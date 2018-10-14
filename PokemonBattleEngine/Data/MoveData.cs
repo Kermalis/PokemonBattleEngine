@@ -12,12 +12,7 @@ namespace PokemonBattleEngine.Data
         public int Power { get; private set; }
         public double Accuracy { get; private set; } // Below 0 indicates an attack that doesn't miss
         public int Priority { get; private set; }
-        public bool MakesContact { get; private set; }
-        public bool AffectedByProtect { get; private set; }
-        public bool AffectedByMagicCoat { get; private set; }
-        public bool AffectedBySnatch { get; private set; }
-        public bool AffectedByMirrorMove { get; private set; }
-        public bool AffectedByKingsRock { get; private set; }
+        public MoveFlags Flags { get; private set; }
         public PossibleTarget Targets { get; private set; }
 
         public static Dictionary<Move, MoveData> Data = new Dictionary<Move, MoveData>()
@@ -29,7 +24,7 @@ namespace PokemonBattleEngine.Data
                     Type = Type.Dark, Category = MoveCategory.Special,
                     Effect = Effect.Flinch, EffectChance = 0.2,
                     PP = 15, Power = 80, Accuracy = 1, Priority = 0,
-                    MakesContact = false, AffectedByProtect = true, AffectedByMagicCoat = false, AffectedBySnatch = false, AffectedByMirrorMove = true, AffectedByKingsRock = true,
+                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove | MoveFlags.AffectedByKingsRock,
                     Targets = PossibleTarget.Any
                 }
             },
@@ -40,7 +35,7 @@ namespace PokemonBattleEngine.Data
                     Type = Type.Dragon, Category = MoveCategory.Special,
                     Effect = Effect.None, EffectChance = 0,
                     PP = 10, Power = 90, Accuracy = 1, Priority = 0,
-                    MakesContact = false, AffectedByProtect = true, AffectedByMagicCoat = false, AffectedBySnatch = false, AffectedByMirrorMove = true, AffectedByKingsRock = true,
+                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove | MoveFlags.AffectedByKingsRock,
                     Targets = PossibleTarget.Any
                 }
             },
@@ -51,7 +46,7 @@ namespace PokemonBattleEngine.Data
                     Type = Type.Water, Category = MoveCategory.Special,
                     Effect = Effect.None, EffectChance = 0,
                     PP = 5, Power = 120, Accuracy = 0.8, Priority = 0,
-                    MakesContact = false, AffectedByProtect = true, AffectedByMagicCoat = false, AffectedBySnatch = false, AffectedByMirrorMove = true, AffectedByKingsRock = false,
+                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove | MoveFlags.AffectedByKingsRock,
                     Targets = PossibleTarget.AnySurrounding
                 }
             },
@@ -62,7 +57,7 @@ namespace PokemonBattleEngine.Data
                     Type = Type.Psychic, Category = MoveCategory.Special,
                     Effect = Effect.LowerSPDEFBy1, EffectChance = 0.1,
                     PP = 10, Power = 90, Accuracy = 1, Priority = 0,
-                    MakesContact = false, AffectedByProtect = true, AffectedByMagicCoat = false, AffectedBySnatch = false, AffectedByMirrorMove = true, AffectedByKingsRock = false,
+                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
                     Targets = PossibleTarget.AnySurrounding
                 }
             },
@@ -73,7 +68,7 @@ namespace PokemonBattleEngine.Data
                     Type = Type.Normal, Category = MoveCategory.Physical,
                     Effect = Effect.None, EffectChance = 0,
                     PP = 35, Power = 50, Accuracy = 1, Priority = 0,
-                    MakesContact = true, AffectedByProtect = true, AffectedByMagicCoat = false, AffectedBySnatch = false, AffectedByMirrorMove = true, AffectedByKingsRock = true,
+                    Flags = MoveFlags.MakesContact | MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove | MoveFlags.AffectedByKingsRock,
                     Targets = PossibleTarget.AnySurrounding
                 }
             },
@@ -84,7 +79,7 @@ namespace PokemonBattleEngine.Data
                     Type = Type.Electric, Category = MoveCategory.Special,
                     Effect = Effect.Paralyze, EffectChance = 0.3,
                     PP = 10, Power = 120, Accuracy = 0.7, Priority = 0,
-                    MakesContact = false, AffectedByProtect = true, AffectedByMagicCoat = false, AffectedBySnatch = false, AffectedByMirrorMove = true, AffectedByKingsRock = false,
+                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
                     Targets = PossibleTarget.AnySurrounding
                 }
             },

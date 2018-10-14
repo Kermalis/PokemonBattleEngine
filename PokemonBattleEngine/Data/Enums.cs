@@ -1,4 +1,6 @@
-﻿namespace PokemonBattleEngine.Data
+﻿using System;
+
+namespace PokemonBattleEngine.Data
 {
     enum Gender : byte
     {
@@ -135,6 +137,17 @@
         Flinch,
         LowerSPDEFBy1,
         Paralyze,
+    }
+    [Flags]
+    enum MoveFlags
+    {
+        None = 0,
+        MakesContact = 1 << 0,
+        AffectedByProtect = 1 << 1,
+        AffectedByMagicCoat = 1 << 2,
+        AffectedBySnatch = 1 << 3,
+        AffectedByMirrorMove = 1 << 4,
+        AffectedByKingsRock = 1 << 5
     }
     enum Move
     {
