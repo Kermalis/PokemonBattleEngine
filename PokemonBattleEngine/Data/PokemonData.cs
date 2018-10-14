@@ -26,6 +26,30 @@ namespace PokemonBattleEngine.Data
                 }
             },
             {
+                Species.Latias,
+                new PokemonData
+                {
+                    GenderRatio = Gender.Female,
+                    Ability1 = Ability.Levitate,
+                    LevelUpMoves = new Tuple<int, Move>[]
+                    {
+                        Tuple.Create(80, Move.DragonPulse),
+                    }
+                }
+            },
+            {
+                Species.Latios,
+                new PokemonData
+                {
+                    GenderRatio = Gender.Male,
+                    Ability1 = Ability.Levitate,
+                    LevelUpMoves = new Tuple<int, Move>[]
+                    {
+                        Tuple.Create(80, Move.DragonPulse),
+                    }
+                }
+            },
+            {
                 Species.Cresselia,
                 new PokemonData
                 {

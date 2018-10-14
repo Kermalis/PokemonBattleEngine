@@ -56,7 +56,8 @@
         Dragon,
         Fighting,
         Normal,
-        Poison
+        Poison,
+        MAX
     }
     enum Nature
     {
@@ -86,24 +87,38 @@
         Careful,
         Quirky
     }
+    enum ItemEffect
+    {
+        None,
+    }
     enum Item
     {
         None,
-
+        ChoiceBand,
+        SoulDew,
     }
     enum Ability
     {
         None,
+        Overgrow,
+        Blaze,
+        Torrent,
+        Swarm,
         Levitate,
+        Hustle,
+        Guts,
         ThickFat,
         HugePower,
         PurePower,
+        MarvelScale,
         BadDreams,
         SapSipper,
     }
     enum Species
     {
         Azumarill = 184,
+        Latias = 380,
+        Latios,
         Cresselia = 488,
         Darkrai = 491,
     }
@@ -124,6 +139,7 @@
         None,
         Tackle,
         HydroPump,
+        DragonPulse,
         Psychic,
         DarkPulse,
     }

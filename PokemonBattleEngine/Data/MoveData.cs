@@ -45,6 +45,17 @@ namespace PokemonBattleEngine.Data
                 }
             },
             {
+                Move.DragonPulse,
+                new MoveData
+                {
+                    Type = Type.Dragon, Category = MoveCategory.Special,
+                    Effect = MoveEffect.None, EffectChance = 0,
+                    PP = 10, Power = 90, Accuracy = 1, Priority = 0,
+                    MakesContact = false, AffectedByProtect = true, AffectedByMagicCoat = false, AffectedBySnatch = false, AffectedByMirrorMove = true, AffectedByKingsRock = true,
+                    Targets = PossibleTarget.Any
+                }
+            },
+            {
                 Move.Psychic,
                 new MoveData
                 {
