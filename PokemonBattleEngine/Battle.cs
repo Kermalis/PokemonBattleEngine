@@ -87,12 +87,10 @@ namespace PokemonBattleEngine
         int CalculateDamage(Pokemon attacker, Pokemon defender, Move move)
         {
             MoveData mData = MoveData.Data[move];
-            int damage = 0;
+            Data.Type moveType = mData.Type;
             int movePower = mData.Power;
-
             int attack = attacker.Attack, spAttack = attacker.SpAttack;
             int defense = defender.Defense, spDefense = defender.SpDefense;
-            Data.Type type = mData.Type;
 
             // TODO: Stuff like mystic water
 
@@ -107,7 +105,7 @@ namespace PokemonBattleEngine
                 || attacker.Ability == Ability.Hustle
                 || (attacker.Ability == Ability.Guts && attacker.Status != Status.None)
                 )
-                attack = 150 * attack / 100;
+                attack = 15 * attack / 10;
 
             // 2x sp attack boost
             if (false//(attacker.Item == Item.DeepSeaTooth && attacker.Species == Species.Clamperl)
@@ -119,7 +117,7 @@ namespace PokemonBattleEngine
                 //|| (attacker.Ability == Ability.Plus && PartnerHasAbility(Ability.Minus))
                 //|| (attacker.Ability == Ability.Minus && PartnerHasAbility(Ability.Plus))
                 )
-                spAttack = 150 * spAttack / 100;
+                spAttack = 15 * spAttack / 10;
 
             // 2x defense boost
             if (false//(defender.Item == Item.MetalPowder && defender.Species == Species.Ditto)
@@ -129,7 +127,7 @@ namespace PokemonBattleEngine
             // 50% defense boost
             if ((defender.Ability == Ability.MarvelScale && defender.Status != Status.None)
                 )
-                defense = 150 * defense / 100;
+                defense = 15 * defense / 10;
 
             // 2x sp defense boost
             if (false//(defender.Item == Item.DeepSeaScale && defender.Species == Species.Clamperl)
@@ -139,7 +137,7 @@ namespace PokemonBattleEngine
             // 50% sp defense boost
             if ((defender.Item == Item.SoulDew && (defender.Species == Species.Latios || defender.Species == Species.Latias))
                 )
-                spDefense = 150 * spDefense / 100;
+                spDefense = 15 * spDefense / 10;
 
             // 2x attack & sp attack boost
             if ((attacker.Item == Item.LightBall && attacker.Species == Species.Pikachu)
@@ -150,7 +148,7 @@ namespace PokemonBattleEngine
             }
 
             // 2x attack & sp attack impairment
-            if ((defender.Ability == Ability.ThickFat && (type == Data.Type.Fire || type == Data.Type.Ice))
+            if ((defender.Ability == Ability.ThickFat && (moveType == Data.Type.Fire || moveType == Data.Type.Ice))
                 )
             {
                 attack /= 2;
@@ -159,12 +157,12 @@ namespace PokemonBattleEngine
 
             // 50% power boost
             if (attacker.HP <= attacker.MaxHP / 3
-                && ((type == Data.Type.Grass && attacker.Ability == Ability.Overgrow)
-                || (type == Data.Type.Fire && attacker.Ability == Ability.Blaze)
-                || (type == Data.Type.Water && attacker.Ability == Ability.Torrent)
-                || (type == Data.Type.Bug && attacker.Ability == Ability.Swarm))
+                && ((moveType == Data.Type.Grass && attacker.Ability == Ability.Overgrow)
+                || (moveType == Data.Type.Fire && attacker.Ability == Ability.Blaze)
+                || (moveType == Data.Type.Water && attacker.Ability == Ability.Torrent)
+                || (moveType == Data.Type.Bug && attacker.Ability == Ability.Swarm))
                 )
-                movePower = 150 * movePower / 100;
+                movePower = 15 * movePower / 10;
 
             // 2x power impairment
             if (false//(type == Data.Type.Electric && MudSportActive())
@@ -172,13 +170,32 @@ namespace PokemonBattleEngine
                 )
                 movePower /= 2;
 
+            int damage = 0, damageHelper = 0;
             if (mData.Category == MoveCategory.Physical)
             {
                 damage = attack;
+                damageHelper = defense;
             }
             else if (mData.Category == MoveCategory.Special)
             {
                 damage = spAttack;
+                damageHelper = spDefense;
+            }
+
+            damage *= movePower;
+            damage *= 2 * attacker.Level / 5 + 2;
+            damage /= damageHelper;
+            damage /= 50;
+
+            if (mData.Category == MoveCategory.Physical)
+            {
+                // Halve damage if the pokemon is burned and does not have the guts ability
+                if (attacker.Status == Status.Burned && attacker.Ability != Ability.Guts)
+                    damage /= 2;
+
+                // This check exists for physical but not special (in pokemon RS gamecode), why?
+                if (damage == 0)
+                    damage = 1;
             }
 
             return damage + 2;
