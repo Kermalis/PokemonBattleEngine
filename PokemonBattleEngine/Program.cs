@@ -9,12 +9,12 @@ namespace PokemonBattleEngine
         {
             Team team1 = new Team
             {
-                Pokemon = new Pokemon[] { new Pokemon(Species.Cresselia) },
+                Pokemon = new Pokemon[] { new Pokemon(Species.Cresselia, Constants.MaxLevel) },
                 PlayerName = "Sasha"
             };
             Team team2 = new Team
             {
-                Pokemon = new Pokemon[] { new Pokemon(Species.Darkrai) },
+                Pokemon = new Pokemon[] { new Pokemon(Species.Darkrai, Constants.MaxLevel) },
                 PlayerName = "Jess"
             };
 

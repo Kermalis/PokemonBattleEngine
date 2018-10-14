@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PokemonBattleEngine.Data
 {
@@ -8,7 +9,7 @@ namespace PokemonBattleEngine.Data
         public Ability Ability1 { get; private set; }
         public Ability Ability2 { get; private set; }
         public Ability AbilityHidden { get; private set; }
-        public Move[] Moves { get; private set; }
+        public Tuple<int, Move>[] LevelUpMoves { get; private set; }
 
         public static Dictionary<Species, PokemonData> Data = new Dictionary<Species, PokemonData>()
         {
@@ -18,9 +19,9 @@ namespace PokemonBattleEngine.Data
                 {
                     GenderRatio = Gender.Female,
                     Ability1 = Ability.Levitate,
-                    Moves = new Move[]
+                    LevelUpMoves = new Tuple<int, Move>[]
                     {
-                        Move.Psychic,
+                        Tuple.Create(93, Move.Psychic),
                     }
                 }
             },
@@ -30,9 +31,9 @@ namespace PokemonBattleEngine.Data
                 {
                     GenderRatio = Gender.Genderless,
                     Ability1 = Ability.BadDreams,
-                    Moves = new Move[]
+                    LevelUpMoves = new Tuple<int, Move>[]
                     {
-                        Move.DarkPulse,
+                        Tuple.Create(93, Move.DarkPulse),
                     }
                 }
             },

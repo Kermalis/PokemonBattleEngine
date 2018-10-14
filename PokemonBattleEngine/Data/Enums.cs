@@ -86,6 +86,11 @@
         Careful,
         Quirky
     }
+    enum Item
+    {
+        None,
+
+    }
     enum Ability
     {
         None,
