@@ -26,6 +26,45 @@ namespace PokemonBattleEngine.Data
                 }
             },
             {
+                Species.Cubone,
+                new PokemonData
+                {
+                    GenderRatio = Gender.M1F1,
+                    Ability1 = Ability.RockHead, Ability2 = Ability.LightningRod, AbilityHidden = Ability.BattleArmor,
+                    HP = 50, Attack = 50, Defense = 95, SpAttack = 40, SpDefense = 50, Speed = 35,
+                    LevelUpMoves = new Tuple<int, Move>[]
+                    {
+                        Tuple.Create(47, Move.Retaliate),
+                    }
+                }
+            },
+            {
+                Species.Marowak,
+                new PokemonData
+                {
+                    GenderRatio = Gender.M1F1,
+                    Ability1 = Ability.RockHead, Ability2 = Ability.LightningRod, AbilityHidden = Ability.BattleArmor,
+                    HP = 60, Attack = 80, Defense = 110, SpAttack = 50, SpDefense = 80, Speed = 45,
+                    LevelUpMoves = new Tuple<int, Move>[]
+                    {
+                        Tuple.Create(59, Move.Retaliate),
+                    }
+                }
+            },
+            {
+                Species.Ditto,
+                new PokemonData
+                {
+                    GenderRatio = Gender.Genderless,
+                    Ability1 = Ability.Limber, AbilityHidden = Ability.Imposter,
+                    HP = 48, Attack = 48, Defense = 48, SpAttack = 48, SpDefense = 48, Speed = 48,
+                    LevelUpMoves = new Tuple<int, Move>[]
+                    {
+                        Tuple.Create(1, Move.Transform),
+                    }
+                }
+            },
+            {
                 Species.Azumarill,
                 new PokemonData
                 {

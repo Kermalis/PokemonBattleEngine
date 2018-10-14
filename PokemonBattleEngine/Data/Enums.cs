@@ -96,22 +96,30 @@ namespace PokemonBattleEngine.Data
         DeepSeaScale,
         DeepSeaTooth,
         LightBall,
+        MetalPowder,
         SoulDew,
+        ThickClub,
     }
     enum Ability
     {
         None,
         BadDreams,
+        BattleArmor,
         Blaze,
         Guts,
         HugePower,
         Hustle,
+        Imposter,
         Levitate,
         LightningRod,
+        Limber,
         MarvelScale,
+        Minus,
         Overgrow,
+        Plus,
         PurePower,
         Rattled,
+        RockHead,
         SapSipper,
         ShellArmor,
         Static,
@@ -123,6 +131,9 @@ namespace PokemonBattleEngine.Data
     {
         None,
         Pikachu = 25,
+        Cubone = 104,
+        Marowak,
+        Ditto = 132,
         Azumarill = 184,
         Clamperl = 366,
         Latias = 380,
@@ -139,10 +150,12 @@ namespace PokemonBattleEngine.Data
     enum Effect
     {
         None,
-        Flinch,
+        Flinch_Hit,
+        Hit,
         Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
-        Lower_SPDEF_By1,
-        Paralyze,
+        Lower_SPDEF_By1_Hit,
+        Paralyze_Hit,
+        Transform,
     }
     [Flags]
     enum MoveFlags
@@ -162,8 +175,10 @@ namespace PokemonBattleEngine.Data
         DragonPulse,
         HydroPump,
         Psychic,
+        Retaliate,
         ShellSmash,
         Tackle,
         Thunder,
+        Transform,
     }
 }

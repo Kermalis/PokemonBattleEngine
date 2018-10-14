@@ -43,11 +43,27 @@ namespace PokemonBattleEngine.Data
                 }
             },
             {
+                Item.MetalPowder,
+                new ItemData
+                {
+                    Effect = Effect.None, EffectParam = 0,
+                    FlingPower = 10
+                }
+            },
+            {
                 Item.SoulDew,
                 new ItemData
                 {
                     Effect = Effect.None, EffectParam = 0,
                     FlingPower = 30
+                }
+            },
+            {
+                Item.ThickClub,
+                new ItemData
+                {
+                    Effect = Effect.None, EffectParam = 0,
+                    FlingPower = 90
                 }
             },
         };
