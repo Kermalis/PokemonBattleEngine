@@ -8,7 +8,7 @@ namespace PokemonBattleEngine.Data
         public MoveCategory Category { get; private set; }
         public MoveEffect Effect { get; private set; }
         public double EffectChance { get; private set; }
-        public int PP { get; private set; }
+        public byte PP { get; private set; }
         public int Power { get; private set; }
         public double Accuracy { get; private set; } // Below 0 indicates an attack that doesn't miss
         public bool MakesContact { get; private set; }

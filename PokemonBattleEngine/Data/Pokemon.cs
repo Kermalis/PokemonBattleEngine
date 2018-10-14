@@ -13,7 +13,7 @@ namespace PokemonBattleEngine.Data
         public int Level { get; private set; }
 
         public Move[] Moves = new Move[Constants.NumMoves];
-        public sbyte[] PP = new sbyte[Constants.NumMoves];
+        public byte[] PP = new byte[Constants.NumMoves];
 
         public readonly Species Species;
         public uint Personality { get; private set; }
@@ -39,8 +39,7 @@ namespace PokemonBattleEngine.Data
             if (moves == null)
                 SetDefaultMovesForCurrentLevel();
             else
-                for (int i = 0; i < Constants.NumMoves; i++)
-                    Moves[i] = moves[i];
+                SetMovesAndPP(moves);
         }
 
         void SetRandomPersonality() => Personality = Utils.GetRandomUint();
@@ -50,10 +49,18 @@ namespace PokemonBattleEngine.Data
             PokemonData pData = PokemonData.Data[Species];
 
             Move[] learnedMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).ToArray();
-            int min = Math.Min(Constants.NumMoves, learnedMoves.Length);
-            // Copy last learned moves
+            SetMovesAndPP(learnedMoves);
+        }
+        void SetMovesAndPP(Move[] moves)
+        {
+            int min = Math.Min(Constants.NumMoves, moves.Length);
+            // Copy last "min" amount of moves from the array
             for (int i = min - 1; i >= 0; i--)
-                Moves[i] = learnedMoves[i];
+            {
+                Move newMove = moves[i];
+                Moves[i] = newMove;
+                PP[i] = MoveData.Data[newMove].PP;
+            }
         }
 
         static Gender GetGenderFromSpeciesAndPersonality(Species species, uint personality)
