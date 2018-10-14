@@ -13,109 +13,110 @@
     }
     enum PossibleTarget // Used in MoveData
     {
-        Self,
-        AnySurrounding,
         Any,
+        AnySurrounding,
+        Self
     }
     enum Target
     {
-        Self,
-        FoeLeft,
-        FoeMiddle,
-        FoeRight,
+        All,
         AllyLeft,
         AllyMiddle,
         AllyRight,
-        All
+        FoeLeft,
+        FoeMiddle,
+        FoeRight,
+        Self
     }
     enum Status
     {
         None,
-        Poisoned,
-        BadlyPoisoned,
-        Paralyzed,
         Asleep,
+        BadlyPoisoned,
+        Burned,
         Frozen,
-        Burned
+        Paralyzed,
+        Poisoned
     }
     enum Type
     {
-        Fire,
-        Grass,
-        Water,
-        Dark,
-        Psychic,
-        Ghost,
-        Rock,
-        Ground,
-        Steel,
-        Electric,
-        Ice,
         Bug,
-        Flying,
+        Dark,
         Dragon,
+        Electric,
         Fighting,
+        Fire,
+        Flying,
+        Ghost,
+        Grass,
+        Ground,
+        Ice,
         Normal,
         Poison,
-        MAX
+        Psychic,
+        Rock,
+        Steel,
+        Water
     }
     enum Nature
     {
-        Hardy,
-        Loney,
-        Brave,
         Adamant,
-        Naughty,
-        Bold,
-        Docile,
-        Relaxed,
-        Impish,
-        Lax,
-        Timid,
-        Hasty,
-        Serious,
-        Jolly,
-        Naive,
-        Modest,
-        Mild,
-        Quiet,
         Bashful,
-        Rash,
+        Bold,
+        Brave,
         Calm,
-        Gentle,
-        Sassy,
         Careful,
-        Quirky
-    }
-    enum ItemEffect
-    {
-        None,
+        Docile,
+        Gentle,
+        Hardy,
+        Hasty,
+        Impish,
+        Jolly,
+        Lax,
+        Loney,
+        Mild,
+        Modest,
+        Naive,
+        Naughty,
+        Quiet,
+        Quirky,
+        Rash,
+        Relaxed,
+        Sassy,
+        Serious,
+        Timid,
+        MAX
     }
     enum Item
     {
         None,
         ChoiceBand,
+        LightBall,
         SoulDew,
     }
     enum Ability
     {
         None,
-        Overgrow,
-        Blaze,
-        Torrent,
-        Swarm,
-        Levitate,
-        Hustle,
-        Guts,
-        ThickFat,
-        HugePower,
-        PurePower,
-        MarvelScale,
         BadDreams,
+        Blaze,
+        Guts,
+        HugePower,
+        Hustle,
+        Levitate,
+        LightningRod,
+        MarvelScale,
+        Overgrow,
+        PurePower,
         SapSipper,
+        Static,
+        Swarm,
+        ThickFat,
+        Torrent,
     }
     enum Species
     {
+        None,
+        Pikachu = 25,
         Azumarill = 184,
         Latias = 380,
         Latios,
@@ -128,19 +129,21 @@
         Physical,
         Special
     }
-    enum MoveEffect
+    enum Effect
     {
         None,
-        LowerSPDEFBy1,
         Flinch,
+        LowerSPDEFBy1,
+        Paralyze,
     }
     enum Move
     {
         None,
-        Tackle,
-        HydroPump,
-        DragonPulse,
-        Psychic,
         DarkPulse,
+        DragonPulse,
+        HydroPump,
+        Psychic,
+        Tackle,
+        Thunder,
     }
 }

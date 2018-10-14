@@ -8,7 +8,7 @@ namespace PokemonBattleEngine
         public static void Main(string[] args)
         {
             TeamData team1 = new TeamData { PlayerName = "Sasha" };
-            team1.Pokemon[0] = new Pokemon(Species.Azumarill, Constants.MaxLevel);
+            team1.Pokemon[0] = new Pokemon(Species.Pikachu, Constants.MaxLevel);
 
             TeamData team2 = new TeamData { PlayerName = "Jess" };
             team2.Pokemon[0] = new Pokemon(Species.Darkrai, Constants.MaxLevel);

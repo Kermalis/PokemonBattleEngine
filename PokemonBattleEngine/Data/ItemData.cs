@@ -4,7 +4,7 @@ namespace PokemonBattleEngine.Data
 {
     class ItemData
     {
-        public ItemEffect Effect { get; private set; }
+        public Effect Effect { get; private set; }
         public int EffectParam { get; private set; }
         public int FlingPower { get; private set; }
 
@@ -14,15 +14,23 @@ namespace PokemonBattleEngine.Data
                 Item.ChoiceBand,
                 new ItemData
                 {
-                    Effect = ItemEffect.None, EffectParam = 0,
+                    Effect = Effect.None, EffectParam = 0,
                     FlingPower = 10
+                }
+            },
+            {
+                Item.LightBall,
+                new ItemData
+                {
+                    Effect = Effect.None, EffectParam = 0,
+                    FlingPower = 30
                 }
             },
             {
                 Item.SoulDew,
                 new ItemData
                 {
-                    Effect = ItemEffect.None, EffectParam = 0,
+                    Effect = Effect.None, EffectParam = 0,
                     FlingPower = 30
                 }
             },

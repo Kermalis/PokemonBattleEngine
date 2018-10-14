@@ -6,43 +6,37 @@ namespace PokemonBattleEngine.Data
 {
     class Pokemon
     {
+        public readonly Species Species;
+        public readonly Gender Gender;
+        public readonly Nature Nature;
+        public int HP;
+        public int MaxHP { get; private set; }
+        public int Attack, Defense, SpAttack, SpDefense, Speed;
+        public int Level { get; private set; }
         public Status Status;
         public Ability Ability;
         public Item Item;
-        public int HP;
-        public int MaxHP { get; private set; }
-        public int Level { get; private set; }
 
         public Move[] Moves = new Move[Constants.NumMoves];
         public int[] PP = new int[Constants.NumMoves];
 
-        public int Attack, Defense, SpAttack, SpDefense, Speed;
-
-        public readonly Species Species;
-        public uint Personality { get; private set; }
-        
-        public Pokemon(Species species, int level = 1, Item item = Item.None, Move[] moves = null, uint personality = 0)
+        public Pokemon(Species species, int level = 1, Item item = Item.None, Move[] moves = null, Nature nature = Nature.MAX)
         {
-            // Set species
+            PokemonData pData = PokemonData.Data[species];
+
             Species = species;
-
-            // Set personality
-            Personality = personality == 0 ? (uint)Utils.RNG.Next() : personality;
-
-            // Set level
+            Gender = GetRandomGenderForSpecies(Species);
+            Ability = pData.Ability1; // Temporary
             Level = level;
-
-            // Set item
             Item = item;
 
-            // Set moves
             if (moves == null)
                 SetDefaultMovesForCurrentLevel();
             else
                 SetMovesAndPP(moves);
 
-            // Ability
-            Ability = GetAbilityFromSpeciesAndPersonality(Species, Personality);
+            if (nature >= Nature.MAX)
+                Nature = (Nature)Utils.RNG.Next(0, (int)Nature.MAX);
 
             // Temporary
             HP = MaxHP = Attack = Defense = SpAttack = SpDefense = Speed = 100;
@@ -67,18 +61,7 @@ namespace PokemonBattleEngine.Data
             }
         }
 
-        static Ability GetAbilityFromSpeciesAndPersonality(Species species, uint personality)
-        {
-            PokemonData pData = PokemonData.Data[species];
-
-            // TODO: Hidden ability
-            if ((personality & 0xFFFF) % 2 == 0 || pData.Ability2 == Ability.None)
-                return pData.Ability1;
-            else
-                return pData.Ability2;
-        }
-
-        static Gender GetGenderFromSpeciesAndPersonality(Species species, uint personality)
+        static Gender GetRandomGenderForSpecies(Species species)
         {
             PokemonData pData = PokemonData.Data[species];
 
@@ -90,13 +73,13 @@ namespace PokemonBattleEngine.Data
                     return pData.GenderRatio;
             }
 
-            if ((byte)pData.GenderRatio > (personality & 0xFF))
+            byte b = (byte)Utils.RNG.Next(0, byte.MaxValue + 1);
+            if ((byte)pData.GenderRatio > b)
                 return Gender.Female;
             else
                 return Gender.Male;
         }
-        public Gender GetGender() => GetGenderFromSpeciesAndPersonality(Species, Personality);
 
-        public override string ToString() => $"{Species} Lv.{Level} {GetGender()} {Ability} {HP}/{MaxHP} HP";
+        public override string ToString() => $"{Species} Lv.{Level} {Nature} {Gender} {Ability} {HP}/{MaxHP} HP";
     }
 }

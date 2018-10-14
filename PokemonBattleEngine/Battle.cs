@@ -94,6 +94,8 @@ namespace PokemonBattleEngine
             int defense = defender.Defense, spDefense = defender.SpDefense;
             Data.Type type = mData.Type;
 
+            // TODO: Stuff like mystic water
+
             // 2x attack boost
             if ((attacker.Ability == Ability.HugePower || attacker.Ability == Ability.PurePower)
                 //|| (attacker.Item == Item.ThickClub && (attacker.Species == Species.Cubone || attacker.Species == Species.Marowak))
@@ -140,7 +142,7 @@ namespace PokemonBattleEngine
                 spDefense = 150 * spDefense / 100;
 
             // 2x attack & sp attack boost
-            if (false//(attacker.Item == Item.LightBall && attacker.Species == Species.Pikachu)
+            if ((attacker.Item == Item.LightBall && attacker.Species == Species.Pikachu)
                 )
             {
                 attack *= 2;
