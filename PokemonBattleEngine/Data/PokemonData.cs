@@ -14,6 +14,18 @@ namespace PokemonBattleEngine.Data
         public static Dictionary<Species, PokemonData> Data = new Dictionary<Species, PokemonData>()
         {
             {
+                Species.Azumarill,
+                new PokemonData
+                {
+                    GenderRatio = Gender.M1F1,
+                    Ability1 = Ability.ThickFat, Ability2 = Ability.HugePower, AbilityHidden = Ability.SapSipper,
+                    LevelUpMoves = new Tuple<int, Move>[]
+                    {
+                        Tuple.Create(46, Move.HydroPump),
+                    }
+                }
+            },
+            {
                 Species.Cresselia,
                 new PokemonData
                 {

@@ -7,13 +7,16 @@ namespace PokemonBattleEngine.Data
     class Pokemon
     {
         public Status Status;
+        public Ability Ability;
         public Item Item;
         public int HP;
         public int MaxHP { get; private set; }
         public int Level { get; private set; }
 
         public Move[] Moves = new Move[Constants.NumMoves];
-        public byte[] PP = new byte[Constants.NumMoves];
+        public int[] PP = new int[Constants.NumMoves];
+
+        public int Attack, Defense, SpAttack, SpDefense, Speed;
 
         public readonly Species Species;
         public uint Personality { get; private set; }
@@ -24,10 +27,7 @@ namespace PokemonBattleEngine.Data
             Species = species;
 
             // Set personality
-            if (personality == 0)
-                SetRandomPersonality();
-            else
-                Personality = personality;
+            Personality = personality == 0 ? (uint)Utils.RNG.Next() : personality;
 
             // Set level
             Level = level;
@@ -40,9 +40,13 @@ namespace PokemonBattleEngine.Data
                 SetDefaultMovesForCurrentLevel();
             else
                 SetMovesAndPP(moves);
-        }
 
-        void SetRandomPersonality() => Personality = Utils.GetRandomUint();
+            // Ability
+            Ability = GetAbilityFromSpeciesAndPersonality(Species, Personality);
+
+            // Temporary
+            HP = MaxHP = Attack = Defense = SpAttack = SpDefense = Speed = 100;
+        }
 
         void SetDefaultMovesForCurrentLevel()
         {
@@ -61,6 +65,17 @@ namespace PokemonBattleEngine.Data
                 Moves[i] = newMove;
                 PP[i] = MoveData.Data[newMove].PP;
             }
+        }
+
+        static Ability GetAbilityFromSpeciesAndPersonality(Species species, uint personality)
+        {
+            PokemonData pData = PokemonData.Data[species];
+
+            // TODO: Hidden ability
+            if ((personality & 0xFFFF) % 2 == 0 || pData.Ability2 == Ability.None)
+                return pData.Ability1;
+            else
+                return pData.Ability2;
         }
 
         static Gender GetGenderFromSpeciesAndPersonality(Species species, uint personality)
@@ -82,6 +97,6 @@ namespace PokemonBattleEngine.Data
         }
         public Gender GetGender() => GetGenderFromSpeciesAndPersonality(Species, Personality);
 
-        public override string ToString() => $"{Species} Lv.{Level} {GetGender()}";
+        public override string ToString() => $"{Species} Lv.{Level} {GetGender()} {Ability} {HP}/{MaxHP} HP";
     }
 }

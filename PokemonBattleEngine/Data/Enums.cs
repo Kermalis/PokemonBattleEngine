@@ -95,10 +95,15 @@
     {
         None,
         Levitate,
+        ThickFat,
+        HugePower,
+        PurePower,
         BadDreams,
+        SapSipper,
     }
     enum Species
     {
+        Azumarill = 184,
         Cresselia = 488,
         Darkrai = 491,
     }
@@ -116,7 +121,9 @@
     }
     enum Move
     {
+        None,
         Tackle,
+        HydroPump,
         Psychic,
         DarkPulse,
     }
