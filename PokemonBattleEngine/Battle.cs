@@ -108,7 +108,7 @@ namespace PokemonBattleEngine
                 attack = 15 * attack / 10;
 
             // 2x sp attack boost
-            if (false//(attacker.Item == Item.DeepSeaTooth && attacker.Species == Species.Clamperl)
+            if ((attacker.Item == Item.DeepSeaTooth && attacker.Species == Species.Clamperl)
                 )
                 spAttack *= 2;
 
@@ -130,7 +130,7 @@ namespace PokemonBattleEngine
                 defense = 15 * defense / 10;
 
             // 2x sp defense boost
-            if (false//(defender.Item == Item.DeepSeaScale && defender.Species == Species.Clamperl)
+            if ((defender.Item == Item.DeepSeaScale && defender.Species == Species.Clamperl)
                 )
                 spDefense *= 2;
 

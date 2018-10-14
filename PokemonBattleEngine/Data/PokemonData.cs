@@ -38,6 +38,18 @@ namespace PokemonBattleEngine.Data
                 }
             },
             {
+                Species.Clamperl,
+                new PokemonData
+                {
+                    GenderRatio = Gender.M1F1,
+                    Ability1 = Ability.ShellArmor, AbilityHidden = Ability.Rattled,
+                    LevelUpMoves = new Tuple<int, Move>[]
+                    {
+                        Tuple.Create(51, Move.ShellSmash),
+                    }
+                }
+            },
+            {
                 Species.Latias,
                 new PokemonData
                 {

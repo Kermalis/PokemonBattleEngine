@@ -93,6 +93,8 @@ namespace PokemonBattleEngine.Data
     {
         None,
         ChoiceBand,
+        DeepSeaScale,
+        DeepSeaTooth,
         LightBall,
         SoulDew,
     }
@@ -109,7 +111,9 @@ namespace PokemonBattleEngine.Data
         MarvelScale,
         Overgrow,
         PurePower,
+        Rattled,
         SapSipper,
+        ShellArmor,
         Static,
         Swarm,
         ThickFat,
@@ -120,6 +124,7 @@ namespace PokemonBattleEngine.Data
         None,
         Pikachu = 25,
         Azumarill = 184,
+        Clamperl = 366,
         Latias = 380,
         Latios,
         Cresselia = 488,
@@ -135,7 +140,8 @@ namespace PokemonBattleEngine.Data
     {
         None,
         Flinch,
-        LowerSPDEFBy1,
+        Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
+        Lower_SPDEF_By1,
         Paralyze,
     }
     [Flags]
@@ -156,6 +162,7 @@ namespace PokemonBattleEngine.Data
         DragonPulse,
         HydroPump,
         Psychic,
+        ShellSmash,
         Tackle,
         Thunder,
     }

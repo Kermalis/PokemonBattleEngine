@@ -7,7 +7,7 @@ namespace PokemonBattleEngine.Data
         public Type Type { get; private set; }
         public MoveCategory Category { get; private set; }
         public Effect Effect { get; private set; }
-        public double EffectChance { get; private set; }
+        public double EffectChance { get; private set; } // Below 0 indicates an effect that always occurs
         public int PP { get; private set; }
         public int Power { get; private set; }
         public double Accuracy { get; private set; } // Below 0 indicates an attack that doesn't miss
@@ -55,10 +55,21 @@ namespace PokemonBattleEngine.Data
                 new MoveData
                 {
                     Type = Type.Psychic, Category = MoveCategory.Special,
-                    Effect = Effect.LowerSPDEFBy1, EffectChance = 0.1,
+                    Effect = Effect.Lower_SPDEF_By1, EffectChance = 0.1,
                     PP = 10, Power = 90, Accuracy = 1, Priority = 0,
                     Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
                     Targets = PossibleTarget.AnySurrounding
+                }
+            },
+            {
+                Move.ShellSmash,
+                new MoveData
+                {
+                    Type = Type.Normal, Category = MoveCategory.Status,
+                    Effect = Effect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2, EffectChance = -1,
+                    PP = 15, Power = 0, Accuracy = -1, Priority = 0,
+                    Flags = MoveFlags.AffectedBySnatch,
+                    Targets = PossibleTarget.Self
                 }
             },
             {

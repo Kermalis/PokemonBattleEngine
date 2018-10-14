@@ -19,6 +19,22 @@ namespace PokemonBattleEngine.Data
                 }
             },
             {
+                Item.DeepSeaScale,
+                new ItemData
+                {
+                    Effect = Effect.None, EffectParam = 0,
+                    FlingPower = 30
+                }
+            },
+            {
+                Item.DeepSeaTooth,
+                new ItemData
+                {
+                    Effect = Effect.None, EffectParam = 0,
+                    FlingPower = 90
+                }
+            },
+            {
                 Item.LightBall,
                 new ItemData
                 {
