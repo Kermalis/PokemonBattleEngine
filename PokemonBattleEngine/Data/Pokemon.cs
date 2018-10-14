@@ -1,5 +1,6 @@
 ﻿using PokemonBattleEngine.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PokemonBattleEngine.Data
@@ -9,10 +10,9 @@ namespace PokemonBattleEngine.Data
         public readonly Species Species;
         public readonly Gender Gender;
         public readonly Nature Nature;
-        public int HP;
-        public int MaxHP { get; private set; }
+        public int HP, MaxHP;
         public int Attack, Defense, SpAttack, SpDefense, Speed;
-        public int Level { get; private set; }
+        public int Level;
         public Status Status;
         public Ability Ability;
         public Item Item;
@@ -38,8 +38,63 @@ namespace PokemonBattleEngine.Data
             if (nature >= Nature.MAX)
                 Nature = (Nature)Utils.RNG.Next(0, (int)Nature.MAX);
 
-            // Temporary
-            HP = MaxHP = Attack = Defense = SpAttack = SpDefense = Speed = 100;
+            CalculateStats();
+            HP = MaxHP;
+        }
+
+        static readonly Dictionary<Nature, sbyte[]> NatureStatTable = new Dictionary<Nature, sbyte[]>
+        {
+            //                               Atk   Def SpAtk SpDef   Spd
+            { Nature.Adamant, new sbyte[] {   +1,    0,   -1,    0,    0} },
+            { Nature.Bashful, new sbyte[] {    0,    0,    0,    0,    0} },
+            { Nature.Bold,    new sbyte[] {   -1,   +1,    0,    0,    0} },
+            { Nature.Brave,   new sbyte[] {   +1,    0,    0,    0,   -1} },
+            { Nature.Calm,    new sbyte[] {   -1,    0,    0,   +1,    0} },
+            { Nature.Careful, new sbyte[] {    0,    0,   -1,   +1,    0} },
+            { Nature.Docile,  new sbyte[] {    0,    0,    0,    0,    0} },
+            { Nature.Gentle,  new sbyte[] {    0,   -1,    0,   +1,    0} },
+            { Nature.Hardy,   new sbyte[] {    0,    0,    0,    0,    0} },
+            { Nature.Hasty,   new sbyte[] {    0,   -1,    0,    0,   +1} },
+            { Nature.Impish,  new sbyte[] {    0,   +1,   -1,    0,    0} },
+            { Nature.Jolly,   new sbyte[] {    0,    0,   -1,    0,   +1} },
+            { Nature.Lax,     new sbyte[] {    0,   +1,    0,   -1,    0} },
+            { Nature.Loney,   new sbyte[] {   +1,   -1,    0,    0,    0} },
+            { Nature.Mild,    new sbyte[] {    0,   -1,   +1,    0,    0} },
+            { Nature.Modest,  new sbyte[] {   -1,    0,   +1,    0,    0} },
+            { Nature.Naive,   new sbyte[] {    0,    0,    0,   -1,   +1} },
+            { Nature.Naughty, new sbyte[] {   +1,    0,    0,   -1,    0} },
+            { Nature.Quiet,   new sbyte[] {    0,    0,   +1,    0,   -1} },
+            { Nature.Quirky,  new sbyte[] {    0,    0,    0,    0,    0} },
+            { Nature.Rash,    new sbyte[] {    0,    0,   +1,   -1,    0} },
+            { Nature.Relaxed, new sbyte[] {    0,   +1,    0,    0,   -1} },
+            { Nature.Sassy,   new sbyte[] {    0,    0,    0,   +1,   -1} },
+            { Nature.Serious, new sbyte[] {    0,    0,    0,    0,    0} },
+            { Nature.Timid,   new sbyte[] {   -1,    0,    0,    0,   +1} },
+        };
+        void CalculateStats(int[] IVs = null, int[] EVs = null)
+        {
+            PokemonData pData = PokemonData.Data[Species];
+
+            if (IVs == null)
+                IVs = new int[6];
+            if (EVs == null)
+                EVs = new int[6];
+
+            MaxHP = ((2 * pData.HP + IVs[0] + (EVs[0] / 4)) * Level / Constants.MaxLevel) + Level + 10;
+            
+            int i = 0;
+            int OtherStat(int baseVal)
+            {
+                double natureMultiplier = 1 + (NatureStatTable[Nature][i] * 0.1);
+                int val = (int)((((2 * baseVal + IVs[i + 1] + (EVs[i + 1] / 4)) * Level / Constants.MaxLevel) + 5) * natureMultiplier);
+                i++;
+                return val;
+            }
+            Attack = OtherStat(pData.Attack);
+            Defense = OtherStat(pData.Defense);
+            SpAttack = OtherStat(pData.SpAttack);
+            SpDefense = OtherStat(pData.SpDefense);
+            Speed = OtherStat(pData.Speed);
         }
 
         void SetDefaultMovesForCurrentLevel()

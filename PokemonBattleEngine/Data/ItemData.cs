@@ -4,9 +4,9 @@ namespace PokemonBattleEngine.Data
 {
     class ItemData
     {
-        public Effect Effect { get; private set; }
-        public int EffectParam { get; private set; }
-        public int FlingPower { get; private set; }
+        public Effect Effect;
+        public int EffectParam;
+        public int FlingPower;
 
         public static Dictionary<Item, ItemData> Data = new Dictionary<Item, ItemData>()
         {

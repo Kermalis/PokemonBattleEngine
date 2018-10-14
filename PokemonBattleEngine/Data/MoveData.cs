@@ -4,16 +4,14 @@ namespace PokemonBattleEngine.Data
 {
     class MoveData
     {
-        public Type Type { get; private set; }
-        public MoveCategory Category { get; private set; }
-        public Effect Effect { get; private set; }
-        public double EffectChance { get; private set; } // Below 0 indicates an effect that always occurs
-        public int PP { get; private set; }
-        public int Power { get; private set; }
-        public double Accuracy { get; private set; } // Below 0 indicates an attack that doesn't miss
-        public int Priority { get; private set; }
-        public MoveFlags Flags { get; private set; }
-        public PossibleTarget Targets { get; private set; }
+        public Type Type;
+        public MoveCategory Category;
+        public Effect Effect;
+        public double EffectChance; // Below 0 indicates an effect that always occurs
+        public int PP, Power, Priority;
+        public double Accuracy; // Below 0 indicates an attack that doesn't miss
+        public MoveFlags Flags;
+        public PossibleTarget Targets;
 
         public static Dictionary<Move, MoveData> Data = new Dictionary<Move, MoveData>()
         {
