@@ -12,10 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Connection.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Ether.Network" Version="3.0.0" />
   </ItemGroup>
 
