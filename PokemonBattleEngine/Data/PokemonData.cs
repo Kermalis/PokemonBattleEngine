@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PokemonBattleEngine.Data
+namespace Kermalis.PokemonBattleEngine.Data
 {
     class PokemonData
     {

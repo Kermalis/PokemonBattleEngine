@@ -1,6 +1,6 @@
-﻿using PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 
-namespace PokemonBattleEngine
+namespace Kermalis.PokemonBattleEngine
 {
     partial class Battle
     {

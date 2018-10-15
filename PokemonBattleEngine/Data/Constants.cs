@@ -1,4 +1,4 @@
-﻿namespace PokemonBattleEngine.Data
+﻿namespace Kermalis.PokemonBattleEngine.Data
 {
     static class Constants
     {

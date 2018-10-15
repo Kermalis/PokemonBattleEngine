@@ -1,11 +1,11 @@
-﻿using PokemonBattleEngine.Util;
+﻿using Kermalis.PokemonBattleEngine.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PokemonBattleEngine.Data
+namespace Kermalis.PokemonBattleEngine.Data
 {
-    class Pokemon
+    public class Pokemon
     {
         public readonly Species Species;
         public readonly Gender Gender;

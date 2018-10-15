@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PokemonBattleEngine.Util
+namespace Kermalis.PokemonBattleEngine.Util
 {
     static class Utils
     {

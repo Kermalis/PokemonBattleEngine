@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBattleEngine", "PokemonBattleEngine\PokemonBattleEngine.csproj", "{AC469C92-3871-41DD-AA00-D3E36A5BDA2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBattleEngineClient", "PokemonBattleEngineClient\PokemonBattleEngineClient.csproj", "{66D25237-CCAD-42BD-98E8-C6E937815DFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBattleEngineServer", "PokemonBattleEngineServer\PokemonBattleEngineServer.csproj", "{BE8F0292-CE0E-4023-984A-17A4016518FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{AC469C92-3871-41DD-AA00-D3E36A5BDA2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC469C92-3871-41DD-AA00-D3E36A5BDA2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC469C92-3871-41DD-AA00-D3E36A5BDA2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66D25237-CCAD-42BD-98E8-C6E937815DFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66D25237-CCAD-42BD-98E8-C6E937815DFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66D25237-CCAD-42BD-98E8-C6E937815DFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66D25237-CCAD-42BD-98E8-C6E937815DFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE8F0292-CE0E-4023-984A-17A4016518FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE8F0292-CE0E-4023-984A-17A4016518FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE8F0292-CE0E-4023-984A-17A4016518FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8F0292-CE0E-4023-984A-17A4016518FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

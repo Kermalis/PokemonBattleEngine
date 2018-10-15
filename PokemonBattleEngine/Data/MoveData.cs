@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace PokemonBattleEngine.Data
+namespace Kermalis.PokemonBattleEngine.Data
 {
     class MoveData
     {
@@ -20,7 +20,7 @@ namespace PokemonBattleEngine.Data
                 new MoveData
                 {
                     Type = Type.Dark, Category = MoveCategory.Special,
-                    Effect = Effect.Flinch_Hit, EffectParam = 20,
+                    Effect = Effect.Hit__MaybeFlinch, EffectParam = 20,
                     PP = 15, Power = 80, Accuracy = 1, Priority = 0,
                     Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove | MoveFlags.AffectedByKingsRock,
                     Targets = PossibleTarget.Any
@@ -53,7 +53,7 @@ namespace PokemonBattleEngine.Data
                 new MoveData
                 {
                     Type = Type.Psychic, Category = MoveCategory.Special,
-                    Effect = Effect.Lower_SPDEF_By1_Hit, EffectParam = 10,
+                    Effect = Effect.Hit__MaybeLower_SPDEF_By1, EffectParam = 10,
                     PP = 10, Power = 90, Accuracy = 1, Priority = 0,
                     Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
                     Targets = PossibleTarget.AnySurrounding
@@ -97,7 +97,7 @@ namespace PokemonBattleEngine.Data
                 new MoveData
                 {
                     Type = Type.Electric, Category = MoveCategory.Special,
-                    Effect = Effect.Paralyze_Hit, EffectParam = 30,
+                    Effect = Effect.Hit__MaybeParalyze, EffectParam = 30,
                     PP = 10, Power = 120, Accuracy = 0.7, Priority = 0,
                     Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
                     Targets = PossibleTarget.AnySurrounding

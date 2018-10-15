@@ -1,7 +1,7 @@
-﻿using PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
 
-namespace PokemonBattleEngine
+namespace Kermalis.PokemonBattleEngine
 {
     public class Program
     {

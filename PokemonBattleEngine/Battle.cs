@@ -1,15 +1,15 @@
-﻿using PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
 
-namespace PokemonBattleEngine
+namespace Kermalis.PokemonBattleEngine
 {
-    class TeamData
+    public sealed class TeamData
     {
         public Pokemon[] Pokemon;
         public string PlayerName;
     }
 
-    partial class Battle
+    public sealed partial class Battle
     {
         private class BattlePokemon
         {

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace PokemonBattleEngine.Data
+namespace Kermalis.PokemonBattleEngine.Data
 {
-    enum Gender : byte
+    public enum Gender : byte
     {
         Male = 0x00,
         M7F1 = 0x1F, // Male 7:1 Female
@@ -13,13 +13,13 @@ namespace PokemonBattleEngine.Data
         Female = 0xFE,
         Genderless = 0xFF
     }
-    enum PossibleTarget // Used in MoveData
+    public enum PossibleTarget // Used in MoveData
     {
         Any,
         AnySurrounding,
         Self
     }
-    enum Target
+    public enum Target
     {
         All,
         AllyLeft,
@@ -30,7 +30,7 @@ namespace PokemonBattleEngine.Data
         FoeRight,
         Self
     }
-    enum Status
+    public enum Status
     {
         None,
         Asleep,
@@ -40,7 +40,7 @@ namespace PokemonBattleEngine.Data
         Paralyzed,
         Poisoned
     }
-    enum Type
+    public enum Type
     {
         Bug,
         Dark,
@@ -60,7 +60,7 @@ namespace PokemonBattleEngine.Data
         Steel,
         Water
     }
-    enum Nature
+    public enum Nature
     {
         Adamant,
         Bashful,
@@ -89,7 +89,7 @@ namespace PokemonBattleEngine.Data
         Timid,
         MAX
     }
-    enum Item
+    public enum Item
     {
         None,
         ChoiceBand,
@@ -100,7 +100,7 @@ namespace PokemonBattleEngine.Data
         SoulDew,
         ThickClub,
     }
-    enum Ability
+    public enum Ability
     {
         None,
         BadDreams,
@@ -127,7 +127,7 @@ namespace PokemonBattleEngine.Data
         ThickFat,
         Torrent,
     }
-    enum Species
+    public enum Species
     {
         None,
         Pikachu = 25,
@@ -141,24 +141,24 @@ namespace PokemonBattleEngine.Data
         Cresselia = 488,
         Darkrai = 491,
     }
-    enum MoveCategory
+    public enum MoveCategory
     {
         Status,
         Physical,
         Special
     }
-    enum Effect
+    public enum Effect
     {
         None,
-        Flinch_Hit,
         Hit,
+        Hit__MaybeFlinch,
+        Hit__MaybeLower_SPDEF_By1,
+        Hit__MaybeParalyze,
         Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
-        Lower_SPDEF_By1_Hit,
-        Paralyze_Hit,
         Transform,
     }
     [Flags]
-    enum MoveFlags
+    public enum MoveFlags
     {
         None = 0,
         MakesContact = 1 << 0,
@@ -168,7 +168,7 @@ namespace PokemonBattleEngine.Data
         AffectedByMirrorMove = 1 << 4,
         AffectedByKingsRock = 1 << 5
     }
-    enum Move
+    public enum Move
     {
         None,
         DarkPulse,
