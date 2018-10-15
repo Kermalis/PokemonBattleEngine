@@ -13,13 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Female = 0xFE,
         Genderless = 0xFF
     }
-    public enum PossibleTarget // Used in MoveData
-    {
-        Any,
-        AnySurrounding,
-        Self
-    }
-    public enum Target
+    public enum Target : byte
     {
         All,
         AllyLeft,
@@ -30,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FoeRight,
         Self
     }
-    public enum Status
+    public enum Status : byte
     {
         None,
         Asleep,
@@ -40,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Paralyzed,
         Poisoned
     }
-    public enum Type
+    public enum Type : byte
     {
         Bug,
         Dark,
@@ -60,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Steel,
         Water
     }
-    public enum Nature
+    public enum Nature : byte
     {
         Adamant,
         Bashful,
@@ -89,7 +83,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Timid,
         MAX
     }
-    public enum Item
+    public enum Item : ushort
     {
         None,
         ChoiceBand,
@@ -99,8 +93,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         MetalPowder,
         SoulDew,
         ThickClub,
+        MAX
     }
-    public enum Ability
+    public enum Ability : byte
     {
         None,
         BadDreams,
@@ -127,7 +122,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ThickFat,
         Torrent,
     }
-    public enum Species
+    public enum Species : ushort
     {
         None,
         Pikachu = 25,
@@ -139,15 +134,21 @@ namespace Kermalis.PokemonBattleEngine.Data
         Latias = 380,
         Latios,
         Cresselia = 488,
-        Darkrai = 491,
+        Darkrai = 491
     }
-    public enum MoveCategory
+    public enum MoveCategory : byte
     {
         Status,
         Physical,
         Special
     }
-    public enum Effect
+    public enum PossibleTarget : byte // Used in MoveData
+    {
+        Any,
+        AnySurrounding,
+        Self
+    }
+    public enum Effect : byte
     {
         None,
         Hit,
@@ -158,7 +159,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Transform,
     }
     [Flags]
-    public enum MoveFlags
+    public enum MoveFlags : byte
     {
         None = 0,
         MakesContact = 1 << 0,
@@ -168,7 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AffectedByMirrorMove = 1 << 4,
         AffectedByKingsRock = 1 << 5
     }
-    public enum Move
+    public enum Move : ushort
     {
         None,
         DarkPulse,

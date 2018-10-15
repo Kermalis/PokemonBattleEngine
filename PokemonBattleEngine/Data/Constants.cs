@@ -2,8 +2,8 @@
 {
     static class Constants
     {
-        public const int MaxLevel = 100;
-        public const int NumMoves = 4;
-        public const int MaxPokemon = 6;
+        public const byte MaxLevel = 100;
+        public const byte NumMoves = 4;
+        public const byte MaxPokemon = 6;
     }
 }

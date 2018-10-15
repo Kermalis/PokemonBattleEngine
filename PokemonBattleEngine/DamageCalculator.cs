@@ -4,7 +4,7 @@ namespace Kermalis.PokemonBattleEngine
 {
     partial class Battle
     {
-        int CalculateBasePower(BattlePokemon attacker, BattlePokemon defender, Move move)
+        ushort CalculateBasePower(BattlePokemon attacker, BattlePokemon defender, Move move)
         {
             MoveData mData = MoveData.Data[move];
             double basePower = mData.Power;
@@ -43,10 +43,10 @@ namespace Kermalis.PokemonBattleEngine
             if (defender.Mon.Ability == Ability.ThickFat && (mData.Type == Type.Fire || mData.Type == Type.Ice))
                 basePower /= 2;
 
-            return (int)basePower;
+            return (ushort)basePower;
         }
 
-        int CalculateAttack(BattlePokemon attacker, BattlePokemon defender, Move move)
+        ushort CalculateAttack(BattlePokemon attacker, BattlePokemon defender, Move move)
         {
             MoveData mData = MoveData.Data[move];
             double attack = attacker.Mon.Attack;
@@ -67,10 +67,10 @@ namespace Kermalis.PokemonBattleEngine
             if (attacker.Mon.Item == Item.ChoiceBand)
                 attack *= 1.5;
 
-            return (int)attack;
+            return (ushort)attack;
         }
 
-        int CalculateDefense(BattlePokemon attacker, BattlePokemon defender, Move move)
+        ushort CalculateDefense(BattlePokemon attacker, BattlePokemon defender, Move move)
         {
             MoveData mData = MoveData.Data[move];
             double defense = attacker.Mon.Defense;
@@ -82,10 +82,10 @@ namespace Kermalis.PokemonBattleEngine
             if (defender.Mon.Ability == Ability.MarvelScale && defender.Mon.Status != Status.None)
                 defense *= 1.5;
 
-            return (int)defense;
+            return (ushort)defense;
         }
 
-        int CalculateSpAttack(BattlePokemon attacker, BattlePokemon defender, Move move)
+        ushort CalculateSpAttack(BattlePokemon attacker, BattlePokemon defender, Move move)
         {
             MoveData mData = MoveData.Data[move];
             double spAttack = attacker.Mon.SpAttack;
@@ -105,10 +105,10 @@ namespace Kermalis.PokemonBattleEngine
             if (attacker.Mon.Item == Item.SoulDew && (attacker.Mon.Species == Species.Latios || attacker.Mon.Species == Species.Latias))
                 spAttack *= 1.5;
 
-            return (int)spAttack;
+            return (ushort)spAttack;
         }
 
-        int CalculateSpDefense(BattlePokemon attacker, BattlePokemon defender, Move move)
+        ushort CalculateSpDefense(BattlePokemon attacker, BattlePokemon defender, Move move)
         {
             MoveData mData = MoveData.Data[move];
             double spDefense = attacker.Mon.SpDefense;
@@ -120,14 +120,14 @@ namespace Kermalis.PokemonBattleEngine
             if (defender.Mon.Item == Item.SoulDew && (defender.Mon.Species == Species.Latios || defender.Mon.Species == Species.Latias))
                 spDefense *= 1.5;
 
-            return (int)spDefense;
+            return (ushort)spDefense;
         }
 
-        int CalculateDamage(BattlePokemon attacker, BattlePokemon defender, Move move)
+        ushort CalculateDamage(BattlePokemon attacker, BattlePokemon defender, Move move)
         {
             MoveData mData = MoveData.Data[move];
-            int damage;
-            int a = 0, d = 0,
+            ushort damage;
+            ushort a = 0, d = 0,
                 p = CalculateBasePower(attacker, defender, move);
 
             // TODO: Determine a and d for moves like Foul Play and Psyshock
@@ -143,10 +143,10 @@ namespace Kermalis.PokemonBattleEngine
                 d = CalculateSpDefense(attacker, defender, move);
             }
 
-            damage = 2 * attacker.Mon.Level / 5 + 2;
-            damage = damage * a * p / d;
+            damage = (ushort)(2 * attacker.Mon.Level / 5 + 2);
+            damage = (ushort)(damage * a * p / d);
             damage /= 50;
-            return damage + 2;
+            return (ushort)(damage + 2);
         }
     }
 }

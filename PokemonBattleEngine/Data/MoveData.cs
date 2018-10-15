@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public MoveCategory Category;
         public Effect Effect;
         public int EffectParam;
-        public int PP, Power, Priority;
+        public byte PP, Power, Priority;
         public double Accuracy; // Below 0 indicates an attack that doesn't miss
         public MoveFlags Flags;
         public PossibleTarget Targets;

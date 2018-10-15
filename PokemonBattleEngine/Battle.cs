@@ -1,11 +1,13 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine
 {
-    public sealed class TeamData
+    public sealed class TeamShell
     {
-        public Pokemon[] Pokemon;
+        public List<PokemonShell> Pokemon = new List<PokemonShell>();
         public string PlayerName;
     }
 
@@ -33,13 +35,13 @@ namespace Kermalis.PokemonBattleEngine
             public BattlePokemon CurrentMon;
             public bool MonFaintedLastTurn; // Retaliate
 
-            public Team(TeamData data)
+            public Team(TeamShell data)
             {
                 PlayerName = data.PlayerName;
-                int min = Math.Min(data.Pokemon.Length, Constants.MaxPokemon);
+                int min = Math.Min(data.Pokemon.Count, Constants.MaxPokemon);
                 Pokemon = new BattlePokemon[min];
                 for (int i = 0; i < min; i++)
-                    Pokemon[i] = new BattlePokemon(data.Pokemon[i], this);
+                    Pokemon[i] = new BattlePokemon(new Pokemon(data.Pokemon[i]), this);
                 CurrentMon = Pokemon[0];
             }
         }
@@ -55,18 +57,18 @@ namespace Kermalis.PokemonBattleEngine
         BattleStatus status;
         readonly Team[] teams = new Team[2];
 
-        public Battle(TeamData td0, TeamData td1)
+        public Battle(TeamShell td0, TeamShell td1)
         {
-            battlers = new BattlePokemon[td0.Pokemon.Length + td1.Pokemon.Length];
-            turnOrder = new byte[battlers.Length];
             teams[0] = new Team(td0);
-            for (int i = 0; i < teams[0].Pokemon.Length; i++)
-                battlers[i] = teams[0].Pokemon[i];
             teams[1] = new Team(td1);
-            for (int i = teams[0].Pokemon.Length; i < battlers.Length; i++)
-                battlers[i] = teams[1].Pokemon[i - teams[0].Pokemon.Length];
+            // Needs work because two teams with 2 pokemon each in a single battle will inflate this
+            battlers = teams[0].Pokemon.Concat(teams[1].Pokemon).ToArray();
+            turnOrder = new byte[battlers.Length];
             status = BattleStatus.WaitingForMoves;
         }
+
+        // Debugging
+        internal Pokemon GetBattler(int index) => battlers[index].Mon;
 
         bool AllMonSelectedMoves()
         {
@@ -108,13 +110,13 @@ namespace Kermalis.PokemonBattleEngine
                 BattlePokemon attacker = battlers[turnOrder[i]];
                 // Temporarily get the opponent
                 BattlePokemon defender = turnOrder[i] == 0 ? battlers[1] : battlers[0];
-                int damage = CalculateDamage(attacker, defender, attacker.SelectedMove);
+                ushort damage = CalculateDamage(attacker, defender, attacker.SelectedMove);
                 DealDamage(defender, damage);
             }
         }
-        void DealDamage(BattlePokemon victim, int damage)
+        void DealDamage(BattlePokemon victim, ushort damage)
         {
-            victim.Mon.HP = Math.Max(0, victim.Mon.HP - damage);
+            victim.Mon.HP = (ushort)Math.Max(0, victim.Mon.HP - damage);
         }
     }
 }
