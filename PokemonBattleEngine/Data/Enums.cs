@@ -89,6 +89,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChoiceBand,
         DeepSeaScale,
         DeepSeaTooth,
+        Leftovers,
         LightBall,
         MetalPowder,
         SoulDew,
@@ -148,14 +149,16 @@ namespace Kermalis.PokemonBattleEngine.Data
         AnySurrounding,
         Self
     }
-    public enum Effect : byte
+    public enum MoveEffect : byte
     {
-        None,
         Hit,
         Hit__MaybeFlinch,
+        Hit__MaybeFreeze,
         Hit__MaybeLower_SPDEF_By1,
         Hit__MaybeParalyze,
         Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
+        Moonlight,
+        Toxic,
         Transform,
     }
     [Flags]
@@ -166,20 +169,26 @@ namespace Kermalis.PokemonBattleEngine.Data
         AffectedByProtect = 1 << 1,
         AffectedByMagicCoat = 1 << 2,
         AffectedBySnatch = 1 << 3,
-        AffectedByMirrorMove = 1 << 4,
-        AffectedByKingsRock = 1 << 5
+        AffectedByMirrorMove = 1 << 4
     }
     public enum Move : ushort
     {
         None,
+        AquaJet,
         DarkPulse,
         DragonPulse,
         HydroPump,
+        IceBeam,
+        IcePunch,
+        Moonlight,
         Psychic,
         Retaliate,
+        Return,
         ShellSmash,
         Tackle,
         Thunder,
+        Toxic,
         Transform,
+        Waterfall,
     }
 }

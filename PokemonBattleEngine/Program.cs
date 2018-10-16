@@ -11,13 +11,37 @@ namespace Kermalis.PokemonBattleEngine
 
             TeamShell team1 = new TeamShell
             {
-                Pokemon = { new PokemonShell { Species = Species.Azumarill, Moves = new Move[] { Move.DarkPulse } } },
+                Pokemon =
+                {
+                    new PokemonShell
+                    {
+                        Species = Species.Azumarill,
+                        Item = Item.ChoiceBand,
+                        Ability = Ability.HugePower,
+                        Nature = Nature.Adamant,
+                        IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+                        EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
+                        Moves = new Move[] { Move.Waterfall, Move.AquaJet, Move.Return, Move.IcePunch },
+                    }
+                },
                 PlayerName = "Sasha"
             };
 
             TeamShell team2 = new TeamShell
             {
-                Pokemon = { new PokemonShell { Species = Species.Cresselia } },
+                Pokemon =
+                {
+                    new PokemonShell
+                    {
+                        Species = Species.Cresselia,
+                        Item = Item.Leftovers,
+                        Ability = Ability.Levitate,
+                        Nature = Nature.Bold,
+                        IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+                        EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
+                        Moves = new Move[] { Move.Psychic, Move.Moonlight, Move.IceBeam, Move.Toxic },
+                    }
+                },
                 PlayerName = "Jess"
             };
 

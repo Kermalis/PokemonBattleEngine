@@ -11,6 +11,9 @@ namespace Kermalis.PokemonBattleEngine
 
 
             // TODO: Stuff like mystic water
+            // STAB
+            // Return
+
             // Damage is halved when using electric moves while mud sport is active
             /* if (type == Type.Electric && MudSportActive())
              * basePower /= 2;*/
