@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PSpecies Species;
         public byte Level = Constants.MaxLevel, Friendship = byte.MaxValue;
         public PAbility Ability;
-        public PNature Nature = PNature.MAX;
+        public PNature Nature = (PNature)Utils.RNG.Next(0, (int)PNature.MAX);
         public PItem Item;
         public byte[] EVs = new byte[6], IVs = new byte[6];
         public PMove[] Moves = new PMove[Constants.NumMoves];
@@ -42,11 +42,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException("Level");
 
             // Validate Ability
-            // Ability.None will force the ability to be chosen in the Pokemon class
-            if (Ability != PAbility.None && Ability != pData.Ability1 && Ability != pData.Ability2 && Ability != pData.AbilityHidden)
+            if (Ability != pData.Ability1 && Ability != pData.Ability2 && Ability != pData.AbilityHidden)
                 throw new ArgumentOutOfRangeException("Ability");
 
-            // Nature being >= Nature.MAX will force the nature to be chosen in the Pokemon class
+            // Validate Nature
+            if (Nature >= PNature.MAX)
+                throw new ArgumentOutOfRangeException("Nature");
 
             // Validate Item
             if (Item != PItem.None)
@@ -62,34 +63,27 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate EVs
-            if (EVs != null)
+            if (EVs == null || EVs.Length != 6)
+                throw new ArgumentOutOfRangeException("EVs");
+            int evTotal = 0;
+            for (int i = 0; i < 6; i++)
             {
-                if (EVs.Length != 6)
+                evTotal += EVs[i];
+                if (evTotal > 510)
                     throw new ArgumentOutOfRangeException("EVs");
-                int total = 0;
-                for (int i = 0; i < 6; i++)
-                {
-                    total += EVs[i];
-                    if (total > 510)
-                        throw new ArgumentOutOfRangeException("EVs");
-                }
             }
             // Validate IVs
-            if (IVs != null)
-            {
-                if (IVs.Length != 6)
-                    throw new ArgumentOutOfRangeException("IVs");
-                if (IVs.Any(e => e > 31))
-                    throw new ArgumentOutOfRangeException("IVs");
-            }
+            if (IVs == null || IVs.Length != 6)
+                throw new ArgumentOutOfRangeException("IVs");
+            if (IVs.Any(e => e > 31))
+                throw new ArgumentOutOfRangeException("IVs");
 
             // Validate Moves
-            // Moves being null or full of Move.None will force the moves to be chosen in the Pokemon class
-            if (Moves != null && Moves.Any(m => m != PMove.None))
+            // Moves being full of PMove.None will force the moves to be chosen in the Pokemon class
+            if (Moves == null || Moves.Length > Constants.NumMoves)
+                throw new ArgumentOutOfRangeException("Moves");
+            if (Moves.Any(m => m != PMove.None))
             {
-                if (Moves.Length > Constants.NumMoves)
-                    throw new ArgumentOutOfRangeException("Moves");
-
                 IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Select(t => t.Item2).Concat(pData.OtherMoves);
                 if (Moves.Any(m => !legalMoves.Contains(m)))
                     throw new ArgumentOutOfRangeException("Moves");
@@ -119,42 +113,21 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             Gender = GetRandomGenderForSpecies(Species);
 
-            if (shell.Ability == PAbility.None) // Randomly pick ability
-            {
-                int r = Utils.RNG.Next(0, 3);
-                switch (r)
-                {
-                    case 0: Ability = pData.Ability1; break;
-                    case 1: Ability = pData.Ability2; break;
-                    case 2: Ability = pData.AbilityHidden; break;
-                }
-            }
-            else
-                Ability = shell.Ability;
-
+            Ability = shell.Ability;
             Level = shell.Level;
             Friendship = shell.Friendship;
             Item = shell.Item;
+            Nature = shell.Nature;
 
-            if (shell.EVs != null)
-                for (int i = 0; i < 6; i++)
-                    EVs[i] = shell.EVs[i]; // Copy EVs
-            if (shell.IVs != null)
-                for (int i = 0; i < 6; i++)
-                    IVs[i] = shell.IVs[i]; // Copy IVs
-            else
-                for (int i = 0; i < 6; i++)
-                    IVs[i] = (byte)Utils.RNG.Next(0, 32); // Randomly assign IVs
+            for (int i = 0; i < 6; i++)
+                EVs[i] = shell.EVs[i];
+            for (int i = 0; i < 6; i++)
+                IVs[i] = shell.IVs[i];
 
-            if (shell.Moves == null || shell.Moves.All(m => m == PMove.None))
+            if (shell.Moves.All(m => m == PMove.None))
                 SetDefaultMovesForCurrentLevel();
             else
                 SetMovesAndPP(shell.Moves);
-
-            if (shell.Nature >= PNature.MAX)
-                Nature = (PNature)Utils.RNG.Next(0, (int)PNature.MAX);
-            else
-                Nature = shell.Nature;
 
             CalculateStats();
             HP = MaxHP;

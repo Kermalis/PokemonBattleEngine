@@ -2,6 +2,8 @@
 using System.Net.Sockets;
 using Ether.Network.Client;
 using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 
 namespace Kermalis.PokemonBattleEngineClient
@@ -20,11 +22,30 @@ namespace Kermalis.PokemonBattleEngineClient
 
         public override void HandleMessage(INetPacketStream packet)
         {
-            Console.WriteLine("Response received: Message: \"{0}\"", packet);
+            Console.WriteLine($"Message received: \"{packet.GetType().Name}\"");
 
             if (packet is ReadyUpPacket)
             {
-
+                Console.WriteLine("Sending team info...");
+                TeamShell team1 = new TeamShell
+                {
+                    Pokemon =
+                    {
+                        new PokemonShell
+                        {
+                            Species = PSpecies.Azumarill,
+                            Item = PItem.ChoiceBand,
+                            Ability = PAbility.HugePower,
+                            Nature = PNature.Adamant,
+                            IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+                            EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
+                            Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
+                        }
+                    },
+                    PlayerName = "Sasha"
+                };
+                using (var pack = new RequestTeamPacket(team1))
+                    Send(pack);
             }
         }
 

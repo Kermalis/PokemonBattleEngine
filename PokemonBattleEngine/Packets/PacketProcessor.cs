@@ -10,9 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public int GetMessageLength(byte[] buffer)
         {
-            int len = BitConverter.ToInt32(buffer, 0);
-            Console.WriteLine(len);
-            return len;
+            return BitConverter.ToInt32(buffer, 0);
         }
         public INetPacketStream CreatePacket(byte[] buffer)
         {
@@ -22,6 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             switch (code)
             {
                 case ReadyUpPacket.Code: packet = new ReadyUpPacket(buffer); break;
+                case RequestTeamPacket.Code: packet = new RequestTeamPacket(buffer); break;
                 default: throw new ArgumentException("Invalid packet code");
             }
 

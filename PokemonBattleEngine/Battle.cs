@@ -7,8 +7,8 @@ namespace Kermalis.PokemonBattleEngine
 {
     public sealed class TeamShell
     {
-        public List<PokemonShell> Pokemon = new List<PokemonShell>();
         public string PlayerName;
+        public List<PokemonShell> Pokemon = new List<PokemonShell>();
     }
 
     public sealed partial class Battle
