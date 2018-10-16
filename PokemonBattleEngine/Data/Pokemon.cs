@@ -5,15 +5,15 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public struct PokemonShell
+    public sealed class PokemonShell
     {
         public Species Species;
-        public byte Level;
+        public byte Level = Constants.MaxLevel, Friendship = byte.MaxValue;
         public Ability Ability;
-        public Nature Nature;
+        public Nature Nature = Nature.MAX;
         public Item Item;
-        public byte[] EVs, IVs;
-        public Move[] Moves;
+        public byte[] EVs = new byte[6], IVs = new byte[6];
+        public Move[] Moves = new Move[Constants.NumMoves];
 
         public static void ValidateMany(IEnumerable<PokemonShell> shells)
         {
@@ -37,8 +37,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate Level
-            // Level being 0 will force the level to be chosen in the Pokemon class
-            if (Level > Constants.MaxLevel)
+            if (Level == 0 || Level > Constants.MaxLevel)
                 throw new ArgumentOutOfRangeException("Level");
 
             // Validate Ability
@@ -61,7 +60,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
 
-            // Validate EVs & IVs
+            // Validate EVs
             if (EVs != null)
             {
                 if (EVs.Length != 6)
@@ -74,6 +73,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         throw new ArgumentOutOfRangeException("EVs");
                 }
             }
+            // Validate IVs
             if (IVs != null)
             {
                 if (IVs.Length != 6)
@@ -83,14 +83,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate Moves
-            // Moves being null will force the moves to be chosen in the Pokemon class
-            if (Moves != null)
+            // Moves being null or full of Move.None will force the moves to be chosen in the Pokemon class
+            if (Moves != null && Moves.Any(m => m != Move.None))
             {
-                if (Moves.Length >= Constants.NumMoves)
+                if (Moves.Length > Constants.NumMoves)
                     throw new ArgumentOutOfRangeException("Moves");
 
-                // TODO: All moves other than level-up
-                IEnumerable<Move> legalMoves = pData.LevelUpMoves.Select(t => t.Item2);
+                IEnumerable<Move> legalMoves = pData.LevelUpMoves.Select(t => t.Item2).Concat(pData.OtherMoves);
                 if (Moves.Any(m => !legalMoves.Contains(m)))
                     throw new ArgumentOutOfRangeException("Moves");
             }
@@ -102,9 +101,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         public readonly Species Species;
         public readonly Gender Gender;
         public readonly Nature Nature;
-        public ushort HP, MaxHP;
-        public ushort Attack, Defense, SpAttack, SpDefense, Speed;
-        public byte Level;
+        public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
+        public byte Level, Friendship;
         public Status Status;
         public Ability Ability;
         public Item Item;
@@ -127,11 +125,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Ability = pData.Ability1; // Temporarily use first ability if expected to generate one
             }
 
-            if (shell.Level == 0)
-                Level = Constants.MaxLevel;
-            else
-                Level = shell.Level;
-
+            Level = shell.Level;
+            Friendship = shell.Friendship;
             Item = shell.Item;
 
             if (shell.EVs != null)
@@ -144,13 +139,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 for (int i = 0; i < 6; i++)
                     IVs[i] = (byte)Utils.RNG.Next(0, 32); // Randomly assign IVs
 
-            if (shell.Moves == null)
+            if (shell.Moves == null || shell.Moves.All(m => m == Move.None))
                 SetDefaultMovesForCurrentLevel();
             else
                 SetMovesAndPP(shell.Moves);
 
             if (shell.Nature >= Nature.MAX)
                 Nature = (Nature)Utils.RNG.Next(0, (int)Nature.MAX);
+            else
+                Nature = shell.Nature;
 
             CalculateStats();
             HP = MaxHP;

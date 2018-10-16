@@ -9,6 +9,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public Ability Ability1, Ability2, AbilityHidden;
         public byte HP, Attack, Defense, SpAttack, SpDefense, Speed;
         public Tuple<int, Move>[] LevelUpMoves;
+        public Move[] OtherMoves;
 
         public static Dictionary<Species, PokemonData> Data = new Dictionary<Species, PokemonData>()
         {
@@ -74,6 +75,13 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, Move>[]
                     {
                         Tuple.Create(46, Move.HydroPump),
+                    },
+                    OtherMoves = new Move[]
+                    {
+                        Move.AquaJet,
+                        Move.IcePunch,
+                        Move.Return,
+                        Move.Waterfall,
                     }
                 }
             },
@@ -126,6 +134,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, Move>[]
                     {
                         Tuple.Create(93, Move.Psychic),
+                    },
+                    OtherMoves = new Move[]
+                    {
+                        Move.IceBeam,
+                        Move.Moonlight,
+                        Move.Toxic,
                     }
                 }
             },
