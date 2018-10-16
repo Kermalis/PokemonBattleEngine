@@ -4,191 +4,191 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     class MoveData
     {
-        public Type Type;
-        public MoveCategory Category;
-        public MoveEffect Effect;
+        public PType Type;
+        public PMoveCategory Category;
+        public PMoveEffect Effect;
         public int EffectParam;
         public byte PP, Power, Accuracy; // 0 power or accuracy will show up as --
         public sbyte Priority;
-        public MoveFlags Flags;
-        public PossibleTarget Targets;
+        public PMoveFlag Flags;
+        public PMoveTarget Targets;
 
-        public static Dictionary<Move, MoveData> Data = new Dictionary<Move, MoveData>()
+        public static Dictionary<PMove, MoveData> Data = new Dictionary<PMove, MoveData>()
         {
             {
-                Move.AquaJet,
+                PMove.AquaJet,
                 new MoveData
                 {
-                    Type = Type.Water, Category = MoveCategory.Physical,
-                    Effect = MoveEffect.Hit, EffectParam = 0,
+                    Type = PType.Water, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PP = 20, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = MoveFlags.MakesContact | MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.DarkPulse,
+                PMove.DarkPulse,
                 new MoveData
                 {
-                    Type = Type.Dark, Category = MoveCategory.Special,
-                    Effect = MoveEffect.Hit__MaybeFlinch, EffectParam = 20,
+                    Type = PType.Dark, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
                     PP = 15, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.Any
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.Any
                 }
             },
             {
-                Move.DragonPulse,
+                PMove.DragonPulse,
                 new MoveData
                 {
-                    Type = Type.Dragon, Category = MoveCategory.Special,
-                    Effect = MoveEffect.Hit, EffectParam = 0,
+                    Type = PType.Dragon, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PP = 10, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.Any
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.Any
                 }
             },
             {
-                Move.HydroPump,
+                PMove.HydroPump,
                 new MoveData
                 {
-                    Type = Type.Water, Category = MoveCategory.Special,
-                    Effect = MoveEffect.Hit, EffectParam = 0,
+                    Type = PType.Water, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PP = 5, Power = 120, Accuracy = 80, Priority = 0,
-                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.IceBeam,
+                PMove.IceBeam,
                 new MoveData
                 {
-                    Type = Type.Ice, Category = MoveCategory.Special,
-                    Effect = MoveEffect.Hit__MaybeFreeze, EffectParam = 10,
+                    Type = PType.Ice, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
                     PP = 10, Power = 95, Accuracy = 100, Priority = 0,
-                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.IcePunch,
+                PMove.IcePunch,
                 new MoveData
                 {
-                    Type = Type.Ice, Category = MoveCategory.Physical,
-                    Effect = MoveEffect.Hit__MaybeFreeze, EffectParam = 10,
+                    Type = PType.Ice, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
                     PP = 15, Power = 75, Accuracy = 100, Priority = 0,
-                    Flags = MoveFlags.MakesContact | MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.Moonlight,
+                PMove.Moonlight,
                 new MoveData
                 {
-                    Type = Type.Normal, Category = MoveCategory.Status,
-                    Effect = MoveEffect.Moonlight, EffectParam = 0,
+                    Type = PType.Normal, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Moonlight, EffectParam = 0,
                     PP = 5, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = MoveFlags.AffectedBySnatch,
-                    Targets = PossibleTarget.Self
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
                 }
             },
             {
-                Move.Psychic,
+                PMove.Psychic,
                 new MoveData
                 {
-                    Type = Type.Psychic, Category = MoveCategory.Special,
-                    Effect = MoveEffect.Hit__MaybeLower_SPDEF_By1, EffectParam = 10,
+                    Type = PType.Psychic, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLower_SPDEF_By1, EffectParam = 10,
                     PP = 10, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.Retaliate,
+                PMove.Retaliate,
                 new MoveData
                 {
-                    Type = Type.Normal, Category = MoveCategory.Physical,
-                    Effect = MoveEffect.Hit, EffectParam = 0,
+                    Type = PType.Normal, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PP = 5, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.Return,
+                PMove.Return,
                 new MoveData
                 {
-                    Type = Type.Normal, Category = MoveCategory.Physical,
-                    Effect = MoveEffect.Hit, EffectParam = 0,
+                    Type = PType.Normal, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PP = 5, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.ShellSmash,
+                PMove.ShellSmash,
                 new MoveData
                 {
-                    Type = Type.Normal, Category = MoveCategory.Status,
-                    Effect = MoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2, EffectParam = 100,
+                    Type = PType.Normal, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2, EffectParam = 100,
                     PP = 15, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = MoveFlags.AffectedBySnatch,
-                    Targets = PossibleTarget.Self
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
                 }
             },
             {
-                Move.Tackle,
+                PMove.Tackle,
                 new MoveData
                 {
-                    Type = Type.Normal, Category = MoveCategory.Physical,
-                    Effect = MoveEffect.Hit, EffectParam = 0,
+                    Type = PType.Normal, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PP = 35, Power = 50, Accuracy = 100, Priority = 0,
-                    Flags = MoveFlags.MakesContact | MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.Thunder,
+                PMove.Thunder,
                 new MoveData
                 {
-                    Type = Type.Electric, Category = MoveCategory.Special,
-                    Effect = MoveEffect.Hit__MaybeParalyze, EffectParam = 30,
+                    Type = PType.Electric, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
                     PP = 10, Power = 120, Accuracy = 70, Priority = 0,
-                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.Toxic,
+                PMove.Toxic,
                 new MoveData
                 {
-                    Type = Type.Poison, Category = MoveCategory.Status,
-                    Effect = MoveEffect.Toxic, EffectParam = 0,
+                    Type = PType.Poison, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Toxic, EffectParam = 0,
                     PP = 10, Power = 0, Accuracy = 90, Priority = 0,
-                    Flags = MoveFlags.AffectedByProtect | MoveFlags.AffectedByMagicCoat | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
             {
-                Move.Transform,
+                PMove.Transform,
                 new MoveData
                 {
-                    Type = Type.Normal, Category = MoveCategory.Status,
-                    Effect = MoveEffect.Transform, EffectParam = 0,
+                    Type = PType.Normal, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Transform, EffectParam = 0,
                     PP = 10, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = MoveFlags.None,
-                    Targets = PossibleTarget.Self
+                    Flags = PMoveFlag.None,
+                    Targets = PMoveTarget.Self
                 }
             },
             {
-                Move.Waterfall,
+                PMove.Waterfall,
                 new MoveData
                 {
-                    Type = Type.Water, Category = MoveCategory.Physical,
-                    Effect = MoveEffect.Hit__MaybeFlinch, EffectParam = 20,
+                    Type = PType.Water, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
                     PP = 15, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = MoveFlags.MakesContact | MoveFlags.AffectedByProtect | MoveFlags.AffectedByMirrorMove,
-                    Targets = PossibleTarget.AnySurrounding
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
                 }
             },
         };

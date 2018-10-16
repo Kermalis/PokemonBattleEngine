@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public enum Gender : byte
+    public enum PGender : byte
     {
         Male = 0x00,
         M7F1 = 0x1F, // Male 7:1 Female
@@ -13,7 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Female = 0xFE,
         Genderless = 0xFF
     }
-    public enum Target : byte
+    public enum PTarget : byte
     {
         All,
         AllyLeft,
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FoeRight,
         Self
     }
-    public enum Status : byte
+    public enum PStatus : byte
     {
         None,
         Asleep,
@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Paralyzed,
         Poisoned
     }
-    public enum Type : byte
+    public enum PType : byte
     {
         Bug,
         Dark,
@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Steel,
         Water
     }
-    public enum Nature : byte
+    public enum PNature : byte
     {
         Adamant,
         Bashful,
@@ -83,7 +83,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Timid,
         MAX
     }
-    public enum Item : ushort
+    public enum PItem : ushort
     {
         None,
         ChoiceBand,
@@ -96,9 +96,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         ThickClub,
         MAX
     }
-    public enum Ability : byte
+    public enum PAbility : byte
     {
-        None,
+        None, // Only used when an ability is removed
         BadDreams,
         BattleArmor,
         Blaze,
@@ -123,7 +123,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ThickFat,
         Torrent,
     }
-    public enum Species : ushort
+    public enum PSpecies : ushort
     {
         None,
         Pikachu = 25,
@@ -137,19 +137,19 @@ namespace Kermalis.PokemonBattleEngine.Data
         Cresselia = 488,
         Darkrai = 491
     }
-    public enum MoveCategory : byte
+    public enum PMoveCategory : byte
     {
         Status,
         Physical,
         Special
     }
-    public enum PossibleTarget : byte // Used in MoveData
+    public enum PMoveTarget : byte // Used in MoveData
     {
         Any,
         AnySurrounding,
         Self
     }
-    public enum MoveEffect : byte
+    public enum PMoveEffect : byte
     {
         Hit,
         Hit__MaybeFlinch,
@@ -162,7 +162,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Transform,
     }
     [Flags]
-    public enum MoveFlags : byte
+    public enum PMoveFlag : byte
     {
         None = 0,
         MakesContact = 1 << 0,
@@ -171,7 +171,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AffectedBySnatch = 1 << 3,
         AffectedByMirrorMove = 1 << 4
     }
-    public enum Move : ushort
+    public enum PMove : ushort
     {
         None,
         AquaJet,

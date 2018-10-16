@@ -7,13 +7,14 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PokemonShell
     {
-        public Species Species;
+        // TODO: Gender
+        public PSpecies Species;
         public byte Level = Constants.MaxLevel, Friendship = byte.MaxValue;
-        public Ability Ability;
-        public Nature Nature = Nature.MAX;
-        public Item Item;
+        public PAbility Ability;
+        public PNature Nature = PNature.MAX;
+        public PItem Item;
         public byte[] EVs = new byte[6], IVs = new byte[6];
-        public Move[] Moves = new Move[Constants.NumMoves];
+        public PMove[] Moves = new PMove[Constants.NumMoves];
 
         public static void ValidateMany(IEnumerable<PokemonShell> shells)
         {
@@ -42,13 +43,13 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             // Validate Ability
             // Ability.None will force the ability to be chosen in the Pokemon class
-            if (Ability != Ability.None && Ability != pData.Ability1 && Ability != pData.Ability2 && Ability != pData.AbilityHidden)
+            if (Ability != PAbility.None && Ability != pData.Ability1 && Ability != pData.Ability2 && Ability != pData.AbilityHidden)
                 throw new ArgumentOutOfRangeException("Ability");
 
             // Nature being >= Nature.MAX will force the nature to be chosen in the Pokemon class
 
             // Validate Item
-            if (Item != Item.None)
+            if (Item != PItem.None)
             {
                 try
                 {
@@ -84,12 +85,12 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             // Validate Moves
             // Moves being null or full of Move.None will force the moves to be chosen in the Pokemon class
-            if (Moves != null && Moves.Any(m => m != Move.None))
+            if (Moves != null && Moves.Any(m => m != PMove.None))
             {
                 if (Moves.Length > Constants.NumMoves)
                     throw new ArgumentOutOfRangeException("Moves");
 
-                IEnumerable<Move> legalMoves = pData.LevelUpMoves.Select(t => t.Item2).Concat(pData.OtherMoves);
+                IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Select(t => t.Item2).Concat(pData.OtherMoves);
                 if (Moves.Any(m => !legalMoves.Contains(m)))
                     throw new ArgumentOutOfRangeException("Moves");
             }
@@ -98,17 +99,17 @@ namespace Kermalis.PokemonBattleEngine.Data
 
     internal class Pokemon
     {
-        public readonly Species Species;
-        public readonly Gender Gender;
-        public readonly Nature Nature;
+        public readonly PSpecies Species;
+        public readonly PGender Gender;
+        public readonly PNature Nature;
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
         public byte Level, Friendship;
-        public Status Status;
-        public Ability Ability;
-        public Item Item;
+        public PStatus Status;
+        public PAbility Ability;
+        public PItem Item;
 
         public byte[] EVs = new byte[6], IVs = new byte[6];
-        public Move[] Moves = new Move[Constants.NumMoves];
+        public PMove[] Moves = new PMove[Constants.NumMoves];
         public byte[] PP = new byte[Constants.NumMoves];
 
         public Pokemon(PokemonShell shell)
@@ -118,12 +119,18 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             Gender = GetRandomGenderForSpecies(Species);
 
-            Ability = shell.Ability;
-            if (Ability == Ability.None)
+            if (shell.Ability == PAbility.None) // Randomly pick ability
             {
-                // TODO: Ability generation
-                Ability = pData.Ability1; // Temporarily use first ability if expected to generate one
+                int r = Utils.RNG.Next(0, 3);
+                switch (r)
+                {
+                    case 0: Ability = pData.Ability1; break;
+                    case 1: Ability = pData.Ability2; break;
+                    case 2: Ability = pData.AbilityHidden; break;
+                }
             }
+            else
+                Ability = shell.Ability;
 
             Level = shell.Level;
             Friendship = shell.Friendship;
@@ -139,13 +146,13 @@ namespace Kermalis.PokemonBattleEngine.Data
                 for (int i = 0; i < 6; i++)
                     IVs[i] = (byte)Utils.RNG.Next(0, 32); // Randomly assign IVs
 
-            if (shell.Moves == null || shell.Moves.All(m => m == Move.None))
+            if (shell.Moves == null || shell.Moves.All(m => m == PMove.None))
                 SetDefaultMovesForCurrentLevel();
             else
                 SetMovesAndPP(shell.Moves);
 
-            if (shell.Nature >= Nature.MAX)
-                Nature = (Nature)Utils.RNG.Next(0, (int)Nature.MAX);
+            if (shell.Nature >= PNature.MAX)
+                Nature = (PNature)Utils.RNG.Next(0, (int)PNature.MAX);
             else
                 Nature = shell.Nature;
 
@@ -153,34 +160,34 @@ namespace Kermalis.PokemonBattleEngine.Data
             HP = MaxHP;
         }
 
-        static readonly Dictionary<Nature, sbyte[]> NatureStatTable = new Dictionary<Nature, sbyte[]>
+        static readonly Dictionary<PNature, sbyte[]> NatureStatTable = new Dictionary<PNature, sbyte[]>
         {
-            //                               Atk   Def SpAtk SpDef   Spd
-            { Nature.Adamant, new sbyte[] {   +1,    0,   -1,    0,    0} },
-            { Nature.Bashful, new sbyte[] {    0,    0,    0,    0,    0} },
-            { Nature.Bold,    new sbyte[] {   -1,   +1,    0,    0,    0} },
-            { Nature.Brave,   new sbyte[] {   +1,    0,    0,    0,   -1} },
-            { Nature.Calm,    new sbyte[] {   -1,    0,    0,   +1,    0} },
-            { Nature.Careful, new sbyte[] {    0,    0,   -1,   +1,    0} },
-            { Nature.Docile,  new sbyte[] {    0,    0,    0,    0,    0} },
-            { Nature.Gentle,  new sbyte[] {    0,   -1,    0,   +1,    0} },
-            { Nature.Hardy,   new sbyte[] {    0,    0,    0,    0,    0} },
-            { Nature.Hasty,   new sbyte[] {    0,   -1,    0,    0,   +1} },
-            { Nature.Impish,  new sbyte[] {    0,   +1,   -1,    0,    0} },
-            { Nature.Jolly,   new sbyte[] {    0,    0,   -1,    0,   +1} },
-            { Nature.Lax,     new sbyte[] {    0,   +1,    0,   -1,    0} },
-            { Nature.Loney,   new sbyte[] {   +1,   -1,    0,    0,    0} },
-            { Nature.Mild,    new sbyte[] {    0,   -1,   +1,    0,    0} },
-            { Nature.Modest,  new sbyte[] {   -1,    0,   +1,    0,    0} },
-            { Nature.Naive,   new sbyte[] {    0,    0,    0,   -1,   +1} },
-            { Nature.Naughty, new sbyte[] {   +1,    0,    0,   -1,    0} },
-            { Nature.Quiet,   new sbyte[] {    0,    0,   +1,    0,   -1} },
-            { Nature.Quirky,  new sbyte[] {    0,    0,    0,    0,    0} },
-            { Nature.Rash,    new sbyte[] {    0,    0,   +1,   -1,    0} },
-            { Nature.Relaxed, new sbyte[] {    0,   +1,    0,    0,   -1} },
-            { Nature.Sassy,   new sbyte[] {    0,    0,    0,   +1,   -1} },
-            { Nature.Serious, new sbyte[] {    0,    0,    0,    0,    0} },
-            { Nature.Timid,   new sbyte[] {   -1,    0,    0,    0,   +1} },
+            //                                Atk   Def SpAtk SpDef   Spd
+            { PNature.Adamant, new sbyte[] {   +1,    0,   -1,    0,    0} },
+            { PNature.Bashful, new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Bold,    new sbyte[] {   -1,   +1,    0,    0,    0} },
+            { PNature.Brave,   new sbyte[] {   +1,    0,    0,    0,   -1} },
+            { PNature.Calm,    new sbyte[] {   -1,    0,    0,   +1,    0} },
+            { PNature.Careful, new sbyte[] {    0,    0,   -1,   +1,    0} },
+            { PNature.Docile,  new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Gentle,  new sbyte[] {    0,   -1,    0,   +1,    0} },
+            { PNature.Hardy,   new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Hasty,   new sbyte[] {    0,   -1,    0,    0,   +1} },
+            { PNature.Impish,  new sbyte[] {    0,   +1,   -1,    0,    0} },
+            { PNature.Jolly,   new sbyte[] {    0,    0,   -1,    0,   +1} },
+            { PNature.Lax,     new sbyte[] {    0,   +1,    0,   -1,    0} },
+            { PNature.Loney,   new sbyte[] {   +1,   -1,    0,    0,    0} },
+            { PNature.Mild,    new sbyte[] {    0,   -1,   +1,    0,    0} },
+            { PNature.Modest,  new sbyte[] {   -1,    0,   +1,    0,    0} },
+            { PNature.Naive,   new sbyte[] {    0,    0,    0,   -1,   +1} },
+            { PNature.Naughty, new sbyte[] {   +1,    0,    0,   -1,    0} },
+            { PNature.Quiet,   new sbyte[] {    0,    0,   +1,    0,   -1} },
+            { PNature.Quirky,  new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Rash,    new sbyte[] {    0,    0,   +1,   -1,    0} },
+            { PNature.Relaxed, new sbyte[] {    0,   +1,    0,    0,   -1} },
+            { PNature.Sassy,   new sbyte[] {    0,    0,    0,   +1,   -1} },
+            { PNature.Serious, new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Timid,   new sbyte[] {   -1,    0,    0,    0,   +1} },
         };
         void CalculateStats()
         {
@@ -207,38 +214,38 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             PokemonData pData = PokemonData.Data[Species];
 
-            Move[] learnedMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).ToArray();
+            PMove[] learnedMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).ToArray();
             SetMovesAndPP(learnedMoves);
         }
-        void SetMovesAndPP(Move[] moves)
+        void SetMovesAndPP(PMove[] moves)
         {
             int min = Math.Min(Constants.NumMoves, moves.Length);
             // Copy last "min" amount of moves from the array
             for (int i = min - 1; i >= 0; i--)
             {
-                Move newMove = moves[i];
+                PMove newMove = moves[i];
                 Moves[i] = newMove;
                 PP[i] = MoveData.Data[newMove].PP;
             }
         }
 
-        static Gender GetRandomGenderForSpecies(Species species)
+        static PGender GetRandomGenderForSpecies(PSpecies species)
         {
             PokemonData pData = PokemonData.Data[species];
 
             switch (pData.GenderRatio)
             {
-                case Gender.Male:
-                case Gender.Female:
-                case Gender.Genderless:
+                case PGender.Male:
+                case PGender.Female:
+                case PGender.Genderless:
                     return pData.GenderRatio;
             }
 
             byte b = (byte)Utils.RNG.Next(0, byte.MaxValue + 1);
             if ((byte)pData.GenderRatio > b)
-                return Gender.Female;
+                return PGender.Female;
             else
-                return Gender.Male;
+                return PGender.Male;
         }
 
         public override string ToString() => $"{Species} Lv.{Level} {Nature} {Gender} {Ability} {HP}/{MaxHP} HP";

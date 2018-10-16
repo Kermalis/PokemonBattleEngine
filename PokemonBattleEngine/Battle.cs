@@ -18,8 +18,8 @@ namespace Kermalis.PokemonBattleEngine
             public readonly Pokemon Mon;
             public readonly Team Team;
 
-            public Move PreviousMove, SelectedMove;
-            public Target SelectedTarget;
+            public PMove PreviousMove, SelectedMove;
+            public PTarget SelectedTarget;
 
             public BattlePokemon(Pokemon mon, Team team)
             {
@@ -73,11 +73,11 @@ namespace Kermalis.PokemonBattleEngine
         bool AllMonSelectedMoves()
         {
             for (int i = 0; i < battlers.Length; i++)
-                if (battlers[i].SelectedMove == Move.None)
+                if (battlers[i].SelectedMove == PMove.None)
                     return false;
             return true;
         }
-        public void SelectMove(int team, int pkmn, int move, Target target)
+        public void SelectMove(int team, int pkmn, int move, PTarget target)
         {
             if (status == BattleStatus.WaitingForMoves)
             {
