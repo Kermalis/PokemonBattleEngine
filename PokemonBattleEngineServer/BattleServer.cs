@@ -23,10 +23,12 @@ namespace Kermalis.PokemonBattleEngineServer
 
         public void Forfeit(Player player)
         {
-
+            // TODO
+            CancelMatch(); // Temporary
         }
         void CancelMatch()
         {
+            Console.WriteLine("Cancelling match...");
             SendToAll(new PMatchCancelledPacket());
             StopMatchAndReset();
         }
@@ -66,6 +68,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
                 catch
                 {
+                    Console.WriteLine("Invalid Pokémon data!");
                     CancelMatch();
                     return;
                 }

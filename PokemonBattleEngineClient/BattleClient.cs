@@ -30,20 +30,20 @@ namespace Kermalis.PokemonBattleEngineClient
                     Console.WriteLine("Sending team info...");
                     PTeamShell team1 = new PTeamShell
                     {
+                        PlayerName = "Sasha",
                         Pokemon =
-                    {
-                        new PPokemonShell
                         {
-                            Species = PSpecies.Azumarill,
-                            Item = PItem.ChoiceBand,
-                            Ability = PAbility.HugePower,
-                            Nature = PNature.Adamant,
-                            IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
-                            EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
-                            Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
+                            new PPokemonShell
+                            {
+                                Species = PSpecies.Azumarill,
+                                Item = PItem.ChoiceBand,
+                                Ability = PAbility.HugePower,
+                                Nature = PNature.Adamant,
+                                IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+                                EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
+                                Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
+                            }
                         }
-                    },
-                        PlayerName = "Sasha"
                     };
                     Send(new PRequestTeamPacket(team1));
                     break;

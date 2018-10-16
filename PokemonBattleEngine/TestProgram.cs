@@ -12,6 +12,7 @@ namespace Kermalis.PokemonBattleEngine
 
             PTeamShell team1 = new PTeamShell
             {
+                PlayerName = "Sasha",
                 Pokemon =
                 {
                     new PPokemonShell
@@ -24,12 +25,12 @@ namespace Kermalis.PokemonBattleEngine
                         EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
                         Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
                     }
-                },
-                PlayerName = "Sasha"
+                }
             };
 
             PTeamShell team2 = new PTeamShell
             {
+                PlayerName = "Jess",
                 Pokemon =
                 {
                     new PPokemonShell
@@ -42,8 +43,7 @@ namespace Kermalis.PokemonBattleEngine
                         EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
                         Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic },
                     }
-                },
-                PlayerName = "Jess"
+                }
             };
 
             try

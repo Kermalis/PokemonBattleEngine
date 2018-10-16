@@ -84,7 +84,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException("Moves");
             if (Moves.Any(m => m != PMove.None))
             {
-                IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Select(t => t.Item2).Concat(pData.OtherMoves);
+                IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).Concat(pData.OtherMoves);
                 if (Moves.Any(m => !legalMoves.Contains(m)))
                     throw new ArgumentOutOfRangeException("Moves");
             }
