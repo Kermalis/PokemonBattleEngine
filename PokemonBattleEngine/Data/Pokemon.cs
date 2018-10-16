@@ -70,7 +70,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 for (int i = 0; i < 6; i++)
                 {
                     total += EVs[i];
-                    if (EVs[i] > 252 || total > 510)
+                    if (total > 510)
                         throw new ArgumentOutOfRangeException("EVs");
                 }
             }
