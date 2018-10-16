@@ -1,7 +1,8 @@
 ﻿using Ether.Network.Packets;
 using Ether.Network.Server;
-using Kermalis.PokemonBattleEngine;
-using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Network;
 using System;
 using System.Linq;
 
@@ -9,51 +10,70 @@ namespace Kermalis.PokemonBattleEngineServer
 {
     class BattleServer : NetServer<Player>
     {
-        private enum State
+        private enum ServerState
         {
+            Startup, // Server is starting up
+            Resetting, // Server is currently resetting the game
             WaitingForPlayers, // Server is waiting for 2 players to connect
             WaitingForTeams, // Server is waiting for both players to send their teams
-            Resetting, // Server is currently resetting the game
         }
-        State state;
+        ServerState state = ServerState.Startup;
         Player[] battlers;
-        public Battle battle { get; private set; }
-        
-        void StopBattleAndReset()
+        public PBattle battle { get; private set; }
+
+        public void Forfeit(Player player)
         {
-            if (state == State.Resetting)
+
+        }
+        void CancelMatch()
+        {
+            SendToAll(new PMatchCancelledPacket());
+            StopMatchAndReset();
+        }
+        void StopMatchAndReset()
+        {
+            if (state == ServerState.Resetting)
                 return;
-            state = State.Resetting;
+            state = ServerState.Resetting;
 
             foreach (var c in Clients)
                 DisconnectClient(c.Id);
             battlers = null;
 
-            state = State.WaitingForPlayers;
+            state = ServerState.WaitingForPlayers;
         }
         void PlayersFound()
         {
             Console.WriteLine("Two players connected!");
 
             battlers = new Player[] { Clients.ElementAt(0), Clients.ElementAt(1) };
-            using (var packet = new ReadyUpPacket())
-                SendTo(battlers, packet);
+            SendTo(battlers, new PReadyUpPacket());
 
             Console.WriteLine("Waiting for teams...");
-            state = State.WaitingForTeams;
+            state = ServerState.WaitingForTeams;
         }
-        public void TeamUpdated(Player player)
+        public void TeamUpdated(Player player, PTeamShell team)
         {
-            if (state != State.WaitingForTeams)
+            if (state != ServerState.WaitingForTeams)
                 return;
+            player.Team = team;
 
-            if(battlers[0].Team != null && battlers[1].Team != null)
+            if (battlers[0].Team != null && battlers[1].Team != null)
             {
+                try
+                {
+                    PPokemonShell.ValidateMany(battlers[0].Team.Pokemon.Concat(battlers[1].Team.Pokemon));
+                }
+                catch
+                {
+                    CancelMatch();
+                    return;
+                }
                 Console.WriteLine("Both players ready!");
             }
         }
 
-        static readonly IPacketProcessor packetProcessor = new PacketProcessor();
+        static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
         protected override IPacketProcessor PacketProcessor => packetProcessor;
         public BattleServer(string host)
         {
@@ -67,18 +87,30 @@ namespace Kermalis.PokemonBattleEngineServer
         protected override void Initialize()
         {
             Console.WriteLine("Server online.");
-            StopBattleAndReset();
+            StopMatchAndReset();
         }
         protected override void OnClientConnected(Player client)
         {
             Console.WriteLine($"Client connected ({client.Id})");
-            if (state == State.WaitingForPlayers && Clients.Count() == 2)
+            if (state == ServerState.WaitingForPlayers && Clients.Count() == 2)
                 PlayersFound();
         }
         protected override void OnClientDisconnected(Player client)
         {
             Console.WriteLine($"Client disconnected ({client.Id})");
-            StopBattleAndReset();
+            switch (state)
+            {
+                case ServerState.Startup:
+                case ServerState.Resetting:
+                    break;
+                case ServerState.WaitingForPlayers:
+                case ServerState.WaitingForTeams:
+                    CancelMatch();
+                    break;
+                default:
+                    Forfeit(client);
+                    break;
+            }
         }
         protected override void OnError(Exception e)
         {

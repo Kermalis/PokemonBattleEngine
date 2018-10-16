@@ -1,30 +1,32 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.IO;
 using System.Text;
 
-namespace Kermalis.PokemonBattleEngine.Packets
+namespace Kermalis.PokemonBattleEngine.Network
 {
-    public sealed class RequestTeamPacket : INetPacketStream
+    public sealed class PRequestTeamPacket : INetPacketStream
     {
         public const int Code = 0x1;
-        public byte[] Buffer { get; } = new byte[0];
+        byte[] buf;
+        public byte[] Buffer => (byte[])buf.Clone();
 
-        public readonly TeamShell Team;
+        public readonly PTeamShell Team;
 
-        public RequestTeamPacket(TeamShell team)
+        public PRequestTeamPacket(PTeamShell team)
         {
             Team = team ?? throw new ArgumentNullException(nameof(team));
 
-            var numPkmn = Math.Min(Constants.MaxPokemon, (byte)Team.Pokemon.Count);
+            var numPkmn = Math.Min(PConstants.MaxPokemon, (byte)Team.Pokemon.Count);
             byte[] playerNameBytes = Encoding.ASCII.GetBytes(Team.PlayerName);
 
             // size, Code, name size, name, numPkmn, pkmn array
             int numBytes = 4 + 4 + 1 + playerNameBytes.Length + 1 + (28 * numPkmn);
-            Buffer = new byte[numBytes];
+            buf = new byte[numBytes];
 
-            using (var w = new BinaryWriter(new MemoryStream(Buffer)))
+            using (var w = new BinaryWriter(new MemoryStream(buf)))
             {
                 w.Write(numBytes - 4);
                 w.Write(Code);
@@ -44,21 +46,21 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         w.Write(pkmn.EVs[j]);
                     for (int j = 0; j < 6; j++)
                         w.Write(pkmn.IVs[j]);
-                    for (int j = 0; j < Constants.NumMoves; j++)
+                    for (int j = 0; j < PConstants.NumMoves; j++)
                         w.Write((ushort)pkmn.Moves[j]);
                 }
             }
         }
-        public RequestTeamPacket(byte[] buffer)
+        public PRequestTeamPacket(byte[] buffer)
         {
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
+            using (var r = new BinaryReader(new MemoryStream(buf = buffer)))
             {
                 r.ReadInt32(); // Skip Code
-                Team = new TeamShell { PlayerName = Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte())) };
-                var numPkmn = Math.Min(Constants.MaxPokemon, r.ReadByte());
+                Team = new PTeamShell { PlayerName = Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte())) };
+                var numPkmn = Math.Min(PConstants.MaxPokemon, r.ReadByte());
                 for (int i = 0; i < numPkmn; i++)
                 {
-                    var pkmn = new PokemonShell
+                    var pkmn = new PPokemonShell
                     {
                         Species = (PSpecies)r.ReadUInt16(),
                         Level = r.ReadByte(),
@@ -71,7 +73,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         pkmn.EVs[j] = r.ReadByte();
                     for (int j = 0; j < 6; j++)
                         pkmn.IVs[j] = r.ReadByte();
-                    for (int j = 0; j < Constants.NumMoves; j++)
+                    for (int j = 0; j < PConstants.NumMoves; j++)
                         pkmn.Moves[j] = (PMove)r.ReadUInt16();
                     Team.Pokemon.Add(pkmn);
                 }
@@ -83,6 +85,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public T Read<T>() => throw new NotImplementedException();
         public T[] ReadArray<T>(int amount) => throw new NotImplementedException();
         public void Write<T>(T value) => throw new NotImplementedException();
-        public void Dispose() => throw new NotImplementedException();
+        public void Dispose() { }
     }
 }

@@ -1,19 +1,20 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 
 namespace Kermalis.PokemonBattleEngine
 {
-    public class Program
+    public class TestProgram
     {
         public static void Main(string[] args)
         {
             Console.WriteLine("Pokémon Battle Engine Test");
 
-            TeamShell team1 = new TeamShell
+            PTeamShell team1 = new PTeamShell
             {
                 Pokemon =
                 {
-                    new PokemonShell
+                    new PPokemonShell
                     {
                         Species = PSpecies.Azumarill,
                         Item = PItem.ChoiceBand,
@@ -27,11 +28,11 @@ namespace Kermalis.PokemonBattleEngine
                 PlayerName = "Sasha"
             };
 
-            TeamShell team2 = new TeamShell
+            PTeamShell team2 = new PTeamShell
             {
                 Pokemon =
                 {
-                    new PokemonShell
+                    new PPokemonShell
                     {
                         Species = PSpecies.Cresselia,
                         Item = PItem.Leftovers,
@@ -47,7 +48,7 @@ namespace Kermalis.PokemonBattleEngine
 
             try
             {
-                PokemonShell.ValidateMany(team1.Pokemon);
+                PPokemonShell.ValidateMany(team1.Pokemon);
             }
             catch (ArgumentOutOfRangeException e)
             {
@@ -55,16 +56,16 @@ namespace Kermalis.PokemonBattleEngine
             }
             try
             {
-                PokemonShell.ValidateMany(team2.Pokemon);
+                PPokemonShell.ValidateMany(team2.Pokemon);
             }
             catch (ArgumentOutOfRangeException e)
             {
                 Console.WriteLine($"Invalid {e.ParamName} in Team 2 Pokémon Shell");
             }
 
-            Battle battle = new Battle(team1, team2);
-            Pokemon p1 = battle.GetBattler(0);
-            Pokemon p2 = battle.GetBattler(1);
+            PBattle battle = new PBattle(team1, team2);
+            PPokemon p1 = battle.GetBattler(0);
+            PPokemon p2 = battle.GetBattler(1);
 
             Console.WriteLine();
             Console.WriteLine("Battle starting.");

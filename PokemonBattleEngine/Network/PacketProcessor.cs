@@ -1,17 +1,14 @@
 ﻿using Ether.Network.Packets;
 using System;
 
-namespace Kermalis.PokemonBattleEngine.Packets
+namespace Kermalis.PokemonBattleEngine.Network
 {
-    public sealed class PacketProcessor : IPacketProcessor
+    public sealed class PPacketProcessor : IPacketProcessor
     {
         public int HeaderSize => 4;
         public bool IncludeHeader => false;
 
-        public int GetMessageLength(byte[] buffer)
-        {
-            return BitConverter.ToInt32(buffer, 0);
-        }
+        public int GetMessageLength(byte[] buffer) => BitConverter.ToInt32(buffer, 0);
         public INetPacketStream CreatePacket(byte[] buffer)
         {
             int code = BitConverter.ToInt32(buffer, 0);
@@ -19,8 +16,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
             INetPacketStream packet;
             switch (code)
             {
-                case ReadyUpPacket.Code: packet = new ReadyUpPacket(buffer); break;
-                case RequestTeamPacket.Code: packet = new RequestTeamPacket(buffer); break;
+                case PReadyUpPacket.Code: packet = new PReadyUpPacket(buffer); break;
+                case PRequestTeamPacket.Code: packet = new PRequestTeamPacket(buffer); break;
+                case PMatchCancelledPacket.Code: packet = new PMatchCancelledPacket(buffer); break;
                 default: throw new ArgumentException("Invalid packet code");
             }
 

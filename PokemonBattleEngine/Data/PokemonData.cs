@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    class PokemonData
+    class PPokemonData
     {
         public PGender GenderRatio;
         public PType Type1, Type2;
@@ -12,11 +12,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         public Tuple<int, PMove>[] LevelUpMoves;
         public PMove[] OtherMoves;
 
-        public static Dictionary<PSpecies, PokemonData> Data = new Dictionary<PSpecies, PokemonData>()
+        public static Dictionary<PSpecies, PPokemonData> Data = new Dictionary<PSpecies, PPokemonData>()
         {
             {
                 PSpecies.Pikachu,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Electric, Type2 = PType.Electric,
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PSpecies.Cubone,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Ground, Type2 = PType.Ground,
@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PSpecies.Marowak,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Ground, Type2 = PType.Ground,
@@ -58,7 +58,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PSpecies.Ditto,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.Genderless,
                     Type1 = PType.Normal, Type2 = PType.Normal,
@@ -72,7 +72,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PSpecies.Azumarill,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Water, Type2 = PType.Water,
@@ -93,7 +93,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PSpecies.Clamperl,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Water, Type2 = PType.Water,
@@ -107,7 +107,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PSpecies.Latias,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.Female,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PSpecies.Latios,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.Male,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
@@ -135,7 +135,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PSpecies.Cresselia,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.Female,
                     Type1 = PType.Psychic, Type2 = PType.Psychic,
@@ -155,7 +155,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PSpecies.Darkrai,
-                new PokemonData
+                new PPokemonData
                 {
                     GenderRatio = PGender.Genderless,
                     Type1 = PType.Dark, Type2 = PType.Dark,

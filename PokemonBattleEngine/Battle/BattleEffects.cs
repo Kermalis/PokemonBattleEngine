@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Kermalis.PokemonBattleEngine
+namespace Kermalis.PokemonBattleEngine.Battle
 {
-    partial class Battle
+    partial class PBattle
     {
 
     }

@@ -2,20 +2,20 @@
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    class ItemData
+    class PItemData
     {
         public int FlingPower;
 
-        public static Dictionary<PItem, ItemData> Data = new Dictionary<PItem, ItemData>()
+        public static Dictionary<PItem, PItemData> Data = new Dictionary<PItem, PItemData>()
         {
-            { PItem.ChoiceBand, new ItemData { FlingPower = 10 } },
-            { PItem.DeepSeaScale, new ItemData { FlingPower = 30 } },
-            { PItem.DeepSeaTooth, new ItemData { FlingPower = 90 } },
-            { PItem.Leftovers, new ItemData { FlingPower = 10 } },
-            { PItem.LightBall, new ItemData { FlingPower = 30 } },
-            { PItem.MetalPowder, new ItemData { FlingPower = 10 } },
-            { PItem.SoulDew, new ItemData { FlingPower = 30 } },
-            { PItem.ThickClub, new ItemData { FlingPower = 90 } },
+            { PItem.ChoiceBand, new PItemData { FlingPower = 10 } },
+            { PItem.DeepSeaScale, new PItemData { FlingPower = 30 } },
+            { PItem.DeepSeaTooth, new PItemData { FlingPower = 90 } },
+            { PItem.Leftovers, new PItemData { FlingPower = 10 } },
+            { PItem.LightBall, new PItemData { FlingPower = 30 } },
+            { PItem.MetalPowder, new PItemData { FlingPower = 10 } },
+            { PItem.SoulDew, new PItemData { FlingPower = 30 } },
+            { PItem.ThickClub, new PItemData { FlingPower = 90 } },
         };
     }
 }

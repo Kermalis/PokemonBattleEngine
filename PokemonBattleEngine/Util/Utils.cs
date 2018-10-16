@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonBattleEngine.Util
 {
-    static class Utils
+    static class PUtils
     {
         public static readonly Random RNG = new Random();
     }

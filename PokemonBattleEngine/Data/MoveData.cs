@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    class MoveData
+    class PMoveData
     {
         public PType Type;
         public PMoveCategory Category;
@@ -13,11 +13,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PMoveFlag Flags;
         public PMoveTarget Targets;
 
-        public static Dictionary<PMove, MoveData> Data = new Dictionary<PMove, MoveData>()
+        public static Dictionary<PMove, PMoveData> Data = new Dictionary<PMove, PMoveData>()
         {
             {
                 PMove.AquaJet,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Water, Category = PMoveCategory.Physical,
                     Effect = PMoveEffect.Hit, EffectParam = 0,
@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.DarkPulse,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Dark, Category = PMoveCategory.Special,
                     Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.DragonPulse,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Dragon, Category = PMoveCategory.Special,
                     Effect = PMoveEffect.Hit, EffectParam = 0,
@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.HydroPump,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Water, Category = PMoveCategory.Special,
                     Effect = PMoveEffect.Hit, EffectParam = 0,
@@ -61,7 +61,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.IceBeam,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Ice, Category = PMoveCategory.Special,
                     Effect = PMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
@@ -72,7 +72,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.IcePunch,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Ice, Category = PMoveCategory.Physical,
                     Effect = PMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
@@ -83,7 +83,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.Moonlight,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
                     Effect = PMoveEffect.Moonlight, EffectParam = 0,
@@ -94,7 +94,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.Psychic,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Psychic, Category = PMoveCategory.Special,
                     Effect = PMoveEffect.Hit__MaybeLower_SPDEF_By1, EffectParam = 10,
@@ -105,7 +105,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.Retaliate,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Physical,
                     Effect = PMoveEffect.Hit, EffectParam = 0,
@@ -116,7 +116,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.Return,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Physical,
                     Effect = PMoveEffect.Hit, EffectParam = 0,
@@ -127,7 +127,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.ShellSmash,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
                     Effect = PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2, EffectParam = 100,
@@ -138,7 +138,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.Tackle,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Physical,
                     Effect = PMoveEffect.Hit, EffectParam = 0,
@@ -149,7 +149,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.Thunder,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Electric, Category = PMoveCategory.Special,
                     Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
@@ -160,7 +160,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.Toxic,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Poison, Category = PMoveCategory.Status,
                     Effect = PMoveEffect.Toxic, EffectParam = 0,
@@ -171,7 +171,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.Transform,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
                     Effect = PMoveEffect.Transform, EffectParam = 0,
@@ -182,7 +182,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             },
             {
                 PMove.Waterfall,
-                new MoveData
+                new PMoveData
                 {
                     Type = PType.Water, Category = PMoveCategory.Physical,
                     Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 20,

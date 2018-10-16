@@ -2,15 +2,15 @@
 using System.Net.Sockets;
 using Ether.Network.Client;
 using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngine.Network;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
     class BattleClient : NetClient
     {
-        static readonly IPacketProcessor packetProcessor = new PacketProcessor();
+        static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
         protected override IPacketProcessor PacketProcessor => packetProcessor;
 
         public BattleClient(string host)
@@ -24,14 +24,15 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             Console.WriteLine($"Message received: \"{packet.GetType().Name}\"");
 
-            if (packet is ReadyUpPacket)
+            switch (packet)
             {
-                Console.WriteLine("Sending team info...");
-                TeamShell team1 = new TeamShell
-                {
-                    Pokemon =
+                case PReadyUpPacket _:
+                    Console.WriteLine("Sending team info...");
+                    PTeamShell team1 = new PTeamShell
                     {
-                        new PokemonShell
+                        Pokemon =
+                    {
+                        new PPokemonShell
                         {
                             Species = PSpecies.Azumarill,
                             Item = PItem.ChoiceBand,
@@ -42,10 +43,10 @@ namespace Kermalis.PokemonBattleEngineClient
                             Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
                         }
                     },
-                    PlayerName = "Sasha"
-                };
-                using (var pack = new RequestTeamPacket(team1))
-                    Send(pack);
+                        PlayerName = "Sasha"
+                    };
+                    Send(new PRequestTeamPacket(team1));
+                    break;
             }
         }
 
@@ -56,6 +57,7 @@ namespace Kermalis.PokemonBattleEngineClient
         protected override void OnDisconnected()
         {
             Console.WriteLine("Disconnected from server");
+            Environment.Exit(0);
         }
         protected override void OnSocketError(SocketError socketError)
         {

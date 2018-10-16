@@ -5,18 +5,18 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PokemonShell
+    public sealed class PPokemonShell
     {
         // TODO: Gender
         public PSpecies Species;
-        public byte Level = Constants.MaxLevel, Friendship = byte.MaxValue;
+        public byte Level = PConstants.MaxLevel, Friendship = byte.MaxValue;
         public PAbility Ability;
-        public PNature Nature = (PNature)Utils.RNG.Next(0, (int)PNature.MAX);
+        public PNature Nature = (PNature)PUtils.RNG.Next(0, (int)PNature.MAX);
         public PItem Item;
         public byte[] EVs = new byte[6], IVs = new byte[6];
-        public PMove[] Moves = new PMove[Constants.NumMoves];
+        public PMove[] Moves = new PMove[PConstants.NumMoves];
 
-        public static void ValidateMany(IEnumerable<PokemonShell> shells)
+        public static void ValidateMany(IEnumerable<PPokemonShell> shells)
         {
             var arr = shells.ToArray();
             for (int i = 0; i < arr.Length; i++)
@@ -27,10 +27,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         public void Validate()
         {
             // Validate Species
-            PokemonData pData;
+            PPokemonData pData;
             try
             {
-                pData = PokemonData.Data[Species];
+                pData = PPokemonData.Data[Species];
             }
             catch
             {
@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate Level
-            if (Level == 0 || Level > Constants.MaxLevel)
+            if (Level == 0 || Level > PConstants.MaxLevel)
                 throw new ArgumentOutOfRangeException("Level");
 
             // Validate Ability
@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 try
                 {
-                    var iData = ItemData.Data[Item];
+                    var iData = PItemData.Data[Item];
                 }
                 catch
                 {
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             // Validate Moves
             // Moves being full of PMove.None will force the moves to be chosen in the Pokemon class
-            if (Moves == null || Moves.Length > Constants.NumMoves)
+            if (Moves == null || Moves.Length > PConstants.NumMoves)
                 throw new ArgumentOutOfRangeException("Moves");
             if (Moves.Any(m => m != PMove.None))
             {
@@ -91,7 +91,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
     }
 
-    internal class Pokemon
+    internal class PPokemon
     {
         public readonly PSpecies Species;
         public readonly PGender Gender;
@@ -103,13 +103,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PItem Item;
 
         public byte[] EVs = new byte[6], IVs = new byte[6];
-        public PMove[] Moves = new PMove[Constants.NumMoves];
-        public byte[] PP = new byte[Constants.NumMoves];
+        public PMove[] Moves = new PMove[PConstants.NumMoves];
+        public byte[] PP = new byte[PConstants.NumMoves];
 
-        public Pokemon(PokemonShell shell)
+        public PPokemon(PPokemonShell shell)
         {
             Species = shell.Species;
-            PokemonData pData = PokemonData.Data[Species];
+            PPokemonData pData = PPokemonData.Data[Species];
 
             Gender = GetRandomGenderForSpecies(Species);
 
@@ -164,15 +164,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         };
         void CalculateStats()
         {
-            PokemonData pData = PokemonData.Data[Species];
+            PPokemonData pData = PPokemonData.Data[Species];
 
-            MaxHP = (ushort)(((2 * pData.HP + IVs[0] + (EVs[0] / 4)) * Level / Constants.MaxLevel) + Level + 10);
+            MaxHP = (ushort)(((2 * pData.HP + IVs[0] + (EVs[0] / 4)) * Level / PConstants.MaxLevel) + Level + 10);
 
             int i = 0;
             ushort OtherStat(byte baseVal)
             {
                 double natureMultiplier = 1 + (NatureStatTable[Nature][i] * 0.1);
-                ushort val = (ushort)((((2 * baseVal + IVs[i + 1] + (EVs[i + 1] / 4)) * Level / Constants.MaxLevel) + 5) * natureMultiplier);
+                ushort val = (ushort)((((2 * baseVal + IVs[i + 1] + (EVs[i + 1] / 4)) * Level / PConstants.MaxLevel) + 5) * natureMultiplier);
                 i++;
                 return val;
             }
@@ -185,26 +185,26 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         void SetDefaultMovesForCurrentLevel()
         {
-            PokemonData pData = PokemonData.Data[Species];
+            PPokemonData pData = PPokemonData.Data[Species];
 
             PMove[] learnedMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).ToArray();
             SetMovesAndPP(learnedMoves);
         }
         void SetMovesAndPP(PMove[] moves)
         {
-            int min = Math.Min(Constants.NumMoves, moves.Length);
+            int min = Math.Min(PConstants.NumMoves, moves.Length);
             // Copy last "min" amount of moves from the array
             for (int i = min - 1; i >= 0; i--)
             {
                 PMove newMove = moves[i];
                 Moves[i] = newMove;
-                PP[i] = MoveData.Data[newMove].PP;
+                PP[i] = PMoveData.Data[newMove].PP;
             }
         }
 
         static PGender GetRandomGenderForSpecies(PSpecies species)
         {
-            PokemonData pData = PokemonData.Data[species];
+            PPokemonData pData = PPokemonData.Data[species];
 
             switch (pData.GenderRatio)
             {
@@ -214,7 +214,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     return pData.GenderRatio;
             }
 
-            byte b = (byte)Utils.RNG.Next(0, byte.MaxValue + 1);
+            byte b = (byte)PUtils.RNG.Next(0, byte.MaxValue + 1);
             if ((byte)pData.GenderRatio > b)
                 return PGender.Female;
             else
