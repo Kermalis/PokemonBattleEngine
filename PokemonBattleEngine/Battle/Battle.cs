@@ -1,21 +1,48 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed class PTeamShell
     {
         public string PlayerName;
-        public List<PPokemonShell> Pokemon = new List<PPokemonShell>();
+        public List<PPokemonShell> Pokemon = new List<PPokemonShell>(PConstants.MaxPokemon);
+
+        public byte[] ToBytes()
+        {
+            var bytes = new List<byte>();
+
+            byte[] playerNameBytes = Encoding.ASCII.GetBytes(PlayerName);
+            bytes.Add((byte)playerNameBytes.Length);
+            bytes.AddRange(playerNameBytes);
+
+            var numPkmn = Math.Min(PConstants.MaxPokemon, Pokemon.Count);
+            bytes.Add((byte)numPkmn);
+            for (int i = 0; i < numPkmn; i++)
+                bytes.AddRange(Pokemon[i].ToBytes());
+
+            return bytes.ToArray();
+        }
+        public static PTeamShell FromBytes(BinaryReader r)
+        {
+            var team = new PTeamShell { PlayerName = Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte())) };
+            var numPkmn = Math.Min(PConstants.MaxPokemon, r.ReadByte());
+            for (int i = 0; i < numPkmn; i++)
+                team.Pokemon.Add(PPokemonShell.FromBytes(r));
+            return team;
+        }
     }
 
     public sealed partial class PBattle
     {
+        // TODO: get rid of this
         private class PBattlePokemon
         {
-            public readonly PPokemon PokeMon;
+            public readonly PPokemon Pokemon;
             public readonly PTeam Team;
 
             public PMove PreviousMove, SelectedMove;
@@ -23,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             public PBattlePokemon(PPokemon pokemon, PTeam team)
             {
-                PokeMon = pokemon;
+                Pokemon = pokemon;
                 Team = team;
             }
         }
@@ -60,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // Debugging
-        internal PPokemon GetBattler(int index) => battlers[index].PokeMon;
+        internal PPokemon GetBattler(int index) => battlers[index].Pokemon;
 
         bool AllMonSelectedMoves()
         {
@@ -71,7 +98,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void SelectMove(int team, int pkmn, int move, PTarget target)
         {
-            teams[team].Pokemon[pkmn].SelectedMove = teams[team].Pokemon[pkmn].PokeMon.Moves[move];
+            teams[team].Pokemon[pkmn].SelectedMove = teams[team].Pokemon[pkmn].Pokemon.Shell.Moves[move];
             teams[team].Pokemon[pkmn].SelectedTarget = target;
 
             if (AllMonSelectedMoves())
@@ -101,7 +128,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void DealDamage(PBattlePokemon victim, ushort damage)
         {
-            victim.PokeMon.HP = (ushort)Math.Max(0, victim.PokeMon.HP - damage);
+            victim.Pokemon.HP = (ushort)Math.Max(0, victim.Pokemon.HP - damage);
         }
     }
 }

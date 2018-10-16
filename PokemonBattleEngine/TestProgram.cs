@@ -20,6 +20,7 @@ namespace Kermalis.PokemonBattleEngine
                         Species = PSpecies.Azumarill,
                         Item = PItem.ChoiceBand,
                         Ability = PAbility.HugePower,
+                        Gender = PGender.Male,
                         Nature = PNature.Adamant,
                         IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
                         EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
@@ -38,6 +39,7 @@ namespace Kermalis.PokemonBattleEngine
                         Species = PSpecies.Cresselia,
                         Item = PItem.Leftovers,
                         Ability = PAbility.Levitate,
+                        Gender = PGender.Female,
                         Nature = PNature.Bold,
                         IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
                         EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
@@ -75,10 +77,10 @@ namespace Kermalis.PokemonBattleEngine
             Console.WriteLine();
             battle.SelectMove(0, 0, 0, PTarget.FoeLeft);
             battle.SelectMove(1, 0, 0, PTarget.FoeLeft);
-            Console.WriteLine($"{p1.Species} used {p1.Moves[0]}");
+            Console.WriteLine($"{p1.Shell.Species} used {p1.Shell.Moves[0]}");
             Console.WriteLine(p2);
             Console.WriteLine();
-            Console.WriteLine($"{p2.Species} used {p2.Moves[0]}");
+            Console.WriteLine($"{p2.Shell.Species} used {p2.Shell.Moves[0]}");
             Console.WriteLine(p1);
             Console.ReadKey();
         }

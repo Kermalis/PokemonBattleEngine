@@ -39,6 +39,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 Item = PItem.ChoiceBand,
                                 Ability = PAbility.HugePower,
                                 Nature = PNature.Adamant,
+                                Gender = PGender.Male,
                                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
                                 EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
                                 Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
