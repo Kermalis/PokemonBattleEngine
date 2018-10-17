@@ -34,6 +34,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeLower_SPDEF_By1:
                     Ef_Hit__MaybeLower_SPDEF_By1(mData.EffectParam);
                     break;
+                case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2:
+                    Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2();
+                    break;
             }
         }
 
@@ -56,10 +59,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PrintMiss();
             return true;
         }
-        void DealDamage(PBattlePokemon victim)
+        void DealDamage(PPokemon victim)
         {
             ushort total = (ushort)(efDamage * efDamageMultiplier);
-            efCurDefender.Pokemon.HP = (ushort)Math.Max(0, victim.Pokemon.HP - total);
+            victim.HP = (ushort)Math.Max(0, victim.HP - total);
+        }
+        unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)
+        {
+            bool tooMuch = false;
+            fixed (sbyte* ptr = &pkmn.AttackChange)
+            {
+                sbyte* scPtr = ptr + (stat - PStat.Attack); // Points to the proper stat change sbyte
+                if (*scPtr < -PConstants.MaxStatChange || *scPtr > PConstants.MaxStatChange)
+                    tooMuch = true;
+                else
+                    *scPtr = (sbyte)PUtils.Clamp(*scPtr + change, -PConstants.MaxStatChange, PConstants.MaxStatChange);
+            }
+            PrintStatChange(pkmn, stat, change, tooMuch);
         }
 
         bool Ef_Hit()
@@ -73,7 +89,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // CritCheck();
             efDamage = CalculateDamage(efCurAttacker, efCurDefender, efCurMove);
             // TypeCheck();
-            DealDamage(efCurDefender);
+            DealDamage(efCurDefender.Pokemon);
             PrintDamageDone();
             PrintCrit();
             // TryFaint();
@@ -94,8 +110,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (!PUtils.ApplyChance(chance))
                 return false;
-            // TODO:
-            // 
+            ApplyStatChange(efCurDefender.Pokemon, PStat.SpDefense, -1);
+            return true;
+        }
+        bool Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
+        {
+            if (AttackCancelCheck())
+                return false;
+            if (AccuracyCheck())
+                return false;
+            PrintMoveUsed();
+            // PPReduce();
+            var pkmn = efCurAttacker.Pokemon;
+            ApplyStatChange(pkmn, PStat.Defense, -1);
+            ApplyStatChange(pkmn, PStat.SpDefense, -1);
+            ApplyStatChange(pkmn, PStat.Attack, +2);
+            ApplyStatChange(pkmn, PStat.SpAttack, +2);
+            ApplyStatChange(pkmn, PStat.Speed, +2);
             return true;
         }
     }

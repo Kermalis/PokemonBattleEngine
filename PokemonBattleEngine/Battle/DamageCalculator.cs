@@ -1,9 +1,20 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using System;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBattle
     {
+        // "forMissing" is true if the multiplier will be used for accuracy or evasion
+        // If this is used for evasion, "change" should be multiplied by -1 before being passed in (because evasion is for reducing a hit chance, not increasing)
+        public double GetStatMultiplier(sbyte change, bool forMissing = false)
+        {
+            double baseVal = forMissing ? 3 : 2;
+            double numerator = Math.Min(baseVal, baseVal + change);
+            double denominator = Math.Min(baseVal, baseVal - change);
+            return numerator / denominator;
+        }
+
         ushort CalculateBasePower(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];
@@ -53,11 +64,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)basePower;
         }
-
         ushort CalculateAttack(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];
-            double attack = attacker.Pokemon.Attack;
+            double attack = attacker.Pokemon.Attack * GetStatMultiplier(attacker.Pokemon.AttackChange);
 
             // Pokemon with the Huge Power or Pure Power ability get a 2x attack boost
             if (attacker.Pokemon.Shell.Ability == PAbility.HugePower || attacker.Pokemon.Shell.Ability == PAbility.PurePower)
@@ -77,11 +87,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)attack;
         }
-
         ushort CalculateDefense(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];
-            double defense = attacker.Pokemon.Defense;
+            double defense = attacker.Pokemon.Defense * GetStatMultiplier(defender.Pokemon.DefenseChange);
 
             // A Ditto holding a Metal Powder gets a 2x defense boost
             if (defender.Pokemon.Shell.Item == PItem.MetalPowder && defender.Pokemon.Shell.Species == PSpecies.Ditto)
@@ -92,11 +101,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)defense;
         }
-
         ushort CalculateSpAttack(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];
-            double spAttack = attacker.Pokemon.SpAttack;
+            double spAttack = attacker.Pokemon.SpAttack * GetStatMultiplier(attacker.Pokemon.SpAttackChange);
 
             // TODO:
             // A pokemon with the Plus ability gets a 1.5x spAttack boost if a teammate has the Minus ability
@@ -115,11 +123,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)spAttack;
         }
-
         ushort CalculateSpDefense(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];
-            double spDefense = attacker.Pokemon.SpDefense;
+            double spDefense = attacker.Pokemon.SpDefense * GetStatMultiplier(defender.Pokemon.SpDefenseChange);
 
             // A Clamperl holding a Deep Sea Scale gets a 2x spDefense boost
             if (defender.Pokemon.Shell.Item == PItem.DeepSeaScale && defender.Pokemon.Shell.Species == PSpecies.Clamperl)
@@ -130,7 +137,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)spDefense;
         }
-
         ushort CalculateDamage(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];

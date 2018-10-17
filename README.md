@@ -7,7 +7,12 @@ The engine only emulates as if it were Pokémon B2W2 versions, so there will not 
 
 ----
 # To Do:
-* Fainting, switching out, stat changes, turn order, double/triple/rotation battles
+* Fainting
+* Switching out
+* Accuracy/Evasion math
+* Critical hits
+* Turn order
+* Double/triple/rotation battles
 * Add most moves, items, pokemon, statuses
 * Battle event handler
 * Anti cheat

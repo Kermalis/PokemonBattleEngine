@@ -13,6 +13,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         Female = 0xFE,
         Genderless = 0xFF
     }
+    public enum PStat : byte
+    {
+        HP,
+        Attack,
+        Defense,
+        SpAttack,
+        SpDefense,
+        Speed,
+        Accuracy,
+        Evasion
+    }
     public enum PTarget : byte
     {
         All,

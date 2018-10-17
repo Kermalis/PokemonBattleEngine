@@ -129,6 +129,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PStatus Status;
         public PStatus2 Status2;
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
+        // These are in a set order; see BattleEffects->ApplyStatChange()
+        public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
         public byte[] PP = new byte[PConstants.NumMoves];
 
         public PPokemon(PPokemonShell shell)

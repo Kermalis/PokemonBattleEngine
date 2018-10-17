@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using System;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -26,6 +27,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (efLandedCrit)
                 Console.WriteLine("A critical hit!");
+        }
+        void PrintStatChange(PPokemon pkmn, PStat stat, sbyte change, bool tooMuch)
+        {
+            string description;
+            switch (change)
+            {
+                case -2: description = "harshly fell"; break;
+                case -1: description = "fell"; break;
+                case +1: description = "rose"; break;
+                case +2: description = "sharply rose"; break;
+                default:
+                    if (tooMuch && change < 0)
+                        description = "won't go lower";
+                    else if (tooMuch && change > 0)
+                        description = "won't go higher";
+                    else if (change <= -3) description = "severely fell";
+                    else if (change >= 3) description = "rose drastically";
+                    else return; // +0
+                    break;
+            }
+            Console.WriteLine("{0}'s {1} {2}!", pkmn.Shell.Species, stat, description);
         }
     }
 }
