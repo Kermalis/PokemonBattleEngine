@@ -12,6 +12,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         double efDamageMultiplier;
         bool efLandedCrit;
 
+        void DoTurnEndedEffects(PBattlePokemon battler)
+        {
+            // TODO: Limber
+        }
+
         void UseMove(PBattlePokemon attacker)
         {
             efCurAttacker = attacker;
@@ -29,6 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeFlinch: Ef_Hit__MaybeFlinch(mData.EffectParam); break;
                 case PMoveEffect.Hit__MaybeFreeze: Ef_Hit__MaybeFreeze(mData.EffectParam); break;
                 case PMoveEffect.Hit__MaybeLower_SPDEF_By1: Ef_Hit__MaybeLower_SPDEF_By1(mData.EffectParam); break;
+                case PMoveEffect.Hit__MaybeParalyze: Ef_Hit__MaybeParalyze(mData.EffectParam); break;
                 case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2: Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2(); break;
             }
         }
@@ -42,7 +48,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else if (efCurAttacker.Pokemon.Status == PStatus.Frozen)
             {
-                // Try to thaw out
+                // 20% chance to thaw out
                 if (PUtils.ApplyChance(20))
                 {
                     PrintStatusEnded(efCurAttacker.Pokemon);
@@ -50,6 +56,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return false;
                 }
                 else
+                {
+                    PrintStatusCancelledMove(efCurAttacker.Pokemon);
+                    return true;
+                }
+            }
+            else if (efCurAttacker.Pokemon.Status == PStatus.Paralyzed)
+            {
+                // 25% chance to be unable to move
+                if (PUtils.ApplyChance(25))
                 {
                     PrintStatusCancelledMove(efCurAttacker.Pokemon);
                     return true;
@@ -85,10 +100,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             PrintStatChange(pkmn, stat, change, tooMuch);
         }
-        void ApplyStatus(PPokemon pkmn, PStatus status)
+        bool ApplyStatusIfPossible(PPokemon pkmn, PStatus status, bool tryForce)
         {
+            // TODO: Limber
+            // ice type vs freezing
             pkmn.Status = status;
             PrintStatusChange(pkmn, status);
+            return true;
         }
 
         bool Ef_Hit()
@@ -117,23 +135,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
             efCurDefender.Pokemon.Status2 |= PStatus2.Flinching;
             return true;
         }
-        bool Ef_Hit__MaybeFreeze(int chance)
+        bool HitAndMaybeApplyStatus(PStatus status, int chance)
         {
             if (!Ef_Hit())
                 return false;
             if (efCurDefender.Pokemon.Status != PStatus.NoStatus || !PUtils.ApplyChance(chance))
                 return false;
-            ApplyStatus(efCurDefender.Pokemon, PStatus.Frozen);
+            if (!ApplyStatusIfPossible(efCurDefender.Pokemon, status, false))
+                return false;
             return true;
         }
-        bool Ef_Hit__MaybeLower_SPDEF_By1(int chance)
+        bool Ef_Hit__MaybeFreeze(int chance)
+        {
+            return HitAndMaybeApplyStatus(PStatus.Frozen, chance);
+        }
+        bool Ef_Hit__MaybeParalyze(int chance)
+        {
+            return HitAndMaybeApplyStatus(PStatus.Paralyzed, chance);
+        }
+        bool HitAndMaybeChangeStat(PStat stat, sbyte change, int chance)
         {
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance))
                 return false;
-            ApplyStatChange(efCurDefender.Pokemon, PStat.SpDefense, -1);
+            ApplyStatChange(efCurDefender.Pokemon, stat, change);
             return true;
+        }
+        bool Ef_Hit__MaybeLower_SPDEF_By1(int chance)
+        {
+            return HitAndMaybeChangeStat(PStat.SpDefense, -1, chance);
         }
         bool Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
         {

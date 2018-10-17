@@ -173,6 +173,16 @@ namespace Kermalis.PokemonBattleEngine.Data
         AnySurrounding,
         Self
     }
+    [Flags]
+    public enum PMoveFlag : byte
+    {
+        None = 0,
+        MakesContact = 1 << 0,
+        AffectedByProtect = 1 << 1,
+        AffectedByMagicCoat = 1 << 2,
+        AffectedBySnatch = 1 << 3,
+        AffectedByMirrorMove = 1 << 4
+    }
     public enum PMoveEffect : byte
     {
         Hit,
@@ -184,16 +194,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         Moonlight,
         Toxic,
         Transform,
-    }
-    [Flags]
-    public enum PMoveFlag : byte
-    {
-        None = 0,
-        MakesContact = 1 << 0,
-        AffectedByProtect = 1 << 1,
-        AffectedByMagicCoat = 1 << 2,
-        AffectedBySnatch = 1 << 3,
-        AffectedByMirrorMove = 1 << 4
     }
     public enum PMove : ushort
     {

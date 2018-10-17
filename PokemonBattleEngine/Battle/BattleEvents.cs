@@ -58,6 +58,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (status)
             {
                 case PStatus.Frozen: description = "was frozen solid"; break;
+                case PStatus.Paralyzed: description = "is paralyzed! It may be unable to move"; break;
                 default: throw new ArgumentOutOfRangeException(nameof(status), $"Invalid status change: {status}");
             }
             Console.WriteLine("{0} {1}!", pkmn.Shell.Species, description);
@@ -80,6 +81,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (status)
             {
                 case PStatus.Frozen: description = "is frozen solid"; break;
+                case PStatus.Paralyzed: description = "is paralyzed! It can't move"; break;
                 default: throw new ArgumentOutOfRangeException(nameof(status), $"Invalid status cancelling move: {status}");
             }
             Console.WriteLine("{0} {1}!", pkmn.Shell.Species, description);

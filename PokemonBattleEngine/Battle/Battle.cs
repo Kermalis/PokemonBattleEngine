@@ -139,6 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             foreach (var b in battlers)
             {
                 b.SelectedMove = PMove.None;
+                DoTurnEndedEffects(b);
             }
         }
     }
