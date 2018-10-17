@@ -25,6 +25,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(50, PMove.Thunder),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+
                     }
                 }
             },
@@ -39,6 +43,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(47, PMove.Retaliate),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+
                     }
                 }
             },
@@ -53,6 +61,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(59, PMove.Retaliate),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+
                     }
                 }
             },
@@ -67,6 +79,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Transform),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+
                     }
                 }
             },
@@ -102,6 +118,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(51, PMove.ShellSmash),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+
                     }
                 }
             },
@@ -116,6 +136,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(80, PMove.DragonPulse),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+
                     }
                 }
             },
@@ -130,6 +154,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(80, PMove.DragonPulse),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+
                     }
                 }
             },
@@ -164,6 +192,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(93, PMove.DarkPulse),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+
                     }
                 }
             },

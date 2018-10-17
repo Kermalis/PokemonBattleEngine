@@ -37,7 +37,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PStatus : byte
     {
-        None,
+        NoStatus,
         Asleep,
         BadlyPoisoned,
         Burned,
@@ -109,7 +109,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PItem : ushort
     {
-        None,
+        NoItem,
         ChoiceBand,
         DeepSeaScale,
         DeepSeaTooth,

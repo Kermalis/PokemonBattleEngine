@@ -25,18 +25,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PMoveData mData = PMoveData.Data[efCurMove];
             switch (mData.Effect)
             {
-                case PMoveEffect.Hit:
-                    Ef_Hit();
-                    break;
-                case PMoveEffect.Hit__MaybeFlinch:
-                    Ef_Hit__MaybeFlinch(mData.EffectParam);
-                    break;
-                case PMoveEffect.Hit__MaybeLower_SPDEF_By1:
-                    Ef_Hit__MaybeLower_SPDEF_By1(mData.EffectParam);
-                    break;
-                case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2:
-                    Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2();
-                    break;
+                case PMoveEffect.Hit: Ef_Hit(); break;
+                case PMoveEffect.Hit__MaybeFlinch: Ef_Hit__MaybeFlinch(mData.EffectParam); break;
+                case PMoveEffect.Hit__MaybeFreeze: Ef_Hit__MaybeFreeze(mData.EffectParam); break;
+                case PMoveEffect.Hit__MaybeLower_SPDEF_By1: Ef_Hit__MaybeLower_SPDEF_By1(mData.EffectParam); break;
+                case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2: Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2(); break;
             }
         }
 
@@ -46,6 +39,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 PrintFlinch();
                 return true;
+            }
+            else if (efCurAttacker.Pokemon.Status == PStatus.Frozen)
+            {
+                // Try to thaw out
+                if (PUtils.ApplyChance(20))
+                {
+                    PrintStatusEnded(efCurAttacker.Pokemon);
+                    efCurAttacker.Pokemon.Status = PStatus.NoStatus;
+                    return false;
+                }
+                else
+                {
+                    PrintStatusCancelledMove(efCurAttacker.Pokemon);
+                    return true;
+                }
             }
             return false;
         }
@@ -77,6 +85,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             PrintStatChange(pkmn, stat, change, tooMuch);
         }
+        void ApplyStatus(PPokemon pkmn, PStatus status)
+        {
+            pkmn.Status = status;
+            PrintStatusChange(pkmn, status);
+        }
 
         bool Ef_Hit()
         {
@@ -102,6 +115,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!PUtils.ApplyChance(chance))
                 return false;
             efCurDefender.Pokemon.Status2 |= PStatus2.Flinching;
+            return true;
+        }
+        bool Ef_Hit__MaybeFreeze(int chance)
+        {
+            if (!Ef_Hit())
+                return false;
+            if (efCurDefender.Pokemon.Status != PStatus.NoStatus || !PUtils.ApplyChance(chance))
+                return false;
+            ApplyStatus(efCurDefender.Pokemon, PStatus.Frozen);
             return true;
         }
         bool Ef_Hit__MaybeLower_SPDEF_By1(int chance)

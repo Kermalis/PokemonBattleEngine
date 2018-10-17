@@ -99,6 +99,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 DetermineTurnOrder();
                 ClearTemporaryStuff();
                 RunMovesInOrder();
+                TurnEnded();
             }
         }
 
@@ -126,7 +127,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             for (int i = 0; i < turnOrder.Length; i++)
             {
-                UseMove(battlers[turnOrder[i]]);
+                var pkmn = battlers[turnOrder[i]];
+                if (pkmn.Pokemon.HP < 1)
+                    continue;
+                UseMove(pkmn);
+                pkmn.PreviousMove = efCurMove;
+            }
+        }
+        void TurnEnded()
+        {
+            foreach (var b in battlers)
+            {
+                b.SelectedMove = PMove.None;
             }
         }
     }

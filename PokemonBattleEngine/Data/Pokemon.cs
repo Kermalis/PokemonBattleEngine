@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(Gender));
 
             // Validate Item
-            if (Item != PItem.None)
+            if (Item != PItem.NoItem)
             {
                 try
                 {
@@ -194,6 +194,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             Speed = OtherStat(pData.Speed);
         }
 
-        public override string ToString() => $"{Shell.Species} Lv.{Shell.Level} {Shell.Nature} {Shell.Gender} {Shell.Ability} {HP}/{MaxHP} HP";
+        public override string ToString() => $"{Shell.Species} Lv.{Shell.Level} {HP}/{MaxHP} HP {Status} {Shell.Item} {Shell.Nature} {Shell.Gender} {Shell.Ability}";
     }
 }
