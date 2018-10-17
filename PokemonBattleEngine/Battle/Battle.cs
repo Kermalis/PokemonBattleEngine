@@ -89,6 +89,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Debugging
         internal PPokemon GetBattler(int index) => battlers[index].Pokemon;
 
+        public void SelectMove(int team, int pkmn, int move, PTarget target)
+        {
+            teams[team].Pokemon[pkmn].SelectedMove = teams[team].Pokemon[pkmn].Pokemon.Shell.Moves[move];
+            teams[team].Pokemon[pkmn].SelectedTarget = target; // TODO: Validate
+
+            if (AllMonSelectedMoves())
+            {
+                DetermineTurnOrder();
+                ClearTemporaryStuff();
+                RunMovesInOrder();
+            }
+        }
+
         bool AllMonSelectedMoves()
         {
             for (int i = 0; i < battlers.Length; i++)
@@ -96,39 +109,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return false;
             return true;
         }
-        public void SelectMove(int team, int pkmn, int move, PTarget target)
-        {
-            teams[team].Pokemon[pkmn].SelectedMove = teams[team].Pokemon[pkmn].Pokemon.Shell.Moves[move];
-            teams[team].Pokemon[pkmn].SelectedTarget = target;
-
-            if (AllMonSelectedMoves())
-            {
-                DetermineTurnOrder();
-                DoDamageInOrder();
-            }
-        }
-
         void DetermineTurnOrder()
         {
             // TODO: Turn order
             turnOrder[0] = 0;
             turnOrder[1] = 1;
         }
-        void DoDamageInOrder()
+        void ClearTemporaryStuff()
+        {
+            foreach (var b in battlers)
+            {
+                b.Pokemon.Status2 &= PStatus2.Flinching;
+            }
+        }
+        void RunMovesInOrder()
         {
             for (int i = 0; i < turnOrder.Length; i++)
             {
-                // TODO: Targets
-                PBattlePokemon attacker = battlers[turnOrder[i]];
-                // Temporarily get the opponent
-                PBattlePokemon defender = turnOrder[i] == 0 ? battlers[1] : battlers[0];
-                ushort damage = CalculateDamage(attacker, defender, attacker.SelectedMove);
-                DealDamage(defender, damage);
+                UseMove(battlers[turnOrder[i]]);
             }
-        }
-        void DealDamage(PBattlePokemon victim, ushort damage)
-        {
-            victim.Pokemon.HP = (ushort)Math.Max(0, victim.Pokemon.HP - damage);
         }
     }
 }

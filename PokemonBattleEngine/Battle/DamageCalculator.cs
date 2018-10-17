@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    partial class PBattle
+    public sealed partial class PBattle
     {
         ushort CalculateBasePower(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
@@ -11,8 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
 
             // TODO: Stuff like mystic water
-            // STAB
-            // Return
+            // Return/Frustration
 
             // Damage is halved when using electric moves while mud sport is active
             /* if (type == Type.Electric && MudSportActive())
@@ -20,6 +19,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Damage is halved when using fire moves while water sport is active
             /* if (type == Type.Fire && WaterSportActive())
              * basePower /= 2;*/
+            // An underground pokemon that gets hit with Earthquake takes twice the damage
+            /* if (move == PMove.Earthquake && defender.Pokemon.Status2.HasFlag(PStatus2.Underground))
+                basePower *= 2;*/
+            // An underwater pokemon that gets hit with Surf takes twice the damage
+            /* if (move == PMove.Surf && defender.Pokemon.Status2.HasFlag(PStatus2.Underwater))
+                basePower *= 2;*/
 
             // A Pikachu holding a Light Ball gets a 2x power boost
             if (attacker.Pokemon.Shell.Item == PItem.LightBall && attacker.Pokemon.Shell.Species == PSpecies.Pikachu)

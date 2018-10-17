@@ -76,12 +76,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(EVs));
             // Validate IVs
             if (IVs == null || IVs.Length != 6 || IVs.Any(e => e > 31))
-                throw new ArgumentOutOfRangeException("IVs");
+                throw new ArgumentOutOfRangeException(nameof(IVs));
 
             // Validate Moves
             IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).Union(pData.OtherMoves);
             if (Moves == null || Moves.Length > PConstants.NumMoves || Moves.Any(m => m != PMove.None && !legalMoves.Contains(m)) || Moves.All(m => m == PMove.None))
-                throw new ArgumentOutOfRangeException("Moves");
+                throw new ArgumentOutOfRangeException(nameof(Moves));
         }
 
         internal byte[] ToBytes()
@@ -127,6 +127,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public readonly PPokemonShell Shell;
 
         public PStatus Status;
+        public PStatus2 Status2;
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
         public byte[] PP = new byte[PConstants.NumMoves];
 

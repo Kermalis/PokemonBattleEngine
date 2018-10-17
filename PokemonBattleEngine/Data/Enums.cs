@@ -34,6 +34,19 @@ namespace Kermalis.PokemonBattleEngine.Data
         Paralyzed,
         Poisoned
     }
+    [Flags]
+    public enum PStatus2 : uint
+    {
+        None,
+        Confused = 1 << 0,
+        Cursed = 1 << 1,
+        Flinching = 1 << 2,
+        FocusEnergy = 1 << 3,
+        Infatuated = 1 << 4,
+        Tormented = 1 << 5,
+        Underground = 1 << 6,
+        Underwater = 1 << 7,
+    }
     public enum PType : byte
     {
         Bug,
