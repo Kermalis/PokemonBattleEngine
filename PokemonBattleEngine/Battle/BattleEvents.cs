@@ -17,10 +17,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Console.WriteLine("{0} flinched!", efCurAttacker.Pokemon.Shell.Species);
         }
-        void PrintDamageDone(PPokemon pkmn, int amt)
+        void PrintDamage(PPokemon pkmn, int amt)
         {
             double percentage = (double)amt / efCurDefender.Pokemon.MaxHP;
             Console.WriteLine("{0} took {1} ({2:P2}) damage!", pkmn.Shell.Species, amt, percentage);
+        }
+        void PrintFaint(PPokemon pkmn)
+        {
+            Console.WriteLine("{0} fainted!", pkmn.Shell.Species);
         }
         void PrintCrit()
         {

@@ -7,7 +7,6 @@ The engine only emulates as if it were Pokémon B2W2 versions, so there will not 
 
 ----
 # To Do:
-* Fainting
 * Switching out
 * Accuracy/Evasion math
 * Critical hits

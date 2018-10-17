@@ -87,7 +87,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort total = (ushort)(efDamage * efDamageMultiplier);
             var oldHP = victim.HP;
             victim.HP = (ushort)Math.Max(0, victim.HP - total);
-            PrintDamageDone(victim, oldHP - victim.HP);
+            PrintDamage(victim, oldHP - victim.HP);
+        }
+        bool TryFaint()
+        {
+            if (efCurDefender.Pokemon.HP < 1)
+            {
+                PrintFaint(efCurDefender.Pokemon);
+                return true;
+            }
+            return false;
         }
         unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)
         {
@@ -124,7 +133,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // TypeCheck();
             DealDamage(efCurDefender.Pokemon);
             PrintCrit();
-            // TryFaint();
+            if (TryFaint())
+                return false;
             return true;
         }
         bool Ef_Hit__MaybeFlinch(int chance)
