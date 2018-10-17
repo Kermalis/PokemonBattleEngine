@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
                 catch
                 {
-                    Console.WriteLine("Invalid Pokémon data!");
+                    Console.WriteLine("Invalid Pokémon data received!");
                     CancelMatch();
                     return;
                 }
@@ -83,7 +83,7 @@ namespace Kermalis.PokemonBattleEngineServer
             Configuration.Backlog = 50;
             Configuration.Host = host;
             Configuration.Port = 8888;
-            Configuration.MaximumNumberOfConnections = 2;
+            Configuration.MaximumNumberOfConnections = 3; // Spectators allowed
             Configuration.BufferSize = 1024;
             Configuration.Blocking = true;
         }

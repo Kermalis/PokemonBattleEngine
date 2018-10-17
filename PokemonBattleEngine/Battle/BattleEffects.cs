@@ -10,6 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         PMove efCurMove;
         ushort efDamage;
         double efDamageMultiplier;
+        bool efLandedCrit;
 
         void UseMove(PBattlePokemon attacker)
         {
@@ -19,6 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             efCurMove = attacker.SelectedMove;
             efDamage = 0;
             efDamageMultiplier = 1;
+            efLandedCrit = false;
 
             PMoveData mData = PMoveData.Data[efCurMove];
             switch (mData.Effect)
@@ -39,7 +41,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (efCurAttacker.Pokemon.Status2.HasFlag(PStatus2.Flinching))
             {
-                // PrintFlinch();
+                PrintFlinch();
                 return true;
             }
             return false;
@@ -51,7 +53,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 || PUtils.ApplyChance(mData.Accuracy) // Got lucky and landed a hit
                 )
                 return false;
-            // PrintMiss();
+            PrintMiss();
             return true;
         }
         void DealDamage(PBattlePokemon victim)
@@ -66,14 +68,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (AccuracyCheck())
                 return false;
-            // PrintMoveUsed();
+            PrintMoveUsed();
             // PPReduce();
             // CritCheck();
             efDamage = CalculateDamage(efCurAttacker, efCurDefender, efCurMove);
             // TypeCheck();
             DealDamage(efCurDefender);
-            // PrintDamageDone();
-            // PrintCrit();
+            PrintDamageDone();
+            PrintCrit();
             // TryFaint();
             return true;
         }
