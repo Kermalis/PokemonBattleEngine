@@ -85,7 +85,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void DealDamage(PPokemon victim)
         {
             ushort total = (ushort)(efDamage * efDamageMultiplier);
+            var oldHP = victim.HP;
             victim.HP = (ushort)Math.Max(0, victim.HP - total);
+            PrintDamageDone(victim, oldHP - victim.HP);
         }
         unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)
         {
@@ -121,7 +123,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             efDamage = CalculateDamage(efCurAttacker, efCurDefender, efCurMove);
             // TypeCheck();
             DealDamage(efCurDefender.Pokemon);
-            PrintDamageDone();
             PrintCrit();
             // TryFaint();
             return true;
