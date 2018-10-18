@@ -45,8 +45,6 @@ namespace Kermalis.PokemonBattleEngine
         {
             Console.WriteLine("Pokémon Battle Engine Test");
 
-
-
             PTeamShell team1 = new PTeamShell
             {
                 PlayerName = "Sasha",

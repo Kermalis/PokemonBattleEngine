@@ -39,6 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
+        // Returns true if an attack gets cancelled
         bool AttackCancelCheck()
         {
             if (efCurAttacker.Pokemon.Status2.HasFlag(PStatus2.Flinching))
@@ -72,6 +73,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
+        // Returns true if an attack misses
         bool AccuracyCheck()
         {
             PMoveData mData = PMoveData.Data[efCurMove];
@@ -82,13 +84,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PrintMiss();
             return true;
         }
-        void DealDamage(PPokemon victim)
+        void DealDamage()
         {
+            PPokemon victim = efCurDefender.Pokemon;
             ushort total = (ushort)(efDamage * efDamageMultiplier);
             var oldHP = victim.HP;
             victim.HP = (ushort)Math.Max(0, victim.HP - total);
             PrintDamage(victim, oldHP - victim.HP);
         }
+        // Returns false if an attack is ineffective
+        bool TypeCheck()
+        {
+            PPokemonData attackerPData = PPokemonData.Data[efCurAttacker.Pokemon.Shell.Species];
+            PPokemonData defenderPData = PPokemonData.Data[efCurDefender.Pokemon.Shell.Species];
+            PMoveData mData = PMoveData.Data[efCurMove];
+
+            // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost
+            if (attackerPData.HasType(mData.Type))
+                efDamageMultiplier *= 1.5;
+
+            return true;
+        }
+        // Returns true if the pokemon fainted
         bool TryFaint()
         {
             if (efCurDefender.Pokemon.HP < 1)
@@ -98,6 +115,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
+
         unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)
         {
             bool tooMuch = false;
@@ -111,10 +129,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             PrintStatChange(pkmn, stat, change, tooMuch);
         }
-        bool ApplyStatusIfPossible(PPokemon pkmn, PStatus status, bool tryForce)
+        // Returns true if the status was applied
+        bool ApplyStatusIfPossible(PPokemon pkmn, PStatus status)
         {
+            PPokemonData pData = PPokemonData.Data[pkmn.Shell.Species];
+
             // TODO: Limber
-            // ice type vs freezing
+
+            // An Ice type pokemon cannot be Frozen
+            if (status == PStatus.Frozen && pData.HasType(PType.Ice))
+                return false;
+
             pkmn.Status = status;
             PrintStatusChange(pkmn, status);
             return true;
@@ -130,8 +155,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // PPReduce();
             // CritCheck();
             efDamage = CalculateDamage(efCurAttacker, efCurDefender, efCurMove);
-            // TypeCheck();
-            DealDamage(efCurDefender.Pokemon);
+            if (!TypeCheck())
+                return false;
+            DealDamage();
             PrintCrit();
             if (TryFaint())
                 return false;
@@ -152,7 +178,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (efCurDefender.Pokemon.Status != PStatus.NoStatus || !PUtils.ApplyChance(chance))
                 return false;
-            if (!ApplyStatusIfPossible(efCurDefender.Pokemon, status, false))
+            if (!ApplyStatusIfPossible(efCurDefender.Pokemon, status))
                 return false;
             return true;
         }

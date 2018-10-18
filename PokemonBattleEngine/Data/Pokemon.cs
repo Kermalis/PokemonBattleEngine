@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(Level));
 
             // Validate Ability
-            if (Ability != pData.Ability1 && Ability != pData.Ability2 && Ability != pData.AbilityHidden)
+            if (!pData.HasAbility(Ability))
                 throw new ArgumentOutOfRangeException(nameof(Ability));
 
             // Validate Nature

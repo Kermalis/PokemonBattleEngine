@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    class PPokemonData
+    public sealed class PPokemonData
     {
         public PGender GenderRatio;
         public PType Type1, Type2;
@@ -11,6 +11,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte HP, Attack, Defense, SpAttack, SpDefense, Speed;
         public Tuple<int, PMove>[] LevelUpMoves;
         public PMove[] OtherMoves;
+
+        public bool HasType(PType type) => Type1 == type || Type2 == type;
+        public bool HasAbility(PAbility ability) => Ability1 == ability || Ability2 == ability || AbilityHidden == ability;
 
         public static Dictionary<PSpecies, PPokemonData> Data = new Dictionary<PSpecies, PPokemonData>()
         {
