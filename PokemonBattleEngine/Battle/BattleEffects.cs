@@ -9,7 +9,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         PBattlePokemon efCurAttacker, efCurDefender;
         PMove efCurMove;
         ushort efDamage;
-        double efDamageMultiplier;
+        double efEffectiveness, efDamageMultiplier;
         bool efLandedCrit;
 
         void DoTurnEndedEffects(PBattlePokemon battler)
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             efCurDefender = attacker == battlers[0] ? battlers[1] : battlers[0]; // Temporary
             efCurMove = attacker.SelectedMove;
             efDamage = 0;
-            efDamageMultiplier = 1;
+            efEffectiveness = efDamageMultiplier = 1;
             efLandedCrit = false;
 
             PMoveData mData = PMoveData.Data[efCurMove];
@@ -87,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void DealDamage()
         {
             PPokemon victim = efCurDefender.Pokemon;
-            ushort total = (ushort)(efDamage * efDamageMultiplier);
+            ushort total = (ushort)(efDamage * efEffectiveness * efDamageMultiplier);
             var oldHP = victim.HP;
             victim.HP = (ushort)Math.Max(0, victim.HP - total);
             PrintDamage(victim, oldHP - victim.HP);
@@ -102,6 +102,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost
             if (attackerPData.HasType(mData.Type))
                 efDamageMultiplier *= 1.5;
+
+            efEffectiveness *= PPokemonData.TypeEffectiveness[(int)mData.Type, (int)defenderPData.Type1];
+            // Don't want to halve twice for a mono type
+            if (defenderPData.Type1 != defenderPData.Type2)
+                efEffectiveness *= PPokemonData.TypeEffectiveness[(int)mData.Type, (int)defenderPData.Type2];
+
+            if (efEffectiveness == 0)
+            {
+                PrintEffectiveness();
+                return false;
+            }
 
             return true;
         }
@@ -158,6 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!TypeCheck())
                 return false;
             DealDamage();
+            PrintEffectiveness();
             PrintCrit();
             if (TryFaint())
                 return false;

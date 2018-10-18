@@ -22,6 +22,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double percentage = (double)amt / efCurDefender.Pokemon.MaxHP;
             Console.WriteLine("{0} took {1} ({2:P2}) damage!", pkmn.Shell.Species, amt, percentage);
         }
+        void PrintEffectiveness()
+        {
+            string message;
+            if (efEffectiveness == 0)
+                message = "It doesn't affect {0}...";
+            else if (efEffectiveness > 1)
+                message = "It's super effective!";
+            else if (efEffectiveness < 1)
+                message = "It's not very effective...";
+            else
+                return;
+
+            Console.WriteLine(message, efCurDefender.Pokemon.Shell.Species);
+        }
         void PrintFaint(PPokemon pkmn)
         {
             Console.WriteLine("{0} fainted!", pkmn.Shell.Species);

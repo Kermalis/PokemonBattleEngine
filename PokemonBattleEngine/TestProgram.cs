@@ -48,7 +48,7 @@ namespace Kermalis.PokemonBattleEngine
             PTeamShell team1 = new PTeamShell
             {
                 PlayerName = "Sasha",
-                Pokemon = { pikachu }
+                Pokemon = { azumarill }
             };
 
             PTeamShell team2 = new PTeamShell
