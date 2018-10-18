@@ -38,28 +38,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 basePower *= 2;*/
 
             // A Pikachu holding a Light Ball gets a 2x power boost
-            if (attacker.Pokemon.Shell.Item == PItem.LightBall && attacker.Pokemon.Shell.Species == PSpecies.Pikachu)
+            if (attacker.Mon.Shell.Item == PItem.LightBall && attacker.Mon.Shell.Species == PSpecies.Pikachu)
                 basePower *= 2;
             // Retaliate doubles power if the team has a pokemon that fainted the previous turn
             if (move == PMove.Retaliate && attacker.Team.MonFaintedLastTurn)
                 basePower *= 2;
             // Overgrow gives a 1.5x boost to Grass attacks if the attacker is below 1/3 max HP
-            if (mData.Type == PType.Grass && attacker.Pokemon.Shell.Ability == PAbility.Overgrow && attacker.Pokemon.HP <= attacker.Pokemon.MaxHP / 3)
+            if (mData.Type == PType.Grass && attacker.Mon.Shell.Ability == PAbility.Overgrow && attacker.Mon.HP <= attacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
             // Blaze gives a 1.5x boost to Fire attacks if the attacker is below 1/3 max HP
-            if (mData.Type == PType.Fire && attacker.Pokemon.Shell.Ability == PAbility.Blaze && attacker.Pokemon.HP <= attacker.Pokemon.MaxHP / 3)
+            if (mData.Type == PType.Fire && attacker.Mon.Shell.Ability == PAbility.Blaze && attacker.Mon.HP <= attacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
             // Torrent gives a 1.5x boost to Water attacks if the attacker is below 1/3 max HP
-            if (mData.Type == PType.Water && attacker.Pokemon.Shell.Ability == PAbility.Torrent && attacker.Pokemon.HP <= attacker.Pokemon.MaxHP / 3)
+            if (mData.Type == PType.Water && attacker.Mon.Shell.Ability == PAbility.Torrent && attacker.Mon.HP <= attacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
             // Swarm gives a 1.5x boost to Bug attacks if the attacker is below 1/3 max HP
-            if (mData.Type == PType.Bug && attacker.Pokemon.Shell.Ability == PAbility.Swarm && attacker.Pokemon.HP <= attacker.Pokemon.MaxHP / 3)
+            if (mData.Type == PType.Bug && attacker.Mon.Shell.Ability == PAbility.Swarm && attacker.Mon.HP <= attacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
             // A burned pokemon does half the damage when it is Burned unless it has the Guts ability
-            if (mData.Category == PMoveCategory.Physical && attacker.Pokemon.Status == PStatus.Burned && attacker.Pokemon.Shell.Ability != PAbility.Guts)
+            if (mData.Category == PMoveCategory.Physical && attacker.Mon.Status == PStatus.Burned && attacker.Mon.Shell.Ability != PAbility.Guts)
                 basePower /= 2;
             // Damage is halved when using Fire or Ice moves against a pokemon with the Thick Fat ability
-            if (defender.Pokemon.Shell.Ability == PAbility.ThickFat && (mData.Type == PType.Fire || mData.Type == PType.Ice))
+            if (defender.Mon.Shell.Ability == PAbility.ThickFat && (mData.Type == PType.Fire || mData.Type == PType.Ice))
                 basePower /= 2;
 
             return (ushort)basePower;
@@ -67,22 +67,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
         ushort CalculateAttack(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];
-            double attack = attacker.Pokemon.Attack * GetStatMultiplier(attacker.Pokemon.AttackChange);
+            double attack = attacker.Mon.Attack * GetStatMultiplier(attacker.Mon.AttackChange);
 
             // Pokemon with the Huge Power or Pure Power ability get a 2x attack boost
-            if (attacker.Pokemon.Shell.Ability == PAbility.HugePower || attacker.Pokemon.Shell.Ability == PAbility.PurePower)
+            if (attacker.Mon.Shell.Ability == PAbility.HugePower || attacker.Mon.Shell.Ability == PAbility.PurePower)
                 attack *= 2;
             // A Cubone or Marowak holding a Thick Club gets a 2x attack boost
-            if (attacker.Pokemon.Shell.Item == PItem.ThickClub && (attacker.Pokemon.Shell.Species == PSpecies.Cubone || attacker.Pokemon.Shell.Species == PSpecies.Marowak))
+            if (attacker.Mon.Shell.Item == PItem.ThickClub && (attacker.Mon.Shell.Species == PSpecies.Cubone || attacker.Mon.Shell.Species == PSpecies.Marowak))
                 attack *= 2;
             // A pokemon with the Hustle ability gets a 1.5x attack boost
-            if (attacker.Pokemon.Shell.Ability == PAbility.Hustle)
+            if (attacker.Mon.Shell.Ability == PAbility.Hustle)
                 attack *= 1.5;
             // A pokemon with the Guts ability gets a 1.5x attack boost when afflicted with a status
-            if (attacker.Pokemon.Shell.Ability == PAbility.Guts && attacker.Pokemon.Status != PStatus.NoStatus)
+            if (attacker.Mon.Shell.Ability == PAbility.Guts && attacker.Mon.Status != PStatus.NoStatus)
                 attack *= 1.5;
             // A pokemon holding a Choice Band gets a 1.5x attack boost
-            if (attacker.Pokemon.Shell.Item == PItem.ChoiceBand)
+            if (attacker.Mon.Shell.Item == PItem.ChoiceBand)
                 attack *= 1.5;
 
             return (ushort)attack;
@@ -90,13 +90,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         ushort CalculateDefense(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];
-            double defense = attacker.Pokemon.Defense * GetStatMultiplier(defender.Pokemon.DefenseChange);
+            double defense = attacker.Mon.Defense * GetStatMultiplier(defender.Mon.DefenseChange);
 
             // A Ditto holding a Metal Powder gets a 2x defense boost
-            if (defender.Pokemon.Shell.Item == PItem.MetalPowder && defender.Pokemon.Shell.Species == PSpecies.Ditto)
+            if (defender.Mon.Shell.Item == PItem.MetalPowder && defender.Mon.Shell.Species == PSpecies.Ditto)
                 defense *= 2;
             // A pokemon with the Marvel Scale ability gets a 1.5x defense boost when afflicted with a status
-            if (defender.Pokemon.Shell.Ability == PAbility.MarvelScale && defender.Pokemon.Status != PStatus.NoStatus)
+            if (defender.Mon.Shell.Ability == PAbility.MarvelScale && defender.Mon.Status != PStatus.NoStatus)
                 defense *= 1.5;
 
             return (ushort)defense;
@@ -104,7 +104,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         ushort CalculateSpAttack(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];
-            double spAttack = attacker.Pokemon.SpAttack * GetStatMultiplier(attacker.Pokemon.SpAttackChange);
+            double spAttack = attacker.Mon.SpAttack * GetStatMultiplier(attacker.Mon.SpAttackChange);
 
             // TODO:
             // A pokemon with the Plus ability gets a 1.5x spAttack boost if a teammate has the Minus ability
@@ -115,10 +115,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
              * spAttack *= 1.5;*/
 
             // A Clamperl holding a Deep Sea Tooth gets a 2x spAttack boost
-            if (attacker.Pokemon.Shell.Item == PItem.DeepSeaTooth && attacker.Pokemon.Shell.Species == PSpecies.Clamperl)
+            if (attacker.Mon.Shell.Item == PItem.DeepSeaTooth && attacker.Mon.Shell.Species == PSpecies.Clamperl)
                 spAttack *= 2;
             // A Latios or Latias holding a Soul Dew gets a 1.5x spAttack boost
-            if (attacker.Pokemon.Shell.Item == PItem.SoulDew && (attacker.Pokemon.Shell.Species == PSpecies.Latios || attacker.Pokemon.Shell.Species == PSpecies.Latias))
+            if (attacker.Mon.Shell.Item == PItem.SoulDew && (attacker.Mon.Shell.Species == PSpecies.Latios || attacker.Mon.Shell.Species == PSpecies.Latias))
                 spAttack *= 1.5;
 
             return (ushort)spAttack;
@@ -126,13 +126,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         ushort CalculateSpDefense(PBattlePokemon attacker, PBattlePokemon defender, PMove move)
         {
             PMoveData mData = PMoveData.Data[move];
-            double spDefense = attacker.Pokemon.SpDefense * GetStatMultiplier(defender.Pokemon.SpDefenseChange);
+            double spDefense = attacker.Mon.SpDefense * GetStatMultiplier(defender.Mon.SpDefenseChange);
 
             // A Clamperl holding a Deep Sea Scale gets a 2x spDefense boost
-            if (defender.Pokemon.Shell.Item == PItem.DeepSeaScale && defender.Pokemon.Shell.Species == PSpecies.Clamperl)
+            if (defender.Mon.Shell.Item == PItem.DeepSeaScale && defender.Mon.Shell.Species == PSpecies.Clamperl)
                 spDefense *= 2;
             // A Latios or Latias holding a Soul Dew gets a 1.5x spDefense boost
-            if (defender.Pokemon.Shell.Item == PItem.SoulDew && (defender.Pokemon.Shell.Species == PSpecies.Latios || defender.Pokemon.Shell.Species == PSpecies.Latias))
+            if (defender.Mon.Shell.Item == PItem.SoulDew && (defender.Mon.Shell.Species == PSpecies.Latios || defender.Mon.Shell.Species == PSpecies.Latias))
                 spDefense *= 1.5;
 
             return (ushort)spDefense;
@@ -157,7 +157,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 d = CalculateSpDefense(attacker, defender, move);
             }
 
-            damage = (ushort)(2 * attacker.Pokemon.Shell.Level / 5 + 2);
+            damage = (ushort)(2 * attacker.Mon.Shell.Level / 5 + 2);
             damage = (ushort)(damage * a * p / d);
             damage /= 50;
             return (ushort)(damage + 2);

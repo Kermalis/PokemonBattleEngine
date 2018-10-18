@@ -9,21 +9,24 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PUsedMovePacket : INetPacketStream
     {
-        public const int Code = 0x3;
+        public const int Code = 0x7;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 
-        public readonly PPokemon Pokemon;
+        public readonly Guid PokemonId;
         public readonly PMove Move;
+        public readonly bool OwnsMove;
 
-        public PUsedMovePacket(PPokemon pkmn, PMove move)
+        public PUsedMovePacket(Guid id, PMove move, bool ownsMove)
         {
-            Pokemon = pkmn ?? throw new ArgumentNullException(nameof(pkmn));
+            PokemonId = id;
             Move = move;
+            OwnsMove = ownsMove;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(Pokemon.ToBytes());
+            bytes.AddRange(PokemonId.ToByteArray());
             bytes.AddRange(BitConverter.GetBytes((ushort)Move));
+            bytes.Add((byte)(OwnsMove ? 1 : 0));
             buf = BitConverter.GetBytes(bytes.Count).Concat(bytes).ToArray();
         }
         public PUsedMovePacket(byte[] buffer)
@@ -31,8 +34,9 @@ namespace Kermalis.PokemonBattleEngine.Network
             using (var r = new BinaryReader(new MemoryStream(buf = buffer)))
             {
                 r.ReadInt32(); // Skip Code
-                Pokemon = PPokemon.FromBytes(r);
+                PokemonId = new Guid(r.ReadBytes(16));
                 Move = (PMove)r.ReadUInt16();
+                OwnsMove = r.ReadByte() != 0;
             }
         }
 

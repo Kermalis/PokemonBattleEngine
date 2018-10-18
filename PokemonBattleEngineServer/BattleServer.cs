@@ -16,10 +16,12 @@ namespace Kermalis.PokemonBattleEngineServer
             Resetting, // Server is currently resetting the game
             WaitingForPlayers, // Server is waiting for 2 players to connect
             WaitingForTeams, // Server is waiting for both players to send their teams
+            StartingMatch, // Server is starting the battle
+            WaitingForMoves, // Server is waiting for players to select moves
         }
         ServerState state = ServerState.Startup;
         Player[] battlers;
-        public PBattle battle { get; private set; }
+        PBattle battle;
 
         public void Forfeit(Player player)
         {
@@ -38,8 +40,11 @@ namespace Kermalis.PokemonBattleEngineServer
                 return;
             state = ServerState.Resetting;
 
-            foreach (var c in Clients)
+            foreach (Player c in Clients)
+            {
+                c.ResetEvent.Close();
                 DisconnectClient(c.Id);
+            }
             battlers = null;
 
             state = ServerState.WaitingForPlayers;
@@ -64,7 +69,7 @@ namespace Kermalis.PokemonBattleEngineServer
             {
                 try
                 {
-                    PPokemonShell.ValidateMany(battlers[0].Team.Pokemon.Concat(battlers[1].Team.Pokemon));
+                    PPokemonShell.ValidateMany(battlers[0].Team.Party.Concat(battlers[1].Team.Party));
                 }
                 catch
                 {
@@ -73,6 +78,54 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 Console.WriteLine("Both players ready!");
+                StartMatch();
+            }
+        }
+        void StartMatch()
+        {
+            if (state == ServerState.StartingMatch)
+                return;
+            state = ServerState.StartingMatch;
+
+            Console.WriteLine("Battle starting!");
+
+            battle = new PBattle(battlers[0].Team, battlers[1].Team);
+            battle.NewEvent += BattleEventHandler;
+            battle.NewEvent += PBattle.ConsoleBattleEventHandler;
+
+            // Send opponent names
+            battlers[0].Send(new PPlayerJoinedPacket(battlers[1].Id, battlers[1].Team.DisplayName));
+            battlers[1].Send(new PPlayerJoinedPacket(battlers[0].Id, battlers[0].Team.DisplayName));
+            WaitForBattlersResponses();
+            // Send players their parties
+            battlers[0].Send(new PSendPartyPacket(PKnownInfo.Instance.LocalParty));
+            battlers[1].Send(new PSendPartyPacket(PKnownInfo.Instance.RemoteParty));
+            WaitForBattlersResponses();
+
+            battle.Start();
+            WaitForBattlersResponses(); // Wait for switch-ins to be received
+
+            state = ServerState.WaitingForMoves;
+        }
+        
+        void WaitForBattlersResponses()
+        {
+            battlers[0].ResetEvent.WaitOne();
+            battlers[1].ResetEvent.WaitOne();
+        }
+        void BattleEventHandler(INetPacketStream packet)
+        {
+            foreach (Player client in Clients)
+            {
+                switch (packet)
+                {
+                    case PSwitchInPacket sip:
+                        if (client == battlers[1])
+                            sip.LocallyOwned = !sip.LocallyOwned; // Correctly set locally owned for this team
+                        break;
+                }
+                
+                client.Send(packet);
             }
         }
 
@@ -83,7 +136,7 @@ namespace Kermalis.PokemonBattleEngineServer
             Configuration.Backlog = 50;
             Configuration.Host = host;
             Configuration.Port = 8888;
-            Configuration.MaximumNumberOfConnections = 3; // Spectators allowed
+            Configuration.MaximumNumberOfConnections = 2; // Spectators allowed but not yet
             Configuration.BufferSize = 1024;
             Configuration.Blocking = true;
         }
@@ -95,6 +148,7 @@ namespace Kermalis.PokemonBattleEngineServer
         protected override void OnClientConnected(Player client)
         {
             Console.WriteLine($"Client connected ({client.Id})");
+            // TODO: If both players connect while the server is resetting
             if (state == ServerState.WaitingForPlayers && Clients.Count() == 2)
                 PlayersFound();
         }

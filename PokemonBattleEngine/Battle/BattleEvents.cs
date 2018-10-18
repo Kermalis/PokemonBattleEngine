@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Network;
 using System;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -10,21 +11,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public delegate void BattleEvent(INetPacketStream packet);
         public event BattleEvent NewEvent;
 
+        void PrintSwitchIn(PPokemon pkmn)
+        {
+            NewEvent?.Invoke(new PSwitchInPacket(pkmn));
+        }
         void PrintMoveUsed()
         {
-            NewEvent?.Invoke(new PUsedMovePacket(efCurAttacker.Pokemon, efCurMove));
+            var pkmn = efCurAttacker.Mon;
+            NewEvent?.Invoke(new PUsedMovePacket(pkmn.Id, efCurMove, pkmn.Shell.Moves.Contains(efCurMove)));
         }
         void PrintMiss()
         {
-            Console.WriteLine("{0}'s attack missed!", efCurAttacker.Pokemon.Shell.Species);
+            Console.WriteLine("{0}'s attack missed!", efCurAttacker.Mon.Shell.Species);
         }
         void PrintFlinch()
         {
-            Console.WriteLine("{0} flinched!", efCurAttacker.Pokemon.Shell.Species);
+            Console.WriteLine("{0} flinched!", efCurAttacker.Mon.Shell.Species);
         }
         void PrintDamage(PPokemon pkmn, int amt)
         {
-            double percentage = (double)amt / efCurDefender.Pokemon.MaxHP;
+            double percentage = (double)amt / efCurDefender.Mon.MaxHP;
             Console.WriteLine("{0} took {1} ({2:P2}) damage!", pkmn.Shell.Species, amt, percentage);
         }
         void PrintEffectiveness()
@@ -39,7 +45,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
                 return;
 
-            Console.WriteLine(message, efCurDefender.Pokemon.Shell.Species);
+            Console.WriteLine(message, efCurDefender.Mon.Shell.Species);
         }
         void PrintFaint(PPokemon pkmn)
         {
@@ -107,6 +113,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 default: throw new ArgumentOutOfRangeException(nameof(status), $"Invalid status cancelling move: {status}");
             }
             Console.WriteLine("{0} {1}!", pkmn.Shell.Species, description);
+        }
+
+
+
+        public static void ConsoleBattleEventHandler(INetPacketStream packet)
+        {
+            switch (packet)
+            {
+                case PSwitchInPacket sip:
+                    Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance[sip.PokemonId].Shell.Species, PKnownInfo.Instance.DisplayName(sip.LocallyOwned));
+                    break;
+                case PUsedMovePacket ump:
+                    Console.WriteLine("{0} used {1}!", PKnownInfo.Instance[ump.PokemonId].Shell.Species, ump.Move);
+                    break;
+            }
         }
     }
 }

@@ -1,98 +1,82 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    public sealed class PTeamShell
-    {
-        public string PlayerName;
-        public List<PPokemonShell> Pokemon = new List<PPokemonShell>(PConstants.MaxPokemon);
-
-        public byte[] ToBytes()
-        {
-            var bytes = new List<byte>();
-
-            byte[] playerNameBytes = Encoding.ASCII.GetBytes(PlayerName);
-            bytes.Add((byte)playerNameBytes.Length);
-            bytes.AddRange(playerNameBytes);
-
-            var numPkmn = Math.Min(PConstants.MaxPokemon, Pokemon.Count);
-            bytes.Add((byte)numPkmn);
-            for (int i = 0; i < numPkmn; i++)
-                bytes.AddRange(Pokemon[i].ToBytes());
-
-            return bytes.ToArray();
-        }
-        public static PTeamShell FromBytes(BinaryReader r)
-        {
-            var team = new PTeamShell { PlayerName = Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte())) };
-            var numPkmn = Math.Min(PConstants.MaxPokemon, r.ReadByte());
-            for (int i = 0; i < numPkmn; i++)
-                team.Pokemon.Add(PPokemonShell.FromBytes(r));
-            return team;
-        }
-    }
-
     public sealed partial class PBattle
     {
-        // TODO: get rid of this
         private class PBattlePokemon
         {
-            public readonly PPokemon Pokemon;
+            public readonly PPokemon Mon;
             public readonly PTeam Team;
 
             public PMove PreviousMove, SelectedMove;
             public PTarget SelectedTarget;
 
-            public PBattlePokemon(PPokemon pokemon, PTeam team)
+            public PBattlePokemon(PPokemon pkmn, PTeam team)
             {
-                Pokemon = pokemon;
+                Mon = pkmn;
                 Team = team;
             }
         }
         private class PTeam
         {
-            public readonly PBattlePokemon[] Pokemon;
-            public readonly string PlayerName;
+            public readonly PBattlePokemon[] Party;
 
-            public PBattlePokemon CurrentMon;
+            public PBattlePokemon CurPokemon;
             public bool MonFaintedLastTurn; // Retaliate
 
             public PTeam(PTeamShell data)
             {
-                PlayerName = data.PlayerName;
-                int min = Math.Min(data.Pokemon.Count, PConstants.MaxPokemon);
-                Pokemon = new PBattlePokemon[min];
+                int min = Math.Min(data.Party.Count, PConstants.MaxPokemon);
+                Party = new PBattlePokemon[min];
                 for (int i = 0; i < min; i++)
-                    Pokemon[i] = new PBattlePokemon(new PPokemon(data.Pokemon[i]), this);
-                CurrentMon = Pokemon[0];
+                {
+                    var pkmn = new PPokemon(Guid.Empty, data.Party[i]);
+                    Party[i] = new PBattlePokemon(pkmn, this);
+                }
+                CurPokemon = Party[0];
             }
         }
 
+        // TODO: Set this length to be 2 * pkmnPerTeam
         PBattlePokemon[] battlers;
         byte[] turnOrder;
         PTeam[] teams = new PTeam[2];
 
-        public void Start(PTeamShell td0, PTeamShell td1)
+        public PBattle(PTeamShell td0, PTeamShell td1)
         {
+            PKnownInfo.Instance.Clear();
+
             teams[0] = new PTeam(td0);
+            PKnownInfo.Instance.LocalDisplayName = td0.DisplayName;
+            // Team 0 pokemon get (LocallyOwned = true) here
+            PKnownInfo.Instance.SetPartyPokemon(teams[0].Party.Select(p => p.Mon), true);
+
             teams[1] = new PTeam(td1);
-            // Needs work because two teams with 2 pokemon each in a single battle will inflate this
-            battlers = teams[0].Pokemon.Concat(teams[1].Pokemon).ToArray();
+            PKnownInfo.Instance.RemoteDisplayName = td1.DisplayName;
+            // Team 1 pokemon get (LocallyOwned = false) here
+            PKnownInfo.Instance.SetPartyPokemon(teams[1].Party.Select(p => p.Mon), false);
+
+            // TODO: Needs work because two teams with 2 pokemon each in a single battle will inflate this
+            battlers = teams[0].Party.Concat(teams[1].Party).ToArray();
             turnOrder = new byte[battlers.Length];
         }
-
-        // Debugging
-        internal PPokemon GetBattler(int index) => battlers[index].Pokemon;
+        public void Start()
+        {
+            // TODO:
+            // Properly switch in (take into account double battles for example)
+            // Set CurPokemon here
+            // Temporary:
+            foreach (PBattlePokemon battler in battlers)
+                PrintSwitchIn(battler.Mon);
+        }
 
         public void SelectMove(int team, int pkmn, int move, PTarget target)
         {
-            teams[team].Pokemon[pkmn].SelectedMove = teams[team].Pokemon[pkmn].Pokemon.Shell.Moves[move];
-            teams[team].Pokemon[pkmn].SelectedTarget = target; // TODO: Validate
+            teams[team].Party[pkmn].SelectedMove = teams[team].Party[pkmn].Mon.Shell.Moves[move];
+            teams[team].Party[pkmn].SelectedTarget = target; // TODO: Validate
 
             if (AllMonSelectedMoves())
             {
@@ -118,17 +102,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void ClearTemporaryStuff()
         {
-            foreach (var b in battlers)
+            foreach (PBattlePokemon battler in battlers)
             {
-                b.Pokemon.Status2 &= PStatus2.Flinching;
+                battler.Mon.Status2 &= PStatus2.Flinching;
             }
         }
         void RunMovesInOrder()
         {
             for (int i = 0; i < turnOrder.Length; i++)
             {
-                var pkmn = battlers[turnOrder[i]];
-                if (pkmn.Pokemon.HP < 1)
+                PBattlePokemon pkmn = battlers[turnOrder[i]];
+                if (pkmn.Mon.HP < 1)
                     continue;
                 UseMove(pkmn);
                 pkmn.PreviousMove = efCurMove;
@@ -136,10 +120,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void TurnEnded()
         {
-            foreach (var b in battlers)
+            foreach (PBattlePokemon battler in battlers)
             {
-                b.SelectedMove = PMove.None;
-                DoTurnEndedEffects(b);
+                battler.SelectedMove = PMove.None;
+                DoTurnEndedEffects(battler);
             }
         }
     }

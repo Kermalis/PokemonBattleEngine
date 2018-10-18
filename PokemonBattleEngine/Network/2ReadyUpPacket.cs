@@ -3,13 +3,13 @@ using System;
 
 namespace Kermalis.PokemonBattleEngine.Network
 {
-    public sealed class PMatchCancelledPacket : INetPacketStream
+    public sealed class PReadyUpPacket : INetPacketStream
     {
         public const int Code = 0x2;
         public byte[] Buffer => new byte[] { 4, 0, 0, 0, 2, 0, 0, 0 };
 
-        public PMatchCancelledPacket() { }
-        public PMatchCancelledPacket(byte[] buffer) { }
+        public PReadyUpPacket() { }
+        public PReadyUpPacket(byte[] buffer) { }
 
         public int Size => throw new NotImplementedException();
         public long Position => throw new NotImplementedException();

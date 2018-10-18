@@ -146,6 +146,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Swarm,
         ThickFat,
         Torrent,
+        MAX,
     }
     public enum PSpecies : ushort
     {

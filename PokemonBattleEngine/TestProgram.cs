@@ -1,12 +1,10 @@
-﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Network;
 using System;
 
 namespace Kermalis.PokemonBattleEngine
 {
-    public class TestProgram
+    class TestProgram
     {
         static readonly PPokemonShell
             pikachu = new PPokemonShell
@@ -46,44 +44,43 @@ namespace Kermalis.PokemonBattleEngine
         public static void Main(string[] args)
         {
             Console.WriteLine("Pokémon Battle Engine Test");
+            Console.WriteLine();
 
             PTeamShell team1 = new PTeamShell
             {
-                PlayerName = "Sasha",
-                Pokemon = { azumarill }
+                DisplayName = "Sasha",
+                Party = { azumarill }
             };
-
             PTeamShell team2 = new PTeamShell
             {
-                PlayerName = "Jess",
-                Pokemon = { cresselia }
+                DisplayName = "Jess",
+                Party = { cresselia }
             };
 
             try
             {
-                PPokemonShell.ValidateMany(team1.Pokemon);
+                PPokemonShell.ValidateMany(team1.Party);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                Console.WriteLine($"Invalid {e.ParamName} in Team 0 Pokémon Shell");
+            }
+            try
+            {
+                PPokemonShell.ValidateMany(team2.Party);
             }
             catch (ArgumentOutOfRangeException e)
             {
                 Console.WriteLine($"Invalid {e.ParamName} in Team 1 Pokémon Shell");
             }
-            try
-            {
-                PPokemonShell.ValidateMany(team2.Pokemon);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine($"Invalid {e.ParamName} in Team 2 Pokémon Shell");
-            }
 
-            PBattle battle = new PBattle();
-            battle.NewEvent += BattleEventHandler;
-            battle.Start(team1, team2);
-            PPokemon p1 = battle.GetBattler(0);
-            PPokemon p2 = battle.GetBattler(1);
+            PBattle battle = new PBattle(team1, team2);
+            battle.NewEvent += PBattle.ConsoleBattleEventHandler;
+            battle.Start();
+            PPokemon p1 = PKnownInfo.Instance.LocalParty[0];
+            PPokemon p2 = PKnownInfo.Instance.RemoteParty[0];
 
             Console.WriteLine();
-            Console.WriteLine("Battle starting.");
             Console.WriteLine(p1);
             Console.WriteLine(p2);
 
@@ -98,16 +95,6 @@ namespace Kermalis.PokemonBattleEngine
                 Console.WriteLine(p2);
             }
             Console.ReadKey();
-        }
-
-        static void BattleEventHandler(INetPacketStream packet)
-        {
-            switch (packet)
-            {
-                case PUsedMovePacket ump:
-                    Console.WriteLine("{0} used {1}!", ump.Pokemon.Shell.Species, ump.Move);
-                    break;
-            }
         }
     }
 }

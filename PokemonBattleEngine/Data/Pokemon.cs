@@ -1,131 +1,15 @@
-﻿using Kermalis.PokemonBattleEngine.Util;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PPokemonShell
+    public sealed class PPokemon
     {
-        public PSpecies Species;
-        public byte Level = PConstants.MaxLevel, Friendship = byte.MaxValue;
-        public PAbility Ability;
-        public PNature Nature = (PNature)PUtils.RNG.Next(0, (int)PNature.MAX);
-        public PGender Gender = PGender.Genderless;
-        public PItem Item;
-        public byte[] EVs = new byte[6], IVs = new byte[6];
-        public PMove[] Moves = new PMove[PConstants.NumMoves];
-
-        public static void ValidateMany(IEnumerable<PPokemonShell> shells)
-        {
-            var arr = shells.ToArray();
-            for (int i = 0; i < arr.Length; i++)
-            {
-                arr[i].Validate();
-            }
-        }
-        public void Validate()
-        {
-            // Validate Species
-            PPokemonData pData;
-            try
-            {
-                pData = PPokemonData.Data[Species];
-            }
-            catch
-            {
-                throw new ArgumentOutOfRangeException(nameof(Species));
-            }
-
-            // Validate Level
-            if (Level == 0 || Level > PConstants.MaxLevel)
-                throw new ArgumentOutOfRangeException(nameof(Level));
-
-            // Validate Ability
-            if (!pData.HasAbility(Ability))
-                throw new ArgumentOutOfRangeException(nameof(Ability));
-
-            // Validate Nature
-            if (Nature >= PNature.MAX)
-                throw new ArgumentOutOfRangeException(nameof(Nature));
-
-            // Validate Gender
-            if ((Gender != PGender.Male && Gender != PGender.Female && Gender != PGender.Genderless)
-                || (Gender == PGender.Male && (pData.GenderRatio == PGender.Female || pData.GenderRatio == PGender.Genderless))
-                || (Gender == PGender.Female && (pData.GenderRatio == PGender.Male || pData.GenderRatio == PGender.Genderless))
-                || (Gender == PGender.Genderless && pData.GenderRatio != PGender.Genderless)
-                )
-                throw new ArgumentOutOfRangeException(nameof(Gender));
-
-            // Validate Item
-            if (Item != PItem.NoItem)
-            {
-                try
-                {
-                    var iData = PItemData.Data[Item];
-                }
-                catch
-                {
-                    throw new ArgumentOutOfRangeException(nameof(Item));
-                }
-            }
-
-            // Validate EVs
-            if (EVs == null || EVs.Length != 6 || EVs.Select(e => (int)e).Sum() > 510)
-                throw new ArgumentOutOfRangeException(nameof(EVs));
-            // Validate IVs
-            if (IVs == null || IVs.Length != 6 || IVs.Any(e => e > 31))
-                throw new ArgumentOutOfRangeException(nameof(IVs));
-
-            // Validate Moves
-            IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).Union(pData.OtherMoves);
-            if (Moves == null || Moves.Length != PConstants.NumMoves // Illegal array
-                || Moves.Any(m => m != PMove.None && !legalMoves.Contains(m)) // Has a move not in the legal list
-                || Moves.Any(m => Moves.Count(m2 => m != PMove.None && m == m2) > 1) // Has a duplicate move
-                || Moves.All(m => m == PMove.None) // Has no moves
-                )
-                throw new ArgumentOutOfRangeException(nameof(Moves));
-        }
-
-        internal byte[] ToBytes()
-        {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes((ushort)Species));
-            bytes.Add(Level);
-            bytes.Add(Friendship);
-            bytes.Add((byte)Ability);
-            bytes.Add((byte)Nature);
-            bytes.Add((byte)Gender);
-            bytes.AddRange(BitConverter.GetBytes((ushort)Item));
-            bytes.AddRange(EVs);
-            bytes.AddRange(IVs);
-            for (int i = 0; i < PConstants.NumMoves; i++)
-                bytes.AddRange(BitConverter.GetBytes((ushort)Moves[i]));
-            return bytes.ToArray();
-        }
-        internal static PPokemonShell FromBytes(BinaryReader r)
-        {
-            var pkmn = new PPokemonShell
-            {
-                Species = (PSpecies)r.ReadUInt16(),
-                Level = r.ReadByte(),
-                Friendship = r.ReadByte(),
-                Ability = (PAbility)r.ReadByte(),
-                Nature = (PNature)r.ReadByte(),
-                Gender = (PGender)r.ReadByte(),
-                Item = (PItem)r.ReadUInt16(),
-                EVs = r.ReadBytes(6),
-                IVs = r.ReadBytes(6)
-            };
-            for (int j = 0; j < PConstants.NumMoves; j++)
-                pkmn.Moves[j] = (PMove)r.ReadUInt16();
-            return pkmn;
-        }
-    }
-
-    public class PPokemon
-    {
+        public readonly Guid Id;
+        // Not included in ToBytes() or FromBytes(). Set manually by the host and by PKnownInfo
+        // True indicates this pokemon is owned by the client or team 0 in the eyes of the host/spectators
+        public bool LocallyOwned;
         public readonly PPokemonShell Shell;
 
         public PStatus Status;
@@ -135,11 +19,33 @@ namespace Kermalis.PokemonBattleEngine.Data
         public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
         public byte[] PP = new byte[PConstants.NumMoves];
 
-        public PPokemon(PPokemonShell shell)
+        // Pass in Guid.Empty to generate a fresh id
+        // LocallyOwned will need to be set manually by the host
+        public PPokemon(Guid id, PPokemonShell shell)
         {
             Shell = shell;
+            if (id == Guid.Empty)
+                Id = Guid.NewGuid();
+            else
+                Id = id;
             CalculateStats();
             HP = MaxHP;
+        }
+        // This constructor is to define an unknown remote pokemon
+        // LocallyOwned is set to false here
+        public PPokemon(Guid id, PSpecies species, byte level, PGender gender)
+        {
+            Id = id;
+            LocallyOwned = false;
+            Shell = new PPokemonShell
+            {
+                Species = species,
+                Level = level,
+                Gender = gender,
+                Item = PItem.MAX,
+                Nature = PNature.MAX,
+                Ability = PAbility.MAX
+            };
         }
 
         static readonly Dictionary<PNature, sbyte[]> natureStatTable = new Dictionary<PNature, sbyte[]>
@@ -195,6 +101,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal byte[] ToBytes()
         {
             var bytes = new List<byte>();
+            bytes.AddRange(Id.ToByteArray());
             bytes.AddRange(Shell.ToBytes());
             bytes.Add((byte)Status);
             bytes.AddRange(BitConverter.GetBytes((uint)Status2));
@@ -211,7 +118,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         internal static PPokemon FromBytes(BinaryReader r)
         {
-            var pkmn = new PPokemon(PPokemonShell.FromBytes(r))
+            var pkmn = new PPokemon(new Guid(r.ReadBytes(16)), PPokemonShell.FromBytes(r))
             {
                 Status = (PStatus)r.ReadByte(),
                 Status2 = (PStatus2)r.ReadUInt32(),
@@ -228,6 +135,30 @@ namespace Kermalis.PokemonBattleEngine.Data
             return pkmn;
         }
 
-        public override string ToString() => $"{Shell.Species} Lv.{Shell.Level} {HP}/{MaxHP} HP {Status} {Shell.Item} {Shell.Nature} {Shell.Gender} {Shell.Ability}";
+        public override bool Equals(object obj)
+        {
+            if (obj is PPokemon other)
+                return other.Id.Equals(Id);
+            return base.Equals(obj);
+        }
+        public override int GetHashCode() => Id.GetHashCode();
+        public override string ToString()
+        {
+            string str = $"{Shell.Species} Lv.{Shell.Level} {HP}/{MaxHP} HP {Status}";
+
+            string item = Shell.Item >= PItem.MAX ? "???" : Shell.Item.ToString();
+            str += $" {item}";
+
+            string nature = Shell.Nature >= PNature.MAX ? "???" : Shell.Nature.ToString();
+            if (nature != "???") // You will never know the nature of an opponent
+                str += $" {nature}";
+
+            str += $" {Shell.Gender}";
+
+            string ability = Shell.Ability >= PAbility.MAX ? "???" : Shell.Ability.ToString();
+            str += $" {ability}";
+
+            return str;
+        }
     }
 }
