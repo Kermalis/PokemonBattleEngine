@@ -1,36 +1,38 @@
 ﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Network
 {
-    public sealed class PRequestTeamPacket : INetPacketStream
+    public sealed class PUsedMovePacket : INetPacketStream
     {
-        public const int Code = 0x1;
+        public const int Code = 0x3;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 
-        public readonly PTeamShell Team;
+        public readonly PPokemon Pokemon;
+        public readonly PMove Move;
 
-        public PRequestTeamPacket(PTeamShell team)
+        public PUsedMovePacket(PPokemon pkmn, PMove move)
         {
-            Team = team ?? throw new ArgumentNullException(nameof(team));
+            Pokemon = pkmn ?? throw new ArgumentNullException(nameof(pkmn));
+            Move = move;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(Team.ToBytes());
+            bytes.AddRange(Pokemon.ToBytes());
+            bytes.AddRange(BitConverter.GetBytes((ushort)Move));
             buf = BitConverter.GetBytes(bytes.Count).Concat(bytes).ToArray();
         }
-        public PRequestTeamPacket(byte[] buffer)
+        public PUsedMovePacket(byte[] buffer)
         {
             using (var r = new BinaryReader(new MemoryStream(buf = buffer)))
             {
                 r.ReadInt32(); // Skip Code
-                Team = PTeamShell.FromBytes(r);
+                Pokemon = PPokemon.FromBytes(r);
+                Move = (PMove)r.ReadUInt16();
             }
         }
 

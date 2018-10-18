@@ -1,5 +1,7 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
+﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Network;
 using System;
 
 namespace Kermalis.PokemonBattleEngine
@@ -74,7 +76,9 @@ namespace Kermalis.PokemonBattleEngine
                 Console.WriteLine($"Invalid {e.ParamName} in Team 2 Pokémon Shell");
             }
 
-            PBattle battle = new PBattle(team1, team2);
+            PBattle battle = new PBattle();
+            battle.NewEvent += BattleEventHandler;
+            battle.Start(team1, team2);
             PPokemon p1 = battle.GetBattler(0);
             PPokemon p2 = battle.GetBattler(1);
 
@@ -94,6 +98,16 @@ namespace Kermalis.PokemonBattleEngine
                 Console.WriteLine(p2);
             }
             Console.ReadKey();
+        }
+
+        static void BattleEventHandler(INetPacketStream packet)
+        {
+            switch (packet)
+            {
+                case PUsedMovePacket ump:
+                    Console.WriteLine("{0} used {1}!", ump.Pokemon.Shell.Species, ump.Move);
+                    break;
+            }
         }
     }
 }

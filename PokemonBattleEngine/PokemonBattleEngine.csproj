@@ -10,18 +10,22 @@
     <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath></OutputPath>
+  <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath></OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ether.Network" Version="3.0.0" />
+    <Compile Remove="Dependencies\**" />
+    <EmbeddedResource Remove="Dependencies\**" />
+    <None Remove="Dependencies\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Ether.Network">
+      <HintPath>Dependencies\Ether.Network.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>  
 
 </Project>

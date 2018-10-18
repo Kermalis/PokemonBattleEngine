@@ -13,5 +13,8 @@ The engine only emulates as if it were Pokémon B2W2 versions, so there will not 
 * Turn order
 * Double/triple/rotation battles
 * Add most moves, items, pokemon, statuses
-* Battle event handler
 * Anti cheat
+
+----
+# PokemonBattleEngine Uses:
+* [Ether.Network](https://github.com/Eastrall/Ether.Network)

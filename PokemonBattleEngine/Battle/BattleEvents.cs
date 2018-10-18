@@ -1,13 +1,18 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Network;
 using System;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBattle
     {
+        public delegate void BattleEvent(INetPacketStream packet);
+        public event BattleEvent NewEvent;
+
         void PrintMoveUsed()
         {
-            Console.WriteLine("{0} used {1}!", efCurAttacker.Pokemon.Shell.Species, efCurMove);
+            NewEvent?.Invoke(new PUsedMovePacket(efCurAttacker.Pokemon, efCurMove));
         }
         void PrintMiss()
         {

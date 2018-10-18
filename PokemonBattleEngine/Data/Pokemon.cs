@@ -114,12 +114,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Ability = (PAbility)r.ReadByte(),
                 Nature = (PNature)r.ReadByte(),
                 Gender = (PGender)r.ReadByte(),
-                Item = (PItem)r.ReadUInt16()
+                Item = (PItem)r.ReadUInt16(),
+                EVs = r.ReadBytes(6),
+                IVs = r.ReadBytes(6)
             };
-            for (int j = 0; j < 6; j++)
-                pkmn.EVs[j] = r.ReadByte();
-            for (int j = 0; j < 6; j++)
-                pkmn.IVs[j] = r.ReadByte();
             for (int j = 0; j < PConstants.NumMoves; j++)
                 pkmn.Moves[j] = (PMove)r.ReadUInt16();
             return pkmn;
@@ -192,6 +190,42 @@ namespace Kermalis.PokemonBattleEngine.Data
             SpAttack = OtherStat(pData.SpAttack);
             SpDefense = OtherStat(pData.SpDefense);
             Speed = OtherStat(pData.Speed);
+        }
+
+        internal byte[] ToBytes()
+        {
+            var bytes = new List<byte>();
+            bytes.AddRange(Shell.ToBytes());
+            bytes.Add((byte)Status);
+            bytes.AddRange(BitConverter.GetBytes((uint)Status2));
+            bytes.AddRange(BitConverter.GetBytes(HP));
+            bytes.Add((byte)AttackChange);
+            bytes.Add((byte)DefenseChange);
+            bytes.Add((byte)SpAttackChange);
+            bytes.Add((byte)SpDefenseChange);
+            bytes.Add((byte)SpeedChange);
+            bytes.Add((byte)AccuracyChange);
+            bytes.Add((byte)EvasionChange);
+            bytes.AddRange(PP);
+            return bytes.ToArray();
+        }
+        internal static PPokemon FromBytes(BinaryReader r)
+        {
+            var pkmn = new PPokemon(PPokemonShell.FromBytes(r))
+            {
+                Status = (PStatus)r.ReadByte(),
+                Status2 = (PStatus2)r.ReadUInt32(),
+                HP = r.ReadUInt16(),
+                AttackChange = r.ReadSByte(),
+                DefenseChange = r.ReadSByte(),
+                SpAttackChange = r.ReadSByte(),
+                SpDefenseChange = r.ReadSByte(),
+                SpeedChange = r.ReadSByte(),
+                AccuracyChange = r.ReadSByte(),
+                EvasionChange = r.ReadSByte(),
+                PP = r.ReadBytes(PConstants.NumMoves)
+            };
+            return pkmn;
         }
 
         public override string ToString() => $"{Shell.Species} Lv.{Shell.Level} {HP}/{MaxHP} HP {Status} {Shell.Item} {Shell.Nature} {Shell.Gender} {Shell.Ability}";

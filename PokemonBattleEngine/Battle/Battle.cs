@@ -75,9 +75,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         PBattlePokemon[] battlers;
         byte[] turnOrder;
-        readonly PTeam[] teams = new PTeam[2];
+        PTeam[] teams = new PTeam[2];
 
-        public PBattle(PTeamShell td0, PTeamShell td1)
+        public void Start(PTeamShell td0, PTeamShell td1)
         {
             teams[0] = new PTeam(td0);
             teams[1] = new PTeam(td1);
