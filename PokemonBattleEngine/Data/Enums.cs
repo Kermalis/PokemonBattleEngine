@@ -20,9 +20,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         Defense,
         SpAttack,
         SpDefense,
-        Speed,
-        Accuracy,
-        Evasion
+        Speed, // TODO
+        Accuracy, // TODO
+        Evasion // TODO
     }
     public enum PTarget : byte
     {
@@ -38,25 +38,25 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PStatus : byte
     {
         NoStatus,
-        Asleep,
-        BadlyPoisoned,
-        Burned,
+        Asleep, // TODO
+        BadlyPoisoned, // TODO
+        Burned, // TODO
         Frozen,
         Paralyzed,
-        Poisoned
+        Poisoned // TODO
     }
     [Flags]
     public enum PStatus2 : uint
     {
         None,
-        Confused = 1 << 0,
-        Cursed = 1 << 1,
+        Confused = 1 << 0, // TODO
+        Cursed = 1 << 1, // TODO
         Flinching = 1 << 2,
-        FocusEnergy = 1 << 3,
-        Infatuated = 1 << 4,
-        Tormented = 1 << 5,
-        Underground = 1 << 6,
-        Underwater = 1 << 7,
+        FocusEnergy = 1 << 3, // TODO
+        Infatuated = 1 << 4, // TODO
+        Tormented = 1 << 5, // TODO
+        Underground = 1 << 6, // TODO
+        Underwater = 1 << 7, // TODO
     }
     public enum PType : byte
     {
@@ -110,12 +110,12 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PItem : ushort
     {
         NoItem,
-        ChoiceBand,
+        ChoiceBand, // TODO: Lock move
         DeepSeaScale,
         DeepSeaTooth,
-        Leftovers,
+        Leftovers, // TODO
         LightBall,
-        MetalPowder,
+        MetalPowder, // TODO
         SoulDew,
         ThickClub,
         MAX
@@ -123,26 +123,26 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PAbility : byte
     {
         None, // Only used when an ability is removed
-        BadDreams,
-        BattleArmor,
+        BadDreams, // TODO
+        BattleArmor, // TODO
         Blaze,
         Guts,
         HugePower,
-        Hustle,
-        Imposter,
-        Levitate,
-        LightningRod,
-        Limber,
+        Hustle, // TODO: Accuracy
+        Imposter, // TODO
+        Levitate, // TODO
+        LightningRod, // TODO
+        Limber, // TODO
         MarvelScale,
-        Minus,
+        Minus, // TODO
         Overgrow,
-        Plus,
+        Plus, // TODO
         PurePower,
-        Rattled,
-        RockHead,
-        SapSipper,
-        ShellArmor,
-        Static,
+        Rattled, // TODO
+        RockHead, // TODO
+        SapSipper, // TODO
+        ShellArmor, // TODO
+        Static, // TODO
         Swarm,
         ThickFat,
         Torrent,
@@ -151,16 +151,16 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PSpecies : ushort
     {
         None,
-        Pikachu = 25,
-        Cubone = 104,
-        Marowak,
-        Ditto = 132,
-        Azumarill = 184,
-        Clamperl = 366,
-        Latias = 380,
-        Latios,
-        Cresselia = 488,
-        Darkrai = 491
+        Pikachu = 25, // TODO
+        Cubone = 104, // TODO
+        Marowak, // TODO
+        Ditto = 132, // TODO
+        Azumarill = 184, // TODO
+        Clamperl = 366, // TODO
+        Latias = 380, // TODO
+        Latios, // TODO
+        Cresselia = 488, // TODO
+        Darkrai = 491 // TODO
     }
     public enum PMoveCategory : byte
     {
@@ -192,9 +192,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeLower_SPDEF_By1,
         Hit__MaybeParalyze,
         Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
-        Moonlight,
-        Toxic,
-        Transform,
+        Moonlight, // TODO
+        Toxic, // TODO
+        Transform, // TODO
     }
     public enum PMove : ushort
     {
@@ -205,15 +205,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         HydroPump,
         IceBeam,
         IcePunch,
-        Moonlight,
+        Moonlight, // TODO
         Psychic,
-        Retaliate,
+        Retaliate, // TODO
         Return,
         ShellSmash,
         Tackle,
         Thunder,
-        Toxic,
-        Transform,
+        Toxic, // TODO
+        Transform, // TODO
         Waterfall,
     }
 }

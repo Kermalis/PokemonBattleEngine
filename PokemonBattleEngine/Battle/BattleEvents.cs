@@ -17,16 +17,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void PrintMoveUsed()
         {
-            var pkmn = efCurAttacker.Mon;
-            NewEvent?.Invoke(new PPkmnMovePacket(pkmn.Id, efCurMove, pkmn.Shell.Moves.Contains(efCurMove)));
+            var pkmn = bAttacker.Mon;
+            NewEvent?.Invoke(new PPkmnMovePacket(pkmn.Id, bCurMove, pkmn.Shell.Moves.Contains(bCurMove)));
         }
         void PrintMiss()
         {
-            Console.WriteLine("{0}'s attack missed!", efCurAttacker.Mon.Shell.Species);
+            Console.WriteLine("{0}'s attack missed!", bAttacker.Mon.Shell.Species);
         }
         void PrintFlinch()
         {
-            Console.WriteLine("{0} flinched!", efCurAttacker.Mon.Shell.Species);
+            Console.WriteLine("{0} flinched!", bAttacker.Mon.Shell.Species);
         }
         void PrintDamage(PPokemon pkmn, ushort amt)
         {
@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void PrintEffectiveness()
         {
-            NewEvent?.Invoke(new PAtkEffectivenessPacket(efCurDefender.Mon.Id, efEffectiveness));
+            NewEvent?.Invoke(new PAtkEffectivenessPacket(bDefender.Mon.Id, bEffectiveness));
         }
         void PrintFaint(PPokemon pkmn)
         {
@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void PrintCrit()
         {
-            if (efLandedCrit)
+            if (bLandedCrit)
                 Console.WriteLine("A critical hit!");
         }
         void PrintStatChange(PPokemon pkmn, PStat stat, sbyte change, bool tooMuch)

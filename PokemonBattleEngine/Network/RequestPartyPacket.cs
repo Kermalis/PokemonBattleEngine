@@ -5,7 +5,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PRequestPartyPacket : INetPacketStream
     {
-        public const int Code = 3;
+        public const int Code = 0x3;
         public byte[] Buffer => new byte[] { 4, 0, 0, 0, 3, 0, 0, 0 };
 
         public PRequestPartyPacket() { }

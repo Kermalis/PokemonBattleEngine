@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PSubmitActionsPacket : INetPacketStream
     {
-        public const int Code = 8;
+        public const int Code = 0x8;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 
@@ -18,9 +18,9 @@ namespace Kermalis.PokemonBattleEngine.Network
             // TODO: Action (switch, forfeit, move)
             public readonly byte Param;
 
-            public Action(Guid id, byte param)
+            public Action(Guid pkmnId, byte param)
             {
-                PokemonId = id;
+                PokemonId = pkmnId;
                 Param = param;
             }
 

@@ -8,16 +8,16 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PPkmnDamagedPacket : INetPacketStream
     {
-        public const int Code = 10;
+        public const int Code = 0xA;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 
         public readonly Guid PokemonId;
         public readonly ushort Damage;
 
-        public PPkmnDamagedPacket(Guid id, ushort dmg)
+        public PPkmnDamagedPacket(Guid pkmnId, ushort dmg)
         {
-            PokemonId = id;
+            PokemonId = pkmnId;
             Damage = dmg;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));

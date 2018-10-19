@@ -5,7 +5,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PMatchCancelledPacket : INetPacketStream
     {
-        public const int Code = 2;
+        public const int Code = 0x2;
         public byte[] Buffer => new byte[] { 4, 0, 0, 0, 2, 0, 0, 0 };
 
         public PMatchCancelledPacket() { }

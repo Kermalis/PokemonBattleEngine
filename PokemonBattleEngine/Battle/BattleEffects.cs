@@ -6,11 +6,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBattle
     {
-        PBattlePokemon efCurAttacker, efCurDefender;
-        PMove efCurMove;
-        ushort efDamage;
-        double efEffectiveness, efDamageMultiplier;
-        bool efLandedCrit;
+        PBattlePokemon bAttacker, bDefender;
+        PMove bCurMove;
+        ushort bDamage;
+        double bEffectiveness, bDamageMultiplier;
+        bool bLandedCrit;
 
         void DoTurnEndedEffects(PBattlePokemon battler)
         {
@@ -19,15 +19,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void UseMove(PBattlePokemon attacker)
         {
-            efCurAttacker = attacker;
+            bAttacker = attacker;
             // TODO: Target
-            efCurDefender = attacker == battlers[0] ? battlers[1] : battlers[0]; // Temporary
-            efCurMove = attacker.SelectedMove;
-            efDamage = 0;
-            efEffectiveness = efDamageMultiplier = 1;
-            efLandedCrit = false;
+            bDefender = attacker == battlers[0] ? battlers[1] : battlers[0]; // Temporary
+            bCurMove = attacker.SelectedMove;
+            bDamage = 0;
+            bEffectiveness = bDamageMultiplier = 1;
+            bLandedCrit = false;
 
-            PMoveData mData = PMoveData.Data[efCurMove];
+            PMoveData mData = PMoveData.Data[bCurMove];
             switch (mData.Effect)
             {
                 case PMoveEffect.Hit: Ef_Hit(); break;
@@ -42,32 +42,32 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Returns true if an attack gets cancelled
         bool AttackCancelCheck()
         {
-            if (efCurAttacker.Mon.Status2.HasFlag(PStatus2.Flinching))
+            if (bAttacker.Mon.Status2.HasFlag(PStatus2.Flinching))
             {
                 PrintFlinch();
                 return true;
             }
-            else if (efCurAttacker.Mon.Status == PStatus.Frozen)
+            else if (bAttacker.Mon.Status == PStatus.Frozen)
             {
                 // 20% chance to thaw out
                 if (PUtils.ApplyChance(20))
                 {
-                    PrintStatusEnded(efCurAttacker.Mon);
-                    efCurAttacker.Mon.Status = PStatus.NoStatus;
+                    PrintStatusEnded(bAttacker.Mon);
+                    bAttacker.Mon.Status = PStatus.NoStatus;
                     return false;
                 }
                 else
                 {
-                    PrintStatusCancelledMove(efCurAttacker.Mon);
+                    PrintStatusCancelledMove(bAttacker.Mon);
                     return true;
                 }
             }
-            else if (efCurAttacker.Mon.Status == PStatus.Paralyzed)
+            else if (bAttacker.Mon.Status == PStatus.Paralyzed)
             {
                 // 25% chance to be unable to move
                 if (PUtils.ApplyChance(25))
                 {
-                    PrintStatusCancelledMove(efCurAttacker.Mon);
+                    PrintStatusCancelledMove(bAttacker.Mon);
                     return true;
                 }
             }
@@ -76,7 +76,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Returns true if an attack misses
         bool AccuracyCheck()
         {
-            PMoveData mData = PMoveData.Data[efCurMove];
+            PMoveData mData = PMoveData.Data[bCurMove];
             if (mData.Accuracy == 0 // Always-hit moves
                 || PUtils.ApplyChance(mData.Accuracy) // Got lucky and landed a hit
                 )
@@ -86,42 +86,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void DealDamage()
         {
-            PPokemon victim = efCurDefender.Mon;
-            ushort total = (ushort)(efDamage * efEffectiveness * efDamageMultiplier);
+            PPokemon victim = bDefender.Mon;
+            ushort total = (ushort)(bDamage * bEffectiveness * bDamageMultiplier);
             var oldHP = victim.HP;
             victim.HP = (ushort)Math.Max(0, victim.HP - total);
             PrintDamage(victim, (ushort)(oldHP - victim.HP));
         }
-        // Returns false if an attack is ineffective
-        bool TypeCheck()
-        {
-            PPokemonData attackerPData = PPokemonData.Data[efCurAttacker.Mon.Shell.Species];
-            PPokemonData defenderPData = PPokemonData.Data[efCurDefender.Mon.Shell.Species];
-            PMoveData mData = PMoveData.Data[efCurMove];
-
-            // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost
-            if (attackerPData.HasType(mData.Type))
-                efDamageMultiplier *= 1.5;
-
-            efEffectiveness *= PPokemonData.TypeEffectiveness[(int)mData.Type, (int)defenderPData.Type1];
-            // Don't want to halve twice for a mono type
-            if (defenderPData.Type1 != defenderPData.Type2)
-                efEffectiveness *= PPokemonData.TypeEffectiveness[(int)mData.Type, (int)defenderPData.Type2];
-
-            if (efEffectiveness == 0)
-            {
-                PrintEffectiveness();
-                return false;
-            }
-
-            return true;
-        }
         // Returns true if the pokemon fainted
         bool TryFaint()
         {
-            if (efCurDefender.Mon.HP < 1)
+            if (bDefender.Mon.HP < 1)
             {
-                PrintFaint(efCurDefender.Mon);
+                PrintFaint(bDefender.Mon);
                 return true;
             }
             return false;
@@ -165,7 +141,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PrintMoveUsed();
             // PPReduce();
             // CritCheck();
-            efDamage = CalculateDamage(efCurAttacker, efCurDefender, efCurMove);
+            bDamage = CalculateDamage();
             if (!TypeCheck())
                 return false;
             DealDamage();
@@ -181,16 +157,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (!PUtils.ApplyChance(chance))
                 return false;
-            efCurDefender.Mon.Status2 |= PStatus2.Flinching;
+            bDefender.Mon.Status2 |= PStatus2.Flinching;
             return true;
         }
         bool HitAndMaybeApplyStatus(PStatus status, int chance)
         {
             if (!Ef_Hit())
                 return false;
-            if (efCurDefender.Mon.Status != PStatus.NoStatus || !PUtils.ApplyChance(chance))
+            if (bDefender.Mon.Status != PStatus.NoStatus || !PUtils.ApplyChance(chance))
                 return false;
-            if (!ApplyStatusIfPossible(efCurDefender.Mon, status))
+            if (!ApplyStatusIfPossible(bDefender.Mon, status))
                 return false;
             return true;
         }
@@ -208,7 +184,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (!PUtils.ApplyChance(chance))
                 return false;
-            ApplyStatChange(efCurDefender.Mon, stat, change);
+            ApplyStatChange(bDefender.Mon, stat, change);
             return true;
         }
         bool Ef_Hit__MaybeLower_SPDEF_By1(int chance)
@@ -223,7 +199,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             PrintMoveUsed();
             // PPReduce();
-            var pkmn = efCurAttacker.Mon;
+            var pkmn = bAttacker.Mon;
             ApplyStatChange(pkmn, PStat.Defense, -1);
             ApplyStatChange(pkmn, PStat.SpDefense, -1);
             ApplyStatChange(pkmn, PStat.Attack, +2);

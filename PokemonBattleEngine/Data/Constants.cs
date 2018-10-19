@@ -1,6 +1,6 @@
 ﻿namespace Kermalis.PokemonBattleEngine.Data
 {
-    static class PConstants
+    public static class PConstants
     {
         public const byte MaxLevel = 100;
         public const byte NumMoves = 4;

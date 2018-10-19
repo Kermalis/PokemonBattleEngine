@@ -41,7 +41,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             {     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5}, // Water
                                                                                                                                                                         // Attacker
         };
-
         public static readonly Dictionary<PNature, sbyte[]> NatureBoosts = new Dictionary<PNature, sbyte[]>
         {
             //                                Atk   Def SpAtk SpDef   Spd

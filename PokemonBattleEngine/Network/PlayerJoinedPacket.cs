@@ -9,20 +9,20 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PPlayerJoinedPacket : INetPacketStream
     {
-        public const int Code = 1;
+        public const int Code = 0x1;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 
         public readonly Guid PlayerId;
         public readonly string DisplayName;
 
-        public PPlayerJoinedPacket(Guid id, string name)
+        public PPlayerJoinedPacket(Guid playerId, string name)
         {
-            PlayerId = id;
+            PlayerId = playerId;
             DisplayName = name;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(id.ToByteArray());
+            bytes.AddRange(playerId.ToByteArray());
             byte[] nameBytes = Encoding.ASCII.GetBytes(DisplayName);
             bytes.Add((byte)nameBytes.Length);
             bytes.AddRange(nameBytes);

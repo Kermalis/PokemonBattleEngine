@@ -9,7 +9,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PSetPartyPacket : INetPacketStream
     {
-        public const int Code = 5;
+        public const int Code = 0x5;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 

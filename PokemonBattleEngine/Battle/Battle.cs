@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         PTeam[] teams = new PTeam[2];
 
         // Returns null if it doesn't exist
-        PBattlePokemon Pokemon(Guid id) => battlers.SingleOrDefault(p => p.Mon.Id == id);
+        PBattlePokemon Pokemon(Guid pkmnId) => battlers.SingleOrDefault(p => p.Mon.Id == pkmnId);
 
         public PBattle(PTeamShell td0, PTeamShell td1)
         {
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (pkmn.Mon.HP < 1)
                     continue;
                 UseMove(pkmn);
-                pkmn.PreviousMove = efCurMove;
+                pkmn.PreviousMove = bCurMove;
             }
         }
         void TurnEnded()

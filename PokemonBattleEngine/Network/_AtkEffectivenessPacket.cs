@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PAtkEffectivenessPacket : INetPacketStream
     {
-        public const int Code = 11;
+        public const int Code = 0xB;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 

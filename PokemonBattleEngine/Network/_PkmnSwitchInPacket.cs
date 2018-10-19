@@ -9,7 +9,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PPkmnSwitchInPacket : INetPacketStream
     {
-        public const int Code = 6;
+        public const int Code = 0x6;
         public byte[] Buffer => BuildBuffer();
 
         public Guid PokemonId;

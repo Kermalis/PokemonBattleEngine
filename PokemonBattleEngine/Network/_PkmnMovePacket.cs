@@ -9,7 +9,7 @@ namespace Kermalis.PokemonBattleEngine.Network
 {
     public sealed class PPkmnMovePacket : INetPacketStream
     {
-        public const int Code = 9;
+        public const int Code = 0x9;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 
@@ -17,9 +17,9 @@ namespace Kermalis.PokemonBattleEngine.Network
         public readonly PMove Move;
         public readonly bool OwnsMove;
 
-        public PPkmnMovePacket(Guid id, PMove move, bool ownsMove)
+        public PPkmnMovePacket(Guid pkmnId, PMove move, bool ownsMove)
         {
-            PokemonId = id;
+            PokemonId = pkmnId;
             Move = move;
             OwnsMove = ownsMove;
             var bytes = new List<byte>();
