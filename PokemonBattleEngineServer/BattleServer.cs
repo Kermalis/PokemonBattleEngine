@@ -8,16 +8,17 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineServer
 {
-    class BattleServer : NetServer<Player>
+    sealed class BattleServer : NetServer<Player>
     {
         private enum ServerState
         {
             Startup, // Server is starting up
             Resetting, // Server is currently resetting the game
             WaitingForPlayers, // Server is waiting for 2 players to connect
-            WaitingForTeams, // Server is waiting for both players to send their teams
+            WaitingForParties, // Server is waiting for both players to send their party
             StartingMatch, // Server is starting the battle
-            WaitingForMoves, // Server is waiting for players to select moves
+            WaitingForActions, // Server is waiting for players to select actions
+            BattleProcessing, // Battle is running and sending events
         }
         ServerState state = ServerState.Startup;
         Player[] battlers;
@@ -54,19 +55,20 @@ namespace Kermalis.PokemonBattleEngineServer
             Console.WriteLine("Two players connected!");
 
             battlers = new Player[] { Clients.ElementAt(0), Clients.ElementAt(1) };
-            SendTo(battlers, new PReadyUpPacket());
+            SendTo(battlers, new PRequestPartyPacket());
 
             Console.WriteLine("Waiting for teams...");
-            state = ServerState.WaitingForTeams;
+            state = ServerState.WaitingForParties;
         }
-        public void TeamUpdated(Player player, PTeamShell team)
+        public void PartySubmitted(Player player, PTeamShell team)
         {
-            if (state != ServerState.WaitingForTeams)
+            if (state != ServerState.WaitingForParties)
                 return;
             player.Team = team;
 
             if (battlers[0].Team != null && battlers[1].Team != null)
             {
+                // Temporary:
                 try
                 {
                     PPokemonShell.ValidateMany(battlers[0].Team.Party.Concat(battlers[1].Team.Party));
@@ -77,6 +79,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     CancelMatch();
                     return;
                 }
+                //
                 Console.WriteLine("Both players ready!");
                 StartMatch();
             }
@@ -90,24 +93,42 @@ namespace Kermalis.PokemonBattleEngineServer
             Console.WriteLine("Battle starting!");
 
             battle = new PBattle(battlers[0].Team, battlers[1].Team);
-            battle.NewEvent += BattleEventHandler;
             battle.NewEvent += PBattle.ConsoleBattleEventHandler;
+            battle.NewEvent += BattleEventHandler;
 
             // Send opponent names
             battlers[0].Send(new PPlayerJoinedPacket(battlers[1].Id, battlers[1].Team.DisplayName));
             battlers[1].Send(new PPlayerJoinedPacket(battlers[0].Id, battlers[0].Team.DisplayName));
             WaitForBattlersResponses();
             // Send players their parties
-            battlers[0].Send(new PSendPartyPacket(PKnownInfo.Instance.LocalParty));
-            battlers[1].Send(new PSendPartyPacket(PKnownInfo.Instance.RemoteParty));
+            battlers[0].Send(new PSetPartyPacket(PKnownInfo.Instance.LocalParty));
+            battlers[1].Send(new PSetPartyPacket(PKnownInfo.Instance.RemoteParty));
             WaitForBattlersResponses();
 
+            state = ServerState.BattleProcessing;
             battle.Start();
-            WaitForBattlersResponses(); // Wait for switch-ins to be received
-
-            state = ServerState.WaitingForMoves;
+            SendTo(battlers, new PRequestActionPacket());
+            state = ServerState.WaitingForActions;
         }
-        
+        public void ActionsSubmitted(Player player, PSubmitActionsPacket.Action[] actions)
+        {
+            if (state != ServerState.WaitingForActions)
+                return;
+
+            // TODO: Verify info
+            player.Actions = actions;
+
+            if (battlers[0].Actions != null && battlers[1].Actions != null)
+            {
+                state = ServerState.BattleProcessing;
+                foreach (var a in battlers[0].Actions.Concat(battlers[1].Actions))
+                    battle.SelectAction(a.PokemonId, a.Param);
+                // TODO: If battle ended
+                //SendTo(battlers, new PRequestActionPacket());
+                //state = ServerState.WaitingForActions;
+            }
+        }
+
         void WaitForBattlersResponses()
         {
             battlers[0].ResetEvent.WaitOne();
@@ -115,17 +136,21 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         void BattleEventHandler(INetPacketStream packet)
         {
-            foreach (Player client in Clients)
+            switch (packet)
             {
-                switch (packet)
-                {
-                    case PSwitchInPacket sip:
+                case PPkmnSwitchInPacket psip:
+                    foreach (Player client in Clients)
+                    {
                         if (client == battlers[1])
-                            sip.LocallyOwned = !sip.LocallyOwned; // Correctly set locally owned for this team
-                        break;
-                }
-                
-                client.Send(packet);
+                            psip.LocallyOwned = !psip.LocallyOwned; // Correctly set locally owned for this team
+                        client.Send(packet);
+                    }
+                    WaitForBattlersResponses();
+                    break;
+                default:
+                    SendToAll(packet);
+                    WaitForBattlersResponses();
+                    break;
             }
         }
 
@@ -155,13 +180,14 @@ namespace Kermalis.PokemonBattleEngineServer
         protected override void OnClientDisconnected(Player client)
         {
             Console.WriteLine($"Client disconnected ({client.Id})");
+            // TODO: If spectator disconnects
             switch (state)
             {
                 case ServerState.Startup:
                 case ServerState.Resetting:
                     break;
                 case ServerState.WaitingForPlayers:
-                case ServerState.WaitingForTeams:
+                case ServerState.WaitingForParties:
                     CancelMatch();
                     break;
                 default:

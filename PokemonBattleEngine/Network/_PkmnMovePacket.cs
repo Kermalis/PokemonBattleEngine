@@ -7,9 +7,9 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Network
 {
-    public sealed class PUsedMovePacket : INetPacketStream
+    public sealed class PPkmnMovePacket : INetPacketStream
     {
-        public const int Code = 0x7;
+        public const int Code = 9;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 
@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Network
         public readonly PMove Move;
         public readonly bool OwnsMove;
 
-        public PUsedMovePacket(Guid id, PMove move, bool ownsMove)
+        public PPkmnMovePacket(Guid id, PMove move, bool ownsMove)
         {
             PokemonId = id;
             Move = move;
@@ -29,12 +29,12 @@ namespace Kermalis.PokemonBattleEngine.Network
             bytes.Add((byte)(OwnsMove ? 1 : 0));
             buf = BitConverter.GetBytes(bytes.Count).Concat(bytes).ToArray();
         }
-        public PUsedMovePacket(byte[] buffer)
+        public PPkmnMovePacket(byte[] buffer)
         {
             using (var r = new BinaryReader(new MemoryStream(buf = buffer)))
             {
                 r.ReadInt32(); // Skip Code
-                PokemonId = new Guid(r.ReadBytes(16));
+                PokemonId = new Guid(r.ReadBytes(0x10));
                 Move = (PMove)r.ReadUInt16();
                 OwnsMove = r.ReadByte() != 0;
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Sockets;
 using Ether.Network.Client;
 using Ether.Network.Packets;
@@ -68,32 +69,56 @@ namespace Kermalis.PokemonBattleEngineClient
 
         public override void HandleMessage(INetPacketStream packet)
         {
-            Console.WriteLine($"Message received: \"{packet.GetType().Name}\"");
+            Debug.WriteLine($"Message received: \"{packet.GetType().Name}\"");
 
             switch (packet)
             {
+                // TODO List for UI
+                case PPkmnMovePacket _:
+                case PAtkEffectivenessPacket _:
+                    Send(new PResponsePacket());
+                    break;
+
                 case PPlayerJoinedPacket pjp:
                     Console.WriteLine("{0} joined the game.", pjp.DisplayName);
                     // TODO: What if it's a spectator?
                     PKnownInfo.Instance.RemoteDisplayName = pjp.DisplayName;
                     Send(new PResponsePacket());
                     break;
-                case PReadyUpPacket _:
+                case PRequestPartyPacket _:
                     Console.WriteLine("Sending team info...");
                     PKnownInfo.Instance.LocalDisplayName = chosenTeam.DisplayName;
-                    Send(new PRequestTeamPacket(chosenTeam));
+                    Send(new PSubmitPartyPacket(chosenTeam));
                     break;
-                case PSendPartyPacket spp:
+                case PSetPartyPacket spp:
                     PKnownInfo.Instance.SetPartyPokemon(spp.Pokemon, true);
                     Send(new PResponsePacket());
                     break;
-                case PSwitchInPacket sip:
-                    if (!sip.LocallyOwned)
-                        PKnownInfo.Instance.AddRemotePokemon(sip.PokemonId, sip.Species, sip.Level, sip.HP, sip.MaxHP, sip.Gender);
-                    Console.WriteLine("{1} is using: {0}", PKnownInfo.Instance[sip.PokemonId], PKnownInfo.Instance.DisplayName(sip.LocallyOwned));
+                case PPkmnSwitchInPacket psip:
+                    if (!psip.LocallyOwned)
+                        PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Level, psip.HP, psip.MaxHP, psip.Gender);
+                    Send(new PResponsePacket());
+                    break;
+                case PRequestActionPacket _:
+                    // TODO
+                    var actions = new PSubmitActionsPacket.Action[1];
+                    actions[0] = new PSubmitActionsPacket.Action(PKnownInfo.Instance.LocalParty[0].Id, 0);
+                    Send(new PSubmitActionsPacket(actions));
+                    break;
+                case PPkmnDamagedPacket pdp:
+                    PKnownInfo.Instance.Pokemon(pdp.PokemonId).HP -= pdp.Damage;
+                    PrintBattlers();
                     Send(new PResponsePacket());
                     break;
             }
+
+            PokemonBattleEngine.Battle.PBattle.ConsoleBattleEventHandler(packet);
+        }
+
+        void PrintBattlers()
+        {
+            Console.WriteLine("{1}: {0}", PKnownInfo.Instance.LocalParty[0], PKnownInfo.Instance.LocalDisplayName);
+            Console.WriteLine("{1}: {0}", PKnownInfo.Instance.RemoteParty[0], PKnownInfo.Instance.RemoteDisplayName);
         }
 
         protected override void OnConnected()

@@ -13,12 +13,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void PrintSwitchIn(PPokemon pkmn)
         {
-            NewEvent?.Invoke(new PSwitchInPacket(pkmn));
+            NewEvent?.Invoke(new PPkmnSwitchInPacket(pkmn));
         }
         void PrintMoveUsed()
         {
             var pkmn = efCurAttacker.Mon;
-            NewEvent?.Invoke(new PUsedMovePacket(pkmn.Id, efCurMove, pkmn.Shell.Moves.Contains(efCurMove)));
+            NewEvent?.Invoke(new PPkmnMovePacket(pkmn.Id, efCurMove, pkmn.Shell.Moves.Contains(efCurMove)));
         }
         void PrintMiss()
         {
@@ -28,24 +28,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Console.WriteLine("{0} flinched!", efCurAttacker.Mon.Shell.Species);
         }
-        void PrintDamage(PPokemon pkmn, int amt)
+        void PrintDamage(PPokemon pkmn, ushort amt)
         {
-            double percentage = (double)amt / efCurDefender.Mon.MaxHP;
-            Console.WriteLine("{0} took {1} ({2:P2}) damage!", pkmn.Shell.Species, amt, percentage);
+            NewEvent?.Invoke(new PPkmnDamagedPacket(pkmn.Id, amt));
         }
         void PrintEffectiveness()
         {
-            string message;
-            if (efEffectiveness == 0)
-                message = "It doesn't affect {0}...";
-            else if (efEffectiveness > 1)
-                message = "It's super effective!";
-            else if (efEffectiveness < 1)
-                message = "It's not very effective...";
-            else
-                return;
-
-            Console.WriteLine(message, efCurDefender.Mon.Shell.Species);
+            NewEvent?.Invoke(new PAtkEffectivenessPacket(efCurDefender.Mon.Id, efEffectiveness));
         }
         void PrintFaint(PPokemon pkmn)
         {
@@ -119,13 +108,32 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public static void ConsoleBattleEventHandler(INetPacketStream packet)
         {
+            PPokemon pkmn;
+            string message;
+
             switch (packet)
             {
-                case PSwitchInPacket sip:
-                    Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance[sip.PokemonId].Shell.Species, PKnownInfo.Instance.DisplayName(sip.LocallyOwned));
+                case PPkmnSwitchInPacket psip:
+                    Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance.Pokemon(psip.PokemonId).Shell.Species, PKnownInfo.Instance.DisplayName(psip.LocallyOwned));
                     break;
-                case PUsedMovePacket ump:
-                    Console.WriteLine("{0} used {1}!", PKnownInfo.Instance[ump.PokemonId].Shell.Species, ump.Move);
+                case PPkmnMovePacket pmp:
+                    Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(pmp.PokemonId).Shell.Species, pmp.Move);
+                    break;
+                case PPkmnDamagedPacket pdp:
+                    pkmn = PKnownInfo.Instance.Pokemon(pdp.PokemonId);
+                    double percentage = (double)pdp.Damage / pkmn.MaxHP;
+                    Console.WriteLine("{0} took {1} ({2:P2}) damage!", pkmn.Shell.Species, pdp.Damage, percentage);
+                    break;
+                case PAtkEffectivenessPacket aep:                    
+                    if (aep.Effectiveness == 0)
+                        message = "It doesn't affect {0}...";
+                    else if (aep.Effectiveness > 1)
+                        message = "It's super effective!";
+                    else if (aep.Effectiveness < 1)
+                        message = "It's not very effective...";
+                    else
+                        break;
+                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(aep.PokemonId).Shell.Species);
                     break;
             }
         }

@@ -42,6 +42,36 @@ namespace Kermalis.PokemonBattleEngine.Data
                                                                                                                                                                         // Attacker
         };
 
+        public static readonly Dictionary<PNature, sbyte[]> NatureBoosts = new Dictionary<PNature, sbyte[]>
+        {
+            //                                Atk   Def SpAtk SpDef   Spd
+            { PNature.Adamant, new sbyte[] {   +1,    0,   -1,    0,    0} },
+            { PNature.Bashful, new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Bold,    new sbyte[] {   -1,   +1,    0,    0,    0} },
+            { PNature.Brave,   new sbyte[] {   +1,    0,    0,    0,   -1} },
+            { PNature.Calm,    new sbyte[] {   -1,    0,    0,   +1,    0} },
+            { PNature.Careful, new sbyte[] {    0,    0,   -1,   +1,    0} },
+            { PNature.Docile,  new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Gentle,  new sbyte[] {    0,   -1,    0,   +1,    0} },
+            { PNature.Hardy,   new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Hasty,   new sbyte[] {    0,   -1,    0,    0,   +1} },
+            { PNature.Impish,  new sbyte[] {    0,   +1,   -1,    0,    0} },
+            { PNature.Jolly,   new sbyte[] {    0,    0,   -1,    0,   +1} },
+            { PNature.Lax,     new sbyte[] {    0,   +1,    0,   -1,    0} },
+            { PNature.Loney,   new sbyte[] {   +1,   -1,    0,    0,    0} },
+            { PNature.Mild,    new sbyte[] {    0,   -1,   +1,    0,    0} },
+            { PNature.Modest,  new sbyte[] {   -1,    0,   +1,    0,    0} },
+            { PNature.Naive,   new sbyte[] {    0,    0,    0,   -1,   +1} },
+            { PNature.Naughty, new sbyte[] {   +1,    0,    0,   -1,    0} },
+            { PNature.Quiet,   new sbyte[] {    0,    0,   +1,    0,   -1} },
+            { PNature.Quirky,  new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Rash,    new sbyte[] {    0,    0,   +1,   -1,    0} },
+            { PNature.Relaxed, new sbyte[] {    0,   +1,    0,    0,   -1} },
+            { PNature.Sassy,   new sbyte[] {    0,    0,    0,   +1,   -1} },
+            { PNature.Serious, new sbyte[] {    0,    0,    0,    0,    0} },
+            { PNature.Timid,   new sbyte[] {   -1,    0,    0,    0,   +1} },
+        };
+
         public static Dictionary<PSpecies, PPokemonData> Data = new Dictionary<PSpecies, PPokemonData>()
         {
             {

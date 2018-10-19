@@ -19,6 +19,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
         public byte[] PP = new byte[PConstants.NumMoves];
 
+        public string OwnerDisplayName => LocallyOwned ? PKnownInfo.Instance.LocalDisplayName : PKnownInfo.Instance.RemoteDisplayName;
+
         // Pass in Guid.Empty to generate a fresh id
         // LocallyOwned will need to be set manually by the host
         public PPokemon(Guid id, PPokemonShell shell)
@@ -48,35 +50,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             };
         }
 
-        static readonly Dictionary<PNature, sbyte[]> natureStatTable = new Dictionary<PNature, sbyte[]>
-        {
-            //                                Atk   Def SpAtk SpDef   Spd
-            { PNature.Adamant, new sbyte[] {   +1,    0,   -1,    0,    0} },
-            { PNature.Bashful, new sbyte[] {    0,    0,    0,    0,    0} },
-            { PNature.Bold,    new sbyte[] {   -1,   +1,    0,    0,    0} },
-            { PNature.Brave,   new sbyte[] {   +1,    0,    0,    0,   -1} },
-            { PNature.Calm,    new sbyte[] {   -1,    0,    0,   +1,    0} },
-            { PNature.Careful, new sbyte[] {    0,    0,   -1,   +1,    0} },
-            { PNature.Docile,  new sbyte[] {    0,    0,    0,    0,    0} },
-            { PNature.Gentle,  new sbyte[] {    0,   -1,    0,   +1,    0} },
-            { PNature.Hardy,   new sbyte[] {    0,    0,    0,    0,    0} },
-            { PNature.Hasty,   new sbyte[] {    0,   -1,    0,    0,   +1} },
-            { PNature.Impish,  new sbyte[] {    0,   +1,   -1,    0,    0} },
-            { PNature.Jolly,   new sbyte[] {    0,    0,   -1,    0,   +1} },
-            { PNature.Lax,     new sbyte[] {    0,   +1,    0,   -1,    0} },
-            { PNature.Loney,   new sbyte[] {   +1,   -1,    0,    0,    0} },
-            { PNature.Mild,    new sbyte[] {    0,   -1,   +1,    0,    0} },
-            { PNature.Modest,  new sbyte[] {   -1,    0,   +1,    0,    0} },
-            { PNature.Naive,   new sbyte[] {    0,    0,    0,   -1,   +1} },
-            { PNature.Naughty, new sbyte[] {   +1,    0,    0,   -1,    0} },
-            { PNature.Quiet,   new sbyte[] {    0,    0,   +1,    0,   -1} },
-            { PNature.Quirky,  new sbyte[] {    0,    0,    0,    0,    0} },
-            { PNature.Rash,    new sbyte[] {    0,    0,   +1,   -1,    0} },
-            { PNature.Relaxed, new sbyte[] {    0,   +1,    0,    0,   -1} },
-            { PNature.Sassy,   new sbyte[] {    0,    0,    0,   +1,   -1} },
-            { PNature.Serious, new sbyte[] {    0,    0,    0,    0,    0} },
-            { PNature.Timid,   new sbyte[] {   -1,    0,    0,    0,   +1} },
-        };
         void CalculateStats()
         {
             PPokemonData pData = PPokemonData.Data[Shell.Species];
@@ -86,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             int i = 0;
             ushort OtherStat(byte baseVal)
             {
-                double natureMultiplier = 1 + (natureStatTable[Shell.Nature][i] * 0.1);
+                double natureMultiplier = 1 + (PPokemonData.NatureBoosts[Shell.Nature][i] * 0.1);
                 ushort val = (ushort)((((2 * baseVal + Shell.IVs[i + 1] + (Shell.EVs[i + 1] / 4)) * Shell.Level / PConstants.MaxLevel) + 5) * natureMultiplier);
                 i++;
                 return val;
@@ -118,7 +91,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         internal static PPokemon FromBytes(BinaryReader r)
         {
-            var pkmn = new PPokemon(new Guid(r.ReadBytes(16)), PPokemonShell.FromBytes(r))
+            var pkmn = new PPokemon(new Guid(r.ReadBytes(0x10)), PPokemonShell.FromBytes(r))
             {
                 Status = (PStatus)r.ReadByte(),
                 Status2 = (PStatus2)r.ReadUInt32(),

@@ -45,6 +45,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         byte[] turnOrder;
         PTeam[] teams = new PTeam[2];
 
+        // Returns null if it doesn't exist
+        PBattlePokemon Pokemon(Guid id) => battlers.SingleOrDefault(p => p.Mon.Id == id);
+
         public PBattle(PTeamShell td0, PTeamShell td1)
         {
             PKnownInfo.Instance.Clear();
@@ -73,10 +76,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PrintSwitchIn(battler.Mon);
         }
 
-        public void SelectMove(int team, int pkmn, int move, PTarget target)
+        public void SelectAction(Guid pkmnId, byte param)
         {
-            teams[team].Party[pkmn].SelectedMove = teams[team].Party[pkmn].Mon.Shell.Moves[move];
-            teams[team].Party[pkmn].SelectedTarget = target; // TODO: Validate
+            PBattlePokemon pkmn = Pokemon(pkmnId);
+            // TODO
+            // if (action == PAction.Fight)
+            pkmn.SelectedMove = pkmn.Mon.Shell.Moves[param];
+            //teams[team].Party[pkmn].SelectedTarget = target; // TODO: Validate
 
             if (AllMonSelectedMoves())
             {

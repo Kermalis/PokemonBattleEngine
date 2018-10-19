@@ -7,9 +7,9 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Network
 {
-    public sealed class PSwitchInPacket : INetPacketStream
+    public sealed class PPkmnSwitchInPacket : INetPacketStream
     {
-        public const int Code = 0x6;
+        public const int Code = 6;
         public byte[] Buffer => BuildBuffer();
 
         public Guid PokemonId;
@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Network
         public ushort HP, MaxHP;
         public PGender Gender;
 
-        public PSwitchInPacket(PPokemon pkmn)
+        public PPkmnSwitchInPacket(PPokemon pkmn)
         {
             PokemonId = pkmn.Id;
             LocallyOwned = pkmn.LocallyOwned;
@@ -29,12 +29,12 @@ namespace Kermalis.PokemonBattleEngine.Network
             MaxHP = pkmn.MaxHP;
             Gender = pkmn.Shell.Gender;
         }
-        public PSwitchInPacket(byte[] buffer)
+        public PPkmnSwitchInPacket(byte[] buffer)
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt32(); // Skip Code
-                PokemonId = new Guid(r.ReadBytes(16));
+                PokemonId = new Guid(r.ReadBytes(0x10));
                 LocallyOwned = r.ReadByte() != 0;
                 Species = (PSpecies)r.ReadUInt16();
                 Level = r.ReadByte();

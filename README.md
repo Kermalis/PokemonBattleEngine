@@ -8,17 +8,20 @@ The engine only emulates as if it were Pokémon B2W2 versions, so there will not 
 Includes some "anti-cheating" code that protects information a player should not know.
 Information slowly gets revealed to each player over time.
 For example, your opponent will not know your ability until your ability does something. He/she will also be unaware of your moves until you use them.
-Therefore, a hacked client cannot do anything more than an ordinary player (unless my code has exploits... in that case... create an issue!)
+Therefore, a modified client cannot do anything more than an ordinary player (unless my code has exploits... in that case... create an issue!)
 
 ----
 # To Do:
-* Switching out and multiple pokemon per team
+* Switching out and multiple Pokémon per team
 * Accuracy/Evasion math
 * Critical hits
 * Turn order
 * Move targetting
 * Double/triple/rotation battles
-* Add most moves, items, pokemon, secondary statuses (underwater, cursed, mud sport, etc.)
+* Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
+* Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
+* Pokémon nicknames
+* Client UI
 
 ----
 # PokemonBattleEngine Uses:

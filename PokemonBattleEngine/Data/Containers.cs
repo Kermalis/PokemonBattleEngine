@@ -177,11 +177,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             remoteParty = new List<PPokemon>(PConstants.MaxPokemon);
 
         public string DisplayName(bool local) => local ? LocalDisplayName : RemoteDisplayName;
+        // Returns null if not found
+        public PPokemon Pokemon(Guid id) => localParty.Concat(remoteParty).SingleOrDefault(p => p.Id == id);
         public PPokemon[] LocalParty => localParty.ToArray();
         public PPokemon[] RemoteParty => remoteParty.ToArray();
-
-        // Returns null if not found
-        public PPokemon this[Guid id] => localParty.Concat(remoteParty).SingleOrDefault(p => p.Id == id);
 
         public void Clear()
         {
@@ -206,7 +205,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             PPokemon pkmn;
 
-            if (this[id] == null)
+            if (Pokemon(id) == null)
             {
                 if (remoteParty.Count == PConstants.MaxPokemon)
                     throw new InvalidOperationException("Too many Pokémon!");
@@ -216,7 +215,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 remoteParty.Add(pkmn);
             }
             else
-                pkmn = this[id];
+                pkmn = Pokemon(id);
 
             // If this pokemon was already added, it also already knows the info other than hp (opponent could have regenerator or could have been healed by an ally)
             pkmn.HP = hp;

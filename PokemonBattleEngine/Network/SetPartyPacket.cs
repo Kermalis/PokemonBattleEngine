@@ -1,40 +1,40 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Network
 {
-    public sealed class PPlayerJoinedPacket : INetPacketStream
+    public sealed class PSetPartyPacket : INetPacketStream
     {
-        public const int Code = 0x1;
+        public const int Code = 5;
         byte[] buf;
         public byte[] Buffer => (byte[])buf.Clone();
 
-        public readonly Guid PlayerId;
-        public readonly string DisplayName;
+        public readonly PPokemon[] Pokemon;
 
-        public PPlayerJoinedPacket(Guid id, string name)
+        public PSetPartyPacket(PPokemon[] pokemon)
         {
-            PlayerId = id;
-            DisplayName = name;
+            Pokemon = pokemon;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(id.ToByteArray());
-            byte[] nameBytes = Encoding.ASCII.GetBytes(DisplayName);
-            bytes.Add((byte)nameBytes.Length);
-            bytes.AddRange(nameBytes);
+            var numPkmn = Math.Min(PConstants.MaxPokemon, Pokemon.Length);
+            bytes.Add((byte)numPkmn);
+            for (int i = 0; i < numPkmn; i++)
+                bytes.AddRange(Pokemon[i].ToBytes());
             buf = BitConverter.GetBytes(bytes.Count).Concat(bytes).ToArray();
         }
-        public PPlayerJoinedPacket(byte[] buffer)
+        public PSetPartyPacket(byte[] buffer)
         {
             using (var r = new BinaryReader(new MemoryStream(buf = buffer)))
             {
                 r.ReadInt32(); // Skip Code
-                PlayerId = new Guid(r.ReadBytes(16));
-                DisplayName = Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte()));
+                var numPkmn = Math.Min(PConstants.MaxPokemon, r.ReadByte());
+                Pokemon = new PPokemon[numPkmn];
+                for (int i = 0; i < numPkmn; i++)
+                    Pokemon[i] = PPokemon.FromBytes(r);
             }
         }
 

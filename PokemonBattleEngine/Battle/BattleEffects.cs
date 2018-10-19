@@ -90,7 +90,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort total = (ushort)(efDamage * efEffectiveness * efDamageMultiplier);
             var oldHP = victim.HP;
             victim.HP = (ushort)Math.Max(0, victim.HP - total);
-            PrintDamage(victim, oldHP - victim.HP);
+            PrintDamage(victim, (ushort)(oldHP - victim.HP));
         }
         // Returns false if an attack is ineffective
         bool TypeCheck()
