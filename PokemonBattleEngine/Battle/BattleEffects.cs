@@ -218,10 +218,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (AttackCancelCheck())
                 return false;
-            if (AccuracyCheck())
-                return false;
             BroadcastMoveUsed();
             // PPReduce();
+            if (AccuracyCheck())
+                return false;
             // CritCheck();
             bDamage = CalculateDamage();
             if (!TypeCheck())
@@ -292,10 +292,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (AttackCancelCheck())
                 return false;
-            if (AccuracyCheck())
-                return false;
             BroadcastMoveUsed();
             // PPReduce();
+            if (AccuracyCheck())
+                return false;
             if (!ApplyStatus1IfPossible(bDefender, PStatus1.BadlyPoisoned))
             {
                 BroadcastFail();
