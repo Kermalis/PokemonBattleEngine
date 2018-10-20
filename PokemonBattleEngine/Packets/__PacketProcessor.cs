@@ -26,18 +26,19 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PRequestActionPacket.Code: packet = new PRequestActionPacket(buffer); break;
                 case PSubmitActionsPacket.Code: packet = new PSubmitActionsPacket(buffer); break;
                 case PPkmnMovePacket.Code: packet = new PPkmnMovePacket(buffer); break;
-                case PPkmnDamagedPacket.Code: packet = new PPkmnDamagedPacket(buffer); break;
+                case PPkmnHPChangedPacket.Code: packet = new PPkmnHPChangedPacket(buffer); break;
                 case PMoveEffectivenessPacket.Code: packet = new PMoveEffectivenessPacket(buffer); break;
                 case PPkmnFlinchedPacket.Code: packet = new PPkmnFlinchedPacket(buffer); break;
                 case PMoveMissedPacket.Code: packet = new PMoveMissedPacket(buffer); break;
                 case PPkmnFaintedPacket.Code: packet = new PPkmnFaintedPacket(buffer); break;
                 case PMoveCritPacket.Code: packet = new PMoveCritPacket(buffer); break;
-                case PPkmnStatChangePacket.Code: packet = new PPkmnStatChangePacket(buffer); break;
+                case PPkmnStatChangedPacket.Code: packet = new PPkmnStatChangedPacket(buffer); break;
                 case PStatus1ChangePacket.Code: packet = new PStatus1ChangePacket(buffer); break;
                 case PStatus1EndedPacket.Code: packet = new PStatus1EndedPacket(buffer); break;
                 case PStatus1CausedImmobilityPacket.Code: packet = new PStatus1CausedImmobilityPacket(buffer); break;
                 case PStatus1CausedDamagePacket.Code: packet = new PStatus1CausedDamagePacket(buffer); break;
                 case PMoveFailPacket.Code: packet = new PMoveFailPacket(buffer); break;
+                case PItemUsedPacket.Code: packet = new PItemUsedPacket(buffer); break;
                 default: throw new ArgumentException($"Invalid packet code: {code}");
             }
 

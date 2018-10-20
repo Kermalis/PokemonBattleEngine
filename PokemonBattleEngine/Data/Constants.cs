@@ -10,5 +10,7 @@
         public const byte BurnDamageDenominator = 8; // burnDamage = (MaxHP / BurnDamageDenominator)
         public const byte PoisonDamageDenominator = 8;
         public const byte ToxicDamageDenominator = 16;
+
+        public const byte LeftoversDenominator = 16;
     }
 }

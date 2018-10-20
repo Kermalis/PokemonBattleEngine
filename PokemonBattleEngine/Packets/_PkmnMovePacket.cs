@@ -18,14 +18,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PPkmnMovePacket(PPokemon pkmn, PMove move)
         {
-            PokemonId = pkmn.Id;
-            Move = move;
-            OwnsMove = pkmn.Shell.Moves.Contains(Move);
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(PokemonId.ToByteArray());
-            bytes.AddRange(BitConverter.GetBytes((ushort)Move));
-            bytes.Add((byte)(OwnsMove ? 1 : 0));
+            bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
+            bytes.AddRange(BitConverter.GetBytes((ushort)(Move = move)));
+            bytes.Add((byte)((OwnsMove = pkmn.Shell.Moves.Contains(Move)) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PPkmnMovePacket(byte[] buffer)
@@ -39,7 +36,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 OwnsMove = r.ReadByte() != 0;
             }
         }
-        
+
         public void Dispose() { }
     }
 }

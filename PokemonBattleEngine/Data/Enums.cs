@@ -113,7 +113,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChoiceBand, // TODO: Lock move
         DeepSeaScale,
         DeepSeaTooth,
-        Leftovers, // TODO
+        Leftovers,
         LightBall,
         MetalPowder, // TODO
         SoulDew,

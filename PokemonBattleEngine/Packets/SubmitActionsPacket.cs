@@ -40,10 +40,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PSubmitActionsPacket(Action[] actions)
         {
-            Actions = actions;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)Actions.Length);
+            bytes.Add((byte)(Actions = actions).Length);
             foreach (var a in Actions)
                 bytes.AddRange(a.ToBytes());
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
@@ -60,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     Actions[i] = Action.FromBytes(r);
             }
         }
-        
+
         public void Dispose() { }
     }
 }

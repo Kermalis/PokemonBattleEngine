@@ -17,12 +17,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PPlayerJoinedPacket(Guid playerId, string name)
         {
-            PlayerId = playerId;
-            DisplayName = name;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(playerId.ToByteArray());
-            byte[] nameBytes = Encoding.ASCII.GetBytes(DisplayName);
+            bytes.AddRange((PlayerId = playerId).ToByteArray());
+            byte[] nameBytes = Encoding.ASCII.GetBytes(DisplayName = name);
             bytes.Add((byte)nameBytes.Length);
             bytes.AddRange(nameBytes);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
@@ -37,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 DisplayName = Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte()));
             }
         }
-        
+
         public void Dispose() { }
     }
 }

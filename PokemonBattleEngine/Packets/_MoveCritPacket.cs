@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PMoveCritPacket() { }
         public PMoveCritPacket(byte[] buffer) { }
-        
+
         public void Dispose() { }
     }
 }

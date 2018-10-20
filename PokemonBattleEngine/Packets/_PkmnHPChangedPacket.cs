@@ -7,30 +7,30 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PMoveEffectivenessPacket : INetPacket
+    public sealed class PPkmnHPChangedPacket : INetPacket
     {
-        public const short Code = 0x0B;
+        public const short Code = 0x0A;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly Guid PokemonId; // Defender
-        public readonly double Effectiveness;
+        public readonly Guid PokemonId;
+        public readonly int Change;
 
-        public PMoveEffectivenessPacket(PPokemon defender, double effectiveness)
+        public PPkmnHPChangedPacket(PPokemon pkmn, int change)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange((PokemonId = defender.Id).ToByteArray());
-            bytes.AddRange(BitConverter.GetBytes(Effectiveness = effectiveness));
+            bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
+            bytes.AddRange(BitConverter.GetBytes(Change = change));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PMoveEffectivenessPacket(byte[] buffer)
+        public PPkmnHPChangedPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
                 PokemonId = new Guid(r.ReadBytes(0x10));
-                Effectiveness = r.ReadDouble();
+                Change = r.ReadInt32();
             }
         }
 

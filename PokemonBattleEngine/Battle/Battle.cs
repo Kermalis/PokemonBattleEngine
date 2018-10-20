@@ -131,7 +131,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             foreach (PBattlePokemon battler in battlers)
             {
                 battler.SelectedMove = PMove.None;
-                DoTurnEndedEffects(battler);
+                if (battler.Mon.HP > 0)
+                    DoTurnEndedEffects(battler);
             }
         }
     }

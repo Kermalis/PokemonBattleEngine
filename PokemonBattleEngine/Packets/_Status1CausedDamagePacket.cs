@@ -17,12 +17,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PStatus1CausedDamagePacket(PPokemon pkmn)
         {
-            PokemonId = pkmn.Id;
-            Status1 = pkmn.Status1;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(PokemonId.ToByteArray());
-            bytes.Add((byte)Status1);
+            bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
+            bytes.Add((byte)(Status1 = pkmn.Status1));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PStatus1CausedDamagePacket(byte[] buffer)

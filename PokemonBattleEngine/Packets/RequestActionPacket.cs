@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PRequestActionPacket() { }
         public PRequestActionPacket(byte[] buffer) { }
-        
+
         public void Dispose() { }
     }
 }

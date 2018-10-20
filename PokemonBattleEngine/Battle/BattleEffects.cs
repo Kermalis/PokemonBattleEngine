@@ -23,20 +23,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PStatus1.Burned:
                     BroadcastStatus1CausedDamage(battler.Mon);
                     DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.BurnDamageDenominator));
-                    TryFaint(battler.Mon);
+                    TryFaint(battler);
                     break;
                 case PStatus1.Poisoned:
                     BroadcastStatus1CausedDamage(battler.Mon);
                     DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.PoisonDamageDenominator));
-                    TryFaint(battler.Mon);
+                    TryFaint(battler);
                     break;
                 case PStatus1.BadlyPoisoned:
                     BroadcastStatus1CausedDamage(battler.Mon);
                     DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP * battler.Status1Counter / PConstants.ToxicDamageDenominator));
-                    if (TryFaint(battler.Mon))
-                        battler.Status1Counter = 0;
-                    else
+                    if (!TryFaint(battler))
                         battler.Status1Counter++;
+                    break;
+            }
+
+            // Items
+            switch (battler.Mon.Shell.Item)
+            {
+                case PItem.Leftovers:
+                    if (HealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.LeftoversDenominator)))
+                        BroadcastItemUsed(battler.Mon);
                     break;
             }
         }
@@ -120,29 +127,43 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts the event
         void DealDamage()
             => DealDamage(bDefender.Mon, (ushort)(bDamage * bEffectiveness * bDamageMultiplier));
-        void DealDamage(PPokemon pkmn, ushort damage)
+        void DealDamage(PPokemon pkmn, ushort hp)
         {
             var oldHP = pkmn.HP;
-            pkmn.HP = (ushort)Math.Max(0, pkmn.HP - damage);
-            BroadcastDamage(pkmn, (ushort)(oldHP - pkmn.HP));
+            pkmn.HP = (ushort)Math.Max(0, pkmn.HP - Math.Max((ushort)1, hp)); // Always try to lose at least 1 HP
+            BroadcastDamaged(pkmn, (ushort)(oldHP - pkmn.HP));
+        }
+
+        // Returns true if it healed
+        // Broadcasts the event if it healed
+        bool HealDamage(PPokemon pkmn, ushort hp)
+        {
+            var oldHP = pkmn.HP;
+            pkmn.HP = (ushort)Math.Min(pkmn.MaxHP, pkmn.HP + Math.Max((ushort)1, hp)); // Always try to heal at least 1 HP
+            var healAmt = (ushort)(pkmn.HP - oldHP);
+            if (healAmt < 1)
+                return false;
+            BroadcastHealed(pkmn, healAmt);
+            return true;
         }
 
         // Returns true if the pokemon fainted
         // Broadcasts the event if it did
         bool TryFaint()
-            => TryFaint(bDefender.Mon);
-        bool TryFaint(PPokemon pkmn)
+            => TryFaint(bDefender);
+        bool TryFaint(PBattlePokemon pkmn)
         {
-            if (pkmn.HP < 1)
+            if (pkmn.Mon.HP < 1)
             {
-                BroadcastFaint(pkmn);
+                pkmn.Status1Counter = 0;
+                BroadcastFaint(pkmn.Mon);
                 return true;
             }
             return false;
         }
 
         // Does not broadcast the event
-        public static void ApplyStatChange(PPkmnStatChangePacket packet)
+        public static void ApplyStatChange(PPkmnStatChangedPacket packet)
             => ApplyStatChange(PKnownInfo.Instance.Pokemon(packet.PokemonId), packet.Stat, packet.Change, null);
         // Broadcasts the event
         void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)

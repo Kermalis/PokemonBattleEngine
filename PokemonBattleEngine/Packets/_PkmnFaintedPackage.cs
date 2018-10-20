@@ -16,10 +16,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PPkmnFaintedPacket(PPokemon pkmn)
         {
-            PokemonId = pkmn.Id;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(PokemonId.ToByteArray());
+            bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PPkmnFaintedPacket(byte[] buffer)
@@ -31,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 PokemonId = new Guid(r.ReadBytes(0x10));
             }
         }
-        
+
         public void Dispose() { }
     }
 }

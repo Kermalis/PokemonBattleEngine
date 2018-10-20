@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Swarm gives a 1.5x boost to Bug attacks if the efCurAttacker is below 1/3 max HP
             if (mData.Type == PType.Bug && bAttacker.Mon.Shell.Ability == PAbility.Swarm && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
-            // A burned pokemon does half the damage when it is Burned unless it has the Guts ability
+            // A Burned pokemon does half the damage when it is Burned unless it has the Guts ability
             if (mData.Category == PMoveCategory.Physical && bAttacker.Mon.Status1 == PStatus1.Burned && bAttacker.Mon.Shell.Ability != PAbility.Guts)
                 basePower /= 2;
             // Damage is halved when using Fire or Ice moves against a pokemon with the Thick Fat ability

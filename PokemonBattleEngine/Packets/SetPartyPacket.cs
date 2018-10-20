@@ -16,10 +16,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PSetPartyPacket(PPokemon[] party)
         {
-            Party = party;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            var numPkmn = Math.Min(PConstants.MaxPartySize, Party.Length);
+            var numPkmn = Math.Min(PConstants.MaxPartySize, (Party = party).Length);
             bytes.Add((byte)numPkmn);
             for (int i = 0; i < numPkmn; i++)
                 bytes.AddRange(Party[i].ToBytes());
@@ -37,7 +36,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     Party[i] = PPokemon.FromBytes(r);
             }
         }
-        
+
         public void Dispose() { }
     }
 }

@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)Gender);
             return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        
+
         public void Dispose() { }
     }
 }

@@ -113,8 +113,9 @@ namespace Kermalis.PokemonBattleEngineClient
                     actions[0] = new PSubmitActionsPacket.Action(PKnownInfo.Instance.LocalParty[0].Id, 0);
                     Send(new PSubmitActionsPacket(actions));
                     break;
-                case PPkmnDamagedPacket pdp:
-                    PKnownInfo.Instance.Pokemon(pdp.PokemonId).HP -= pdp.Damage;
+                case PPkmnHPChangedPacket pdp:
+                    pkmn = PKnownInfo.Instance.Pokemon(pdp.PokemonId);
+                    pkmn.HP = (ushort)(pkmn.HP + pdp.Change);
                     PrintBattlers();
                     Send(new PResponsePacket());
                     break;
@@ -128,9 +129,10 @@ namespace Kermalis.PokemonBattleEngineClient
                         var index = pkmn.Shell.Moves.ToList().IndexOf(PMove.MAX);
                         pkmn.Shell.Moves[index] = pmp.Move;
                     }
+                    PrintBattlers();
                     Send(new PResponsePacket());
                     break;
-                case PPkmnStatChangePacket pscp:
+                case PPkmnStatChangedPacket pscp:
                     PBattle.ApplyStatChange(pscp);
                     Send(new PResponsePacket());
                     break;
@@ -140,6 +142,11 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PStatus1EndedPacket sep:
                     PKnownInfo.Instance.Pokemon(sep.PokemonId).Status1 = PStatus1.NoStatus;
+                    Send(new PResponsePacket());
+                    break;
+                case PItemUsedPacket iup:
+                    PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Item = iup.Item;
+                    PrintBattlers();
                     Send(new PResponsePacket());
                     break;
             }

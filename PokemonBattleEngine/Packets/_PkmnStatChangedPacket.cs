@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PPkmnStatChangePacket : INetPacket
+    public sealed class PPkmnStatChangedPacket : INetPacket
     {
         public const short Code = 0x10;
         public IEnumerable<byte> Buffer { get; }
@@ -17,21 +17,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly sbyte Change;
         public readonly bool IsTooMuch;
 
-        public PPkmnStatChangePacket(PPokemon pkmn, PStat stat, sbyte change, bool isTooMuch)
+        public PPkmnStatChangedPacket(PPokemon pkmn, PStat stat, sbyte change, bool isTooMuch)
         {
-            PokemonId = pkmn.Id;
-            Stat = stat;
-            Change = change;
-            IsTooMuch = isTooMuch;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(PokemonId.ToByteArray());
-            bytes.Add((byte)Stat);
-            bytes.Add((byte)Change);
-            bytes.Add((byte)(IsTooMuch ? 1 : 0));
+            bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
+            bytes.Add((byte)(Stat = stat));
+            bytes.Add((byte)(Change = change));
+            bytes.Add((byte)((IsTooMuch = isTooMuch) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PPkmnStatChangePacket(byte[] buffer)
+        public PPkmnStatChangedPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
@@ -43,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 IsTooMuch = r.ReadByte() != 0;
             }
         }
-        
+
         public void Dispose() { }
     }
 }

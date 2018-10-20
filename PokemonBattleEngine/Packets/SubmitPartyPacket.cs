@@ -16,10 +16,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PSubmitPartyPacket(PTeamShell team)
         {
-            Team = team;
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(Team.ToBytes());
+            bytes.AddRange((Team = team).ToBytes());
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PSubmitPartyPacket(byte[] buffer)
@@ -31,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Team = PTeamShell.FromBytes(r);
             }
         }
-        
+
         public void Dispose() { }
     }
 }

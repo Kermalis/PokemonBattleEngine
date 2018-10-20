@@ -18,8 +18,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PMoveMissedPacket(bAttacker.Mon));
         void BroadcastFlinch()
             => OnNewEvent?.Invoke(new PPkmnFlinchedPacket(bAttacker.Mon));
-        void BroadcastDamage(PPokemon pkmn, ushort amt)
-            => OnNewEvent?.Invoke(new PPkmnDamagedPacket(pkmn, amt));
+        void BroadcastDamaged(PPokemon pkmn, ushort hp)
+            => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, -hp));
+        void BroadcastHealed(PPokemon pkmn, ushort hp)
+            => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, hp));
         void BroadcastEffectiveness()
             => OnNewEvent?.Invoke(new PMoveEffectivenessPacket(bDefender.Mon, bEffectiveness));
         void BroadcastFaint(PPokemon pkmn)
@@ -30,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 OnNewEvent?.Invoke(new PMoveCritPacket());
         }
         void BroadcastStatChange(PPokemon pkmn, PStat stat, sbyte change, bool isTooMuch)
-            => OnNewEvent?.Invoke(new PPkmnStatChangePacket(pkmn, stat, change, isTooMuch));
+            => OnNewEvent?.Invoke(new PPkmnStatChangedPacket(pkmn, stat, change, isTooMuch));
         void BroadcastStatus1Change(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PStatus1ChangePacket(pkmn));
         void BroadcastStatus1Ended(PPokemon pkmn)
@@ -41,6 +43,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PStatus1CausedDamagePacket(pkmn));
         void BroadcastFail()
             => OnNewEvent?.Invoke(new PMoveFailPacket());
+        void BroadcastItemUsed(PPokemon pkmn)
+            => OnNewEvent?.Invoke(new PItemUsedPacket(pkmn));
 
 
 
@@ -48,6 +52,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             PPokemon pkmn;
             string message;
+            double percentage;
 
             switch (packet)
             {
@@ -57,10 +62,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PPkmnMovePacket pmp:
                     Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(pmp.PokemonId).Shell.Species, pmp.Move);
                     break;
-                case PPkmnDamagedPacket pdp:
+                case PPkmnHPChangedPacket pdp:
                     pkmn = PKnownInfo.Instance.Pokemon(pdp.PokemonId);
-                    double percentage = (double)pdp.Damage / pkmn.MaxHP;
-                    Console.WriteLine("{0} took {1} ({2:P2}) damage!", pkmn.Shell.Species, pdp.Damage, percentage);
+                    var hp = Math.Abs(pdp.Change);
+                    percentage = (double)hp / pkmn.MaxHP;
+                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Species, hp, percentage, pdp.Change < 0 ? "lost" : "gained");
                     break;
                 case PMoveEffectivenessPacket mep:
                     if (mep.Effectiveness == 0)
@@ -74,7 +80,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mep.PokemonId).Shell.Species);
                     break;
                 case PPkmnFlinchedPacket pflp:
-                    Console.WriteLine("{0} flinched!", PKnownInfo.Instance.Pokemon(pflp.PokemonId).Shell.Species);
+                    Console.WriteLine("{0} flinched and couldn't move!", PKnownInfo.Instance.Pokemon(pflp.PokemonId).Shell.Species);
                     break;
                 case PMoveMissedPacket mmp:
                     Console.WriteLine("{0}'s attack missed!", PKnownInfo.Instance.Pokemon(mmp.PokemonId).Shell.Species);
@@ -88,7 +94,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveFailPacket _:
                     Console.WriteLine("But it failed!");
                     break;
-                case PPkmnStatChangePacket pscp:
+                case PPkmnStatChangedPacket pscp:
                     switch (pscp.Change)
                     {
                         case -2: message = "harshly fell"; break;
@@ -148,6 +154,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(scdp.Status1), $"Invalid status1 causing damage: {scdp.Status1}");
                     }
                     Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scdp.PokemonId).Shell.Species, message);
+                    break;
+                case PItemUsedPacket iup:
+                    switch (iup.Item)
+                    {
+                        case PItem.Leftovers: message = "restored a little HP using its Leftovers"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
+                    }
+                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Species, message);
                     break;
             }
         }
