@@ -81,7 +81,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (mData.Type == PType.Bug && bAttacker.Mon.Shell.Ability == PAbility.Swarm && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
             // A burned pokemon does half the damage when it is Burned unless it has the Guts ability
-            if (mData.Category == PMoveCategory.Physical && bAttacker.Mon.Status == PStatus.Burned && bAttacker.Mon.Shell.Ability != PAbility.Guts)
+            if (mData.Category == PMoveCategory.Physical && bAttacker.Mon.Status1 == PStatus1.Burned && bAttacker.Mon.Shell.Ability != PAbility.Guts)
                 basePower /= 2;
             // Damage is halved when using Fire or Ice moves against a pokemon with the Thick Fat ability
             if (bDefender.Mon.Shell.Ability == PAbility.ThickFat && (mData.Type == PType.Fire || mData.Type == PType.Ice))
@@ -104,7 +104,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bAttacker.Mon.Shell.Ability == PAbility.Hustle)
                 attack *= 1.5;
             // A pokemon with the Guts ability gets a 1.5x attack boost when afflicted with a status
-            if (bAttacker.Mon.Shell.Ability == PAbility.Guts && bAttacker.Mon.Status != PStatus.NoStatus)
+            if (bAttacker.Mon.Shell.Ability == PAbility.Guts && bAttacker.Mon.Status1 != PStatus1.NoStatus)
                 attack *= 1.5;
             // A pokemon holding a Choice Band gets a 1.5x attack boost
             if (bAttacker.Mon.Shell.Item == PItem.ChoiceBand)
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bDefender.Mon.Shell.Item == PItem.MetalPowder && bDefender.Mon.Shell.Species == PSpecies.Ditto)
                 defense *= 2;
             // A pokemon with the Marvel Scale ability gets a 1.5x defense boost when afflicted with a status
-            if (bDefender.Mon.Shell.Ability == PAbility.MarvelScale && bDefender.Mon.Status != PStatus.NoStatus)
+            if (bDefender.Mon.Shell.Ability == PAbility.MarvelScale && bDefender.Mon.Status1 != PStatus1.NoStatus)
                 defense *= 1.5;
 
             return (ushort)defense;

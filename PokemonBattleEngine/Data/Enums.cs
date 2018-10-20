@@ -26,7 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PTarget : byte
     {
-        All,
+        AllButSelf,
         AllyLeft,
         AllyMiddle,
         AllyRight,
@@ -35,15 +35,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         FoeRight,
         Self
     }
-    public enum PStatus : byte
+    public enum PStatus1 : byte
     {
         NoStatus,
         Asleep, // TODO
-        BadlyPoisoned, // TODO
+        BadlyPoisoned,
         Burned,
         Frozen,
         Paralyzed,
-        Poisoned // TODO
+        Poisoned
     }
     [Flags]
     public enum PStatus2 : uint
@@ -194,7 +194,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeParalyze,
         Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
         Moonlight, // TODO
-        Toxic, // TODO
+        Toxic,
         Transform, // TODO
     }
     public enum PMove : ushort
@@ -214,7 +214,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShellSmash,
         Tackle,
         Thunder,
-        Toxic, // TODO
+        Toxic,
         Transform, // TODO
         Waterfall,
         MAX

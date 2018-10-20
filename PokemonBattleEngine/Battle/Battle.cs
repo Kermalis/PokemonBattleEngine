@@ -11,6 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             public readonly PPokemon Mon;
             public readonly PTeam Team;
 
+            public byte Status1Counter;
+
             public PMove PreviousMove, SelectedMove;
             public PTarget SelectedTarget;
 
@@ -29,7 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             public PTeam(PTeamShell data)
             {
-                int min = Math.Min(data.Party.Count, PConstants.MaxPokemon);
+                int min = Math.Min(data.Party.Count, PConstants.MaxPartySize);
                 Party = new PBattlePokemon[min];
                 for (int i = 0; i < min; i++)
                 {

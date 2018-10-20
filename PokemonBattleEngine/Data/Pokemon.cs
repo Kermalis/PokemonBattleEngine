@@ -13,7 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public bool LocallyOwned;
         public readonly PPokemonShell Shell;
 
-        public PStatus Status;
+        public PStatus1 Status1;
         public PStatus2 Status2;
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
         // These are in a set order; see BattleEffects->ApplyStatChange()
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             var bytes = new List<byte>();
             bytes.AddRange(Id.ToByteArray());
             bytes.AddRange(Shell.ToBytes());
-            bytes.Add((byte)Status);
+            bytes.Add((byte)Status1);
             bytes.AddRange(BitConverter.GetBytes((uint)Status2));
             bytes.AddRange(BitConverter.GetBytes(HP));
             bytes.Add((byte)AttackChange);
@@ -97,7 +97,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             var pkmn = new PPokemon(new Guid(r.ReadBytes(0x10)), PPokemonShell.FromBytes(r))
             {
-                Status = (PStatus)r.ReadByte(),
+                Status1 = (PStatus1)r.ReadByte(),
                 Status2 = (PStatus2)r.ReadUInt32(),
                 HP = r.ReadUInt16(),
                 AttackChange = r.ReadSByte(),
@@ -131,7 +131,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             str += $" {Shell.Species}";
             str += $" Lv.{Shell.Level}";
             str += $" {HP}/{MaxHP} HP";
-            str += $" {Status}";
+            str += $" {Status1}";
             str += $" {item}";
             if (nature != "???") // You will never know the nature of an opponent
                 str += $" {nature}";

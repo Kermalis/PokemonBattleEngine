@@ -22,8 +22,8 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public string LocalDisplayName = string.Empty,
             RemoteDisplayName = string.Empty;
-        List<PPokemon> localParty = new List<PPokemon>(PConstants.MaxPokemon),
-            remoteParty = new List<PPokemon>(PConstants.MaxPokemon);
+        List<PPokemon> localParty = new List<PPokemon>(PConstants.MaxPartySize),
+            remoteParty = new List<PPokemon>(PConstants.MaxPartySize);
 
         public string DisplayName(bool local) => local ? LocalDisplayName : RemoteDisplayName;
         // Returns null if it doesn't exist
@@ -39,8 +39,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public void SetPartyPokemon(IEnumerable<PPokemon> pkmn, bool local)
         {
-            var list = pkmn.Take(PConstants.MaxPokemon).ToList();
-            list.Capacity = PConstants.MaxPokemon;
+            var list = pkmn.Take(PConstants.MaxPartySize).ToList();
+            list.Capacity = PConstants.MaxPartySize;
 
             foreach (var p in list)
                 p.LocallyOwned = local;
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             if (Pokemon(id) == null)
             {
-                if (remoteParty.Count == PConstants.MaxPokemon)
+                if (remoteParty.Count == PConstants.MaxPartySize)
                     throw new InvalidOperationException("Too many Pokémon!");
 
                 // Use remote pokemon constructor, which sets LocallyOwned to false and moves to PMove.MAX

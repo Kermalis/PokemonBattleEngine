@@ -17,11 +17,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             // TODO: Limber
 
-            if (battler.Mon.Status == PStatus.Burned)
+            // Major statuses
+            switch (battler.Mon.Status1)
             {
-                BroadcastStatusCausedDamage(battler.Mon);
-                DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.BurnDamageDenominator));
-                TryFaint(battler.Mon);
+                case PStatus1.Burned:
+                    BroadcastStatus1CausedDamage(battler.Mon);
+                    DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.BurnDamageDenominator));
+                    TryFaint(battler.Mon);
+                    break;
+                case PStatus1.Poisoned:
+                    BroadcastStatus1CausedDamage(battler.Mon);
+                    DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.PoisonDamageDenominator));
+                    TryFaint(battler.Mon);
+                    break;
+                case PStatus1.BadlyPoisoned:
+                    BroadcastStatus1CausedDamage(battler.Mon);
+                    DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP * battler.Status1Counter / PConstants.ToxicDamageDenominator));
+                    if (TryFaint(battler.Mon))
+                        battler.Status1Counter = 0;
+                    else
+                        battler.Status1Counter++;
+                    break;
             }
         }
 
@@ -45,45 +61,51 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeLower_SPDEF_By1: Ef_Hit__MaybeLower_SPDEF_By1(mData.EffectParam); break;
                 case PMoveEffect.Hit__MaybeParalyze: Ef_Hit__MaybeParalyze(mData.EffectParam); break;
                 case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2: Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2(); break;
+                case PMoveEffect.Toxic: Ef_Toxic(); break;
                 default: throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
             }
         }
 
         // Returns true if an attack gets cancelled
+        // Broadcasts status ending events & status causing immobility events
         bool AttackCancelCheck()
         {
+            // Flinch first
             if (bAttacker.Mon.Status2.HasFlag(PStatus2.Flinching))
             {
                 BroadcastFlinch();
                 return true;
             }
-            else if (bAttacker.Mon.Status == PStatus.Frozen)
+
+            // Major statuses
+            switch (bAttacker.Mon.Status1)
             {
-                // 20% chance to thaw out
-                if (PUtils.ApplyChance(20))
-                {
-                    BroadcastStatusEnded(bAttacker.Mon);
-                    bAttacker.Mon.Status = PStatus.NoStatus;
-                    return false;
-                }
-                else
-                {
-                    BroadcastStatusCausedImmobility(bAttacker.Mon);
+                case PStatus1.Frozen:
+                    // 20% chance to thaw out
+                    if (PUtils.ApplyChance(20))
+                    {
+                        BroadcastStatus1Ended(bAttacker.Mon);
+                        bAttacker.Mon.Status1 = PStatus1.NoStatus;
+                        return false;
+                    }
+                    // Didn't thaw out
+                    BroadcastStatus1CausedImmobility(bAttacker.Mon);
                     return true;
-                }
+                case PStatus1.Paralyzed:
+                    // 25% chance to be unable to move
+                    if (PUtils.ApplyChance(25))
+                    {
+                        BroadcastStatus1CausedImmobility(bAttacker.Mon);
+                        return true;
+                    }
+                    break;
             }
-            else if (bAttacker.Mon.Status == PStatus.Paralyzed)
-            {
-                // 25% chance to be unable to move
-                if (PUtils.ApplyChance(25))
-                {
-                    BroadcastStatusCausedImmobility(bAttacker.Mon);
-                    return true;
-                }
-            }
+
             return false;
         }
+
         // Returns true if an attack misses
+        // Broadcasts the event if it missed
         bool AccuracyCheck()
         {
             PMoveData mData = PMoveData.Data[bMove];
@@ -95,6 +117,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
 
+        // Broadcasts the event
         void DealDamage()
             => DealDamage(bDefender.Mon, (ushort)(bDamage * bEffectiveness * bDamageMultiplier));
         void DealDamage(PPokemon pkmn, ushort damage)
@@ -105,6 +128,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // Returns true if the pokemon fainted
+        // Broadcasts the event if it did
         bool TryFaint()
             => TryFaint(bDefender.Mon);
         bool TryFaint(PPokemon pkmn)
@@ -117,11 +141,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
+        // Does not broadcast the event
         public static void ApplyStatChange(PPkmnStatChangePacket packet)
             => ApplyStatChange(PKnownInfo.Instance.Pokemon(packet.PokemonId), packet.Stat, packet.Change, null);
-        // Broadcasts the event as well
+        // Broadcasts the event
         void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)
             => ApplyStatChange(pkmn, stat, change, this);
+        // Broadcasts the event if "battle" is not null
         static unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change, PBattle battle)
         {
             bool isTooMuch = false;
@@ -137,24 +163,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // Returns true if the status was applied
-        bool ApplyStatusIfPossible(PPokemon pkmn, PStatus status)
+        // Broadcasts the change if applied
+        bool ApplyStatus1IfPossible(PBattlePokemon pkmn, PStatus1 status)
         {
-            if (pkmn.Status != PStatus.NoStatus)
+            if (pkmn.Mon.Status1 != PStatus1.NoStatus)
                 return false;
 
-            PPokemonData pData = PPokemonData.Data[pkmn.Shell.Species];
+            PPokemonData pData = PPokemonData.Data[pkmn.Mon.Shell.Species];
 
             // TODO: Limber
 
             // An Ice type pokemon cannot be Frozen
-            if (status == PStatus.Frozen && pData.HasType(PType.Ice))
+            if (status == PStatus1.Frozen && pData.HasType(PType.Ice))
                 return false;
             // A Fire type pokemon cannot be burned
-            if (status == PStatus.Burned && pData.HasType(PType.Fire))
+            if (status == PStatus1.Burned && pData.HasType(PType.Fire))
+                return false;
+            // A Poison or Steel type pokemon cannot be poisoned or badly poisoned
+            if ((status == PStatus1.BadlyPoisoned || status == PStatus1.Poisoned) && (pData.HasType(PType.Poison) || pData.HasType(PType.Steel)))
                 return false;
 
-            pkmn.Status = status;
-            BroadcastStatusChange(pkmn);
+
+            pkmn.Mon.Status1 = status;
+            // Start toxic counter
+            if (status == PStatus1.BadlyPoisoned)
+                pkmn.Status1Counter = 1;
+            BroadcastStatus1Change(pkmn.Mon);
+
             return true;
         }
 
@@ -187,22 +222,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
 
-        bool HitAndMaybeApplyStatus(PStatus status, int chance)
+        bool HitAndMaybeApplyStatus1(PStatus1 status, int chance)
         {
             if (!Ef_Hit())
                 return false;
-            if (bDefender.Mon.Status != PStatus.NoStatus || !PUtils.ApplyChance(chance))
+            if (!PUtils.ApplyChance(chance))
                 return false;
-            if (!ApplyStatusIfPossible(bDefender.Mon, status))
+            if (!ApplyStatus1IfPossible(bDefender, status))
                 return false;
             return true;
         }
         bool Ef_Hit__MaybeBurn(int chance)
-            => HitAndMaybeApplyStatus(PStatus.Burned, chance);
+            => HitAndMaybeApplyStatus1(PStatus1.Burned, chance);
         bool Ef_Hit__MaybeFreeze(int chance)
-            => HitAndMaybeApplyStatus(PStatus.Frozen, chance);
+            => HitAndMaybeApplyStatus1(PStatus1.Frozen, chance);
         bool Ef_Hit__MaybeParalyze(int chance)
-            => HitAndMaybeApplyStatus(PStatus.Paralyzed, chance);
+            => HitAndMaybeApplyStatus1(PStatus1.Paralyzed, chance);
 
         bool HitAndMaybeChangeStat(PStat stat, sbyte change, int chance)
         {
@@ -229,6 +264,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyStatChange(pkmn, PStat.Attack, +2);
             ApplyStatChange(pkmn, PStat.SpAttack, +2);
             ApplyStatChange(pkmn, PStat.Speed, +2);
+            return true;
+        }
+
+        bool Ef_Toxic()
+        {
+            if (AttackCancelCheck())
+                return false;
+            if (AccuracyCheck())
+                return false;
+            BroadcastMoveUsed();
+            // PPReduce();
+            if (!ApplyStatus1IfPossible(bDefender, PStatus1.BadlyPoisoned))
+            {
+                BroadcastFail();
+                return false;
+            }
             return true;
         }
     }

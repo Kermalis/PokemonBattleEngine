@@ -127,7 +127,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public sealed class PTeamShell
     {
         public string DisplayName;
-        public readonly List<PPokemonShell> Party = new List<PPokemonShell>(PConstants.MaxPokemon);
+        public readonly List<PPokemonShell> Party = new List<PPokemonShell>(PConstants.MaxPartySize);
 
         internal byte[] ToBytes()
         {
@@ -137,7 +137,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             bytes.Add((byte)nameBytes.Length);
             bytes.AddRange(nameBytes);
 
-            var numPkmn = Math.Min(PConstants.MaxPokemon, Party.Count);
+            var numPkmn = Math.Min(PConstants.MaxPartySize, Party.Count);
             bytes.Add((byte)numPkmn);
             for (int i = 0; i < numPkmn; i++)
                 bytes.AddRange(Party[i].ToBytes());
@@ -149,7 +149,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 DisplayName = Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte()))
             };
-            var numPkmn = Math.Min(PConstants.MaxPokemon, r.ReadByte());
+            var numPkmn = Math.Min(PConstants.MaxPartySize, r.ReadByte());
             for (int i = 0; i < numPkmn; i++)
                 team.Party.Add(PPokemonShell.FromBytes(r));
             return team;

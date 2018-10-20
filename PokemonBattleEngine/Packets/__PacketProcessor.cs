@@ -33,10 +33,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PPkmnFaintedPacket.Code: packet = new PPkmnFaintedPacket(buffer); break;
                 case PMoveCritPacket.Code: packet = new PMoveCritPacket(buffer); break;
                 case PPkmnStatChangePacket.Code: packet = new PPkmnStatChangePacket(buffer); break;
-                case PStatusChangePacket.Code: packet = new PStatusChangePacket(buffer); break;
-                case PStatusEndedPacket.Code: packet = new PStatusEndedPacket(buffer); break;
-                case PStatusCausedImmobilityPacket.Code: packet = new PStatusCausedImmobilityPacket(buffer); break;
-                case PStatusCausedDamagePacket.Code: packet = new PStatusCausedDamagePacket(buffer); break;
+                case PStatus1ChangePacket.Code: packet = new PStatus1ChangePacket(buffer); break;
+                case PStatus1EndedPacket.Code: packet = new PStatus1EndedPacket(buffer); break;
+                case PStatus1CausedImmobilityPacket.Code: packet = new PStatus1CausedImmobilityPacket(buffer); break;
+                case PStatus1CausedDamagePacket.Code: packet = new PStatus1CausedDamagePacket(buffer); break;
+                case PMoveFailPacket.Code: packet = new PMoveFailPacket(buffer); break;
                 default: throw new ArgumentException($"Invalid packet code: {code}");
             }
 

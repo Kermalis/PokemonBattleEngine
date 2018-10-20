@@ -81,8 +81,9 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PPkmnFlinchedPacket _:
                 case PMoveMissedPacket _:
                 case PPkmnFaintedPacket _:
-                case PStatusCausedImmobilityPacket _:
-                case PStatusCausedDamagePacket _:
+                case PStatus1CausedImmobilityPacket _:
+                case PStatus1CausedDamagePacket _:
+                case PMoveFailPacket _:
                     Send(new PResponsePacket());
                     break;
 
@@ -133,12 +134,12 @@ namespace Kermalis.PokemonBattleEngineClient
                     PBattle.ApplyStatChange(pscp);
                     Send(new PResponsePacket());
                     break;
-                case PStatusChangePacket scp:
-                    PKnownInfo.Instance.Pokemon(scp.PokemonId).Status = scp.Status;
+                case PStatus1ChangePacket scp:
+                    PKnownInfo.Instance.Pokemon(scp.PokemonId).Status1 = scp.Status1;
                     Send(new PResponsePacket());
                     break;
-                case PStatusEndedPacket sep:
-                    PKnownInfo.Instance.Pokemon(sep.PokemonId).Status = PStatus.NoStatus;
+                case PStatus1EndedPacket sep:
+                    PKnownInfo.Instance.Pokemon(sep.PokemonId).Status1 = PStatus1.NoStatus;
                     Send(new PResponsePacket());
                     break;
             }
