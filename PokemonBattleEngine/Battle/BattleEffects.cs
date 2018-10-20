@@ -139,6 +139,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Returns true if the status was applied
         bool ApplyStatusIfPossible(PPokemon pkmn, PStatus status)
         {
+            if (pkmn.Status != PStatus.NoStatus)
+                return false;
+
             PPokemonData pData = PPokemonData.Data[pkmn.Shell.Species];
 
             // TODO: Limber
