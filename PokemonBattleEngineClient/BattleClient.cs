@@ -81,6 +81,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PPkmnFlinchedPacket _:
                 case PMoveMissedPacket _:
                 case PPkmnFaintedPacket _:
+                case PStatusCausedImmobilityPacket _:
                     Send(new PResponsePacket());
                     break;
 

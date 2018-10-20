@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PStatusChangePacket(pkmn));
         void BroadcastStatusEnded(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PStatusEndedPacket(pkmn));
-        void PrintStatusCausedImmobility(PPokemon pkmn)
+        void BroadcastStatusCausedImmobility(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PStatusCausedImmobilityPacket(pkmn));
 
 

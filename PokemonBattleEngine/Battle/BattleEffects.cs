@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    PrintStatusCausedImmobility(bAttacker.Mon);
+                    BroadcastStatusCausedImmobility(bAttacker.Mon);
                     return true;
                 }
             }
@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // 25% chance to be unable to move
                 if (PUtils.ApplyChance(25))
                 {
-                    PrintStatusCausedImmobility(bAttacker.Mon);
+                    BroadcastStatusCausedImmobility(bAttacker.Mon);
                     return true;
                 }
             }
