@@ -82,6 +82,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Inferno,
+                new PMoveData
+                {
+                    Type = PType.Fire, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeBurn, EffectParam = 100,
+                    PP = 5, Power = 10, Accuracy = 50, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
+                }
+            },
+            {
                 PMove.Moonlight,
                 new PMoveData
                 {

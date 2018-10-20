@@ -16,6 +16,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void DoTurnEndedEffects(PBattlePokemon battler)
         {
             // TODO: Limber
+
+            if (battler.Mon.Status == PStatus.Burned)
+            {
+                BroadcastStatusCausedDamage(battler.Mon);
+                DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.BurnDamageDenominator));
+                TryFaint(battler.Mon);
+            }
         }
 
         void UseMove(PBattlePokemon attacker)
@@ -32,11 +39,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (mData.Effect)
             {
                 case PMoveEffect.Hit: Ef_Hit(); break;
+                case PMoveEffect.Hit__MaybeBurn: Ef_Hit__MaybeBurn(mData.EffectParam); break;
                 case PMoveEffect.Hit__MaybeFlinch: Ef_Hit__MaybeFlinch(mData.EffectParam); break;
                 case PMoveEffect.Hit__MaybeFreeze: Ef_Hit__MaybeFreeze(mData.EffectParam); break;
                 case PMoveEffect.Hit__MaybeLower_SPDEF_By1: Ef_Hit__MaybeLower_SPDEF_By1(mData.EffectParam); break;
                 case PMoveEffect.Hit__MaybeParalyze: Ef_Hit__MaybeParalyze(mData.EffectParam); break;
                 case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2: Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2(); break;
+                default: throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
             }
         }
 
@@ -85,20 +94,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMiss();
             return true;
         }
+
         void DealDamage()
+            => DealDamage(bDefender.Mon, (ushort)(bDamage * bEffectiveness * bDamageMultiplier));
+        void DealDamage(PPokemon pkmn, ushort damage)
         {
-            PPokemon victim = bDefender.Mon;
-            ushort total = (ushort)(bDamage * bEffectiveness * bDamageMultiplier);
-            var oldHP = victim.HP;
-            victim.HP = (ushort)Math.Max(0, victim.HP - total);
-            BroadcastDamage(victim, (ushort)(oldHP - victim.HP));
+            var oldHP = pkmn.HP;
+            pkmn.HP = (ushort)Math.Max(0, pkmn.HP - damage);
+            BroadcastDamage(pkmn, (ushort)(oldHP - pkmn.HP));
         }
+
         // Returns true if the pokemon fainted
         bool TryFaint()
+            => TryFaint(bDefender.Mon);
+        bool TryFaint(PPokemon pkmn)
         {
-            if (bDefender.Mon.HP < 1)
+            if (pkmn.HP < 1)
             {
-                BroadcastFaint(bDefender.Mon);
+                BroadcastFaint(pkmn);
                 return true;
             }
             return false;
@@ -132,6 +145,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             // An Ice type pokemon cannot be Frozen
             if (status == PStatus.Frozen && pData.HasType(PType.Ice))
+                return false;
+            // A Fire type pokemon cannot be burned
+            if (status == PStatus.Burned && pData.HasType(PType.Fire))
                 return false;
 
             pkmn.Status = status;
@@ -167,6 +183,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             bDefender.Mon.Status2 |= PStatus2.Flinching;
             return true;
         }
+
         bool HitAndMaybeApplyStatus(PStatus status, int chance)
         {
             if (!Ef_Hit())
@@ -177,14 +194,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             return true;
         }
+        bool Ef_Hit__MaybeBurn(int chance)
+            => HitAndMaybeApplyStatus(PStatus.Burned, chance);
         bool Ef_Hit__MaybeFreeze(int chance)
-        {
-            return HitAndMaybeApplyStatus(PStatus.Frozen, chance);
-        }
+            => HitAndMaybeApplyStatus(PStatus.Frozen, chance);
         bool Ef_Hit__MaybeParalyze(int chance)
-        {
-            return HitAndMaybeApplyStatus(PStatus.Paralyzed, chance);
-        }
+            => HitAndMaybeApplyStatus(PStatus.Paralyzed, chance);
+
         bool HitAndMaybeChangeStat(PStat stat, sbyte change, int chance)
         {
             if (!Ef_Hit())
@@ -195,9 +211,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
         bool Ef_Hit__MaybeLower_SPDEF_By1(int chance)
-        {
-            return HitAndMaybeChangeStat(PStat.SpDefense, -1, chance);
-        }
+            => HitAndMaybeChangeStat(PStat.SpDefense, -1, chance);
         bool Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
         {
             if (AttackCancelCheck())

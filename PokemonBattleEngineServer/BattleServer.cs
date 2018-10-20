@@ -69,15 +69,18 @@ namespace Kermalis.PokemonBattleEngineServer
             if (battlers[0].Team != null && battlers[1].Team != null)
             {
                 // Temporary:
-                try
+                if (false)
                 {
-                    PPokemonShell.ValidateMany(battlers[0].Team.Party.Concat(battlers[1].Team.Party));
-                }
-                catch
-                {
-                    Console.WriteLine("Invalid Pokémon data received!");
-                    CancelMatch();
-                    return;
+                    try
+                    {
+                        PPokemonShell.ValidateMany(battlers[0].Team.Party.Concat(battlers[1].Team.Party));
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Invalid Pokémon data received!");
+                        CancelMatch();
+                        return;
+                    }
                 }
                 //
                 Console.WriteLine("Both players ready!");

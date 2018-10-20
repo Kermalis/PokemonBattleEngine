@@ -40,7 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         NoStatus,
         Asleep, // TODO
         BadlyPoisoned, // TODO
-        Burned, // TODO
+        Burned,
         Frozen,
         Paralyzed,
         Poisoned // TODO
@@ -187,6 +187,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PMoveEffect : byte
     {
         Hit,
+        Hit__MaybeBurn,
         Hit__MaybeFlinch,
         Hit__MaybeFreeze,
         Hit__MaybeLower_SPDEF_By1,
@@ -205,6 +206,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HydroPump,
         IceBeam,
         IcePunch,
+        Inferno,
         Moonlight, // TODO
         Psychic,
         Retaliate, // TODO

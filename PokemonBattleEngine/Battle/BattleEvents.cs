@@ -37,6 +37,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PStatusEndedPacket(pkmn));
         void BroadcastStatusCausedImmobility(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PStatusCausedImmobilityPacket(pkmn));
+        void BroadcastStatusCausedDamage(PPokemon pkmn)
+            => OnNewEvent?.Invoke(new PStatusCausedDamagePacket(pkmn));
 
 
 
@@ -106,6 +108,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PStatusChangePacket scp:
                     switch (scp.Status)
                     {
+                        case PStatus.Burned: message = "was burned"; break;
                         case PStatus.Frozen: message = "was frozen solid"; break;
                         case PStatus.Paralyzed: message = "is paralyzed! It may be unable to move"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(scp.Status), $"Invalid status change: {scp.Status}");
@@ -128,6 +131,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(scip.Status), $"Invalid status causing immobility: {scip.Status}");
                     }
                     Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scip.PokemonId).Shell.Species, message);
+                    break;
+                case PStatusCausedDamagePacket scdp:
+                    switch (scdp.Status)
+                    {
+                        case PStatus.Burned: message = "was hurt by its burn"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(scdp.Status), $"Invalid status causing damage: {scdp.Status}");
+                    }
+                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scdp.PokemonId).Shell.Species, message);
                     break;
             }
         }
