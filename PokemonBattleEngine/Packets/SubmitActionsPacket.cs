@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Kermalis.PokemonBattleEngine.Network
+namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PSubmitActionsPacket : INetPacketStream
+    public sealed class PSubmitActionsPacket : INetPacket
     {
-        public const int Code = 0x8;
-        byte[] buf;
-        public byte[] Buffer => (byte[])buf.Clone();
+        public const short Code = 0x08;
+        public IEnumerable<byte> Buffer { get; }
 
         public sealed class Action
         {
@@ -47,25 +46,21 @@ namespace Kermalis.PokemonBattleEngine.Network
             bytes.Add((byte)Actions.Length);
             foreach (var a in Actions)
                 bytes.AddRange(a.ToBytes());
-            buf = BitConverter.GetBytes(bytes.Count).Concat(bytes).ToArray();
+            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PSubmitActionsPacket(byte[] buffer)
         {
-            using (var r = new BinaryReader(new MemoryStream(buf = buffer)))
+            Buffer = buffer;
+            using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
-                r.ReadInt32(); // Skip Code
+                r.ReadInt16(); // Skip Code
                 byte numActions = r.ReadByte();
                 Actions = new Action[numActions];
                 for (int i = 0; i < numActions; i++)
                     Actions[i] = Action.FromBytes(r);
             }
         }
-
-        public int Size => throw new NotImplementedException();
-        public long Position => throw new NotImplementedException();
-        public T Read<T>() => throw new NotImplementedException();
-        public T[] ReadArray<T>(int amount) => throw new NotImplementedException();
-        public void Write<T>(T value) => throw new NotImplementedException();
+        
         public void Dispose() { }
     }
 }

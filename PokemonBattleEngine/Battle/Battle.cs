@@ -73,7 +73,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Set CurPokemon here
             // Temporary:
             foreach (PBattlePokemon battler in battlers)
-                PrintSwitchIn(battler.Mon);
+                BroadcastSwitchIn(battler.Mon);
         }
 
         public void SelectAction(Guid pkmnId, byte param)
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (pkmn.Mon.HP < 1)
                     continue;
                 UseMove(pkmn);
-                pkmn.PreviousMove = bCurMove;
+                pkmn.PreviousMove = bMove;
             }
         }
         void TurnEnded()

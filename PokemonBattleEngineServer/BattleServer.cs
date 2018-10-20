@@ -2,7 +2,7 @@
 using Ether.Network.Server;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Network;
+using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Linq;
 
@@ -93,8 +93,8 @@ namespace Kermalis.PokemonBattleEngineServer
             Console.WriteLine("Battle starting!");
 
             battle = new PBattle(battlers[0].Team, battlers[1].Team);
-            battle.NewEvent += PBattle.ConsoleBattleEventHandler;
-            battle.NewEvent += BattleEventHandler;
+            battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
+            battle.OnNewEvent += BattleEventHandler;
 
             // Send opponent names
             battlers[0].Send(new PPlayerJoinedPacket(battlers[1].Id, battlers[1].Team.DisplayName));
@@ -134,7 +134,7 @@ namespace Kermalis.PokemonBattleEngineServer
             battlers[0].ResetEvent.WaitOne();
             battlers[1].ResetEvent.WaitOne();
         }
-        void BattleEventHandler(INetPacketStream packet)
+        void BattleEventHandler(INetPacket packet)
         {
             switch (packet)
             {
@@ -155,7 +155,7 @@ namespace Kermalis.PokemonBattleEngineServer
         }
 
         static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
-        protected override IPacketProcessor PacketProcessor => packetProcessor;
+        public override IPacketProcessor PacketProcessor => packetProcessor;
         public BattleServer(string host)
         {
             Configuration.Backlog = 50;

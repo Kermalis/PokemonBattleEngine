@@ -12,11 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ether.Network" Version="3.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+    <Reference Include="Ether.Network">
+      <HintPath>..\Shared Dependencies\Ether.Network.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

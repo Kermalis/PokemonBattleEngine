@@ -4,7 +4,7 @@ using System;
 
 namespace Kermalis.PokemonBattleEngine
 {
-    class TestProgram
+    class PTestProgram
     {
         static readonly PPokemonShell
             pikachu = new PPokemonShell
@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Bold,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
                 EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
-                Moves = new PMove[] { PMove.IceBeam, PMove.Moonlight, PMove.Psychic, PMove.Toxic }
+                Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic }
             };
 
         public static void Main(string[] args)
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine
             }
 
             PBattle battle = new PBattle(team1, team2);
-            battle.NewEvent += PBattle.ConsoleBattleEventHandler;
+            battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
             battle.Start();
             PPokemon p1 = PKnownInfo.Instance.LocalParty[0];
             PPokemon p2 = PKnownInfo.Instance.RemoteParty[0];

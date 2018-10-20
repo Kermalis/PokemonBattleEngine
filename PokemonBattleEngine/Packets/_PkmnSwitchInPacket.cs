@@ -5,19 +5,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Kermalis.PokemonBattleEngine.Network
+namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PPkmnSwitchInPacket : INetPacketStream
+    public sealed class PPkmnSwitchInPacket : INetPacket
     {
-        public const int Code = 0x6;
-        public byte[] Buffer => BuildBuffer();
+        public const short Code = 0x06;
+        public IEnumerable<byte> Buffer => BuildBuffer();
 
-        public Guid PokemonId;
+        public readonly Guid PokemonId;
         public bool LocallyOwned;
-        public PSpecies Species;
-        public byte Level;
-        public ushort HP, MaxHP;
-        public PGender Gender;
+        public readonly PSpecies Species;
+        public readonly byte Level;
+        public readonly ushort HP, MaxHP;
+        public readonly PGender Gender;
 
         public PPkmnSwitchInPacket(PPokemon pkmn)
         {
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Network
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
-                r.ReadInt32(); // Skip Code
+                r.ReadInt16(); // Skip Code
                 PokemonId = new Guid(r.ReadBytes(0x10));
                 LocallyOwned = r.ReadByte() != 0;
                 Species = (PSpecies)r.ReadUInt16();
@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Network
                 Gender = (PGender)r.ReadByte();
             }
         }
-        byte[] BuildBuffer()
+        IEnumerable<byte> BuildBuffer()
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -54,14 +54,9 @@ namespace Kermalis.PokemonBattleEngine.Network
             bytes.AddRange(BitConverter.GetBytes(HP));
             bytes.AddRange(BitConverter.GetBytes(MaxHP));
             bytes.Add((byte)Gender);
-            return BitConverter.GetBytes(bytes.Count).Concat(bytes).ToArray();
+            return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-
-        public int Size => throw new NotImplementedException();
-        public long Position => throw new NotImplementedException();
-        public T Read<T>() => throw new NotImplementedException();
-        public T[] ReadArray<T>(int amount) => throw new NotImplementedException();
-        public void Write<T>(T value) => throw new NotImplementedException();
+        
         public void Dispose() { }
     }
 }

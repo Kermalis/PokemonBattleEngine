@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Util;
 using System;
 
@@ -7,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
     public sealed partial class PBattle
     {
         PBattlePokemon bAttacker, bDefender;
-        PMove bCurMove;
+        PMove bMove;
         ushort bDamage;
         double bEffectiveness, bDamageMultiplier;
         bool bLandedCrit;
@@ -22,12 +23,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             bAttacker = attacker;
             // TODO: Target
             bDefender = attacker == battlers[0] ? battlers[1] : battlers[0]; // Temporary
-            bCurMove = attacker.SelectedMove;
+            bMove = attacker.SelectedMove;
             bDamage = 0;
             bEffectiveness = bDamageMultiplier = 1;
             bLandedCrit = false;
 
-            PMoveData mData = PMoveData.Data[bCurMove];
+            PMoveData mData = PMoveData.Data[bMove];
             switch (mData.Effect)
             {
                 case PMoveEffect.Hit: Ef_Hit(); break;
@@ -44,7 +45,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (bAttacker.Mon.Status2.HasFlag(PStatus2.Flinching))
             {
-                PrintFlinch();
+                BroadcastFlinch();
                 return true;
             }
             else if (bAttacker.Mon.Status == PStatus.Frozen)
@@ -52,13 +53,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // 20% chance to thaw out
                 if (PUtils.ApplyChance(20))
                 {
-                    PrintStatusEnded(bAttacker.Mon);
+                    BroadcastStatusEnded(bAttacker.Mon);
                     bAttacker.Mon.Status = PStatus.NoStatus;
                     return false;
                 }
                 else
                 {
-                    PrintStatusCancelledMove(bAttacker.Mon);
+                    PrintStatusCausedImmobility(bAttacker.Mon);
                     return true;
                 }
             }
@@ -67,7 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // 25% chance to be unable to move
                 if (PUtils.ApplyChance(25))
                 {
-                    PrintStatusCancelledMove(bAttacker.Mon);
+                    PrintStatusCausedImmobility(bAttacker.Mon);
                     return true;
                 }
             }
@@ -76,12 +77,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Returns true if an attack misses
         bool AccuracyCheck()
         {
-            PMoveData mData = PMoveData.Data[bCurMove];
+            PMoveData mData = PMoveData.Data[bMove];
             if (mData.Accuracy == 0 // Always-hit moves
                 || PUtils.ApplyChance(mData.Accuracy) // Got lucky and landed a hit
                 )
                 return false;
-            PrintMiss();
+            BroadcastMiss();
             return true;
         }
         void DealDamage()
@@ -90,32 +91,38 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort total = (ushort)(bDamage * bEffectiveness * bDamageMultiplier);
             var oldHP = victim.HP;
             victim.HP = (ushort)Math.Max(0, victim.HP - total);
-            PrintDamage(victim, (ushort)(oldHP - victim.HP));
+            BroadcastDamage(victim, (ushort)(oldHP - victim.HP));
         }
         // Returns true if the pokemon fainted
         bool TryFaint()
         {
             if (bDefender.Mon.HP < 1)
             {
-                PrintFaint(bDefender.Mon);
+                BroadcastFaint(bDefender.Mon);
                 return true;
             }
             return false;
         }
 
-        unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)
+        public static void ApplyStatChange(PPkmnStatChangePacket packet)
+            => ApplyStatChange(PKnownInfo.Instance.Pokemon(packet.PokemonId), packet.Stat, packet.Change, null);
+        // Broadcasts the event as well
+        void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)
+            => ApplyStatChange(pkmn, stat, change, this);
+        static unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change, PBattle battle)
         {
-            bool tooMuch = false;
+            bool isTooMuch = false;
             fixed (sbyte* ptr = &pkmn.AttackChange)
             {
                 sbyte* scPtr = ptr + (stat - PStat.Attack); // Points to the proper stat change sbyte
                 if (*scPtr < -PConstants.MaxStatChange || *scPtr > PConstants.MaxStatChange)
-                    tooMuch = true;
+                    isTooMuch = true;
                 else
                     *scPtr = (sbyte)PUtils.Clamp(*scPtr + change, -PConstants.MaxStatChange, PConstants.MaxStatChange);
             }
-            PrintStatChange(pkmn, stat, change, tooMuch);
+            battle?.BroadcastStatChange(pkmn, stat, change, isTooMuch);
         }
+
         // Returns true if the status was applied
         bool ApplyStatusIfPossible(PPokemon pkmn, PStatus status)
         {
@@ -128,7 +135,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
 
             pkmn.Status = status;
-            PrintStatusChange(pkmn, status);
+            BroadcastStatusChange(pkmn);
             return true;
         }
 
@@ -138,15 +145,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (AccuracyCheck())
                 return false;
-            PrintMoveUsed();
+            BroadcastMoveUsed();
             // PPReduce();
             // CritCheck();
             bDamage = CalculateDamage();
             if (!TypeCheck())
                 return false;
             DealDamage();
-            PrintEffectiveness();
-            PrintCrit();
+            BroadcastEffectiveness();
+            BroadcastCrit();
             if (TryFaint())
                 return false;
             return true;
@@ -197,7 +204,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (AccuracyCheck())
                 return false;
-            PrintMoveUsed();
+            BroadcastMoveUsed();
             // PPReduce();
             var pkmn = bAttacker.Mon;
             ApplyStatChange(pkmn, PStat.Defense, -1);

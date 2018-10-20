@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -35,6 +36,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         // This constructor is to define an unknown remote pokemon
         // LocallyOwned is set to false here
+        // Moves are set to PMove.MAX which will be displayed as "???"
         public PPokemon(Guid id, PSpecies species, byte level, PGender gender)
         {
             Id = id;
@@ -48,6 +50,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Nature = PNature.MAX,
                 Ability = PAbility.MAX
             };
+            for (int i = 0; i < PConstants.NumMoves; i++)
+                Shell.Moves[i] = PMove.MAX;
         }
 
         void CalculateStats()
@@ -117,19 +121,22 @@ namespace Kermalis.PokemonBattleEngine.Data
         public override int GetHashCode() => Id.GetHashCode();
         public override string ToString()
         {
-            string str = $"{Shell.Species} Lv.{Shell.Level} {HP}/{MaxHP} HP {Status}";
+            string item = Shell.Item.ToString().Replace("MAX", "???");
+            string nature = Shell.Nature.ToString().Replace("MAX", "???");
+            string ability = Shell.Ability.ToString().Replace("MAX", "???");
+            string moves = Shell.Moves.Print().Replace("MAX", "???");
 
-            string item = Shell.Item >= PItem.MAX ? "???" : Shell.Item.ToString();
+            string str = string.Empty;
+            str += $"{Shell.Gender}";
+            str += $" {Shell.Species}";
+            str += $" Lv.{Shell.Level}";
+            str += $" {HP}/{MaxHP} HP";
+            str += $" {Status}";
             str += $" {item}";
-
-            string nature = Shell.Nature >= PNature.MAX ? "???" : Shell.Nature.ToString();
             if (nature != "???") // You will never know the nature of an opponent
                 str += $" {nature}";
-
-            str += $" {Shell.Gender}";
-
-            string ability = Shell.Ability >= PAbility.MAX ? "???" : Shell.Ability.ToString();
             str += $" {ability}";
+            str += $" {moves}";
 
             return str;
         }

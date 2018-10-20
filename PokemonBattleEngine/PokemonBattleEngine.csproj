@@ -16,15 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Dependencies\**" />
-    <EmbeddedResource Remove="Dependencies\**" />
-    <None Remove="Dependencies\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Ether.Network">
-      <HintPath>Dependencies\Ether.Network.dll</HintPath>
-      <Private>true</Private>
+      <HintPath>../Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>
   </ItemGroup>  
 

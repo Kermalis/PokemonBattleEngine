@@ -215,5 +215,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         Toxic, // TODO
         Transform, // TODO
         Waterfall,
+        MAX
     }
 }

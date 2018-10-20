@@ -1,7 +1,7 @@
 ﻿using Ether.Network.Common;
 using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Network;
+using Kermalis.PokemonBattleEngine.Packets;
 using System.Diagnostics;
 using System.Threading;
 
@@ -14,12 +14,12 @@ namespace Kermalis.PokemonBattleEngineServer
         public PTeamShell Team;
         public PSubmitActionsPacket.Action[] Actions;
         
-        public override void Send(INetPacketStream packet)
+        public override void Send(INetPacket packet)
         {
             base.Send(packet);
             ResetEvent.Reset();
         }
-        public override void HandleMessage(INetPacketStream packet)
+        public override void HandleMessage(INetPacket packet)
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({Id})");
 

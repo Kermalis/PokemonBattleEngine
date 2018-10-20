@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             PPokemonData attackerPData = PPokemonData.Data[bAttacker.Mon.Shell.Species];
             PPokemonData defenderPData = PPokemonData.Data[bDefender.Mon.Shell.Species];
-            PMoveData mData = PMoveData.Data[bCurMove];
+            PMoveData mData = PMoveData.Data[bMove];
 
             // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost
             if (attackerPData.HasType(mData.Type))
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (bEffectiveness == 0)
             {
-                PrintEffectiveness();
+                BroadcastEffectiveness();
                 return false;
             }
 
@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         ushort CalculateBasePower()
         {
-            PMoveData mData = PMoveData.Data[bCurMove];
+            PMoveData mData = PMoveData.Data[bMove];
             double basePower = mData.Power;
 
 
@@ -66,7 +66,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bAttacker.Mon.Shell.Item == PItem.LightBall && bAttacker.Mon.Shell.Species == PSpecies.Pikachu)
                 basePower *= 2;
             // Retaliate doubles power if the team has a pokemon that fainted the previous turn
-            if (bCurMove == PMove.Retaliate && bAttacker.Team.MonFaintedLastTurn)
+            if (bMove == PMove.Retaliate && bAttacker.Team.MonFaintedLastTurn)
                 basePower *= 2;
             // Overgrow gives a 1.5x boost to Grass attacks if the efCurAttacker is below 1/3 max HP
             if (mData.Type == PType.Grass && bAttacker.Mon.Shell.Ability == PAbility.Overgrow && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
@@ -91,7 +91,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         ushort CalculateAttack()
         {
-            PMoveData mData = PMoveData.Data[bCurMove];
+            PMoveData mData = PMoveData.Data[bMove];
             double attack = bAttacker.Mon.Attack * GetStatMultiplier(bAttacker.Mon.AttackChange);
 
             // Pokemon with the Huge Power or Pure Power ability get a 2x attack boost
@@ -114,7 +114,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         ushort CalculateDefense()
         {
-            PMoveData mData = PMoveData.Data[bCurMove];
+            PMoveData mData = PMoveData.Data[bMove];
             double defense = bAttacker.Mon.Defense * GetStatMultiplier(bDefender.Mon.DefenseChange);
 
             // A Ditto holding a Metal Powder gets a 2x defense boost
@@ -128,7 +128,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         ushort CalculateSpAttack()
         {
-            PMoveData mData = PMoveData.Data[bCurMove];
+            PMoveData mData = PMoveData.Data[bMove];
             double spAttack = bAttacker.Mon.SpAttack * GetStatMultiplier(bAttacker.Mon.SpAttackChange);
 
             // TODO:
@@ -150,7 +150,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         ushort CalculateSpDefense()
         {
-            PMoveData mData = PMoveData.Data[bCurMove];
+            PMoveData mData = PMoveData.Data[bMove];
             double spDefense = bAttacker.Mon.SpDefense * GetStatMultiplier(bDefender.Mon.SpDefenseChange);
 
             // A Clamperl holding a Deep Sea Scale gets a 2x spDefense boost
@@ -164,7 +164,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         ushort CalculateDamage()
         {
-            PMoveData mData = PMoveData.Data[bCurMove];
+            PMoveData mData = PMoveData.Data[bMove];
             ushort damage;
             ushort a = 0, d = 0,
                 p = CalculateBasePower();

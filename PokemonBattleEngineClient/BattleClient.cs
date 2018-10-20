@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Sockets;
 using Ether.Network.Client;
 using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Network;
+using Kermalis.PokemonBattleEngine.Packets;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
     class BattleClient : NetClient
     {
         static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
-        protected override IPacketProcessor PacketProcessor => packetProcessor;
+        public override IPacketProcessor PacketProcessor => packetProcessor;
 
         static readonly PPokemonShell
             pikachu = new PPokemonShell
@@ -45,7 +47,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 Nature = PNature.Bold,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
                 EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
-                Moves = new PMove[] { PMove.IceBeam, PMove.Moonlight, PMove.Psychic, PMove.Toxic }
+                Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic }
             };
         static readonly PTeamShell
             team1 = new PTeamShell
@@ -67,15 +69,18 @@ namespace Kermalis.PokemonBattleEngineClient
             Configuration.BufferSize = 1024;
         }
 
-        public override void HandleMessage(INetPacketStream packet)
+        public override void HandleMessage(INetPacket packet)
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\"");
+            PPokemon pkmn;
 
             switch (packet)
             {
                 // TODO List for UI
-                case PPkmnMovePacket _:
-                case PAtkEffectivenessPacket _:
+                case PMoveEffectivenessPacket _:
+                case PPkmnFlinchedPacket _:
+                case PMoveMissedPacket _:
+                case PPkmnFaintedPacket _:
                     Send(new PResponsePacket());
                     break;
 
@@ -91,7 +96,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     Send(new PSubmitPartyPacket(chosenTeam));
                     break;
                 case PSetPartyPacket spp:
-                    PKnownInfo.Instance.SetPartyPokemon(spp.Pokemon, true);
+                    PKnownInfo.Instance.SetPartyPokemon(spp.Party, true);
                     Send(new PResponsePacket());
                     break;
                 case PPkmnSwitchInPacket psip:
@@ -110,9 +115,33 @@ namespace Kermalis.PokemonBattleEngineClient
                     PrintBattlers();
                     Send(new PResponsePacket());
                     break;
+                case PPkmnMovePacket pmp:
+                    pkmn = PKnownInfo.Instance.Pokemon(pmp.PokemonId);
+                    // Reveal move if the pokemon owns it and it's not already revealed
+                    if (pmp.OwnsMove && !pkmn.Shell.Moves.Contains(pmp.Move))
+                    {
+                        // Set the first unknown move to the used move
+                        // TODO: Set PP
+                        var index = pkmn.Shell.Moves.ToList().IndexOf(PMove.MAX);
+                        pkmn.Shell.Moves[index] = pmp.Move;
+                    }
+                    Send(new PResponsePacket());
+                    break;
+                case PPkmnStatChangePacket pscp:
+                    PBattle.ApplyStatChange(pscp);
+                    Send(new PResponsePacket());
+                    break;
+                case PStatusChangePacket scp:
+                    PKnownInfo.Instance.Pokemon(scp.PokemonId).Status = scp.Status;
+                    Send(new PResponsePacket());
+                    break;
+                case PStatusEndedPacket sep:
+                    PKnownInfo.Instance.Pokemon(sep.PokemonId).Status = PStatus.NoStatus;
+                    Send(new PResponsePacket());
+                    break;
             }
 
-            PokemonBattleEngine.Battle.PBattle.ConsoleBattleEventHandler(packet);
+            PBattle.ConsoleBattleEventHandler(packet);
         }
 
         void PrintBattlers()

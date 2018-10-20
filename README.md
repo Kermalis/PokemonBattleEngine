@@ -15,6 +15,7 @@ Therefore, a modified client cannot do anything more than an ordinary player (un
 * Switching out and multiple Pokémon per team
 * Accuracy/Evasion math
 * Critical hits
+* PP
 * Turn order
 * Move targetting
 * Double/triple/rotation battles
@@ -26,4 +27,4 @@ Therefore, a modified client cannot do anything more than an ordinary player (un
 
 ----
 # PokemonBattleEngine Uses:
-* [Ether.Network](https://github.com/Eastrall/Ether.Network)
+* [My fork of Ether.Network](https://github.com/Kermalis/Ether.Network)

@@ -20,7 +20,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        public string LocalDisplayName, RemoteDisplayName;
+        public string LocalDisplayName = string.Empty,
+            RemoteDisplayName = string.Empty;
         List<PPokemon> localParty = new List<PPokemon>(PConstants.MaxPokemon),
             remoteParty = new List<PPokemon>(PConstants.MaxPokemon);
 
@@ -58,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 if (remoteParty.Count == PConstants.MaxPokemon)
                     throw new InvalidOperationException("Too many Pokémon!");
 
-                // Use remote pokemon constructor, which sets LocallyOwned to false
+                // Use remote pokemon constructor, which sets LocallyOwned to false and moves to PMove.MAX
                 pkmn = new PPokemon(id, species, level, gender);
                 remoteParty.Add(pkmn);
             }

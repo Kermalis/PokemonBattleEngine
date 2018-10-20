@@ -24,6 +24,11 @@
             Gets the <see cref="T:Ether.Network.Client.INetClient"/> running state.
             </summary>
         </member>
+        <member name="P:Ether.Network.Client.INetClient.PacketProcessor">
+            <summary>
+            Gets the <see cref="T:Ether.Network.Client.INetClient"/> packet processor.
+            </summary>
+        </member>
         <member name="M:Ether.Network.Client.INetClient.Connect">
             <summary>
             Connects to a remote server.
@@ -34,7 +39,7 @@
             Disconnects from the remote server.
             </summary>
         </member>
-        <member name="M:Ether.Network.Client.INetClient.Send(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Client.INetClient.Send(Ether.Network.Packets.INetPacket)">
             <summary>
             Sends packets to the remote server.
             </summary>
@@ -45,15 +50,13 @@
             Managed TCP client.
             </summary>
         </member>
-        <member name="P:Ether.Network.Client.NetClient.PacketProcessor">
-            <summary>
-            Gets the packet processor.
-            </summary>
-        </member>
         <member name="P:Ether.Network.Client.NetClient.IsConnected">
             <inheritdoc />
         </member>
         <member name="P:Ether.Network.Client.NetClient.IsRunning">
+            <inheritdoc />
+        </member>
+        <member name="P:Ether.Network.Client.NetClient.PacketProcessor">
             <inheritdoc />
         </member>
         <member name="P:Ether.Network.Client.NetClient.Configuration">
@@ -72,10 +75,10 @@
         <member name="M:Ether.Network.Client.NetClient.Disconnect">
             <inheritdoc />
         </member>
-        <member name="M:Ether.Network.Client.NetClient.Send(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Client.NetClient.Send(Ether.Network.Packets.INetPacket)">
             <inheritdoc />
         </member>
-        <member name="M:Ether.Network.Client.NetClient.HandleMessage(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Client.NetClient.HandleMessage(Ether.Network.Packets.INetPacket)">
             <summary>
             Triggered when the <see cref="T:Ether.Network.Client.NetClient"/> receives a packet.
             </summary>
@@ -314,26 +317,26 @@
             Gets the <see cref="T:Ether.Network.Server.INetServer"/> instance the <see cref="T:Ether.Network.Common.INetUser"/> is connected to.
             </summary>
         </member>
-        <member name="M:Ether.Network.Common.INetUser.Send(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Common.INetUser.Send(Ether.Network.Packets.INetPacket)">
             <summary>
             Sends a packet throught the network.
             </summary>
             <param name="packet">Outgoing packet</param>
         </member>
-        <member name="M:Ether.Network.Common.INetUser.SendTo(System.Collections.Generic.IEnumerable{Ether.Network.Common.INetUser},Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Common.INetUser.SendTo(System.Collections.Generic.IEnumerable{Ether.Network.Common.INetUser},Ether.Network.Packets.INetPacket)">
             <summary>
             Sends a packet to a list of users.
             </summary>
             <param name="users">List of users</param>
             <param name="packet">Outgoing packet</param>
         </member>
-        <member name="M:Ether.Network.Common.INetUser.SendToAll(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Common.INetUser.SendToAll(Ether.Network.Packets.INetPacket)">
             <summary>
             Sends a packet to all users on the server.
             </summary>
             <param name="packet">Outgoing packet</param>
         </member>
-        <member name="M:Ether.Network.Common.INetUser.HandleMessage(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Common.INetUser.HandleMessage(Ether.Network.Packets.INetPacket)">
             <summary>
             Handles an incoming message.
             </summary>
@@ -392,16 +395,16 @@
             Creates a new <see cref="T:Ether.Network.Common.NetUser"/> instance.
             </summary>
         </member>
-        <member name="M:Ether.Network.Common.NetUser.HandleMessage(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Common.NetUser.HandleMessage(Ether.Network.Packets.INetPacket)">
             <inheritdoc />
         </member>
-        <member name="M:Ether.Network.Common.NetUser.Send(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Common.NetUser.Send(Ether.Network.Packets.INetPacket)">
             <inheritdoc />
         </member>
-        <member name="M:Ether.Network.Common.NetUser.SendTo(System.Collections.Generic.IEnumerable{Ether.Network.Common.INetUser},Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Common.NetUser.SendTo(System.Collections.Generic.IEnumerable{Ether.Network.Common.INetUser},Ether.Network.Packets.INetPacket)">
             <inheritdoc />
         </member>
-        <member name="M:Ether.Network.Common.NetUser.SendToAll(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Common.NetUser.SendToAll(Ether.Network.Packets.INetPacket)">
             <inheritdoc />
         </member>
         <member name="T:Ether.Network.Exceptions.EtherClientNotFoundException">
@@ -518,47 +521,15 @@
             <typeparam name="T"></typeparam>
             <param name="blockingCollection"></param>
         </member>
-        <member name="T:Ether.Network.Packets.INetPacketStream">
+        <member name="T:Ether.Network.Packets.INetPacket">
             <summary>
-            Ether.Network Packet stream interface.
+            Ether.Network Packet interface.
             </summary>
         </member>
-        <member name="P:Ether.Network.Packets.INetPacketStream.Size">
-            <summary>
-            Gets the size of the packet.
-            </summary>
-        </member>
-        <member name="P:Ether.Network.Packets.INetPacketStream.Position">
-            <summary>
-            Gets the current position of the cursor in the packet stream.
-            </summary>
-        </member>
-        <member name="P:Ether.Network.Packets.INetPacketStream.Buffer">
+        <member name="P:Ether.Network.Packets.INetPacket.Buffer">
             <summary>
             Gets the packet buffer.
             </summary>
-        </member>
-        <member name="M:Ether.Network.Packets.INetPacketStream.Read``1">
-            <summary>
-            Reads a T value from the packet.
-            </summary>
-            <typeparam name="T">Type of the value</typeparam>
-            <returns>The value read and converted to the type.</returns>
-        </member>
-        <member name="M:Ether.Network.Packets.INetPacketStream.ReadArray``1(System.Int32)">
-            <summary>
-            Reads an array of T value from the packet.
-            </summary>
-            <typeparam name="T">Value type.</typeparam>
-            <param name="amount">Amount to read.</param>
-            <returns>An array of type T.</returns>
-        </member>
-        <member name="M:Ether.Network.Packets.INetPacketStream.Write``1(``0)">
-            <summary>
-            Writes a T value in the packet.
-            </summary>
-            <typeparam name="T">Type of the value.</typeparam>
-            <param name="value">Value to write in the packet stream.</param>
         </member>
         <member name="T:Ether.Network.Packets.IPacketProcessor">
             <summary>
@@ -572,7 +543,7 @@
         </member>
         <member name="P:Ether.Network.Packets.IPacketProcessor.IncludeHeader">
             <summary>
-            Gets a value indicating whether to put the packet header in front of the packet <see cref="P:Ether.Network.Packets.INetPacketStream.Buffer"/>.
+            Gets a value indicating whether to put the packet header in front of the packet <see cref="P:Ether.Network.Packets.INetPacket.Buffer"/>.
             </summary>
         </member>
         <member name="M:Ether.Network.Packets.IPacketProcessor.GetMessageLength(System.Byte[])">
@@ -584,97 +555,10 @@
         </member>
         <member name="M:Ether.Network.Packets.IPacketProcessor.CreatePacket(System.Byte[])">
             <summary>
-            Creates a new <see cref="T:Ether.Network.Packets.INetPacketStream"/> packet instance.
+            Creates a new <see cref="T:Ether.Network.Packets.INetPacket"/> packet instance.
             </summary>
             <param name="buffer">Input buffer</param>
             <returns>New packet</returns>
-        </member>
-        <member name="T:Ether.Network.Packets.NetPacket">
-            <summary>
-            Represents a Ehter.Network built-in packet.
-            </summary>
-        </member>
-        <member name="P:Ether.Network.Packets.NetPacket.Buffer">
-            <inheritdoc />
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacket.#ctor">
-            <summary>
-            Creates a new <see cref="T:Ether.Network.Packets.NetPacket"/> in write-only mode.
-            </summary>
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacket.#ctor(System.Byte[])">
-            <summary>
-            Creates a new <see cref="T:Ether.Network.Packets.NetPacket"/> in read-only mode.
-            </summary>
-            <param name="buffer"></param>
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacket.BuildBuffer">
-            <summary>
-            Builds the final buffer.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="F:Ether.Network.Packets.NetPacketMethods.ReadMethods">
-            <summary>
-            Read methods dictionary.
-            </summary>
-        </member>
-        <member name="F:Ether.Network.Packets.NetPacketMethods.WriteMethods">
-            <summary>
-            Write methods dictionary.
-            </summary>
-        </member>
-        <member name="P:Ether.Network.Packets.NetPacketProcessor.HeaderSize">
-            <inheritdoc />
-        </member>
-        <member name="P:Ether.Network.Packets.NetPacketProcessor.IncludeHeader">
-            <inheritdoc />
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacketProcessor.GetMessageLength(System.Byte[])">
-            <inheritdoc />
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacketProcessor.CreatePacket(System.Byte[])">
-            <inheritdoc />
-        </member>
-        <member name="T:Ether.Network.Packets.NetPacketStream">
-            <summary>
-            Creates a Ether.Network packet steram.
-            </summary>
-        </member>
-        <member name="P:Ether.Network.Packets.NetPacketStream.Size">
-            <inheritdoc />
-        </member>
-        <member name="P:Ether.Network.Packets.NetPacketStream.Buffer">
-            <inheritdoc />
-        </member>
-        <member name="P:Ether.Network.Packets.NetPacketStream.Position">
-            <inheritdoc />
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacketStream.#ctor">
-            <summary>
-            Creates and initializes a new <see cref="T:Ether.Network.Packets.NetPacketStream"/> instance in write-only mode.
-            </summary>
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacketStream.#ctor(System.Byte[])">
-            <summary>
-            Creates and initializes a new <see cref="T:Ether.Network.Packets.NetPacketStream"/> instance in read-only mode.
-            </summary>
-            <param name="buffer">Input buffer</param>
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacketStream.Read``1">
-            <inheritdoc />
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacketStream.ReadArray``1(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacketStream.Write``1(``0)">
-            <inheritdoc />
-        </member>
-        <member name="M:Ether.Network.Packets.NetPacketStream.GetInternalBuffer">
-            <summary>
-            Get stream buffer.
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:Ether.Network.Server.INetServer">
             <summary>
@@ -684,6 +568,11 @@
         <member name="P:Ether.Network.Server.INetServer.IsRunning">
             <summary>
             Gets the <see cref="T:Ether.Network.Server.INetServer"/> running state.
+            </summary>
+        </member>
+        <member name="P:Ether.Network.Server.INetServer.PacketProcessor">
+            <summary>
+            Gets the <see cref="T:Ether.Network.Server.INetServer"/> packet processor.
             </summary>
         </member>
         <member name="M:Ether.Network.Server.INetServer.Start">
@@ -702,14 +591,14 @@
             </summary>
             <param name="clientId">Client unique id</param>
         </member>
-        <member name="M:Ether.Network.Server.INetServer.SendTo(System.Collections.Generic.IEnumerable{Ether.Network.Common.INetUser},Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Server.INetServer.SendTo(System.Collections.Generic.IEnumerable{Ether.Network.Common.INetUser},Ether.Network.Packets.INetPacket)">
             <summary>
             Sends a packet to a list of connected users.
             </summary>
             <param name="users">List of users.</param>
             <param name="packet">Packet to send.</param>
         </member>
-        <member name="M:Ether.Network.Server.INetServer.SendToAll(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Server.INetServer.SendToAll(Ether.Network.Packets.INetPacket)">
             <summary>
             Sends a packet to every connected user.
             </summary>
@@ -730,12 +619,10 @@
             Gets the <see cref="T:Ether.Network.Server.NetServer`1"/> configuration
             </summary>
         </member>
-        <member name="P:Ether.Network.Server.NetServer`1.PacketProcessor">
-            <summary>
-            Gets the packet processor.
-            </summary>
-        </member>
         <member name="P:Ether.Network.Server.NetServer`1.IsRunning">
+            <inheritdoc />
+        </member>
+        <member name="P:Ether.Network.Server.NetServer`1.PacketProcessor">
             <inheritdoc />
         </member>
         <member name="P:Ether.Network.Server.NetServer`1.Clients">
@@ -757,10 +644,10 @@
         <member name="M:Ether.Network.Server.NetServer`1.DisconnectClient(System.Guid)">
             <inheritdoc />
         </member>
-        <member name="M:Ether.Network.Server.NetServer`1.SendTo(System.Collections.Generic.IEnumerable{Ether.Network.Common.INetUser},Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Server.NetServer`1.SendTo(System.Collections.Generic.IEnumerable{Ether.Network.Common.INetUser},Ether.Network.Packets.INetPacket)">
             <inheritdoc />
         </member>
-        <member name="M:Ether.Network.Server.NetServer`1.SendToAll(Ether.Network.Packets.INetPacketStream)">
+        <member name="M:Ether.Network.Server.NetServer`1.SendToAll(Ether.Network.Packets.INetPacket)">
             <inheritdoc />
         </member>
         <member name="M:Ether.Network.Server.NetServer`1.GetUser(System.Guid)">

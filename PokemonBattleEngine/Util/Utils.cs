@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Util
 {
@@ -13,6 +14,14 @@ namespace Kermalis.PokemonBattleEngine.Util
             if (val.CompareTo(min) < 0) return min;
             else if (val.CompareTo(max) > 0) return max;
             else return val;
+        }
+
+        public static string Print<T>(this IEnumerable<T> source, bool parenthesis = true)
+        {
+            string str = parenthesis ? "( " : "";
+            str += string.Join(", ", source);
+            str += parenthesis ? " )" : "";
+            return str;
         }
     }
 }

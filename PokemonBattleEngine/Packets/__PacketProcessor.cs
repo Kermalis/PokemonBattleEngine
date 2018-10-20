@@ -1,19 +1,19 @@
 ﻿using Ether.Network.Packets;
 using System;
 
-namespace Kermalis.PokemonBattleEngine.Network
+namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PPacketProcessor : IPacketProcessor
     {
-        public int HeaderSize => 4;
+        public int HeaderSize => 2;
         public bool IncludeHeader => false;
 
-        public int GetMessageLength(byte[] buffer) => BitConverter.ToInt32(buffer, 0);
-        public INetPacketStream CreatePacket(byte[] buffer)
+        public int GetMessageLength(byte[] buffer) => BitConverter.ToInt16(buffer, 0);
+        public INetPacket CreatePacket(byte[] buffer)
         {
-            int code = BitConverter.ToInt32(buffer, 0);
+            short code = BitConverter.ToInt16(buffer, 0);
 
-            INetPacketStream packet;
+            INetPacket packet;
             switch (code)
             {
                 case PResponsePacket.Code: packet = new PResponsePacket(buffer); break;
@@ -27,8 +27,16 @@ namespace Kermalis.PokemonBattleEngine.Network
                 case PSubmitActionsPacket.Code: packet = new PSubmitActionsPacket(buffer); break;
                 case PPkmnMovePacket.Code: packet = new PPkmnMovePacket(buffer); break;
                 case PPkmnDamagedPacket.Code: packet = new PPkmnDamagedPacket(buffer); break;
-                case PAtkEffectivenessPacket.Code: packet = new PAtkEffectivenessPacket(buffer); break;
-                default: throw new ArgumentException("Invalid packet code");
+                case PMoveEffectivenessPacket.Code: packet = new PMoveEffectivenessPacket(buffer); break;
+                case PPkmnFlinchedPacket.Code: packet = new PPkmnFlinchedPacket(buffer); break;
+                case PMoveMissedPacket.Code: packet = new PMoveMissedPacket(buffer); break;
+                case PPkmnFaintedPacket.Code: packet = new PPkmnFaintedPacket(buffer); break;
+                case PMoveCritPacket.Code: packet = new PMoveCritPacket(buffer); break;
+                case PPkmnStatChangePacket.Code: packet = new PPkmnStatChangePacket(buffer); break;
+                case PStatusChangePacket.Code: packet = new PStatusChangePacket(buffer); break;
+                case PStatusEndedPacket.Code: packet = new PStatusEndedPacket(buffer); break;
+                case PStatusCausedImmobilityPacket.Code: packet = new PStatusCausedImmobilityPacket(buffer); break;
+                default: throw new ArgumentException($"Invalid packet code: {code}");
             }
 
             return packet;
