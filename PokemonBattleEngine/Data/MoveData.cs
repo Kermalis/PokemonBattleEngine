@@ -49,6 +49,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Frustration,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
+                }
+            },
+            {
                 PMove.HydroPump,
                 new PMoveData
                 {
@@ -131,7 +142,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     Type = PType.Normal, Category = PMoveCategory.Physical,
                     Effect = PMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 0, Accuracy = 100, Priority = 0,
+                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
                     Targets = PMoveTarget.AnySurrounding
                 }

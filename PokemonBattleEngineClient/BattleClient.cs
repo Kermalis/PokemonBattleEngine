@@ -20,6 +20,8 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 Species = PSpecies.Pikachu,
                 Nickname = "Jerry",
+                Level = 100,
+                Friendship = 255,
                 Item = PItem.LightBall,
                 Ability = PAbility.LightningRod,
                 Gender = PGender.Male,
@@ -33,6 +35,8 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 Species = PSpecies.Azumarill,
                 Nickname = "ZuWEEE",
+                Level = 100,
+                Friendship = 255,
                 Item = PItem.ChoiceBand,
                 Ability = PAbility.HugePower,
                 Gender = PGender.Male,
@@ -46,6 +50,8 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 Species = PSpecies.Cresselia,
                 Nickname = "Crest",
+                Level = 100,
+                Friendship = 255,
                 Item = PItem.Leftovers,
                 Ability = PAbility.Levitate,
                 Gender = PGender.Female,

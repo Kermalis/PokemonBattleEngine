@@ -45,9 +45,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PMoveData mData = PMoveData.Data[bMove];
             double basePower = mData.Power;
 
+            // Moves with variable base power
+            switch (bMove)
+            {
+                case PMove.Frustration:
+                    basePower = Math.Max(1, (byte.MaxValue - bAttacker.Mon.Shell.Friendship) / 2.5);
+                    break;
+                case PMove.Return:
+                    basePower = Math.Max(1, bAttacker.Mon.Shell.Friendship / 2.5);
+                    break;
+            }
 
             // TODO: Stuff like mystic water
-            // Return/Frustration
 
             // Damage is halved when using electric moves while mud sport is active
             /* if (type == Type.Electric && MudSportActive())

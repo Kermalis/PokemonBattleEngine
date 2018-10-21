@@ -18,7 +18,7 @@ Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
 * Switching out and multiple Pokémon per team
 * Accuracy/Evasion math
 * Critical hits
-* Friendship
+* Heaviness
 * Struggle
 * Weather
 * Turn order

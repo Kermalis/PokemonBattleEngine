@@ -203,6 +203,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AquaJet,
         DarkPulse,
         DragonPulse,
+        Frustration,
         HydroPump,
         IceBeam,
         IcePunch,

@@ -87,7 +87,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-
+                        PMove.Frustration,
+                        PMove.Return,
                     }
                 }
             },
@@ -105,7 +106,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-
+                        PMove.Frustration,
+                        PMove.Return,
                     }
                 }
             },
@@ -123,7 +125,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-
+                        PMove.Frustration,
+                        PMove.Return,
                     }
                 }
             },
@@ -160,6 +163,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         PMove.AquaJet,
+                        PMove.Frustration,
                         PMove.IcePunch,
                         PMove.Return,
                         PMove.Waterfall,
@@ -180,7 +184,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-
+                        PMove.Frustration,
+                        PMove.Return,
                     }
                 }
             },
@@ -198,7 +203,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-
+                        PMove.Frustration,
+                        PMove.Return,
                     }
                 }
             },
@@ -216,7 +222,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-
+                        PMove.Frustration,
+                        PMove.Return,
                     }
                 }
             },
@@ -234,8 +241,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
+                        PMove.Frustration,
                         PMove.IceBeam,
                         PMove.Moonlight,
+                        PMove.Return,
                         PMove.Toxic,
                     }
                 }
@@ -254,7 +263,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-
+                        PMove.Frustration,
+                        PMove.Return,
                     }
                 }
             },
