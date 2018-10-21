@@ -17,6 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PItem Item;
         public byte[] EVs = new byte[6], IVs = new byte[6];
         public PMove[] Moves = new PMove[PConstants.NumMoves];
+        public byte[] PPUps = new byte[PConstants.NumMoves];
 
         // Throws ArgumentOutOfRangeException for the invalid information
         public static void ValidateMany(IEnumerable<PPokemonShell> shells)
@@ -75,10 +76,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate EVs
-            if (EVs == null || EVs.Length != 6 || EVs.Select(e => (int)e).Sum() > 510)
+            if (EVs == null || EVs.Length != 6 || EVs.Select(e => (int)e).Sum() > PConstants.MaxTotalEVs)
                 throw new ArgumentOutOfRangeException(nameof(EVs));
             // Validate IVs
-            if (IVs == null || IVs.Length != 6 || IVs.Any(e => e > 31))
+            if (IVs == null || IVs.Length != 6 || IVs.Any(i => i > PConstants.MaxIVs))
                 throw new ArgumentOutOfRangeException(nameof(IVs));
 
             // Validate Moves
@@ -89,6 +90,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 || Moves.All(m => m == PMove.None) // Has no moves
                 )
                 throw new ArgumentOutOfRangeException(nameof(Moves));
+
+            // Validate PPUps
+            if (PPUps == null || PPUps.Length != PConstants.NumMoves || PPUps.Any(p => p > PConstants.MaxPPUps))
+                throw new ArgumentOutOfRangeException(nameof(PPUps));
         }
 
         internal byte[] ToBytes()
@@ -105,6 +110,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             bytes.AddRange(IVs);
             for (int i = 0; i < PConstants.NumMoves; i++)
                 bytes.AddRange(BitConverter.GetBytes((ushort)Moves[i]));
+            bytes.AddRange(PPUps);
             return bytes.ToArray();
         }
         internal static PPokemonShell FromBytes(BinaryReader r)
@@ -121,8 +127,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 EVs = r.ReadBytes(6),
                 IVs = r.ReadBytes(6)
             };
-            for (int j = 0; j < PConstants.NumMoves; j++)
-                pkmn.Moves[j] = (PMove)r.ReadUInt16();
+            for (int i = 0; i < PConstants.NumMoves; i++)
+                pkmn.Moves[i] = (PMove)r.ReadUInt16();
+            pkmn.PPUps = r.ReadBytes(PConstants.NumMoves);
             return pkmn;
         }
     }
@@ -131,6 +138,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public string DisplayName;
         public readonly List<PPokemonShell> Party = new List<PPokemonShell>(PConstants.MaxPartySize);
 
+        // TODO: Validate methods
         internal byte[] ToBytes()
         {
             var bytes = new List<byte>();

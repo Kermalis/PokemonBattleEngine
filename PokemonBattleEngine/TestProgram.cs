@@ -17,7 +17,8 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
                 EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
-                Moves = new PMove[] { PMove.Thunder, PMove.Thunder, PMove.Thunder, PMove.Thunder } // substitute, thunderbolt, hidden power ice, grass knot
+                Moves = new PMove[] { PMove.Thunder, PMove.Thunder, PMove.Thunder, PMove.Thunder }, // substitute, thunderbolt, hidden power ice, grass knot
+                PPUps = new byte[] { 3, 3, 3, 3 }
             },
             azumarill = new PPokemonShell
             {
@@ -28,7 +29,8 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Adamant,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
                 EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
-                Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch }
+                Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
+                PPUps = new byte[] { 3, 3, 3, 3 }
             },
             cresselia = new PPokemonShell
             {
@@ -39,7 +41,8 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Bold,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
                 EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
-                Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic }
+                Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic },
+                PPUps = new byte[] { 3, 3, 3, 3 }
             };
 
         public static void Main(string[] args)

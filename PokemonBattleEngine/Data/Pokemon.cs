@@ -37,7 +37,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 PMove move = Shell.Moves[i];
                 if (move != PMove.None)
-                    PP[i] = MaxPP[i] = PMoveData.Data[move].PP;
+                {
+                    byte tier = PMoveData.Data[move].PPTier;
+                    int movePP = (tier * PConstants.PPMultiplier) + (tier * Shell.PPUps[i]);
+                    PP[i] = MaxPP[i] = (byte)movePP;
+                }
             }
         }
         // This constructor is to define an unknown remote pokemon
@@ -69,7 +73,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             int i = 0;
             ushort OtherStat(byte baseVal)
             {
-                double natureMultiplier = 1 + (PPokemonData.NatureBoosts[Shell.Nature][i] * 0.1);
+                double natureMultiplier = 1 + (PPokemonData.NatureBoosts[Shell.Nature][i] * PConstants.NatureStatBoost);
                 ushort val = (ushort)((((2 * baseVal + Shell.IVs[i + 1] + (Shell.EVs[i + 1] / 4)) * Shell.Level / PConstants.MaxLevel) + 5) * natureMultiplier);
                 i++;
                 return val;

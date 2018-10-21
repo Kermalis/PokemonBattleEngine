@@ -163,7 +163,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             var moveIndex = pkmn.Shell.Moves.ToList().IndexOf(move);
             int amtToReduce = 1;
-            // TODO: Pressure
+            // TODO: If target is not self and has pressure
             var oldPP = pkmn.PP[moveIndex];
             pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
             var reduceAmt = oldPP - pkmn.PP[moveIndex];
