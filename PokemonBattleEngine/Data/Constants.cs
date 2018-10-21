@@ -6,6 +6,9 @@
 
         public const byte MaxPartySize = 6; // [Default: 6]
 
+        public const byte MaxPokemonNameLength = 10; // [Default: 10]
+        public const byte MaxPlayerNameLength = 7; // [Default: 7]
+
         public const ushort MaxTotalEVs = 510; // [Default: 510]
         public const byte MaxIVs = 31; // [Default: 31]
 

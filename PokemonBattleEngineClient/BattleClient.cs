@@ -19,6 +19,7 @@ namespace Kermalis.PokemonBattleEngineClient
             pikachu = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
+                Nickname = "Jerry",
                 Item = PItem.LightBall,
                 Ability = PAbility.LightningRod,
                 Gender = PGender.Male,
@@ -31,6 +32,7 @@ namespace Kermalis.PokemonBattleEngineClient
             azumarill = new PPokemonShell
             {
                 Species = PSpecies.Azumarill,
+                Nickname = "ZuWEEE",
                 Item = PItem.ChoiceBand,
                 Ability = PAbility.HugePower,
                 Gender = PGender.Male,
@@ -43,6 +45,7 @@ namespace Kermalis.PokemonBattleEngineClient
             cresselia = new PPokemonShell
             {
                 Species = PSpecies.Cresselia,
+                Nickname = "Crest",
                 Item = PItem.Leftovers,
                 Ability = PAbility.Levitate,
                 Gender = PGender.Female,
@@ -108,7 +111,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PPkmnSwitchInPacket psip:
                     if (!psip.LocallyOwned)
-                        PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Level, psip.HP, psip.MaxHP, psip.Gender);
+                        PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Nickname, psip.Level, psip.HP, psip.MaxHP, psip.Gender);
                     Send(new PResponsePacket());
                     break;
                 case PRequestActionPacket _:

@@ -57,16 +57,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (packet)
             {
                 case PPkmnSwitchInPacket psip:
-                    Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance.Pokemon(psip.PokemonId).Shell.Species, PKnownInfo.Instance.DisplayName(psip.LocallyOwned));
+                    Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance.Pokemon(psip.PokemonId).Shell.Nickname, PKnownInfo.Instance.DisplayName(psip.LocallyOwned));
                     break;
                 case PPkmnMovePacket pmp:
-                    Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(pmp.PokemonId).Shell.Species, pmp.Move);
+                    Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(pmp.PokemonId).Shell.Nickname, pmp.Move);
                     break;
                 case PPkmnHPChangedPacket pdp:
                     pkmn = PKnownInfo.Instance.Pokemon(pdp.PokemonId);
                     var hp = Math.Abs(pdp.Change);
                     percentage = (double)hp / pkmn.MaxHP;
-                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Species, hp, percentage, pdp.Change < 0 ? "lost" : "gained");
+                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, percentage, pdp.Change < 0 ? "lost" : "gained");
                     break;
                 case PMoveEffectivenessPacket mep:
                     if (mep.Effectiveness == 0)
@@ -77,16 +77,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         message = "It's not very effective...";
                     else
                         break;
-                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mep.PokemonId).Shell.Species);
+                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mep.PokemonId).Shell.Nickname);
                     break;
                 case PPkmnFlinchedPacket pflp:
-                    Console.WriteLine("{0} flinched and couldn't move!", PKnownInfo.Instance.Pokemon(pflp.PokemonId).Shell.Species);
+                    Console.WriteLine("{0} flinched and couldn't move!", PKnownInfo.Instance.Pokemon(pflp.PokemonId).Shell.Nickname);
                     break;
                 case PMoveMissedPacket mmp:
-                    Console.WriteLine("{0}'s attack missed!", PKnownInfo.Instance.Pokemon(mmp.PokemonId).Shell.Species);
+                    Console.WriteLine("{0}'s attack missed!", PKnownInfo.Instance.Pokemon(mmp.PokemonId).Shell.Nickname);
                     break;
                 case PPkmnFaintedPacket pfap:
-                    Console.WriteLine("{0} fainted!", PKnownInfo.Instance.Pokemon(pfap.PokemonId).Shell.Species);
+                    Console.WriteLine("{0} fainted!", PKnownInfo.Instance.Pokemon(pfap.PokemonId).Shell.Nickname);
                     break;
                 case PMoveCritPacket _:
                     Console.WriteLine("A critical hit!");
@@ -114,7 +114,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 throw new ArgumentOutOfRangeException(nameof(pscp.Change), $"Invalid stat change: {pscp.Change}"); // +0
                             break;
                     }
-                    Console.WriteLine("{0}'s {1} {2}!", PKnownInfo.Instance.Pokemon(pscp.PokemonId).Shell.Species, pscp.Stat, message);
+                    Console.WriteLine("{0}'s {1} {2}!", PKnownInfo.Instance.Pokemon(pscp.PokemonId).Shell.Nickname, pscp.Stat, message);
                     break;
                 case PStatus1ChangePacket scp:
                     switch (scp.Status1)
@@ -126,7 +126,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PStatus1.Paralyzed: message = "is paralyzed! It may be unable to move"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(scp.Status1), $"Invalid status1 change: {scp.Status1}");
                     }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scp.PokemonId).Shell.Species, message);
+                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scp.PokemonId).Shell.Nickname, message);
                     break;
                 case PStatus1EndedPacket sep:
                     switch (sep.Status1)
@@ -134,7 +134,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PStatus1.Frozen: message = "thawed out"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(sep.Status1), $"Invalid status1 ending: {sep.Status1}");
                     }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(sep.PokemonId).Shell.Species, message);
+                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(sep.PokemonId).Shell.Nickname, message);
                     break;
                 case PStatus1CausedImmobilityPacket scip:
                     switch (scip.Status1)
@@ -143,7 +143,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PStatus1.Paralyzed: message = "is paralyzed! It can't move"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(scip.Status1), $"Invalid status1 causing immobility: {scip.Status1}");
                     }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scip.PokemonId).Shell.Species, message);
+                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scip.PokemonId).Shell.Nickname, message);
                     break;
                 case PStatus1CausedDamagePacket scdp:
                     switch (scdp.Status1)
@@ -153,7 +153,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PStatus1.Poisoned: message = "was hurt by poison"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(scdp.Status1), $"Invalid status1 causing damage: {scdp.Status1}");
                     }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scdp.PokemonId).Shell.Species, message);
+                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scdp.PokemonId).Shell.Nickname, message);
                     break;
                 case PItemUsedPacket iup:
                     switch (iup.Item)
@@ -161,7 +161,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PItem.Leftovers: message = "restored a little HP using its Leftovers"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
                     }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Species, message);
+                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Nickname, message);
                     break;
             }
         }

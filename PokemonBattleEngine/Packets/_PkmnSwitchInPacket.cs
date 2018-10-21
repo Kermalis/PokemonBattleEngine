@@ -1,5 +1,6 @@
 ﻿using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly Guid PokemonId;
         public bool LocallyOwned;
         public readonly PSpecies Species;
+        public readonly string Nickname;
         public readonly byte Level;
         public readonly ushort HP, MaxHP;
         public readonly PGender Gender;
@@ -24,6 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             PokemonId = pkmn.Id;
             LocallyOwned = pkmn.LocallyOwned;
             Species = pkmn.Shell.Species;
+            Nickname = pkmn.Shell.Nickname;
             Level = pkmn.Shell.Level;
             HP = pkmn.HP;
             MaxHP = pkmn.MaxHP;
@@ -37,6 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 PokemonId = new Guid(r.ReadBytes(0x10));
                 LocallyOwned = r.ReadByte() != 0;
                 Species = (PSpecies)r.ReadUInt16();
+                Nickname = PUtils.StringFromBytes(r);
                 Level = r.ReadByte();
                 HP = r.ReadUInt16();
                 MaxHP = r.ReadUInt16();
@@ -50,6 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(PokemonId.ToByteArray());
             bytes.Add((byte)(LocallyOwned ? 1 : 0));
             bytes.AddRange(BitConverter.GetBytes((ushort)Species));
+            bytes.AddRange(PUtils.StringToBytes(Nickname));
             bytes.Add(Level);
             bytes.AddRange(BitConverter.GetBytes(HP));
             bytes.AddRange(BitConverter.GetBytes(MaxHP));

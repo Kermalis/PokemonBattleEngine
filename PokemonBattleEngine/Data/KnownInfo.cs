@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             else
                 remoteParty = list;
         }
-        public void AddRemotePokemon(Guid id, PSpecies species, byte level, ushort hp, ushort maxHP, PGender gender)
+        public void AddRemotePokemon(Guid id, PSpecies species, string nickname, byte level, ushort hp, ushort maxHP, PGender gender)
         {
             PPokemon pkmn;
 
@@ -60,7 +60,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     throw new InvalidOperationException("Too many Pokémon!");
 
                 // Use remote pokemon constructor, which sets LocallyOwned to false and moves to PMove.MAX
-                pkmn = new PPokemon(id, species, level, gender);
+                pkmn = new PPokemon(id, species, nickname, level, gender);
                 remoteParty.Add(pkmn);
             }
             else

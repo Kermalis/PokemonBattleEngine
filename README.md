@@ -16,7 +16,6 @@ Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
 ----
 # To Do:
 * Switching out and multiple Pokémon per team
-* Pokémon nicknames
 * Accuracy/Evasion math
 * Critical hits
 * Friendship

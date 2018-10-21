@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PPokemonShell
     {
         public PSpecies Species;
+        public string Nickname;
         public byte Level = PConstants.MaxLevel, Friendship = byte.MaxValue;
         public PAbility Ability;
         public PNature Nature = (PNature)PUtils.RNG.Next(0, (int)PNature.MAX);
@@ -41,6 +41,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(Species));
             }
+
+            // Validate nickname
+            if (string.IsNullOrWhiteSpace(Nickname) || Nickname.Length > PConstants.MaxPokemonNameLength)
+                throw new ArgumentOutOfRangeException(nameof(Nickname));
 
             // Validate Level
             if (Level == 0 || Level > PConstants.MaxLevel)
@@ -100,6 +104,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes((ushort)Species));
+            bytes.AddRange(PUtils.StringToBytes(Nickname));
             bytes.Add(Level);
             bytes.Add(Friendship);
             bytes.Add((byte)Ability);
@@ -118,6 +123,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             var pkmn = new PPokemonShell
             {
                 Species = (PSpecies)r.ReadUInt16(),
+                Nickname = PUtils.StringFromBytes(r),
                 Level = r.ReadByte(),
                 Friendship = r.ReadByte(),
                 Ability = (PAbility)r.ReadByte(),
@@ -138,26 +144,47 @@ namespace Kermalis.PokemonBattleEngine.Data
         public string DisplayName;
         public readonly List<PPokemonShell> Party = new List<PPokemonShell>(PConstants.MaxPartySize);
 
-        // TODO: Validate methods
+        // Throws ArgumentOutOfRangeException for the invalid information
+        public static void ValidateMany(IEnumerable<PTeamShell> shells)
+        {
+            var arr = shells.ToArray();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                arr[i].Validate();
+            }
+        }
+        // Throws ArgumentOutOfRangeException for the invalid information
+        public void Validate()
+        {
+            // Validate display name
+            if (string.IsNullOrWhiteSpace(DisplayName) || DisplayName.Length > PConstants.MaxPlayerNameLength)
+                throw new ArgumentOutOfRangeException(nameof(DisplayName));
+
+            // Validate Party
+            if (Party == null || Party.Count == 0 || Party.Count > PConstants.MaxPartySize)
+                throw new ArgumentOutOfRangeException(nameof(Party));
+            // Validate Party Pokemon
+            PPokemonShell.ValidateMany(Party);
+        }
+
         internal byte[] ToBytes()
         {
             var bytes = new List<byte>();
 
-            byte[] nameBytes = Encoding.ASCII.GetBytes(DisplayName);
-            bytes.Add((byte)nameBytes.Length);
-            bytes.AddRange(nameBytes);
+            bytes.AddRange(PUtils.StringToBytes(DisplayName));
 
-            var numPkmn = Math.Min(PConstants.MaxPartySize, Party.Count);
-            bytes.Add((byte)numPkmn);
+            var numPkmn = (byte)Party.Count;
+            bytes.Add(numPkmn);
             for (int i = 0; i < numPkmn; i++)
                 bytes.AddRange(Party[i].ToBytes());
+
             return bytes.ToArray();
         }
         internal static PTeamShell FromBytes(BinaryReader r)
         {
             var team = new PTeamShell
             {
-                DisplayName = Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte()))
+                DisplayName = PUtils.StringFromBytes(r)
             };
             var numPkmn = Math.Min(PConstants.MaxPartySize, r.ReadByte());
             for (int i = 0; i < numPkmn; i++)

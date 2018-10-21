@@ -47,13 +47,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         // This constructor is to define an unknown remote pokemon
         // LocallyOwned is set to false here
         // Moves are set to PMove.MAX which will be displayed as "???"
-        public PPokemon(Guid id, PSpecies species, byte level, PGender gender)
+        public PPokemon(Guid id, PSpecies species, string nickname, byte level, PGender gender)
         {
             Id = id;
             LocallyOwned = false;
             Shell = new PPokemonShell
             {
                 Species = species,
+                Nickname = nickname,
                 Level = level,
                 Gender = gender,
                 Item = PItem.MAX,
@@ -148,7 +149,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             string str = string.Empty;
             str += $"{Shell.Gender}";
-            str += $" {Shell.Species}";
+            str += $" {Shell.Nickname}/{Shell.Species}";
             str += $" Lv.{Shell.Level}";
             str += $" {HP}/{MaxHP} HP";
             str += $" {Status1}";

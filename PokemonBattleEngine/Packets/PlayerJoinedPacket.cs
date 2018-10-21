@@ -1,9 +1,9 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
@@ -20,9 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.AddRange((PlayerId = playerId).ToByteArray());
-            byte[] nameBytes = Encoding.ASCII.GetBytes(DisplayName = name);
-            bytes.Add((byte)nameBytes.Length);
-            bytes.AddRange(nameBytes);
+            bytes.AddRange(PUtils.StringToBytes(DisplayName = name));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PPlayerJoinedPacket(byte[] buffer)
@@ -32,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 PlayerId = new Guid(r.ReadBytes(0x10));
-                DisplayName = Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte()));
+                DisplayName = PUtils.StringFromBytes(r);
             }
         }
 

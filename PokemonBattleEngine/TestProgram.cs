@@ -11,6 +11,7 @@ namespace Kermalis.PokemonBattleEngine
             pikachu = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
+                Nickname = "Jerry",
                 Item = PItem.LightBall,
                 Ability = PAbility.LightningRod,
                 Gender = PGender.Male,
@@ -23,6 +24,7 @@ namespace Kermalis.PokemonBattleEngine
             azumarill = new PPokemonShell
             {
                 Species = PSpecies.Azumarill,
+                Nickname = "ZuWEEE",
                 Item = PItem.ChoiceBand,
                 Ability = PAbility.HugePower,
                 Gender = PGender.Male,
@@ -35,6 +37,7 @@ namespace Kermalis.PokemonBattleEngine
             cresselia = new PPokemonShell
             {
                 Species = PSpecies.Cresselia,
+                Nickname = "Crest",
                 Item = PItem.Leftovers,
                 Ability = PAbility.Levitate,
                 Gender = PGender.Female,
@@ -60,23 +63,6 @@ namespace Kermalis.PokemonBattleEngine
                 DisplayName = "Jess",
                 Party = { cresselia }
             };
-
-            try
-            {
-                PPokemonShell.ValidateMany(team1.Party);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine($"Invalid {e.ParamName} in Team 0 Pokémon Shell");
-            }
-            try
-            {
-                PPokemonShell.ValidateMany(team2.Party);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine($"Invalid {e.ParamName} in Team 1 Pokémon Shell");
-            }
 
             PBattle battle = new PBattle(team1, team2);
             battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;

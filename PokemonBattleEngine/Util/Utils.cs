@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Util
 {
@@ -22,6 +24,19 @@ namespace Kermalis.PokemonBattleEngine.Util
             str += string.Join(", ", source);
             str += parenthesis ? " )" : "";
             return str;
+        }
+
+        public static byte[] StringToBytes(string str)
+        {
+            var bytes = new List<byte>();
+            byte[] nameBytes = Encoding.ASCII.GetBytes(str);
+            bytes.Add((byte)nameBytes.Length);
+            bytes.AddRange(nameBytes);
+            return bytes.ToArray();
+        }
+        public static string StringFromBytes(BinaryReader r)
+        {
+            return Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte()));
         }
     }
 }
