@@ -73,6 +73,7 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\"");
             PPokemon pkmn;
+            int i;
 
             switch (packet)
             {
@@ -113,10 +114,16 @@ namespace Kermalis.PokemonBattleEngineClient
                     actions[0] = new PSubmitActionsPacket.Action(PKnownInfo.Instance.LocalParty[0].Id, 0);
                     Send(new PSubmitActionsPacket(actions));
                     break;
-                case PPkmnHPChangedPacket pdp:
-                    pkmn = PKnownInfo.Instance.Pokemon(pdp.PokemonId);
-                    pkmn.HP = (ushort)(pkmn.HP + pdp.Change);
+                case PPkmnHPChangedPacket phcp:
+                    pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
+                    pkmn.HP = (ushort)(pkmn.HP + phcp.Change);
                     PrintBattlers();
+                    Send(new PResponsePacket());
+                    break;
+                case PMovePPChangedPacket mpcp:
+                    pkmn = PKnownInfo.Instance.Pokemon(mpcp.PokemonId);
+                    i = pkmn.Shell.Moves.ToList().IndexOf(mpcp.Move);
+                    pkmn.PP[i] = (byte)(pkmn.PP[i] + mpcp.Change);
                     Send(new PResponsePacket());
                     break;
                 case PPkmnMovePacket pmp:
@@ -125,11 +132,9 @@ namespace Kermalis.PokemonBattleEngineClient
                     if (pmp.OwnsMove && !pkmn.Shell.Moves.Contains(pmp.Move))
                     {
                         // Set the first unknown move to the used move
-                        // TODO: Set PP
-                        var index = pkmn.Shell.Moves.ToList().IndexOf(PMove.MAX);
-                        pkmn.Shell.Moves[index] = pmp.Move;
+                        i = pkmn.Shell.Moves.ToList().IndexOf(PMove.MAX);
+                        pkmn.Shell.Moves[i] = pmp.Move;
                     }
-                    PrintBattlers();
                     Send(new PResponsePacket());
                     break;
                 case PPkmnStatChangedPacket pscp:
@@ -146,7 +151,6 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PItemUsedPacket iup:
                     PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Item = iup.Item;
-                    PrintBattlers();
                     Send(new PResponsePacket());
                     break;
             }

@@ -13,15 +13,18 @@ Therefore, a modified client cannot do anything more than an ordinary player (un
 ----
 # To Do:
 * Switching out and multiple Pokémon per team
+* Pokémon nicknames
 * Accuracy/Evasion math
 * Critical hits
-* PP
+* Friendship
+* PP Ups
+* Struggle
+* Weather
 * Turn order
 * Move targetting
 * Double/triple/rotation battles
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
-* Pokémon nicknames
 * Client UI
 * Spectators
 

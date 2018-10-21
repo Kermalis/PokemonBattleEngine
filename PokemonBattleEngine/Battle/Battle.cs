@@ -48,7 +48,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         PTeam[] teams = new PTeam[2];
 
         // Returns null if it doesn't exist
-        PBattlePokemon Pokemon(Guid pkmnId) => battlers.SingleOrDefault(p => p.Mon.Id == pkmnId);
+        PBattlePokemon BattlePokemon(Guid pkmnId) => battlers.SingleOrDefault(p => p.Mon.Id == pkmnId);
 
         public PBattle(PTeamShell td0, PTeamShell td1)
         {
@@ -78,28 +78,61 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastSwitchIn(battler.Mon);
         }
 
-        public void SelectAction(Guid pkmnId, byte param)
+        public bool IsActionValid(Guid pkmnId, byte param)
         {
-            PBattlePokemon pkmn = Pokemon(pkmnId);
+            // TODO: Non-fighting actions (make a class)
+
+            PBattlePokemon pkmn = BattlePokemon(pkmnId);
+
+            // Invalid move
+            if (param >= PConstants.NumMoves || pkmn.Mon.Shell.Moves[param] == PMove.None)
+                return false;
+
+            // TODO: Struggle
+
+            // Out of PP
+            if (pkmn.Mon.PP[param] < 1)
+                return false;
+
+            return true;
+        }
+        // Returns true if the action was valid (and was selected)
+        public bool SelectActionIfValid(Guid pkmnId, byte param)
+        {
+            if (IsActionValid(pkmnId, param))
+            {
+                SelectAction(pkmnId, param);
+                return true;
+            }
+            return false;
+        }
+        void SelectAction(Guid pkmnId, byte param)
+        {
+            PBattlePokemon pkmn = BattlePokemon(pkmnId);
             // TODO
             // if (action == PAction.Fight)
             pkmn.SelectedMove = pkmn.Mon.Shell.Moves[param];
-            //teams[team].Party[pkmn].SelectedTarget = target; // TODO: Validate
-
-            if (AllMonSelectedMoves())
-            {
-                DetermineTurnOrder();
-                ClearTemporaryStuff();
-                RunMovesInOrder();
-                TurnEnded();
-            }
+            //teams[team].Party[pkmn].SelectedTarget = target;
         }
 
-        bool AllMonSelectedMoves()
+        public bool IsReadyToRunTurn()
         {
             for (int i = 0; i < battlers.Length; i++)
                 if (battlers[i].SelectedMove == PMove.None)
                     return false;
+            return true;
+        }
+
+        public bool RunTurn()
+        {
+            if (!IsReadyToRunTurn())
+                return false;
+
+            DetermineTurnOrder();
+            ClearTemporaryStuff();
+            RunMovesInOrder();
+            TurnEnded();
+
             return true;
         }
         void DetermineTurnOrder()

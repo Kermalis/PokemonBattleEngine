@@ -18,6 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte[] EVs = new byte[6], IVs = new byte[6];
         public PMove[] Moves = new PMove[PConstants.NumMoves];
 
+        // Throws ArgumentOutOfRangeException for the invalid information
         public static void ValidateMany(IEnumerable<PPokemonShell> shells)
         {
             var arr = shells.ToArray();
@@ -26,6 +27,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 arr[i].Validate();
             }
         }
+        // Throws ArgumentOutOfRangeException for the invalid information
         public void Validate()
         {
             // Validate Species

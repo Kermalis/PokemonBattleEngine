@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Util;
 using System;
 
 namespace Kermalis.PokemonBattleEngine
@@ -87,8 +88,24 @@ namespace Kermalis.PokemonBattleEngine
             while (p1.HP > 0 && p2.HP > 0)
             {
                 Console.WriteLine();
-                battle.SelectAction(p1.Id, 0);
-                battle.SelectAction(p2.Id, 0);
+
+                // Temporary
+                do
+                {
+                    byte move;
+                    bool valid;
+
+                    move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
+                    valid = battle.SelectActionIfValid(p1.Id, move);
+                    Console.WriteLine("{0} ({1}) valid: {2}", move, p1.Shell.Moves[move], valid);
+
+                    move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
+                    valid = battle.SelectActionIfValid(p2.Id, move);
+                    Console.WriteLine("{0} ({1}) valid: {2}", move, p2.Shell.Moves[move], valid);
+
+                    Console.WriteLine();
+                } while (!battle.IsReadyToRunTurn());
+                battle.RunTurn();
 
                 Console.WriteLine();
                 Console.WriteLine(p1);

@@ -18,10 +18,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PMoveMissedPacket(bAttacker.Mon));
         void BroadcastFlinch()
             => OnNewEvent?.Invoke(new PPkmnFlinchedPacket(bAttacker.Mon));
-        void BroadcastDamaged(PPokemon pkmn, ushort hp)
-            => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, -hp));
-        void BroadcastHealed(PPokemon pkmn, ushort hp)
-            => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, hp));
+        void BroadcastHPChanged(PPokemon pkmn, int change)
+            => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, change));
         void BroadcastEffectiveness()
             => OnNewEvent?.Invoke(new PMoveEffectivenessPacket(bDefender.Mon, bEffectiveness));
         void BroadcastFaint(PPokemon pkmn)
@@ -45,6 +43,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PMoveFailPacket());
         void BroadcastItemUsed(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PItemUsedPacket(pkmn));
+        void BroadcastPPChanged(PPokemon pkmn, PMove move, int change)
+            => OnNewEvent?.Invoke(new PMovePPChangedPacket(pkmn, move, change));
 
 
 

@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Util;
 using System;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -69,6 +70,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeParalyze: Ef_Hit__MaybeParalyze(mData.EffectParam); break;
                 case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2: Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2(); break;
                 case PMoveEffect.Toxic: Ef_Toxic(); break;
+                case PMoveEffect.Transform:
+                case PMoveEffect.Moonlight:
+                    // TODO
+                    BroadcastMoveUsed();
+                    PPReduce();
+                    BroadcastFail();
+                    break;
                 default: throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
             }
         }
@@ -131,7 +139,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             var oldHP = pkmn.HP;
             pkmn.HP = (ushort)Math.Max(0, pkmn.HP - Math.Max((ushort)1, hp)); // Always try to lose at least 1 HP
-            BroadcastDamaged(pkmn, (ushort)(oldHP - pkmn.HP));
+            var damageAmt = oldHP - pkmn.HP;
+            BroadcastHPChanged(pkmn, -damageAmt);
         }
 
         // Returns true if it healed
@@ -140,11 +149,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             var oldHP = pkmn.HP;
             pkmn.HP = (ushort)Math.Min(pkmn.MaxHP, pkmn.HP + Math.Max((ushort)1, hp)); // Always try to heal at least 1 HP
-            var healAmt = (ushort)(pkmn.HP - oldHP);
+            var healAmt = pkmn.HP - oldHP;
             if (healAmt < 1)
                 return false;
-            BroadcastHealed(pkmn, healAmt);
+            BroadcastHPChanged(pkmn, healAmt);
             return true;
+        }
+        
+        // Broadcasts the event
+        void PPReduce()
+            => PPReduce(bAttacker.Mon, bMove);
+        void PPReduce(PPokemon pkmn, PMove move)
+        {
+            var moveIndex = pkmn.Shell.Moves.ToList().IndexOf(move);
+            int amtToReduce = 1;
+            // TODO: Pressure
+            var oldPP = pkmn.PP[moveIndex];
+            pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
+            var reduceAmt = oldPP - pkmn.PP[moveIndex];
+            BroadcastPPChanged(pkmn, move, -reduceAmt);
         }
 
         // Returns true if the pokemon fainted
@@ -219,7 +242,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (AttackCancelCheck())
                 return false;
             BroadcastMoveUsed();
-            // PPReduce();
+            PPReduce();
             if (AccuracyCheck())
                 return false;
             // CritCheck();
@@ -293,7 +316,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (AttackCancelCheck())
                 return false;
             BroadcastMoveUsed();
-            // PPReduce();
+            PPReduce();
             if (AccuracyCheck())
                 return false;
             if (!ApplyStatus1IfPossible(bDefender, PStatus1.BadlyPoisoned))

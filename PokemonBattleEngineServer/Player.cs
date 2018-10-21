@@ -12,7 +12,6 @@ namespace Kermalis.PokemonBattleEngineServer
         public readonly ManualResetEvent ResetEvent = new ManualResetEvent(true);
 
         public PTeamShell Team;
-        public PSubmitActionsPacket.Action[] Actions;
         
         public override void Send(INetPacket packet)
         {

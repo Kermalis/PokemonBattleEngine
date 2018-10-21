@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
         // These are in a set order; see BattleEffects->ApplyStatChange()
         public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
-        public byte[] PP = new byte[PConstants.NumMoves];
+        public byte[] PP = new byte[PConstants.NumMoves], MaxPP = new byte[PConstants.NumMoves];
 
         public string OwnerDisplayName => LocallyOwned ? PKnownInfo.Instance.LocalDisplayName : PKnownInfo.Instance.RemoteDisplayName;
 
@@ -33,6 +33,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Id = id;
             CalculateStats();
             HP = MaxHP;
+            for (int i = 0; i < PConstants.NumMoves; i++)
+            {
+                PMove move = Shell.Moves[i];
+                if (move != PMove.None)
+                    PP[i] = MaxPP[i] = PMoveData.Data[move].PP;
+            }
         }
         // This constructor is to define an unknown remote pokemon
         // LocallyOwned is set to false here
@@ -91,6 +97,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             bytes.Add((byte)AccuracyChange);
             bytes.Add((byte)EvasionChange);
             bytes.AddRange(PP);
+            bytes.AddRange(MaxPP);
             return bytes.ToArray();
         }
         internal static PPokemon FromBytes(BinaryReader r)
@@ -107,7 +114,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 SpeedChange = r.ReadSByte(),
                 AccuracyChange = r.ReadSByte(),
                 EvasionChange = r.ReadSByte(),
-                PP = r.ReadBytes(PConstants.NumMoves)
+                PP = r.ReadBytes(PConstants.NumMoves),
+                MaxPP = r.ReadBytes(PConstants.NumMoves)
             };
             return pkmn;
         }
@@ -124,7 +132,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             string item = Shell.Item.ToString().Replace("MAX", "???");
             string nature = Shell.Nature.ToString().Replace("MAX", "???");
             string ability = Shell.Ability.ToString().Replace("MAX", "???");
-            string moves = Shell.Moves.Print().Replace("MAX", "???");
+            string[] moveStrs = new string[PConstants.NumMoves];
+            for (int i = 0; i < PConstants.NumMoves; i++)
+            {
+                string mStr = Shell.Moves[i].ToString().Replace("MAX", "???");
+                if (MaxPP[i] != 0)
+                    mStr += $" {PP[i]}/{MaxPP[i]}";
+                moveStrs[i] = mStr;
+            }
+            string moves = moveStrs.Print();
 
             string str = string.Empty;
             str += $"{Shell.Gender}";
