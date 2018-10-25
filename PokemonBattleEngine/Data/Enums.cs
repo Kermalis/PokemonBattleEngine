@@ -194,6 +194,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeParalyze,
         Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
         Moonlight, // TODO
+        Raise_SPATK,
         Toxic,
         Transform, // TODO
     }
@@ -209,6 +210,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IcePunch,
         Inferno,
         Moonlight, // TODO
+        NastyPlot,
         Psychic,
         Retaliate, // TODO
         Return,

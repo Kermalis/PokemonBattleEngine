@@ -15,6 +15,7 @@ Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
 
 ----
 # To Do:
+* Pokémon level validation
 * Switching out and multiple Pokémon per team
 * Accuracy/Evasion math
 * Critical hits

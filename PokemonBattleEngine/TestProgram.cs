@@ -52,6 +52,21 @@ namespace Kermalis.PokemonBattleEngine
                 EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
                 Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic },
                 PPUps = new byte[] { 3, 3, 3, 3 }
+            },
+            darkrai = new PPokemonShell
+            {
+                Species = PSpecies.Darkrai,
+                Nickname = "Darkrai",
+                Level = 100,
+                Friendship = 255,
+                Item = PItem.Leftovers,
+                Ability = PAbility.BadDreams,
+                Gender = PGender.Genderless,
+                Nature = PNature.Timid,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+                EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+                Moves = new PMove[] { PMove.DarkPulse, PMove.DarkPulse, PMove.NastyPlot, PMove.DarkPulse }, // dark void, dark pulse, nasty plot, substitute
+                PPUps = new byte[] { 3, 3, 3, 3 }
             };
 
         public static void Main(string[] args)
@@ -62,12 +77,12 @@ namespace Kermalis.PokemonBattleEngine
             PTeamShell team1 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { azumarill }
+                Party = { cresselia }
             };
             PTeamShell team2 = new PTeamShell
             {
                 DisplayName = "Jess",
-                Party = { cresselia }
+                Party = { darkrai }
             };
 
             PBattle battle = new PBattle(team1, team2);

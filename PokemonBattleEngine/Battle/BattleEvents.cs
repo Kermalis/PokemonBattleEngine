@@ -62,11 +62,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PPkmnMovePacket pmp:
                     Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(pmp.PokemonId).Shell.Nickname, pmp.Move);
                     break;
-                case PPkmnHPChangedPacket pdp:
-                    pkmn = PKnownInfo.Instance.Pokemon(pdp.PokemonId);
-                    var hp = Math.Abs(pdp.Change);
+                case PPkmnHPChangedPacket phcp:
+                    pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
+                    var hp = Math.Abs(phcp.Change);
                     percentage = (double)hp / pkmn.MaxHP;
-                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, percentage, pdp.Change < 0 ? "lost" : "gained");
+                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, percentage, phcp.Change < 0 ? "lost" : "gained");
                     break;
                 case PMoveEffectivenessPacket mep:
                     if (mep.Effectiveness == 0)

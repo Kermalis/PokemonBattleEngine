@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PPokemonData
     {
+        public byte HP, Attack, Defense, SpAttack, SpDefense, Speed;
         public PGender GenderRatio;
         public PType Type1, Type2;
-        public PAbility Ability1, Ability2, AbilityHidden;
-        public byte HP, Attack, Defense, SpAttack, SpDefense, Speed;
+        public PAbility[] Abilities;
         public Tuple<int, PMove>[] LevelUpMoves;
         public PMove[] OtherMoves;
 
         public bool HasType(PType type) => Type1 == type || Type2 == type;
-        public bool HasAbility(PAbility ability) => Ability1 == ability || Ability2 == ability || AbilityHidden == ability;
+        public bool HasAbility(PAbility ability) => Abilities.Contains(ability);
 
         // First is attacker, second is defender
         // Cast PType to an int for the indices
@@ -77,12 +78,13 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Pikachu,
                 new PPokemonData
                 {
+                    HP = 35, Attack = 55, Defense = 30, SpAttack = 50, SpDefense = 40, Speed = 90,
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Electric, Type2 = PType.Electric,
-                    Ability1 = PAbility.Static, Ability2 = PAbility.Static, AbilityHidden = PAbility.LightningRod,
-                    HP = 35, Attack = 55, Defense = 30, SpAttack = 50, SpDefense = 40, Speed = 90,
+                    Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
+                        Tuple.Create(18, PMove.NastyPlot), // As Pichu
                         Tuple.Create(50, PMove.Thunder),
                     },
                     OtherMoves = new PMove[]
@@ -96,10 +98,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Cubone,
                 new PPokemonData
                 {
+                    HP = 50, Attack = 50, Defense = 95, SpAttack = 40, SpDefense = 50, Speed = 35,
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Ground, Type2 = PType.Ground,
-                    Ability1 = PAbility.RockHead, Ability2 = PAbility.LightningRod, AbilityHidden = PAbility.BattleArmor,
-                    HP = 50, Attack = 50, Defense = 95, SpAttack = 40, SpDefense = 50, Speed = 35,
+                    Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(47, PMove.Retaliate),
@@ -115,10 +117,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Marowak,
                 new PPokemonData
                 {
+                    HP = 60, Attack = 80, Defense = 110, SpAttack = 50, SpDefense = 80, Speed = 45,
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Ground, Type2 = PType.Ground,
-                    Ability1 = PAbility.RockHead, Ability2 = PAbility.LightningRod, AbilityHidden = PAbility.BattleArmor,
-                    HP = 60, Attack = 80, Defense = 110, SpAttack = 50, SpDefense = 80, Speed = 45,
+                    Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(59, PMove.Retaliate),
@@ -134,10 +136,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Ditto,
                 new PPokemonData
                 {
+                    HP = 48, Attack = 48, Defense = 48, SpAttack = 48, SpDefense = 48, Speed = 48,
                     GenderRatio = PGender.Genderless,
                     Type1 = PType.Normal, Type2 = PType.Normal,
-                    Ability1 = PAbility.Limber, Ability2 = PAbility.Limber, AbilityHidden = PAbility.Imposter,
-                    HP = 48, Attack = 48, Defense = 48, SpAttack = 48, SpDefense = 48, Speed = 48,
+                    Abilities = new PAbility[] { PAbility.Limber, PAbility.Imposter },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Transform),
@@ -152,10 +154,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Azumarill,
                 new PPokemonData
                 {
+                    HP = 100, Attack = 50, Defense = 80, SpAttack = 50, SpDefense = 80, Speed = 50,
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Water, Type2 = PType.Water,
-                    Ability1 = PAbility.ThickFat, Ability2 = PAbility.HugePower, AbilityHidden = PAbility.SapSipper,
-                    HP = 100, Attack = 50, Defense = 80, SpAttack = 50, SpDefense = 80, Speed = 50,
+                    Abilities = new PAbility[] { PAbility.ThickFat, PAbility.HugePower, PAbility.SapSipper },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(46, PMove.HydroPump),
@@ -174,10 +176,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Clamperl,
                 new PPokemonData
                 {
+                    HP = 35, Attack = 64, Defense = 85, SpAttack = 74, SpDefense = 55, Speed = 32,
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Water, Type2 = PType.Water,
-                    Ability1 = PAbility.ShellArmor, Ability2 = PAbility.ShellArmor, AbilityHidden = PAbility.Rattled,
-                    HP = 35, Attack = 64, Defense = 85, SpAttack = 74, SpDefense = 55, Speed = 32,
+                    Abilities = new PAbility[] { PAbility.ShellArmor, PAbility.Rattled },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(51, PMove.ShellSmash),
@@ -193,10 +195,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Latias,
                 new PPokemonData
                 {
+                    HP = 80, Attack = 80, Defense = 90, SpAttack = 110, SpDefense = 130, Speed = 110,
                     GenderRatio = PGender.Female,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
-                    Ability1 = PAbility.Levitate, Ability2 = PAbility.Levitate, AbilityHidden = PAbility.Levitate,
-                    HP = 80, Attack = 80, Defense = 90, SpAttack = 110, SpDefense = 130, Speed = 110,
+                    Abilities = new PAbility[] { PAbility.Levitate },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(80, PMove.DragonPulse),
@@ -212,10 +214,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Latios,
                 new PPokemonData
                 {
+                    HP = 80, Attack = 90, Defense = 80, SpAttack = 130, SpDefense = 110, Speed = 110,
                     GenderRatio = PGender.Male,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
-                    Ability1 = PAbility.Levitate, Ability2 = PAbility.Levitate, AbilityHidden = PAbility.Levitate,
-                    HP = 80, Attack = 90, Defense = 80, SpAttack = 130, SpDefense = 110, Speed = 110,
+                    Abilities = new PAbility[] { PAbility.Levitate },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(80, PMove.DragonPulse),
@@ -231,10 +233,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Cresselia,
                 new PPokemonData
                 {
+                    HP = 120, Attack = 70, Defense = 120, SpAttack = 75, SpDefense = 130, Speed = 85,
                     GenderRatio = PGender.Female,
                     Type1 = PType.Psychic, Type2 = PType.Psychic,
-                    Ability1 = PAbility.Levitate, Ability2 = PAbility.Levitate, AbilityHidden = PAbility.Levitate,
-                    HP = 120, Attack = 70, Defense = 120, SpAttack = 75, SpDefense = 130, Speed = 85,
+                    Abilities = new PAbility[] { PAbility.Levitate },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(93, PMove.Psychic),
@@ -253,12 +255,13 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PSpecies.Darkrai,
                 new PPokemonData
                 {
+                    HP = 70, Attack = 90, Defense = 90, SpAttack = 135, SpDefense = 90, Speed = 125,
                     GenderRatio = PGender.Genderless,
                     Type1 = PType.Dark, Type2 = PType.Dark,
-                    Ability1 = PAbility.BadDreams, Ability2 = PAbility.BadDreams, AbilityHidden = PAbility.BadDreams,
-                    HP = 70, Attack = 90, Defense = 90, SpAttack = 135, SpDefense = 90, Speed = 125,
+                    Abilities = new PAbility[] { PAbility.BadDreams },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
+                        Tuple.Create(75, PMove.NastyPlot),
                         Tuple.Create(93, PMove.DarkPulse),
                     },
                     OtherMoves = new PMove[]

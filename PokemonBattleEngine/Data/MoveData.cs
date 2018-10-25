@@ -115,6 +115,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.NastyPlot,
+                new PMoveData
+                {
+                    Type = PType.Dark, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Raise_SPATK, EffectParam = +2,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Psychic,
                 new PMoveData
                 {

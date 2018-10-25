@@ -69,6 +69,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeLower_SPDEF_By1: Ef_Hit__MaybeLower_SPDEF_By1(mData.EffectParam); break;
                 case PMoveEffect.Hit__MaybeParalyze: Ef_Hit__MaybeParalyze(mData.EffectParam); break;
                 case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2: Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2(); break;
+                case PMoveEffect.Raise_SPATK: Ef_Raise_SPATK(mData.EffectParam); break;
                 case PMoveEffect.Toxic: Ef_Toxic(); break;
                 case PMoveEffect.Transform:
                 case PMoveEffect.Moonlight:
@@ -155,7 +156,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastHPChanged(pkmn, healAmt);
             return true;
         }
-        
+
         // Broadcasts the event
         void PPReduce()
             => PPReduce(bAttacker.Mon, bMove);
@@ -294,14 +295,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         bool Ef_Hit__MaybeLower_SPDEF_By1(int chance)
             => HitAndMaybeChangeStat(PStat.SpDefense, -1, chance);
+
+        bool ChangeStat(PBattlePokemon pkmn, PStat stat, int change)
+        {
+            if (AttackCancelCheck())
+                return false;
+            BroadcastMoveUsed();
+            PPReduce();
+            ApplyStatChange(pkmn.Mon, stat, (sbyte)change);
+            return true;
+        }
         bool Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
         {
             if (AttackCancelCheck())
                 return false;
-            if (AccuracyCheck())
-                return false;
             BroadcastMoveUsed();
-            // PPReduce();
+            PPReduce();
             var pkmn = bAttacker.Mon;
             ApplyStatChange(pkmn, PStat.Defense, -1);
             ApplyStatChange(pkmn, PStat.SpDefense, -1);
@@ -310,6 +319,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyStatChange(pkmn, PStat.Speed, +2);
             return true;
         }
+        bool Ef_Raise_SPATK(int change)
+            => ChangeStat(bAttacker, PStat.SpAttack, change);
 
         bool Ef_Toxic()
         {

@@ -9,16 +9,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     // In online play, information slowly gets revealed (opponent ability, opponent item, etc)
     public sealed class PKnownInfo
     {
-        static PKnownInfo instance;
-        public static PKnownInfo Instance
-        {
-            get
-            {
-                if (instance == null)
-                    instance = new PKnownInfo();
-                return instance;
-            }
-        }
+        public static PKnownInfo Instance { get; } = new PKnownInfo();
 
         public string LocalDisplayName = string.Empty,
             RemoteDisplayName = string.Empty;
