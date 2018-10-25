@@ -203,6 +203,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Thunderbolt,
+                new PMoveData
+                {
+                    Type = PType.Electric, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 10,
+                    PPTier = 3, Power = 95, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
+                }
+            },
+            {
                 PMove.Toxic,
                 new PMoveData
                 {

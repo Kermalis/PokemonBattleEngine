@@ -221,6 +221,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShellSmash,
         Tackle,
         Thunder,
+        Thunderbolt,
         Toxic,
         Transform, // TODO
         Waterfall,

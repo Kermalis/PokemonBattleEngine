@@ -13,8 +13,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         public Tuple<int, PMove>[] LevelUpMoves;
         public PMove[] OtherMoves;
 
-        public bool HasType(PType type) => Type1 == type || Type2 == type;
         public bool HasAbility(PAbility ability) => Abilities.Contains(ability);
+        public bool HasType(PType type) => Type1 == type || Type2 == type;
 
         // First is attacker, second is defender
         // Cast PType to an int for the indices
@@ -84,13 +84,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
+                        Tuple.Create(1, PMove.Growl),
                         Tuple.Create(18, PMove.NastyPlot), // As Pichu
-                        Tuple.Create(50, PMove.Thunder),
                     },
                     OtherMoves = new PMove[]
                     {
                         PMove.Frustration,
                         PMove.Return,
+                        PMove.Thunder,
+                        PMove.Thunderbolt,
                     }
                 }
             },
@@ -104,6 +106,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
+                        Tuple.Create(1, PMove.Growl),
                         Tuple.Create(47, PMove.Retaliate),
                     },
                     OtherMoves = new PMove[]
@@ -123,6 +126,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
+                        Tuple.Create(1, PMove.Growl),
                         Tuple.Create(59, PMove.Retaliate),
                     },
                     OtherMoves = new PMove[]
@@ -207,6 +211,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         PMove.Frustration,
                         PMove.Return,
+                        PMove.Thunder,
+                        PMove.Thunderbolt,
                     }
                 }
             },
@@ -226,6 +232,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         PMove.Frustration,
                         PMove.Return,
+                        PMove.Thunder,
+                        PMove.Thunderbolt,
                     }
                 }
             },
@@ -268,6 +276,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         PMove.Frustration,
                         PMove.Return,
+                        PMove.Thunder,
+                        PMove.Thunderbolt,
                     }
                 }
             },
