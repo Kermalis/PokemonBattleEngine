@@ -68,6 +68,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Change_Opponent_DEF:
                     ChangeStat(bDefender, PStat.Defense, mData.EffectParam);
                     break;
+                case PMoveEffect.Change_User_DEF:
+                    ChangeStat(bAttacker, PStat.Defense, mData.EffectParam);
+                    break;
                 case PMoveEffect.Change_User_SPATK:
                     ChangeStat(bAttacker, PStat.SpAttack, mData.EffectParam);
                     break;

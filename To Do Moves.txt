@@ -92,7 +92,6 @@ Mimic
 Screech
 Double Team
 Recover
-Harden
 Minimize
 Smokescreen
 Confuse Ray

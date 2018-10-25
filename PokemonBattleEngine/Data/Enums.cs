@@ -190,6 +190,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         Change_Opponent_ATK,
         Change_Opponent_DEF,
+        Change_User_DEF,
         Change_User_SPATK,
         Hit,
         Hit__MaybeBurn,
@@ -210,6 +211,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DragonPulse,
         Frustration,
         Growl,
+        Harden,
         HiddenPower,
         HydroPump,
         IceBeam,
