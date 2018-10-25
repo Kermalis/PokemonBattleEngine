@@ -170,9 +170,10 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PMoveTarget : byte // Used in MoveData
     {
-        Any,
-        AnySurrounding,
-        Self
+        AllFoesSurrounding, // All foes surrounding
+        Any, // Single battler except itself
+        AnySurrounding, // Single battler surrounding
+        Self // Self
     }
     [Flags]
     public enum PMoveFlag : byte
@@ -182,10 +183,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         AffectedByProtect = 1 << 1,
         AffectedByMagicCoat = 1 << 2,
         AffectedBySnatch = 1 << 3,
-        AffectedByMirrorMove = 1 << 4
+        AffectedByMirrorMove = 1 << 4,
+        SoundBased = 1 << 5
     }
     public enum PMoveEffect : byte
     {
+        Change_Opponent_ATK,
+        Change_User_SPATK,
         Hit,
         Hit__MaybeBurn,
         Hit__MaybeFlinch,
@@ -194,7 +198,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeParalyze,
         Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
         Moonlight, // TODO
-        Raise_SPATK,
         Toxic,
         Transform, // TODO
     }
@@ -205,6 +208,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DarkPulse,
         DragonPulse,
         Frustration,
+        Growl,
         HydroPump,
         IceBeam,
         IcePunch,

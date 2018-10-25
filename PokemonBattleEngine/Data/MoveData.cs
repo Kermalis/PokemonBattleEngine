@@ -60,6 +60,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Growl,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Change_Opponent_ATK, EffectParam = -1,
+                    PPTier = 8, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove | PMoveFlag.SoundBased,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.HydroPump,
                 new PMoveData
                 {
@@ -119,7 +130,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Dark, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.Raise_SPATK, EffectParam = +2,
+                    Effect = PMoveEffect.Change_User_SPATK, EffectParam = +2,
                     PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.AffectedBySnatch,
                     Targets = PMoveTarget.Self

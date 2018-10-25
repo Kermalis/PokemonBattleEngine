@@ -62,15 +62,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PMoveData mData = PMoveData.Data[bMove];
             switch (mData.Effect)
             {
-                case PMoveEffect.Hit: Ef_Hit(); break;
-                case PMoveEffect.Hit__MaybeBurn: Ef_Hit__MaybeBurn(mData.EffectParam); break;
-                case PMoveEffect.Hit__MaybeFlinch: Ef_Hit__MaybeFlinch(mData.EffectParam); break;
-                case PMoveEffect.Hit__MaybeFreeze: Ef_Hit__MaybeFreeze(mData.EffectParam); break;
-                case PMoveEffect.Hit__MaybeLower_SPDEF_By1: Ef_Hit__MaybeLower_SPDEF_By1(mData.EffectParam); break;
-                case PMoveEffect.Hit__MaybeParalyze: Ef_Hit__MaybeParalyze(mData.EffectParam); break;
-                case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2: Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2(); break;
-                case PMoveEffect.Raise_SPATK: Ef_Raise_SPATK(mData.EffectParam); break;
-                case PMoveEffect.Toxic: Ef_Toxic(); break;
+                case PMoveEffect.Change_Opponent_ATK:
+                    ChangeStat(bDefender, PStat.Attack, mData.EffectParam);
+                    break;
+                case PMoveEffect.Change_User_SPATK:
+                    ChangeStat(bAttacker, PStat.SpAttack, mData.EffectParam);
+                    break;
+                case PMoveEffect.Hit:
+                    Ef_Hit();
+                    break;
+                case PMoveEffect.Hit__MaybeBurn:
+                    HitAndMaybeApplyStatus1(PStatus1.Burned, mData.EffectParam);
+                    break;
+                case PMoveEffect.Hit__MaybeFlinch:
+                    Ef_Hit__MaybeFlinch(mData.EffectParam);
+                    break;
+                case PMoveEffect.Hit__MaybeFreeze:
+                    HitAndMaybeApplyStatus1(PStatus1.Frozen, mData.EffectParam);
+                    break;
+                case PMoveEffect.Hit__MaybeLower_SPDEF_By1:
+                    HitAndMaybeChangeStat(PStat.SpDefense, -1, mData.EffectParam);
+                    break;
+                case PMoveEffect.Hit__MaybeParalyze:
+                    HitAndMaybeApplyStatus1(PStatus1.Paralyzed, mData.EffectParam);
+                    break;
+                case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2:
+                    Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2();
+                    break;
+                case PMoveEffect.Toxic:
+                    Ef_Toxic();
+                    break;
                 case PMoveEffect.Transform:
                 case PMoveEffect.Moonlight:
                     // TODO
@@ -78,7 +99,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     PPReduce();
                     BroadcastFail();
                     break;
-                default: throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
             }
         }
 
@@ -277,12 +299,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             return true;
         }
-        bool Ef_Hit__MaybeBurn(int chance)
-            => HitAndMaybeApplyStatus1(PStatus1.Burned, chance);
-        bool Ef_Hit__MaybeFreeze(int chance)
-            => HitAndMaybeApplyStatus1(PStatus1.Frozen, chance);
-        bool Ef_Hit__MaybeParalyze(int chance)
-            => HitAndMaybeApplyStatus1(PStatus1.Paralyzed, chance);
 
         bool HitAndMaybeChangeStat(PStat stat, sbyte change, int chance)
         {
@@ -293,8 +309,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyStatChange(bDefender.Mon, stat, change);
             return true;
         }
-        bool Ef_Hit__MaybeLower_SPDEF_By1(int chance)
-            => HitAndMaybeChangeStat(PStat.SpDefense, -1, chance);
 
         bool ChangeStat(PBattlePokemon pkmn, PStat stat, int change)
         {
@@ -319,8 +333,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyStatChange(pkmn, PStat.Speed, +2);
             return true;
         }
-        bool Ef_Raise_SPATK(int change)
-            => ChangeStat(bAttacker, PStat.SpAttack, change);
 
         bool Ef_Toxic()
         {
