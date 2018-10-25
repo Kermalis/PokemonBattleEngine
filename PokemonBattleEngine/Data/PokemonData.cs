@@ -128,6 +128,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
+                        Tuple.Create(13, PMove.Leer),
                         Tuple.Create(47, PMove.Retaliate),
                     },
                     OtherMoves = new PMove[]
@@ -149,6 +150,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
+                        Tuple.Create(13, PMove.Leer),
                         Tuple.Create(59, PMove.Retaliate),
                     },
                     OtherMoves = new PMove[]

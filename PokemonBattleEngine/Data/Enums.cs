@@ -189,6 +189,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PMoveEffect : byte
     {
         Change_Opponent_ATK,
+        Change_Opponent_DEF,
         Change_User_SPATK,
         Hit,
         Hit__MaybeBurn,
@@ -214,6 +215,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IceBeam,
         IcePunch,
         Inferno,
+        Leer,
         Moonlight, // TODO
         NastyPlot,
         Psychic,
