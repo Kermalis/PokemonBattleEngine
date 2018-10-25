@@ -10,6 +10,7 @@
         public const byte MaxPlayerNameLength = 7; // [Default: 7]
 
         public const ushort MaxTotalEVs = 510; // [Default: 510]
+        // Raising MaxIVs will not affect Hidden Power.
         public const byte MaxIVs = 31; // [Default: 31]
 
         public const double NatureStatBoost = 0.1; // [Default: 0.1]

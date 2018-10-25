@@ -15,7 +15,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        static readonly PType[] hiddenPowerTypes = { PType.Fighting, PType.Flying, PType.Poison, PType.Ground, PType.Rock, PType.Bug, PType.Ghost, PType.Steel, PType.Fire, PType.Water, PType.Grass, PType.Electric, PType.Psychic, PType.Ice, PType.Dragon, PType.Dark };
         // Returns false (and prints) if an attack is ineffective
         bool TypeCheck()
         {
@@ -26,16 +25,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (bMove)
             {
                 case PMove.HiddenPower:
-                    {
-                        int a = bAttacker.Mon.Shell.IVs[0] & 1,
-                            b = bAttacker.Mon.Shell.IVs[1] & 1,
-                            c = bAttacker.Mon.Shell.IVs[2] & 1,
-                            d = bAttacker.Mon.Shell.IVs[5] & 1,
-                            e = bAttacker.Mon.Shell.IVs[3] & 1,
-                            f = bAttacker.Mon.Shell.IVs[4] & 1;
-                        bMoveType = hiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (hiddenPowerTypes.Length - 1) / ((1 << 6) - 1)];
-                        break;
-                    }
+                    bMoveType = bAttacker.Mon.GetHiddenPowerType();
+                    break;
                 default:
                     bMoveType = mData.Type;
                     break;
@@ -71,17 +62,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     basePower = Math.Max(1, (byte.MaxValue - bAttacker.Mon.Shell.Friendship) / 2.5);
                     break;
                 case PMove.HiddenPower:
-                    {
-                        int a = (bAttacker.Mon.Shell.IVs[0] & 2) == 2 ? 1 : 0,
-                            b = (bAttacker.Mon.Shell.IVs[1] & 2) == 2 ? 1 : 0,
-                            c = (bAttacker.Mon.Shell.IVs[2] & 2) == 2 ? 1 : 0,
-                            d = (bAttacker.Mon.Shell.IVs[5] & 2) == 2 ? 1 : 0,
-                            e = (bAttacker.Mon.Shell.IVs[3] & 2) == 2 ? 1 : 0,
-                            f = (bAttacker.Mon.Shell.IVs[4] & 2) == 2 ? 1 : 0;
-                        // 30 is minimum, 30+40 is maximum
-                        basePower = (((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * 40 / ((1 << 6) - 1)) + 30;
-                        break;
-                    }
+                    basePower = bAttacker.Mon.GetHiddenPowerBasePower();
+                    break;
                 case PMove.Return:
                     basePower = Math.Max(1, bAttacker.Mon.Shell.Friendship / 2.5);
                     break;

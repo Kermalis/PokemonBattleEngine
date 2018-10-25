@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         // First is attacker, second is defender
         // Cast PType to an int for the indices
         // [0,1] = bug attacker, dark defender
-        public static double[,] TypeEffectiveness = new double[,]
+        public static readonly double[,] TypeEffectiveness = new double[,]
         {
             // Defender
             //    Bug     Dark   Dragon Electric Fighting     Fire   Flying    Ghost    Grass   Ground      Ice   Normal   Poison  Psychic     Rock    Steel    Water
@@ -71,6 +71,26 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PNature.Serious, new sbyte[] {    0,    0,    0,    0,    0} },
             { PNature.Timid,   new sbyte[] {   -1,    0,    0,    0,   +1} },
         };
+        public static readonly PType[] HiddenPowerTypes = new PType[]
+        {
+            PType.Fighting, // 7.8125 %
+            PType.Flying,   // 6.2500 %
+            PType.Poison,   // 6.2500 %
+            PType.Ground,   // 6.2500 %
+            PType.Rock,     // 6.2500 %
+            PType.Bug,      // 7.8125 %
+            PType.Ghost,    // 6.2500 %
+            PType.Steel,    // 6.2500 %
+            PType.Fire,     // 6.2500 %
+            PType.Water,    // 6.2500 %
+            PType.Grass,    // 7.8125 %
+            PType.Electric, // 6.2500 %
+            PType.Psychic,  // 6.2500 %
+            PType.Ice,      // 6.2500 %
+            PType.Dragon,   // 6.2500 %
+            PType.Dark      // 1.5625 %
+        };
+
 
         public static Dictionary<PSpecies, PPokemonData> Data = new Dictionary<PSpecies, PPokemonData>()
         {

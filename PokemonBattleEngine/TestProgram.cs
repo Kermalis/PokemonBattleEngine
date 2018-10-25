@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.LightningRod,
                 Gender = PGender.Male,
                 Nature = PNature.Timid,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
                 EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
                 Moves = new PMove[] { PMove.Thunderbolt, PMove.Thunderbolt, PMove.HiddenPower, PMove.Thunderbolt }, // substitute, thunderbolt, hidden power ice, grass knot
                 PPUps = new byte[] { 3, 3, 3, 3 }
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.HugePower,
                 Gender = PGender.Male,
                 Nature = PNature.Adamant,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
                 EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
                 Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
                 PPUps = new byte[] { 3, 3, 3, 3 }
@@ -48,7 +48,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.Levitate,
                 Gender = PGender.Female,
                 Nature = PNature.Bold,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
                 EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
                 Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic },
                 PPUps = new byte[] { 3, 3, 3, 3 }
@@ -63,7 +63,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.BadDreams,
                 Gender = PGender.Genderless,
                 Nature = PNature.Timid,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
                 EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
                 Moves = new PMove[] { PMove.DarkPulse, PMove.DarkPulse, PMove.NastyPlot, PMove.DarkPulse }, // dark void, dark pulse, nasty plot, substitute
                 PPUps = new byte[] { 3, 3, 3, 3 }

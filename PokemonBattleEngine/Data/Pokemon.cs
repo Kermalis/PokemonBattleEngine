@@ -86,6 +86,28 @@ namespace Kermalis.PokemonBattleEngine.Data
             Speed = OtherStat(pData.Speed);
         }
 
+        public PType GetHiddenPowerType()
+        {
+            int a = Shell.IVs[0] & 1,
+                b = Shell.IVs[1] & 1,
+                c = Shell.IVs[2] & 1,
+                d = Shell.IVs[5] & 1,
+                e = Shell.IVs[3] & 1,
+                f = Shell.IVs[4] & 1;
+            return PPokemonData.HiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (PPokemonData.HiddenPowerTypes.Length - 1) / ((1 << 6) - 1)];
+        }
+        public int GetHiddenPowerBasePower()
+        {
+            int a = (Shell.IVs[0] & 2) == 2 ? 1 : 0,
+                b = (Shell.IVs[1] & 2) == 2 ? 1 : 0,
+                c = (Shell.IVs[2] & 2) == 2 ? 1 : 0,
+                d = (Shell.IVs[5] & 2) == 2 ? 1 : 0,
+                e = (Shell.IVs[3] & 2) == 2 ? 1 : 0,
+                f = (Shell.IVs[4] & 2) == 2 ? 1 : 0;
+            // 30 is minimum, 30+40 is maximum
+            return (((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * 40 / ((1 << 6) - 1)) + 30;
+        }
+
         internal byte[] ToBytes()
         {
             var bytes = new List<byte>();
@@ -134,6 +156,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         public override int GetHashCode() => Id.GetHashCode();
         public override string ToString()
         {
+            bool remotePokemon = Shell.Nature == PNature.MAX; // If the nature is unset, the program is not the server and does not own the Pokémon
+
             string item = Shell.Item.ToString().Replace("MAX", "???");
             string nature = Shell.Nature.ToString().Replace("MAX", "???");
             string ability = Shell.Ability.ToString().Replace("MAX", "???");
@@ -141,25 +165,37 @@ namespace Kermalis.PokemonBattleEngine.Data
             for (int i = 0; i < PConstants.NumMoves; i++)
             {
                 string mStr = Shell.Moves[i].ToString().Replace("MAX", "???");
-                if (MaxPP[i] != 0)
+                if (!remotePokemon)
                     mStr += $" {PP[i]}/{MaxPP[i]}";
                 moveStrs[i] = mStr;
             }
-            string moves = moveStrs.Print();
+            string moves = moveStrs.Print(false);
 
             string str = string.Empty;
-            str += $"{Shell.Gender}";
-            str += $" {Shell.Nickname}/{Shell.Species}";
-            str += $" Lv.{Shell.Level}";
-            str += $" {HP}/{MaxHP} HP";
-            str += $" {Status1}";
-            str += $" {item}";
-            if (nature != "???") // You will never know the nature of an opponent
-                str += $" {nature}";
-            str += $" {ability}";
-            str += $" {moves}";
+            str += $"{Shell.Nickname}/{Shell.Species} {GenderSymbol} Lv.{Shell.Level}";
+            str += Environment.NewLine;
+            str += $"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})";
+            str += Environment.NewLine;
+            str += $"Status: {Status1}";
+            str += Environment.NewLine;
+            str += $"Item: {item}";
+            str += Environment.NewLine;
+            str += $"Ability: {ability}";
+            if (!remotePokemon)
+            {
+                str += Environment.NewLine;
+                str += $"Nature: {nature}";
+            }
+            if (!remotePokemon)
+            {
+                str += Environment.NewLine;
+                str += $"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}";
+            }
+            str += Environment.NewLine;
+            str += $"Moves: {moves}";
 
             return str;
         }
+        public char GenderSymbol => Shell.Gender == PGender.Female ? '♀' : Shell.Gender == PGender.Male ? '♂' : ' ';
     }
 }
