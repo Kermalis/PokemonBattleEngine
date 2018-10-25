@@ -9,7 +9,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
     public sealed partial class PBattle
     {
         PBattlePokemon bAttacker, bDefender;
-        PMove bMove;
+        PMove bMove; PType bMoveType;
         ushort bDamage;
         double bEffectiveness, bDamageMultiplier;
         bool bLandedCrit;
@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             bAttacker = attacker;
             // TODO: Target
             bDefender = attacker == battlers[0] ? battlers[1] : battlers[0]; // Temporary
-            bMove = attacker.SelectedMove;
+            bMove = attacker.SelectedMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
             bDamage = 0;
             bEffectiveness = bDamageMultiplier = 1;
             bLandedCrit = false;

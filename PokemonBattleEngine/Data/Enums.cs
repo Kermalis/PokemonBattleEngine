@@ -209,6 +209,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DragonPulse,
         Frustration,
         Growl,
+        HiddenPower,
         HydroPump,
         IceBeam,
         IcePunch,

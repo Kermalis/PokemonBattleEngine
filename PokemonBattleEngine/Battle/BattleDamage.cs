@@ -15,6 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
+        static readonly PType[] hiddenPowerTypes = { PType.Fighting, PType.Flying, PType.Poison, PType.Ground, PType.Rock, PType.Bug, PType.Ghost, PType.Steel, PType.Fire, PType.Water, PType.Grass, PType.Electric, PType.Psychic, PType.Ice, PType.Dragon, PType.Dark };
         // Returns false (and prints) if an attack is ineffective
         bool TypeCheck()
         {
@@ -22,14 +23,32 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPokemonData defenderPData = PPokemonData.Data[bDefender.Mon.Shell.Species];
             PMoveData mData = PMoveData.Data[bMove];
 
+            switch (bMove)
+            {
+                case PMove.HiddenPower:
+                    {
+                        int a = bAttacker.Mon.Shell.IVs[0] & 1,
+                            b = bAttacker.Mon.Shell.IVs[1] & 1,
+                            c = bAttacker.Mon.Shell.IVs[2] & 1,
+                            d = bAttacker.Mon.Shell.IVs[5] & 1,
+                            e = bAttacker.Mon.Shell.IVs[3] & 1,
+                            f = bAttacker.Mon.Shell.IVs[4] & 1;
+                        bMoveType = hiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (hiddenPowerTypes.Length - 1) / ((1 << 6) - 1)];
+                        break;
+                    }
+                default:
+                    bMoveType = mData.Type;
+                    break;
+            }
+
             // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost
-            if (attackerPData.HasType(mData.Type))
+            if (attackerPData.HasType(bMoveType))
                 bDamageMultiplier *= 1.5;
 
-            bEffectiveness *= PPokemonData.TypeEffectiveness[(int)mData.Type, (int)defenderPData.Type1];
+            bEffectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)defenderPData.Type1];
             // Don't want to halve twice for a mono type
             if (defenderPData.Type1 != defenderPData.Type2)
-                bEffectiveness *= PPokemonData.TypeEffectiveness[(int)mData.Type, (int)defenderPData.Type2];
+                bEffectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)defenderPData.Type2];
 
             if (bEffectiveness == 0)
             {
@@ -51,6 +70,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMove.Frustration:
                     basePower = Math.Max(1, (byte.MaxValue - bAttacker.Mon.Shell.Friendship) / 2.5);
                     break;
+                case PMove.HiddenPower:
+                    {
+                        int a = (bAttacker.Mon.Shell.IVs[0] & 2) == 2 ? 1 : 0,
+                            b = (bAttacker.Mon.Shell.IVs[1] & 2) == 2 ? 1 : 0,
+                            c = (bAttacker.Mon.Shell.IVs[2] & 2) == 2 ? 1 : 0,
+                            d = (bAttacker.Mon.Shell.IVs[5] & 2) == 2 ? 1 : 0,
+                            e = (bAttacker.Mon.Shell.IVs[3] & 2) == 2 ? 1 : 0,
+                            f = (bAttacker.Mon.Shell.IVs[4] & 2) == 2 ? 1 : 0;
+                        // 30 is minimum, 30+40 is maximum
+                        basePower = (((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * 40 / ((1 << 6) - 1)) + 30;
+                        break;
+                    }
                 case PMove.Return:
                     basePower = Math.Max(1, bAttacker.Mon.Shell.Friendship / 2.5);
                     break;
@@ -78,22 +109,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bMove == PMove.Retaliate && bAttacker.Team.MonFaintedLastTurn)
                 basePower *= 2;
             // Overgrow gives a 1.5x boost to Grass attacks if the efCurAttacker is below 1/3 max HP
-            if (mData.Type == PType.Grass && bAttacker.Mon.Shell.Ability == PAbility.Overgrow && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
+            if (bMoveType == PType.Grass && bAttacker.Mon.Shell.Ability == PAbility.Overgrow && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
             // Blaze gives a 1.5x boost to Fire attacks if the efCurAttacker is below 1/3 max HP
-            if (mData.Type == PType.Fire && bAttacker.Mon.Shell.Ability == PAbility.Blaze && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
+            if (bMoveType == PType.Fire && bAttacker.Mon.Shell.Ability == PAbility.Blaze && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
             // Torrent gives a 1.5x boost to Water attacks if the efCurAttacker is below 1/3 max HP
-            if (mData.Type == PType.Water && bAttacker.Mon.Shell.Ability == PAbility.Torrent && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
+            if (bMoveType == PType.Water && bAttacker.Mon.Shell.Ability == PAbility.Torrent && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
             // Swarm gives a 1.5x boost to Bug attacks if the efCurAttacker is below 1/3 max HP
-            if (mData.Type == PType.Bug && bAttacker.Mon.Shell.Ability == PAbility.Swarm && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
+            if (bMoveType == PType.Bug && bAttacker.Mon.Shell.Ability == PAbility.Swarm && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)
                 basePower *= 1.5;
             // A Burned pokemon does half the damage when it is Burned unless it has the Guts ability
             if (mData.Category == PMoveCategory.Physical && bAttacker.Mon.Status1 == PStatus1.Burned && bAttacker.Mon.Shell.Ability != PAbility.Guts)
                 basePower /= 2;
             // Damage is halved when using Fire or Ice moves against a pokemon with the Thick Fat ability
-            if (bDefender.Mon.Shell.Ability == PAbility.ThickFat && (mData.Type == PType.Fire || mData.Type == PType.Ice))
+            if (bDefender.Mon.Shell.Ability == PAbility.ThickFat && (bMoveType == PType.Fire || bMoveType == PType.Ice))
                 basePower /= 2;
 
             return (ushort)basePower;

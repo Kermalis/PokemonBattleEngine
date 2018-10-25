@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
                 EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
-                Moves = new PMove[] { PMove.Thunderbolt, PMove.Thunderbolt, PMove.Thunderbolt, PMove.Thunderbolt }, // substitute, thunderbolt, hidden power ice, grass knot
+                Moves = new PMove[] { PMove.Thunderbolt, PMove.Thunderbolt, PMove.HiddenPower, PMove.Thunderbolt }, // substitute, thunderbolt, hidden power ice, grass knot
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             azumarill = new PPokemonShell
@@ -77,7 +77,7 @@ namespace Kermalis.PokemonBattleEngine
             PTeamShell team1 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { cresselia }
+                Party = { pikachu }
             };
             PTeamShell team2 = new PTeamShell
             {

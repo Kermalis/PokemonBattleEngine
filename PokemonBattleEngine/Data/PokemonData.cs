@@ -90,6 +90,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         PMove.Frustration,
+                        PMove.HiddenPower,
                         PMove.Return,
                         PMove.Thunder,
                         PMove.Thunderbolt,
@@ -112,6 +113,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         PMove.Frustration,
+                        PMove.HiddenPower,
                         PMove.Return,
                     }
                 }
@@ -132,6 +134,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         PMove.Frustration,
+                        PMove.HiddenPower,
                         PMove.Return,
                     }
                 }
@@ -170,6 +173,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         PMove.AquaJet,
                         PMove.Frustration,
+                        PMove.HiddenPower,
                         PMove.IcePunch,
                         PMove.Return,
                         PMove.Waterfall,
@@ -191,6 +195,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         PMove.Frustration,
+                        PMove.HiddenPower,
                         PMove.Return,
                     }
                 }
@@ -210,6 +215,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         PMove.Frustration,
+                        PMove.HiddenPower,
                         PMove.Return,
                         PMove.Thunder,
                         PMove.Thunderbolt,
@@ -231,6 +237,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         PMove.Frustration,
+                        PMove.HiddenPower,
                         PMove.Return,
                         PMove.Thunder,
                         PMove.Thunderbolt,
@@ -252,6 +259,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         PMove.Frustration,
+                        PMove.HiddenPower,
                         PMove.IceBeam,
                         PMove.Moonlight,
                         PMove.Return,
@@ -275,6 +283,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         PMove.Frustration,
+                        PMove.HiddenPower,
                         PMove.Return,
                         PMove.Thunder,
                         PMove.Thunderbolt,
