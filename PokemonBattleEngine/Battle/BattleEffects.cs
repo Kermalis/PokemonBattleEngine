@@ -123,7 +123,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (PUtils.ApplyChance(20))
                     {
                         BroadcastStatus1Ended(bAttacker.Mon);
-                        bAttacker.Mon.Status1 = PStatus1.NoStatus;
+                        bAttacker.Mon.Status1 = PStatus1.None;
                         return false;
                     }
                     // Didn't thaw out
@@ -233,7 +233,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts the change if applied
         bool ApplyStatus1IfPossible(PBattlePokemon pkmn, PStatus1 status)
         {
-            if (pkmn.Mon.Status1 != PStatus1.NoStatus)
+            if (pkmn.Mon.Status1 != PStatus1.None)
                 return false;
 
             PPokemonData pData = PPokemonData.Data[pkmn.Mon.Shell.Species];

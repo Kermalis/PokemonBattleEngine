@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(Gender));
 
             // Validate Item
-            if (Item != PItem.NoItem)
+            if (Item != PItem.None)
             {
                 try
                 {

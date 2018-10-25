@@ -16,51 +16,66 @@ namespace Kermalis.PokemonBattleEngineClient
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
         static readonly PPokemonShell
-            pikachu = new PPokemonShell
-            {
-                Species = PSpecies.Pikachu,
-                Nickname = "Jerry",
-                Level = 100,
-                Friendship = 255,
-                Item = PItem.LightBall,
-                Ability = PAbility.LightningRod,
-                Gender = PGender.Male,
-                Nature = PNature.Timid,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
-                EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
-                Moves = new PMove[] { PMove.Thunder, PMove.Thunder, PMove.Thunder, PMove.Thunder }, // substitute, thunderbolt, hidden power ice, grass knot
-                PPUps = new byte[] { 3, 3, 3, 3 }
-            },
-            azumarill = new PPokemonShell
-            {
-                Species = PSpecies.Azumarill,
-                Nickname = "ZuWEEE",
-                Level = 100,
-                Friendship = 255,
-                Item = PItem.ChoiceBand,
-                Ability = PAbility.HugePower,
-                Gender = PGender.Male,
-                Nature = PNature.Adamant,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
-                EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
-                Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
-                PPUps = new byte[] { 3, 3, 3, 3 }
-            },
-            cresselia = new PPokemonShell
-            {
-                Species = PSpecies.Cresselia,
-                Nickname = "Crest",
-                Level = 100,
-                Friendship = 255,
-                Item = PItem.Leftovers,
-                Ability = PAbility.Levitate,
-                Gender = PGender.Female,
-                Nature = PNature.Bold,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
-                EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
-                Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic },
-                PPUps = new byte[] { 3, 3, 3, 3 }
-            };
+    pikachu = new PPokemonShell
+    {
+        Species = PSpecies.Pikachu,
+        Nickname = "Jerry",
+        Level = 100,
+        Friendship = 255,
+        Item = PItem.LightBall,
+        Ability = PAbility.LightningRod,
+        Gender = PGender.Male,
+        Nature = PNature.Timid,
+        IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
+        EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
+        Moves = new PMove[] { PMove.Thunderbolt, PMove.Thunderbolt, PMove.HiddenPower, PMove.Thunderbolt }, // substitute, thunderbolt, hidden power ice, grass knot
+        PPUps = new byte[] { 3, 3, 3, 3 }
+    },
+    azumarill = new PPokemonShell
+    {
+        Species = PSpecies.Azumarill,
+        Nickname = "ZuWEEE",
+        Level = 100,
+        Friendship = 255,
+        Item = PItem.ChoiceBand,
+        Ability = PAbility.HugePower,
+        Gender = PGender.Male,
+        Nature = PNature.Adamant,
+        IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
+        EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
+        Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
+        PPUps = new byte[] { 3, 3, 3, 3 }
+    },
+    cresselia = new PPokemonShell
+    {
+        Species = PSpecies.Cresselia,
+        Nickname = "Crest",
+        Level = 100,
+        Friendship = 255,
+        Item = PItem.Leftovers,
+        Ability = PAbility.Levitate,
+        Gender = PGender.Female,
+        Nature = PNature.Bold,
+        IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
+        EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
+        Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic },
+        PPUps = new byte[] { 3, 3, 3, 3 }
+    },
+    darkrai = new PPokemonShell
+    {
+        Species = PSpecies.Darkrai,
+        Nickname = "Darkrai",
+        Level = 100,
+        Friendship = 255,
+        Item = PItem.Leftovers,
+        Ability = PAbility.BadDreams,
+        Gender = PGender.Genderless,
+        Nature = PNature.Timid,
+        IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
+        EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+        Moves = new PMove[] { PMove.DarkPulse, PMove.DarkPulse, PMove.NastyPlot, PMove.DarkPulse }, // dark void, dark pulse, nasty plot, substitute
+        PPUps = new byte[] { 3, 3, 3, 3 }
+    };
         static readonly PTeamShell
             team1 = new PTeamShell
             {
@@ -158,7 +173,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     Send(new PResponsePacket());
                     break;
                 case PStatus1EndedPacket sep:
-                    PKnownInfo.Instance.Pokemon(sep.PokemonId).Status1 = PStatus1.NoStatus;
+                    PKnownInfo.Instance.Pokemon(sep.PokemonId).Status1 = PStatus1.None;
                     Send(new PResponsePacket());
                     break;
                 case PItemUsedPacket iup:

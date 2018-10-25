@@ -176,7 +176,9 @@ namespace Kermalis.PokemonBattleEngine.Data
             str += Environment.NewLine;
             str += $"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})";
             str += Environment.NewLine;
-            str += $"Status: {Status1}";
+            str += $"Status1: {Status1}";
+            str += Environment.NewLine;
+            str += $"Status2: {Status2}";
             str += Environment.NewLine;
             str += $"Item: {item}";
             str += Environment.NewLine;

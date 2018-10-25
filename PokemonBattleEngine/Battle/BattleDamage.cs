@@ -126,7 +126,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bAttacker.Mon.Shell.Ability == PAbility.Hustle)
                 attack *= 1.5;
             // A pokemon with the Guts ability gets a 1.5x attack boost when afflicted with a status
-            if (bAttacker.Mon.Shell.Ability == PAbility.Guts && bAttacker.Mon.Status1 != PStatus1.NoStatus)
+            if (bAttacker.Mon.Shell.Ability == PAbility.Guts && bAttacker.Mon.Status1 != PStatus1.None)
                 attack *= 1.5;
             // A pokemon holding a Choice Band gets a 1.5x attack boost
             if (bAttacker.Mon.Shell.Item == PItem.ChoiceBand)
@@ -143,7 +143,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bDefender.Mon.Shell.Item == PItem.MetalPowder && bDefender.Mon.Shell.Species == PSpecies.Ditto)
                 defense *= 2;
             // A pokemon with the Marvel Scale ability gets a 1.5x defense boost when afflicted with a status
-            if (bDefender.Mon.Shell.Ability == PAbility.MarvelScale && bDefender.Mon.Status1 != PStatus1.NoStatus)
+            if (bDefender.Mon.Shell.Ability == PAbility.MarvelScale && bDefender.Mon.Status1 != PStatus1.None)
                 defense *= 1.5;
 
             return (ushort)defense;
