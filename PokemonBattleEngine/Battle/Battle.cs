@@ -145,7 +145,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             foreach (PBattlePokemon battler in battlers)
             {
-                battler.Mon.Status2 ^= PStatus2.Flinching;
+                battler.Mon.Status2 &= ~PStatus2.Flinching;
             }
         }
         void RunMovesInOrder()
