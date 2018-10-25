@@ -137,6 +137,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Lick,
+                new PMoveData
+                {
+                    Type = PType.Ghost, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
+                    PPTier = 6, Power = 20, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
+                }
+            },
+            {
                 PMove.Moonlight,
                 new PMoveData
                 {

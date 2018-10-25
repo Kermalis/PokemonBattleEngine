@@ -216,6 +216,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IcePunch,
         Inferno,
         Leer,
+        Lick,
         Moonlight, // TODO
         NastyPlot,
         Psychic,
