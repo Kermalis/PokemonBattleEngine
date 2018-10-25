@@ -221,6 +221,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Psychic,
         Retaliate, // TODO
         Return,
+        Scratch,
         ShellSmash,
         Tackle,
         Thunder,
