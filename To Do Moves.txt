@@ -317,7 +317,6 @@ Icicle Spear
 Iron Defense
 Block
 Howl
-Dragon Claw
 Frenzy Plant
 Bulk Up
 Bounce

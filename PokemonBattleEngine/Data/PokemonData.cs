@@ -738,7 +738,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // surf
                         // dive
                         // hone claws
-                        // dragon claw
                         // psyshock
                         // roar
                         // sunny day
@@ -804,6 +803,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
                         PMove.CalmMind, // TM
+                        PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
@@ -858,7 +858,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // surf
                         // dive
                         // hone claws
-                        // dragon claw
                         // psyshock
                         // roar
                         // sunny day
@@ -921,6 +920,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
                         PMove.CalmMind, // TM
+                        PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM

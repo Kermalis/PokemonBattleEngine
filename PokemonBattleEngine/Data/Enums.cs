@@ -212,6 +212,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AquaJet,
         CalmMind,
         DarkPulse,
+        DragonClaw,
         DragonDance,
         DragonPulse,
         Frustration,

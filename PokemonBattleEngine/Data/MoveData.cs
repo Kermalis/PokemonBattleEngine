@@ -49,6 +49,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.DragonClaw,
+                new PMoveData
+                {
+                    Type = PType.Dragon, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
+                }
+            },
+            {
                 PMove.DragonDance,
                 new PMoveData
                 {
