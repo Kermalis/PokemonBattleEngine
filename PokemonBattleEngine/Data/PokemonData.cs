@@ -168,7 +168,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // present
                         // reversal
                         // thunder punch
-                        // tickle
                         // wish
                         // covet // tutor
                         // helping hand
@@ -202,6 +201,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.Return, // TM
+                        PMove.Tickle, // Egg Move
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM
@@ -495,7 +495,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // present
                         // reversal
                         // thunder punch
-                        // tickle
                         // wish
                         // body slam // gen 3 tutor
                         // captivate // gen 4 tm
@@ -516,6 +515,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.Return, // TM
+                        PMove.Tickle, // Egg Move
                         PMove.Thunder, //TM
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM
@@ -595,7 +595,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // soak
                         // superpower
                         // supersonic
-                        // tickle
                         // water sport // egg move
                         // aqua tail // tutor
                         // bounce
@@ -632,6 +631,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IcePunch, // Move Tutor
                         PMove.Return, // TM
+                        PMove.Tickle, // Egg Move
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
                     }

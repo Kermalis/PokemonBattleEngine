@@ -189,20 +189,21 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PMoveEffect : byte
     {
-        Change_Opponent_ATK,
-        Change_Opponent_DEF,
-        Change_User_DEF,
-        Change_User_SPATK,
+        ChangeTarget_ATK,
+        ChangeTarget_DEF,
+        ChangeUser_DEF,
+        ChangeUser_SPATK,
         Hit,
         Hit__MaybeBurn,
         Hit__MaybeFlinch,
         Hit__MaybeFreeze,
-        Hit__MaybeLower_SPDEF_By1,
+        Hit__MaybeLowerTarget_SPDEF_By1,
         Hit__MaybeParalyze,
-        Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
+        LowerTarget_ATK_DEF_By1,
+        LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
         Moonlight, // TODO
-        Raise_User_ATK_SPE_By1,
-        Raise_User_SPATK_SPDEF_By1,
+        RaiseUser_ATK_SPE_By1,
+        RaiseUser_SPATK_SPDEF_By1,
         Toxic,
         Transform, // TODO
     }
@@ -234,6 +235,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Scratch,
         ShellSmash,
         Tackle,
+        Tickle,
         Thunder,
         Thunderbolt,
         Toxic,

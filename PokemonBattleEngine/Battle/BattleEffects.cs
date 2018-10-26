@@ -62,16 +62,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PMoveData mData = PMoveData.Data[bMove];
             switch (mData.Effect)
             {
-                case PMoveEffect.Change_Opponent_ATK:
+                case PMoveEffect.ChangeTarget_ATK:
                     ChangeStat(bDefender, PStat.Attack, mData.EffectParam);
                     break;
-                case PMoveEffect.Change_Opponent_DEF:
+                case PMoveEffect.ChangeTarget_DEF:
                     ChangeStat(bDefender, PStat.Defense, mData.EffectParam);
                     break;
-                case PMoveEffect.Change_User_DEF:
+                case PMoveEffect.ChangeUser_DEF:
                     ChangeStat(bAttacker, PStat.Defense, mData.EffectParam);
                     break;
-                case PMoveEffect.Change_User_SPATK:
+                case PMoveEffect.ChangeUser_SPATK:
                     ChangeStat(bAttacker, PStat.SpAttack, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit:
@@ -86,20 +86,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeFreeze:
                     HitAndMaybeApplyStatus1(PStatus1.Frozen, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLower_SPDEF_By1:
+                case PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1:
                     HitAndMaybeChangeStat(PStat.SpDefense, -1, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeParalyze:
                     HitAndMaybeApplyStatus1(PStatus1.Paralyzed, mData.EffectParam);
                     break;
-                case PMoveEffect.Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2:
-                    Ef_Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2();
+                case PMoveEffect.LowerTarget_ATK_DEF_By1:
+                    Ef_LowerTarget_ATK_DEF_By1();
                     break;
-                case PMoveEffect.Raise_User_ATK_SPE_By1:
-                    Ef_Raise_User_ATK_SPE_By1();
+                case PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2:
+                    Ef_LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2();
                     break;
-                case PMoveEffect.Raise_User_SPATK_SPDEF_By1:
-                    Ef_Raise_User_SPATK_SPDEF_By1();
+                case PMoveEffect.RaiseUser_ATK_SPE_By1:
+                    Ef_RaiseUser_ATK_SPE_By1();
+                    break;
+                case PMoveEffect.RaiseUser_SPATK_SPDEF_By1:
+                    Ef_RaiseUser_SPATK_SPDEF_By1();
                     break;
                 case PMoveEffect.Toxic:
                     Ef_Toxic();
@@ -331,7 +334,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyStatChange(pkmn.Mon, stat, (sbyte)change);
             return true;
         }
-        bool Ef_Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
+        bool Ef_LowerTarget_ATK_DEF_By1()
+        {
+            if (AttackCancelCheck())
+                return false;
+            BroadcastMoveUsed();
+            PPReduce();
+            if (AccuracyCheck())
+                return false;
+            var pkmn = bDefender.Mon;
+            ApplyStatChange(pkmn, PStat.Attack, -1);
+            ApplyStatChange(pkmn, PStat.Defense, -1);
+            return true;
+        }
+        bool Ef_LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
         {
             if (AttackCancelCheck())
                 return false;
@@ -345,7 +361,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyStatChange(pkmn, PStat.Speed, +2);
             return true;
         }
-        bool Ef_Raise_User_ATK_SPE_By1()
+        bool Ef_RaiseUser_ATK_SPE_By1()
         {
             if (AttackCancelCheck())
                 return false;
@@ -356,7 +372,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyStatChange(pkmn, PStat.Speed, +1);
             return true;
         }
-        bool Ef_Raise_User_SPATK_SPDEF_By1()
+        bool Ef_RaiseUser_SPATK_SPDEF_By1()
         {
             if (AttackCancelCheck())
                 return false;

@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Psychic, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.Raise_User_SPATK_SPDEF_By1, EffectParam = 0,
+                    Effect = PMoveEffect.RaiseUser_SPATK_SPDEF_By1, EffectParam = 0,
                     PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.AffectedBySnatch,
                     Targets = PMoveTarget.Self
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Dragon, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.Raise_User_ATK_SPE_By1, EffectParam = 0,
+                    Effect = PMoveEffect.RaiseUser_ATK_SPE_By1, EffectParam = 0,
                     PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.AffectedBySnatch,
                     Targets = PMoveTarget.Self
@@ -108,7 +108,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.Change_Opponent_ATK, EffectParam = -1,
+                    Effect = PMoveEffect.ChangeTarget_ATK, EffectParam = -1,
                     PPTier = 8, Power = 0, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove | PMoveFlag.SoundBased,
                     Targets = PMoveTarget.AllFoesSurrounding
@@ -119,7 +119,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.Change_User_DEF, EffectParam = +1,
+                    Effect = PMoveEffect.ChangeUser_DEF, EffectParam = +1,
                     PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.AffectedBySnatch,
                     Targets = PMoveTarget.Self
@@ -185,7 +185,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.Change_Opponent_DEF, EffectParam = -1,
+                    Effect = PMoveEffect.ChangeTarget_DEF, EffectParam = -1,
                     PPTier = 6, Power = 0, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
                     Targets = PMoveTarget.AllFoesSurrounding
@@ -218,7 +218,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Dark, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.Change_User_SPATK, EffectParam = +2,
+                    Effect = PMoveEffect.ChangeUser_SPATK, EffectParam = +2,
                     PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.AffectedBySnatch,
                     Targets = PMoveTarget.Self
@@ -229,7 +229,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Psychic, Category = PMoveCategory.Special,
-                    Effect = PMoveEffect.Hit__MaybeLower_SPDEF_By1, EffectParam = 10,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
                     PPTier = 2, Power = 90, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
                     Targets = PMoveTarget.AnySurrounding
@@ -273,7 +273,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2, EffectParam = 0,
+                    Effect = PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2, EffectParam = 0,
                     PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.AffectedBySnatch,
                     Targets = PMoveTarget.Self
@@ -287,6 +287,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 7, Power = 50, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
+                }
+            },
+            {
+                PMove.Tickle,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.LowerTarget_ATK_DEF_By1, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
                     Targets = PMoveTarget.AnySurrounding
                 }
             },
