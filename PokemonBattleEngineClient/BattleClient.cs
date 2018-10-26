@@ -20,12 +20,12 @@ namespace Kermalis.PokemonBattleEngineClient
     pikachu = new PPokemonShell
     {
         Species = PSpecies.Pikachu,
-        Nickname = "Jerry",
+        Nickname = "Pikachu",
         Level = 100,
         Friendship = 255,
         Item = PItem.LightBall,
         Ability = PAbility.LightningRod,
-        Gender = PGender.Male,
+        Gender = PGender.Female,
         Nature = PNature.Timid,
         IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
         EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
@@ -86,7 +86,7 @@ namespace Kermalis.PokemonBattleEngineClient
             team2 = new PTeamShell
             {
                 DisplayName = "Jess",
-                Party = { cresselia }
+                Party = { pikachu }
             };
         static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team1 : team2;
 

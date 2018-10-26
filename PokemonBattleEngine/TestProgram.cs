@@ -11,12 +11,12 @@ namespace Kermalis.PokemonBattleEngine
             pikachu = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
-                Nickname = "Jerry",
+                Nickname = "Pikachu",
                 Level = 100,
                 Friendship = 255,
                 Item = PItem.LightBall,
                 Ability = PAbility.LightningRod,
-                Gender = PGender.Male,
+                Gender = PGender.Female,
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
                 EVs = new byte[] { 0, 0, 4, 252, 0, 252 },

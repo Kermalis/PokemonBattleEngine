@@ -1,28 +1,28 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient">
-  <Canvas Background="Orange" Height="500" Width="700">
-    <views:PokemonView Name="Battler0_2" ZIndex="1" Canvas.Left="0" Canvas.Top="300"/>
-    <views:PokemonView Name="Battler0_0" ZIndex="0" Canvas.Left="150" Canvas.Top="280"/>
-    <views:PokemonView Name="Battler0_1" ZIndex="1" Canvas.Left="300" Canvas.Top="320"/>
+  <Canvas Width="512" Height="384">
+    <Canvas.Background>
+      <ImageBrush Source="resm:Kermalis.PokemonBattleEngineClient.Assets.Backgrounds.1-t.png?assembly=PokemonBattleEngineClient"/>
+    </Canvas.Background>
+    <views:PokemonView Name="Battler0_2" ZIndex="1" Canvas.Left="-30" Canvas.Top="190"/>
+    <views:PokemonView Name="Battler0_0" ZIndex="0" Canvas.Left="150" Canvas.Top="170"/>
+    <views:PokemonView Name="Battler0_1" ZIndex="1" Canvas.Left="330" Canvas.Top="210"/>
 
-    <views:PokemonView Name="Battler1_2" ZIndex="0" Canvas.Left="375" Canvas.Top="0"/>
-    <views:PokemonView Name="Battler1_0" ZIndex="1" Canvas.Left="450" Canvas.Top="10"/>
-    <views:PokemonView Name="Battler1_1" ZIndex="0" Canvas.Left="525" Canvas.Top="5"/>
+    <views:PokemonView Name="Battler1_2" ZIndex="0" Canvas.Left="180" Canvas.Top="60"/>
+    <views:PokemonView Name="Battler1_0" ZIndex="1" Canvas.Left="270" Canvas.Top="80"/>
+    <views:PokemonView Name="Battler1_1" ZIndex="0" Canvas.Left="360" Canvas.Top="70"/>
 
-    <Line
-      StartPoint="0,422" EndPoint="700,422"
-      Stroke="#80000000" StrokeThickness="2"
-      IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
-    <TextBlock
-      Text="{Binding Message}" TextAlignment="Center"
-      Background="#A0000000" Foreground="White"
-      FontSize="28" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pixel Operator"
-      Height="62" Width="700" Canvas.Top="425"
-      IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
-    <Line
-      StartPoint="0,490" EndPoint="700,490"
-      Stroke="#80000000" StrokeThickness="2"
-      IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
+    <Line StartPoint="0,335" EndPoint="512,335" Stroke="#C3000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
+    <Line StartPoint="0,336" EndPoint="512,336" Stroke="#35000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
+    <Line StartPoint="0,337" EndPoint="512,337" Stroke="#7C000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
+    <Rectangle Width="512" Height="36" Canvas.Left="0" Canvas.Top="338" Fill="#83000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
+      <TextBlock
+        Text="{Binding Message}" Foreground="White"
+        FontSize="18" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pixel Operator"
+        Width="480" Height="36" Canvas.Left="16" Canvas.Top="338" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="3"/>
+    <Line StartPoint="0,375" EndPoint="512,375" Stroke="#7C000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
+    <Line StartPoint="0,376" EndPoint="512,376" Stroke="#35000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
+    <Line StartPoint="0,377" EndPoint="512,377" Stroke="#C3000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
   </Canvas>
 </UserControl>
