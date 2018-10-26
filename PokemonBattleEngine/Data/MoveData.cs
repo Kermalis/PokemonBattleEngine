@@ -38,6 +38,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.DragonDance,
+                new PMoveData
+                {
+                    Type = PType.Dragon, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Raise_User_ATK_SPE_By1, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.DragonPulse,
                 new PMoveData
                 {
@@ -229,7 +240,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2, EffectParam = 100,
+                    Effect = PMoveEffect.Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2, EffectParam = 0,
                     PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.AffectedBySnatch,
                     Targets = PMoveTarget.Self

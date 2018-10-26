@@ -92,8 +92,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeParalyze:
                     HitAndMaybeApplyStatus1(PStatus1.Paralyzed, mData.EffectParam);
                     break;
-                case PMoveEffect.Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2:
-                    Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2();
+                case PMoveEffect.Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2:
+                    Ef_Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2();
+                    break;
+                case PMoveEffect.Raise_User_ATK_SPE_By1:
+                    Ef_Raise_User_ATK_SPE_By1();
                     break;
                 case PMoveEffect.Toxic:
                     Ef_Toxic();
@@ -325,7 +328,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyStatChange(pkmn.Mon, stat, (sbyte)change);
             return true;
         }
-        bool Ef_Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
+        bool Ef_Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
         {
             if (AttackCancelCheck())
                 return false;
@@ -337,6 +340,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ApplyStatChange(pkmn, PStat.Attack, +2);
             ApplyStatChange(pkmn, PStat.SpAttack, +2);
             ApplyStatChange(pkmn, PStat.Speed, +2);
+            return true;
+        }
+        bool Ef_Raise_User_ATK_SPE_By1()
+        {
+            if (AttackCancelCheck())
+                return false;
+            BroadcastMoveUsed();
+            PPReduce();
+            var pkmn = bAttacker.Mon;
+            ApplyStatChange(pkmn, PStat.Attack, +1);
+            ApplyStatChange(pkmn, PStat.Speed, +1);
             return true;
         }
 

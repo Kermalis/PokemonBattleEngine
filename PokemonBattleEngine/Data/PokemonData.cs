@@ -844,7 +844,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // zen headbutt 40
                         // recover 45
                         // psycho shift 50
-                        // dragon dance 50 // Gen 3 50, Gen 4-5 55
+                        Tuple.Create(50, PMove.DragonDance), // Gen 3
+                        Tuple.Create(55, PMove.DragonDance), // Gen 4 / Gen 5
                         Tuple.Create(60, PMove.Psychic), // Gen 5
                         // heal pulse 65
                         Tuple.Create(70, PMove.DragonPulse), // Gen 4

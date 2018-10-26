@@ -199,8 +199,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeFreeze,
         Hit__MaybeLower_SPDEF_By1,
         Hit__MaybeParalyze,
-        Lower_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
+        Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
         Moonlight, // TODO
+        Raise_User_ATK_SPE_By1,
         Toxic,
         Transform, // TODO
     }
@@ -209,6 +210,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         None,
         AquaJet,
         DarkPulse,
+        DragonDance,
         DragonPulse,
         Frustration,
         Growl,
