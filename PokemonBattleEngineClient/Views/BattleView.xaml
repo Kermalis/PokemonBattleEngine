@@ -11,14 +11,14 @@
     <views:PokemonView Name="Battler1_1" ZIndex="0" Canvas.Left="525" Canvas.Top="5"/>
 
     <Line
-      StartPoint="0,424" EndPoint="700,424"
+      StartPoint="0,422" EndPoint="700,422"
       Stroke="#80000000" StrokeThickness="2"
       IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <TextBlock
       Text="{Binding Message}" TextAlignment="Center"
       Background="#A0000000" Foreground="White"
-      FontSize="26"
-      Height="60" Width="700" Canvas.Top="427"
+      FontSize="28" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pixel Operator"
+      Height="62" Width="700" Canvas.Top="425"
       IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <Line
       StartPoint="0,490" EndPoint="700,490"
