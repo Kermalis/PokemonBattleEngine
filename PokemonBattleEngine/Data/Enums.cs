@@ -155,6 +155,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Cubone = 104, // TODO
         Marowak, // TODO
         Ditto = 132, // TODO
+        Pichu = 172, // TODO
         Azumarill = 184, // TODO
         Clamperl = 366, // TODO
         Latias = 380, // TODO

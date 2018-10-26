@@ -10,6 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PGender GenderRatio;
         public PType Type1, Type2;
         public PAbility[] Abilities;
+        public byte MinLevel;
         public Tuple<int, PMove>[] LevelUpMoves;
         public PMove[] OtherMoves;
 
@@ -102,18 +103,108 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Electric, Type2 = PType.Electric,
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
+                    MinLevel = 1, // Egg
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
+                        // thunder shock 1
+                        // charm 1 // As Pichu
+                        // tail whip 5
+                        // follow me 5 // gen 3 pichu event
+                        // teeter dance 5 // gen 3 pichu event
+                        // thunder wave 8 // 8 As Pichu, 10
+                        // quick attack 13
+                        // sweet kiss 11 // As Pichu
+                        // electro ball 18
                         Tuple.Create(18, PMove.NastyPlot), // As Pichu
+                        // double team 21
+                        // slam 26
+                        Tuple.Create(29, PMove.Thunderbolt),
+                        // sing 30 // gen 5 event (Singing Pikachu)
+                        // last resort 30 // gen 4 event (Kyoto Cross Media Experience 2009 Pikachu)
+                        // endeavor 30 // gen 4 pichu event
+                        // feint 34
+                        // agility 37
+                        // discharge 42
+                        // light screen 45
+                        // extremespeed 50 // gen 5 event (ExtremeSpeed Pikachu)
+                        // yawn 50 // gen 4 event (Sleeping Pikachu)
+                        // rest 50 // gen 4 event (Sleeping Pikachu)
+                        Tuple.Create(50, PMove.Thunder),
                     },
                     OtherMoves = new PMove[]
                     {
-                        PMove.Frustration,
-                        PMove.HiddenPower,
-                        PMove.Return,
-                        PMove.Thunder,
-                        PMove.Thunderbolt,
+                        // strength
+                        // light screen
+                        // protect
+                        // rain dance
+                        // dig
+                        // brick break
+                        // double team
+                        // facade
+                        // reset
+                        // attract
+                        // round
+                        // echoed voice
+                        // fling
+                        // charge beam
+                        // flash
+                        // volt switch
+                        // thunder wave
+                        // grass knot
+                        // swagger
+                        // substitute
+                        // wild charge
+                        // rock smash
+                        // bestow // egg
+                        // bide
+                        // charge
+                        // double slap
+                        // encore
+                        // endure
+                        // fake out
+                        // flail
+                        // lucky chant
+                        // present
+                        // reversal
+                        // thunder punch
+                        // tickle
+                        // wish
+                        // covet // tutor
+                        // helping hand
+                        // iron tail
+                        // knock off
+                        // magnet rise
+                        // signal beam
+                        // sleep talk
+                        // snore
+                        // thunder punch
+                        // body slam // gen 3 tutor
+                        // captivate // gen 4 tm
+                        // counter // gen 3 tutor
+                        // defense curl // gen 3 tutor
+                        // double edge // gen 3 tutor
+                        // dynamic punch // gen 3 tutor
+                        // focus punch // gen 4 tm
+                        // headbutt // gen 4 tutor
+                        // mega kick // gen 3 tutor
+                        // mega punch // gen 3 tutor
+                        // mimic // gen 3 tutor
+                        // mud slap // gen 4 tutor
+                        // natural gift // gen 4 tm
+                        // rollout // gen 4 tutor
+                        // secret power // gen 4 tm
+                        // seismic toss // gen 3 tutor
+                        // shock wave // gen 4 tm
+                        // swift // gen 4 tutor
+                        // uproar // tutor as Pichu
+                        // volt tackle // egg as pichu
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.Return, // TM
+                        PMove.Thunder, // TM
+                        PMove.Thunderbolt, // TM
+                        PMove.Toxic, // TM
                     }
                 }
             },
@@ -125,17 +216,99 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Ground, Type2 = PType.Ground,
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
+                    MinLevel = 1, // Egg
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
+                        // tail whip 3
+                        // bone club 7
+                        // headbutt 11
                         Tuple.Create(13, PMove.Leer),
+                        // focus energy 17
+                        // bonemerang 21
+                        // rage 23
+                        // false swipe 27
+                        // thrash 31
+                        // fling 33
+                        // bone rush 37
+                        // endeavor 41
+                        // double edge 43
                         Tuple.Create(47, PMove.Retaliate),
                     },
                     OtherMoves = new PMove[]
                     {
-                        PMove.Frustration,
-                        PMove.HiddenPower,
-                        PMove.Return,
+                        // strength
+                        // sunny day
+                        // blizzard
+                        // protect
+                        // smack down
+                        // earthquake
+                        // dig
+                        // brick break
+                        // double team
+                        // flamethrower
+                        // sandstorm
+                        // fire blast
+                        // rock tomb
+                        // aerial ace
+                        // facade
+                        // rest
+                        // attract
+                        // thief
+                        // round
+                        // echoed voice
+                        // false swipe
+                        // fling
+                        // incinerate
+                        // swords dance
+                        // bulldoze
+                        // rock slide
+                        // swagger
+                        // substitute
+                        // rock smash
+                        // ancient power // egg
+                        // belly drum
+                        // chip away
+                        // detect
+                        // double kick
+                        // endure
+                        // iron head
+                        // perish song
+                        // screech
+                        // skull bash
+                        // earth power // tutor
+                        // endeavor
+                        // fire punch
+                        // icy wind
+                        // iron defense
+                        // iron head
+                        // iron tail
+                        // knock off
+                        // low kick
+                        // sleep talk
+                        // snore
+                        // stealth rock
+                        // thunder punch
+                        // uproar
+                        // body slam // gen 3 tutor
+                        // captivate // gen 4 tm
+                        // counter // gen 3 tutor
+                        // dynamic punch // gen 3 tutor
+                        // focus punch // gen 4 tm
+                        // fury cutter // gen 4 tutor
+                        // mega kick // gen 3 tutor
+                        // mega punch // gen 3 tutor
+                        // mimic // gen 3 tutor
+                        // mud slap // gen 4 tutor
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        // seismic toss // gen 3 tutor
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.IceBeam, // TM
+                        PMove.Retaliate, // TM
+                        PMove.Return, // TM
+                        PMove.Toxic, // TM
                     }
                 }
             },
@@ -147,17 +320,105 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Ground, Type2 = PType.Ground,
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
+                    MinLevel = 14, // HGSS (Rock Tunnel)
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
+                        // bone club 1 // 1 & 7
+                        // headbutt 1 // 1 & 11
+                        // tail whip 1 // 1 & 3
                         Tuple.Create(13, PMove.Leer),
+                        // focus energy 17
+                        // bonemerang 21
+                        // rage 23
+                        // false swipe 27
+                        // thrash 31 // 31 as Cubone, 33
+                        // fling 33 // 33 as Cubone, 37
+                        // bone rush 37 // 37 as Cubone, 43
+                        // endeavor 41 // 41 as Cubone, 49
+                        // double edge 43 // 43 as Cubone, 53
+                        Tuple.Create(47, PMove.Retaliate), // As Cubone
                         Tuple.Create(59, PMove.Retaliate),
                     },
                     OtherMoves = new PMove[]
                     {
-                        PMove.Frustration,
-                        PMove.HiddenPower,
-                        PMove.Return,
+                        // strength
+                        // sunny day
+                        // blizzard
+                        // hyper beam
+                        // protect
+                        // smack down
+                        // earthquake
+                        // dig
+                        // brick break
+                        // double team
+                        // flamethrower
+                        // sandstorm
+                        // fire blast
+                        // rock tomb
+                        // aerial ace
+                        // facade
+                        // rest
+                        // attract
+                        // thief
+                        // round
+                        // echoed voice
+                        // focus blast
+                        // false swipe
+                        // fling
+                        // incinerate
+                        // giga impact
+                        // stone edge
+                        // swords dance
+                        // bulldoze
+                        // rock slide
+                        // swagger
+                        // substitute
+                        // rock smash
+                        // ancient power // egg move
+                        // belly drum
+                        // chip away
+                        // detect
+                        // double kick
+                        // endure
+                        // iron head
+                        // perish song
+                        // screech
+                        // skull bash
+                        // earth power // move tutor
+                        // endeavor
+                        // fire punch
+                        // icy wind
+                        // iron defense
+                        // iron head
+                        // iron tail
+                        // knock off
+                        // low kick
+                        // outrage
+                        // sleep talk
+                        // snore
+                        // stealth rock
+                        // thunder punch
+                        // uproar
+                        // body slam // gen 3 tutor
+                        // captivate // gen 4 tm
+                        // counter // gen 3 tutor
+                        // dynamic punch // gen 3 tutor
+                        // focus punch // gen 4 tm
+                        // fury cutter // gen 4 tutor
+                        // mega kick // gen 3 tutor
+                        // mega punch // gen 3 tutor
+                        // mimic // gen 3 tutor
+                        // mud slap // gen 4 tutor
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        // seismic toss // gen 3 tutor
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.IceBeam, // TM
+                        PMove.Retaliate, // TM
+                        PMove.Return, // TM
+                        PMove.Toxic, // TM
                     }
                 }
             },
@@ -169,6 +430,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.Genderless,
                     Type1 = PType.Normal, Type2 = PType.Normal,
                     Abilities = new PAbility[] { PAbility.Limber, PAbility.Imposter },
+                    MinLevel = 10, // HGSS (Route 34, Route 35)
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Transform),
@@ -180,6 +442,87 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Pichu,
+                new PPokemonData
+                {
+                    HP = 20, Attack = 40, Defense = 15, SpAttack = 35, SpDefense = 35, Speed = 60,
+                    GenderRatio = PGender.M1F1,
+                    Type1 = PType.Electric, Type2 = PType.Electric,
+                    Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
+                    MinLevel = 1, // Egg
+                    LevelUpMoves = new Tuple<int, PMove>[]
+                    {
+                        // thundershock 1
+                        // charm 1
+                        // tail whip 5
+                        // follow me 5 // Gen 3 event (PokéPark Egg Pichu)
+                        // teeter dance 5 // Gen 3 event (Teeter Dance Pichu, Pokémon Stamp Ruby and Sapphire Contest Pichu)
+                        // thunder wave 8 // Gen 3 8, Gen 4 / Gen 5 10
+                        // sweet kiss 11 // Gen 3 11, Gen 4 / Gen 5 13
+                        // nasty plot 18                        
+                        // endeavor 30 // gen 4 event (Shokotan Pikachu-colored Pichu, Mikena Pichu, GameStop Pichu)
+                    },
+                    OtherMoves = new PMove[]
+                    {
+                        // light screen
+                        // protect
+                        // rain dance
+                        // double team
+                        // facade
+                        // rest
+                        // attract
+                        // round
+                        // echoed voice
+                        // fling
+                        // charge beam
+                        // flash
+                        // volt switch
+                        // thunder wave
+                        // grass knot
+                        // swagger
+                        // substitute
+                        // wild charge
+                        // volt tackle // egg
+                        // bestow
+                        // bide
+                        // charge
+                        // double slap
+                        // encore
+                        // endure
+                        // fake out
+                        // flail
+                        // lucky chant
+                        // present
+                        // reversal
+                        // thunder punch
+                        // tickle
+                        // wish
+                        // body slam // gen 3 tutor
+                        // captivate // gen 4 tm
+                        // counter // gen 3 tutor
+                        // defense curl // gen 3 tutor
+                        // double edge // gen 3 tutor
+                        // headbutt // gen 4 tutor
+                        // mega kick // gen 3 tutor
+                        // mega punch // gen 3 tutor
+                        // mimic // gen 3 tutor
+                        // mud slap // gen 4 tutor
+                        // natural gift // gen 4 tm
+                        // rollout // gen 4 tutor
+                        // secret power // gen 4 tm
+                        // seismic toss // gen 3 tutor
+                        // shock wave // gen 4 tm
+                        // swift // gen 4 tutor
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.Return, // TM
+                        PMove.Thunder, //TM
+                        PMove.Thunderbolt, // TM
+                        PMove.Toxic, // TM
+                    }
+                }
+            },
+            {
                 PSpecies.Azumarill,
                 new PPokemonData
                 {
@@ -187,18 +530,110 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Water, Type2 = PType.Water,
                     Abilities = new PAbility[] { PAbility.ThickFat, PAbility.HugePower, PAbility.SapSipper },
+                    MinLevel = 5, // B2W2 (Route 20, Flocessy Ranch, Relic Passage)
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
-                        Tuple.Create(46, PMove.HydroPump),
+                        // tackle 1
+                        // bubble 1 // B2W2 1
+                        // tail whip 1 // Gen 3 1 & 6, Gen 4 / BW 1 & 7, B2W2 1 & 2
+                        // water gun 1 // Gen 3 / Gen 4 / BW 1 & 10, B2W2 7
+                        // water sport 1 // B2W2 Level 1 & 5
+                        // defense curl 1 // Gen 3 1 & 3, Gen 4 / BW 1 & 2, B2W2 10
+                        // rollout 10 // Gen 3 / Gen 4 / BW 15, B2W2 10
+                        // bubblebeam 13 // Gen 3 / Gen 4 24, BW 20, B2W2 13
+                        // helping hand 16 // B2W2 16
+                        // aqua tail 21 // Gen 4 / BW 47, B2W2 21
+                        // double edge 25 // Gen 3 34, Gen 4 / BW 33, B2W2 25
+                        // aqua ring 23 // Gen 3 / Gen 4 23 as Marill, B2W2 31
+                        // superpower 42 // B2W2 42
+                        // rain dance 32 // Gen 3 / Gen 4 32 as Marill, B2W2 35
+                        Tuple.Create(42, PMove.HydroPump), // Gen 4 as Marill
+                        Tuple.Create(46, PMove.HydroPump), // B2W2
+                        // charm 2 // Gen 4 / BW 2 as Azurill, B2W2 10 as Azurill
+                        // splash 1 // As Azurill
                     },
                     OtherMoves = new PMove[]
                     {
-                        PMove.AquaJet,
-                        PMove.Frustration,
-                        PMove.HiddenPower,
-                        PMove.IcePunch,
-                        PMove.Return,
-                        PMove.Waterfall,
+                        // surf
+                        // strength
+                        // dive
+                        // hail
+                        // blizzard
+                        // hyper beam
+                        // light screen
+                        // protect
+                        // rain dance
+                        // dig
+                        // brick break
+                        // double team
+                        // facade
+                        // reset
+                        // attract
+                        // round
+                        // focus blast
+                        // scald
+                        // fling
+                        // giga impact
+                        // bulldoze
+                        // work up
+                        // grass knot
+                        // swagger
+                        // substitute
+                        // rock smash
+                        // amnesia // egg move
+                        // belly drum
+                        // body slam
+                        // encore
+                        // fake tears
+                        // future sight
+                        // muddy water
+                        // perish song
+                        // present
+                        // refresh
+                        // sing
+                        // slam
+                        // soak
+                        // superpower
+                        // supersonic
+                        // tickle
+                        // water sport // egg move
+                        // aqua tail // tutor
+                        // bounce
+                        // covet
+                        // helping hand
+                        // hyper voice
+                        // icy wind
+                        // iron tail
+                        // knock off
+                        // sleep talk
+                        // snore
+                        // superpower
+                        // captivate // gen 4 tm
+                        // dynamic punch // gen 3 tutor
+                        // endure // gen 4 tm
+                        // focus punch // gen 4 tm
+                        // headbutt // gen 4 tutor
+                        // mega kick // gen 3 tutor
+                        // mega punch // gen 3 tutor
+                        // mimic // gen 3 tutor
+                        // mud slap // gen 4 tutor
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        // seismic toss // gen 3 tutor
+                        // swift // gen 4 tutor
+                        // water pulse // gen 4 tm
+                        // whirlpool // gen 4 HM
+                        // bounce // move tutor as azurill / marill
+                        // uproar // move tutor as azurill
+                        // slam // egg move as Azurill / marill
+                        PMove.AquaJet, // Egg Move
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.IceBeam, // TM
+                        PMove.IcePunch, // Move Tutor
+                        PMove.Return, // TM
+                        PMove.Toxic, // TM
+                        PMove.Waterfall, // HM
                     }
                 }
             },
@@ -210,15 +645,57 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Water, Type2 = PType.Water,
                     Abilities = new PAbility[] { PAbility.ShellArmor, PAbility.Rattled },
+                    MinLevel = 1, // Egg
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
+                        // clamp 1
+                        // iron defense 1
+                        // water gun 1
+                        // whirlpool 1
                         Tuple.Create(51, PMove.ShellSmash),
                     },
                     OtherMoves = new PMove[]
                     {
-                        PMove.Frustration,
-                        PMove.HiddenPower,
-                        PMove.Return,
+                        // surf
+                        // dive
+                        // hail
+                        // blizzard
+                        // protect
+                        // rain dance
+                        // double team
+                        // facade
+                        // rest
+                        // attract
+                        // round
+                        // scald
+                        // swagger
+                        // substitute
+                        // aqua ring // egg move
+                        // barrier
+                        // body slam
+                        // brine
+                        // confuse ray
+                        // endure
+                        // mud sport
+                        // muddy water
+                        // refresh
+                        // supersonic
+                        // water pulse
+                        // icy wind // tutor
+                        // iron defense
+                        // sleep talk
+                        // snore
+                        // captivate // gen 4 tm
+                        // double edge // gen 3 tutor
+                        // mimic // gen 3 tutor
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.IceBeam, // TM
+                        PMove.Return, // TM
+                        PMove.Toxic, // TM
+                        PMove.Waterfall, // HM
                     }
                 }
             },
@@ -230,17 +707,114 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.Female,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
                     Abilities = new PAbility[] { PAbility.Levitate },
+                    MinLevel = 35, // HG (Roaming)
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
-                        Tuple.Create(80, PMove.DragonPulse),
+                        // psywave 1
+                        // wish 5
+                        // helping hand 10
+                        // safeguard 15
+                        // dragon breath 20
+                        // water sport 25
+                        // refresh 30
+                        // mist ball 35
+                        Tuple.Create(40, PMove.Psychic), // Gen 3
+                        // zen headbutt 40
+                        // recover 45
+                        // psycho shift 50
+                        // charm 50 // Gen 3 50, Gen 4-5 55
+                        Tuple.Create(60, PMove.Psychic), // Gen 5
+                        // healing wish 60 // Gen 4 60, Gen 5 85
+                        // heal pulse 65
+                        Tuple.Create(70, PMove.DragonPulse), // Gen 4
+                        // reflect type 70
+                        // guard split 75
+                        Tuple.Create(80, PMove.DragonPulse), // Gen 5
                     },
                     OtherMoves = new PMove[]
                     {
-                        PMove.Frustration,
-                        PMove.HiddenPower,
-                        PMove.Return,
-                        PMove.Thunder,
-                        PMove.Thunderbolt,
+                        // cut
+                        // fly
+                        // surf
+                        // dive
+                        // hone claws
+                        // dragon claw
+                        // psyshock
+                        // calm mind
+                        // roar
+                        // sunny day
+                        // hyper beam
+                        // light screen
+                        // protect
+                        // rain dance
+                        // telekinesis
+                        // safeguard
+                        // solar beam
+                        // earthquake
+                        // shadow ball
+                        // double team
+                        // reflect
+                        // sandstorm
+                        // aerial ace
+                        // facade
+                        // rest
+                        // attract
+                        // round
+                        // energy ball
+                        // charge beam
+                        // shadow claw
+                        // giga impact
+                        // flash
+                        // thunder wave
+                        // psych up
+                        // bulldoze
+                        // dream eater
+                        // grass knot
+                        // swagger
+                        // substitute
+                        // covet // tutor
+                        // draco meteor // tutor
+                        // helping hand // tutor
+                        // icy wind // tutor
+                        // last resort // tutor
+                        // magic coat // tutor
+                        // magic room
+                        // outrage
+                        // role play
+                        // roost
+                        // sleep talk
+                        // snore
+                        // tailwind
+                        // trick
+                        // zen headbutt // tutor
+                        // body slam // gen 3 tutor
+                        // captivate // gen 4 tm
+                        // defog // gen 4 hm
+                        // double edge // gen 3 tutor
+                        // endure // gen 4 tm
+                        // fury cutter // gen 4 tutor
+                        // mimic // gen 3 tutor
+                        // mud-slap // gen 4 tutor
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        // shock wave // gen 4 tm
+                        // steel wing // gen 4 tm
+                        // sucker punch // gen 4 tutor
+                        // swift // gen 4 tutor
+                        // twister // gen 4 tutor
+                        // water pulse // gen 4 tm
+                        // whirlpool // gen 4 hm
+                        PMove.DragonPulse, // Move Tutor
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.IceBeam, // TM
+                        PMove.Psychic, // TM
+                        PMove.Retaliate, // TM
+                        PMove.Return, // TM
+                        PMove.Thunder, // TM
+                        PMove.Thunderbolt, // TM
+                        PMove.Toxic, // TM
+                        PMove.Waterfall, // HM
                     }
                 }
             },
@@ -252,17 +826,111 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.Male,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
                     Abilities = new PAbility[] { PAbility.Levitate },
+                    MinLevel = 35, // SS (Roaming)
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
-                        Tuple.Create(80, PMove.DragonPulse),
+                        // psywave 1
+                        // heal block 5
+                        // helping hand 10
+                        // safeguard 15
+                        // dragon breath 20
+                        // protect 25
+                        // refresh 30
+                        // luster purge 35
+                        // telekinesis 70
+                        // power split 75
+                        // memento 5 // Gen 3 5, Gen 4 60, Gen 5 85
+                        Tuple.Create(40, PMove.Psychic), // Gen 3
+                        // zen headbutt 40
+                        // recover 45
+                        // psycho shift 50
+                        // dragon dance 50 // Gen 3 50, Gen 4-5 55
+                        Tuple.Create(60, PMove.Psychic), // Gen 5
+                        // heal pulse 65
+                        Tuple.Create(70, PMove.DragonPulse), // Gen 4
+                        Tuple.Create(80, PMove.DragonPulse), // Gen 5
                     },
                     OtherMoves = new PMove[]
                     {
-                        PMove.Frustration,
-                        PMove.HiddenPower,
-                        PMove.Return,
-                        PMove.Thunder,
-                        PMove.Thunderbolt,
+                        // cut
+                        // fly
+                        // surf
+                        // dive
+                        // hone claws
+                        // dragon claw
+                        // psyshock
+                        // calm mind
+                        // roar
+                        // sunny day
+                        // hyper beam
+                        // light screen
+                        // protect
+                        // rain dance
+                        // telekinesis
+                        // safeguard
+                        // solar beam
+                        // earthquake
+                        // shadow ball
+                        // double team
+                        // reflect
+                        // sandstorm
+                        // aerial ace
+                        // facade
+                        // rest
+                        // attract
+                        // round
+                        // energy ball
+                        // charge beam
+                        // shadow claw
+                        // giga impact
+                        // flash
+                        // thunder wave
+                        // psych up
+                        // bulldoze
+                        // dream eater
+                        // grass knot
+                        // swagger
+                        // substitute
+                        // draco meteor // tutor
+                        // helping hand // tutor
+                        // icy wind // tutor
+                        // last resort // tutor
+                        // magic coat // tutor
+                        // outrage // tutor
+                        // roost // tutor
+                        // sleep talk // tutor
+                        // snore // tutor
+                        // tailwind // tutor
+                        // trick // tutor
+                        // wonder room // tutor
+                        // zen headbutt // tutor
+                        // body slam // gen 3 tutor
+                        // captivate // gen 4 tm
+                        // defog // gen 4 hm
+                        // double edge // gen 3 tutor
+                        // endure // gen 4 tm
+                        // fury cutter // gen 4 tutor
+                        // mimic // gen 3 tutor
+                        // mud-slap // gen 4 tutor
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        // shock wave // gen 4 tm
+                        // steel wing // gen 4 tm
+                        // swift // gen 4 tutor
+                        // twister // gen 4 tutor
+                        // water pulse // gen 4 tm
+                        // whirlpool // gen 4 hm
+                        PMove.DragonPulse, // Move Tutor
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.IceBeam, // TM
+                        PMove.Psychic, // TM
+                        PMove.Retaliate, // TM
+                        PMove.Return, // TM
+                        PMove.Thunder, // TM
+                        PMove.Thunderbolt, // TM
+                        PMove.Toxic, // TM
+                        PMove.Waterfall, // HM
                     }
                 }
             },
@@ -274,18 +942,77 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.Female,
                     Type1 = PType.Psychic, Type2 = PType.Psychic,
                     Abilities = new PAbility[] { PAbility.Levitate },
+                    MinLevel = 50, // DPPt (Roaming)
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
+                        // confusion 1
+                        // double team 1
+                        // safeguard 11
+                        // mist 20
+                        // aurora beam 29
+                        // future sight 38
+                        // slash 47
+                        Tuple.Create(57, PMove.Moonlight),
+                        // psycho cut 66
+                        // psycho shift 75
+                        // lunar dance 84
                         Tuple.Create(93, PMove.Psychic),
                     },
                     OtherMoves = new PMove[]
                     {
-                        PMove.Frustration,
-                        PMove.HiddenPower,
-                        PMove.IceBeam,
-                        PMove.Moonlight,
-                        PMove.Return,
-                        PMove.Toxic,
+                        // psyshock
+                        // calm mind
+                        // sunny day
+                        // hyper beam
+                        // light screen
+                        // protect
+                        // rain dance
+                        // telekinesis
+                        // safeguard
+                        // solar beam
+                        // shadow ball
+                        // double team
+                        // Reflect
+                        // facade
+                        // rest
+                        // attract
+                        // round
+                        // energy ball
+                        // charge beam
+                        // giga impact
+                        // flash
+                        // thunder wave
+                        // psych up
+                        // dream eater
+                        // grass knot
+                        // swagger
+                        // substitute
+                        // trick room
+                        // gravity // move tutor
+                        // helping hand // tutor
+                        // icy wind // tutor
+                        // magic coat // tutor
+                        // magic room // tutor
+                        // recycle // tutor
+                        // signal beam // tutor
+                        // skill swap // tutor
+                        // sleep talk // tutor
+                        // snore // tutor
+                        // trick // tutor
+                        // zen headbutt // tutor
+                        // captivate // gen 4 tm
+                        // endure // gen 4 tm
+                        // fury cutter // gen 4 tutor
+                        // mud-slap // gen 4 tutor
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        // swift // gen 4 tutor
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.IceBeam, // TM
+                        PMove.Psychic, // TM
+                        PMove.Return, // TM
+                        PMove.Toxic, // TM
                     }
                 }
             },
@@ -297,18 +1024,101 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.Genderless,
                     Type1 = PType.Dark, Type2 = PType.Dark,
                     Abilities = new PAbility[] { PAbility.BadDreams },
+                    MinLevel = 40, // DP (Newmoon Island)
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
+                        // disable 1
+                        // night shade 1 // DP
+                        // ominous wind 1
+                        // quick attack 11
+                        // hypnosis 20
+                        // pursuit 29 // DP
+                        // faint attack 29
+                        // nightmare 38
+                        // double team 47
+                        // haze 57
+                        // dark void 50 // Events
+                        // dark void 66
+                        // roar of time 50 // gen 4 event (Alamos Darkrai, Nintendo of Korea Darkrai, Cinema Darkrai)
+                        // spacial rend 50 // gen 4 event (Alamos Darkrai, Nintendo of Korea Darkrai, Cinema Darkrai)
+                        // embargo 75 // DP
                         Tuple.Create(75, PMove.NastyPlot),
+                        // dream eater 84
                         Tuple.Create(93, PMove.DarkPulse),
                     },
                     OtherMoves = new PMove[]
                     {
-                        PMove.Frustration,
-                        PMove.HiddenPower,
-                        PMove.Return,
-                        PMove.Thunder,
-                        PMove.Thunderbolt,
+                        // Cut
+                        // Strength
+                        // Calm mind
+                        // sunny day
+                        // taunt
+                        // blizzard
+                        // hyper beam
+                        // protect
+                        // rain dance
+                        // shadow ball
+                        // brick break
+                        // double team // TM 
+                        // sludge bomb
+                        // rock tomb
+                        // aerial ace
+                        // torment
+                        // facade
+                        // rest
+                        // thief
+                        // round
+                        // focus blast
+                        // fling
+                        // charge beam
+                        // incinerate
+                        // will-o-wisp
+                        // embargo // TM
+                        // shadow claw
+                        // payback
+                        // giga impact
+                        // flash
+                        // thunder wave
+                        // swords dance
+                        // psych up
+                        // rock slide
+                        // x-scissor
+                        // poison jab
+                        // dream eater
+                        // swagger
+                        // substitute
+                        // rock smash
+                        // snarl
+                        // drain punch // move tutor
+                        // foul play // move tutor
+                        // icy wind // move tutor
+                        // knock off // move tutor
+                        // last resort // move tutor
+                        // sleep talk // move tutor
+                        // snatch // move tutor
+                        // snore // move tutor
+                        // spite // move tutor
+                        // trick // move tutor
+                        // wonder room // move tutor
+                        // endure // gen 4 TM
+                        // focus punch // gen 4 TM
+                        // headbutt // gen 4 move tutor
+                        // mud-slap // gen 4 move tutor
+                        // natural gift // gen 4 TM
+                        // secret power // gen 4 TM
+                        // shock wave // gen 4 TM
+                        // sucker punch // gen 4 move tutor
+                        // swift // gen 4 move tutor
+                        PMove.DarkPulse, // Move tutor
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.IceBeam, // TM
+                        PMove.Psychic, // TM
+                        PMove.Retaliate, // TM
+                        PMove.Return, // TM
+                        PMove.Thunder, // TM
+                        PMove.Thunderbolt, // TM
+                        PMove.Toxic, // TM
                     }
                 }
             },
