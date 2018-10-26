@@ -16,6 +16,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         public static Dictionary<PMove, PMoveData> Data = new Dictionary<PMove, PMoveData>()
         {
             {
+                PMove.AerialAce,
+                new PMoveData
+                {
+                    Type = PType.Flying, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.Any
+                }
+            },
+            {
                 PMove.AquaJet,
                 new PMoveData
                 {

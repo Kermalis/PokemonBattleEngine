@@ -209,6 +209,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PMove : ushort
     {
         None,
+        AerialAce,
         AquaJet,
         CalmMind,
         DarkPulse,

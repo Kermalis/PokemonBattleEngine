@@ -250,7 +250,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sandstorm
                         // fire blast
                         // rock tomb
-                        // aerial ace
                         // facade
                         // rest
                         // attract
@@ -303,6 +302,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
+                        PMove.AerialAce, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -356,7 +356,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sandstorm
                         // fire blast
                         // rock tomb
-                        // aerial ace
                         // facade
                         // rest
                         // attract
@@ -413,6 +412,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
+                        PMove.AerialAce, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -753,7 +753,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double team
                         // reflect
                         // sandstorm
-                        // aerial ace
                         // facade
                         // rest
                         // attract
@@ -802,6 +801,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // twister // gen 4 tutor
                         // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
+                        PMove.AerialAce, // TM
                         PMove.CalmMind, // TM
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
@@ -873,7 +873,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double team
                         // reflect
                         // sandstorm
-                        // aerial ace
                         // facade
                         // rest
                         // attract
@@ -919,6 +918,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // twister // gen 4 tutor
                         // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
+                        PMove.AerialAce, // TM
                         PMove.CalmMind, // TM
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
@@ -1062,7 +1062,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double team // TM 
                         // sludge bomb
                         // rock tomb
-                        // aerial ace
                         // torment
                         // facade
                         // rest
@@ -1108,6 +1107,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // shock wave // gen 4 TM
                         // sucker punch // gen 4 move tutor
                         // swift // gen 4 move tutor
+                        PMove.AerialAce, // TM
                         PMove.CalmMind, // TM
                         PMove.DarkPulse, // Move tutor
                         PMove.Frustration, // TM

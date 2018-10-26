@@ -312,7 +312,6 @@ Sand Tomb
 Sheer Cold
 Muddy Water
 Bullet Seed
-Aerial Ace
 Icicle Spear
 Iron Defense
 Block
