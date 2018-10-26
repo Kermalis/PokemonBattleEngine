@@ -233,6 +233,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Toxic,
         Transform, // TODO
         Waterfall,
+        XScissor,
         MAX
     }
 }

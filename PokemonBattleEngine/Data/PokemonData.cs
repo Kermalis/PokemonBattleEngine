@@ -1082,7 +1082,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // swords dance
                         // psych up
                         // rock slide
-                        // x-scissor
                         // poison jab
                         // dream eater
                         // swagger
@@ -1119,6 +1118,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM
+                        PMove.XScissor, // TM
                     }
                 }
             },

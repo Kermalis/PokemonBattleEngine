@@ -301,6 +301,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Targets = PMoveTarget.AnySurrounding
                 }
             },
+            {
+                PMove.XScissor,
+                new PMoveData
+                {
+                    Type = PType.Bug, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AnySurrounding
+                }
+            },
         };
     }
 }
