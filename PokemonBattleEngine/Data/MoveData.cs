@@ -27,6 +27,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.CalmMind,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Raise_User_SPATK_SPDEF_By1, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.DarkPulse,
                 new PMoveData
                 {

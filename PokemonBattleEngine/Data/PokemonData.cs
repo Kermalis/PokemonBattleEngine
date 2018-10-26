@@ -740,7 +740,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // hone claws
                         // dragon claw
                         // psyshock
-                        // calm mind
                         // roar
                         // sunny day
                         // hyper beam
@@ -804,6 +803,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // twister // gen 4 tutor
                         // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
+                        PMove.CalmMind, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
@@ -860,7 +860,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // hone claws
                         // dragon claw
                         // psyshock
-                        // calm mind
                         // roar
                         // sunny day
                         // hyper beam
@@ -921,6 +920,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // twister // gen 4 tutor
                         // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
+                        PMove.CalmMind, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
@@ -962,7 +962,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         // psyshock
-                        // calm mind
                         // sunny day
                         // hyper beam
                         // light screen
@@ -1008,6 +1007,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // swift // gen 4 tutor
+                        PMove.CalmMind, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -1051,7 +1051,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         // Cut
                         // Strength
-                        // Calm mind
                         // sunny day
                         // taunt
                         // blizzard
@@ -1109,6 +1108,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // shock wave // gen 4 TM
                         // sucker punch // gen 4 move tutor
                         // swift // gen 4 move tutor
+                        PMove.CalmMind, // TM
                         PMove.DarkPulse, // Move tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM

@@ -98,6 +98,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Raise_User_ATK_SPE_By1:
                     Ef_Raise_User_ATK_SPE_By1();
                     break;
+                case PMoveEffect.Raise_User_SPATK_SPDEF_By1:
+                    Ef_Raise_User_SPATK_SPDEF_By1();
+                    break;
                 case PMoveEffect.Toxic:
                     Ef_Toxic();
                     break;
@@ -351,6 +354,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var pkmn = bAttacker.Mon;
             ApplyStatChange(pkmn, PStat.Attack, +1);
             ApplyStatChange(pkmn, PStat.Speed, +1);
+            return true;
+        }
+        bool Ef_Raise_User_SPATK_SPDEF_By1()
+        {
+            if (AttackCancelCheck())
+                return false;
+            BroadcastMoveUsed();
+            PPReduce();
+            var pkmn = bAttacker.Mon;
+            ApplyStatChange(pkmn, PStat.SpAttack, +1);
+            ApplyStatChange(pkmn, PStat.SpDefense, +1);
             return true;
         }
 

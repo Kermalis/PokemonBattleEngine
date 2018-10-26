@@ -202,6 +202,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Lower_User_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
         Moonlight, // TODO
         Raise_User_ATK_SPE_By1,
+        Raise_User_SPATK_SPDEF_By1,
         Toxic,
         Transform, // TODO
     }
@@ -209,6 +210,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         AquaJet,
+        CalmMind,
         DarkPulse,
         DragonDance,
         DragonPulse,
