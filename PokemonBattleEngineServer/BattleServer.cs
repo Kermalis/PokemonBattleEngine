@@ -95,7 +95,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 if (battlers[0].Team != null && battlers[1].Team != null)
                 {
                     // Temporary:
-                    if (true)
+                    if (false)
                     {
                         try
                         {
@@ -242,7 +242,7 @@ namespace Kermalis.PokemonBattleEngineServer
         {
             Console.WriteLine($"Client disconnected ({client.Id})");
             // Temporarily ignore spectators
-            if (!battlers.Contains(client))
+            if (battlers == null || !battlers.Contains(client))
                 return;
             switch (state)
             {

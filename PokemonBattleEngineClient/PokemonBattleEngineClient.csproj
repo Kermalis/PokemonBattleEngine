@@ -2,20 +2,54 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <ApplicationIcon />
     <OutputType>Exe</OutputType>
-    <StartupObject />
     <RootNamespace>Kermalis.PokemonBattleEngineClient</RootNamespace>
+    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
-    <PackageProjectUrl>https://github.com/Kermalis/PokemonBattleEngine</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="**\*.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+	<EmbeddedResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Dependencies\**" />
+    <EmbeddedResource Remove="Dependencies\**" />
+    <None Remove="Dependencies\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Views\BattleView.xaml" />
+    <None Remove="Views\PokemonView.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.6.2-*" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.6.2-*" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.6.2-*" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
-    <Reference Include="Ether.Network">
-      <HintPath>..\Shared Dependencies\Ether.Network.dll</HintPath>
+    <Reference Include="AvaloniaGif">
+      <HintPath>Dependencies\AvaloniaGif.dll</HintPath>
     </Reference>
+    <Reference Include="Ether.Network">
+      <HintPath>../Shared Dependencies\Ether.Network.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\BattleView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\PokemonView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

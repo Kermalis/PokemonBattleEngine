@@ -7,6 +7,7 @@ using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using Kermalis.PokemonBattleEngineClient.Views;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
@@ -89,11 +90,15 @@ namespace Kermalis.PokemonBattleEngineClient
             };
         static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team1 : team2;
 
-        public BattleClient(string host)
+        readonly BattleView view;
+
+        public BattleClient(string host, BattleView view)
         {
             Configuration.Host = host;
             Configuration.Port = 8888;
             Configuration.BufferSize = 1024;
+
+            this.view = view;
         }
 
         public override void HandleMessage(INetPacket packet)
@@ -101,6 +106,7 @@ namespace Kermalis.PokemonBattleEngineClient
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\"");
             PPokemon pkmn;
             int i;
+            double d;
 
             switch (packet)
             {
@@ -116,13 +122,13 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
 
                 case PPlayerJoinedPacket pjp:
-                    Console.WriteLine("{0} joined the game.", pjp.DisplayName);
+                    view.AddMessage(string.Format("{0} joined the game.", pjp.DisplayName), true);
                     // TODO: What if it's a spectator?
                     PKnownInfo.Instance.RemoteDisplayName = pjp.DisplayName;
                     Send(new PResponsePacket());
                     break;
                 case PRequestPartyPacket _:
-                    Console.WriteLine("Sending team info...");
+                    view.AddMessage("Sending team info...", true);
                     PKnownInfo.Instance.LocalDisplayName = chosenTeam.DisplayName;
                     Send(new PSubmitPartyPacket(chosenTeam));
                     break;
@@ -133,6 +139,10 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PPkmnSwitchInPacket psip:
                     if (!psip.LocallyOwned)
                         PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Nickname, psip.Level, psip.HP, psip.MaxHP, psip.Gender);
+                    pkmn = PKnownInfo.Instance.Pokemon(psip.PokemonId);
+                    Console.WriteLine(pkmn);
+                    view.PokemonViews[psip.LocallyOwned ? 0 : 3].Pokemon = pkmn; // Temporary
+                    view.AddMessage(string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.LocallyOwned)), true);
                     Send(new PResponsePacket());
                     break;
                 case PRequestActionPacket _:
@@ -144,7 +154,11 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PPkmnHPChangedPacket phcp:
                     pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
                     pkmn.HP = (ushort)(pkmn.HP + phcp.Change);
-                    PrintBattlers();
+
+                    var hp = Math.Abs(phcp.Change);
+                    d = (double)hp / pkmn.MaxHP;
+                    view.AddMessage(string.Format("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, d, phcp.Change < 0 ? "lost" : "gained"), true);
+
                     Send(new PResponsePacket());
                     break;
                 case PMovePPChangedPacket mpcp:
@@ -181,29 +195,22 @@ namespace Kermalis.PokemonBattleEngineClient
                     Send(new PResponsePacket());
                     break;
             }
-
-            PBattle.ConsoleBattleEventHandler(packet);
-        }
-
-        void PrintBattlers()
-        {
-            Console.WriteLine("{1}: {0}", PKnownInfo.Instance.LocalParty[0], PKnownInfo.Instance.LocalDisplayName);
-            Console.WriteLine("{1}: {0}", PKnownInfo.Instance.RemoteParty[0], PKnownInfo.Instance.RemoteDisplayName);
         }
 
         protected override void OnConnected()
         {
-            Console.WriteLine("Connected to {0}", Socket.RemoteEndPoint);
+            Debug.WriteLine("Connected to {0}", Socket.RemoteEndPoint);
             PKnownInfo.Instance.Clear();
+            view.AddMessage("Waiting for players...");
         }
         protected override void OnDisconnected()
         {
-            Console.WriteLine("Disconnected from server");
+            Debug.WriteLine("Disconnected from server");
             Environment.Exit(0);
         }
         protected override void OnSocketError(SocketError socketError)
         {
-            Console.WriteLine("Socket Error: {0}", socketError);
+            Debug.WriteLine("Socket Error: {0}", socketError);
         }
     }
 }
