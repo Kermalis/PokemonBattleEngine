@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
@@ -8,7 +9,7 @@ using System.Reflection;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    public class PokemonView : UserControl, INotifyPropertyChanged
+    class PokemonView : UserControl, INotifyPropertyChanged
     {
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
@@ -44,6 +45,16 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Visible));
             }
         }
+        Point location;
+        public Point Location
+        {
+            get => location;
+            set
+            {
+                location = value;
+                OnPropertyChanged(nameof(Location));
+            }
+        }
         Uri uri;
         public Uri Source
         {
@@ -53,8 +64,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Source));
             }
         }
-        /*public double ShadowX { get; private set; }
-        public double ShadowY { get; private set; }*/
 
         public PokemonView()
         {
@@ -84,13 +93,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 string suffix = spriteIsGenderNeutral ? "" : pokemon.Shell.Gender == PGender.Female ? "-F" : "-M";
                 // Set the result
                 Source = new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.{(pokemon.LocallyOwned ? "Back_Sprites" : "Front_Sprites")}.{sss}{suffix}.gif?assembly=PokemonBattleEngineClient");
-                
-                /*var shadow = this.FindControl<Image>("Shadow");
-                shadow.RenderTransform = new SkewTransform(pokemon.LocallyOwned ? -30 : -40, 5);
-                shadow.OpacityMask = new SolidColorBrush(Color.FromRgb(80, 80, 80), 0.8);
-
-                ShadowX = pokemon.LocallyOwned ? 3 : 13;
-                ShadowY = pokemon.LocallyOwned ? -5 : -10;*/
             }
         }
     }

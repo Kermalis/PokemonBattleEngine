@@ -15,24 +15,26 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             public readonly Guid PokemonId;
             // TODO: Action (switch, forfeit, move)
-            public readonly byte Param;
+            public readonly byte Param1, Param2;
 
-            public Action(Guid pkmnId, byte param)
+            public Action(Guid pkmnId, byte param1, byte param2)
             {
                 PokemonId = pkmnId;
-                Param = param;
+                Param1 = param1;
+                Param2 = param2;
             }
 
             internal byte[] ToBytes()
             {
                 var bytes = new List<byte>();
                 bytes.AddRange(PokemonId.ToByteArray());
-                bytes.Add(Param);
+                bytes.Add(Param1);
+                bytes.Add(Param2);
                 return bytes.ToArray();
             }
             internal static Action FromBytes(BinaryReader r)
             {
-                return new Action(new Guid(r.ReadBytes(16)), r.ReadByte());
+                return new Action(new Guid(r.ReadBytes(16)), r.ReadByte(), r.ReadByte());
             }
         }
 

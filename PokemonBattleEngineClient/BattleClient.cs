@@ -47,6 +47,21 @@ namespace Kermalis.PokemonBattleEngineClient
         Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
         PPUps = new byte[] { 3, 3, 3, 3 }
     },
+    latios = new PPokemonShell
+    {
+        Species = PSpecies.Latios,
+        Nickname = "Latios",
+        Level = 100,
+        Friendship = 255,
+        Item = PItem.Leftovers, // choice specs
+        Ability = PAbility.Levitate,
+        Gender = PGender.Male,
+        Nature = PNature.Timid,
+        IVs = new byte[] { 31, 30, 31, 30, 31, 30 }, // Hidden Power Fire/70
+        EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
+        Moves = new PMove[] { PMove.DragonPulse, PMove.DragonPulse, PMove.DragonPulse, PMove.HiddenPower }, // draco meteor, surf, psyshock, hidden power fire
+        PPUps = new byte[] { 3, 3, 3, 3 }
+    },
     cresselia = new PPokemonShell
     {
         Species = PSpecies.Cresselia,
@@ -81,15 +96,16 @@ namespace Kermalis.PokemonBattleEngineClient
             team1 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { azumarill }
+                Party = { cresselia, latios, darkrai }
             },
             team2 = new PTeamShell
             {
                 DisplayName = "Jess",
-                Party = { pikachu }
+                Party = { azumarill, azumarill, azumarill }
             };
-        static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team1 : team2;
+        static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team1 : team2; // Temporary
 
+        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Single;
         readonly BattleView view;
 
         public BattleClient(string host, BattleView view)
@@ -99,6 +115,7 @@ namespace Kermalis.PokemonBattleEngineClient
             Configuration.BufferSize = 1024;
 
             this.view = view;
+            this.view.Client = this;
         }
 
         public override void HandleMessage(INetPacket packet)
@@ -140,15 +157,15 @@ namespace Kermalis.PokemonBattleEngineClient
                     if (!psip.LocallyOwned)
                         PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Nickname, psip.Level, psip.HP, psip.MaxHP, psip.Gender);
                     pkmn = PKnownInfo.Instance.Pokemon(psip.PokemonId);
-                    Console.WriteLine(pkmn);
-                    view.PokemonViews[psip.LocallyOwned ? 0 : 3].Pokemon = pkmn; // Temporary
+                    pkmn.FieldPosition = psip.FieldPosition;
+                    view.PokemonPositionChanged(pkmn);
                     view.AddMessage(string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.LocallyOwned)), true);
                     Send(new PResponsePacket());
                     break;
                 case PRequestActionPacket _:
                     // TODO
                     var actions = new PSubmitActionsPacket.Action[1];
-                    actions[0] = new PSubmitActionsPacket.Action(PKnownInfo.Instance.LocalParty[0].Id, 0);
+                    actions[0] = new PSubmitActionsPacket.Action(PKnownInfo.Instance.LocalParty[0].Id, 0, (byte)(PTarget.FoeLeft));
                     Send(new PSubmitActionsPacket(actions));
                     break;
                 case PPkmnHPChangedPacket phcp:

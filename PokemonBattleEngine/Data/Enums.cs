@@ -24,16 +24,35 @@ namespace Kermalis.PokemonBattleEngine.Data
         Accuracy, // TODO
         Evasion // TODO
     }
+    public enum PBattleStyle : byte
+    {
+        Single,
+        Double,
+        Triple,
+        Rotation
+    }
+    public enum PFieldPosition : byte
+    {
+        // Not on the field.
+        None,
+        // In a double, triple, or rotation battle, the pokemon to __your__ left.
+        Left,
+        // In a single battle, pokemon are in the center.
+        // In a double battle, no pokemon are in the center.
+        // In a triple or rotation battle, it is obvious.
+        Center,
+        // In a double, triple, or rotation battle, the pokemon to __your__ right.
+        Right
+    }
+    [Flags]
     public enum PTarget : byte
     {
-        AllButSelf,
-        AllyLeft,
-        AllyMiddle,
-        AllyRight,
-        FoeLeft,
-        FoeMiddle,
-        FoeRight,
-        Self
+        AllyLeft = 1 << 0,
+        AllyCenter = 1 << 1,
+        AllyRight = 1 << 2,
+        FoeLeft = 1 << 3,
+        FoeCenter = 1 << 4,
+        FoeRight = 1 << 5
     }
     public enum PStatus1 : byte
     {

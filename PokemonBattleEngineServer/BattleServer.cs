@@ -22,8 +22,9 @@ namespace Kermalis.PokemonBattleEngineServer
             BattleProcessing, // Battle is running and sending events
         }
         ServerState state = ServerState.Startup;
-        Player[] battlers;
+        readonly PBattleStyle intendedBattleStyle = PBattleStyle.Single; // TODO: Let the client know what kind of style this server is running (matchmaking)
         PBattle battle;
+        Player[] battlers;
 
         public void Forfeit(Player player)
         {
@@ -126,7 +127,7 @@ namespace Kermalis.PokemonBattleEngineServer
 
                 Console.WriteLine("Battle starting!");
 
-                battle = new PBattle(battlers[0].Team, battlers[1].Team);
+                battle = new PBattle(intendedBattleStyle, battlers[0].Team, battlers[1].Team);
                 battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
                 battle.OnNewEvent += BattleEventHandler;
 
@@ -158,7 +159,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 bool valid = true;
                 foreach (PSubmitActionsPacket.Action action in actions)
                 {
-                    if (!battle.SelectActionIfValid(action.PokemonId, action.Param))
+                    if (!battle.SelectActionIfValid(action.PokemonId, action.Param1, action.Param2))
                     {
                         valid = false;
                         break;

@@ -6,7 +6,7 @@ using Kermalis.PokemonBattleEngineClient.Views;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
-    public class MainWindow : Window
+    class MainWindow : Window
     {
         public MainWindow()
         {

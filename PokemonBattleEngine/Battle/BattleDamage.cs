@@ -88,7 +88,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bAttacker.Mon.Shell.Item == PItem.LightBall && bAttacker.Mon.Shell.Species == PSpecies.Pikachu)
                 basePower *= 2;
             // Retaliate doubles power if the team has a pokemon that fainted the previous turn
-            if (bMove == PMove.Retaliate && bAttacker.Team.MonFaintedLastTurn)
+            if (bMove == PMove.Retaliate && teams[bAttacker.Mon.LocallyOwned ? 0 : 1].MonFaintedLastTurn)
                 basePower *= 2;
             // Overgrow gives a 1.5x boost to Grass attacks if the efCurAttacker is below 1/3 max HP
             if (bMoveType == PType.Grass && bAttacker.Mon.Shell.Ability == PAbility.Overgrow && bAttacker.Mon.HP <= bAttacker.Mon.MaxHP / 3)

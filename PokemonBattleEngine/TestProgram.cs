@@ -38,6 +38,21 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            latios = new PPokemonShell
+            {
+                Species = PSpecies.Latios,
+                Nickname = "Latios",
+                Level = 100,
+                Friendship = 255,
+                Item = PItem.Leftovers, // choice specs
+                Ability = PAbility.Levitate,
+                Gender = PGender.Male,
+                Nature = PNature.Timid,
+                IVs = new byte[] { 31, 30, 31, 30, 31, 30 }, // Hidden Power Fire/70
+                EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
+                Moves = new PMove[] { PMove.DragonPulse, PMove.DragonPulse, PMove.DragonPulse, PMove.HiddenPower }, // draco meteor, surf, psyshock, hidden power fire
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             cresselia = new PPokemonShell
             {
                 Species = PSpecies.Cresselia,
@@ -77,25 +92,29 @@ namespace Kermalis.PokemonBattleEngine
             PTeamShell team1 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { pikachu }
+                Party = { pikachu, azumarill }
             };
             PTeamShell team2 = new PTeamShell
             {
                 DisplayName = "Jess",
-                Party = { darkrai }
+                Party = { darkrai, cresselia }
             };
 
-            PBattle battle = new PBattle(team1, team2);
+            PBattle battle = new PBattle(PBattleStyle.Double, team1, team2);
             battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
             battle.Start();
-            PPokemon p1 = PKnownInfo.Instance.LocalParty[0];
-            PPokemon p2 = PKnownInfo.Instance.RemoteParty[0];
+            PPokemon p0_0 = PKnownInfo.Instance.LocalParty[0];
+            PPokemon p0_1 = PKnownInfo.Instance.LocalParty[1];
+            PPokemon p1_0 = PKnownInfo.Instance.RemoteParty[0];
+            PPokemon p1_1 = PKnownInfo.Instance.RemoteParty[1];
 
             Console.WriteLine();
-            Console.WriteLine(p1);
-            Console.WriteLine(p2);
+            Console.WriteLine(p0_0);
+            Console.WriteLine(p0_1);
+            Console.WriteLine(p1_0);
+            Console.WriteLine(p1_1);
 
-            while (p1.HP > 0 && p2.HP > 0)
+            while ((p0_0.HP > 0 || p0_1.HP > 0) && (p1_0.HP > 0 || p1_1.HP > 0))
             {
                 Console.WriteLine();
 
@@ -106,20 +125,23 @@ namespace Kermalis.PokemonBattleEngine
                     bool valid;
 
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    valid = battle.SelectActionIfValid(p1.Id, move);
-                    Console.WriteLine("{0} ({1}) valid: {2}", move, p1.Shell.Moves[move], valid);
-
+                    valid = battle.SelectActionIfValid(p0_0.Id, move, (byte)(PTarget.FoeLeft));
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    valid = battle.SelectActionIfValid(p2.Id, move);
-                    Console.WriteLine("{0} ({1}) valid: {2}", move, p2.Shell.Moves[move], valid);
+                    valid = battle.SelectActionIfValid(p0_1.Id, move, (byte)(PTarget.FoeRight));
+                    move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
+                    valid = battle.SelectActionIfValid(p1_0.Id, move, (byte)(PTarget.FoeLeft));
+                    move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
+                    valid = battle.SelectActionIfValid(p1_1.Id, move, (byte)(PTarget.FoeRight));
 
                     Console.WriteLine();
                 } while (!battle.IsReadyToRunTurn());
                 battle.RunTurn();
 
                 Console.WriteLine();
-                Console.WriteLine(p1);
-                Console.WriteLine(p2);
+                Console.WriteLine(p0_0);
+                Console.WriteLine(p0_1);
+                Console.WriteLine(p1_0);
+                Console.WriteLine(p1_1);
             }
             Console.ReadKey();
         }

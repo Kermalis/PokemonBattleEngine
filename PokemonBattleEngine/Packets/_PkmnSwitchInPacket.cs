@@ -20,6 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly byte Level;
         public readonly ushort HP, MaxHP;
         public readonly PGender Gender;
+        public readonly PFieldPosition FieldPosition;
 
         public PPkmnSwitchInPacket(PPokemon pkmn)
         {
@@ -31,6 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             HP = pkmn.HP;
             MaxHP = pkmn.MaxHP;
             Gender = pkmn.Shell.Gender;
+            FieldPosition = pkmn.FieldPosition;
         }
         public PPkmnSwitchInPacket(byte[] buffer)
         {
@@ -45,6 +47,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 HP = r.ReadUInt16();
                 MaxHP = r.ReadUInt16();
                 Gender = (PGender)r.ReadByte();
+                FieldPosition = (PFieldPosition)r.ReadByte();
             }
         }
         IEnumerable<byte> BuildBuffer()
@@ -59,6 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes(HP));
             bytes.AddRange(BitConverter.GetBytes(MaxHP));
             bytes.Add((byte)Gender);
+            bytes.Add((byte)FieldPosition);
             return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
 

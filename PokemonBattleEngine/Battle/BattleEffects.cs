@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
@@ -51,12 +52,134 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void UseMove(PBattlePokemon attacker)
         {
+            PTeam attackerTeam = teams[attacker.Mon.LocallyOwned ? 0 : 1]; // Attacker's team
+            PTeam opposingTeam = teams[attacker.Mon.LocallyOwned ? 1 : 0]; // Other team
+
+            #region Targets
+            
+            var targets = new List<PBattlePokemon>();
+            if (attacker.SelectedTarget.HasFlag(PTarget.AllyLeft))
+            {
+                PBattlePokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Left);
+                targets.Add(b);
+            }
+            if (attacker.SelectedTarget.HasFlag(PTarget.AllyCenter))
+            {
+                PBattlePokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Center);
+                targets.Add(b);
+            }
+            if (attacker.SelectedTarget.HasFlag(PTarget.AllyRight))
+            {
+                PBattlePokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Right);
+                targets.Add(b);
+            }
+            if (attacker.SelectedTarget.HasFlag(PTarget.FoeLeft))
+            {
+                PBattlePokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                // Target fainted, fallback to its teammate
+                if (b == null)
+                {
+                    if (BattleStyle == PBattleStyle.Double)
+                    {
+                        b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                    }
+                    else if (BattleStyle == PBattleStyle.Triple)
+                    {
+                        // TODO: Center fainted as well but move can hit anyone, so pick far corner
+                        b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
+                    }
+                }
+                targets.Add(b);
+            }
+            if (attacker.SelectedTarget.HasFlag(PTarget.FoeCenter))
+            {
+                PBattlePokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
+                // Target fainted, fallback to its teammate
+                if (b == null)
+                {
+                    if (BattleStyle == PBattleStyle.Triple)
+                    {
+                        if (attacker.Mon.FieldPosition == PFieldPosition.Left)
+                        {
+                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                        }
+                        else if (attacker.Mon.FieldPosition == PFieldPosition.Right)
+                        {
+                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                        }
+                        else // Center
+                        {
+                            // If left fainted but not right, choose right, and vice versa
+                            PBattlePokemon oppLeft = opposingTeam.BattlerAtPosition(PFieldPosition.Left),
+                                oppRight = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                            if (oppLeft == null && oppRight != null)
+                            {
+                                b = oppRight;
+                            }
+                            else if (oppLeft != null && oppRight == null)
+                            {
+                                b = oppLeft;
+                            }
+                            else // Both alive; randomly select left or right
+                            {
+                                b = PUtils.RNG.NextDouble() >= 0.5 ? oppLeft : oppRight;
+                            }
+                        }
+                    }
+                }
+                targets.Add(b);
+            }
+            if (attacker.SelectedTarget.HasFlag(PTarget.FoeRight))
+            {
+                PBattlePokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                // Target fainted, fallback to its teammate
+                if (b == null)
+                {
+                    if (BattleStyle == PBattleStyle.Double)
+                    {
+                        b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                    }
+                    else if (BattleStyle == PBattleStyle.Triple)
+                    {
+                        // TODO: Center fainted as well but move can hit anyone, so pick far corner
+                        b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
+                    }
+                }
+                targets.Add(b);
+            }
+            targets = targets.Distinct().ToList(); // Remove duplicate targets
+
+            #endregion
+
             bAttacker = attacker;
-            // TODO: Target
-            bDefender = attacker == battlers[0] ? battlers[1] : battlers[0]; // Temporary
-            bMove = attacker.SelectedMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            bMove = bAttacker.SelectedMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            if (AttackCancelCheck())
+                return;
+            BroadcastMoveUsed();
+            PPReduce();
+            
+            int aliveTargets = targets.Count(t => t != null);
+            if (aliveTargets == 0)
+            {
+                BroadcastFail();
+                return;
+            }
+            // Reduced damage if targetting multiple pokemon
+            double initialDamageMultiplier = aliveTargets > 1 ? 0.75 : 1;
+
+            foreach (PBattlePokemon target in targets)
+            {
+                // For example, we use growl which attacks two surrounding opponents, but one fainted
+                if (target == null || target.Mon.HP < 1)
+                    continue;
+                bDefender = target;
+                UseMoveOnDefender(initialDamageMultiplier);
+            }
+        }
+        void UseMoveOnDefender(double initialDamageMultiplier)
+        {
             bDamage = 0;
-            bEffectiveness = bDamageMultiplier = 1;
+            bEffectiveness = 1; bDamageMultiplier = initialDamageMultiplier;
             bLandedCrit = false;
 
             PMoveData mData = PMoveData.Data[bMove];
@@ -110,8 +233,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Transform:
                 case PMoveEffect.Moonlight:
                     // TODO
-                    BroadcastMoveUsed();
-                    PPReduce();
                     BroadcastFail();
                     break;
                 default:
@@ -216,7 +337,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.Mon.HP < 1)
             {
-                pkmn.Status1Counter = 0;
+                activeBattlers.Remove(pkmn);
+                pkmn.Mon.FieldPosition = PFieldPosition.None;
                 BroadcastFaint(pkmn.Mon);
                 return true;
             }
@@ -277,10 +399,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         bool Ef_Hit()
         {
-            if (AttackCancelCheck())
-                return false;
-            BroadcastMoveUsed();
-            PPReduce();
             if (AccuracyCheck())
                 return false;
             // CritCheck();
@@ -327,19 +445,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         bool ChangeStat(PBattlePokemon pkmn, PStat stat, int change)
         {
-            if (AttackCancelCheck())
-                return false;
-            BroadcastMoveUsed();
-            PPReduce();
             ApplyStatChange(pkmn.Mon, stat, (sbyte)change);
             return true;
         }
         bool Ef_LowerTarget_ATK_DEF_By1()
         {
-            if (AttackCancelCheck())
-                return false;
-            BroadcastMoveUsed();
-            PPReduce();
             if (AccuracyCheck())
                 return false;
             var pkmn = bDefender.Mon;
@@ -349,10 +459,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         bool Ef_LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
         {
-            if (AttackCancelCheck())
-                return false;
-            BroadcastMoveUsed();
-            PPReduce();
             var pkmn = bAttacker.Mon;
             ApplyStatChange(pkmn, PStat.Defense, -1);
             ApplyStatChange(pkmn, PStat.SpDefense, -1);
@@ -363,10 +469,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         bool Ef_RaiseUser_ATK_SPE_By1()
         {
-            if (AttackCancelCheck())
-                return false;
-            BroadcastMoveUsed();
-            PPReduce();
             var pkmn = bAttacker.Mon;
             ApplyStatChange(pkmn, PStat.Attack, +1);
             ApplyStatChange(pkmn, PStat.Speed, +1);
@@ -374,10 +476,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         bool Ef_RaiseUser_SPATK_SPDEF_By1()
         {
-            if (AttackCancelCheck())
-                return false;
-            BroadcastMoveUsed();
-            PPReduce();
             var pkmn = bAttacker.Mon;
             ApplyStatChange(pkmn, PStat.SpAttack, +1);
             ApplyStatChange(pkmn, PStat.SpDefense, +1);
@@ -386,10 +484,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         bool Ef_Toxic()
         {
-            if (AttackCancelCheck())
-                return false;
-            BroadcastMoveUsed();
-            PPReduce();
             if (AccuracyCheck())
                 return false;
             if (!ApplyStatus1IfPossible(bDefender, PStatus1.BadlyPoisoned))

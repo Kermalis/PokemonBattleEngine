@@ -27,7 +27,7 @@ Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
 * Struggle
 * Weather
 * Turn order
-* Move targetting
+* Move targetting (mostly done)
 * Double/triple/rotation battles
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
