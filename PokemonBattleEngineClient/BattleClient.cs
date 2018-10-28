@@ -165,7 +165,13 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PRequestActionsPacket _:
                     // TODO
                     var actions = new PAction[1];
-                    actions[0] = new PAction(PKnownInfo.Instance.LocalParty[0].Id, 0, (byte)(PTarget.FoeLeft));
+                    pkmn = PKnownInfo.Instance.LocalParty[0];
+                    actions[0] = new PAction
+                    {
+                        PokemonId = pkmn.Id,
+                        Move = pkmn.Shell.Moves[0],
+                        Targets = PTarget.FoeCenter
+                    };
                     Send(new PSubmitActionsPacket(actions));
                     break;
                 case PPkmnHPChangedPacket phcp:
@@ -180,7 +186,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PMovePPChangedPacket mpcp:
                     pkmn = PKnownInfo.Instance.Pokemon(mpcp.PokemonId);
-                    i = pkmn.Shell.Moves.ToList().IndexOf(mpcp.Move);
+                    i = Array.IndexOf(pkmn.Shell.Moves, mpcp.Move);
                     pkmn.PP[i] = (byte)(pkmn.PP[i] + mpcp.Change);
                     Send(new PResponsePacket());
                     break;
@@ -190,7 +196,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     if (pmp.OwnsMove && !pkmn.Shell.Moves.Contains(pmp.Move))
                     {
                         // Set the first unknown move to the used move
-                        i = pkmn.Shell.Moves.ToList().IndexOf(PMove.MAX);
+                        i = Array.IndexOf(pkmn.Shell.Moves, PMove.MAX);
                         pkmn.Shell.Moves[i] = pmp.Move;
                     }
                     Send(new PResponsePacket());

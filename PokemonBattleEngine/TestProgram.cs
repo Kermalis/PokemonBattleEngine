@@ -92,29 +92,29 @@ namespace Kermalis.PokemonBattleEngine
             PTeamShell team1 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { pikachu, azumarill }
+                Party = { azumarill, pikachu }
             };
             PTeamShell team2 = new PTeamShell
             {
                 DisplayName = "Jess",
-                Party = { darkrai, cresselia }
+                Party = { cresselia, darkrai }
             };
 
-            PBattle battle = new PBattle(PBattleStyle.Double, team1, team2);
+            PBattle battle = new PBattle(PBattleStyle.Single, team1, team2);
             battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
             battle.Start();
             PPokemon p0_0 = PKnownInfo.Instance.LocalParty[0];
-            PPokemon p0_1 = PKnownInfo.Instance.LocalParty[1];
+            //PPokemon p0_1 = PKnownInfo.Instance.LocalParty[1];
             PPokemon p1_0 = PKnownInfo.Instance.RemoteParty[0];
-            PPokemon p1_1 = PKnownInfo.Instance.RemoteParty[1];
+            //PPokemon p1_1 = PKnownInfo.Instance.RemoteParty[1];
 
             Console.WriteLine();
             Console.WriteLine(p0_0);
-            Console.WriteLine(p0_1);
+            //Console.WriteLine(p0_1);
             Console.WriteLine(p1_0);
-            Console.WriteLine(p1_1);
+            //Console.WriteLine(p1_1);
 
-            while ((p0_0.HP > 0 || p0_1.HP > 0) && (p1_0.HP > 0 || p1_1.HP > 0))
+            while ((p0_0.HP > 0/* || p0_1.HP > 0*/) && (p1_0.HP > 0/* || p1_1.HP > 0*/))
             {
                 Console.WriteLine();
 
@@ -126,30 +126,50 @@ namespace Kermalis.PokemonBattleEngine
                     bool valid;
 
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    action = new PAction(p0_0.Id, move, (byte)(PTarget.FoeRight));
+                    action = new PAction
+                    {
+                        PokemonId = p0_0.Id,
+                        Move = p0_0.Shell.Moves[move],
+                        Targets = PTarget.FoeCenter
+                    };
                     valid = battle.SelectActionIfValid(action);
+
+                    /*move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
+                    action = new PAction
+                    {
+                        PokemonId = p0_1.Id,
+                        Move = p0_1.Shell.Moves[move],
+                        Targets = PTarget.FoeLeft
+                    };
+                    valid = battle.SelectActionIfValid(action);*/
 
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    action = new PAction(p0_1.Id, move, (byte)(PTarget.FoeLeft));
+                    action = new PAction
+                    {
+                        PokemonId = p1_0.Id,
+                        Move = p1_0.Shell.Moves[move],
+                        Targets = PTarget.FoeCenter
+                    };
                     valid = battle.SelectActionIfValid(action);
 
-                    move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    action = new PAction(p1_0.Id, move, (byte)(PTarget.FoeRight));
-                    valid = battle.SelectActionIfValid(action);
+                    /*move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
+                    action = new PAction
+                    {
+                        PokemonId = p1_1.Id,
+                        Move = p1_1.Shell.Moves[move],
+                        Targets = PTarget.FoeLeft
+                    };
+                    valid = battle.SelectActionIfValid(action);*/
 
-                    move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    action = new PAction(p1_1.Id, move, (byte)(PTarget.FoeLeft));
-                    valid = battle.SelectActionIfValid(action);
-
-                    Console.WriteLine();
+                    //Console.WriteLine();
                 } while (!battle.IsReadyToRunTurn());
                 battle.RunTurn();
 
                 Console.WriteLine();
                 Console.WriteLine(p0_0);
-                Console.WriteLine(p0_1);
+                //Console.WriteLine(p0_1);
                 Console.WriteLine(p1_0);
-                Console.WriteLine(p1_1);
+                //Console.WriteLine(p1_1);
             }
             Console.ReadKey();
         }

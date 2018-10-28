@@ -57,7 +57,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             #region Targets
 
-            PTarget selectedTarget = (PTarget)attacker.SelectedAction.Param2;
+            PTarget selectedTarget = (PTarget)attacker.SelectedAction.Targets;
             var targets = new List<PBattlePokemon>();
             if (selectedTarget.HasFlag(PTarget.AllyLeft))
             {
@@ -153,7 +153,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             #endregion
 
             bAttacker = attacker;
-            bMove = bAttacker.Mon.Shell.Moves[bAttacker.SelectedAction.Param1]; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            bMove = bAttacker.SelectedAction.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
             if (AttackCancelCheck())
                 return;
             BroadcastMoveUsed();
@@ -321,7 +321,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => PPReduce(bAttacker.Mon, bMove);
         void PPReduce(PPokemon pkmn, PMove move)
         {
-            var moveIndex = pkmn.Shell.Moves.ToList().IndexOf(move);
+            var moveIndex = Array.IndexOf(pkmn.Shell.Moves, move);
             int amtToReduce = 1;
             // TODO: If target is not self and has pressure
             var oldPP = pkmn.PP[moveIndex];
