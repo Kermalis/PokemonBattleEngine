@@ -160,7 +160,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
 
             // Invalid move
-            if (param1 >= PConstants.NumMoves || pkmn.Mon.Shell.Moves[param1] == PMove.None)
+            PMove move = pkmn.Mon.Shell.Moves[param1];
+            if (param1 >= PConstants.NumMoves || move == PMove.None)
                 return false;
 
             // TODO: Struggle
@@ -168,9 +169,278 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Out of PP
             if (pkmn.Mon.PP[param1] < 1)
                 return false;
-            
-            // TODO: Targets (param2)
-            
+
+            PMoveData mData = PMoveData.Data[move];
+            PTarget targets = (PTarget)param2;
+            switch (BattleStyle)
+            {
+                case PBattleStyle.Single:
+                case PBattleStyle.Rotation:
+                    // Only center in single battles & rotation battles
+                    switch (mData.Targets)
+                    {
+                        case PMoveTarget.All:
+                            if (targets != (PTarget.AllyCenter | PTarget.FoeCenter))
+                                return false;
+                            break;
+                        case PMoveTarget.AllFoes:
+                        case PMoveTarget.AllFoesSurrounding:
+                        case PMoveTarget.AllSurrounding:
+                        case PMoveTarget.SingleFoeSurrounding:
+                        case PMoveTarget.SingleNotSelf:
+                        case PMoveTarget.SingleSurrounding:
+                            if (targets != PTarget.FoeCenter)
+                                return false;
+                            break;
+                        case PMoveTarget.AllTeam:
+                        case PMoveTarget.Self:
+                        case PMoveTarget.SelfOrAllySurrounding:
+                            if (targets != PTarget.AllyCenter)
+                                return false;
+                            break;
+                        case PMoveTarget.RandomFoeSurrounding:
+                        case PMoveTarget.SingleAllySurrounding:
+                            // TODO: set the target
+                            break;
+                    }
+                    break;
+                case PBattleStyle.Double:
+                    // No center in double battles
+                    switch (mData.Targets)
+                    {
+                        case PMoveTarget.All:
+                            if (targets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
+                                return false;
+                            break;
+                        case PMoveTarget.AllFoes:
+                        case PMoveTarget.AllFoesSurrounding:
+                            if (targets != (PTarget.FoeLeft | PTarget.FoeRight))
+                                return false;
+                            break;
+                        case PMoveTarget.AllSurrounding:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != (PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != (PTarget.AllyLeft | PTarget.FoeLeft | PTarget.FoeRight))
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.AllTeam:
+                            if (targets != (PTarget.AllyLeft | PTarget.AllyRight))
+                                return false;
+                            break;
+                        case PMoveTarget.RandomFoeSurrounding:
+                            // TODO: Set the target
+                            break;
+                        case PMoveTarget.Self:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != PTarget.AllyLeft)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != PTarget.AllyRight)
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.SelfOrAllySurrounding:
+                            if (targets != PTarget.AllyLeft && targets != PTarget.AllyRight)
+                                return false;
+                            break;
+                        case PMoveTarget.SingleAllySurrounding:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != PTarget.AllyRight)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != PTarget.AllyLeft)
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.SingleFoeSurrounding:
+                            if (targets != PTarget.FoeLeft && targets != PTarget.FoeRight)
+                                return false;
+                            break;
+                        case PMoveTarget.SingleNotSelf:
+                        case PMoveTarget.SingleSurrounding:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != PTarget.AllyRight && targets != PTarget.FoeLeft && targets != PTarget.FoeRight)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != PTarget.AllyLeft && targets != PTarget.FoeLeft && targets != PTarget.FoeRight)
+                                    return false;
+                            }
+                            break;
+                    }
+                    break;
+                case PBattleStyle.Triple:
+                    switch (mData.Targets)
+                    {
+                        case PMoveTarget.All:
+                            if (targets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                return false;
+                            break;
+                        case PMoveTarget.AllFoes:
+                            if (targets != (PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                return false;
+                            break;
+                        case PMoveTarget.AllFoesSurrounding:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != (PTarget.FoeLeft | PTarget.FoeCenter))
+                                    return false;
+                            }
+                            else if (pkmn.Mon.FieldPosition == PFieldPosition.Center)
+                            {
+                                if (targets != (PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != (PTarget.FoeCenter | PTarget.FoeRight))
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.AllSurrounding:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != (PTarget.AllyCenter | PTarget.FoeLeft | PTarget.FoeCenter))
+                                    return false;
+                            }
+                            else if (pkmn.Mon.FieldPosition == PFieldPosition.Center)
+                            {
+                                if (targets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != (PTarget.AllyCenter | PTarget.FoeCenter | PTarget.FoeRight))
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.AllTeam:
+                            if (targets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight))
+                                return false;
+                            break;
+                        case PMoveTarget.RandomFoeSurrounding:
+                            // TODO: set the target
+                            break;
+                        case PMoveTarget.Self:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != PTarget.AllyLeft)
+                                    return false;
+                            }
+                            else if (pkmn.Mon.FieldPosition == PFieldPosition.Center)
+                            {
+                                if (targets != PTarget.AllyCenter)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != PTarget.AllyRight)
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.SelfOrAllySurrounding:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != PTarget.AllyLeft && targets != PTarget.AllyCenter)
+                                    return false;
+                            }
+                            else if (pkmn.Mon.FieldPosition == PFieldPosition.Center)
+                            {
+                                if (targets != PTarget.AllyLeft && targets != PTarget.AllyCenter && targets != PTarget.AllyRight)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != PTarget.AllyCenter && targets != PTarget.AllyRight)
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.SingleAllySurrounding:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != PTarget.AllyCenter)
+                                    return false;
+                            }
+                            else if (pkmn.Mon.FieldPosition == PFieldPosition.Center)
+                            {
+                                if (targets != PTarget.AllyLeft && targets != PTarget.AllyRight)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != PTarget.AllyCenter)
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.SingleFoeSurrounding:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != PTarget.FoeLeft && targets != PTarget.FoeCenter)
+                                    return false;
+                            }
+                            else if (pkmn.Mon.FieldPosition == PFieldPosition.Center)
+                            {
+                                if (targets != PTarget.FoeLeft && targets != PTarget.FoeCenter && targets != PTarget.FoeRight)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != PTarget.FoeCenter && targets != PTarget.FoeRight)
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.SingleNotSelf:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != PTarget.AllyCenter && targets != PTarget.AllyRight && targets != PTarget.FoeLeft && targets != PTarget.FoeCenter && targets != PTarget.FoeRight)
+                                    return false;
+                            }
+                            else if (pkmn.Mon.FieldPosition == PFieldPosition.Center)
+                            {
+                                if (targets != PTarget.AllyLeft && targets != PTarget.AllyRight && targets != PTarget.FoeLeft && targets != PTarget.FoeCenter && targets != PTarget.FoeRight)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != PTarget.AllyLeft && targets != PTarget.AllyCenter && targets != PTarget.FoeLeft && targets != PTarget.FoeCenter && targets != PTarget.FoeRight)
+                                    return false;
+                            }
+                            break;
+                        case PMoveTarget.SingleSurrounding:
+                            if (pkmn.Mon.FieldPosition == PFieldPosition.Left)
+                            {
+                                if (targets != PTarget.AllyCenter && targets != PTarget.FoeLeft && targets != PTarget.FoeCenter)
+                                    return false;
+                            }
+                            else if (pkmn.Mon.FieldPosition == PFieldPosition.Center)
+                            {
+                                if (targets != PTarget.AllyLeft && targets != PTarget.AllyRight && targets != PTarget.FoeLeft && targets != PTarget.FoeCenter && targets != PTarget.FoeRight)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (targets != PTarget.AllyCenter && targets != PTarget.FoeCenter && targets != PTarget.FoeRight)
+                                    return false;
+                            }
+                            break;
+                    }
+                    break;
+            }
+
             return true;
         }
         // Returns true if the action was valid (and was selected)
