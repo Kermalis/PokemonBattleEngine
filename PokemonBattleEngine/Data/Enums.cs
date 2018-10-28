@@ -190,10 +190,18 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PMoveTarget : byte // Used in MoveData
     {
-        AllFoesSurrounding, // All foes surrounding
-        Any, // Single battler except itself
-        AnySurrounding, // Single battler surrounding
-        Self // Self
+        All,                   // Every battler (Ex. Perish Song)
+        AllFoes,               // Every foe (Ex. Stealth Rock)
+        AllFoesSurrounding,    // All foes surrounding (Ex. Growl)
+        AllSurrounding,        // All battlers surrounding (Ex. Earthquake)
+        AllTeam,               // User's entire team (Ex. Light Screen)
+        RandomFoeSurrounding,  // Randomly picks a surrounding foe (Ex. Outrage)
+        Self,                  // Self (Ex. Growth)
+        SelfOrAllySurrounding, // Self or adjacent ally (Ex. Acupressure)
+        SingleAllySurrounding, // Adjacent ally (Ex. Helping Hand)
+        SingleNotSelf,         // Single battler except itself (Ex. Dark Pulse)
+        SingleFoeSurrounding,  // Single foe surrounding (Ex. Me First)
+        SingleSurrounding,     // Single battler surrounding (Ex. Tackle)
     }
     [Flags]
     public enum PMoveFlag : byte

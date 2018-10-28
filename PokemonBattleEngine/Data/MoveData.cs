@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.Any
+                    Targets = PMoveTarget.SingleNotSelf
                 }
             },
             {
@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 4, Power = 40, Accuracy = 100, Priority = +1,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
                     PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.Any
+                    Targets = PMoveTarget.SingleNotSelf
                 }
             },
             {
@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -89,7 +89,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 2, Power = 90, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.Any
+                    Targets = PMoveTarget.SingleNotSelf
                 }
             },
             {
@@ -100,7 +100,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -133,7 +133,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 3, Power = 0, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -144,7 +144,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 1, Power = 120, Accuracy = 80, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -155,7 +155,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
                     PPTier = 2, Power = 95, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -166,7 +166,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
                     PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -177,7 +177,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeBurn, EffectParam = 100,
                     PPTier = 1, Power = 10, Accuracy = 50, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -199,7 +199,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
                     PPTier = 6, Power = 20, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -232,7 +232,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
                     PPTier = 2, Power = 90, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -243,7 +243,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 1, Power = 70, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -254,7 +254,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -265,7 +265,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 8, Power = 40, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -287,7 +287,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 7, Power = 50, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -298,7 +298,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.LowerTarget_ATK_DEF_By1, EffectParam = 0,
                     PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -309,7 +309,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
                     PPTier = 2, Power = 120, Accuracy = 70, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -320,7 +320,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 10,
                     PPTier = 3, Power = 95, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -331,7 +331,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Toxic, EffectParam = 0,
                     PPTier = 2, Power = 0, Accuracy = 90, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -353,7 +353,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
                     PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {
@@ -364,7 +364,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
-                    Targets = PMoveTarget.AnySurrounding
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
         };
