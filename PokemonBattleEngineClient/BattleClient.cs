@@ -162,10 +162,10 @@ namespace Kermalis.PokemonBattleEngineClient
                     view.AddMessage(string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.LocallyOwned)), true);
                     Send(new PResponsePacket());
                     break;
-                case PRequestActionPacket _:
+                case PRequestActionsPacket _:
                     // TODO
-                    var actions = new PSubmitActionsPacket.Action[1];
-                    actions[0] = new PSubmitActionsPacket.Action(PKnownInfo.Instance.LocalParty[0].Id, 0, (byte)(PTarget.FoeLeft));
+                    var actions = new PAction[1];
+                    actions[0] = new PAction(PKnownInfo.Instance.LocalParty[0].Id, 0, (byte)(PTarget.FoeLeft));
                     Send(new PSubmitActionsPacket(actions));
                     break;
                 case PPkmnHPChangedPacket phcp:

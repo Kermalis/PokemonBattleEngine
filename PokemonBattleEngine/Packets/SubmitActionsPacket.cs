@@ -1,4 +1,5 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,36 +12,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x08;
         public IEnumerable<byte> Buffer { get; }
 
-        public sealed class Action
-        {
-            public readonly Guid PokemonId;
-            // TODO: Action (switch, forfeit, move)
-            public readonly byte Param1, Param2;
+        public readonly PAction[] Actions;
 
-            public Action(Guid pkmnId, byte param1, byte param2)
-            {
-                PokemonId = pkmnId;
-                Param1 = param1;
-                Param2 = param2;
-            }
-
-            internal byte[] ToBytes()
-            {
-                var bytes = new List<byte>();
-                bytes.AddRange(PokemonId.ToByteArray());
-                bytes.Add(Param1);
-                bytes.Add(Param2);
-                return bytes.ToArray();
-            }
-            internal static Action FromBytes(BinaryReader r)
-            {
-                return new Action(new Guid(r.ReadBytes(16)), r.ReadByte(), r.ReadByte());
-            }
-        }
-
-        public readonly Action[] Actions;
-
-        public PSubmitActionsPacket(Action[] actions)
+        public PSubmitActionsPacket(PAction[] actions)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -56,9 +30,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 byte numActions = r.ReadByte();
-                Actions = new Action[numActions];
+                Actions = new PAction[numActions];
                 for (int i = 0; i < numActions; i++)
-                    Actions[i] = Action.FromBytes(r);
+                    Actions[i] = PAction.FromBytes(r);
             }
         }
 

@@ -122,16 +122,24 @@ namespace Kermalis.PokemonBattleEngine
                 do
                 {
                     byte move;
+                    PAction action;
                     bool valid;
 
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    valid = battle.SelectActionIfValid(p0_0.Id, move, (byte)(PTarget.FoeLeft));
+                    action = new PAction(p0_0.Id, move, (byte)(PTarget.FoeRight));
+                    valid = battle.SelectActionIfValid(action);
+
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    valid = battle.SelectActionIfValid(p0_1.Id, move, (byte)(PTarget.FoeRight));
+                    action = new PAction(p0_1.Id, move, (byte)(PTarget.FoeLeft));
+                    valid = battle.SelectActionIfValid(action);
+
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    valid = battle.SelectActionIfValid(p1_0.Id, move, (byte)(PTarget.FoeLeft));
+                    action = new PAction(p1_0.Id, move, (byte)(PTarget.FoeRight));
+                    valid = battle.SelectActionIfValid(action);
+
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    valid = battle.SelectActionIfValid(p1_1.Id, move, (byte)(PTarget.FoeRight));
+                    action = new PAction(p1_1.Id, move, (byte)(PTarget.FoeLeft));
+                    valid = battle.SelectActionIfValid(action);
 
                     Console.WriteLine();
                 } while (!battle.IsReadyToRunTurn());

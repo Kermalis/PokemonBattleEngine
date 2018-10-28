@@ -142,12 +142,12 @@ namespace Kermalis.PokemonBattleEngineServer
 
                 state = ServerState.BattleProcessing;
                 battle.Start();
-                SendTo(battlers, new PRequestActionPacket());
+                SendTo(battlers, new PRequestActionsPacket());
                 Console.WriteLine("Waiting for actions...");
                 state = ServerState.WaitingForActions;
             }
         }
-        public void ActionsSubmitted(Player player, PSubmitActionsPacket.Action[] actions)
+        public void ActionsSubmitted(Player player, PAction[] actions)
         {
             if (state != ServerState.WaitingForActions)
                 return;
@@ -157,9 +157,9 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
 
                 bool valid = true;
-                foreach (PSubmitActionsPacket.Action action in actions)
+                foreach (PAction action in actions)
                 {
-                    if (!battle.SelectActionIfValid(action.PokemonId, action.Param1, action.Param2))
+                    if (!battle.SelectActionIfValid(action))
                     {
                         valid = false;
                         break;
@@ -180,7 +180,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
                 else
                 {
-                    player.Send(new PRequestActionPacket());
+                    player.Send(new PRequestActionsPacket());
                 }
             }
         }

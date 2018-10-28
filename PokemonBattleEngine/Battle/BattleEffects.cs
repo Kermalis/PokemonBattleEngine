@@ -56,24 +56,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PTeam opposingTeam = teams[attacker.Mon.LocallyOwned ? 1 : 0]; // Other team
 
             #region Targets
-            
+
+            PTarget selectedTarget = (PTarget)attacker.SelectedAction.Param2;
             var targets = new List<PBattlePokemon>();
-            if (attacker.SelectedTarget.HasFlag(PTarget.AllyLeft))
+            if (selectedTarget.HasFlag(PTarget.AllyLeft))
             {
                 PBattlePokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Left);
                 targets.Add(b);
             }
-            if (attacker.SelectedTarget.HasFlag(PTarget.AllyCenter))
+            if (selectedTarget.HasFlag(PTarget.AllyCenter))
             {
                 PBattlePokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Center);
                 targets.Add(b);
             }
-            if (attacker.SelectedTarget.HasFlag(PTarget.AllyRight))
+            if (selectedTarget.HasFlag(PTarget.AllyRight))
             {
                 PBattlePokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Right);
                 targets.Add(b);
             }
-            if (attacker.SelectedTarget.HasFlag(PTarget.FoeLeft))
+            if (selectedTarget.HasFlag(PTarget.FoeLeft))
             {
                 PBattlePokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
                 // Target fainted, fallback to its teammate
@@ -91,7 +92,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 targets.Add(b);
             }
-            if (attacker.SelectedTarget.HasFlag(PTarget.FoeCenter))
+            if (selectedTarget.HasFlag(PTarget.FoeCenter))
             {
                 PBattlePokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
                 // Target fainted, fallback to its teammate
@@ -129,7 +130,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 targets.Add(b);
             }
-            if (attacker.SelectedTarget.HasFlag(PTarget.FoeRight))
+            if (selectedTarget.HasFlag(PTarget.FoeRight))
             {
                 PBattlePokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
                 // Target fainted, fallback to its teammate
@@ -152,7 +153,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             #endregion
 
             bAttacker = attacker;
-            bMove = bAttacker.SelectedMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            bMove = bAttacker.Mon.Shell.Moves[bAttacker.SelectedAction.Param1]; // bMoveType gets set in BattleDamage.cs->TypeCheck()
             if (AttackCancelCheck())
                 return;
             BroadcastMoveUsed();

@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PSubmitPartyPacket.Code: packet = new PSubmitPartyPacket(buffer); break;
                 case PSetPartyPacket.Code: packet = new PSetPartyPacket(buffer); break;
                 case PPkmnSwitchInPacket.Code: packet = new PPkmnSwitchInPacket(buffer); break;
-                case PRequestActionPacket.Code: packet = new PRequestActionPacket(buffer); break;
+                case PRequestActionsPacket.Code: packet = new PRequestActionsPacket(buffer); break;
                 case PSubmitActionsPacket.Code: packet = new PSubmitActionsPacket(buffer); break;
                 case PPkmnMovePacket.Code: packet = new PPkmnMovePacket(buffer); break;
                 case PPkmnHPChangedPacket.Code: packet = new PPkmnHPChangedPacket(buffer); break;
