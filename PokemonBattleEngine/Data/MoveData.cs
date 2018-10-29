@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    class PMoveData
+    public sealed class PMoveData
     {
         public PType Type;
         public PMoveCategory Category;

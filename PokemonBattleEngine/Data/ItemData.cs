@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    class PItemData
+    public sealed class PItemData
     {
         public int FlingPower;
 
