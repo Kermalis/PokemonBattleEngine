@@ -1,17 +1,17 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient">
+             xmlns:view="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient">
   <Canvas Width="512" Height="384">
     <Canvas.Background>
       <ImageBrush Source="resm:Kermalis.PokemonBattleEngineClient.Assets.Backgrounds.1-s.png?assembly=PokemonBattleEngineClient"/>
     </Canvas.Background>
-    <views:PokemonView Name="Battler0_Left" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <views:PokemonView Name="Battler0_Center" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <views:PokemonView Name="Battler0_Right" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler0_Left" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler0_Center" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler0_Right" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
 
-    <views:PokemonView Name="Battler1_Right" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <views:PokemonView Name="Battler1_Center" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <views:PokemonView Name="Battler1_Left" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler1_Right" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler1_Center" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler1_Left" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
 
     <Line StartPoint="0,335" EndPoint="512,335" Stroke="#C3000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <Line StartPoint="0,336" EndPoint="512,336" Stroke="#35000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>

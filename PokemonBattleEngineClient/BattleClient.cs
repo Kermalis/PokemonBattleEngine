@@ -106,16 +106,19 @@ namespace Kermalis.PokemonBattleEngineClient
         static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team1 : team2; // Temporary
 
         public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Single;
-        readonly BattleView view;
+        readonly BattleView battleView;
+        readonly ActionsView actionsView;
 
-        public BattleClient(string host, BattleView view)
+        public BattleClient(string host, BattleView battleView, ActionsView actionsView)
         {
             Configuration.Host = host;
             Configuration.Port = 8888;
             Configuration.BufferSize = 1024;
 
-            this.view = view;
-            this.view.Client = this;
+            this.battleView = battleView;
+            this.battleView.Client = this;
+            this.actionsView = actionsView;
+            this.actionsView.Client = this;
         }
 
         public override void HandleMessage(INetPacket packet)
@@ -139,13 +142,13 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
 
                 case PPlayerJoinedPacket pjp:
-                    view.AddMessage(string.Format("{0} joined the game.", pjp.DisplayName), true);
+                    battleView.AddMessage(string.Format("{0} joined the game.", pjp.DisplayName), true);
                     // TODO: What if it's a spectator?
                     PKnownInfo.Instance.RemoteDisplayName = pjp.DisplayName;
                     Send(new PResponsePacket());
                     break;
                 case PRequestPartyPacket _:
-                    view.AddMessage("Sending team info...", true);
+                    battleView.AddMessage("Sending team info...", true);
                     PKnownInfo.Instance.LocalDisplayName = chosenTeam.DisplayName;
                     Send(new PSubmitPartyPacket(chosenTeam));
                     break;
@@ -158,21 +161,15 @@ namespace Kermalis.PokemonBattleEngineClient
                         PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Nickname, psip.Level, psip.HP, psip.MaxHP, psip.Gender);
                     pkmn = PKnownInfo.Instance.Pokemon(psip.PokemonId);
                     pkmn.FieldPosition = psip.FieldPosition;
-                    view.PokemonPositionChanged(pkmn);
-                    view.AddMessage(string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.LocallyOwned)), true);
+                    battleView.PokemonPositionChanged(pkmn);
+                    battleView.AddMessage(string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.LocallyOwned)), true);
                     Send(new PResponsePacket());
                     break;
                 case PRequestActionsPacket _:
                     // TODO
-                    var actions = new PAction[1];
                     pkmn = PKnownInfo.Instance.LocalParty[0];
-                    actions[0] = new PAction
-                    {
-                        PokemonId = pkmn.Id,
-                        Move = pkmn.Shell.Moves[0],
-                        Targets = PTarget.FoeCenter
-                    };
-                    Send(new PSubmitActionsPacket(actions));
+                    battleView.AddMessage($"What will {pkmn.Shell.Nickname} do?", true);
+                    actionsView.SetInfo(pkmn);
                     break;
                 case PPkmnHPChangedPacket phcp:
                     pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
@@ -180,7 +177,7 @@ namespace Kermalis.PokemonBattleEngineClient
 
                     var hp = Math.Abs(phcp.Change);
                     d = (double)hp / pkmn.MaxHP;
-                    view.AddMessage(string.Format("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, d, phcp.Change < 0 ? "lost" : "gained"), true);
+                    battleView.AddMessage(string.Format("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, d, phcp.Change < 0 ? "lost" : "gained"), true);
 
                     Send(new PResponsePacket());
                     break;
@@ -220,11 +217,18 @@ namespace Kermalis.PokemonBattleEngineClient
             }
         }
 
+        public void MoveSelected(PAction action)
+        {
+            var actions = new PAction[1];
+            actions[0] = action;
+            Send(new PSubmitActionsPacket(actions));
+        }
+
         protected override void OnConnected()
         {
             Debug.WriteLine("Connected to {0}", Socket.RemoteEndPoint);
             PKnownInfo.Instance.Clear();
-            view.AddMessage("Waiting for players...");
+            battleView.AddMessage("Waiting for players...");
         }
         protected override void OnDisconnected()
         {

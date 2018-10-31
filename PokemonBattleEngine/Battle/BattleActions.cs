@@ -84,7 +84,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PMoveTarget.AllTeam:
                         case PMoveTarget.Self:
                         case PMoveTarget.SelfOrAllySurrounding:
-                        case PMoveTarget.SingleAllySurrounding: // Client should send "Center" even though the move will fail
+                        case PMoveTarget.SingleAllySurrounding: // Client should send "AllyCenter" even though the move will fail
                             if (action.Targets != PTarget.AllyCenter)
                                 return false;
                             break;
