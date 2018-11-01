@@ -264,6 +264,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ScaryFace,
         Scratch,
         ShellSmash,
+        Spark,
         Tackle,
         Tickle,
         Thunder,

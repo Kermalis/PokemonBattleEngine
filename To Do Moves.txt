@@ -190,7 +190,6 @@ Rollout
 False Swipe
 Swagger
 Milk Drink
-Spark
 Fury Cutter
 Steel Wing
 Mean Look
