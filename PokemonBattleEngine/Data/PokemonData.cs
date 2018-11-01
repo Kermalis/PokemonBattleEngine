@@ -715,7 +715,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // wish 5
                         // helping hand 10
                         // safeguard 15
-                        // dragon breath 20
+                        Tuple.Create(20, PMove.DragonBreath),
                         // water sport 25
                         // refresh 30
                         // mist ball 35
@@ -835,7 +835,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // heal block 5
                         // helping hand 10
                         // safeguard 15
-                        // dragon breath 20
+                        Tuple.Create(20, PMove.DragonBreath),
                         // protect 25
                         // refresh 30
                         // luster purge 35

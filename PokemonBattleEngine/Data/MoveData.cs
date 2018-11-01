@@ -71,6 +71,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.DragonBreath,
+                new PMoveData
+                {
+                    Type = PType.Dragon, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
+                    PPTier = 4, Power = 60, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.DragonClaw,
                 new PMoveData
                 {
