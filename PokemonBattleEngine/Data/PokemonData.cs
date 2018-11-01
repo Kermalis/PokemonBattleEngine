@@ -127,7 +127,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // agility 37
                         // discharge 42
                         // light screen 45
-                        // extremespeed 50 // gen 5 event (ExtremeSpeed Pikachu)
+                        Tuple.Create(50, PMove.ExtremeSpeed), // Gen 5 event (ExtremeSpeed Pikachu)
                         // yawn 50 // gen 4 event (Sleeping Pikachu)
                         // rest 50 // gen 4 event (Sleeping Pikachu)
                         Tuple.Create(50, PMove.Thunder),

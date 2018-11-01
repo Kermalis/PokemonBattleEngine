@@ -214,7 +214,6 @@ Rain Dance
 Sunny Day
 Mirror Coat
 Psych Up
-Extreme Speed
 Ancient Power
 Shadow Ball
 Future Sight
