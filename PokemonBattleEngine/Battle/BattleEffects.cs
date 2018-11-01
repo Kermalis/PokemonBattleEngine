@@ -57,7 +57,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             #region Targets
 
-            PTarget selectedTarget = (PTarget)attacker.SelectedAction.Targets;
+            PTarget selectedTarget = attacker.SelectedAction.Targets;
             var targets = new List<PBattlePokemon>();
             if (selectedTarget.HasFlag(PTarget.AllyLeft))
             {
@@ -191,6 +191,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.ChangeTarget_DEF:
                     ChangeStat(bDefender, PStat.Defense, mData.EffectParam);
+                    break;
+                case PMoveEffect.ChangeTarget_SPE:
+                    ChangeStat(bDefender, PStat.Speed, mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_DEF:
                     ChangeStat(bAttacker, PStat.Defense, mData.EffectParam);

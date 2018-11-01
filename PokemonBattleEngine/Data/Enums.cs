@@ -218,6 +218,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         ChangeTarget_ATK,
         ChangeTarget_DEF,
+        ChangeTarget_SPE,
         ChangeUser_DEF,
         ChangeUser_SPATK,
         Hit,
@@ -259,6 +260,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Psychic,
         Retaliate, // TODO
         Return,
+        ScaryFace,
         Scratch,
         ShellSmash,
         Tackle,
