@@ -13,10 +13,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public new event PropertyChangedEventHandler PropertyChanged;
 
         string message;
-        public string Message
+        string Message
         {
             get => message;
-            private set
+            set
             {
                 message = value;
                 OnPropertyChanged(nameof(Message));
@@ -24,10 +24,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool isMessageBoxVisible;
-        public bool IsMessageBoxVisible
+        bool IsMessageBoxVisible
         {
             get => isMessageBoxVisible;
-            private set
+            set
             {
                 isMessageBoxVisible = value;
                 OnPropertyChanged(nameof(IsMessageBoxVisible));

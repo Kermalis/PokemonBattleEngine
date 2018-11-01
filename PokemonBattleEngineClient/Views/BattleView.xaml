@@ -19,8 +19,8 @@
     <Rectangle Width="512" Height="36" Canvas.Left="0" Canvas.Top="338" Fill="#83000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <TextBlock
       Text="{Binding Message}" Foreground="White"
-      FontSize="18" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pixel Operator"
-      Width="480" Height="36" Canvas.Left="16" Canvas.Top="338" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="3"/>
+      FontSize="18" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
+      Width="480" Height="36" Canvas.Left="16" Canvas.Top="342" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="3"/>
     <Line StartPoint="0,375" EndPoint="512,375" Stroke="#7C000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <Line StartPoint="0,376" EndPoint="512,376" Stroke="#35000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <Line StartPoint="0,377" EndPoint="512,377" Stroke="#C3000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>

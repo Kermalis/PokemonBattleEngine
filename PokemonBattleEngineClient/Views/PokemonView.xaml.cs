@@ -26,20 +26,20 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         double scale;
-        public double Scale
+        double Scale
         {
             get => scale;
-            private set
+            set
             {
                 scale = value;
                 OnPropertyChanged(nameof(Scale));
             }
         }
         bool visible;
-        public bool Visible
+        bool Visible
         {
             get => visible;
-            private set
+            set
             {
                 visible = value;
                 OnPropertyChanged(nameof(Visible));
@@ -56,9 +56,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         Uri uri;
-        public Uri Source
+        Uri Source
         {
-            get => uri; private set
+            get => uri;
+            set
             {
                 uri = value;
                 OnPropertyChanged(nameof(Source));

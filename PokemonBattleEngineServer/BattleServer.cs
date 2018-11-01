@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineServer
             BattleProcessing, // Battle is running and sending events
         }
         ServerState state = ServerState.Startup;
-        readonly PBattleStyle intendedBattleStyle = PBattleStyle.Single; // TODO: Let the client know what kind of style this server is running (matchmaking)
+        readonly PBattleStyle intendedBattleStyle = PBattleStyle.Triple; // TODO: Let the client know what kind of style this server is running (matchmaking)
         PBattle battle;
         Player[] battlers;
 
@@ -156,6 +156,8 @@ namespace Kermalis.PokemonBattleEngineServer
                 if (state != ServerState.WaitingForActions)
                     return;
 
+                Console.WriteLine($"Received actions from {player.Team.DisplayName}");
+
                 bool valid = true;
                 foreach (PAction action in actions)
                 {
@@ -168,6 +170,7 @@ namespace Kermalis.PokemonBattleEngineServer
 
                 if (valid)
                 {
+                    Console.WriteLine("Actions are valid.");
                     if (battle.IsReadyToRunTurn())
                     {
                         Console.WriteLine("Players selected actions!");
@@ -180,6 +183,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
                 else
                 {
+                    Console.WriteLine("Actions are invalid!");
                     player.Send(new PRequestActionsPacket());
                 }
             }

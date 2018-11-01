@@ -2,19 +2,54 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:model="clr-namespace:Kermalis.PokemonBattleEngineClient.Models;assembly=PokemonBattleEngineClient"
         Width="512" Height="128" Background="#313131" Name="Actions0">
-  <ItemsControl Items="{Binding Moves}">
-    <ItemsControl.ItemsPanel>
-      <ItemsPanelTemplate>
-        <StackPanel Orientation="Horizontal" Spacing="20" Margin="20"/>
-      </ItemsPanelTemplate>
-    </ItemsControl.ItemsPanel>
-    <ItemsControl.ItemTemplate>
-      <DataTemplate>
-        <Button Width="103" Height="30" IsEnabled="{Binding Enabled}"
-                Content="{Binding Name}" Command="{Binding SelectMoveCommand}"
-                Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" Foreground="White"
-                FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pixel Operator"/>
-      </DataTemplate>
-    </ItemsControl.ItemTemplate>
-  </ItemsControl>
+  <StackPanel>
+    <Canvas Width="512" Height="128" IsVisible="{Binding TargetsVisible}">
+      <Rectangle IsVisible="{Binding TargetLineFoeRightAllyLeftEnabled}" Width="12" Height="26" Canvas.Left="{Binding LeftLineX}" Canvas.Top="51" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+      <Rectangle IsVisible="{Binding TargetLineFoeRightFoeCenterEnabled}" Width="32" Height="12" Canvas.Left="{Binding CenterLineX}" Canvas.Top="32" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+      <Rectangle IsVisible="{Binding TargetLineAllyLeftAllyCenterEnabled}" Width="32" Height="12" Canvas.Left="{Binding CenterLineX}" Canvas.Top="84" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+      <Rectangle IsVisible="{Binding TargetLineFoeLeftFoeCenterEnabled}" Width="32" Height="12" Canvas.Left="304" Canvas.Top="32" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+      <Rectangle IsVisible="{Binding TargetLineFoeCenterAllyCenterEnabled}" Width="12" Height="26" Canvas.Left="251" Canvas.Top="51" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+      <Rectangle IsVisible="{Binding TargetLineAllyRightAllyCenterEnabled}" Width="32" Height="12" Canvas.Left="304" Canvas.Top="84" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+      <Rectangle IsVisible="{Binding TargetLineFoeLeftAllyRightEnabled}" Width="12" Height="26" Canvas.Left="{Binding RightLineX}" Canvas.Top="51" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+      <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="23" IsEnabled="{Binding TargetFoeRightEnabled}"
+              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Foreground="White"
+              Content="{Binding TargetFoeRight}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
+              Command="{Binding SelectTargetCommand}" CommandParameter="FoeRight"/>
+      <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="23" IsEnabled="{Binding TargetFoeCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
+              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Foreground="White"
+              Content="{Binding TargetFoeCenter}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
+              Command="{Binding SelectTargetCommand}" CommandParameter="FoeCenter"/>
+      <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="23" IsEnabled="{Binding TargetFoeLeftEnabled}"
+              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Foreground="White"
+              Content="{Binding TargetFoeLeft}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
+              Command="{Binding SelectTargetCommand}" CommandParameter="FoeLeft"/>
+      <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="75" IsEnabled="{Binding TargetAllyLeftEnabled}"
+              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Foreground="White"
+              Content="{Binding TargetAllyLeft}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
+              Command="{Binding SelectTargetCommand}" CommandParameter="AllyLeft"/>
+      <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="75"  IsEnabled="{Binding TargetAllyCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
+              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Foreground="White"
+              Content="{Binding TargetAllyCenter}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
+              Command="{Binding SelectTargetCommand}" CommandParameter="AllyCenter"/>
+      <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="75" IsEnabled="{Binding TargetAllyRightEnabled}"
+              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Foreground="White"
+              Content="{Binding TargetAllyRight}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
+              Command="{Binding SelectTargetCommand}" CommandParameter="AllyRight"/>
+    </Canvas>
+    <ItemsControl Items="{Binding Moves}" Width="512" Height="128" IsVisible="{Binding MovesVisible}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal" Spacing="20" Margin="20"/>
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Button Width="103" Height="30" IsEnabled="{Binding Enabled}"
+                  Content="{Binding Move}" Command="{Binding SelectMoveCommand}"
+                  Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4" Foreground="White"
+                  FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
 </UserControl>

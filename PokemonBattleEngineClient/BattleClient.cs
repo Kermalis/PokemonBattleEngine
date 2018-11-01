@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
@@ -105,7 +106,7 @@ namespace Kermalis.PokemonBattleEngineClient
             };
         static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team1 : team2; // Temporary
 
-        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Single;
+        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Triple;
         readonly BattleView battleView;
         readonly ActionsView actionsView;
 
@@ -166,10 +167,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     Send(new PResponsePacket());
                     break;
                 case PRequestActionsPacket _:
-                    // TODO
-                    pkmn = PKnownInfo.Instance.LocalParty[0];
-                    battleView.AddMessage($"What will {pkmn.Shell.Nickname} do?", true);
-                    actionsView.SetInfo(pkmn);
+                    ActionsLoop(true);
                     break;
                 case PPkmnHPChangedPacket phcp:
                     pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
@@ -217,11 +215,57 @@ namespace Kermalis.PokemonBattleEngineClient
             }
         }
 
-        public void MoveSelected(PAction action)
+        List<PAction> actions;
+        void ActionsLoop(bool begin)
         {
-            var actions = new PAction[1];
-            actions[0] = action;
-            Send(new PSubmitActionsPacket(actions));
+            PPokemon pkmn;
+            if (begin)
+            {
+                var alive = new List<PPokemon>();
+                switch (BattleStyle)
+                {
+                    case PBattleStyle.Single:
+                    case PBattleStyle.Rotation:
+                        alive.Add(PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center));
+                        break;
+                    case PBattleStyle.Double:
+                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Left);
+                        if (pkmn != null)
+                            alive.Add(pkmn);
+                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Right);
+                        if (pkmn != null)
+                            alive.Add(pkmn);
+                        break;
+                    case PBattleStyle.Triple:
+                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Left);
+                        if (pkmn != null)
+                            alive.Add(pkmn);
+                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center);
+                        if (pkmn != null)
+                            alive.Add(pkmn);
+                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Right);
+                        if (pkmn != null)
+                            alive.Add(pkmn);
+                        break;
+                }
+                actions = alive.Select(p => new PAction { PokemonId = p.Id }).ToList();
+            }
+            int i = actions.FindIndex(a => a.Move == PMove.None);
+            if (i == -1)
+            {
+                battleView.AddMessage($"Waiting for {PKnownInfo.Instance.RemoteDisplayName}...", true);
+                Send(new PSubmitActionsPacket(actions.ToArray()));
+            }
+            else
+            {
+                pkmn = PKnownInfo.Instance.Pokemon(actions[i].PokemonId);
+                battleView.AddMessage($"What will {pkmn.Shell.Nickname} do?", true);
+                actionsView.DisplayMoves(actions[i]);
+            }
+        }
+        public void ActionSet(PAction action)
+        {
+            ActionsLoop(false);
         }
 
         protected override void OnConnected()

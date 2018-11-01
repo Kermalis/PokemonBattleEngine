@@ -43,14 +43,14 @@ namespace Kermalis.PokemonBattleEngineClient.Models
 
         public ReactiveCommand SelectMoveCommand { get; }
 
-        string name;
-        public string Name
+        PMove move;
+        public PMove Move
         {
-            get => name;
+            get => move;
             set
             {
-                name = value;
-                OnPropertyChanged(nameof(Name));
+                move = value;
+                OnPropertyChanged(nameof(Move));
             }
         }
         bool enabled;
@@ -90,7 +90,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             var ttb = typeToBrush[move == PMove.None ? PType.Normal : PMoveData.Data[move].Type];
 
             Enabled = move != PMove.None && pkmn.PP[i] > 0;
-            Name = move.ToString();
+            Move = move;
             Brush = ttb.Item1;
             BorderBrush = ttb.Item2;
 
