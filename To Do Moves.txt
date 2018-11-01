@@ -205,7 +205,6 @@ Baton Pass
 Encore
 Pursuit
 Rapid Spin
-Sweet Scent
 Iron Tail
 Metal Claw
 Vital Throw

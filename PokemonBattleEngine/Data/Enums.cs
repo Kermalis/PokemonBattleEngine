@@ -218,6 +218,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         ChangeTarget_ATK,
         ChangeTarget_DEF,
+        ChangeTarget_EVA,
         ChangeTarget_SPE,
         ChangeUser_DEF,
         ChangeUser_SPATK,
@@ -269,6 +270,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShellSmash,
         Spark,
         SteelWing,
+        SweetScent,
         Tackle,
         Tickle,
         Thunder,
