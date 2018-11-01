@@ -281,6 +281,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Thunderbolt,
         Toxic,
         Transform, // TODO
+        VitalThrow,
         Waterfall,
         XScissor,
         MAX

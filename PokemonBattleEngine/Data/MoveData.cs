@@ -445,6 +445,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.VitalThrow,
+                new PMoveData
+                {
+                    Type = PType.Fighting, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 2, Power = 70, Accuracy = 0, Priority = -1,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Waterfall,
                 new PMoveData
                 {

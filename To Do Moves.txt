@@ -205,7 +205,6 @@ Baton Pass
 Encore
 Pursuit
 Rapid Spin
-Vital Throw
 Morning Sun
 Synthesis
 Moonlight
