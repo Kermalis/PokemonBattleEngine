@@ -313,6 +313,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.SteelWing,
+                new PMoveData
+                {
+                    Type = PType.Steel, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeRaiseUser_DEF_By1, EffectParam = 10,
+                    PPTier = 5, Power = 70, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Tackle,
                 new PMoveData
                 {

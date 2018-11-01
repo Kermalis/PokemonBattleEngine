@@ -227,6 +227,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeFreeze,
         Hit__MaybeLowerTarget_SPDEF_By1,
         Hit__MaybeParalyze,
+        Hit__MaybeRaiseUser_DEF_By1,
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
         Moonlight, // TODO
@@ -265,6 +266,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Scratch,
         ShellSmash,
         Spark,
+        SteelWing,
         Tackle,
         Tickle,
         Thunder,

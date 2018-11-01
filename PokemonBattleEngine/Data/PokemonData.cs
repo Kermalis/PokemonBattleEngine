@@ -797,7 +797,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // shock wave // gen 4 tm
-                        // steel wing // gen 4 tm
                         // sucker punch // gen 4 tutor
                         // swift // gen 4 tutor
                         // twister // gen 4 tutor
@@ -813,6 +812,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.SteelWing, // TM
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM
@@ -915,7 +915,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // shock wave // gen 4 tm
-                        // steel wing // gen 4 tm
                         // swift // gen 4 tutor
                         // twister // gen 4 tutor
                         // water pulse // gen 4 tm
@@ -930,6 +929,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.SteelWing, // TM
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM

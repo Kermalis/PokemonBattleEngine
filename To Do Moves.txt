@@ -191,7 +191,6 @@ False Swipe
 Swagger
 Milk Drink
 Fury Cutter
-Steel Wing
 Mean Look
 Attract
 Sleep Talk

@@ -214,10 +214,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     HitAndMaybeApplyStatus1(PStatus1.Frozen, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1:
-                    HitAndMaybeChangeStat(PStat.SpDefense, -1, mData.EffectParam);
+                    HitAndMaybeChangeTargetStat(PStat.SpDefense, -1, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeParalyze:
                     HitAndMaybeApplyStatus1(PStatus1.Paralyzed, mData.EffectParam);
+                    break;
+                case PMoveEffect.Hit__MaybeRaiseUser_DEF_By1:
+                    HitAndMaybeChangeUserStat(PStat.Defense, +1, mData.EffectParam);
                     break;
                 case PMoveEffect.LowerTarget_ATK_DEF_By1:
                     Ef_LowerTarget_ATK_DEF_By1();
@@ -437,13 +440,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
 
-        bool HitAndMaybeChangeStat(PStat stat, sbyte change, int chance)
+        bool HitAndMaybeChangeTargetStat(PStat stat, sbyte change, int chance)
         {
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance))
                 return false;
             ApplyStatChange(bDefender.Mon, stat, change);
+            return true;
+        }
+        bool HitAndMaybeChangeUserStat(PStat stat, sbyte change, int chance)
+        {
+            if (!Ef_Hit())
+                return false;
+            if (!PUtils.ApplyChance(chance))
+                return false;
+            ApplyStatChange(bAttacker.Mon, stat, change);
             return true;
         }
 
