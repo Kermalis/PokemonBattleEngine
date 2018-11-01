@@ -201,7 +201,6 @@ Pain Split
 Sacred Fire
 Magnitude
 Dynamic Punch
-Megahorn
 Dragon Breath
 Baton Pass
 Encore
