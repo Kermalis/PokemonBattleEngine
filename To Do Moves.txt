@@ -205,7 +205,6 @@ Baton Pass
 Encore
 Pursuit
 Rapid Spin
-Metal Claw
 Vital Throw
 Morning Sun
 Synthesis

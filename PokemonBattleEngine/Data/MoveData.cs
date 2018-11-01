@@ -247,6 +247,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.MetalClaw,
+                new PMoveData
+                {
+                    Type = PType.Steel, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeRaiseUser_ATK_By1, EffectParam = 10,
+                    PPTier = 7, Power = 50, Accuracy = 95, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Moonlight,
                 new PMoveData
                 {
