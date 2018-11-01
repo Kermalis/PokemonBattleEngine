@@ -203,6 +203,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.IronTail,
+                new PMoveData
+                {
+                    Type = PType.Steel, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_DEF_By1, EffectParam = 30,
+                    PPTier = 3, Power = 100, Accuracy = 75, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Leer,
                 new PMoveData
                 {

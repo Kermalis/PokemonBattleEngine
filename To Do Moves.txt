@@ -205,7 +205,6 @@ Baton Pass
 Encore
 Pursuit
 Rapid Spin
-Iron Tail
 Metal Claw
 Vital Throw
 Morning Sun

@@ -171,7 +171,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // wish
                         // covet // tutor
                         // helping hand
-                        // iron tail
                         // knock off
                         // magnet rise
                         // signal beam
@@ -200,6 +199,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // volt tackle // egg as pichu
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
+                        PMove.IronTail, // Move Tutor
                         PMove.Return, // TM
                         PMove.Tickle, // Egg Move
                         PMove.Thunder, // TM
@@ -281,7 +281,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // icy wind
                         // iron defense
                         // iron head
-                        // iron tail
                         // knock off
                         // low kick
                         // sleep talk
@@ -306,6 +305,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.IronTail, // Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.Toxic, // TM
@@ -390,7 +390,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // icy wind
                         // iron defense
                         // iron head
-                        // iron tail
                         // knock off
                         // low kick
                         // outrage
@@ -416,6 +415,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.IronTail, // Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.Toxic, // TM
@@ -603,7 +603,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // helping hand
                         // hyper voice
                         // icy wind
-                        // iron tail
                         // knock off
                         // sleep talk
                         // snore
@@ -631,6 +630,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IcePunch, // Move Tutor
+                        PMove.IronTail, // Move Tutor
                         PMove.Return, // TM
                         PMove.Tickle, // Egg Move
                         PMove.Toxic, // TM
