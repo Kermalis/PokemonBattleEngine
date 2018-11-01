@@ -241,6 +241,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AerialAce,
         AquaJet,
         CalmMind,
+        Charm,
         DarkPulse,
         DragonClaw,
         DragonDance,

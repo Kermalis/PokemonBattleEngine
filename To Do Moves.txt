@@ -186,7 +186,6 @@ Outrage
 Sandstorm
 Giga Drain
 Endure
-Charm
 Rollout
 False Swipe
 Swagger

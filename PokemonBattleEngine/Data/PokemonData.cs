@@ -108,7 +108,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         Tuple.Create(1, PMove.Growl),
                         // thunder shock 1
-                        // charm 1 // As Pichu
+                        Tuple.Create(1, PMove.Charm), // As Pichu
                         // tail whip 5
                         // follow me 5 // gen 3 pichu event
                         // teeter dance 5 // gen 3 pichu event
@@ -453,7 +453,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         // thundershock 1
-                        // charm 1
+                        Tuple.Create(1, PMove.Charm),
                         // tail whip 5
                         // follow me 5 // Gen 3 event (PokéPark Egg Pichu)
                         // teeter dance 5 // Gen 3 event (Teeter Dance Pichu, Pokémon Stamp Ruby and Sapphire Contest Pichu)
@@ -539,6 +539,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // water gun 1 // Gen 3 / Gen 4 / BW 1 & 10, B2W2 7
                         // water sport 1 // B2W2 Level 1 & 5
                         // defense curl 1 // Gen 3 1 & 3, Gen 4 / BW 1 & 2, B2W2 10
+                        Tuple.Create(2, PMove.Charm), // Gen 4 / BW as Azurill
+                        Tuple.Create(10, PMove.Charm), // B2W2 as Azurill
                         // rollout 10 // Gen 3 / Gen 4 / BW 15, B2W2 10
                         // bubblebeam 13 // Gen 3 / Gen 4 24, BW 20, B2W2 13
                         // helping hand 16 // B2W2 16
@@ -549,7 +551,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rain dance 32 // Gen 3 / Gen 4 32 as Marill, B2W2 35
                         Tuple.Create(42, PMove.HydroPump), // Gen 4 as Marill
                         Tuple.Create(46, PMove.HydroPump), // B2W2
-                        // charm 2 // Gen 4 / BW 2 as Azurill, B2W2 10 as Azurill
                         // splash 1 // As Azurill
                     },
                     OtherMoves = new PMove[]
@@ -722,7 +723,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // zen headbutt 40
                         // recover 45
                         // psycho shift 50
-                        // charm 50 // Gen 3 50, Gen 4-5 55
+                        Tuple.Create(50, PMove.Charm), // Gen 3
+                        Tuple.Create(55, PMove.Charm), // Gen 4-5
                         Tuple.Create(60, PMove.Psychic), // Gen 5
                         // healing wish 60 // Gen 4 60, Gen 5 85
                         // heal pulse 65
