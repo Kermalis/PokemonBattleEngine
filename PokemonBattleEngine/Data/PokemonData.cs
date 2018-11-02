@@ -220,7 +220,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         Tuple.Create(1, PMove.Growl),
                         Tuple.Create(3, PMove.TailWhip),
-                        // bone club 7
+                        Tuple.Create(7, PMove.BoneClub),
                         Tuple.Create(11, PMove.Headbutt),
                         Tuple.Create(13, PMove.Leer),
                         // focus energy 17
@@ -323,7 +323,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
-                        // bone club 1 // 1 & 7
+                        Tuple.Create(1, PMove.BoneClub),
                         Tuple.Create(1, PMove.Headbutt),
                         Tuple.Create(1, PMove.TailWhip),
                         Tuple.Create(13, PMove.Leer),

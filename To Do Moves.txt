@@ -68,7 +68,6 @@ Bide
 Metronome
 Mirror Move
 Self-Destruct
-Bone Club
 Fire Blast
 Clamp
 Swift

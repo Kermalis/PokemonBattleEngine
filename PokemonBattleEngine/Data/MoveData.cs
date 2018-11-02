@@ -93,6 +93,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.BoneClub,
+                new PMoveData
+                {
+                    Type = PType.Ground, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 10,
+                    PPTier = 4, Power = 65, Accuracy = 85, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.BubbleBeam,
                 new PMoveData
                 {
