@@ -68,7 +68,6 @@ Bide
 Metronome
 Mirror Move
 Self-Destruct
-Fire Blast
 Clamp
 Swift
 Skull Bash

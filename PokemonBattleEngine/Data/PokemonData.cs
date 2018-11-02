@@ -244,7 +244,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dig
                         // brick break
                         // sandstorm
-                        // fire blast
                         // rock tomb
                         // facade
                         // rest
@@ -293,6 +292,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.DoubleTeam, // TM
+                        PMove.FireBlast, // TM
                         PMove.FirePunch, // Move Tutor
                         PMove.Flamethrower, // TM
                         PMove.Frustration, // TM
@@ -350,7 +350,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dig
                         // brick break
                         // sandstorm
-                        // fire blast
                         // rock tomb
                         // facade
                         // rest
@@ -403,6 +402,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.DoubleTeam, // TM
+                        PMove.FireBlast, // TM
                         PMove.FirePunch, // Move Tutor
                         PMove.Flamethrower, // TM
                         PMove.Frustration, // TM
