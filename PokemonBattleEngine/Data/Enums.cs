@@ -260,6 +260,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Bite,
         BodySlam,
         BoneClub,
+        Bubble,
         BubbleBeam,
         CalmMind,
         Charm,

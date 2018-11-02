@@ -115,6 +115,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Bubble,
+                new PMoveData
+                {
+                    Type = PType.Water, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 10,
+                    PPTier = 6, Power = 20, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.BubbleBeam,
                 new PMoveData
                 {

@@ -82,7 +82,6 @@ Leech Life
 Lovely Kiss
 Sky Attack
 Transform
-Bubble
 Dizzy Punch
 Spore
 Flash

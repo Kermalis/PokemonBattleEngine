@@ -533,7 +533,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         // tackle 1
-                        // bubble 1 // B2W2 1
+                        Tuple.Create(1, PMove.Bubble),
                         Tuple.Create(1, PMove.TailWhip),
                         Tuple.Create(1, PMove.WaterGun),
                         // water sport 1 // B2W2 Level 1 & 5
