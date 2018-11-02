@@ -541,7 +541,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(2, PMove.Charm), // Gen 4 / BW as Azurill
                         Tuple.Create(10, PMove.Charm), // B2W2 as Azurill
                         // rollout 10 // Gen 3 / Gen 4 / BW 15, B2W2 10
-                        // bubblebeam 13 // Gen 3 / Gen 4 24, BW 20, B2W2 13
+                        Tuple.Create(13, PMove.BubbleBeam),
                         // helping hand 16 // B2W2 16
                         // aqua tail 21 // Gen 4 / BW 47, B2W2 21
                         // double edge 25 // Gen 3 34, Gen 4 / BW 33, B2W2 25

@@ -29,7 +29,6 @@ Mist
 Surf
 Blizzard
 Psybeam
-Bubble Beam
 Aurora Beam
 Hyper Beam
 Peck
