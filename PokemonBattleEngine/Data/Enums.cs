@@ -295,6 +295,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PoisonSting,
         Pound,
         Psychic,
+        QuickAttack,
         Retaliate, // TODO
         Return,
         RockSmash,

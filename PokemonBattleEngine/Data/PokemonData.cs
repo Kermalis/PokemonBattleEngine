@@ -113,8 +113,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // follow me 5 // gen 3 pichu event
                         // teeter dance 5 // gen 3 pichu event
                         // thunder wave 8 // 8 As Pichu, 10
-                        // quick attack 13
                         // sweet kiss 11 // As Pichu
+                        Tuple.Create(13, PMove.QuickAttack),
                         // electro ball 18
                         Tuple.Create(18, PMove.NastyPlot), // As Pichu
                         // double team 21
@@ -1031,7 +1031,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // disable 1
                         // night shade 1 // DP
                         // ominous wind 1
-                        // quick attack 11
+                        Tuple.Create(11, PMove.QuickAttack),
                         // hypnosis 20
                         // pursuit 29 // DP
                         // faint attack 29
