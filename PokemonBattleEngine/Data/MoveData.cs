@@ -632,6 +632,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Strength,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 3, Power = 80, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.SweetScent,
                 new PMoveData
                 {

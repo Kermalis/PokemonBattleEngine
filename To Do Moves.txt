@@ -34,7 +34,6 @@ Submission
 Low Kick
 Counter
 Seismic Toss
-Strength
 Absorb
 Mega Drain
 Leech Seed

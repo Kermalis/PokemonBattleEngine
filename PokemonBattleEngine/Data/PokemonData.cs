@@ -134,7 +134,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // strength
                         // light screen
                         // protect
                         // rain dance
@@ -199,6 +198,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.Strength, // HM
                         PMove.Tickle, // Egg Move
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
@@ -236,7 +236,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // strength
                         // sunny day
                         // blizzard
                         // protect
@@ -305,6 +304,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.Strength, // HM
                         PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
@@ -341,7 +341,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // strength
                         // sunny day
                         // blizzard
                         // hyper beam
@@ -415,6 +414,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.Strength, // HM
                         PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
@@ -555,7 +555,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         // surf
-                        // strength
                         // dive
                         // hail
                         // blizzard
@@ -630,6 +629,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.Slam, // Egg Move
+                        PMove.Strength, // HM
                         PMove.Tickle, // Egg Move
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
@@ -1049,7 +1049,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // Strength
                         // sunny day
                         // taunt
                         // blizzard
@@ -1115,6 +1114,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.ShadowBall, // TM
+                        PMove.Strength, // HM
                         PMove.SwordsDance, // TM
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
