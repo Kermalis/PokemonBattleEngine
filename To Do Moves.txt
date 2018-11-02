@@ -20,7 +20,6 @@ Thrash
 Double-Edge
 Twineedle
 Pin Missile
-Bite
 Roar
 Sing
 Supersonic
