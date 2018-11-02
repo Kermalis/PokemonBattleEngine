@@ -643,6 +643,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.MeteorMash,
+                new PMoveData
+                {
+                    Type = PType.Steel, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeRaiseUser_ATK_By1, EffectParam = 20,
+                    PPTier = 2, Power = 100, Accuracy = 85, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.MistBall,
                 new PMoveData
                 {

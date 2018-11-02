@@ -311,6 +311,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MegaKick,
         MegaPunch,
         MetalClaw,
+        MeteorMash,
         MistBall,
         Moonlight, // TODO
         MudSlap,
