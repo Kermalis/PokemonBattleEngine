@@ -326,8 +326,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // bone club 1 // 1 & 7
                         Tuple.Create(1, PMove.Headbutt),
                         Tuple.Create(1, PMove.TailWhip),
-                        Tuple.Create(3, PMove.TailWhip),
-                        Tuple.Create(11, PMove.Headbutt),
                         Tuple.Create(13, PMove.Leer),
                         // focus energy 17
                         // bonemerang 21
@@ -537,7 +535,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // tackle 1
                         // bubble 1 // B2W2 1
                         Tuple.Create(1, PMove.TailWhip),
-                        // water gun 1 // Gen 3 / Gen 4 / BW 1 & 10, B2W2 7
+                        Tuple.Create(1, PMove.WaterGun),
                         // water sport 1 // B2W2 Level 1 & 5
                         // defense curl 1 // Gen 3 1 & 3, Gen 4 / BW 1 & 2, B2W2 10
                         Tuple.Create(2, PMove.Charm), // Gen 4 / BW as Azurill
@@ -651,7 +649,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         // clamp 1
                         // iron defense 1
-                        // water gun 1
+                        Tuple.Create(1, PMove.WaterGun),
                         // whirlpool 1
                         Tuple.Create(51, PMove.ShellSmash),
                     },

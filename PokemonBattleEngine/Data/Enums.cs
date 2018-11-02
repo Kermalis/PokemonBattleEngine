@@ -311,6 +311,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         VineWhip,
         VitalThrow,
         Waterfall,
+        WaterGun,
         WingAttack,
         XScissor,
         MAX
