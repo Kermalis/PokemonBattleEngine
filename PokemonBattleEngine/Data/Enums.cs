@@ -285,6 +285,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DrillPeck,
         EggBomb,
         Ember,
+        Extrasensory,
         ExtremeSpeed,
         FakeTears,
         FeatherDance,
