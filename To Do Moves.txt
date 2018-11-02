@@ -8,7 +8,6 @@ Gust
 Whirlwind
 Fly
 Bind
-Vine Whip
 Stomp
 Double Kick
 Mega Kick

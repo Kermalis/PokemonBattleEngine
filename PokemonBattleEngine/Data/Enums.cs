@@ -295,6 +295,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Toxic,
         Transform, // TODO
         ViceGrip,
+        VineWhip,
         VitalThrow,
         Waterfall,
         WingAttack,
