@@ -216,6 +216,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PMoveEffect : byte
     {
+        ChangeTarget_ACC,
         ChangeTarget_ATK,
         ChangeTarget_DEF,
         ChangeTarget_EVA,
@@ -279,6 +280,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Retaliate, // TODO
         Return,
         RockSmash,
+        SandAttack,
         ScaryFace,
         Scratch,
         ShadowBall,

@@ -186,6 +186,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PMoveData mData = PMoveData.Data[bMove];
             switch (mData.Effect)
             {
+                case PMoveEffect.ChangeTarget_ACC:
+                    ChangeStat(bDefender, PStat.Accuracy, mData.EffectParam);
+                    break;
                 case PMoveEffect.ChangeTarget_ATK:
                     ChangeStat(bDefender, PStat.Attack, mData.EffectParam);
                     break;
