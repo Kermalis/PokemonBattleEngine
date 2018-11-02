@@ -266,6 +266,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Leer,
         Lick,
         Megahorn,
+        MegaPunch,
         MetalClaw,
         Moonlight, // TODO
         NastyPlot,

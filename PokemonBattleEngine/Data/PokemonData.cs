@@ -185,7 +185,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // focus punch // gen 4 tm
                         // headbutt // gen 4 tutor
                         // mega kick // gen 3 tutor
-                        // mega punch // gen 3 tutor
                         // mimic // gen 3 tutor
                         // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
@@ -199,6 +198,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IronTail, // Move Tutor
+                        PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.Tickle, // Egg Move
@@ -294,7 +294,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // focus punch // gen 4 tm
                         // fury cutter // gen 4 tutor
                         // mega kick // gen 3 tutor
-                        // mega punch // gen 3 tutor
                         // mimic // gen 3 tutor
                         // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
@@ -305,6 +304,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IronTail, // Move Tutor
+                        PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
@@ -404,7 +404,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // focus punch // gen 4 tm
                         // fury cutter // gen 4 tutor
                         // mega kick // gen 3 tutor
-                        // mega punch // gen 3 tutor
                         // mimic // gen 3 tutor
                         // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
@@ -415,6 +414,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IronTail, // Move Tutor
+                        PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
@@ -503,7 +503,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double edge // gen 3 tutor
                         // headbutt // gen 4 tutor
                         // mega kick // gen 3 tutor
-                        // mega punch // gen 3 tutor
                         // mimic // gen 3 tutor
                         // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
@@ -514,6 +513,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // swift // gen 4 tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
+                        PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Return, // TM
                         PMove.Tickle, // Egg Move
                         PMove.Thunder, //TM
@@ -612,7 +612,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // focus punch // gen 4 tm
                         // headbutt // gen 4 tutor
                         // mega kick // gen 3 tutor
-                        // mega punch // gen 3 tutor
                         // mimic // gen 3 tutor
                         // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
@@ -630,6 +629,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IcePunch, // Move Tutor
                         PMove.IronTail, // Move Tutor
+                        PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.Tickle, // Egg Move
