@@ -166,7 +166,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // lucky chant
                         // present
                         // reversal
-                        // thunder punch
                         // wish
                         // covet // tutor
                         // helping hand
@@ -175,7 +174,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // signal beam
                         // sleep talk
                         // snore
-                        // thunder punch
                         // body slam // gen 3 tutor
                         // captivate // gen 4 tm
                         // counter // gen 3 tutor
@@ -204,6 +202,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Tickle, // Egg Move
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
+                        PMove.ThunderPunch, // Egg Move, Move Tutor
                         PMove.Toxic, // TM
                     }
                 }
@@ -284,7 +283,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sleep talk
                         // snore
                         // stealth rock
-                        // thunder punch
                         // uproar
                         // body slam // gen 3 tutor
                         // captivate // gen 4 tm
@@ -308,6 +306,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
                     }
                 }
@@ -394,7 +393,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sleep talk
                         // snore
                         // stealth rock
-                        // thunder punch
                         // uproar
                         // body slam // gen 3 tutor
                         // captivate // gen 4 tm
@@ -418,6 +416,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
                     }
                 }
@@ -494,7 +493,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // lucky chant
                         // present
                         // reversal
-                        // thunder punch
                         // wish
                         // body slam // gen 3 tutor
                         // captivate // gen 4 tm
@@ -518,6 +516,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Tickle, // Egg Move
                         PMove.Thunder, //TM
                         PMove.Thunderbolt, // TM
+                        PMove.ThunderPunch, // Egg Move
                         PMove.Toxic, // TM
                     }
                 }

@@ -287,6 +287,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tickle,
         Thunder,
         Thunderbolt,
+        ThunderPunch,
         Toxic,
         Transform, // TODO
         VitalThrow,
