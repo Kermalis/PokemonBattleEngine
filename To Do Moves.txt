@@ -52,7 +52,6 @@ Fissure
 Dig
 Confusion
 Hypnosis
-Agility
 Quick Attack
 Rage
 Teleport

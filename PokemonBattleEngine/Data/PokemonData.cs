@@ -124,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // last resort 30 // gen 4 event (Kyoto Cross Media Experience 2009 Pikachu)
                         // endeavor 30 // gen 4 pichu event
                         // feint 34
-                        // agility 37
+                        Tuple.Create(37, PMove.Agility),
                         // discharge 42
                         // light screen 45
                         Tuple.Create(50, PMove.ExtremeSpeed), // Gen 5 event (ExtremeSpeed Pikachu)
