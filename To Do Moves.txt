@@ -68,7 +68,6 @@ Bide
 Metronome
 Mirror Move
 Self-Destruct
-Egg Bomb
 Smog
 Sludge
 Bone Club

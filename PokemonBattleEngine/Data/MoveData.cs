@@ -225,6 +225,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.EggBomb,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 2, Power = 100, Accuracy = 75, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Ember,
                 new PMoveData
                 {

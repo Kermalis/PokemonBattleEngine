@@ -269,6 +269,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DragonPulse,
         DoubleTeam,
         DrillPeck,
+        EggBomb,
         Ember,
         ExtremeSpeed,
         FirePunch,
