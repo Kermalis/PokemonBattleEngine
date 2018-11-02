@@ -232,6 +232,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeBurn,
         Hit__MaybeFlinch,
         Hit__MaybeFreeze,
+        Hit__MaybeLowerTarget_ACC_By1,
         Hit__MaybeLowerTarget_ATK_By1,
         Hit__MaybeLowerTarget_DEF_By1,
         Hit__MaybeLowerTarget_SPDEF_By1,
@@ -304,6 +305,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MegaPunch,
         MetalClaw,
         Moonlight, // TODO
+        MudSlap,
         NastyPlot,
         Peck,
         PoisonSting,

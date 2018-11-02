@@ -179,7 +179,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // focus punch // gen 4 tm
                         // mega kick // gen 3 tutor
                         // mimic // gen 3 tutor
-                        // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
                         // rollout // gen 4 tutor
                         // secret power // gen 4 tm
@@ -195,6 +194,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
+                        PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.Strength, // HM
@@ -284,7 +284,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fury cutter // gen 4 tutor
                         // mega kick // gen 3 tutor
                         // mimic // gen 3 tutor
-                        // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
@@ -299,6 +298,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
+                        PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSlide, // TM
@@ -394,7 +394,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fury cutter // gen 4 tutor
                         // mega kick // gen 3 tutor
                         // mimic // gen 3 tutor
-                        // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
@@ -409,6 +408,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
+                        PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSlide, // TM
@@ -498,7 +498,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double edge // gen 3 tutor
                         // mega kick // gen 3 tutor
                         // mimic // gen 3 tutor
-                        // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
                         // rollout // gen 4 tutor
                         // secret power // gen 4 tm
@@ -511,6 +510,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.MegaPunch, // Gen 3 Move Tutor
+                        PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Return, // TM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Tickle, // Egg Move
@@ -606,7 +606,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // focus punch // gen 4 tm
                         // mega kick // gen 3 tutor
                         // mimic // gen 3 tutor
-                        // mud slap // gen 4 tutor
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
@@ -625,6 +624,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IcePunch, // Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
+                        PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.Slam, // Egg Move
@@ -786,7 +786,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // endure // gen 4 tm
                         // fury cutter // gen 4 tutor
                         // mimic // gen 3 tutor
-                        // mud-slap // gen 4 tutor
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // shock wave // gen 4 tm
@@ -805,6 +804,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
@@ -904,7 +904,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // endure // gen 4 tm
                         // fury cutter // gen 4 tutor
                         // mimic // gen 3 tutor
-                        // mud-slap // gen 4 tutor
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // shock wave // gen 4 tm
@@ -922,6 +921,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
@@ -1000,7 +1000,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // captivate // gen 4 tm
                         // endure // gen 4 tm
                         // fury cutter // gen 4 tutor
-                        // mud-slap // gen 4 tutor
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         PMove.CalmMind, // TM
@@ -1009,6 +1008,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Psychic, // TM
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
@@ -1091,7 +1091,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // wonder room // move tutor
                         // endure // gen 4 TM
                         // focus punch // gen 4 TM
-                        // mud-slap // gen 4 move tutor
                         // natural gift // gen 4 TM
                         // secret power // gen 4 TM
                         // shock wave // gen 4 TM
@@ -1106,6 +1105,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM

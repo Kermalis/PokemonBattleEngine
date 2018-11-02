@@ -599,6 +599,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.MudSlap,
+                new PMoveData
+                {
+                    Type = PType.Ground, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 100,
+                    PPTier = 2, Power = 20, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.NastyPlot,
                 new PMoveData
                 {
