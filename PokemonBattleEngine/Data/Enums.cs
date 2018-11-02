@@ -296,6 +296,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ViceGrip,
         VitalThrow,
         Waterfall,
+        WingAttack,
         XScissor,
         MAX
     }

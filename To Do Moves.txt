@@ -5,7 +5,6 @@ Pay Day
 Guillotine
 Razor Wind
 Gust
-Wing Attack
 Whirlwind
 Fly
 Bind
