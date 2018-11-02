@@ -665,6 +665,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.RockSlide,
+                new PMoveData
+                {
+                    Type = PType.Rock, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
+                    PPTier = 2, Power = 75, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.RockSmash,
                 new PMoveData
                 {

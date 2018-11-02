@@ -310,6 +310,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         QuickAttack,
         Retaliate, // TODO
         Return,
+        RockSlide,
         RockSmash,
         RockThrow,
         SandAttack,
