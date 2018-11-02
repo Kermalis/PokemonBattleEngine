@@ -333,6 +333,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RockSlide,
         RockSmash,
         RockThrow,
+        RockTomb,
         SandAttack,
         ScaryFace,
         Scratch,

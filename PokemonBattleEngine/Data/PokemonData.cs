@@ -244,7 +244,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dig
                         // brick break
                         // sandstorm
-                        // rock tomb
                         // facade
                         // rest
                         // attract
@@ -303,6 +302,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Return, // TM
                         PMove.RockSlide, // TM
                         PMove.RockSmash, // TM
+                        PMove.RockTomb, // TM
                         PMove.Screech, // Egg Move
                         PMove.Strength, // HM
                         PMove.SwordsDance, // TM
@@ -350,7 +350,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dig
                         // brick break
                         // sandstorm
-                        // rock tomb
                         // facade
                         // rest
                         // attract
@@ -413,6 +412,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Return, // TM
                         PMove.RockSlide, // TM
                         PMove.RockSmash, // TM
+                        PMove.RockTomb, // TM
                         PMove.Screech, // Egg Move
                         PMove.Strength, // HM
                         PMove.SwordsDance, // TM
@@ -1056,7 +1056,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // protect
                         // rain dance
                         // brick break
-                        // rock tomb
                         // torment
                         // facade
                         // rest
@@ -1111,6 +1110,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Return, // TM
                         PMove.RockSlide, // TM
                         PMove.RockSmash, // TM
+                        PMove.RockTomb, // TM
                         PMove.ShadowBall, // TM
                         PMove.SludgeBomb, // TM
                         PMove.Strength, // HM

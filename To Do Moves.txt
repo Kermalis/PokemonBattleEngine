@@ -213,7 +213,6 @@ Weather Ball
 Aromatherapy
 Air Cutter
 Odor Sleuth
-Rock Tomb
 Silver Wind
 Metal Sound
 Grass Whistle

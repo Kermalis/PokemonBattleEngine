@@ -863,6 +863,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.RockTomb,
+                new PMoveData
+                {
+                    Type = PType.Rock, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 100,
+                    PPTier = 2, Power = 50, Accuracy = 80, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.SandAttack,
                 new PMoveData
                 {
