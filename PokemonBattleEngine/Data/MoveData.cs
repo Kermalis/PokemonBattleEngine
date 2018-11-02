@@ -665,6 +665,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.MetalSound,
+                new PMoveData
+                {
+                    Type = PType.Steel, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeTarget_SPDEF, EffectParam = -2,
+                    PPTier = 8, Power = 0, Accuracy = 85, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove | PMoveFlag.SoundBased,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.MeteorMash,
                 new PMoveData
                 {
