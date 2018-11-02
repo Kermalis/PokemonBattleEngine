@@ -302,6 +302,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.FeatherDance,
+                new PMoveData
+                {
+                    Type = PType.Flying, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeTarget_ATK, EffectParam = -2,
+                    PPTier = 3, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.FireBlast,
                 new PMoveData
                 {

@@ -202,7 +202,6 @@ Dive
 Arm Thrust
 Camouflage
 Mist Ball
-Feather Dance
 Teeter Dance
 Blaze Kick
 Mud Sport
