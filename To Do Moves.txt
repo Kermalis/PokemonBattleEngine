@@ -25,7 +25,6 @@ Sing
 Supersonic
 Sonic Boom
 Disable
-Flamethrower
 Mist
 Water Gun
 Surf

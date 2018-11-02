@@ -262,6 +262,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Ember,
         ExtremeSpeed,
         FirePunch,
+        Flamethrower,
         Frustration,
         Growl,
         Harden,

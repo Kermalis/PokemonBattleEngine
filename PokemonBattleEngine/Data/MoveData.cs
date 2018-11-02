@@ -203,6 +203,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Flamethrower,
+                new PMoveData
+                {
+                    Type = PType.Fire, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeBurn, EffectParam = 10,
+                    PPTier = 3, Power = 95, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Frustration,
                 new PMoveData
                 {
