@@ -52,7 +52,6 @@ Fissure
 Dig
 Confusion
 Hypnosis
-Meditate
 Agility
 Quick Attack
 Rage

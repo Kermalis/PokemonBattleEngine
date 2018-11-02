@@ -282,6 +282,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IronTail,
         Leer,
         Lick,
+        Meditate,
         Megahorn,
         MegaKick,
         MegaPunch,
