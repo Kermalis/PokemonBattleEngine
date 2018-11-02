@@ -579,7 +579,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // substitute
                         // belly drum // egg move
                         // encore
-                        // fake tears
                         // future sight
                         // muddy water
                         // perish song
@@ -615,6 +614,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.AquaJet, // Egg Move
                         PMove.BodySlam, // Egg Move
                         PMove.DoubleTeam, // TM
+                        PMove.FakeTears, // Move Tutor
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM

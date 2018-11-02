@@ -324,6 +324,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.FakeTears,
+                new PMoveData
+                {
+                    Type = PType.Dark, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeTarget_SPDEF, EffectParam = -2,
+                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.FeatherDance,
                 new PMoveData
                 {
