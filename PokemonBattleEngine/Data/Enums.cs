@@ -293,6 +293,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HornAttack,
         HydroPump,
         HyperFang,
+        HyperVoice,
         IceBeam,
         IcePunch,
         IcyWind,

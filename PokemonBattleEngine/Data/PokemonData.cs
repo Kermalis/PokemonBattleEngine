@@ -594,7 +594,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // bounce
                         // covet
                         // helping hand
-                        // hyper voice
                         // knock off
                         // sleep talk
                         // snore
@@ -619,6 +618,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
+                        PMove.HyperVoice, // Move Tutor
                         PMove.IceBeam, // TM
                         PMove.IcePunch, // Move Tutor
                         PMove.IcyWind, // Move Tutor
