@@ -192,6 +192,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.DrillPeck,
+                new PMoveData
+                {
+                    Type = PType.Flying, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 4, Power = 80, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleNotSelf
+                }
+            },
+            {
                 PMove.Ember,
                 new PMoveData
                 {
