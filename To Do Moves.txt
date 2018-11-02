@@ -223,7 +223,6 @@ Uproar
 Stockpile
 Spit Up
 Swallow
-Heat Wave
 Hail
 Torment
 Flatter
