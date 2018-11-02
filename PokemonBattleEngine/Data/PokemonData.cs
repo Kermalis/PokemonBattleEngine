@@ -117,7 +117,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(13, PMove.QuickAttack),
                         // electro ball 18
                         Tuple.Create(18, PMove.NastyPlot), // As Pichu
-                        // double team 21
+                        Tuple.Create(21, PMove.DoubleTeam),
                         Tuple.Create(26, PMove.Slam),
                         Tuple.Create(29, PMove.Thunderbolt),
                         // sing 30 // gen 5 event (Singing Pikachu)
@@ -139,7 +139,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rain dance
                         // dig
                         // brick break
-                        // double team
                         // facade
                         // reset
                         // attract
@@ -191,6 +190,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // uproar // tutor as Pichu
                         // volt tackle // egg as pichu
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
@@ -243,7 +243,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // earthquake
                         // dig
                         // brick break
-                        // double team
                         // sandstorm
                         // fire blast
                         // rock tomb
@@ -293,6 +292,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.DoubleTeam, // TM
                         PMove.FirePunch, // Move Tutor
                         PMove.Flamethrower, // TM
                         PMove.Frustration, // TM
@@ -349,7 +349,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // earthquake
                         // dig
                         // brick break
-                        // double team
                         // sandstorm
                         // fire blast
                         // rock tomb
@@ -403,6 +402,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.DoubleTeam, // TM
                         PMove.FirePunch, // Move Tutor
                         PMove.Flamethrower, // TM
                         PMove.Frustration, // TM
@@ -466,7 +466,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // light screen
                         // protect
                         // rain dance
-                        // double team
                         // facade
                         // rest
                         // attract
@@ -508,6 +507,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // shock wave // gen 4 tm
                         // swift // gen 4 tutor
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
@@ -564,7 +564,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rain dance
                         // dig
                         // brick break
-                        // double team
                         // facade
                         // reset
                         // attract
@@ -619,6 +618,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // uproar // move tutor as azurill
                         PMove.AquaJet, // Egg Move
                         PMove.BodySlam, // Egg Move
+                        PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
@@ -661,7 +661,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // blizzard
                         // protect
                         // rain dance
-                        // double team
                         // facade
                         // rest
                         // attract
@@ -689,6 +688,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         PMove.BodySlam, // Egg Move
+                        PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -748,7 +748,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // safeguard
                         // solar beam
                         // earthquake
-                        // double team
                         // reflect
                         // sandstorm
                         // facade
@@ -803,6 +802,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Cut, // HM
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
+                        PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -868,7 +868,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // safeguard
                         // solar beam
                         // earthquake
-                        // double team
                         // reflect
                         // sandstorm
                         // facade
@@ -920,6 +919,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Cut, // HM
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
+                        PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -947,7 +947,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         // confusion 1
-                        // double team 1
+                        Tuple.Create(1, PMove.DoubleTeam),
                         // safeguard 11
                         // mist 20
                         Tuple.Create(29, PMove.AuroraBeam),
@@ -970,7 +970,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // telekinesis
                         // safeguard
                         // solar beam
-                        // double team
                         // Reflect
                         // facade
                         // rest
@@ -1007,6 +1006,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         // swift // gen 4 tutor
                         PMove.CalmMind, // TM
+                        PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -1036,7 +1036,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // pursuit 29 // DP
                         // faint attack 29
                         // nightmare 38
-                        // double team 47
+                        Tuple.Create(47, PMove.DoubleTeam),
                         // haze 57
                         // dark void 50 // Events
                         // dark void 66
@@ -1056,7 +1056,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // protect
                         // rain dance
                         // brick break
-                        // double team // TM 
                         // sludge bomb
                         // rock tomb
                         // torment
@@ -1105,6 +1104,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.CalmMind, // TM
                         PMove.Cut, // HM
                         PMove.DarkPulse, // Move tutor
+                        PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM

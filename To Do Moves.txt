@@ -55,7 +55,6 @@ Hypnosis
 Rage
 Night Shade
 Mimic
-Double Team
 Recover
 Minimize
 Smokescreen
