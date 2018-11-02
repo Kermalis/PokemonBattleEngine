@@ -155,7 +155,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // swagger
                         // substitute
                         // wild charge
-                        // rock smash
                         // bestow // egg
                         // bide
                         // charge
@@ -201,6 +200,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IronTail, // Move Tutor
                         PMove.Return, // TM
+                        PMove.RockSmash, // TM
                         PMove.Tickle, // Egg Move
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
@@ -264,7 +264,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rock slide
                         // swagger
                         // substitute
-                        // rock smash
                         // ancient power // egg
                         // belly drum
                         // chip away
@@ -308,6 +307,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IronTail, // Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.RockSmash, // TM
                         PMove.Toxic, // TM
                     }
                 }
@@ -373,7 +373,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rock slide
                         // swagger
                         // substitute
-                        // rock smash
                         // ancient power // egg move
                         // belly drum
                         // chip away
@@ -418,6 +417,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IronTail, // Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.RockSmash, // TM
                         PMove.Toxic, // TM
                     }
                 }
@@ -580,7 +580,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // grass knot
                         // swagger
                         // substitute
-                        // rock smash
                         // amnesia // egg move
                         // belly drum
                         // body slam
@@ -632,6 +631,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IcePunch, // Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.Return, // TM
+                        PMove.RockSmash, // TM
                         PMove.Tickle, // Egg Move
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
@@ -1086,7 +1086,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dream eater
                         // swagger
                         // substitute
-                        // rock smash
                         // snarl
                         // drain punch // move tutor
                         // foul play // move tutor
@@ -1117,6 +1116,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.RockSmash, // TM
                         PMove.ShadowBall, // TM
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM

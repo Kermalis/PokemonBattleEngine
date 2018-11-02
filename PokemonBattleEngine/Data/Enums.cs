@@ -271,6 +271,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Psychic,
         Retaliate, // TODO
         Return,
+        RockSmash,
         ScaryFace,
         Scratch,
         ShadowBall,
