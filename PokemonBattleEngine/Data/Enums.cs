@@ -295,6 +295,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Retaliate, // TODO
         Return,
         RockSmash,
+        RockThrow,
         SandAttack,
         ScaryFace,
         Scratch,

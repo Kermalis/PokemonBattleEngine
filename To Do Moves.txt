@@ -47,7 +47,6 @@ Petal Dance
 Dragon Rage
 Fire Spin
 Thunder Wave
-Rock Throw
 Earthquake
 Fissure
 Dig
