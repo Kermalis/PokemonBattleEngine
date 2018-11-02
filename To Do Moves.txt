@@ -84,7 +84,6 @@ Sky Attack
 Transform
 Dizzy Punch
 Spore
-Flash
 Psywave
 Splash
 Acid Armor
