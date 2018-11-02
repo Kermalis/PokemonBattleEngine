@@ -57,7 +57,6 @@ Night Shade
 Mimic
 Recover
 Minimize
-Smokescreen
 Confuse Ray
 Withdraw
 Defense Curl
