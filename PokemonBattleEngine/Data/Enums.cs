@@ -253,6 +253,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DragonDance,
         DragonPulse,
         ExtremeSpeed,
+        FirePunch,
         Frustration,
         Growl,
         Harden,

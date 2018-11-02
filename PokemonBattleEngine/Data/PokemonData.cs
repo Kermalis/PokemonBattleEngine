@@ -276,7 +276,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // skull bash
                         // earth power // tutor
                         // endeavor
-                        // fire punch
                         // icy wind
                         // iron defense
                         // iron head
@@ -300,6 +299,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
+                        PMove.FirePunch, // Move Tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -385,7 +385,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // skull bash
                         // earth power // move tutor
                         // endeavor
-                        // fire punch
                         // icy wind
                         // iron defense
                         // iron head
@@ -410,6 +409,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
+                        PMove.FirePunch, // Move Tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
