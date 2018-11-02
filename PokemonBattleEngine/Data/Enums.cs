@@ -248,6 +248,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         CalmMind,
         Charm,
         Crunch,
+        Cut,
         DarkPulse,
         DragonBreath,
         DragonClaw,

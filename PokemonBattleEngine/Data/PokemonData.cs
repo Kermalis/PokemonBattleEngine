@@ -734,7 +734,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // cut
                         // fly
                         // surf
                         // dive
@@ -802,6 +801,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // whirlpool // gen 4 hm
                         PMove.AerialAce, // TM
                         PMove.CalmMind, // TM
+                        PMove.Cut, // HM
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.Frustration, // TM
@@ -854,7 +854,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // cut
                         // fly
                         // surf
                         // dive
@@ -919,6 +918,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // whirlpool // gen 4 hm
                         PMove.AerialAce, // TM
                         PMove.CalmMind, // TM
+                        PMove.Cut, // HM
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.Frustration, // TM
@@ -1050,7 +1050,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // Cut
                         // Strength
                         // sunny day
                         // taunt
@@ -1107,6 +1106,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // swift // gen 4 move tutor
                         PMove.AerialAce, // TM
                         PMove.CalmMind, // TM
+                        PMove.Cut, // HM
                         PMove.DarkPulse, // Move tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
