@@ -10,7 +10,6 @@ Fly
 Bind
 Stomp
 Double Kick
-Mega Kick
 Jump Kick
 Rolling Kick
 Sand Attack
