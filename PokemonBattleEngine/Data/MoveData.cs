@@ -82,6 +82,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Astonish,
+                new PMoveData
+                {
+                    Type = PType.Ghost, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
+                    PPTier = 3, Power = 30, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.AuroraBeam,
                 new PMoveData
                 {
