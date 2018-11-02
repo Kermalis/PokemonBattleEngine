@@ -355,6 +355,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WingAttack,
         Withdraw,
         XScissor,
+        ZapCannon,
         MAX
     }
 }

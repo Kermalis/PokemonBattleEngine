@@ -1148,6 +1148,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Targets = PMoveTarget.SingleSurrounding
                 }
             },
+            {
+                PMove.ZapCannon,
+                new PMoveData
+                {
+                    Type = PType.Electric, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 100,
+                    PPTier = 1, Power = 120, Accuracy = 50, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
         };
     }
 }
