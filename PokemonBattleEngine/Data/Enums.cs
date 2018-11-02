@@ -263,6 +263,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Headbutt,
         HeatWave,
         HiddenPower,
+        HornAttack,
         HydroPump,
         IceBeam,
         IcePunch,
