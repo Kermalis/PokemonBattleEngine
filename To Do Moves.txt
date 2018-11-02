@@ -220,7 +220,6 @@ Signal Beam
 Sky Uppercut
 Sand Tomb
 Sheer Cold
-Muddy Water
 Bullet Seed
 Icicle Spear
 Iron Defense

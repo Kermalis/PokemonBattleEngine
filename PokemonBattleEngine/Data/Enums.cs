@@ -323,6 +323,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MeteorMash,
         MistBall,
         Moonlight, // TODO
+        MuddyWater,
         MudSlap,
         NastyPlot,
         Octazooka,

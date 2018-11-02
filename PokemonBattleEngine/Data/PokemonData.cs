@@ -580,7 +580,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // belly drum // egg move
                         // encore
                         // future sight
-                        // muddy water
                         // perish song
                         // present
                         // refresh
@@ -624,6 +623,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IcyWind, // Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
+                        PMove.MuddyWater, // Egg Move
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
@@ -674,7 +674,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // confuse ray
                         // endure
                         // mud sport
-                        // muddy water
                         // refresh
                         // supersonic
                         // water pulse
@@ -692,6 +691,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
+                        PMove.MuddyWater, // Egg Move
                         PMove.Return, // TM
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM

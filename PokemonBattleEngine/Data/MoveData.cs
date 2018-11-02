@@ -731,6 +731,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.MuddyWater,
+                new PMoveData
+                {
+                    Type = PType.Water, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 30,
+                    PPTier = 2, Power = 95, Accuracy = 85, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.MudSlap,
                 new PMoveData
                 {
