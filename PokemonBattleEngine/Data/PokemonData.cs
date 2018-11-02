@@ -577,8 +577,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // grass knot
                         // swagger
                         // substitute
-                        // amnesia // egg move
-                        // belly drum
+                        // belly drum // egg move
                         // encore
                         // fake tears
                         // future sight
@@ -615,6 +614,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // whirlpool // gen 4 HM
                         // bounce // move tutor as azurill / marill
                         // uproar // move tutor as azurill
+                        PMove.Amnesia, // Egg Move
                         PMove.AquaJet, // Egg Move
                         PMove.BodySlam, // Egg Move
                         PMove.DoubleTeam, // TM

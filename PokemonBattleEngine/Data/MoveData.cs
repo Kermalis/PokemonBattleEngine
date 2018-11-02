@@ -445,6 +445,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Kinesis,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeTarget_ACC, EffectParam = -1,
+                    PPTier = 3, Power = 0, Accuracy = 80, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Leer,
                 new PMoveData
                 {

@@ -72,7 +72,6 @@ Clamp
 Skull Bash
 Spike Cannon
 Constrict
-Kinesis
 Soft-Boiled
 High Jump Kick
 Glare

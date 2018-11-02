@@ -290,6 +290,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IcePunch,
         Inferno,
         IronTail,
+        Kinesis,
         Leer,
         Lick,
         Meditate,
