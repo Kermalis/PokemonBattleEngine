@@ -27,6 +27,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.AcidArmor,
+                new PMoveData
+                {
+                    Type = PType.Poison, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeUser_DEF, EffectParam = +2,
+                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.AerialAce,
                 new PMoveData
                 {

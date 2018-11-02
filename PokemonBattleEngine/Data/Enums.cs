@@ -252,6 +252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         Acid,
+        AcidArmor,
         AerialAce,
         Agility,
         Amnesia,

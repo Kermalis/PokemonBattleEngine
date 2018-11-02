@@ -86,7 +86,6 @@ Dizzy Punch
 Spore
 Psywave
 Splash
-Acid Armor
 Crabhammer
 Explosion
 Fury Swipes
