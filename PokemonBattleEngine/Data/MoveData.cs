@@ -973,6 +973,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.TailGlow,
+                new PMoveData
+                {
+                    Type = PType.Bug, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeUser_SPATK, EffectParam = +3,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.TailWhip,
                 new PMoveData
                 {

@@ -201,7 +201,6 @@ Secret Power
 Dive
 Arm Thrust
 Camouflage
-Tail Glow
 Luster Purge
 Mist Ball
 Feather Dance
