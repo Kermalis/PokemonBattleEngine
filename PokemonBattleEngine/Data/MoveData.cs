@@ -742,6 +742,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.ThunderShock,
+                new PMoveData
+                {
+                    Type = PType.Electric, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 10,
+                    PPTier = 6, Power = 40, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Toxic,
                 new PMoveData
                 {

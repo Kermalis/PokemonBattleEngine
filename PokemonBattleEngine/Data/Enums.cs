@@ -313,6 +313,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Thunder,
         Thunderbolt,
         ThunderPunch,
+        ThunderShock,
         Toxic,
         Transform, // TODO
         ViceGrip,

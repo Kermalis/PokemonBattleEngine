@@ -107,7 +107,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
-                        // thunder shock 1
+                        Tuple.Create(1, PMove.ThunderShock),
                         Tuple.Create(1, PMove.Charm), // As Pichu
                         Tuple.Create(5, PMove.TailWhip),
                         // follow me 5 // gen 3 pichu event
@@ -451,7 +451,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 1, // Egg
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
-                        // thundershock 1
+                        Tuple.Create(1, PMove.ThunderShock),
                         Tuple.Create(1, PMove.Charm),
                         Tuple.Create(5, PMove.TailWhip),
                         // follow me 5 // Gen 3 event (PokéPark Egg Pichu)
