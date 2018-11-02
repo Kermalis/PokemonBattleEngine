@@ -950,7 +950,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double team 1
                         // safeguard 11
                         // mist 20
-                        // aurora beam 29
+                        Tuple.Create(29, PMove.AuroraBeam),
                         // future sight 38
                         // slash 47
                         Tuple.Create(57, PMove.Moonlight),
