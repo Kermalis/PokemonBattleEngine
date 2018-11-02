@@ -929,6 +929,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Withdraw,
+                new PMoveData
+                {
+                    Type = PType.Water, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeUser_DEF, EffectParam = +1,
+                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.XScissor,
                 new PMoveData
                 {

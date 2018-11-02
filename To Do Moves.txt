@@ -58,7 +58,6 @@ Mimic
 Recover
 Minimize
 Confuse Ray
-Withdraw
 Defense Curl
 Barrier
 Light Screen

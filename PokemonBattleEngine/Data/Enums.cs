@@ -333,6 +333,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Waterfall,
         WaterGun,
         WingAttack,
+        Withdraw,
         XScissor,
         MAX
     }
