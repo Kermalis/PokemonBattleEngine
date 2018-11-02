@@ -290,6 +290,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ThunderPunch,
         Toxic,
         Transform, // TODO
+        ViceGrip,
         VitalThrow,
         Waterfall,
         XScissor,
