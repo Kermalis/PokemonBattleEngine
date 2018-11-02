@@ -304,6 +304,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Spark,
         SteelWing,
         Strength,
+        StringShot,
         SweetScent,
         SwordsDance,
         Tackle,

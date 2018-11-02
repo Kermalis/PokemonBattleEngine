@@ -44,7 +44,6 @@ Poison Powder
 Stun Spore
 Sleep Powder
 Petal Dance
-String Shot
 Dragon Rage
 Fire Spin
 Thunder Shock
