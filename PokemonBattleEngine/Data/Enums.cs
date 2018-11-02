@@ -311,6 +311,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShadowBall,
         ShellSmash,
         Slam,
+        Smog,
         SmokeScreen,
         Spark,
         SteelWing,

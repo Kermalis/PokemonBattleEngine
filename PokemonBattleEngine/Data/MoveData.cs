@@ -687,6 +687,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Smog,
+                new PMoveData
+                {
+                    Type = PType.Poison, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybePoison, EffectParam = 40,
+                    PPTier = 4, Power = 20, Accuracy = 70, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.SmokeScreen,
                 new PMoveData
                 {
