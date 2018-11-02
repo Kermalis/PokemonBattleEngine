@@ -533,6 +533,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.LusterPurge,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 50,
+                    PPTier = 1, Power = 70, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.MachPunch,
                 new PMoveData
                 {

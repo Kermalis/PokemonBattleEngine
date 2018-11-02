@@ -836,7 +836,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(20, PMove.DragonBreath),
                         // protect 25
                         // refresh 30
-                        // luster purge 35
+                        Tuple.Create(35, PMove.LusterPurge),
                         // telekinesis 70
                         // power split 75
                         // memento 5 // Gen 3 5, Gen 4 60, Gen 5 85

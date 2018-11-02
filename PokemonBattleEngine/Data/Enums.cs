@@ -299,6 +299,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Kinesis,
         Leer,
         Lick,
+        LusterPurge,
         MachPunch,
         Meditate,
         Megahorn,
