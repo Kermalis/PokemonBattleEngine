@@ -215,7 +215,6 @@ Air Cutter
 Odor Sleuth
 Silver Wind
 Grass Whistle
-Cosmic Power
 Water Spout
 Signal Beam
 Shadow Punch

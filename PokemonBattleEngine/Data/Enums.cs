@@ -249,6 +249,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
         Moonlight, // TODO
         RaiseUser_ATK_SPE_By1,
+        RaiseUser_DEF_SPDEF_By1,
         RaiseUser_SPATK_SPDEF_By1,
         Toxic,
         Transform, // TODO
@@ -271,6 +272,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BubbleBeam,
         CalmMind,
         Charm,
+        CosmicPower,
         Crunch,
         CrushClaw,
         Cut,

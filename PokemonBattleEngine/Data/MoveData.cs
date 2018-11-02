@@ -181,6 +181,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.CosmicPower,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.RaiseUser_DEF_SPDEF_By1, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Crunch,
                 new PMoveData
                 {

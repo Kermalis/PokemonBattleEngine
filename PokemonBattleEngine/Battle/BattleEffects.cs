@@ -158,7 +158,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             BroadcastMoveUsed();
             PPReduce();
-            
+
             int aliveTargets = targets.Count(t => t != null);
             if (aliveTargets == 0)
             {
@@ -275,6 +275,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.RaiseUser_ATK_SPE_By1:
                     Ef_RaiseUser_ATK_SPE_By1();
+                    break;
+                case PMoveEffect.RaiseUser_DEF_SPDEF_By1:
+                    Ef_RaiseUser_DEF_SPDEF_By1();
                     break;
                 case PMoveEffect.RaiseUser_SPATK_SPDEF_By1:
                     Ef_RaiseUser_SPATK_SPDEF_By1();
@@ -533,6 +536,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var pkmn = bAttacker.Mon;
             ApplyStatChange(pkmn, PStat.Attack, +1);
             ApplyStatChange(pkmn, PStat.Speed, +1);
+            return true;
+        }
+        bool Ef_RaiseUser_DEF_SPDEF_By1()
+        {
+            var pkmn = bAttacker.Mon;
+            ApplyStatChange(pkmn, PStat.Defense, +1);
+            ApplyStatChange(pkmn, PStat.SpDefense, +1);
             return true;
         }
         bool Ef_RaiseUser_SPATK_SPDEF_By1()
