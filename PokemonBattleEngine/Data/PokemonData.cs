@@ -255,7 +255,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fling
                         // incinerate
                         // bulldoze
-                        // rock slide
                         // swagger
                         // substitute
                         // ancient power // egg
@@ -302,6 +301,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.RockSlide, // TM
                         PMove.RockSmash, // TM
                         PMove.Screech, // Egg Move
                         PMove.Strength, // HM
@@ -364,7 +364,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // giga impact
                         // stone edge
                         // bulldoze
-                        // rock slide
                         // swagger
                         // substitute
                         // ancient power // egg move
@@ -412,6 +411,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.RockSlide, // TM
                         PMove.RockSmash, // TM
                         PMove.Screech, // Egg Move
                         PMove.Strength, // HM
@@ -1068,13 +1068,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // charge beam
                         // incinerate
                         // will-o-wisp
-                        // embargo // TM
+                        // embargo
                         // shadow claw
                         // payback
                         // giga impact
                         // thunder wave
                         // psych up
-                        // rock slide
                         // poison jab
                         // dream eater
                         // swagger
@@ -1111,6 +1110,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.RockSlide, // TM
                         PMove.RockSmash, // TM
                         PMove.ShadowBall, // TM
                         PMove.Strength, // HM

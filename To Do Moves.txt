@@ -92,7 +92,6 @@ Fury Swipes
 Bonemerang
 Rest
 Hyper Fang
-Sharpen
 Conversion
 Tri Attack
 Super Fang
