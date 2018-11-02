@@ -109,7 +109,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(1, PMove.Growl),
                         // thunder shock 1
                         Tuple.Create(1, PMove.Charm), // As Pichu
-                        // tail whip 5
+                        Tuple.Create(5, PMove.TailWhip),
                         // follow me 5 // gen 3 pichu event
                         // teeter dance 5 // gen 3 pichu event
                         // thunder wave 8 // 8 As Pichu, 10
@@ -219,7 +219,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
-                        // tail whip 3
+                        Tuple.Create(3, PMove.TailWhip),
                         // bone club 7
                         Tuple.Create(11, PMove.Headbutt),
                         Tuple.Create(13, PMove.Leer),
@@ -325,7 +325,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(1, PMove.Growl),
                         // bone club 1 // 1 & 7
                         Tuple.Create(1, PMove.Headbutt),
-                        // tail whip 1 // 1 & 3
+                        Tuple.Create(1, PMove.TailWhip),
+                        Tuple.Create(3, PMove.TailWhip),
                         Tuple.Create(11, PMove.Headbutt),
                         Tuple.Create(13, PMove.Leer),
                         // focus energy 17
@@ -454,7 +455,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         // thundershock 1
                         Tuple.Create(1, PMove.Charm),
-                        // tail whip 5
+                        Tuple.Create(5, PMove.TailWhip),
                         // follow me 5 // Gen 3 event (PokéPark Egg Pichu)
                         // teeter dance 5 // Gen 3 event (Teeter Dance Pichu, Pokémon Stamp Ruby and Sapphire Contest Pichu)
                         // thunder wave 8 // Gen 3 8, Gen 4 / Gen 5 10
@@ -535,7 +536,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         // tackle 1
                         // bubble 1 // B2W2 1
-                        // tail whip 1 // Gen 3 1 & 6, Gen 4 / BW 1 & 7, B2W2 1 & 2
+                        Tuple.Create(1, PMove.TailWhip),
                         // water gun 1 // Gen 3 / Gen 4 / BW 1 & 10, B2W2 7
                         // water sport 1 // B2W2 Level 1 & 5
                         // defense curl 1 // Gen 3 1 & 3, Gen 4 / BW 1 & 2, B2W2 10

@@ -294,6 +294,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SweetScent,
         SwordsDance,
         Tackle,
+        TailWhip,
         Tickle,
         Thunder,
         Thunderbolt,
