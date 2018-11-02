@@ -731,6 +731,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Overheat,
+                new PMoveData
+                {
+                    Type = PType.Fire, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerUser_SPATK_By2, EffectParam = 100,
+                    PPTier = 1, Power = 140, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Peck,
                 new PMoveData
                 {

@@ -212,7 +212,6 @@ Hydro Cannon
 Weather Ball
 Aromatherapy
 Air Cutter
-Overheat
 Odor Sleuth
 Rock Tomb
 Silver Wind
