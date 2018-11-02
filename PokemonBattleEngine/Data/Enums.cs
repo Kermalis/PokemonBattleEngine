@@ -293,6 +293,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HyperFang,
         IceBeam,
         IcePunch,
+        IcyWind,
         Inferno,
         IronTail,
         Kinesis,

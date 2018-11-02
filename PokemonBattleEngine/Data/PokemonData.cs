@@ -268,7 +268,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // skull bash
                         // earth power // tutor
                         // endeavor
-                        // icy wind
                         // iron defense
                         // iron head
                         // knock off
@@ -296,6 +295,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.IcyWind, // Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
@@ -377,7 +377,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // skull bash
                         // earth power // move tutor
                         // endeavor
-                        // icy wind
                         // iron defense
                         // iron head
                         // knock off
@@ -406,6 +405,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.IcyWind, // Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
@@ -589,13 +589,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // soak
                         // superpower
                         // supersonic
-                        // water sport // egg move
+                        // water sport
                         // aqua tail // tutor
                         // bounce
                         // covet
                         // helping hand
                         // hyper voice
-                        // icy wind
                         // knock off
                         // sleep talk
                         // snore
@@ -622,6 +621,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IcePunch, // Move Tutor
+                        PMove.IcyWind, // Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
@@ -678,8 +678,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // refresh
                         // supersonic
                         // water pulse
-                        // icy wind // tutor
-                        // iron defense
+                        // iron defense // tutor
                         // sleep talk
                         // snore
                         // captivate // gen 4 tm
@@ -692,6 +691,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.IcyWind, // Move Tutor
                         PMove.Return, // TM
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
@@ -768,7 +768,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // covet // tutor
                         // draco meteor // tutor
                         // helping hand // tutor
-                        // icy wind // tutor
                         // last resort // tutor
                         // magic coat // tutor
                         // magic room
@@ -804,6 +803,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
@@ -887,7 +887,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // substitute
                         // draco meteor // tutor
                         // helping hand // tutor
-                        // icy wind // tutor
                         // last resort // tutor
                         // magic coat // tutor
                         // outrage // tutor
@@ -921,6 +920,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
@@ -987,7 +987,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // trick room
                         // gravity // move tutor
                         // helping hand // tutor
-                        // icy wind // tutor
                         // magic coat // tutor
                         // magic room // tutor
                         // recycle // tutor
@@ -1008,6 +1007,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Psychic, // TM
                         PMove.Return, // TM
@@ -1080,7 +1080,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // snarl
                         // drain punch // move tutor
                         // foul play // move tutor
-                        // icy wind // move tutor
                         // knock off // move tutor
                         // last resort // move tutor
                         // sleep talk // move tutor
@@ -1105,6 +1104,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
+                        PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM

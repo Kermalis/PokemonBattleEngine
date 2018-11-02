@@ -121,7 +121,6 @@ Spikes
 Foresight
 Destiny Bond
 Perish Song
-Icy Wind
 Detect
 Bone Rush
 Lock-On
