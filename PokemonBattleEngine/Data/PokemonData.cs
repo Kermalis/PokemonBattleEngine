@@ -268,7 +268,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // endure
                         // iron head
                         // perish song
-                        // screech
                         // skull bash
                         // earth power // tutor
                         // endeavor
@@ -304,6 +303,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.Screech, // Egg Move
                         PMove.Strength, // HM
                         PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor
@@ -377,7 +377,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // endure
                         // iron head
                         // perish song
-                        // screech
                         // skull bash
                         // earth power // move tutor
                         // endeavor
@@ -414,6 +413,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.Screech, // Egg Move
                         PMove.Strength, // HM
                         PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor

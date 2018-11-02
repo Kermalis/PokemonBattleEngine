@@ -304,6 +304,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SandAttack,
         ScaryFace,
         Scratch,
+        Screech,
         ShadowBall,
         ShellSmash,
         Slam,
