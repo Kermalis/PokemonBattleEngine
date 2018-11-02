@@ -307,6 +307,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Moonlight, // TODO
         MudSlap,
         NastyPlot,
+        Octazooka,
         Peck,
         PoisonSting,
         Pound,
