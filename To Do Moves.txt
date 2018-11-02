@@ -30,7 +30,6 @@ Surf
 Blizzard
 Psybeam
 Hyper Beam
-Peck
 Drill Peck
 Submission
 Low Kick

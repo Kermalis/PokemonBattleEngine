@@ -287,6 +287,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MetalClaw,
         Moonlight, // TODO
         NastyPlot,
+        Peck,
         PoisonSting,
         Pound,
         Psychic,
