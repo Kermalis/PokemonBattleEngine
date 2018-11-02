@@ -467,6 +467,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.SwordsDance,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeUser_ATK, EffectParam = +2,
+                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Tackle,
                 new PMoveData
                 {

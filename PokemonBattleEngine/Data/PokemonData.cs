@@ -258,7 +258,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // false swipe
                         // fling
                         // incinerate
-                        // swords dance
                         // bulldoze
                         // rock slide
                         // swagger
@@ -306,6 +305,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
                     }
@@ -367,7 +367,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // incinerate
                         // giga impact
                         // stone edge
-                        // swords dance
                         // bulldoze
                         // rock slide
                         // swagger
@@ -416,6 +415,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
                     }
@@ -1078,7 +1078,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // giga impact
                         // flash
                         // thunder wave
-                        // swords dance
                         // psych up
                         // rock slide
                         // poison jab
@@ -1117,6 +1116,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.ShadowBall, // TM
+                        PMove.SwordsDance, // TM
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM

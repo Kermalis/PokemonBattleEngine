@@ -4,7 +4,6 @@ Comet Punch
 Pay Day
 Guillotine
 Razor Wind
-Swords Dance
 Cut
 Gust
 Wing Attack
