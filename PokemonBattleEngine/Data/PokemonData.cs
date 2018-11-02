@@ -1056,7 +1056,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // protect
                         // rain dance
                         // brick break
-                        // sludge bomb
                         // rock tomb
                         // torment
                         // facade
@@ -1113,6 +1112,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.RockSlide, // TM
                         PMove.RockSmash, // TM
                         PMove.ShadowBall, // TM
+                        PMove.SludgeBomb, // TM
                         PMove.Strength, // HM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.SwordsDance, // TM

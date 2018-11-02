@@ -324,6 +324,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShellSmash,
         Slam,
         Sludge,
+        SludgeBomb,
         Smog,
         SmokeScreen,
         Spark,
