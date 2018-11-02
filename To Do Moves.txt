@@ -69,7 +69,6 @@ Metronome
 Mirror Move
 Self-Destruct
 Clamp
-Swift
 Skull Bash
 Spike Cannon
 Constrict

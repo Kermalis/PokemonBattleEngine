@@ -321,6 +321,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Strength,
         StringShot,
         SweetScent,
+        Swift,
         SwordsDance,
         Tackle,
         TailWhip,
