@@ -174,7 +174,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // signal beam
                         // sleep talk
                         // snore
-                        // body slam // gen 3 tutor
                         // captivate // gen 4 tm
                         // counter // gen 3 tutor
                         // defense curl // gen 3 tutor
@@ -192,6 +191,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // swift // gen 4 tutor
                         // uproar // tutor as Pichu
                         // volt tackle // egg as pichu
+                        PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
@@ -283,7 +283,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // snore
                         // stealth rock
                         // uproar
-                        // body slam // gen 3 tutor
                         // captivate // gen 4 tm
                         // counter // gen 3 tutor
                         // dynamic punch // gen 3 tutor
@@ -296,6 +295,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
+                        PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.FirePunch, // Move Tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
@@ -394,7 +394,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // snore
                         // stealth rock
                         // uproar
-                        // body slam // gen 3 tutor
                         // captivate // gen 4 tm
                         // counter // gen 3 tutor
                         // dynamic punch // gen 3 tutor
@@ -407,6 +406,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
+                        PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.FirePunch, // Move Tutor
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
@@ -495,7 +495,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // present
                         // reversal
                         // wish
-                        // body slam // gen 3 tutor
                         // captivate // gen 4 tm
                         // counter // gen 3 tutor
                         // defense curl // gen 3 tutor
@@ -509,6 +508,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // seismic toss // gen 3 tutor
                         // shock wave // gen 4 tm
                         // swift // gen 4 tutor
+                        PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
@@ -582,7 +582,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // substitute
                         // amnesia // egg move
                         // belly drum
-                        // body slam
                         // encore
                         // fake tears
                         // future sight
@@ -621,6 +620,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // bounce // move tutor as azurill / marill
                         // uproar // move tutor as azurill
                         PMove.AquaJet, // Egg Move
+                        PMove.BodySlam, // Egg Move
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
@@ -672,7 +672,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // substitute
                         // aqua ring // egg move
                         // barrier
-                        // body slam
                         // brine
                         // confuse ray
                         // endure
@@ -690,6 +689,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // mimic // gen 3 tutor
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
+                        PMove.BodySlam, // Egg Move
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -783,7 +783,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // tailwind
                         // trick
                         // zen headbutt // tutor
-                        // body slam // gen 3 tutor
                         // captivate // gen 4 tm
                         // defog // gen 4 hm
                         // double edge // gen 3 tutor
@@ -800,6 +799,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
                         PMove.AerialAce, // TM
+                        PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.CalmMind, // TM
                         PMove.Cut, // HM
                         PMove.DragonClaw, // TM
@@ -901,7 +901,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // trick // tutor
                         // wonder room // tutor
                         // zen headbutt // tutor
-                        // body slam // gen 3 tutor
                         // captivate // gen 4 tm
                         // defog // gen 4 hm
                         // double edge // gen 3 tutor
@@ -917,6 +916,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
                         PMove.AerialAce, // TM
+                        PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.CalmMind, // TM
                         PMove.Cut, // HM
                         PMove.DragonClaw, // TM

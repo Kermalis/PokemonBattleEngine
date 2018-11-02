@@ -246,6 +246,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         None,
         AerialAce,
         AquaJet,
+        BodySlam,
         CalmMind,
         Charm,
         Crunch,
