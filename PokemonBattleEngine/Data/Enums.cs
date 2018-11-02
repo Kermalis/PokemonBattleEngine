@@ -260,6 +260,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Frustration,
         Growl,
         Harden,
+        Headbutt,
         HeatWave,
         HiddenPower,
         HydroPump,

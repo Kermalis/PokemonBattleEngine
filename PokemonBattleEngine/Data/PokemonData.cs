@@ -181,7 +181,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double edge // gen 3 tutor
                         // dynamic punch // gen 3 tutor
                         // focus punch // gen 4 tm
-                        // headbutt // gen 4 tutor
                         // mega kick // gen 3 tutor
                         // mimic // gen 3 tutor
                         // mud slap // gen 4 tutor
@@ -194,6 +193,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // uproar // tutor as Pichu
                         // volt tackle // egg as pichu
                         PMove.Frustration, // TM
+                        PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
@@ -221,7 +221,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(1, PMove.Growl),
                         // tail whip 3
                         // bone club 7
-                        // headbutt 11
+                        Tuple.Create(11, PMove.Headbutt),
                         Tuple.Create(13, PMove.Leer),
                         // focus energy 17
                         // bonemerang 21
@@ -324,8 +324,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         Tuple.Create(1, PMove.Growl),
                         // bone club 1 // 1 & 7
-                        // headbutt 1 // 1 & 11
+                        Tuple.Create(1, PMove.Headbutt),
                         // tail whip 1 // 1 & 3
+                        Tuple.Create(11, PMove.Headbutt),
                         Tuple.Create(13, PMove.Leer),
                         // focus energy 17
                         // bonemerang 21
@@ -499,7 +500,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // counter // gen 3 tutor
                         // defense curl // gen 3 tutor
                         // double edge // gen 3 tutor
-                        // headbutt // gen 4 tutor
                         // mega kick // gen 3 tutor
                         // mimic // gen 3 tutor
                         // mud slap // gen 4 tutor
@@ -510,6 +510,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // shock wave // gen 4 tm
                         // swift // gen 4 tutor
                         PMove.Frustration, // TM
+                        PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Return, // TM
@@ -608,7 +609,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dynamic punch // gen 3 tutor
                         // endure // gen 4 tm
                         // focus punch // gen 4 tm
-                        // headbutt // gen 4 tutor
                         // mega kick // gen 3 tutor
                         // mimic // gen 3 tutor
                         // mud slap // gen 4 tutor
@@ -622,6 +622,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // uproar // move tutor as azurill
                         PMove.AquaJet, // Egg Move
                         PMove.Frustration, // TM
+                        PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IcePunch, // Move Tutor
@@ -1096,7 +1097,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // wonder room // move tutor
                         // endure // gen 4 TM
                         // focus punch // gen 4 TM
-                        // headbutt // gen 4 move tutor
                         // mud-slap // gen 4 move tutor
                         // natural gift // gen 4 TM
                         // secret power // gen 4 TM
@@ -1108,6 +1108,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Cut, // HM
                         PMove.DarkPulse, // Move tutor
                         PMove.Frustration, // TM
+                        PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.Psychic, // TM

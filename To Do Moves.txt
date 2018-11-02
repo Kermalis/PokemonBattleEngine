@@ -12,7 +12,6 @@ Stomp
 Double Kick
 Jump Kick
 Rolling Kick
-Headbutt
 Horn Attack
 Fury Attack
 Horn Drill
