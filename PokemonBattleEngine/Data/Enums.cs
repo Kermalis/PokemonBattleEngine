@@ -154,6 +154,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Limber, // TODO
         MarvelScale,
         Minus, // TODO
+        NoGuard,
         Overgrow,
         Plus, // TODO
         PurePower,

@@ -337,6 +337,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts the event if it missed
         bool AccuracyCheck()
         {
+            // No Guard always hits
+            if (bAttacker.Mon.Shell.Ability == PAbility.NoGuard || bDefender.Mon.Shell.Ability == PAbility.NoGuard)
+                return true;
+
             PMoveData mData = PMoveData.Data[bMove];
             if (mData.Accuracy == 0 // Always-hit moves
                 || PUtils.ApplyChance(mData.Accuracy) // Got lucky and landed a hit
