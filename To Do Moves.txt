@@ -91,7 +91,6 @@ Explosion
 Fury Swipes
 Bonemerang
 Rest
-Hyper Fang
 Conversion
 Tri Attack
 Super Fang

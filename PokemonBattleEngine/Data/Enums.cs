@@ -289,6 +289,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HiddenPower,
         HornAttack,
         HydroPump,
+        HyperFang,
         IceBeam,
         IcePunch,
         Inferno,
