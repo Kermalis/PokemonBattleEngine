@@ -342,6 +342,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Scratch,
         Screech,
         ShadowBall,
+        ShadowPunch,
         Sharpen,
         ShellSmash,
         Slam,
