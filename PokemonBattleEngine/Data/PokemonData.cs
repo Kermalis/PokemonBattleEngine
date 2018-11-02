@@ -751,7 +751,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // safeguard
                         // solar beam
                         // earthquake
-                        // shadow ball
                         // double team
                         // reflect
                         // sandstorm
@@ -812,6 +811,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.ShadowBall, // TM
                         PMove.SteelWing, // TM
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
@@ -871,7 +871,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // safeguard
                         // solar beam
                         // earthquake
-                        // shadow ball
                         // double team
                         // reflect
                         // sandstorm
@@ -929,6 +928,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.ShadowBall, // TM
                         PMove.SteelWing, // TM
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
@@ -972,7 +972,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // telekinesis
                         // safeguard
                         // solar beam
-                        // shadow ball
                         // double team
                         // Reflect
                         // facade
@@ -1015,6 +1014,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.Psychic, // TM
                         PMove.Return, // TM
+                        PMove.ShadowBall, // TM
                         PMove.Toxic, // TM
                     }
                 }
@@ -1059,7 +1059,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // hyper beam
                         // protect
                         // rain dance
-                        // shadow ball
                         // brick break
                         // double team // TM 
                         // sludge bomb
@@ -1118,6 +1117,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
+                        PMove.ShadowBall, // TM
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM

@@ -273,6 +273,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Return,
         ScaryFace,
         Scratch,
+        ShadowBall,
         ShellSmash,
         Spark,
         SteelWing,
