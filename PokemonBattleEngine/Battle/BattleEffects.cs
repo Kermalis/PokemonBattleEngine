@@ -264,9 +264,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Toxic:
                     Ef_Toxic();
                     break;
-                case PMoveEffect.Transform:
-                case PMoveEffect.Moonlight:
-                    // TODO
+                case PMoveEffect.Fail:
+                case PMoveEffect.Transform: // TODO
+                case PMoveEffect.Moonlight: // TODO
                     BroadcastFail();
                     break;
                 default:

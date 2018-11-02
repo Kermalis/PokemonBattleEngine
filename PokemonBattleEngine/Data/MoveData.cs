@@ -742,6 +742,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Teleport,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Fail, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.None,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Tickle,
                 new PMoveData
                 {

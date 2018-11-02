@@ -53,7 +53,6 @@ Dig
 Confusion
 Hypnosis
 Rage
-Teleport
 Night Shade
 Mimic
 Screech
