@@ -282,6 +282,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Scratch,
         ShadowBall,
         ShellSmash,
+        Slam,
         Spark,
         SteelWing,
         SweetScent,

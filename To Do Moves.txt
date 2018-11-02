@@ -8,7 +8,6 @@ Gust
 Whirlwind
 Fly
 Bind
-Slam
 Vine Whip
 Stomp
 Double Kick

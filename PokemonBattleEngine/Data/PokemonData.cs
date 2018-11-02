@@ -118,7 +118,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // electro ball 18
                         Tuple.Create(18, PMove.NastyPlot), // As Pichu
                         // double team 21
-                        // slam 26
+                        Tuple.Create(26, PMove.Slam),
                         Tuple.Create(29, PMove.Thunderbolt),
                         // sing 30 // gen 5 event (Singing Pikachu)
                         // last resort 30 // gen 4 event (Kyoto Cross Media Experience 2009 Pikachu)
@@ -590,7 +590,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // present
                         // refresh
                         // sing
-                        // slam
                         // soak
                         // superpower
                         // supersonic
@@ -621,7 +620,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // whirlpool // gen 4 HM
                         // bounce // move tutor as azurill / marill
                         // uproar // move tutor as azurill
-                        // slam // egg move as Azurill / marill
                         PMove.AquaJet, // Egg Move
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
@@ -631,6 +629,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.Slam, // Egg Move
                         PMove.Tickle, // Egg Move
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
