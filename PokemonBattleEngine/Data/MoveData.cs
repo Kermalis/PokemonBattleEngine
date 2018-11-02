@@ -698,6 +698,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.PoisonFang,
+                new PMoveData
+                {
+                    Type = PType.Poison, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeToxic, EffectParam = 30,
+                    PPTier = 3, Power = 50, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.PoisonSting,
                 new PMoveData
                 {

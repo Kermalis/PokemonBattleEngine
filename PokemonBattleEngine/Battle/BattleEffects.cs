@@ -258,6 +258,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeRaiseUser_DEF_By1:
                     HitAndMaybeChangeUserStat(PStat.Defense, +1, mData.EffectParam);
                     break;
+                case PMoveEffect.Hit__MaybeToxic:
+                    HitAndMaybeApplyStatus1(PStatus1.BadlyPoisoned, mData.EffectParam);
+                    break;
                 case PMoveEffect.LowerTarget_ATK_DEF_By1:
                     Ef_LowerTarget_ATK_DEF_By1();
                     break;

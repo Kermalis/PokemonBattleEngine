@@ -242,6 +242,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybePoison,
         Hit__MaybeRaiseUser_ATK_By1,
         Hit__MaybeRaiseUser_DEF_By1,
+        Hit__MaybeToxic,
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
         Moonlight, // TODO
@@ -315,6 +316,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         NastyPlot,
         Octazooka,
         Peck,
+        PoisonFang,
         PoisonSting,
         Pound,
         Psychic,
