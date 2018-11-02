@@ -390,6 +390,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.PoisonSting,
+                new PMoveData
+                {
+                    Type = PType.Poison, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybePoison, EffectParam = 30,
+                    PPTier = 7, Power = 15, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Pound,
                 new PMoveData
                 {

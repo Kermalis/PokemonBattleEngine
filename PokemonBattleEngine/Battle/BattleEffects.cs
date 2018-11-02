@@ -231,6 +231,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeParalyze:
                     HitAndMaybeApplyStatus1(PStatus1.Paralyzed, mData.EffectParam);
                     break;
+                case PMoveEffect.Hit__MaybePoison:
+                    HitAndMaybeApplyStatus1(PStatus1.Poisoned, mData.EffectParam);
+                    break;
                 case PMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
                     HitAndMaybeChangeUserStat(PStat.Attack, +1, mData.EffectParam);
                     break;

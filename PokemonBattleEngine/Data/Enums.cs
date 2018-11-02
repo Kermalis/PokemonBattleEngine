@@ -231,6 +231,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeLowerTarget_DEF_By1,
         Hit__MaybeLowerTarget_SPDEF_By1,
         Hit__MaybeParalyze,
+        Hit__MaybePoison,
         Hit__MaybeRaiseUser_ATK_By1,
         Hit__MaybeRaiseUser_DEF_By1,
         LowerTarget_ATK_DEF_By1,
@@ -278,6 +279,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MetalClaw,
         Moonlight, // TODO
         NastyPlot,
+        PoisonSting,
         Pound,
         Psychic,
         Retaliate, // TODO
