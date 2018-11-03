@@ -225,7 +225,6 @@ Icicle Spear
 Block
 Frenzy Plant
 Bounce
-Mud Shot
 Poison Tail
 Covet
 Volt Tackle
