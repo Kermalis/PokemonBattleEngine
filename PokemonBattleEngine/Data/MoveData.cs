@@ -566,6 +566,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.IronDefense,
+                new PMoveData
+                {
+                    Type = PType.Steel, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeUser_DEF, EffectParam = +2,
+                    PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.IronTail,
                 new PMoveData
                 {

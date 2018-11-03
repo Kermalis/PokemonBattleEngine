@@ -267,7 +267,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // skull bash
                         // earth power // tutor
                         // endeavor
-                        // iron defense
                         // iron head
                         // knock off
                         // low kick
@@ -295,6 +294,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
+                        PMove.IronDefense, // Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
@@ -376,7 +376,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // skull bash
                         // earth power // move tutor
                         // endeavor
-                        // iron defense
                         // iron head
                         // knock off
                         // low kick
@@ -405,6 +404,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
+                        PMove.IronDefense, // Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
@@ -648,7 +648,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         // clamp 1
-                        // iron defense 1
+                        Tuple.Create(1, PMove.IronDefense),
                         Tuple.Create(1, PMove.WaterGun),
                         // whirlpool 1
                         Tuple.Create(51, PMove.ShellSmash),
@@ -677,8 +677,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // refresh
                         // supersonic
                         // water pulse
-                        // iron defense // tutor
-                        // sleep talk
+                        // sleep talk // tutor
                         // snore
                         // captivate // gen 4 tm
                         // double edge // gen 3 tutor
@@ -691,6 +690,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
+                        PMove.IronDefense, // Move Tutor
                         PMove.MuddyWater, // Egg Move
                         PMove.Return, // TM
                         PMove.Toxic, // TM

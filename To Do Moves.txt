@@ -222,7 +222,6 @@ Sand Tomb
 Sheer Cold
 Bullet Seed
 Icicle Spear
-Iron Defense
 Block
 Howl
 Frenzy Plant

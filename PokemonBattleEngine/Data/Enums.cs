@@ -308,6 +308,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IcePunch,
         IcyWind,
         Inferno,
+        IronDefense,
         IronTail,
         Kinesis,
         Leer,
