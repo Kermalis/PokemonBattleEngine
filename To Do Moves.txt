@@ -275,7 +275,6 @@ Drain Punch
 Brave Bird
 Switcheroo
 Giga Impact
-Bullet Punch
 Avalanche
 Ice Shard
 Shadow Claw

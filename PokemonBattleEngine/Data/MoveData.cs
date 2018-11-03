@@ -214,6 +214,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.BulletPunch,
+                new PMoveData
+                {
+                    Type = PType.Steel, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.CalmMind,
                 new PMoveData
                 {
