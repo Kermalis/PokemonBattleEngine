@@ -995,6 +995,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.RockPolish,
+                new PMoveData
+                {
+                    Type = PType.Rock, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeUser_SPE, EffectParam = +2,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.RockSlide,
                 new PMoveData
                 {
