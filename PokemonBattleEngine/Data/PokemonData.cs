@@ -1072,7 +1072,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // giga impact
                         // thunder wave
                         // psych up
-                        // poison jab
                         // dream eater
                         // swagger
                         // substitute
@@ -1104,6 +1103,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.PoisonJab, // TM
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM

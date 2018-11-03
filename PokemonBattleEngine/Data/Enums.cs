@@ -343,6 +343,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Overheat,
         Peck,
         PoisonFang,
+        PoisonJab,
         PoisonSting,
         Pound,
         Psychic,
