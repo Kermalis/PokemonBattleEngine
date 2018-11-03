@@ -394,6 +394,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ThunderShock,
         Toxic,
         Transform, // TODO
+        VacuumWave,
         ViceGrip,
         VineWhip,
         VitalThrow,

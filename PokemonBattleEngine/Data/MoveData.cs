@@ -1479,6 +1479,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.VacuumWave,
+                new PMoveData
+                {
+                    Type = PType.Fighting, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.ViceGrip,
                 new PMoveData
                 {
