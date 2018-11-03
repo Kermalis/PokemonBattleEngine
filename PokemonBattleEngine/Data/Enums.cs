@@ -315,6 +315,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ForcePalm,
         Frustration,
         Growl,
+        GunkShot,
         HammerArm,
         Harden,
         Headbutt,

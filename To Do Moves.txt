@@ -287,7 +287,6 @@ Trick Room
 Leaf Storm
 Rock Wrecker
 Cross Poison
-Gunk Shot
 Iron Head
 Magnet Bomb
 Stone Edge
