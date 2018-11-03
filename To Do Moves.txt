@@ -231,7 +231,6 @@ Volt Tackle
 Water Sport
 Leaf Blade
 Rock Blast
-Shock Wave
 Water Pulse
 Doom Desire
 Psycho Boost

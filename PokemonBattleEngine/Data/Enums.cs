@@ -354,6 +354,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShadowPunch,
         Sharpen,
         ShellSmash,
+        ShockWave,
         Slam,
         Sludge,
         SludgeBomb,

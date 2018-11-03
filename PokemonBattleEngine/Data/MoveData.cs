@@ -1061,6 +1061,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.ShockWave,
+                new PMoveData
+                {
+                    Type = PType.Electric, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Slam,
                 new PMoveData
                 {
