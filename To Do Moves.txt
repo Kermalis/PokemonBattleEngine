@@ -224,7 +224,6 @@ Bullet Seed
 Icicle Spear
 Block
 Frenzy Plant
-Bulk Up
 Bounce
 Mud Shot
 Poison Tail

@@ -187,37 +187,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (mData.Effect)
             {
                 case PMoveEffect.ChangeTarget_ACC:
-                    ChangeStat(bDefender, PStat.Accuracy, mData.EffectParam);
+                    ApplyStatChange(bDefender.Mon, PStat.Accuracy, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_ATK:
-                    ChangeStat(bDefender, PStat.Attack, mData.EffectParam);
+                    ApplyStatChange(bDefender.Mon, PStat.Attack, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_DEF:
-                    ChangeStat(bDefender, PStat.Defense, mData.EffectParam);
+                    ApplyStatChange(bDefender.Mon, PStat.Defense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_EVA:
-                    ChangeStat(bDefender, PStat.Evasion, mData.EffectParam);
+                    ApplyStatChange(bDefender.Mon, PStat.Evasion, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_SPDEF:
-                    ChangeStat(bDefender, PStat.SpDefense, mData.EffectParam);
+                    ApplyStatChange(bDefender.Mon, PStat.SpDefense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_SPE:
-                    ChangeStat(bDefender, PStat.Speed, mData.EffectParam);
+                    ApplyStatChange(bDefender.Mon, PStat.Speed, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_ATK:
-                    ChangeStat(bAttacker, PStat.Attack, mData.EffectParam);
+                    ApplyStatChange(bAttacker.Mon, PStat.Attack, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_DEF:
-                    ChangeStat(bAttacker, PStat.Defense, mData.EffectParam);
+                    ApplyStatChange(bAttacker.Mon, PStat.Defense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_SPATK:
-                    ChangeStat(bAttacker, PStat.SpAttack, mData.EffectParam);
+                    ApplyStatChange(bAttacker.Mon, PStat.SpAttack, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_SPDEF:
-                    ChangeStat(bAttacker, PStat.SpDefense, mData.EffectParam);
+                    ApplyStatChange(bAttacker.Mon, PStat.SpDefense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_SPE:
-                    ChangeStat(bAttacker, PStat.Speed, mData.EffectParam);
+                    ApplyStatChange(bAttacker.Mon, PStat.Speed, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.Hit:
                     Ef_Hit();
@@ -268,19 +268,31 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     HitAndMaybeApplyStatus1(PStatus1.BadlyPoisoned, mData.EffectParam);
                     break;
                 case PMoveEffect.LowerTarget_ATK_DEF_By1:
-                    Ef_LowerTarget_ATK_DEF_By1();
+                    ApplyStatChange(bDefender.Mon, PStat.Attack, -1);
+                    ApplyStatChange(bDefender.Mon, PStat.Defense, -1);
                     break;
-                case PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2:
-                    Ef_LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2();
+                case PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
+                    ApplyStatChange(bAttacker.Mon, PStat.Defense, -1);
+                    ApplyStatChange(bAttacker.Mon, PStat.SpDefense, -1);
+                    ApplyStatChange(bAttacker.Mon, PStat.Attack, +2);
+                    ApplyStatChange(bAttacker.Mon, PStat.SpAttack, +2);
+                    ApplyStatChange(bAttacker.Mon, PStat.Speed, +2);
+                    break;
+                case PMoveEffect.RaiseUser_ATK_DEF_By1:
+                    ApplyStatChange(bAttacker.Mon, PStat.Attack, +1);
+                    ApplyStatChange(bAttacker.Mon, PStat.Defense, +1);
                     break;
                 case PMoveEffect.RaiseUser_ATK_SPE_By1:
-                    Ef_RaiseUser_ATK_SPE_By1();
+                    ApplyStatChange(bAttacker.Mon, PStat.Attack, +1);
+                    ApplyStatChange(bAttacker.Mon, PStat.Speed, +1);
                     break;
                 case PMoveEffect.RaiseUser_DEF_SPDEF_By1:
-                    Ef_RaiseUser_DEF_SPDEF_By1();
+                    ApplyStatChange(bAttacker.Mon, PStat.Defense, +1);
+                    ApplyStatChange(bAttacker.Mon, PStat.SpDefense, +1);
                     break;
                 case PMoveEffect.RaiseUser_SPATK_SPDEF_By1:
-                    Ef_RaiseUser_SPATK_SPDEF_By1();
+                    ApplyStatChange(bAttacker.Mon, PStat.SpAttack, +1);
+                    ApplyStatChange(bAttacker.Mon, PStat.SpDefense, +1);
                     break;
                 case PMoveEffect.Toxic:
                     Ef_Toxic();
@@ -508,52 +520,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!PUtils.ApplyChance(chance))
                 return false;
             ApplyStatChange(bAttacker.Mon, stat, change);
-            return true;
-        }
-
-        bool ChangeStat(PBattlePokemon pkmn, PStat stat, int change)
-        {
-            ApplyStatChange(pkmn.Mon, stat, (sbyte)change);
-            return true;
-        }
-        bool Ef_LowerTarget_ATK_DEF_By1()
-        {
-            if (AccuracyCheck())
-                return false;
-            var pkmn = bDefender.Mon;
-            ApplyStatChange(pkmn, PStat.Attack, -1);
-            ApplyStatChange(pkmn, PStat.Defense, -1);
-            return true;
-        }
-        bool Ef_LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2()
-        {
-            var pkmn = bAttacker.Mon;
-            ApplyStatChange(pkmn, PStat.Defense, -1);
-            ApplyStatChange(pkmn, PStat.SpDefense, -1);
-            ApplyStatChange(pkmn, PStat.Attack, +2);
-            ApplyStatChange(pkmn, PStat.SpAttack, +2);
-            ApplyStatChange(pkmn, PStat.Speed, +2);
-            return true;
-        }
-        bool Ef_RaiseUser_ATK_SPE_By1()
-        {
-            var pkmn = bAttacker.Mon;
-            ApplyStatChange(pkmn, PStat.Attack, +1);
-            ApplyStatChange(pkmn, PStat.Speed, +1);
-            return true;
-        }
-        bool Ef_RaiseUser_DEF_SPDEF_By1()
-        {
-            var pkmn = bAttacker.Mon;
-            ApplyStatChange(pkmn, PStat.Defense, +1);
-            ApplyStatChange(pkmn, PStat.SpDefense, +1);
-            return true;
-        }
-        bool Ef_RaiseUser_SPATK_SPDEF_By1()
-        {
-            var pkmn = bAttacker.Mon;
-            ApplyStatChange(pkmn, PStat.SpAttack, +1);
-            ApplyStatChange(pkmn, PStat.SpDefense, +1);
             return true;
         }
 

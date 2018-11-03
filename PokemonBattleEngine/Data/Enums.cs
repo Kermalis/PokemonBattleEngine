@@ -247,8 +247,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeRaiseUser_DEF_By1,
         Hit__MaybeToxic,
         LowerTarget_ATK_DEF_By1,
-        LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2,
+        LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         Moonlight, // TODO
+        RaiseUser_ATK_DEF_By1,
         RaiseUser_ATK_SPE_By1,
         RaiseUser_DEF_SPDEF_By1,
         RaiseUser_SPATK_SPDEF_By1,
@@ -271,6 +272,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BoneClub,
         Bubble,
         BubbleBeam,
+        BulkUp,
         CalmMind,
         Charm,
         CosmicPower,

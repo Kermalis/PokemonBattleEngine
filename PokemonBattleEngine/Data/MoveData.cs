@@ -159,6 +159,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.BulkUp,
+                new PMoveData
+                {
+                    Type = PType.Fighting, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.RaiseUser_ATK_DEF_By1, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.CalmMind,
                 new PMoveData
                 {
@@ -1021,7 +1032,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
-                    Effect = PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPD_By2, EffectParam = 0,
+                    Effect = PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2, EffectParam = 0,
                     PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.AffectedBySnatch,
                     Targets = PMoveTarget.Self
