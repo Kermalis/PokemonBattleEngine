@@ -341,6 +341,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LusterPurge,
         MachPunch,
         MagicalLeaf,
+        MagnetBomb,
         Meditate,
         Megahorn,
         MegaKick,

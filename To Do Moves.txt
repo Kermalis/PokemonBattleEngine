@@ -287,7 +287,6 @@ Trick Room
 Leaf Storm
 Rock Wrecker
 Cross Poison
-Magnet Bomb
 Stone Edge
 Captivate
 Stealth Rock
