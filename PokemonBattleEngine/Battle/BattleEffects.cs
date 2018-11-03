@@ -86,7 +86,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else if (BattleStyle == PBattleStyle.Triple)
                     {
-                        // TODO: Center fainted as well but move can hit anyone, so pick far corner
+                        // TODO: Center fainted as well but move can hit anyone, who gets picked?
                         b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
                     }
                 }
@@ -121,6 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 b = oppLeft;
                             }
+                            // TODO: Find out if it should be random:
                             else // Both alive; randomly select left or right
                             {
                                 b = PUtils.RNG.NextDouble() >= 0.5 ? oppLeft : oppRight;
