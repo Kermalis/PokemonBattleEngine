@@ -291,6 +291,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DragonClaw,
         DragonDance,
         DragonPulse,
+        DragonRush,
         DoubleTeam,
         DrillPeck,
         EggBomb,

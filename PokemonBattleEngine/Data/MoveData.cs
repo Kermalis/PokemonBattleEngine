@@ -346,6 +346,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.DragonRush,
+                new PMoveData
+                {
+                    Type = PType.Dragon, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
+                    PPTier = 2, Power = 100, Accuracy = 75, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.DoubleTeam,
                 new PMoveData
                 {
