@@ -265,8 +265,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // iron head
                         // perish song
                         // skull bash
-                        // earth power // tutor
-                        // endeavor
+                        // endeavor // tutor
                         // iron head
                         // knock off
                         // low kick
@@ -287,6 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.DoubleTeam, // TM
+                        PMove.EarthPower, // Move Tutor
                         PMove.FireBlast, // TM
                         PMove.FirePunch, // Move Tutor
                         PMove.Flamethrower, // TM
@@ -373,8 +373,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // iron head
                         // perish song
                         // skull bash
-                        // earth power // move tutor
-                        // endeavor
+                        // endeavor // tutor
                         // iron head
                         // knock off
                         // low kick
@@ -396,6 +395,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.DoubleTeam, // TM
+                        PMove.EarthPower, // TM
                         PMove.FireBlast, // TM
                         PMove.FirePunch, // Move Tutor
                         PMove.Flamethrower, // TM
