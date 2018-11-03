@@ -10,12 +10,15 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         public PSpecies Species;
         public string Nickname;
-        public byte Level = PConstants.MaxLevel, Friendship = byte.MaxValue;
+        public byte Level = PConstants.MaxLevel,
+            Friendship = byte.MaxValue;
+        public bool Shiny;
         public PAbility Ability;
         public PNature Nature = (PNature)PUtils.RNG.Next(0, (int)PNature.MAX);
         public PGender Gender = PGender.Genderless;
         public PItem Item;
-        public byte[] EVs = new byte[6], IVs = new byte[6];
+        public byte[] EVs = new byte[6],
+            IVs = new byte[6];
         public PMove[] Moves = new PMove[PConstants.NumMoves];
         public byte[] PPUps = new byte[PConstants.NumMoves];
 
@@ -107,6 +110,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             bytes.AddRange(PUtils.StringToBytes(Nickname));
             bytes.Add(Level);
             bytes.Add(Friendship);
+            bytes.Add((byte)(Shiny ? 1 : 0));
             bytes.Add((byte)Ability);
             bytes.Add((byte)Nature);
             bytes.Add((byte)Gender);
@@ -126,6 +130,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Nickname = PUtils.StringFromBytes(r),
                 Level = r.ReadByte(),
                 Friendship = r.ReadByte(),
+                Shiny = r.ReadBoolean(),
                 Ability = (PAbility)r.ReadByte(),
                 Nature = (PNature)r.ReadByte(),
                 Gender = (PGender)r.ReadByte(),

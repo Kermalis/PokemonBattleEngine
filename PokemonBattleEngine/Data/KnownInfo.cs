@@ -4,9 +4,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // Proof of concept container for online play
-    // "Local" represents team 0 while "Opponent" represents team 1
-    // In online play, information slowly gets revealed (opponent ability, opponent item, etc)
+    // "Local" represents team 0 while "Remote" represents team 1
     public sealed class PKnownInfo
     {
         public static PKnownInfo Instance { get; } = new PKnownInfo();
@@ -42,7 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             else
                 remoteParty = list;
         }
-        public void AddRemotePokemon(Guid id, PSpecies species, string nickname, byte level, ushort hp, ushort maxHP, PGender gender)
+        public void AddRemotePokemon(Guid id, PSpecies species, string nickname, byte level, bool shiny, ushort hp, ushort maxHP, PGender gender)
         {
             PPokemon pkmn;
 
@@ -52,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     throw new InvalidOperationException("Too many Pokémon!");
 
                 // Use remote pokemon constructor, which sets Local to false and moves to PMove.MAX
-                pkmn = new PPokemon(id, species, nickname, level, gender);
+                pkmn = new PPokemon(id, species, nickname, level, shiny, gender);
                 remoteParty.Add(pkmn);
             }
             else

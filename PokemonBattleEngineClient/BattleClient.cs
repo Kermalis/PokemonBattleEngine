@@ -24,6 +24,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 Nickname = "Pikachu",
                 Level = 100,
                 Friendship = 255,
+                Shiny = false,
                 Item = PItem.LightBall,
                 Ability = PAbility.LightningRod,
                 Gender = PGender.Female,
@@ -39,6 +40,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 Nickname = "ZuWEEE",
                 Level = 100,
                 Friendship = 255,
+                Shiny = false,
                 Item = PItem.ChoiceBand,
                 Ability = PAbility.HugePower,
                 Gender = PGender.Male,
@@ -54,6 +56,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 Nickname = "Latios",
                 Level = 100,
                 Friendship = 255,
+                Shiny = false,
                 Item = PItem.Leftovers, // choice specs
                 Ability = PAbility.Levitate,
                 Gender = PGender.Male,
@@ -70,6 +73,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 Level = 100,
                 Friendship = 255,
                 Item = PItem.Leftovers,
+                Shiny = true,
                 Ability = PAbility.Levitate,
                 Gender = PGender.Female,
                 Nature = PNature.Bold,
@@ -84,6 +88,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 Nickname = "Darkrai",
                 Level = 100,
                 Friendship = 255,
+                Shiny = true,
                 Item = PItem.Leftovers,
                 Ability = PAbility.BadDreams,
                 Gender = PGender.Genderless,
@@ -159,7 +164,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PPkmnSwitchInPacket psip:
                     if (!psip.Local)
-                        PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Nickname, psip.Level, psip.HP, psip.MaxHP, psip.Gender);
+                        PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Nickname, psip.Level, psip.Shiny, psip.HP, psip.MaxHP, psip.Gender);
                     pkmn = PKnownInfo.Instance.Pokemon(psip.PokemonId);
                     pkmn.FieldPosition = psip.FieldPosition;
                     battleView.PokemonPositionChanged(pkmn);

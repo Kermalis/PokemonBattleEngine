@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 PokemonId = new Guid(r.ReadBytes(0x10));
                 Move = (PMove)r.ReadUInt16();
-                OwnsMove = r.ReadByte() != 0;
+                OwnsMove = r.ReadBoolean();
             }
         }
 

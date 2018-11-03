@@ -36,7 +36,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 PokemonId = new Guid(r.ReadBytes(0x10));
                 Stat = (PStat)r.ReadByte();
                 Change = r.ReadSByte();
-                IsTooMuch = r.ReadByte() != 0;
+                IsTooMuch = r.ReadBoolean();
             }
         }
 

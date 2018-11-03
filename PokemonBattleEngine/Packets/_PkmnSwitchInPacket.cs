@@ -18,6 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly PSpecies Species;
         public readonly string Nickname;
         public readonly byte Level;
+        public readonly bool Shiny;
         public readonly ushort HP, MaxHP;
         public readonly PGender Gender;
         public readonly PFieldPosition FieldPosition;
@@ -29,6 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Species = pkmn.Shell.Species;
             Nickname = pkmn.Shell.Nickname;
             Level = pkmn.Shell.Level;
+            Shiny = pkmn.Shell.Shiny;
             HP = pkmn.HP;
             MaxHP = pkmn.MaxHP;
             Gender = pkmn.Shell.Gender;
@@ -40,10 +42,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 PokemonId = new Guid(r.ReadBytes(0x10));
-                Local = r.ReadByte() != 0;
+                Local = r.ReadBoolean();
                 Species = (PSpecies)r.ReadUInt32();
                 Nickname = PUtils.StringFromBytes(r);
                 Level = r.ReadByte();
+                Shiny = r.ReadBoolean();
                 HP = r.ReadUInt16();
                 MaxHP = r.ReadUInt16();
                 Gender = (PGender)r.ReadByte();
@@ -59,6 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes((uint)Species));
             bytes.AddRange(PUtils.StringToBytes(Nickname));
             bytes.Add(Level);
+            bytes.Add((byte)(Shiny ? 1 : 0));
             bytes.AddRange(BitConverter.GetBytes(HP));
             bytes.AddRange(BitConverter.GetBytes(MaxHP));
             bytes.Add((byte)Gender);

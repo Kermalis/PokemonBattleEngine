@@ -53,7 +53,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         // This constructor is to define an unknown remote pokemon
         // Local is set to false here
         // Moves are set to PMove.MAX which will be displayed as "???"
-        public PPokemon(Guid id, PSpecies species, string nickname, byte level, PGender gender)
+        public PPokemon(Guid id, PSpecies species, string nickname, byte level, bool shiny, PGender gender)
         {
             Id = id;
             Local = false;
@@ -62,6 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Species = species,
                 Nickname = nickname,
                 Level = level,
+                Shiny = shiny,
                 Gender = gender,
                 Item = PItem.MAX,
                 Nature = PNature.MAX,
