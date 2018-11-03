@@ -500,6 +500,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.FocusBlast,
+                new PMoveData
+                {
+                    Type = PType.Fighting, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
+                    PPTier = 1, Power = 120, Accuracy = 70, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.ForcePalm,
                 new PMoveData
                 {

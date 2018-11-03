@@ -305,6 +305,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FirePunch,
         Flamethrower,
         Flash,
+        FocusBlast,
         ForcePalm,
         Frustration,
         Growl,

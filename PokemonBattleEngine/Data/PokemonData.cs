@@ -356,7 +356,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // thief
                         // round
                         // echoed voice
-                        // focus blast
                         // false swipe
                         // fling
                         // incinerate
@@ -400,6 +399,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.FireBlast, // TM
                         PMove.FirePunch, // Move Tutor
                         PMove.Flamethrower, // TM
+                        PMove.FocusBlast, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
@@ -568,7 +568,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // reset
                         // attract
                         // round
-                        // focus blast
                         // scald
                         // fling
                         // giga impact
@@ -614,6 +613,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.BodySlam, // Egg Move
                         PMove.DoubleTeam, // TM
                         PMove.FakeTears, // Move Tutor
+                        PMove.FocusBlast, // TM
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
@@ -1061,7 +1061,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // thief
                         // round
-                        // focus blast
                         // fling
                         // charge beam
                         // incinerate
@@ -1097,6 +1096,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.DarkPulse, // Move tutor
                         PMove.DoubleTeam, // TM
                         PMove.Flash, // TM
+                        PMove.FocusBlast, // TM
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
