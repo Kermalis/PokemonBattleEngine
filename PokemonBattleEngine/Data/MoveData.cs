@@ -1347,6 +1347,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.SeedFlare,
+                new PMoveData
+                {
+                    Type = PType.Grass, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2, EffectParam = 40,
+                    PPTier = 1, Power = 120, Accuracy = 85, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.ShadowBall,
                 new PMoveData
                 {

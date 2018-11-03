@@ -246,6 +246,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1:
                     HitAndMaybeChangeTargetStat(PStat.SpDefense, -1, mData.EffectParam);
                     break;
+                case PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2:
+                    HitAndMaybeChangeTargetStat(PStat.SpDefense, -2, mData.EffectParam);
+                    break;
                 case PMoveEffect.Hit__MaybeLowerTarget_SPE_By1:
                     HitAndMaybeChangeTargetStat(PStat.Speed, -1, mData.EffectParam);
                     break;
