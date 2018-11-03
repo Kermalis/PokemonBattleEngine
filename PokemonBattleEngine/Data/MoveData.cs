@@ -93,6 +93,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.AuraSphere,
+                new PMoveData
+                {
+                    Type = PType.Fighting, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 4, Power = 90, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleNotSelf
+                }
+            },
+            {
                 PMove.AuroraBeam,
                 new PMoveData
                 {

@@ -268,6 +268,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Amnesia,
         AquaJet,
         Astonish,
+        AuraSphere,
         AuroraBeam,
         Bite,
         BodySlam,
