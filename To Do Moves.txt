@@ -233,7 +233,6 @@ Leaf Blade
 Rock Blast
 Water Pulse
 Doom Desire
-Psycho Boost
 Roost
 Gravity
 Miracle Eye
