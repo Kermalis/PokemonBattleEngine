@@ -907,6 +907,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.MirrorShot,
+                new PMoveData
+                {
+                    Type = PType.Steel, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 30,
+                    PPTier = 2, Power = 65, Accuracy = 85, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.MistBall,
                 new PMoveData
                 {

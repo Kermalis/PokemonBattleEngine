@@ -342,6 +342,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MetalClaw,
         MetalSound,
         MeteorMash,
+        MirrorShot,
         MistBall,
         Moonlight, // TODO
         MudBomb,

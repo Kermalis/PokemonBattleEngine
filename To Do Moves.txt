@@ -281,7 +281,6 @@ Thunder Fang
 Ice Fang
 Fire Fang
 Psycho Cut
-Mirror Shot
 Flash Cannon
 Rock Climb
 Defog
