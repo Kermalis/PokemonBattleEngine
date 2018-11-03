@@ -54,6 +54,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         FoeCenter = 1 << 4,
         FoeRight = 1 << 5
     }
+    public enum PDecision : byte
+    {
+        None,
+        Fight,
+    }
     public enum PStatus1 : byte
     {
         None,

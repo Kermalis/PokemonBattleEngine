@@ -202,14 +202,14 @@ namespace Kermalis.PokemonBattleEngineServer
                     foreach (Player client in Clients)
                     {
                         if (client == battlers[1])
-                            psip.LocallyOwned = !psip.LocallyOwned; // Correctly set locally owned for this team
+                            psip.Local = !psip.Local; // Correctly set locally owned for this team
                         client.Send(packet);
                     }
                     WaitForBattlersResponses();
                     break;
                 case PMovePPChangedPacket mpcp:
                     // Send only to the owner's client
-                    int i = PKnownInfo.Instance.Pokemon(mpcp.PokemonId).LocallyOwned ? 0 : 1;
+                    int i = PKnownInfo.Instance.Pokemon(mpcp.PokemonId).Local ? 0 : 1;
                     battlers[i].Send(mpcp);
                     battlers[i].ResetEvent.WaitOne(); // Wait for response
                     break;

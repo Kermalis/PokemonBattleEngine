@@ -81,7 +81,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             else
             {
                 Visible = true;
-                Scale = pokemon.LocallyOwned ? 2 : 1;
+                Scale = pokemon.Local ? 2 : 1;
 
                 // Loading the correct sprite requires checking first
                 string sss = $"{(uint)pokemon.Shell.Species}";
@@ -93,7 +93,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 // sss.gif if the sprite is gender neutral, else sss-F.gif if the pokemon is female, otherwise sss-M.gif
                 string suffix = spriteIsGenderNeutral ? "" : pokemon.Shell.Gender == PGender.Female ? "-F" : "-M";
                 // Set the result
-                Source = new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.{(pokemon.LocallyOwned ? "Back_Sprites" : "Front_Sprites")}.{sss}{suffix}.gif?assembly=PokemonBattleEngineClient");
+                Source = new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.{(pokemon.Local ? "Back_Sprites" : "Front_Sprites")}.{sss}{suffix}.gif?assembly=PokemonBattleEngineClient");
             }
         }
     }

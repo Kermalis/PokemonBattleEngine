@@ -158,12 +158,12 @@ namespace Kermalis.PokemonBattleEngineClient
                     Send(new PResponsePacket());
                     break;
                 case PPkmnSwitchInPacket psip:
-                    if (!psip.LocallyOwned)
+                    if (!psip.Local)
                         PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Nickname, psip.Level, psip.HP, psip.MaxHP, psip.Gender);
                     pkmn = PKnownInfo.Instance.Pokemon(psip.PokemonId);
                     pkmn.FieldPosition = psip.FieldPosition;
                     battleView.PokemonPositionChanged(pkmn);
-                    battleView.AddMessage(string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.LocallyOwned)), true);
+                    battleView.AddMessage(string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.Local)), true);
                     Send(new PResponsePacket());
                     break;
                 case PRequestActionsPacket _:
@@ -215,55 +215,55 @@ namespace Kermalis.PokemonBattleEngineClient
             }
         }
 
-        List<PAction> actions;
+        List<PPokemon> actions = new List<PPokemon>(3);
         void ActionsLoop(bool begin)
         {
             PPokemon pkmn;
             if (begin)
             {
-                var alive = new List<PPokemon>();
+                foreach (PPokemon p in PKnownInfo.Instance.LocalParty)
+                    p.Action.Decision = PDecision.None;
+                actions.Clear();
                 switch (BattleStyle)
                 {
                     case PBattleStyle.Single:
                     case PBattleStyle.Rotation:
-                        alive.Add(PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center));
+                        actions.Add(PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center));
                         break;
                     case PBattleStyle.Double:
                         pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Left);
                         if (pkmn != null)
-                            alive.Add(pkmn);
+                            actions.Add(pkmn);
                         pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Right);
                         if (pkmn != null)
-                            alive.Add(pkmn);
+                            actions.Add(pkmn);
                         break;
                     case PBattleStyle.Triple:
                         pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Left);
                         if (pkmn != null)
-                            alive.Add(pkmn);
+                            actions.Add(pkmn);
                         pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center);
                         if (pkmn != null)
-                            alive.Add(pkmn);
+                            actions.Add(pkmn);
                         pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Right);
                         if (pkmn != null)
-                            alive.Add(pkmn);
+                            actions.Add(pkmn);
                         break;
                 }
-                actions = alive.Select(p => new PAction { PokemonId = p.Id }).ToList();
             }
-            int i = actions.FindIndex(a => a.Move == PMove.None);
+            int i = actions.FindIndex(p => p.Action.Decision == PDecision.None);
             if (i == -1)
             {
                 battleView.AddMessage($"Waiting for {PKnownInfo.Instance.RemoteDisplayName}...", true);
-                Send(new PSubmitActionsPacket(actions.ToArray()));
+                Send(new PSubmitActionsPacket(actions.Select(p => p.Action).ToArray()));
             }
             else
             {
-                pkmn = PKnownInfo.Instance.Pokemon(actions[i].PokemonId);
-                battleView.AddMessage($"What will {pkmn.Shell.Nickname} do?", true);
+                battleView.AddMessage($"What will {actions[i].Shell.Nickname} do?", true);
                 actionsView.DisplayMoves(actions[i]);
             }
         }
-        public void ActionSet(PAction action)
+        public void ActionSet()
         {
             ActionsLoop(false);
         }

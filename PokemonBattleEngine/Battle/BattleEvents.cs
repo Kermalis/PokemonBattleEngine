@@ -13,15 +13,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BroadcastSwitchIn(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PPkmnSwitchInPacket(pkmn));
         void BroadcastMoveUsed()
-            => OnNewEvent?.Invoke(new PPkmnMovePacket(bAttacker.Mon, bMove));
+            => OnNewEvent?.Invoke(new PPkmnMovePacket(bAttacker, bMove));
         void BroadcastMiss()
-            => OnNewEvent?.Invoke(new PMoveMissedPacket(bAttacker.Mon));
+            => OnNewEvent?.Invoke(new PMoveMissedPacket(bAttacker));
         void BroadcastFlinch()
-            => OnNewEvent?.Invoke(new PPkmnFlinchedPacket(bAttacker.Mon));
+            => OnNewEvent?.Invoke(new PPkmnFlinchedPacket(bAttacker));
         void BroadcastHPChanged(PPokemon pkmn, int change)
             => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, change));
         void BroadcastEffectiveness()
-            => OnNewEvent?.Invoke(new PMoveEffectivenessPacket(bDefender.Mon, bEffectiveness));
+            => OnNewEvent?.Invoke(new PMoveEffectivenessPacket(bDefender, bEffectiveness));
         void BroadcastFaint(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PPkmnFaintedPacket(pkmn));
         void BroadcastCrit()
@@ -57,7 +57,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (packet)
             {
                 case PPkmnSwitchInPacket psip:
-                    Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance.Pokemon(psip.PokemonId).Shell.Nickname, PKnownInfo.Instance.DisplayName(psip.LocallyOwned));
+                    Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance.Pokemon(psip.PokemonId).Shell.Nickname, PKnownInfo.Instance.DisplayName(psip.Local));
                     break;
                 case PPkmnMovePacket pmp:
                     Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(pmp.PokemonId).Shell.Nickname, pmp.Move);

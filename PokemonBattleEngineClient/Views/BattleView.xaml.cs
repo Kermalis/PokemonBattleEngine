@@ -78,7 +78,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             if (pkmn.FieldPosition == PFieldPosition.None)
                 return;
 
-            PokemonView view = this.FindControl<PokemonView>($"Battler{(pkmn.LocallyOwned ? 0 : 1)}_{pkmn.FieldPosition}");
+            PokemonView view = this.FindControl<PokemonView>($"Battler{(pkmn.Local ? 0 : 1)}_{pkmn.FieldPosition}");
             view.Pokemon = pkmn;
 
             switch (Client.BattleStyle)

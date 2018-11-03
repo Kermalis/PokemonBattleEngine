@@ -30,13 +30,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             localParty.Clear();
             remoteParty.Clear();
         }
-        public void SetPartyPokemon(IEnumerable<PPokemon> pkmn, bool local)
+        public void SetPartyPokemon(PPokemon[] party, bool local)
         {
-            var list = pkmn.Take(PConstants.MaxPartySize).ToList();
-            list.Capacity = PConstants.MaxPartySize;
+            var list = new List<PPokemon>(party);
 
             foreach (var p in list)
-                p.LocallyOwned = local;
+                p.Local = local;
 
             if (local)
                 localParty = list;
@@ -52,7 +51,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 if (remoteParty.Count == PConstants.MaxPartySize)
                     throw new InvalidOperationException("Too many Pokémon!");
 
-                // Use remote pokemon constructor, which sets LocallyOwned to false and moves to PMove.MAX
+                // Use remote pokemon constructor, which sets Local to false and moves to PMove.MAX
                 pkmn = new PPokemon(id, species, nickname, level, gender);
                 remoteParty.Add(pkmn);
             }

@@ -9,74 +9,74 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBattle
     {
-        PBattlePokemon bAttacker, bDefender;
+        PPokemon bAttacker, bDefender;
         PMove bMove; PType bMoveType;
         ushort bDamage;
         double bEffectiveness, bDamageMultiplier;
         bool bLandedCrit;
 
-        void DoTurnEndedEffects(PBattlePokemon battler)
+        void DoTurnEndedEffects(PPokemon battler)
         {
             // TODO: Limber
 
             // Major statuses
-            switch (battler.Mon.Status1)
+            switch (battler.Status1)
             {
                 case PStatus1.Burned:
-                    BroadcastStatus1CausedDamage(battler.Mon);
-                    DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.BurnDamageDenominator));
+                    BroadcastStatus1CausedDamage(battler);
+                    DealDamage(battler, (ushort)(battler.MaxHP / PConstants.BurnDamageDenominator));
                     TryFaint(battler);
                     break;
                 case PStatus1.Poisoned:
-                    BroadcastStatus1CausedDamage(battler.Mon);
-                    DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.PoisonDamageDenominator));
+                    BroadcastStatus1CausedDamage(battler);
+                    DealDamage(battler, (ushort)(battler.MaxHP / PConstants.PoisonDamageDenominator));
                     TryFaint(battler);
                     break;
                 case PStatus1.BadlyPoisoned:
-                    BroadcastStatus1CausedDamage(battler.Mon);
-                    DealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP * battler.Status1Counter / PConstants.ToxicDamageDenominator));
+                    BroadcastStatus1CausedDamage(battler);
+                    DealDamage(battler, (ushort)(battler.MaxHP * battler.Status1Counter / PConstants.ToxicDamageDenominator));
                     if (!TryFaint(battler))
                         battler.Status1Counter++;
                     break;
             }
 
             // Items
-            switch (battler.Mon.Shell.Item)
+            switch (battler.Shell.Item)
             {
                 case PItem.Leftovers:
-                    if (HealDamage(battler.Mon, (ushort)(battler.Mon.MaxHP / PConstants.LeftoversDenominator)))
-                        BroadcastItemUsed(battler.Mon);
+                    if (HealDamage(battler, (ushort)(battler.MaxHP / PConstants.LeftoversDenominator)))
+                        BroadcastItemUsed(battler);
                     break;
             }
         }
 
-        void UseMove(PBattlePokemon attacker)
+        void UseMove(PPokemon attacker)
         {
-            PTeam attackerTeam = teams[attacker.Mon.LocallyOwned ? 0 : 1]; // Attacker's team
-            PTeam opposingTeam = teams[attacker.Mon.LocallyOwned ? 1 : 0]; // Other team
+            PTeam attackerTeam = teams[attacker.Local ? 0 : 1]; // Attacker's team
+            PTeam opposingTeam = teams[attacker.Local ? 1 : 0]; // Other team
 
             #region Targets
 
-            PTarget selectedTarget = attacker.SelectedAction.Targets;
-            var targets = new List<PBattlePokemon>();
+            PTarget selectedTarget = attacker.Action.Targets;
+            var targets = new List<PPokemon>();
             if (selectedTarget.HasFlag(PTarget.AllyLeft))
             {
-                PBattlePokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Left);
+                PPokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Left);
                 targets.Add(b);
             }
             if (selectedTarget.HasFlag(PTarget.AllyCenter))
             {
-                PBattlePokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Center);
+                PPokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Center);
                 targets.Add(b);
             }
             if (selectedTarget.HasFlag(PTarget.AllyRight))
             {
-                PBattlePokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Right);
+                PPokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Right);
                 targets.Add(b);
             }
             if (selectedTarget.HasFlag(PTarget.FoeLeft))
             {
-                PBattlePokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                PPokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
@@ -94,24 +94,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (selectedTarget.HasFlag(PTarget.FoeCenter))
             {
-                PBattlePokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
+                PPokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
                     if (BattleStyle == PBattleStyle.Triple)
                     {
-                        if (attacker.Mon.FieldPosition == PFieldPosition.Left)
+                        if (attacker.FieldPosition == PFieldPosition.Left)
                         {
                             b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
                         }
-                        else if (attacker.Mon.FieldPosition == PFieldPosition.Right)
+                        else if (attacker.FieldPosition == PFieldPosition.Right)
                         {
                             b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
                         }
                         else // Center
                         {
                             // If left fainted but not right, choose right, and vice versa
-                            PBattlePokemon oppLeft = opposingTeam.BattlerAtPosition(PFieldPosition.Left),
+                            PPokemon oppLeft = opposingTeam.BattlerAtPosition(PFieldPosition.Left),
                                 oppRight = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
                             if (oppLeft == null && oppRight != null)
                             {
@@ -133,7 +133,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (selectedTarget.HasFlag(PTarget.FoeRight))
             {
-                PBattlePokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                PPokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
@@ -154,7 +154,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             #endregion
 
             bAttacker = attacker;
-            bMove = bAttacker.SelectedAction.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            bMove = bAttacker.Action.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
             if (AttackCancelCheck())
                 return;
             BroadcastMoveUsed();
@@ -169,10 +169,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Reduced damage if targetting multiple pokemon
             double initialDamageMultiplier = aliveTargets > 1 ? 0.75 : 1;
 
-            foreach (PBattlePokemon target in targets)
+            foreach (PPokemon target in targets)
             {
                 // For example, we use growl which attacks two surrounding opponents, but one fainted
-                if (target == null || target.Mon.HP < 1)
+                if (target == null || target.HP < 1)
                     continue;
                 bDefender = target;
                 UseMoveOnDefender(initialDamageMultiplier);
@@ -188,37 +188,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (mData.Effect)
             {
                 case PMoveEffect.ChangeTarget_ACC:
-                    ApplyStatChange(bDefender.Mon, PStat.Accuracy, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bDefender, PStat.Accuracy, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_ATK:
-                    ApplyStatChange(bDefender.Mon, PStat.Attack, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bDefender, PStat.Attack, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_DEF:
-                    ApplyStatChange(bDefender.Mon, PStat.Defense, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bDefender, PStat.Defense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_EVA:
-                    ApplyStatChange(bDefender.Mon, PStat.Evasion, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bDefender, PStat.Evasion, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_SPDEF:
-                    ApplyStatChange(bDefender.Mon, PStat.SpDefense, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bDefender, PStat.SpDefense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_SPE:
-                    ApplyStatChange(bDefender.Mon, PStat.Speed, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bDefender, PStat.Speed, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_ATK:
-                    ApplyStatChange(bAttacker.Mon, PStat.Attack, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bAttacker, PStat.Attack, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_DEF:
-                    ApplyStatChange(bAttacker.Mon, PStat.Defense, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bAttacker, PStat.Defense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_SPATK:
-                    ApplyStatChange(bAttacker.Mon, PStat.SpAttack, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bAttacker, PStat.SpAttack, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_SPDEF:
-                    ApplyStatChange(bAttacker.Mon, PStat.SpDefense, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bAttacker, PStat.SpDefense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_SPE:
-                    ApplyStatChange(bAttacker.Mon, PStat.Speed, (sbyte)mData.EffectParam);
+                    ApplyStatChange(bAttacker, PStat.Speed, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.Hit:
                     Ef_Hit();
@@ -261,7 +261,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1:
                     if (HitAndMaybeChangeUserStat(PStat.Defense, -1, mData.EffectParam))
-                        ApplyStatChange(bAttacker.Mon, PStat.SpDefense, -1);
+                        ApplyStatChange(bAttacker, PStat.SpDefense, -1);
                     break;
                 case PMoveEffect.Hit__MaybeLowerUser_SPATK_By2:
                     HitAndMaybeChangeUserStat(PStat.SpAttack, -2, mData.EffectParam);
@@ -282,31 +282,31 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     HitAndMaybeApplyStatus1(PStatus1.BadlyPoisoned, mData.EffectParam);
                     break;
                 case PMoveEffect.LowerTarget_ATK_DEF_By1:
-                    ApplyStatChange(bDefender.Mon, PStat.Attack, -1);
-                    ApplyStatChange(bDefender.Mon, PStat.Defense, -1);
+                    ApplyStatChange(bDefender, PStat.Attack, -1);
+                    ApplyStatChange(bDefender, PStat.Defense, -1);
                     break;
                 case PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
-                    ApplyStatChange(bAttacker.Mon, PStat.Defense, -1);
-                    ApplyStatChange(bAttacker.Mon, PStat.SpDefense, -1);
-                    ApplyStatChange(bAttacker.Mon, PStat.Attack, +2);
-                    ApplyStatChange(bAttacker.Mon, PStat.SpAttack, +2);
-                    ApplyStatChange(bAttacker.Mon, PStat.Speed, +2);
+                    ApplyStatChange(bAttacker, PStat.Defense, -1);
+                    ApplyStatChange(bAttacker, PStat.SpDefense, -1);
+                    ApplyStatChange(bAttacker, PStat.Attack, +2);
+                    ApplyStatChange(bAttacker, PStat.SpAttack, +2);
+                    ApplyStatChange(bAttacker, PStat.Speed, +2);
                     break;
                 case PMoveEffect.RaiseUser_ATK_DEF_By1:
-                    ApplyStatChange(bAttacker.Mon, PStat.Attack, +1);
-                    ApplyStatChange(bAttacker.Mon, PStat.Defense, +1);
+                    ApplyStatChange(bAttacker, PStat.Attack, +1);
+                    ApplyStatChange(bAttacker, PStat.Defense, +1);
                     break;
                 case PMoveEffect.RaiseUser_ATK_SPE_By1:
-                    ApplyStatChange(bAttacker.Mon, PStat.Attack, +1);
-                    ApplyStatChange(bAttacker.Mon, PStat.Speed, +1);
+                    ApplyStatChange(bAttacker, PStat.Attack, +1);
+                    ApplyStatChange(bAttacker, PStat.Speed, +1);
                     break;
                 case PMoveEffect.RaiseUser_DEF_SPDEF_By1:
-                    ApplyStatChange(bAttacker.Mon, PStat.Defense, +1);
-                    ApplyStatChange(bAttacker.Mon, PStat.SpDefense, +1);
+                    ApplyStatChange(bAttacker, PStat.Defense, +1);
+                    ApplyStatChange(bAttacker, PStat.SpDefense, +1);
                     break;
                 case PMoveEffect.RaiseUser_SPATK_SPDEF_By1:
-                    ApplyStatChange(bAttacker.Mon, PStat.SpAttack, +1);
-                    ApplyStatChange(bAttacker.Mon, PStat.SpDefense, +1);
+                    ApplyStatChange(bAttacker, PStat.SpAttack, +1);
+                    ApplyStatChange(bAttacker, PStat.SpDefense, +1);
                     break;
                 case PMoveEffect.Toxic:
                     Ef_Toxic();
@@ -326,31 +326,31 @@ namespace Kermalis.PokemonBattleEngine.Battle
         bool AttackCancelCheck()
         {
             // Flinch first
-            if (bAttacker.Mon.Status2.HasFlag(PStatus2.Flinching))
+            if (bAttacker.Status2.HasFlag(PStatus2.Flinching))
             {
                 BroadcastFlinch();
                 return true;
             }
 
             // Major statuses
-            switch (bAttacker.Mon.Status1)
+            switch (bAttacker.Status1)
             {
                 case PStatus1.Frozen:
                     // 20% chance to thaw out
                     if (PUtils.ApplyChance(20))
                     {
-                        BroadcastStatus1Ended(bAttacker.Mon);
-                        bAttacker.Mon.Status1 = PStatus1.None;
+                        BroadcastStatus1Ended(bAttacker);
+                        bAttacker.Status1 = PStatus1.None;
                         return false;
                     }
                     // Didn't thaw out
-                    BroadcastStatus1CausedImmobility(bAttacker.Mon);
+                    BroadcastStatus1CausedImmobility(bAttacker);
                     return true;
                 case PStatus1.Paralyzed:
                     // 25% chance to be unable to move
                     if (PUtils.ApplyChance(25))
                     {
-                        BroadcastStatus1CausedImmobility(bAttacker.Mon);
+                        BroadcastStatus1CausedImmobility(bAttacker);
                         return true;
                     }
                     break;
@@ -364,7 +364,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         bool AccuracyCheck()
         {
             // No Guard always hits
-            if (bAttacker.Mon.Shell.Ability == PAbility.NoGuard || bDefender.Mon.Shell.Ability == PAbility.NoGuard)
+            if (bAttacker.Shell.Ability == PAbility.NoGuard || bDefender.Shell.Ability == PAbility.NoGuard)
                 return true;
 
             PMoveData mData = PMoveData.Data[bMove];
@@ -378,7 +378,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Broadcasts the event
         void DealDamage()
-            => DealDamage(bDefender.Mon, (ushort)(bDamage * bEffectiveness * bDamageMultiplier));
+            => DealDamage(bDefender, (ushort)(bDamage * bEffectiveness * bDamageMultiplier));
         void DealDamage(PPokemon pkmn, ushort hp)
         {
             var oldHP = pkmn.HP;
@@ -402,7 +402,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Broadcasts the event
         void PPReduce()
-            => PPReduce(bAttacker.Mon, bMove);
+            => PPReduce(bAttacker, bMove);
         void PPReduce(PPokemon pkmn, PMove move)
         {
             var moveIndex = Array.IndexOf(pkmn.Shell.Moves, move);
@@ -418,13 +418,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts the event if it did
         bool TryFaint()
             => TryFaint(bDefender);
-        bool TryFaint(PBattlePokemon pkmn)
+        bool TryFaint(PPokemon pkmn)
         {
-            if (pkmn.Mon.HP < 1)
+            if (pkmn.HP < 1)
             {
                 activeBattlers.Remove(pkmn);
-                pkmn.Mon.FieldPosition = PFieldPosition.None;
-                BroadcastFaint(pkmn.Mon);
+                pkmn.FieldPosition = PFieldPosition.None;
+                BroadcastFaint(pkmn);
                 return true;
             }
             return false;
@@ -453,12 +453,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns true if the status was applied
         // Broadcasts the change if applied
-        bool ApplyStatus1IfPossible(PBattlePokemon pkmn, PStatus1 status)
+        bool ApplyStatus1IfPossible(PPokemon pkmn, PStatus1 status)
         {
-            if (pkmn.Mon.Status1 != PStatus1.None)
+            if (pkmn.Status1 != PStatus1.None)
                 return false;
 
-            PPokemonData pData = PPokemonData.Data[pkmn.Mon.Shell.Species];
+            PPokemonData pData = PPokemonData.Data[pkmn.Shell.Species];
 
             // TODO: Limber
 
@@ -473,11 +473,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
 
 
-            pkmn.Mon.Status1 = status;
+            pkmn.Status1 = status;
             // Start toxic counter
             if (status == PStatus1.BadlyPoisoned)
                 pkmn.Status1Counter = 1;
-            BroadcastStatus1Change(pkmn.Mon);
+            BroadcastStatus1Change(pkmn);
 
             return true;
         }
@@ -503,7 +503,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (!PUtils.ApplyChance(chance))
                 return false;
-            bDefender.Mon.Status2 |= PStatus2.Flinching;
+            bDefender.Status2 |= PStatus2.Flinching;
             return true;
         }
 
@@ -524,7 +524,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (!PUtils.ApplyChance(chance))
                 return false;
-            ApplyStatChange(bDefender.Mon, stat, change);
+            ApplyStatChange(bDefender, stat, change);
             return true;
         }
         bool HitAndMaybeChangeUserStat(PStat stat, sbyte change, int chance)
@@ -533,7 +533,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (!PUtils.ApplyChance(chance))
                 return false;
-            ApplyStatChange(bAttacker.Mon, stat, change);
+            ApplyStatChange(bAttacker, stat, change);
             return true;
         }
 

@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public IEnumerable<byte> Buffer => BuildBuffer();
 
         public readonly Guid PokemonId;
-        public bool LocallyOwned;
+        public bool Local;
         public readonly PSpecies Species;
         public readonly string Nickname;
         public readonly byte Level;
@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PPkmnSwitchInPacket(PPokemon pkmn)
         {
             PokemonId = pkmn.Id;
-            LocallyOwned = pkmn.LocallyOwned;
+            Local = pkmn.Local;
             Species = pkmn.Shell.Species;
             Nickname = pkmn.Shell.Nickname;
             Level = pkmn.Shell.Level;
@@ -40,7 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 PokemonId = new Guid(r.ReadBytes(0x10));
-                LocallyOwned = r.ReadByte() != 0;
+                Local = r.ReadByte() != 0;
                 Species = (PSpecies)r.ReadUInt32();
                 Nickname = PUtils.StringFromBytes(r);
                 Level = r.ReadByte();
@@ -55,7 +55,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.AddRange(PokemonId.ToByteArray());
-            bytes.Add((byte)(LocallyOwned ? 1 : 0));
+            bytes.Add((byte)(Local ? 1 : 0));
             bytes.AddRange(BitConverter.GetBytes((uint)Species));
             bytes.AddRange(PUtils.StringToBytes(Nickname));
             bytes.Add(Level);
