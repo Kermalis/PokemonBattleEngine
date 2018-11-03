@@ -333,6 +333,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IronDefense,
         IronTail,
         Kinesis,
+        LavaPlume,
         Leer,
         Lick,
         LusterPurge,
