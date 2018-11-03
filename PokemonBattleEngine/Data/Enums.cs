@@ -277,6 +277,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BoneClub,
         Bubble,
         BubbleBeam,
+        BugBuzz,
         BulkUp,
         CalmMind,
         Charm,
