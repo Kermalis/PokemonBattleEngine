@@ -362,6 +362,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PoisonSting,
         Pound,
         PowerGem,
+        PowerWhip,
         Psychic,
         PsychoBoost,
         QuickAttack,

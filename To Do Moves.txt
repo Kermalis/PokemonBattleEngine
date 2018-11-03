@@ -285,7 +285,6 @@ Rock Climb
 Defog
 Trick Room
 Leaf Storm
-Power Whip
 Rock Wrecker
 Cross Poison
 Gunk Shot
