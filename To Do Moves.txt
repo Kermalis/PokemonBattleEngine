@@ -280,7 +280,6 @@ Shadow Claw
 Thunder Fang
 Ice Fang
 Fire Fang
-Mud Bomb
 Psycho Cut
 Zen Headbutt
 Mirror Shot

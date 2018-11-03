@@ -344,6 +344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MeteorMash,
         MistBall,
         Moonlight, // TODO
+        MudBomb,
         MuddyWater,
         MudSlap,
         MudShot,
