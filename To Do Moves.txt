@@ -246,7 +246,6 @@ Tailwind
 Acupressure
 Metal Burst
 U-turn
-Close Combat
 Payback
 Assurance
 Embargo
