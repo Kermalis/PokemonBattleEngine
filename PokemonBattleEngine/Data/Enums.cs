@@ -265,6 +265,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AcidArmor,
         AerialAce,
         Agility,
+        AirSlash,
         Amnesia,
         AquaJet,
         AquaTail,

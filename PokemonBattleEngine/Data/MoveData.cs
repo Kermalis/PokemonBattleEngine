@@ -60,6 +60,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.AirSlash,
+                new PMoveData
+                {
+                    Type = PType.Flying, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
+                    PPTier = 4, Power = 75, Accuracy = 95, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleNotSelf
+                }
+            },
+            {
                 PMove.Amnesia,
                 new PMoveData
                 {
