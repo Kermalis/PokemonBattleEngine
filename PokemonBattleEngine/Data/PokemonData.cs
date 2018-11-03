@@ -145,7 +145,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // round
                         // echoed voice
                         // fling
-                        // charge beam
                         // volt switch
                         // thunder wave
                         // grass knot
@@ -186,6 +185,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // uproar // tutor as Pichu
                         // volt tackle // egg as pichu
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.ChargeBeam, // TM
                         PMove.DoubleTeam, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
@@ -470,7 +470,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // round
                         // echoed voice
                         // fling
-                        // charge beam
                         // volt switch
                         // thunder wave
                         // grass knot
@@ -501,6 +500,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.ChargeBeam, // TM
                         PMove.DoubleTeam, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
@@ -752,7 +752,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // attract
                         // round
-                        // charge beam
                         // shadow claw
                         // giga impact
                         // thunder wave
@@ -789,6 +788,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.CalmMind, // TM
+                        PMove.ChargeBeam, // TM
                         PMove.Cut, // HM
                         PMove.DracoMeteor, // Move Tutor
                         PMove.DragonClaw, // TM
@@ -872,7 +872,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // attract
                         // round
-                        // charge beam
                         // shadow claw
                         // giga impact
                         // thunder wave
@@ -906,6 +905,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.CalmMind, // TM
+                        PMove.ChargeBeam, // TM
                         PMove.Cut, // HM
                         PMove.DracoMeteor, // Move Tutor
                         PMove.DragonClaw, // TM
@@ -973,7 +973,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // attract
                         // round
-                        // charge beam
                         // giga impact
                         // thunder wave
                         // psych up
@@ -998,6 +997,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         PMove.CalmMind, // TM
+                        PMove.ChargeBeam, // TM
                         PMove.DoubleTeam, // TM
                         PMove.EnergyBall, // TM
                         PMove.Flash, // TM
@@ -1060,7 +1060,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // thief
                         // round
                         // fling
-                        // charge beam
                         // incinerate
                         // will-o-wisp
                         // embargo
@@ -1090,6 +1089,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sucker punch // gen 4 move tutor
                         PMove.AerialAce, // TM
                         PMove.CalmMind, // TM
+                        PMove.ChargeBeam, // TM
                         PMove.Cut, // HM
                         PMove.DarkPulse, // Move tutor
                         PMove.DoubleTeam, // TM

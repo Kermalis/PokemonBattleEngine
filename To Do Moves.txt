@@ -294,7 +294,6 @@ Grass Knot
 Chatter
 Judgment
 Bug Bite
-Charge Beam
 Wood Hammer
 Attack Order
 Defend Order

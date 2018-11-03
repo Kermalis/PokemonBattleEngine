@@ -236,6 +236,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.ChargeBeam,
+                new PMoveData
+                {
+                    Type = PType.Electric, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeRaiseUser_SPATK_By1, EffectParam = 70,
+                    PPTier = 2, Power = 50, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Charm,
                 new PMoveData
                 {
