@@ -1248,6 +1248,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.ShadowSneak,
+                new PMoveData
+                {
+                    Type = PType.Ghost, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Sharpen,
                 new PMoveData
                 {

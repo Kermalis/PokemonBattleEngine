@@ -373,6 +373,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SeedBomb,
         ShadowBall,
         ShadowPunch,
+        ShadowSneak,
         Sharpen,
         ShellSmash,
         ShockWave,
