@@ -258,6 +258,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeLowerUser_SPATK_By2:
                     HitAndMaybeChangeUserStat(PStat.SpAttack, -2, mData.EffectParam);
                     break;
+                case PMoveEffect.Hit__MaybeLowerUser_SPE_By1:
+                    HitAndMaybeChangeUserStat(PStat.Speed, -1, mData.EffectParam);
+                    break;
                 case PMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
                     HitAndMaybeChangeUserStat(PStat.Attack, +1, mData.EffectParam);
                     break;

@@ -445,6 +445,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.HammerArm,
+                new PMoveData
+                {
+                    Type = PType.Fighting, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeLowerUser_SPE_By1, EffectParam = 100,
+                    PPTier = 2, Power = 100, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Harden,
                 new PMoveData
                 {

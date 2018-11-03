@@ -237,7 +237,6 @@ Roost
 Gravity
 Miracle Eye
 Wake-Up Slap
-Hammer Arm
 Gyro Ball
 Healing Wish
 Brine
