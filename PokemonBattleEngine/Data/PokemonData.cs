@@ -765,7 +765,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // swagger
                         // substitute
                         // covet // tutor
-                        // draco meteor // tutor
                         // helping hand // tutor
                         // last resort // tutor
                         // magic coat // tutor
@@ -793,6 +792,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.CalmMind, // TM
                         PMove.Cut, // HM
+                        PMove.DracoMeteor, // Move Tutor
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.DoubleTeam, // TM
@@ -884,7 +884,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // grass knot
                         // swagger
                         // substitute
-                        // draco meteor // tutor
                         // helping hand // tutor
                         // last resort // tutor
                         // magic coat // tutor
@@ -910,6 +909,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.CalmMind, // TM
                         PMove.Cut, // HM
+                        PMove.DracoMeteor, // Move Tutor
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.DoubleTeam, // TM

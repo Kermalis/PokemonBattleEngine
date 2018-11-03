@@ -284,7 +284,6 @@ Psycho Cut
 Rock Climb
 Defog
 Trick Room
-Draco Meteor
 Discharge
 Lava Plume
 Leaf Storm

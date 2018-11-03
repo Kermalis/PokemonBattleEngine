@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 30, 31, 30, 31, 30 }, // Hidden Power Fire/70
                 EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
-                Moves = new PMove[] { PMove.DragonPulse, PMove.DragonPulse, PMove.DragonPulse, PMove.HiddenPower }, // draco meteor, surf, psyshock, hidden power fire
+                Moves = new PMove[] { PMove.DracoMeteor, PMove.DracoMeteor, PMove.DracoMeteor, PMove.HiddenPower }, // draco meteor, surf, psyshock, hidden power fire
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             cresselia = new PPokemonShell
