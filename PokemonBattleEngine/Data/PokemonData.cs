@@ -754,7 +754,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // attract
                         // round
-                        // energy ball
                         // charge beam
                         // shadow claw
                         // giga impact
@@ -798,6 +797,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.DoubleTeam, // TM
+                        PMove.EnergyBall, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
@@ -874,7 +874,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // attract
                         // round
-                        // energy ball
                         // charge beam
                         // shadow claw
                         // giga impact
@@ -915,6 +914,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
                         PMove.DoubleTeam, // TM
+                        PMove.EnergyBall, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
@@ -975,7 +975,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // attract
                         // round
-                        // energy ball
                         // charge beam
                         // giga impact
                         // thunder wave
@@ -1003,6 +1002,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         PMove.CalmMind, // TM
                         PMove.DoubleTeam, // TM
+                        PMove.EnergyBall, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM

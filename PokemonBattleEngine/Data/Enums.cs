@@ -296,6 +296,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DrillPeck,
         EggBomb,
         Ember,
+        EnergyBall,
         Extrasensory,
         ExtremeSpeed,
         FaintAttack,
