@@ -223,7 +223,6 @@ Sheer Cold
 Bullet Seed
 Icicle Spear
 Block
-Howl
 Frenzy Plant
 Bulk Up
 Bounce

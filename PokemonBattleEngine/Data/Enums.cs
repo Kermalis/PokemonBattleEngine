@@ -301,6 +301,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HeatWave,
         HiddenPower,
         HornAttack,
+        Howl,
         HydroPump,
         HyperFang,
         HyperVoice,
