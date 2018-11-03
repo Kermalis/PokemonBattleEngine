@@ -84,7 +84,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 Scale = pokemon.LocallyOwned ? 2 : 1;
 
                 // Loading the correct sprite requires checking first
-                string sss = $"{(ushort)pokemon.Shell.Species:D3}";
+                string sss = $"{(uint)pokemon.Shell.Species}";
                 // Get available resources (including sprites)
                 string[] resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
                 // Check for sss.gif where sss is the species number

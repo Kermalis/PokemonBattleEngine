@@ -92,7 +92,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             PType.Dark      // 1.5625 %
         };
 
-
         public static Dictionary<PSpecies, PPokemonData> Data = new Dictionary<PSpecies, PPokemonData>()
         {
             {
@@ -635,6 +634,25 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Unown_A,
+                new PPokemonData
+                {
+                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
+                    GenderRatio = PGender.Genderless,
+                    Type1 = PType.Psychic, Type2 = PType.Psychic,
+                    Abilities = new PAbility[] { PAbility.Levitate },
+                    MinLevel = 5, // HGSS (Ruins of Alph)
+                    LevelUpMoves = new Tuple<int, PMove>[]
+                    {
+                        Tuple.Create(1, PMove.HiddenPower),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+
+                    }
+                }
+            },
+            {
                 PSpecies.Clamperl,
                 new PPokemonData
                 {
@@ -1122,5 +1140,37 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
         };
+
+        // Formes
+        static PPokemonData()
+        {
+            Data.Add(PSpecies.Unown_B, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_C, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_D, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_E, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_F, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_G, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_H, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_I, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_J, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_K, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_L, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_M, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_N, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_O, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_P, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_Q, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_R, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_S, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_T, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_U, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_V, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_W, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_X, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_Y, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_Z, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_Exclamation, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+            Data.Add(PSpecies.Unown_Question, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+        }
     }
 }

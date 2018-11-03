@@ -103,7 +103,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal byte[] ToBytes()
         {
             var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes((ushort)Species));
+            bytes.AddRange(BitConverter.GetBytes((uint)Species));
             bytes.AddRange(PUtils.StringToBytes(Nickname));
             bytes.Add(Level);
             bytes.Add(Friendship);
@@ -122,7 +122,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             var pkmn = new PPokemonShell
             {
-                Species = (PSpecies)r.ReadUInt16(),
+                Species = (PSpecies)r.ReadUInt32(),
                 Nickname = PUtils.StringFromBytes(r),
                 Level = r.ReadByte(),
                 Friendship = r.ReadByte(),

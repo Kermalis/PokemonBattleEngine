@@ -41,7 +41,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 PokemonId = new Guid(r.ReadBytes(0x10));
                 LocallyOwned = r.ReadByte() != 0;
-                Species = (PSpecies)r.ReadUInt16();
+                Species = (PSpecies)r.ReadUInt32();
                 Nickname = PUtils.StringFromBytes(r);
                 Level = r.ReadByte();
                 HP = r.ReadUInt16();
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.AddRange(PokemonId.ToByteArray());
             bytes.Add((byte)(LocallyOwned ? 1 : 0));
-            bytes.AddRange(BitConverter.GetBytes((ushort)Species));
+            bytes.AddRange(BitConverter.GetBytes((uint)Species));
             bytes.AddRange(PUtils.StringToBytes(Nickname));
             bytes.Add(Level);
             bytes.AddRange(BitConverter.GetBytes(HP));

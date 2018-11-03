@@ -168,20 +168,48 @@ namespace Kermalis.PokemonBattleEngine.Data
         Torrent,
         MAX,
     }
-    public enum PSpecies : ushort
+    public enum PSpecies : uint
     {
         None,
         Pikachu = 25, // TODO
         Cubone = 104, // TODO
         Marowak, // TODO
-        Ditto = 132, // TODO
+        Ditto = 132,
         Pichu = 172, // TODO
         Azumarill = 184, // TODO
+        Unown_A = 201 | (0 << 0x10),
+        Unown_B = 201 | (1 << 0x10),
+        Unown_C = 201 | (2 << 0x10),
+        Unown_D = 201 | (3 << 0x10),
+        Unown_E = 201 | (4 << 0x10),
+        Unown_F = 201 | (5 << 0x10),
+        Unown_G = 201 | (6 << 0x10),
+        Unown_H = 201 | (7 << 0x10),
+        Unown_I = 201 | (8 << 0x10),
+        Unown_J = 201 | (9 << 0x10),
+        Unown_K = 201 | (10 << 0x10),
+        Unown_L = 201 | (11 << 0x10),
+        Unown_M = 201 | (12 << 0x10),
+        Unown_N = 201 | (13 << 0x10),
+        Unown_O = 201 | (14 << 0x10),
+        Unown_P = 201 | (15 << 0x10),
+        Unown_Q = 201 | (16 << 0x10),
+        Unown_R = 201 | (17 << 0x10),
+        Unown_S = 201 | (18 << 0x10),
+        Unown_T = 201 | (19 << 0x10),
+        Unown_U = 201 | (20 << 0x10),
+        Unown_V = 201 | (21 << 0x10),
+        Unown_W = 201 | (22 << 0x10),
+        Unown_X = 201 | (23 << 0x10),
+        Unown_Y = 201 | (24 << 0x10),
+        Unown_Z = 201 | (25 << 0x10),
+        Unown_Exclamation = 201 | (26 << 0x10),
+        Unown_Question = 201 | (27 << 0x10),
         Clamperl = 366, // TODO
         Latias = 380, // TODO
         Latios, // TODO
         Cresselia = 488, // TODO
-        Darkrai = 491 // TODO
+        Darkrai = 491, // TODO
     }
     public enum PMoveCategory : byte
     {
