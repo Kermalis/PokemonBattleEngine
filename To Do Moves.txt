@@ -281,7 +281,6 @@ Thunder Fang
 Ice Fang
 Fire Fang
 Psycho Cut
-Flash Cannon
 Rock Climb
 Defog
 Trick Room
