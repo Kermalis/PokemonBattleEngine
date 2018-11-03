@@ -709,6 +709,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.IceShard,
+                new PMoveData
+                {
+                    Type = PType.Ice, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.IcyWind,
                 new PMoveData
                 {
