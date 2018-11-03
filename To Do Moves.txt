@@ -284,7 +284,6 @@ Psycho Cut
 Rock Climb
 Defog
 Trick Room
-Discharge
 Lava Plume
 Leaf Storm
 Power Whip

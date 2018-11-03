@@ -288,6 +288,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         CrushClaw,
         Cut,
         DarkPulse,
+        Discharge,
         DracoMeteor,
         DragonBreath,
         DragonClaw,

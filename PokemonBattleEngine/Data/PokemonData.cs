@@ -125,7 +125,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // endeavor 30 // gen 4 pichu event
                         // feint 34
                         Tuple.Create(37, PMove.Agility),
-                        // discharge 42
+                        Tuple.Create(42, PMove.Discharge),
                         // light screen 45
                         Tuple.Create(50, PMove.ExtremeSpeed), // Gen 5 event (ExtremeSpeed Pikachu)
                         // yawn 50 // gen 4 event (Sleeping Pikachu)
