@@ -10,8 +10,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public double GetStatMultiplier(sbyte change, bool forMissing = false)
         {
             double baseVal = forMissing ? 3 : 2;
-            double numerator = Math.Min(baseVal, baseVal + change);
-            double denominator = Math.Min(baseVal, baseVal - change);
+            double numerator = Math.Max(baseVal, baseVal + change);
+            double denominator = Math.Max(baseVal, baseVal - change);
             return numerator / denominator;
         }
 
