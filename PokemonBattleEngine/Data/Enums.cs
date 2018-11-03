@@ -332,6 +332,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IcyWind,
         Inferno,
         IronDefense,
+        IronHead,
         IronTail,
         Kinesis,
         LavaPlume,

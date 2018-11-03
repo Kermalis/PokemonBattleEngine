@@ -262,11 +262,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // detect
                         // double kick
                         // endure
-                        // iron head
                         // perish song
                         // skull bash
                         // endeavor // tutor
-                        // iron head
                         // knock off
                         // low kick
                         // sleep talk
@@ -295,6 +293,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
                         PMove.IronDefense, // Move Tutor
+                        PMove.IronHead, // Egg Move / Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
@@ -370,11 +369,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // detect
                         // double kick
                         // endure
-                        // iron head
                         // perish song
                         // skull bash
                         // endeavor // tutor
-                        // iron head
                         // knock off
                         // low kick
                         // outrage
@@ -405,6 +402,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
                         PMove.IronDefense, // Move Tutor
+                        PMove.IronHead, // Egg Move / Move Tutor
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
