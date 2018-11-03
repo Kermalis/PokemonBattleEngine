@@ -228,7 +228,6 @@ Bounce
 Poison Tail
 Covet
 Volt Tackle
-Magical Leaf
 Water Sport
 Leaf Blade
 Rock Blast
