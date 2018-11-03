@@ -267,6 +267,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Agility,
         Amnesia,
         AquaJet,
+        AquaTail,
         Astonish,
         AuraSphere,
         AuroraBeam,

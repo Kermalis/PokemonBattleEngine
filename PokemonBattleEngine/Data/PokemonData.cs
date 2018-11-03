@@ -543,7 +543,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rollout 10 // Gen 3 / Gen 4 / BW 15, B2W2 10
                         Tuple.Create(13, PMove.BubbleBeam),
                         // helping hand 16 // B2W2 16
-                        // aqua tail 21 // Gen 4 / BW 47, B2W2 21
+                        Tuple.Create(21, PMove.AquaTail),
                         // double edge 25 // Gen 3 34, Gen 4 / BW 33, B2W2 25
                         // aqua ring 23 // Gen 3 / Gen 4 23 as Marill, B2W2 31
                         // superpower 42 // B2W2 42
@@ -588,8 +588,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // superpower
                         // supersonic
                         // water sport
-                        // aqua tail // tutor
-                        // bounce
+                        // bounce // tutor
                         // covet
                         // helping hand
                         // knock off
@@ -611,6 +610,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // uproar // move tutor as azurill
                         PMove.Amnesia, // Egg Move
                         PMove.AquaJet, // Egg Move
+                        PMove.AquaTail, // Move Tutor
                         PMove.BodySlam, // Egg Move
                         PMove.DoubleTeam, // TM
                         PMove.FakeTears, // Move Tutor
