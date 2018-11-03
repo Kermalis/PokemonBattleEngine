@@ -718,7 +718,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // refresh 30
                         // mist ball 35
                         Tuple.Create(40, PMove.Psychic), // Gen 3
-                        // zen headbutt 40
+                        Tuple.Create(40, PMove.ZenHeadbutt),
                         // recover 45
                         // psycho shift 50
                         Tuple.Create(50, PMove.Charm), // Gen 3
@@ -777,7 +777,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // snore
                         // tailwind
                         // trick
-                        // zen headbutt // tutor
                         // captivate // gen 4 tm
                         // defog // gen 4 hm
                         // double edge // gen 3 tutor
@@ -815,6 +814,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
+                        PMove.ZenHeadbutt, // Move Tutor
                     }
                 }
             },
@@ -841,7 +841,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // power split 75
                         // memento 5 // Gen 3 5, Gen 4 60, Gen 5 85
                         Tuple.Create(40, PMove.Psychic), // Gen 3
-                        // zen headbutt 40
+                        Tuple.Create(40, PMove.ZenHeadbutt),
                         // recover 45
                         // psycho shift 50
                         Tuple.Create(50, PMove.DragonDance), // Gen 3
@@ -895,7 +895,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // tailwind // tutor
                         // trick // tutor
                         // wonder room // tutor
-                        // zen headbutt // tutor
                         // captivate // gen 4 tm
                         // defog // gen 4 hm
                         // double edge // gen 3 tutor
@@ -932,6 +931,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
+                        PMove.ZenHeadbutt, // Move Tutor
                     }
                 }
             },
@@ -994,7 +994,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sleep talk // tutor
                         // snore // tutor
                         // trick // tutor
-                        // zen headbutt // tutor
                         // captivate // gen 4 tm
                         // endure // gen 4 tm
                         // fury cutter // gen 4 tutor
@@ -1014,6 +1013,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.ShadowBall, // TM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Toxic, // TM
+                        PMove.ZenHeadbutt, // Move Tutor
                     }
                 }
             },

@@ -411,6 +411,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Withdraw,
         XScissor,
         ZapCannon,
+        ZenHeadbutt,
         MAX
     }
 }

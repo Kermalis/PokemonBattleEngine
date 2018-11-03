@@ -1665,6 +1665,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Targets = PMoveTarget.SingleSurrounding
                 }
             },
+            {
+                PMove.ZenHeadbutt,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
+                    PPTier = 3, Power = 80, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
         };
     }
 }
