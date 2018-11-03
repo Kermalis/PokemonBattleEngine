@@ -1034,7 +1034,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(11, PMove.QuickAttack),
                         // hypnosis 20
                         // pursuit 29 // DP
-                        // faint attack 29
+                        Tuple.Create(29, PMove.FaintAttack),
                         // nightmare 38
                         Tuple.Create(47, PMove.DoubleTeam),
                         // haze 57

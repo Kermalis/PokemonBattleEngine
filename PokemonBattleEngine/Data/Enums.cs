@@ -291,6 +291,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Ember,
         Extrasensory,
         ExtremeSpeed,
+        FaintAttack,
         FakeTears,
         FeatherDance,
         FireBlast,
