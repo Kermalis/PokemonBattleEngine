@@ -377,7 +377,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             // No Guard always hits
             if (bAttacker.Shell.Ability == PAbility.NoGuard || bDefender.Shell.Ability == PAbility.NoGuard)
-                return true;
+                return false;
 
             if (mData.Accuracy == 0 // Always-hit moves
                 || PUtils.ApplyChance(mData.Accuracy, 100) // Got lucky and landed a hit
