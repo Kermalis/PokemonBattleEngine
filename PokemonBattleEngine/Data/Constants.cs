@@ -25,6 +25,8 @@
         public const byte PPMultiplier = 5; // [Default: 5]
         public const byte MaxPPUps = 3; // [Default: 3]
 
+        public const byte SleepMinTurns = 1; // [Default: 1]
+        public const byte SleepMaxTurns = 3; // [Default: 3]
         public const byte BurnDamageDenominator = 8; // [Default: 8 (1/8 damage each turn)]
         public const byte PoisonDamageDenominator = 8; // [Default: 8 (1/8 damage each turn)]
         public const byte ToxicDamageDenominator = 16; // [Default: 16 (1/16 damage increasingly each turn)]

@@ -125,6 +125,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PStatus1ChangePacket scp:
                     switch (scp.Status1)
                     {
+                        case PStatus1.Asleep: message = "fell asleep"; break;
                         case PStatus1.Burned: message = "was burned"; break;
                         case PStatus1.Frozen: message = "was frozen solid"; break;
                         case PStatus1.BadlyPoisoned:
@@ -137,6 +138,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PStatus1EndedPacket sep:
                     switch (sep.Status1)
                     {
+                        case PStatus1.Asleep: message = "woke up"; break;
                         case PStatus1.Frozen: message = "thawed out"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(sep.Status1), $"Invalid status1 ending: {sep.Status1}");
                     }
@@ -145,11 +147,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PStatus1CausedImmobilityPacket scip:
                     switch (scip.Status1)
                     {
-                        case PStatus1.Frozen: message = "is frozen solid"; break;
-                        case PStatus1.Paralyzed: message = "is paralyzed! It can't move"; break;
+                        case PStatus1.Asleep: message = "is fast asleep."; break;
+                        case PStatus1.Frozen: message = "is frozen solid!"; break;
+                        case PStatus1.Paralyzed: message = "is paralyzed! It can't move!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(scip.Status1), $"Invalid status1 causing immobility: {scip.Status1}");
                     }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scip.PokemonId).Shell.Nickname, message);
+                    Console.WriteLine("{0} {1}", PKnownInfo.Instance.Pokemon(scip.PokemonId).Shell.Nickname, message);
                     break;
                 case PStatus1CausedDamagePacket scdp:
                     switch (scdp.Status1)

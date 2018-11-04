@@ -62,7 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PStatus1 : byte
     {
         None,
-        Asleep, // TODO
+        Asleep,
         BadlyPoisoned,
         Burned,
         Frozen,

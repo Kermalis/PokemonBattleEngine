@@ -22,6 +22,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Major statuses
             switch (battler.Status1)
             {
+                case PStatus1.Asleep:
+                    battler.Status1Counter++;
+                    break;
                 case PStatus1.Burned:
                     BroadcastStatus1CausedDamage(battler);
                     DealDamage(battler, (ushort)(battler.MaxHP / PConstants.BurnDamageDenominator));
@@ -338,6 +341,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Major statuses
             switch (bAttacker.Status1)
             {
+                case PStatus1.Asleep:
+                    // Check if we can wake up
+                    if (bAttacker.Status1Counter >= bAttacker.SleepTurns)
+                    {
+                        BroadcastStatus1Ended(bAttacker);
+                        bAttacker.Status1 = PStatus1.None;
+                        return false;
+                    }
+                    // Didn't wake up
+                    BroadcastStatus1CausedImmobility(bAttacker);
+                    return true;
                 case PStatus1.Frozen:
                     // 20% chance to thaw out
                     if (PUtils.ApplyChance(20, 100))
@@ -466,6 +480,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts the change if applied
         bool ApplyStatus1IfPossible(PPokemon pkmn, PStatus1 status)
         {
+            // Cannot change status if already afflicted
             if (pkmn.Status1 != PStatus1.None)
                 return false;
 
@@ -488,6 +503,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Start toxic counter
             if (status == PStatus1.BadlyPoisoned)
                 pkmn.Status1Counter = 1;
+            // Set sleep length
+            if (status == PStatus1.Asleep)
+                pkmn.SleepTurns = (byte)PUtils.RNG.Next(PConstants.SleepMinTurns, PConstants.SleepMaxTurns + 1);
+
             BroadcastStatus1Change(pkmn);
 
             return true;

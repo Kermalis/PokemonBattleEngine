@@ -24,6 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
 
         public byte Status1Counter; // Toxic/Sleep
+        public byte SleepTurns; // Amount of turns to sleep
 
         public byte ProtectCounter; // Protect
         public bool Protected; // If true, will not take damage from most attacks this turn
