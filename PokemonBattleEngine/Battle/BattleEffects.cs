@@ -425,7 +425,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPPChanged(pkmn, move, -reduceAmt);
         }
 
-        // Returns true if the pokemon fainted
+        // Returns true if the pokemon fainted & removes it from activeBattlers
         // Broadcasts the event if it did
         bool TryFaint()
             => TryFaint(bDefender);

@@ -169,7 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void TurnEnded()
         {
-            foreach (PPokemon battler in activeBattlers)
+            foreach (PPokemon battler in activeBattlers.ToArray()) // Copy the list so a faint does not cause a collection modified exception
             {
                 battler.Status2 &= ~PStatus2.Flinching;
                 battler.Action.Decision = PDecision.None;
