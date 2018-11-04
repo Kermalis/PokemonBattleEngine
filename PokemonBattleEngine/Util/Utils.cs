@@ -9,7 +9,8 @@ namespace Kermalis.PokemonBattleEngine.Util
     {
         public static readonly Random RNG = new Random();
 
-        public static bool ApplyChance(int percentChance) => RNG.Next(0, 100) < percentChance;
+        // Returns true if you are lucky
+        public static bool ApplyChance(int chance, int outOf) => RNG.Next(0, outOf) < chance;
 
         public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
         {

@@ -32,6 +32,7 @@ Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Spectators
+* AI
 
 ----
 # PokemonBattleEngine Uses:

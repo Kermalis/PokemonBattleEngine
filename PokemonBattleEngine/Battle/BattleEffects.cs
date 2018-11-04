@@ -292,6 +292,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     ApplyStatChange(bAttacker, PStat.SpAttack, +2);
                     ApplyStatChange(bAttacker, PStat.Speed, +2);
                     break;
+                case PMoveEffect.Protect:
+                    Ef_Protect();
+                    break;
                 case PMoveEffect.RaiseUser_ATK_DEF_By1:
                     ApplyStatChange(bAttacker, PStat.Attack, +1);
                     ApplyStatChange(bAttacker, PStat.Defense, +1);
@@ -337,7 +340,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PStatus1.Frozen:
                     // 20% chance to thaw out
-                    if (PUtils.ApplyChance(20))
+                    if (PUtils.ApplyChance(20, 100))
                     {
                         BroadcastStatus1Ended(bAttacker);
                         bAttacker.Status1 = PStatus1.None;
@@ -348,7 +351,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return true;
                 case PStatus1.Paralyzed:
                     // 25% chance to be unable to move
-                    if (PUtils.ApplyChance(25))
+                    if (PUtils.ApplyChance(25, 100))
                     {
                         BroadcastStatus1CausedImmobility(bAttacker);
                         return true;
@@ -359,17 +362,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
-        // Returns true if an attack misses
+        // Returns true if an attack fails to hit
         // Broadcasts the event if it missed
+        // Broadcasts protect if protect activated
         bool AccuracyCheck()
         {
+            PMoveData mData = PMoveData.Data[bMove];
+
+            if (bDefender.Protected && mData.Flags.HasFlag(PMoveFlag.AffectedByProtect))
+            {
+                BroadcastProtect();
+                return true;
+            }
+
             // No Guard always hits
             if (bAttacker.Shell.Ability == PAbility.NoGuard || bDefender.Shell.Ability == PAbility.NoGuard)
                 return true;
 
-            PMoveData mData = PMoveData.Data[bMove];
             if (mData.Accuracy == 0 // Always-hit moves
-                || PUtils.ApplyChance(mData.Accuracy) // Got lucky and landed a hit
+                || PUtils.ApplyChance(mData.Accuracy, 100) // Got lucky and landed a hit
                 )
                 return false;
             BroadcastMiss();
@@ -501,7 +512,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (!Ef_Hit())
                 return false;
-            if (!PUtils.ApplyChance(chance))
+            if (!PUtils.ApplyChance(chance, 100))
                 return false;
             bDefender.Status2 |= PStatus2.Flinching;
             return true;
@@ -511,7 +522,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (!Ef_Hit())
                 return false;
-            if (!PUtils.ApplyChance(chance))
+            if (!PUtils.ApplyChance(chance, 100))
                 return false;
             if (!ApplyStatus1IfPossible(bDefender, status))
                 return false;
@@ -522,7 +533,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (!Ef_Hit())
                 return false;
-            if (!PUtils.ApplyChance(chance))
+            if (!PUtils.ApplyChance(chance, 100))
                 return false;
             ApplyStatChange(bDefender, stat, change);
             return true;
@@ -531,9 +542,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (!Ef_Hit())
                 return false;
-            if (!PUtils.ApplyChance(chance))
+            if (!PUtils.ApplyChance(chance, 100))
                 return false;
             ApplyStatChange(bAttacker, stat, change);
+            return true;
+        }
+
+        bool Ef_Protect()
+        {
+            // TODO: If the user goes last, fail
+            ushort chance = ushort.MaxValue;
+            for (int i = 0; i < bAttacker.ProtectCounter; i++)
+                chance /= 2;
+            bAttacker.ProtectCounter++;
+            if (!PUtils.ApplyChance(chance, ushort.MaxValue))
+            {
+                BroadcastFail();
+                return false;
+            }
+            bAttacker.Protected = true;
+            BroadcastProtect();
             return true;
         }
 

@@ -136,7 +136,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         // light screen
-                        // protect
                         // rain dance
                         // dig
                         // brick break
@@ -195,6 +194,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.ShockWave, // Gen 4 TM
@@ -240,7 +240,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         // sunny day
                         // blizzard
-                        // protect
                         // smack down
                         // earthquake
                         // dig
@@ -261,7 +260,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // ancient power // egg
                         // belly drum
                         // chip away
-                        // detect
                         // double kick
                         // endure
                         // perish song
@@ -285,6 +283,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.Detect, // Egg Move
                         PMove.DoubleTeam, // TM
                         PMove.EarthPower, // Move Tutor
                         PMove.FireBlast, // TM
@@ -299,6 +298,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSlide, // TM
@@ -346,7 +346,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sunny day
                         // blizzard
                         // hyper beam
-                        // protect
                         // smack down
                         // earthquake
                         // dig
@@ -369,7 +368,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // ancient power // egg move
                         // belly drum
                         // chip away
-                        // detect
                         // double kick
                         // endure
                         // perish song
@@ -394,6 +392,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.Detect, // Egg Move
                         PMove.DoubleTeam, // TM
                         PMove.EarthPower, // TM
                         PMove.FireBlast, // TM
@@ -409,6 +408,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IronTail, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSlide, // TM
@@ -467,7 +467,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         // light screen
-                        // protect
                         // rain dance
                         // facade
                         // rest
@@ -513,6 +512,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
                         PMove.Return, // TM
                         PMove.ShockWave, // Gen 4 TM
                         PMove.Swift, // Gen 4 Move Tutor
@@ -564,7 +564,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // blizzard
                         // hyper beam
                         // light screen
-                        // protect
                         // rain dance
                         // dig
                         // brick break
@@ -629,6 +628,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MuddyWater, // Egg Move
                         PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.Slam, // Egg Move
@@ -684,7 +684,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dive
                         // hail
                         // blizzard
-                        // protect
                         // rain dance
                         // facade
                         // rest
@@ -717,6 +716,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IcyWind, // Move Tutor
                         PMove.IronDefense, // Move Tutor
                         PMove.MuddyWater, // Egg Move
+                        PMove.Protect, // TM
                         PMove.Return, // TM
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
@@ -768,7 +768,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sunny day
                         // hyper beam
                         // light screen
-                        // protect
                         // rain dance
                         // telekinesis
                         // safeguard
@@ -829,6 +828,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
@@ -861,7 +861,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // helping hand 10
                         // safeguard 15
                         Tuple.Create(20, PMove.DragonBreath),
-                        // protect 25
+                        Tuple.Create(25, PMove.Protect),
                         // refresh 30
                         Tuple.Create(35, PMove.LusterPurge),
                         // telekinesis 70
@@ -889,7 +889,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sunny day
                         // hyper beam
                         // light screen
-                        // protect
                         // rain dance
                         // telekinesis
                         // safeguard
@@ -947,6 +946,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
@@ -993,7 +993,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sunny day
                         // hyper beam
                         // light screen
-                        // protect
                         // rain dance
                         // telekinesis
                         // safeguard
@@ -1036,6 +1035,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
                         PMove.Psychic, // TM
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
@@ -1082,7 +1082,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // taunt
                         // blizzard
                         // hyper beam
-                        // protect
                         // rain dance
                         // brick break
                         // torment
@@ -1133,6 +1132,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.PoisonJab, // TM
+                        PMove.Protect, // TM
                         PMove.Psychic, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM

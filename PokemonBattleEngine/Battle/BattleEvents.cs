@@ -29,6 +29,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bLandedCrit)
                 OnNewEvent?.Invoke(new PMoveCritPacket());
         }
+        void BroadcastProtect()
+            => OnNewEvent?.Invoke(new PPkmnProtectPacket(bDefender));
+
         void BroadcastStatChange(PPokemon pkmn, PStat stat, sbyte change, bool isTooMuch)
             => OnNewEvent?.Invoke(new PPkmnStatChangedPacket(pkmn, stat, change, isTooMuch));
         void BroadcastStatus1Change(PPokemon pkmn)
@@ -87,6 +90,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PPkmnFaintedPacket pfap:
                     Console.WriteLine("{0} fainted!", PKnownInfo.Instance.Pokemon(pfap.PokemonId).Shell.Nickname);
+                    break;
+                case PPkmnProtectPacket ppp:
+                    Console.WriteLine("{0} protected itself!", PKnownInfo.Instance.Pokemon(ppp.PokemonId).Shell.Nickname);
                     break;
                 case PMoveCritPacket _:
                     Console.WriteLine("A critical hit!");

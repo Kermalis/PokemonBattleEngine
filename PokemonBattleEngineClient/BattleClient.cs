@@ -99,17 +99,17 @@ namespace Kermalis.PokemonBattleEngineClient
                 PPUps = new byte[] { 3, 3, 3, 3 }
             };
         static readonly PTeamShell
-            team1 = new PTeamShell
+            team0 = new PTeamShell
             {
                 DisplayName = "Sasha",
                 Party = { cresselia, latios, darkrai }
             },
-            team2 = new PTeamShell
+            team1 = new PTeamShell
             {
                 DisplayName = "Jess",
                 Party = { azumarill, azumarill, azumarill }
             };
-        static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team1 : team2; // Temporary
+        static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team0 : team1; // Temporary
 
         public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Triple;
         readonly BattleView battleView;
@@ -144,6 +144,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PStatus1CausedImmobilityPacket _:
                 case PStatus1CausedDamagePacket _:
                 case PMoveFailPacket _:
+                case PPkmnProtectPacket _:
                     Send(new PResponsePacket());
                     break;
 

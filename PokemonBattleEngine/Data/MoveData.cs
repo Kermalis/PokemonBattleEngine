@@ -324,6 +324,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Detect,
+                new PMoveData
+                {
+                    Type = PType.Fighting, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Protect, EffectParam = 0,
+                    PPTier = 1, Power = 0, Accuracy = 0, Priority = +4,
+                    Flags = PMoveFlag.None,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Discharge,
                 new PMoveData
                 {
@@ -1179,6 +1190,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PPTier = 2, Power = 120, Accuracy = 85, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
                     Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
+                PMove.Protect,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Protect, EffectParam = 0,
+                    PPTier = 2, Power = 0, Accuracy = 0, Priority = +4,
+                    Flags = PMoveFlag.None,
+                    Targets = PMoveTarget.Self
                 }
             },
             {

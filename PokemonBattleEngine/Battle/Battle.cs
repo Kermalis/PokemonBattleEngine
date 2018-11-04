@@ -143,7 +143,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
 
             DetermineTurnOrder();
-            ClearTemporaryStuff();
             RunMovesInOrder();
             TurnEnded();
 
@@ -155,13 +154,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Temporary:
             for (int i = 0; i < activeBattlers.Count; i++)
                 activeBattlers[i].TurnOrder = i;
-        }
-        void ClearTemporaryStuff()
-        {
-            foreach (PPokemon battler in activeBattlers)
-            {
-                battler.Status2 &= ~PStatus2.Flinching;
-            }
         }
         void RunMovesInOrder()
         {
@@ -179,7 +171,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             foreach (PPokemon battler in activeBattlers)
             {
+                battler.Status2 &= ~PStatus2.Flinching;
                 battler.Action.Decision = PDecision.None;
+                battler.Protected = false;
+                if (battler.PreviousMove != PMove.Protect && battler.PreviousMove != PMove.Detect)
+                    battler.ProtectCounter = 0;
                 if (battler.HP > 0)
                     DoTurnEndedEffects(battler); // BattleEffects.cs
             }

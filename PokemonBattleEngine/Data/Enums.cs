@@ -286,6 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         Moonlight, // TODO
+        Protect, // TODO: If the user goes last, fail
         RaiseUser_ATK_DEF_By1,
         RaiseUser_ATK_SPE_By1,
         RaiseUser_DEF_SPDEF_By1,
@@ -324,6 +325,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         CrushClaw,
         Cut,
         DarkPulse,
+        Detect,
         Discharge,
         DracoMeteor,
         DragonBreath,
@@ -402,6 +404,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pound,
         PowerGem,
         PowerWhip,
+        Protect,
         Psychic,
         PsychoBoost,
         QuickAttack,

@@ -94,18 +94,18 @@ namespace Kermalis.PokemonBattleEngine
             Console.WriteLine("Pokémon Battle Engine Test");
             Console.WriteLine();
 
-            PTeamShell team1 = new PTeamShell
+            PTeamShell team0 = new PTeamShell
             {
                 DisplayName = "Sasha",
                 Party = { azumarill, pikachu }
             };
-            PTeamShell team2 = new PTeamShell
+            PTeamShell team1 = new PTeamShell
             {
                 DisplayName = "Jess",
                 Party = { cresselia, darkrai }
             };
 
-            PBattle battle = new PBattle(PBattleStyle.Single, team1, team2);
+            PBattle battle = new PBattle(PBattleStyle.Single, team0, team1);
             battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
             battle.Start();
             PPokemon p0_0 = PKnownInfo.Instance.LocalParty[0];
@@ -134,6 +134,7 @@ namespace Kermalis.PokemonBattleEngine
                     action = new PAction
                     {
                         PokemonId = p0_0.Id,
+                        Decision = PDecision.Fight,
                         Move = p0_0.Shell.Moves[move],
                         Targets = PTarget.FoeCenter
                     };
@@ -152,6 +153,7 @@ namespace Kermalis.PokemonBattleEngine
                     action = new PAction
                     {
                         PokemonId = p1_0.Id,
+                        Decision = PDecision.Fight,
                         Move = p1_0.Shell.Moves[move],
                         Targets = PTarget.FoeCenter
                     };

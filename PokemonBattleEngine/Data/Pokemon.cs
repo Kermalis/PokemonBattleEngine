@@ -23,7 +23,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         // These are in a set order; see BattleEffects->ApplyStatChange()
         public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
 
-        public byte Status1Counter;
+        public byte Status1Counter; // Toxic/Sleep
+
+        public byte ProtectCounter; // Protect
+        public bool Protected; // If true, will not take damage from most attacks this turn
 
         public PMove PreviousMove;
         public PAction Action;
