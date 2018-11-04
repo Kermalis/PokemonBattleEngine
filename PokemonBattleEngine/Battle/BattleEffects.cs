@@ -15,42 +15,53 @@ namespace Kermalis.PokemonBattleEngine.Battle
         double bEffectiveness, bDamageMultiplier;
         bool bLandedCrit;
 
-        void DoTurnEndedEffects(PPokemon battler)
+        void SwitchInEffects(PPokemon pkmn)
         {
-            // TODO: Limber
-
+            // Abilities
+            CureLimber(pkmn);
+        }
+        void PreMoveEffects(PPokemon pkmn)
+        {
+            // Abilities
+            CureLimber(pkmn);
+        }
+        void DoTurnEndedEffects(PPokemon pkmn)
+        {
             // Major statuses
-            switch (battler.Status1)
+            switch (pkmn.Status1)
             {
                 case PStatus1.Asleep:
-                    battler.Status1Counter++;
+                    pkmn.Status1Counter++;
                     break;
                 case PStatus1.Burned:
-                    BroadcastStatus1CausedDamage(battler);
-                    DealDamage(battler, (ushort)(battler.MaxHP / PConstants.BurnDamageDenominator));
-                    TryFaint(battler);
+                    BroadcastStatus1CausedDamage(pkmn);
+                    DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.BurnDamageDenominator));
+                    TryFaint(pkmn);
                     break;
                 case PStatus1.Poisoned:
-                    BroadcastStatus1CausedDamage(battler);
-                    DealDamage(battler, (ushort)(battler.MaxHP / PConstants.PoisonDamageDenominator));
-                    TryFaint(battler);
+                    BroadcastStatus1CausedDamage(pkmn);
+                    DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.PoisonDamageDenominator));
+                    TryFaint(pkmn);
                     break;
                 case PStatus1.BadlyPoisoned:
-                    BroadcastStatus1CausedDamage(battler);
-                    DealDamage(battler, (ushort)(battler.MaxHP * battler.Status1Counter / PConstants.ToxicDamageDenominator));
-                    if (!TryFaint(battler))
-                        battler.Status1Counter++;
+                    BroadcastStatus1CausedDamage(pkmn);
+                    DealDamage(pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PConstants.ToxicDamageDenominator));
+                    if (!TryFaint(pkmn))
+                        pkmn.Status1Counter++;
                     break;
             }
 
             // Items
-            switch (battler.Shell.Item)
+            switch (pkmn.Shell.Item)
             {
                 case PItem.Leftovers:
-                    if (HealDamage(battler, (ushort)(battler.MaxHP / PConstants.LeftoversDenominator)))
-                        BroadcastItemUsed(battler);
+                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.LeftoversDenominator)))
+                        BroadcastItemUsed(pkmn);
                     break;
             }
+
+            // Abilities
+            CureLimber(pkmn);
         }
 
         void UseMove(PPokemon attacker)
@@ -390,7 +401,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // No Guard always hits
-            if (bAttacker.Shell.Ability == PAbility.NoGuard || bDefender.Shell.Ability == PAbility.NoGuard)
+            if (bAttacker.Ability == PAbility.NoGuard || bDefender.Ability == PAbility.NoGuard)
                 return false;
 
             if (mData.Accuracy == 0 // Always-hit moves
@@ -423,6 +434,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             BroadcastHPChanged(pkmn, healAmt);
             return true;
+        }
+
+        void CureLimber(PPokemon pkmn)
+        {
+            if (pkmn.Ability == PAbility.Limber && pkmn.Status1 == PStatus1.Paralyzed)
+            {
+                BroadcastLimber(pkmn, false);
+                BroadcastStatus1Ended(pkmn);
+            }
         }
 
         // Broadcasts the event
@@ -478,36 +498,62 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns true if the status was applied
         // Broadcasts the change if applied
-        bool ApplyStatus1IfPossible(PPokemon pkmn, PStatus1 status)
+        // "tryingToForce" being true will broadcast events such as failing or ineffective types
+        bool ApplyStatus1IfPossible(PStatus1 status, bool tryingToForce)
         {
             // Cannot change status if already afflicted
-            if (pkmn.Status1 != PStatus1.None)
+            if (bDefender.Status1 != PStatus1.None)
+            {
+                if (tryingToForce)
+                    BroadcastFail();
                 return false;
+            }
 
-            PPokemonData pData = PPokemonData.Data[pkmn.Shell.Species];
+            PPokemonData pData = PPokemonData.Data[bDefender.Shell.Species];
 
-            // TODO: Limber
+            // A Pokémon with Limber cannot be paralyzed unless the attacker has mold breaker
+            if (status == PStatus1.Paralyzed && bDefender.Ability == PAbility.Limber)
+            {
+                if (tryingToForce)
+                {
+                    BroadcastLimber(bDefender, true);
+                    BroadcastEffectiveness(0);
+                }
+                return false;
+            }
 
             // An Ice type pokemon cannot be Frozen
             if (status == PStatus1.Frozen && pData.HasType(PType.Ice))
+            {
+                if (tryingToForce)
+                    BroadcastEffectiveness(0);
                 return false;
+            }
             // A Fire type pokemon cannot be burned
             if (status == PStatus1.Burned && pData.HasType(PType.Fire))
+            {
+                if (tryingToForce)
+                    BroadcastEffectiveness(0);
                 return false;
+            }
             // A Poison or Steel type pokemon cannot be poisoned or badly poisoned
             if ((status == PStatus1.BadlyPoisoned || status == PStatus1.Poisoned) && (pData.HasType(PType.Poison) || pData.HasType(PType.Steel)))
+            {
+                if (tryingToForce)
+                    BroadcastEffectiveness(0);
                 return false;
+            }
 
 
-            pkmn.Status1 = status;
+            bDefender.Status1 = status;
             // Start toxic counter
             if (status == PStatus1.BadlyPoisoned)
-                pkmn.Status1Counter = 1;
+                bDefender.Status1Counter = 1;
             // Set sleep length
             if (status == PStatus1.Asleep)
-                pkmn.SleepTurns = (byte)PUtils.RNG.Next(PConstants.SleepMinTurns, PConstants.SleepMaxTurns + 1);
+                bDefender.SleepTurns = (byte)PUtils.RNG.Next(PConstants.SleepMinTurns, PConstants.SleepMaxTurns + 1);
 
-            BroadcastStatus1Change(pkmn);
+            BroadcastStatus1Change(bDefender);
 
             return true;
         }
@@ -521,7 +567,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!TypeCheck())
                 return false;
             DealDamage();
-            BroadcastEffectiveness();
+            BroadcastEffectiveness(bEffectiveness);
             BroadcastCrit();
             if (TryFaint())
                 return false;
@@ -543,7 +589,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
                 return false;
-            if (!ApplyStatus1IfPossible(bDefender, status))
+            if (!ApplyStatus1IfPossible(status, false))
                 return false;
             return true;
         }
@@ -588,11 +634,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (AccuracyCheck())
                 return false;
-            if (!ApplyStatus1IfPossible(bDefender, PStatus1.BadlyPoisoned))
-            {
-                BroadcastFail();
+            if (!ApplyStatus1IfPossible(PStatus1.BadlyPoisoned, true))
                 return false;
-            }
             return true;
         }
     }

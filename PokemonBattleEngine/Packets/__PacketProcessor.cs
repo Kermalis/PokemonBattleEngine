@@ -41,6 +41,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PItemUsedPacket.Code: packet = new PItemUsedPacket(buffer); break;
                 case PMovePPChangedPacket.Code: packet = new PMovePPChangedPacket(buffer); break;
                 case PPkmnProtectPacket.Code: packet = new PPkmnProtectPacket(buffer); break;
+                case PAbilityLimberPacket.Code: packet = new PAbilityLimberPacket(buffer); break;
                 default: throw new ArgumentException($"Invalid packet code: {code}");
             }
 

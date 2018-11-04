@@ -156,7 +156,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Imposter, // TODO
         Levitate, // TODO
         LightningRod, // TODO
-        Limber, // TODO
+        Limber,
         MarvelScale,
         Minus, // TODO
         NoGuard,

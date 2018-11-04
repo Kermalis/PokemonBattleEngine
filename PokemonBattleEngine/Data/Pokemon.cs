@@ -17,6 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
         public byte[] PP = new byte[PConstants.NumMoves], MaxPP = new byte[PConstants.NumMoves];
 
+        public PAbility Ability;
         public PFieldPosition FieldPosition = PFieldPosition.None;
         public PStatus1 Status1;
         public PStatus2 Status2;
@@ -39,6 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PPokemon(Guid id, PPokemonShell shell)
         {
             Shell = shell;
+            Ability = Shell.Ability;
             Id = id;
             Action.PokemonId = id;
             CalculateStats();
@@ -72,6 +74,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Nature = PNature.MAX,
                 Ability = PAbility.MAX
             };
+            Ability = PAbility.MAX;
             for (int i = 0; i < PConstants.NumMoves; i++)
                 Shell.Moves[i] = PMove.MAX;
         }
@@ -145,7 +148,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             string item = Shell.Item.ToString().Replace("MAX", "???");
             string nature = Shell.Nature.ToString().Replace("MAX", "???");
-            string ability = Shell.Ability.ToString().Replace("MAX", "???");
+            string ability = Ability.ToString().Replace("MAX", "???");
             string[] moveStrs = new string[PConstants.NumMoves];
             for (int i = 0; i < PConstants.NumMoves; i++)
             {

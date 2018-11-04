@@ -4,7 +4,6 @@ Speed Boost
 Battle Armor
 Sturdy
 Damp
-Limber
 Sand Veil
 Static
 Volt Absorb

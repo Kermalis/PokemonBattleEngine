@@ -20,8 +20,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PPkmnFlinchedPacket(bAttacker));
         void BroadcastHPChanged(PPokemon pkmn, int change)
             => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, change));
-        void BroadcastEffectiveness()
-            => OnNewEvent?.Invoke(new PMoveEffectivenessPacket(bDefender, bEffectiveness));
+        void BroadcastEffectiveness(double effectiveness)
+            => OnNewEvent?.Invoke(new PMoveEffectivenessPacket(bDefender, effectiveness));
         void BroadcastFaint(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PPkmnFaintedPacket(pkmn));
         void BroadcastCrit()
@@ -48,6 +48,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PItemUsedPacket(pkmn));
         void BroadcastPPChanged(PPokemon pkmn, PMove move, int change)
             => OnNewEvent?.Invoke(new PMovePPChangedPacket(pkmn, move, change));
+        void BroadcastLimber(PPokemon pkmn, bool prevented) // Prevented or cured
+            => OnNewEvent?.Invoke(new PAbilityLimberPacket(pkmn, prevented));
 
 
 
@@ -138,11 +140,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PStatus1EndedPacket sep:
                     switch (sep.Status1)
                     {
-                        case PStatus1.Asleep: message = "woke up"; break;
-                        case PStatus1.Frozen: message = "thawed out"; break;
+                        case PStatus1.Asleep: message = "woke up!"; break;
+                        case PStatus1.Frozen: message = "thawed out!"; break;
+                        case PStatus1.Paralyzed: message = "was cured of paralysis."; break;
                         default: throw new ArgumentOutOfRangeException(nameof(sep.Status1), $"Invalid status1 ending: {sep.Status1}");
                     }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(sep.PokemonId).Shell.Nickname, message);
+                    Console.WriteLine("{0} {1}", PKnownInfo.Instance.Pokemon(sep.PokemonId).Shell.Nickname, message);
                     break;
                 case PStatus1CausedImmobilityPacket scip:
                     switch (scip.Status1)
@@ -171,6 +174,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
                     }
                     Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Nickname, message);
+                    break;
+                case PAbilityLimberPacket alp:
+                    Console.Write("{0}'s Limber: ", PKnownInfo.Instance.Pokemon(alp.PokemonId).Shell.Nickname);
                     break;
             }
         }

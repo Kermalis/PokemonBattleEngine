@@ -128,8 +128,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void Start()
         {
-            foreach (PPokemon battler in activeBattlers)
-                BroadcastSwitchIn(battler);
+            foreach (PPokemon pkmn in activeBattlers)
+                BroadcastSwitchIn(pkmn);
+            foreach (PPokemon pkmn in activeBattlers)
+                SwitchInEffects(pkmn); // BattleEffects.cs
         }
 
         public bool IsReadyToRunTurn()
@@ -163,21 +165,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PPokemon pkmn = turnOrder[i];
                 if (pkmn.HP < 1)
                     continue;
+                PreMoveEffects(pkmn); // BattleEffects.cs
                 UseMove(pkmn); // BattleEffects.cs
                 pkmn.PreviousMove = bMove;
             }
         }
         void TurnEnded()
         {
-            foreach (PPokemon battler in activeBattlers.ToArray()) // Copy the list so a faint does not cause a collection modified exception
+            foreach (PPokemon pkmn in activeBattlers.ToArray()) // Copy the list so a faint does not cause a collection modified exception
             {
-                battler.Status2 &= ~PStatus2.Flinching;
-                battler.Action.Decision = PDecision.None;
-                battler.Protected = false;
-                if (battler.PreviousMove != PMove.Protect && battler.PreviousMove != PMove.Detect)
-                    battler.ProtectCounter = 0;
-                if (battler.HP > 0)
-                    DoTurnEndedEffects(battler); // BattleEffects.cs
+                pkmn.Status2 &= ~PStatus2.Flinching;
+                pkmn.Action.Decision = PDecision.None;
+                pkmn.Protected = false;
+                if (pkmn.PreviousMove != PMove.Protect && pkmn.PreviousMove != PMove.Detect)
+                    pkmn.ProtectCounter = 0;
+                if (pkmn.HP > 0)
+                    DoTurnEndedEffects(pkmn); // BattleEffects.cs
             }
         }
     }

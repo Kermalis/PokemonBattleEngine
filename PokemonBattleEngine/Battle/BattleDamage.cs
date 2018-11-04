@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        // Returns false (and prints) if an attack is ineffective
+        // Returns false and broadcasts if an attack is ineffective
         bool TypeCheck()
         {
             PPokemonData attackerPData = PPokemonData.Data[bAttacker.Shell.Species];
@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (bEffectiveness == 0)
             {
-                BroadcastEffectiveness();
+                BroadcastEffectiveness(0);
                 return false;
             }
 
@@ -91,22 +91,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bMove == PMove.Retaliate && teams[bAttacker.Local ? 0 : 1].MonFaintedLastTurn)
                 basePower *= 2;
             // Overgrow gives a 1.5x boost to Grass attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Grass && bAttacker.Shell.Ability == PAbility.Overgrow && bAttacker.HP <= bAttacker.MaxHP / 3)
+            if (bMoveType == PType.Grass && bAttacker.Ability == PAbility.Overgrow && bAttacker.HP <= bAttacker.MaxHP / 3)
                 basePower *= 1.5;
             // Blaze gives a 1.5x boost to Fire attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Fire && bAttacker.Shell.Ability == PAbility.Blaze && bAttacker.HP <= bAttacker.MaxHP / 3)
+            if (bMoveType == PType.Fire && bAttacker.Ability == PAbility.Blaze && bAttacker.HP <= bAttacker.MaxHP / 3)
                 basePower *= 1.5;
             // Torrent gives a 1.5x boost to Water attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Water && bAttacker.Shell.Ability == PAbility.Torrent && bAttacker.HP <= bAttacker.MaxHP / 3)
+            if (bMoveType == PType.Water && bAttacker.Ability == PAbility.Torrent && bAttacker.HP <= bAttacker.MaxHP / 3)
                 basePower *= 1.5;
             // Swarm gives a 1.5x boost to Bug attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Bug && bAttacker.Shell.Ability == PAbility.Swarm && bAttacker.HP <= bAttacker.MaxHP / 3)
+            if (bMoveType == PType.Bug && bAttacker.Ability == PAbility.Swarm && bAttacker.HP <= bAttacker.MaxHP / 3)
                 basePower *= 1.5;
             // A Burned pokemon does half the damage when it is Burned unless it has the Guts ability
-            if (mData.Category == PMoveCategory.Physical && bAttacker.Status1 == PStatus1.Burned && bAttacker.Shell.Ability != PAbility.Guts)
+            if (mData.Category == PMoveCategory.Physical && bAttacker.Status1 == PStatus1.Burned && bAttacker.Ability != PAbility.Guts)
                 basePower /= 2;
             // Damage is halved when using Fire or Ice moves against a pokemon with the Thick Fat ability
-            if (bDefender.Shell.Ability == PAbility.ThickFat && (bMoveType == PType.Fire || bMoveType == PType.Ice))
+            if (bDefender.Ability == PAbility.ThickFat && (bMoveType == PType.Fire || bMoveType == PType.Ice))
                 basePower /= 2;
 
             return (ushort)basePower;
@@ -117,16 +117,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double attack = bAttacker.Attack * GetStatMultiplier(bAttacker.AttackChange);
 
             // Pokemon with the Huge Power or Pure Power ability get a 2x attack boost
-            if (bAttacker.Shell.Ability == PAbility.HugePower || bAttacker.Shell.Ability == PAbility.PurePower)
+            if (bAttacker.Ability == PAbility.HugePower || bAttacker.Ability == PAbility.PurePower)
                 attack *= 2;
             // A Cubone or Marowak holding a Thick Club gets a 2x attack boost
             if (bAttacker.Shell.Item == PItem.ThickClub && (bAttacker.Shell.Species == PSpecies.Cubone || bAttacker.Shell.Species == PSpecies.Marowak))
                 attack *= 2;
             // A pokemon with the Hustle ability gets a 1.5x attack boost
-            if (bAttacker.Shell.Ability == PAbility.Hustle)
+            if (bAttacker.Ability == PAbility.Hustle)
                 attack *= 1.5;
             // A pokemon with the Guts ability gets a 1.5x attack boost when afflicted with a status
-            if (bAttacker.Shell.Ability == PAbility.Guts && bAttacker.Status1 != PStatus1.None)
+            if (bAttacker.Ability == PAbility.Guts && bAttacker.Status1 != PStatus1.None)
                 attack *= 1.5;
             // A pokemon holding a Choice Band gets a 1.5x attack boost
             if (bAttacker.Shell.Item == PItem.ChoiceBand)
@@ -143,7 +143,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bDefender.Shell.Item == PItem.MetalPowder && bDefender.Shell.Species == PSpecies.Ditto)
                 defense *= 2;
             // A pokemon with the Marvel Scale ability gets a 1.5x defense boost when afflicted with a status
-            if (bDefender.Shell.Ability == PAbility.MarvelScale && bDefender.Status1 != PStatus1.None)
+            if (bDefender.Ability == PAbility.MarvelScale && bDefender.Status1 != PStatus1.None)
                 defense *= 1.5;
 
             return (ushort)defense;
