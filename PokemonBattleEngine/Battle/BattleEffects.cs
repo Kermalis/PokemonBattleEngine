@@ -619,12 +619,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort chance = ushort.MaxValue;
             for (int i = 0; i < bAttacker.ProtectCounter; i++)
                 chance /= 2;
-            bAttacker.ProtectCounter++;
             if (!PUtils.ApplyChance(chance, ushort.MaxValue))
             {
+                bAttacker.ProtectCounter = 0;
                 BroadcastFail();
                 return false;
             }
+            bAttacker.ProtectCounter++;
             bAttacker.Protected = true;
             BroadcastProtect();
             return true;
