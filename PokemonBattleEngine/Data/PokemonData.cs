@@ -254,7 +254,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // false swipe
                         // fling
                         // incinerate
-                        // bulldoze
                         // swagger
                         // substitute
                         // ancient power // egg
@@ -283,6 +282,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.Bulldoze, // TM
                         PMove.Detect, // Egg Move
                         PMove.DoubleTeam, // TM
                         PMove.EarthPower, // Move Tutor
@@ -362,7 +362,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // incinerate
                         // giga impact
                         // stone edge
-                        // bulldoze
                         // swagger
                         // substitute
                         // ancient power // egg move
@@ -392,6 +391,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.Bulldoze, // TM
                         PMove.Detect, // Egg Move
                         PMove.DoubleTeam, // TM
                         PMove.EarthPower, // TM
@@ -574,7 +574,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // scald
                         // fling
                         // giga impact
-                        // bulldoze
                         // work up
                         // grass knot
                         // swagger
@@ -614,6 +613,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.AquaJet, // Egg Move
                         PMove.AquaTail, // Move Tutor
                         PMove.BodySlam, // Egg Move
+                        PMove.Bulldoze, // TM
                         PMove.DoubleTeam, // TM
                         PMove.FakeTears, // Move Tutor
                         PMove.FocusBlast, // TM
@@ -782,7 +782,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // giga impact
                         // thunder wave
                         // psych up
-                        // bulldoze
                         // dream eater
                         // grass knot
                         // swagger
@@ -813,6 +812,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // whirlpool // gen 4 hm
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.Bulldoze, // TM
                         PMove.CalmMind, // TM
                         PMove.ChargeBeam, // TM
                         PMove.Cut, // HM
@@ -903,7 +903,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // giga impact
                         // thunder wave
                         // psych up
-                        // bulldoze
                         // dream eater
                         // grass knot
                         // swagger
@@ -931,6 +930,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // whirlpool // gen 4 hm
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.Bulldoze, // TM
                         PMove.CalmMind, // TM
                         PMove.ChargeBeam, // TM
                         PMove.Cut, // HM

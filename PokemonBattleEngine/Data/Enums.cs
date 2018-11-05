@@ -331,6 +331,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BubbleBeam,
         BugBuzz,
         BulkUp,
+        Bulldoze,
         BulletPunch,
         CalmMind,
         ChargeBeam,

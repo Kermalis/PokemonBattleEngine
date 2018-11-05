@@ -349,7 +349,6 @@ Water Pledge
 Fire Pledge
 Grass Pledge
 Volt Switch
-Bulldoze
 Frost Breath
 Dragon Tail
 Work Up

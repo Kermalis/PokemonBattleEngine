@@ -225,6 +225,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Bulldoze,
+                new PMoveData
+                {
+                    Type = PType.Ground, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 100,
+                    PPTier = 4, Power = 60, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllSurrounding
+                }
+            },
+            {
                 PMove.BulletPunch,
                 new PMoveData
                 {
