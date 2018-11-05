@@ -73,7 +73,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PStatus2 : uint
     {
         None,
-        Confused = 1 << 0, // TODO
+        Confused = 1 << 0,
         Cursed = 1 << 1, // TODO
         Flinching = 1 << 2,
         FocusEnergy = 1 << 3, // TODO
@@ -274,6 +274,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Fail,
         Hit,
         Hit__MaybeBurn,
+        Hit__MaybeConfuse,
         Hit__MaybeFlinch,
         Hit__MaybeFreeze,
         Hit__MaybeLowerTarget_ACC_By1,
@@ -329,6 +330,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChargeBeam,
         Charm,
         CloseCombat,
+        Confusion,
         CosmicPower,
         Crunch,
         CrushClaw,

@@ -50,7 +50,6 @@ Thunder Wave
 Earthquake
 Fissure
 Dig
-Confusion
 Hypnosis
 Rage
 Night Shade

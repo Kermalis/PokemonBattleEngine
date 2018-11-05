@@ -244,6 +244,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeBurn:
                     HitAndMaybeApplyStatus1(PStatus1.Burned, mData.EffectParam);
                     break;
+                case PMoveEffect.Hit__MaybeConfuse:
+                    Ef_Hit__MaybeConfuse(mData.EffectParam);
+                    break;
                 case PMoveEffect.Hit__MaybeFlinch:
                     Ef_Hit__MaybeFlinch(mData.EffectParam);
                     break;
