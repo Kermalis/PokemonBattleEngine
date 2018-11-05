@@ -78,9 +78,18 @@ namespace Kermalis.PokemonBattleEngine.Data
         Flinching = 1 << 2,
         FocusEnergy = 1 << 3, // TODO
         Infatuated = 1 << 4, // TODO
-        Tormented = 1 << 5, // TODO
-        Underground = 1 << 6, // TODO
-        Underwater = 1 << 7, // TODO
+        Protected = 1 << 5,
+        Tormented = 1 << 6, // TODO
+        Underground = 1 << 7, // TODO
+        Underwater = 1 << 8, // TODO
+    }
+    public enum PStatusAction : byte
+    {
+        Activated, // flinch prevented movement, protect activated, etc
+        Added, // protected itself, became paralyzed, etc
+        CausedDamage, // hurt from confusion, hurt from burn, etc
+        Cured, // limber curing paralysis
+        Ended, // woke up, no longer confused, etc
     }
     public enum PType : byte
     {

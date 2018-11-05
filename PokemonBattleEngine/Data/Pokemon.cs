@@ -28,7 +28,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte SleepTurns; // Amount of turns to sleep
 
         public byte ProtectCounter; // Protect
-        public bool Protected; // If true, will not take damage from most attacks this turn
 
         public PMove PreviousMove;
         public PAction Action;

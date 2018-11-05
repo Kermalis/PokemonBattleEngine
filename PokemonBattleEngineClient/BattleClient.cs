@@ -138,13 +138,9 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 // TODO List for UI
                 case PMoveEffectivenessPacket _:
-                case PPkmnFlinchedPacket _:
                 case PMoveMissedPacket _:
                 case PPkmnFaintedPacket _:
-                case PStatus1CausedImmobilityPacket _:
-                case PStatus1CausedDamagePacket _:
                 case PMoveFailPacket _:
-                case PPkmnProtectPacket _:
                     Send(new PResponsePacket());
                     break;
 
@@ -206,12 +202,28 @@ namespace Kermalis.PokemonBattleEngineClient
                     PBattle.ApplyStatChange(pscp);
                     Send(new PResponsePacket());
                     break;
-                case PStatus1ChangePacket scp:
-                    PKnownInfo.Instance.Pokemon(scp.PokemonId).Status1 = scp.Status1;
+                case PStatus1Packet s1p:
+                    switch (s1p.StatusAction)
+                    {
+                        case PStatusAction.Added:
+                            PKnownInfo.Instance.Pokemon(s1p.PokemonId).Status1 = s1p.Status1;
+                            break;
+                        case PStatusAction.Ended:
+                            PKnownInfo.Instance.Pokemon(s1p.PokemonId).Status1 = PStatus1.None;
+                            break;
+                    }
                     Send(new PResponsePacket());
                     break;
-                case PStatus1EndedPacket sep:
-                    PKnownInfo.Instance.Pokemon(sep.PokemonId).Status1 = PStatus1.None;
+                case PStatus2Packet s2p:
+                    switch (s2p.StatusAction)
+                    {
+                        case PStatusAction.Added:
+                            PKnownInfo.Instance.Pokemon(s2p.PokemonId).Status2 |= s2p.Status2;
+                            break;
+                        case PStatusAction.Ended:
+                            PKnownInfo.Instance.Pokemon(s2p.PokemonId).Status2 &= ~s2p.Status2;
+                            break;
+                    }
                     Send(new PResponsePacket());
                     break;
                 case PItemUsedPacket iup:

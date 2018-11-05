@@ -174,9 +174,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             foreach (PPokemon pkmn in activeBattlers.ToArray()) // Copy the list so a faint does not cause a collection modified exception
             {
-                pkmn.Status2 &= ~PStatus2.Flinching;
                 pkmn.Action.Decision = PDecision.None;
-                pkmn.Protected = false;
+                pkmn.Status2 &= ~PStatus2.Flinching;
+                pkmn.Status2 &= ~PStatus2.Protected;
                 if (pkmn.PreviousMove != PMove.Protect && pkmn.PreviousMove != PMove.Detect)
                     pkmn.ProtectCounter = 0;
                 if (pkmn.HP > 0)

@@ -28,20 +28,23 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PPkmnMovePacket.Code: packet = new PPkmnMovePacket(buffer); break;
                 case PPkmnHPChangedPacket.Code: packet = new PPkmnHPChangedPacket(buffer); break;
                 case PMoveEffectivenessPacket.Code: packet = new PMoveEffectivenessPacket(buffer); break;
-                case PPkmnFlinchedPacket.Code: packet = new PPkmnFlinchedPacket(buffer); break;
+                //case PPkmnFlinchedPacket.Code: packet = new PPkmnFlinchedPacket(buffer); break;
                 case PMoveMissedPacket.Code: packet = new PMoveMissedPacket(buffer); break;
                 case PPkmnFaintedPacket.Code: packet = new PPkmnFaintedPacket(buffer); break;
                 case PMoveCritPacket.Code: packet = new PMoveCritPacket(buffer); break;
                 case PPkmnStatChangedPacket.Code: packet = new PPkmnStatChangedPacket(buffer); break;
-                case PStatus1ChangePacket.Code: packet = new PStatus1ChangePacket(buffer); break;
-                case PStatus1EndedPacket.Code: packet = new PStatus1EndedPacket(buffer); break;
-                case PStatus1CausedImmobilityPacket.Code: packet = new PStatus1CausedImmobilityPacket(buffer); break;
-                case PStatus1CausedDamagePacket.Code: packet = new PStatus1CausedDamagePacket(buffer); break;
+                case PStatus1Packet.Code: packet = new PStatus1Packet(buffer); break;
+                case PStatus2Packet.Code: packet = new PStatus2Packet(buffer); break;
+                //case PStatus1CausedImmobilityPacket.Code: packet = new PStatus1CausedImmobilityPacket(buffer); break;
+                //case PStatus1CausedDamagePacket.Code: packet = new PStatus1CausedDamagePacket(buffer); break;
                 case PMoveFailPacket.Code: packet = new PMoveFailPacket(buffer); break;
                 case PItemUsedPacket.Code: packet = new PItemUsedPacket(buffer); break;
                 case PMovePPChangedPacket.Code: packet = new PMovePPChangedPacket(buffer); break;
-                case PPkmnProtectPacket.Code: packet = new PPkmnProtectPacket(buffer); break;
+                //case PPkmnProtectPacket.Code: packet = new PPkmnProtectPacket(buffer); break;
                 case PAbilityLimberPacket.Code: packet = new PAbilityLimberPacket(buffer); break;
+                //case PStatus2AddedPacket.Code: packet = new PStatus2AddedPacket(buffer); break;
+                //case PStatus2ActivatedPacket.Code: packet = new PStatus2ActivatedPacket(buffer); break;
+                //case PStatus2CausedDamagePacket.Code: packet = new PStatus2CausedDamagePacket(buffer); break;
                 default: throw new ArgumentException($"Invalid packet code: {code}");
             }
 

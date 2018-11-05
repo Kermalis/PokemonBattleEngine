@@ -16,8 +16,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PPkmnMovePacket(bAttacker, bMove));
         void BroadcastMiss()
             => OnNewEvent?.Invoke(new PMoveMissedPacket(bAttacker));
-        void BroadcastFlinch()
-            => OnNewEvent?.Invoke(new PPkmnFlinchedPacket(bAttacker));
         void BroadcastHPChanged(PPokemon pkmn, int change)
             => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, change));
         void BroadcastEffectiveness(double effectiveness)
@@ -29,19 +27,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bLandedCrit)
                 OnNewEvent?.Invoke(new PMoveCritPacket());
         }
-        void BroadcastProtect()
-            => OnNewEvent?.Invoke(new PPkmnProtectPacket(bDefender));
 
         void BroadcastStatChange(PPokemon pkmn, PStat stat, sbyte change, bool isTooMuch)
             => OnNewEvent?.Invoke(new PPkmnStatChangedPacket(pkmn, stat, change, isTooMuch));
-        void BroadcastStatus1Change(PPokemon pkmn)
-            => OnNewEvent?.Invoke(new PStatus1ChangePacket(pkmn));
-        void BroadcastStatus1Ended(PPokemon pkmn)
-            => OnNewEvent?.Invoke(new PStatus1EndedPacket(pkmn));
-        void BroadcastStatus1CausedImmobility(PPokemon pkmn)
-            => OnNewEvent?.Invoke(new PStatus1CausedImmobilityPacket(pkmn));
-        void BroadcastStatus1CausedDamage(PPokemon pkmn)
-            => OnNewEvent?.Invoke(new PStatus1CausedDamagePacket(pkmn));
+        void BroadcastStatus1(PPokemon pkmn, PStatusAction statusAction)
+            => OnNewEvent?.Invoke(new PStatus1Packet(pkmn, statusAction));
+        void BroadcastStatus2(PPokemon pkmn, PStatus2 status, PStatusAction statusAction)
+            => OnNewEvent?.Invoke(new PStatus2Packet(pkmn, status, statusAction));
         void BroadcastFail()
             => OnNewEvent?.Invoke(new PMoveFailPacket());
         void BroadcastItemUsed(PPokemon pkmn)
@@ -84,17 +76,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mep.PokemonId).Shell.Nickname);
                     break;
-                case PPkmnFlinchedPacket pflp:
-                    Console.WriteLine("{0} flinched and couldn't move!", PKnownInfo.Instance.Pokemon(pflp.PokemonId).Shell.Nickname);
-                    break;
                 case PMoveMissedPacket mmp:
                     Console.WriteLine("{0}'s attack missed!", PKnownInfo.Instance.Pokemon(mmp.PokemonId).Shell.Nickname);
                     break;
                 case PPkmnFaintedPacket pfap:
                     Console.WriteLine("{0} fainted!", PKnownInfo.Instance.Pokemon(pfap.PokemonId).Shell.Nickname);
-                    break;
-                case PPkmnProtectPacket ppp:
-                    Console.WriteLine("{0} protected itself!", PKnownInfo.Instance.Pokemon(ppp.PokemonId).Shell.Nickname);
                     break;
                 case PMoveCritPacket _:
                     Console.WriteLine("A critical hit!");
@@ -124,48 +110,78 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     Console.WriteLine("{0}'s {1} {2}!", PKnownInfo.Instance.Pokemon(pscp.PokemonId).Shell.Nickname, pscp.Stat, message);
                     break;
-                case PStatus1ChangePacket scp:
-                    switch (scp.Status1)
+                case PStatus1Packet s1p:
+                    switch (s1p.Status1)
                     {
-                        case PStatus1.Asleep: message = "fell asleep"; break;
-                        case PStatus1.Burned: message = "was burned"; break;
-                        case PStatus1.Frozen: message = "was frozen solid"; break;
+                        case PStatus1.Asleep:
+                            switch (s1p.StatusAction)
+                            {
+                                case PStatusAction.Activated: message = "{0} is fast asleep."; break;
+                                case PStatusAction.Added: message = "{0} fell asleep!"; break;
+                                case PStatusAction.Ended: message = "{0} woke up!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid asleep action: {s1p.StatusAction}");
+                            }
+                            break;
                         case PStatus1.BadlyPoisoned:
-                        case PStatus1.Poisoned: message = "was poisoned"; break;
-                        case PStatus1.Paralyzed: message = "is paralyzed! It may be unable to move"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(scp.Status1), $"Invalid status1 change: {scp.Status1}");
+                        case PStatus1.Poisoned:
+                            switch (s1p.StatusAction)
+                            {
+                                case PStatusAction.Added: message = "{0} was poisoned!"; break;
+                                case PStatusAction.CausedDamage: message = "{0} was hurt by poison!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid poisoned action: {s1p.StatusAction}");
+                            }
+                            break;
+                        case PStatus1.Burned:
+                            switch (s1p.StatusAction)
+                            {
+                                case PStatusAction.Added: message = "{0} was burned!"; break;
+                                case PStatusAction.CausedDamage: message = "{0} was hurt by its burn!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid burned action: {s1p.StatusAction}");
+                            }
+                            break;
+                        case PStatus1.Frozen:
+                            switch (s1p.StatusAction)
+                            {
+                                case PStatusAction.Activated: message = "{0} is frozen solid!"; break;
+                                case PStatusAction.Added: message = "{0} was frozen solid!"; break;
+                                case PStatusAction.Ended: message = "{0} thawed out!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid frozen action: {s1p.StatusAction}");
+                            }
+                            break;
+                        case PStatus1.Paralyzed:
+                            switch (s1p.StatusAction)
+                            {
+                                case PStatusAction.Activated: message = "{0} is paralyzed! It can't move!"; break;
+                                case PStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
+                                case PStatusAction.Cured: message = "{0} was cured of paralysis."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid paralyzed action: {s1p.StatusAction}");
+                            }
+                            break;
+                        default: throw new ArgumentOutOfRangeException(nameof(s1p.Status1), $"Invalid status1: {s1p.Status1}");
                     }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scp.PokemonId).Shell.Nickname, message);
+                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s1p.PokemonId).Shell.Nickname);
                     break;
-                case PStatus1EndedPacket sep:
-                    switch (sep.Status1)
+                case PStatus2Packet s2p:
+                    switch (s2p.Status2)
                     {
-                        case PStatus1.Asleep: message = "woke up!"; break;
-                        case PStatus1.Frozen: message = "thawed out!"; break;
-                        case PStatus1.Paralyzed: message = "was cured of paralysis."; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(sep.Status1), $"Invalid status1 ending: {sep.Status1}");
+                        case PStatus2.Flinching:
+                            switch (s2p.StatusAction)
+                            {
+                                case PStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid flinching action: {s2p.StatusAction}");
+                            }
+                            break;
+                        case PStatus2.Protected:
+                            switch (s2p.StatusAction)
+                            {
+                                case PStatusAction.Activated:
+                                case PStatusAction.Added: message = "{0} protected itself!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid protected action: {s2p.StatusAction}");
+                            }
+                            break;
+                        default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
-                    Console.WriteLine("{0} {1}", PKnownInfo.Instance.Pokemon(sep.PokemonId).Shell.Nickname, message);
-                    break;
-                case PStatus1CausedImmobilityPacket scip:
-                    switch (scip.Status1)
-                    {
-                        case PStatus1.Asleep: message = "is fast asleep."; break;
-                        case PStatus1.Frozen: message = "is frozen solid!"; break;
-                        case PStatus1.Paralyzed: message = "is paralyzed! It can't move!"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(scip.Status1), $"Invalid status1 causing immobility: {scip.Status1}");
-                    }
-                    Console.WriteLine("{0} {1}", PKnownInfo.Instance.Pokemon(scip.PokemonId).Shell.Nickname, message);
-                    break;
-                case PStatus1CausedDamagePacket scdp:
-                    switch (scdp.Status1)
-                    {
-                        case PStatus1.Burned: message = "was hurt by its burn"; break;
-                        case PStatus1.BadlyPoisoned:
-                        case PStatus1.Poisoned: message = "was hurt by poison"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(scdp.Status1), $"Invalid status1 causing damage: {scdp.Status1}");
-                    }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(scdp.PokemonId).Shell.Nickname, message);
+                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s2p.PokemonId).Shell.Nickname);
                     break;
                 case PItemUsedPacket iup:
                     switch (iup.Item)
