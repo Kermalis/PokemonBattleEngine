@@ -451,6 +451,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RazorShell,
         Retaliate, // TODO
         Return,
+        RockClimb,
         RockPolish,
         RockSlide,
         RockSmash,

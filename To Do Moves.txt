@@ -275,7 +275,6 @@ Thunder Fang
 Ice Fang
 Fire Fang
 Psycho Cut
-Rock Climb
 Defog
 Trick Room
 Leaf Storm
