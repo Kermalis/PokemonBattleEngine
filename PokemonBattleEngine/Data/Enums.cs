@@ -313,6 +313,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         None,
         Acid,
         AcidArmor,
+        AcidSpray,
         AerialAce,
         Agility,
         AirSlash,
