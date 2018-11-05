@@ -1101,7 +1101,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dream eater
                         // swagger
                         // substitute
-                        // snarl
                         // drain punch // move tutor
                         // foul play // move tutor
                         // knock off // move tutor
@@ -1142,6 +1141,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.ShadowBall, // TM
                         PMove.ShockWave, // Gen 4 TM
                         PMove.SludgeBomb, // TM
+                        PMove.Snarl, // TM
                         PMove.Strength, // HM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.SwordsDance, // TM

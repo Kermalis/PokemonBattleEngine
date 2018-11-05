@@ -469,6 +469,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SludgeWave,
         Smog,
         SmokeScreen,
+        Snarl,
         Spark,
         SteelWing,
         Strength,

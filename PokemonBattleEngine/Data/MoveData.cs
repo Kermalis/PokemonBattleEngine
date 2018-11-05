@@ -1732,6 +1732,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Snarl,
+                new PMoveData
+                {
+                    Type = PType.Dark, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPATK_By1, EffectParam = 100,
+                    PPTier = 3, Power = 55, Accuracy = 95, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.SoundBased,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.Spark,
                 new PMoveData
                 {
