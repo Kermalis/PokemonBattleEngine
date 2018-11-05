@@ -29,9 +29,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Major statuses
             switch (pkmn.Status1)
             {
-                case PStatus1.Asleep:
-                    pkmn.Status1Counter++; // TODO: Does this go after using a move, or does it go here?
-                    break;
                 case PStatus1.Burned:
                     BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.BurnDamageDenominator));
@@ -171,6 +168,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // TODO: Find a better place for this..?
             if (attacker.Status2.HasFlag(PStatus2.Confused))
                 attacker.ConfusionCounter++;
+            if (attacker.Status1 == PStatus1.Asleep)
+                attacker.Status1Counter++;
 
             bAttacker = attacker;
             bMove = attacker.Action.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
