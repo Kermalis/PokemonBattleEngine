@@ -112,7 +112,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(1, PMove.Charm), // As Pichu
                         Tuple.Create(5, PMove.TailWhip),
                         // follow me 5 // gen 3 pichu event
-                        // teeter dance 5 // gen 3 pichu event
+                        Tuple.Create(5, PMove.TeeterDance), // Gen 3 Pichu Event
                         // thunder wave 8 // 8 As Pichu, 10
                         Tuple.Create(11, PMove.SweetKiss), // As Pichu
                         Tuple.Create(13, PMove.QuickAttack),
@@ -458,7 +458,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(1, PMove.Charm),
                         Tuple.Create(5, PMove.TailWhip),
                         // follow me 5 // Gen 3 event (PokéPark Egg Pichu)
-                        // teeter dance 5 // Gen 3 event (Teeter Dance Pichu, Pokémon Stamp Ruby and Sapphire Contest Pichu)
+                        Tuple.Create(5, PMove.TeeterDance), // Gen 3 Event (Teeter Dance Pichu, Pokémon Stamp Ruby and Sapphire Contest Pichu)
                         // thunder wave 8 // Gen 3 8, Gen 4 / Gen 5 10
                         Tuple.Create(11, PMove.SweetKiss), // Gen 3
                         Tuple.Create(13, PMove.SweetKiss), // Gen 4 / 5

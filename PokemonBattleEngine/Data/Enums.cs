@@ -492,6 +492,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tackle,
         TailGlow,
         TailWhip,
+        TeeterDance,
         Teleport,
         Tickle,
         Thunder,
