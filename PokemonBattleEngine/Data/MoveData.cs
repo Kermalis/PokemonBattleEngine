@@ -1501,6 +1501,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.SludgeWave,
+                new PMoveData
+                {
+                    Type = PType.Poison, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybePoison, EffectParam = 10,
+                    PPTier = 2, Power = 95, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllSurrounding
+                }
+            },
+            {
                 PMove.Smog,
                 new PMoveData
                 {

@@ -443,6 +443,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Slam,
         Sludge,
         SludgeBomb,
+        SludgeWave,
         Smog,
         SmokeScreen,
         Spark,
