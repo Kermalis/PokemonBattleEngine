@@ -94,7 +94,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case -2: message = "harshly fell"; break;
                         case -1: message = "fell"; break;
                         case +1: message = "rose"; break;
-                        case +2: message = "sharply rose"; break;
+                        case +2: message = "rose sharply"; break;
                         default:
                             if (pscp.IsTooMuch && pscp.Change < 0)
                                 message = "won't go lower";

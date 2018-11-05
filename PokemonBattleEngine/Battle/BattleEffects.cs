@@ -349,6 +349,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     ApplyStatChange(bAttacker, PStat.SpDefense, +1);
                     ApplyStatChange(bAttacker, PStat.Speed, +1);
                     break;
+                case PMoveEffect.RaiseUser_SPE_By2_ATK_By1:
+                    ApplyStatChange(bAttacker, PStat.Speed, +2);
+                    ApplyStatChange(bAttacker, PStat.Attack, +1);
+                    break;
                 case PMoveEffect.Toxic:
                     TryForceStatus1(PStatus1.BadlyPoisoned);
                     break;

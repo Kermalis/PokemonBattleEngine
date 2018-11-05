@@ -337,7 +337,6 @@ Scald
 Heal Pulse
 Hex
 Sky Drop
-Shift Gear
 Circle Throw
 Incinerate
 Quash

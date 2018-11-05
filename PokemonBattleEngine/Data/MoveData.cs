@@ -1512,6 +1512,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.ShiftGear,
+                new PMoveData
+                {
+                    Type = PType.Steel, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.RaiseUser_SPE_By2_ATK_By1, EffectParam = 0,
+                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.ShockWave,
                 new PMoveData
                 {

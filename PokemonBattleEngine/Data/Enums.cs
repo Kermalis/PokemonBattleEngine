@@ -305,6 +305,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_DEF_SPDEF_By1,
         RaiseUser_SPATK_SPDEF_By1,
         RaiseUser_SPATK_SPDEF_SPE_By1,
+        RaiseUser_SPE_By2_ATK_By1,
         Toxic,
         Transform, // TODO
     }
@@ -447,6 +448,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShadowSneak,
         Sharpen,
         ShellSmash,
+        ShiftGear,
         ShockWave,
         Slam,
         Sludge,
