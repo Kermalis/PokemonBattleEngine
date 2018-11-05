@@ -449,6 +449,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ScaryFace,
         Scratch,
         Screech,
+        SearingShot,
         SeedBomb,
         SeedFlare,
         ShadowBall,

@@ -1512,6 +1512,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.SearingShot,
+                new PMoveData
+                {
+                    Type = PType.Fire, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeBurn, EffectParam = 30,
+                    PPTier = 1, Power = 100, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.SeedBomb,
                 new PMoveData
                 {
