@@ -460,6 +460,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SteelWing,
         Strength,
         StringShot,
+        StruggleBug,
         SweetScent,
         Swift,
         SwordsDance,

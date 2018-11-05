@@ -1644,6 +1644,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.StruggleBug,
+                new PMoveData
+                {
+                    Type = PType.Bug, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPATK_By1, EffectParam = 100,
+                    PPTier = 4, Power = 30, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.SweetScent,
                 new PMoveData
                 {
