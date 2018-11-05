@@ -170,6 +170,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.BoltStrike,
+                new PMoveData
+                {
+                    Type = PType.Electric, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 20,
+                    PPTier = 1, Power = 130, Accuracy = 85, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.BoneClub,
                 new PMoveData
                 {
