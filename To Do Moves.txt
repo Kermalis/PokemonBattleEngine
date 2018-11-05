@@ -318,7 +318,6 @@ Magic Room
 Smack Down
 Storm Throw
 Flame Burst
-Quiver Dance
 Heavy Slam
 Synchronoise
 Electro Ball

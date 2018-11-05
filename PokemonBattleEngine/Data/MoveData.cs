@@ -1259,6 +1259,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.QuiverDance,
+                new PMoveData
+                {
+                    Type = PType.Bug, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Retaliate,
                 new PMoveData
                 {

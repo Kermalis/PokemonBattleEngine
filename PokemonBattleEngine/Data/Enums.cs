@@ -302,6 +302,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_ATK_SPE_By1,
         RaiseUser_DEF_SPDEF_By1,
         RaiseUser_SPATK_SPDEF_By1,
+        RaiseUser_SPATK_SPDEF_SPE_By1,
         Toxic,
         Transform, // TODO
     }
@@ -421,6 +422,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Psychic,
         PsychoBoost,
         QuickAttack,
+        QuiverDance,
         Retaliate, // TODO
         Return,
         RockPolish,
