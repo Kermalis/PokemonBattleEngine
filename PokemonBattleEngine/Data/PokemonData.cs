@@ -586,7 +586,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // sing
                         // soak
                         // superpower
-                        // supersonic
                         // water sport
                         // bounce // tutor
                         // covet
@@ -632,6 +631,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.RockSmash, // TM
                         PMove.Slam, // Egg Move
                         PMove.Strength, // HM
+                        PMove.Supersonic, // Egg Move
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Tickle, // Egg Move
                         PMove.Toxic, // TM
@@ -698,7 +698,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // endure
                         // mud sport
                         // refresh
-                        // supersonic
                         // water pulse
                         // sleep talk // tutor
                         // snore
@@ -718,6 +717,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MuddyWater, // Egg Move
                         PMove.Protect, // TM
                         PMove.Return, // TM
+                        PMove.Supersonic, // Egg Move
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
                     }

@@ -484,6 +484,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Strength,
         StringShot,
         StruggleBug,
+        Supersonic,
         SweetScent,
         Swift,
         SwordsDance,

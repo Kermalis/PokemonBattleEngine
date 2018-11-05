@@ -22,7 +22,6 @@ Twineedle
 Pin Missile
 Roar
 Sing
-Supersonic
 Sonic Boom
 Disable
 Mist
