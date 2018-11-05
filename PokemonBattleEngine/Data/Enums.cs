@@ -287,6 +287,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeLowerUser_DEF_SPDEF_By1,
         Hit__MaybeLowerUser_SPATK_By2,
         Hit__MaybeLowerUser_SPE_By1,
+        Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1,
         Hit__MaybeParalyze,
         Hit__MaybePoison,
         Hit__MaybeRaiseUser_ATK_By1,
@@ -491,6 +492,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Toxic,
         Transform, // TODO
         VacuumWave,
+        VCreate,
         ViceGrip,
         VineWhip,
         VitalThrow,

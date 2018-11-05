@@ -1974,6 +1974,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.VCreate,
+                new PMoveData
+                {
+                    Type = PType.Fire, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1, EffectParam = 100,
+                    PPTier = 1, Power = 180, Accuracy = 95, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.ViceGrip,
                 new PMoveData
                 {
