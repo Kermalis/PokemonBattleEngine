@@ -508,6 +508,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         VitalThrow,
         Waterfall,
         WaterGun,
+        WaterPulse,
         WingAttack,
         Withdraw,
         Workup,

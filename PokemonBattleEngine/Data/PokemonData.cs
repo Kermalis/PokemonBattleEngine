@@ -604,7 +604,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
-                        // water pulse // gen 4 tm
                         // whirlpool // gen 4 HM
                         // bounce // move tutor as azurill / marill
                         // uproar // move tutor as azurill
@@ -637,6 +636,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Tickle, // Egg Move
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
+                        PMove.WaterPulse, // Gen 4 TM
                         PMove.Workup, // TM
                     }
                 }
@@ -699,7 +699,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // endure
                         // mud sport
                         // refresh
-                        // water pulse
                         // sleep talk // tutor
                         // snore
                         // captivate // gen 4 tm
@@ -721,6 +720,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Supersonic, // Egg Move
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
+                        PMove.WaterPulse, // Egg Move
                     }
                 }
             },
@@ -809,7 +809,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         // sucker punch // gen 4 tutor
                         // twister // gen 4 tutor
-                        // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
@@ -841,6 +840,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
+                        PMove.WaterPulse, // Gen 4 TM
                         PMove.ZenHeadbutt, // Move Tutor
                     }
                 }
@@ -927,7 +927,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         // twister // gen 4 tutor
-                        // water pulse // gen 4 tm
                         // whirlpool // gen 4 hm
                         PMove.AerialAce, // TM
                         PMove.BodySlam, // Gen 3 Move Tutor
@@ -959,6 +958,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
+                        PMove.WaterPulse, // Gen 4 TM
                         PMove.ZenHeadbutt, // Move Tutor
                     }
                 }
