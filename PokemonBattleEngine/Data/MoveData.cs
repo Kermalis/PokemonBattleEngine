@@ -929,6 +929,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.LowSweep,
+                new PMoveData
+                {
+                    Type = PType.Fighting, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 100,
+                    PPTier = 4, Power = 60, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.LusterPurge,
                 new PMoveData
                 {

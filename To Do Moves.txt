@@ -322,7 +322,6 @@ Heavy Slam
 Synchronoise
 Electro Ball
 Soak
-Low Sweep
 Acid Spray
 Foul Play
 Simple Beam

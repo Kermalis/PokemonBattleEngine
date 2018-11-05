@@ -394,6 +394,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LavaPlume,
         Leer,
         Lick,
+        LowSweep,
         LusterPurge,
         MachPunch,
         MagicalLeaf,
