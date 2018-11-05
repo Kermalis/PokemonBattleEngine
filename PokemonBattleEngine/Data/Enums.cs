@@ -422,6 +422,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MudSlap,
         MudShot,
         NastyPlot,
+        NightDaze,
         Octazooka,
         Overheat,
         Peck,
