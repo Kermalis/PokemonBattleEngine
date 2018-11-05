@@ -396,6 +396,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IceBeam,
         IcePunch,
         IceShard,
+        IcicleCrash,
         IcyWind,
         Inferno,
         IronDefense,

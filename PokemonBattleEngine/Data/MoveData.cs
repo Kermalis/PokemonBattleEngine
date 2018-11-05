@@ -929,6 +929,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.IcicleCrash,
+                new PMoveData
+                {
+                    Type = PType.Ice, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
+                    PPTier = 2, Power = 85, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.IcyWind,
                 new PMoveData
                 {
