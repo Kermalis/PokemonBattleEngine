@@ -282,7 +282,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1:
                     if (HitAndMaybeChangeUserStat(PStat.Defense, -1, mData.EffectParam))
+                    {
                         ApplyStatChange(bAttacker, PStat.SpDefense, -1);
+                    }
                     break;
                 case PMoveEffect.Hit__MaybeLowerUser_SPATK_By2:
                     HitAndMaybeChangeUserStat(PStat.SpAttack, -2, mData.EffectParam);
@@ -636,13 +638,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
-                return true;
-            if (!bDefender.Status2.HasFlag(PStatus2.Confused))
-            {
-                bDefender.Status2 |= PStatus2.Confused;
-                bDefender.ConfusionTurns = (byte)(PUtils.RNG.Next(PConstants.ConfusionMinTurns, PConstants.ConfusionMaxTurns + 1) + 1);
-                BroadcastStatus2(bDefender, PStatus2.Confused, PStatusAction.Added);
-            }
+                return false;
+            if (bDefender.Status2.HasFlag(PStatus2.Confused))
+                return false;
+            bDefender.Status2 |= PStatus2.Confused;
+            bDefender.ConfusionTurns = (byte)(PUtils.RNG.Next(PConstants.ConfusionMinTurns, PConstants.ConfusionMaxTurns + 1) + 1);
+            BroadcastStatus2(bDefender, PStatus2.Confused, PStatusAction.Added);
             return true;
         }
         bool Ef_Hit__MaybeFlinch(int chance)
@@ -650,7 +651,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
-                return true;
+                return false;
             bDefender.Status2 |= PStatus2.Flinching;
             return true;
         }
@@ -668,9 +669,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
-                return true;
+                return false;
             if (!ApplyStatus1IfPossible(status, false))
-                return true;
+                return false;
             return true;
         }
 
@@ -679,7 +680,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
-                return true;
+                return false;
             ApplyStatChange(bDefender, stat, change);
             return true;
         }
@@ -688,7 +689,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
-                return true;
+                return false;
             ApplyStatChange(bAttacker, stat, change);
             return true;
         }
