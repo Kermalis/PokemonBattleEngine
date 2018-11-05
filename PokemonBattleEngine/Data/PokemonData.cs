@@ -762,7 +762,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fly
                         // surf
                         // dive
-                        // hone claws
                         // psyshock
                         // roar
                         // sunny day
@@ -825,6 +824,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
+                        PMove.HoneClaws, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
@@ -883,7 +883,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fly
                         // surf
                         // dive
-                        // hone claws
                         // psyshock
                         // roar
                         // sunny day
@@ -943,6 +942,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
+                        PMove.HoneClaws, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
@@ -974,7 +974,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     ShinyLocked = false,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
-                        // confusion 1
+                        Tuple.Create(1, PMove.Confusion),
                         Tuple.Create(1, PMove.DoubleTeam),
                         // safeguard 11
                         // mist 20

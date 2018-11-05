@@ -297,6 +297,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         Moonlight, // TODO
         Protect, // TODO: If the user goes last, fail
+        RaiseUser_ATK_ACC_By1,
         RaiseUser_ATK_DEF_By1,
         RaiseUser_ATK_SPE_By1,
         RaiseUser_DEF_SPDEF_By1,
@@ -370,6 +371,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Headbutt,
         HeatWave,
         HiddenPower,
+        HoneClaws,
         HornAttack,
         Howl,
         HydroPump,

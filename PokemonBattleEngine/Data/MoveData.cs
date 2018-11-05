@@ -709,6 +709,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.HoneClaws,
+                new PMoveData
+                {
+                    Type = PType.Dark, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.RaiseUser_ATK_ACC_By1, EffectParam = 0,
+                    PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.HornAttack,
                 new PMoveData
                 {

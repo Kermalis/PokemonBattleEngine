@@ -316,6 +316,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Protect:
                     Ef_Protect();
                     break;
+                case PMoveEffect.RaiseUser_ATK_ACC_By1:
+                    ApplyStatChange(bAttacker, PStat.Attack, +1);
+                    ApplyStatChange(bAttacker, PStat.Accuracy, +1);
+                    break;
                 case PMoveEffect.RaiseUser_ATK_DEF_By1:
                     ApplyStatChange(bAttacker, PStat.Attack, +1);
                     ApplyStatChange(bAttacker, PStat.Defense, +1);
