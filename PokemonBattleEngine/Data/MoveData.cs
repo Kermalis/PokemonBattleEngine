@@ -269,6 +269,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Coil,
+                new PMoveData
+                {
+                    Type = PType.Poison, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.RaiseUser_ATK_DEF_ACC_By1, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Confusion,
                 new PMoveData
                 {

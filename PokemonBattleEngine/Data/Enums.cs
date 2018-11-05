@@ -300,6 +300,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Protect, // TODO: If the user goes last, fail
         RaiseUser_ATK_ACC_By1,
         RaiseUser_ATK_DEF_By1,
+        RaiseUser_ATK_DEF_ACC_By1,
         RaiseUser_ATK_SPE_By1,
         RaiseUser_DEF_SPDEF_By1,
         RaiseUser_SPATK_SPDEF_By1,
@@ -333,6 +334,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChargeBeam,
         Charm,
         CloseCombat,
+        Coil,
         Confusion,
         CosmicPower,
         Crunch,

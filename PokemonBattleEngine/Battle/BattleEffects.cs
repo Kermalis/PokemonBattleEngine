@@ -327,6 +327,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     ApplyStatChange(bAttacker, PStat.Attack, +1);
                     ApplyStatChange(bAttacker, PStat.Defense, +1);
                     break;
+                case PMoveEffect.RaiseUser_ATK_DEF_ACC_By1:
+                    ApplyStatChange(bAttacker, PStat.Attack, +1);
+                    ApplyStatChange(bAttacker, PStat.Defense, +1);
+                    ApplyStatChange(bAttacker, PStat.Accuracy, +1);
+                    break;
                 case PMoveEffect.RaiseUser_ATK_SPE_By1:
                     ApplyStatChange(bAttacker, PStat.Attack, +1);
                     ApplyStatChange(bAttacker, PStat.Speed, +1);
