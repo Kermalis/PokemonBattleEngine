@@ -368,6 +368,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FaintAttack,
         FakeTears,
         FeatherDance,
+        FieryDance,
         FireBlast,
         FirePunch,
         FlameCharge,
