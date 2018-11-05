@@ -351,7 +351,6 @@ Grass Pledge
 Volt Switch
 Frost Breath
 Dragon Tail
-Work Up
 Electroweb
 Wild Charge
 Drill Run

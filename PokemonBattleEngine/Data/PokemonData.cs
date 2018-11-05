@@ -574,7 +574,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // scald
                         // fling
                         // giga impact
-                        // work up
                         // grass knot
                         // swagger
                         // substitute
@@ -637,6 +636,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Tickle, // Egg Move
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
+                        PMove.Workup, // TM
                     }
                 }
             },
