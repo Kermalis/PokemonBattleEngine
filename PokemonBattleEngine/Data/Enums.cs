@@ -375,6 +375,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FocusBlast,
         ForcePalm,
         Frustration,
+        Glaciate,
         Growl,
         GunkShot,
         HammerArm,
