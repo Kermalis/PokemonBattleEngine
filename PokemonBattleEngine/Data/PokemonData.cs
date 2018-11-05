@@ -167,7 +167,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // helping hand
                         // knock off
                         // magnet rise
-                        // signal beam
                         // sleep talk
                         // snore
                         // captivate // gen 4 tm
@@ -198,6 +197,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.ShockWave, // Gen 4 TM
+                        PMove.SignalBeam, // Move Tutor
                         PMove.Strength, // HM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Tickle, // Egg Move
@@ -1015,7 +1015,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // magic coat // tutor
                         // magic room // tutor
                         // recycle // tutor
-                        // signal beam // tutor
                         // skill swap // tutor
                         // sleep talk // tutor
                         // snore // tutor
@@ -1039,6 +1038,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Psychic, // TM
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
+                        PMove.SignalBeam, // Move Tutor
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Toxic, // TM
                         PMove.ZenHeadbutt, // Move Tutor

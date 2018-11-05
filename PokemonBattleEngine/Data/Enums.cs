@@ -470,6 +470,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Sharpen,
         ShellSmash,
         ShiftGear,
+        SignalBeam,
         ShockWave,
         Slam,
         Sludge,

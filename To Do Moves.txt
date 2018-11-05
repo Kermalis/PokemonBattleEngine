@@ -209,7 +209,6 @@ Odor Sleuth
 Silver Wind
 Grass Whistle
 Water Spout
-Signal Beam
 Sky Uppercut
 Sand Tomb
 Sheer Cold

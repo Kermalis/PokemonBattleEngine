@@ -1721,6 +1721,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.SignalBeam,
+                new PMoveData
+                {
+                    Type = PType.Bug, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeConfuse, EffectParam = 10,
+                    PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.ShockWave,
                 new PMoveData
                 {
