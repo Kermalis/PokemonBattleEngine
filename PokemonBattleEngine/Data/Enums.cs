@@ -340,6 +340,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         CalmMind,
         ChargeBeam,
         Charm,
+        Chatter,
         CloseCombat,
         Coil,
         Confusion,

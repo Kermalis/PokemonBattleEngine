@@ -302,6 +302,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Chatter,
+                new PMoveData
+                {
+                    Type = PType.Flying, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeConfuse, EffectParam = 0,
+                    PPTier = 4, Power = 60, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.SoundBased,
+                    Targets = PMoveTarget.SingleNotSelf
+                }
+            },
+            {
                 PMove.CloseCombat,
                 new PMoveData
                 {
