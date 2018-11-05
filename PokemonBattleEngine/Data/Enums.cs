@@ -326,6 +326,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AuraSphere,
         AuroraBeam,
         Bite,
+        BlueFlare,
         BodySlam,
         BoltStrike,
         BoneClub,

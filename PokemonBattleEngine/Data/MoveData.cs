@@ -159,6 +159,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.BlueFlare,
+                new PMoveData
+                {
+                    Type = PType.Fire, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeBurn, EffectParam = 20,
+                    PPTier = 1, Power = 130, Accuracy = 85, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.BodySlam,
                 new PMoveData
                 {
