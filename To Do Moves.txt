@@ -322,7 +322,6 @@ Heavy Slam
 Synchronoise
 Electro Ball
 Soak
-Flame Charge
 Coil
 Low Sweep
 Acid Spray
