@@ -28,7 +28,6 @@ Disable
 Mist
 Surf
 Blizzard
-Psybeam
 Hyper Beam
 Submission
 Low Kick

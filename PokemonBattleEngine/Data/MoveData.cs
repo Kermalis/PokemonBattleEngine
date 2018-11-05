@@ -1424,6 +1424,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Psybeam,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeConfuse, EffectParam = 10,
+                    PPTier = 4, Power = 65, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Psychic,
                 new PMoveData
                 {

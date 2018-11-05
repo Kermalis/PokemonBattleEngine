@@ -443,6 +443,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PowerGem,
         PowerWhip,
         Protect,
+        Psybeam,
         Psychic,
         PsychoBoost,
         QuickAttack,
