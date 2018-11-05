@@ -357,6 +357,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DrillPeck,
         EarthPower,
         EggBomb,
+        Electroweb,
         Ember,
         EnergyBall,
         Extrasensory,
