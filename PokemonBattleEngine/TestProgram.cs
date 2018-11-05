@@ -114,13 +114,16 @@ namespace Kermalis.PokemonBattleEngine
             //PPokemon p1_1 = PKnownInfo.Instance.RemoteParty[1];
 
             Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine(p0_0);
+            Console.WriteLine();
             //Console.WriteLine(p0_1);
             Console.WriteLine(p1_0);
             //Console.WriteLine(p1_1);
 
             while ((p0_0.HP > 0/* || p0_1.HP > 0*/) && (p1_0.HP > 0/* || p1_1.HP > 0*/))
             {
+                Console.WriteLine();
                 Console.WriteLine();
 
                 // Temporary
@@ -173,7 +176,9 @@ namespace Kermalis.PokemonBattleEngine
                 battle.RunTurn();
 
                 Console.WriteLine();
+                Console.WriteLine();
                 Console.WriteLine(p0_0);
+                Console.WriteLine();
                 //Console.WriteLine(p0_1);
                 Console.WriteLine(p1_0);
                 //Console.WriteLine(p1_1);

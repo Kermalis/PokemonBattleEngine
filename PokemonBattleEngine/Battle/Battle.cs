@@ -131,13 +131,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             foreach (PPokemon pkmn in activeBattlers)
                 BroadcastSwitchIn(pkmn);
             foreach (PPokemon pkmn in activeBattlers)
-                SwitchInEffects(pkmn); // BattleEffects.cs
+                DoSwitchInEffects(pkmn); // BattleEffects.cs
         }
 
-        public bool IsReadyToRunTurn()
-        {
-            return activeBattlers.All(b => b.Action.Decision != PDecision.None);
-        }
+        public bool IsReadyToRunTurn() => activeBattlers.All(b => b.Action.Decision != PDecision.None);
 
         public bool RunTurn()
         {
@@ -165,7 +162,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PPokemon pkmn = turnOrder[i];
                 if (pkmn.HP < 1)
                     continue;
-                PreMoveEffects(pkmn); // BattleEffects.cs
+                DoPreMoveEffects(pkmn); // BattleEffects.cs
                 UseMove(pkmn); // BattleEffects.cs
                 pkmn.PreviousMove = bMove;
             }

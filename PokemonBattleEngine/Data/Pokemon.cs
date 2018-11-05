@@ -27,6 +27,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte Status1Counter; // Toxic/Sleep
         public byte SleepTurns; // Amount of turns to sleep
 
+        public byte ConfusionCounter; // Confused
+        public byte ConfusionTurns; // Amount of turns to be confused
         public byte ProtectCounter; // Protect
 
         public PMove PreviousMove;

@@ -25,6 +25,8 @@
         public const byte PPMultiplier = 5; // [Default: 5]
         public const byte MaxPPUps = 3; // [Default: 3]
 
+        public const byte ConfusionMinTurns = 1; // [Default: 1]
+        public const byte ConfusionMaxTurns = 4; // [Default: 4]
         public const byte SleepMinTurns = 1; // [Default: 1]
         public const byte SleepMaxTurns = 3; // [Default: 3]
         public const byte BurnDamageDenominator = 8; // [Default: 8 (1/8 damage each turn)]

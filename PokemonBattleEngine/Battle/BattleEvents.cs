@@ -164,6 +164,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PStatus2Packet s2p:
                     switch (s2p.Status2)
                     {
+                        case PStatus2.Confused:
+                            switch (s2p.StatusAction)
+                            {
+                                case PStatusAction.Activated: message = "{0} is confused!"; break;
+                                case PStatusAction.Added: message = "{0} became confused!"; break;
+                                case PStatusAction.CausedDamage: message = "It hurt itself in its confusion!"; break;
+                                case PStatusAction.Ended: message = "{0} snapped out of its confusion."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid confused action: {s2p.StatusAction}");
+                            }
+                            break;
                         case PStatus2.Flinching:
                             switch (s2p.StatusAction)
                             {

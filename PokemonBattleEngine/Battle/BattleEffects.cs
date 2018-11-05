@@ -11,19 +11,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         PPokemon bAttacker, bDefender;
         PMove bMove; PType bMoveType;
-        ushort bDamage;
         double bEffectiveness, bDamageMultiplier;
         bool bLandedCrit;
 
-        void SwitchInEffects(PPokemon pkmn)
+        void DoSwitchInEffects(PPokemon pkmn)
         {
             // Abilities
-            CureLimber(pkmn);
+            Ab_LimberCure(pkmn);
         }
-        void PreMoveEffects(PPokemon pkmn)
+        void DoPreMoveEffects(PPokemon pkmn)
         {
             // Abilities
-            CureLimber(pkmn);
+            Ab_LimberCure(pkmn);
         }
         void DoTurnEndedEffects(PPokemon pkmn)
         {
@@ -31,22 +30,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (pkmn.Status1)
             {
                 case PStatus1.Asleep:
-                    pkmn.Status1Counter++;
+                    pkmn.Status1Counter++; // TODO: Does this go after using a move, or does it go here?
                     break;
                 case PStatus1.Burned:
                     BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.BurnDamageDenominator));
-                    TryFaint(pkmn);
+                    CheckFaint(pkmn);
                     break;
                 case PStatus1.Poisoned:
                     BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.PoisonDamageDenominator));
-                    TryFaint(pkmn);
+                    CheckFaint(pkmn);
                     break;
                 case PStatus1.BadlyPoisoned:
                     BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PConstants.ToxicDamageDenominator));
-                    if (!TryFaint(pkmn))
+                    if (CheckFaint(pkmn))
+                        pkmn.Status1Counter = 0;
+                    else
                         pkmn.Status1Counter++;
                     break;
             }
@@ -61,7 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Abilities
-            CureLimber(pkmn);
+            Ab_LimberCure(pkmn);
         }
 
         void UseMove(PPokemon attacker)
@@ -167,8 +168,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             #endregion
 
+            // TODO: Find a better place for this..?
+            if (attacker.Status2.HasFlag(PStatus2.Confused))
+                attacker.ConfusionCounter++;
+
             bAttacker = attacker;
-            bMove = bAttacker.Action.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            bMove = attacker.Action.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
             if (AttackCancelCheck())
                 return;
             BroadcastMoveUsed();
@@ -194,7 +199,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void UseMoveOnDefender(double initialDamageMultiplier)
         {
-            bDamage = 0;
             bEffectiveness = 1; bDamageMultiplier = initialDamageMultiplier;
             bLandedCrit = false;
 
@@ -326,7 +330,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     ApplyStatChange(bAttacker, PStat.SpDefense, +1);
                     break;
                 case PMoveEffect.Toxic:
-                    Ef_Toxic();
+                    TryForceStatus1(PStatus1.BadlyPoisoned);
                     break;
                 case PMoveEffect.Fail:
                 case PMoveEffect.Transform: // TODO
@@ -356,24 +360,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // Check if we can wake up
                     if (bAttacker.Status1Counter >= bAttacker.SleepTurns)
                     {
-                        BroadcastStatus1(bAttacker, PStatusAction.Ended);
                         bAttacker.Status1 = PStatus1.None;
-                        return false;
+                        bAttacker.Status1Counter = bAttacker.SleepTurns = 0;
+                        BroadcastStatus1(bAttacker, PStatusAction.Ended);
                     }
-                    // Didn't wake up
-                    BroadcastStatus1(bAttacker, PStatusAction.Activated);
-                    return true;
+                    else
+                    {
+                        BroadcastStatus1(bAttacker, PStatusAction.Activated);
+                        return true;
+                    }
+                    break;
                 case PStatus1.Frozen:
                     // 20% chance to thaw out
                     if (PUtils.ApplyChance(20, 100))
                     {
-                        BroadcastStatus1(bAttacker, PStatusAction.Ended);
                         bAttacker.Status1 = PStatus1.None;
-                        return false;
+                        BroadcastStatus1(bAttacker, PStatusAction.Ended);
                     }
-                    // Didn't thaw out
-                    BroadcastStatus1(bAttacker, PStatusAction.Activated);
-                    return true;
+                    else
+                    {
+                        BroadcastStatus1(bAttacker, PStatusAction.Activated);
+                        return true;
+                    }
+                    break;
                 case PStatus1.Paralyzed:
                     // 25% chance to be unable to move
                     if (PUtils.ApplyChance(25, 100))
@@ -382,6 +391,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         return true;
                     }
                     break;
+            }
+
+            // Minor statuses
+            if (bAttacker.Status2.HasFlag(PStatus2.Confused))
+            {
+                // Check if we snap out of confusion
+                if (bAttacker.ConfusionCounter >= bAttacker.ConfusionTurns)
+                {
+                    bAttacker.Status2 &= ~PStatus2.Confused;
+                    bAttacker.ConfusionCounter = bAttacker.ConfusionTurns = 0;
+                    BroadcastStatus2(bAttacker, PStatus2.Confused, PStatusAction.Ended);
+                }
+                else
+                {
+                    BroadcastStatus2(bAttacker, PStatus2.Confused, PStatusAction.Activated);
+                    // 50% chance to hit itself
+                    if (PUtils.ApplyChance(50, 100))
+                    {
+                        DealDamage(bAttacker, CalculateDamage(bAttacker, bDefender, 40, PMoveCategory.Physical));
+                        BroadcastStatus2(bAttacker, PStatus2.Confused, PStatusAction.CausedDamage);
+                        CheckFaint(bAttacker);
+                        return true;
+                    }
+                }
             }
 
             return false;
@@ -413,8 +446,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // Broadcasts the event
-        void DealDamage()
-            => DealDamage(bDefender, (ushort)(bDamage * bEffectiveness * bDamageMultiplier));
         void DealDamage(PPokemon pkmn, ushort hp)
         {
             var oldHP = pkmn.HP;
@@ -436,10 +467,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
 
-        void CureLimber(PPokemon pkmn)
+        void Ab_LimberCure(PPokemon pkmn)
         {
             if (pkmn.Ability == PAbility.Limber && pkmn.Status1 == PStatus1.Paralyzed)
             {
+                bAttacker.Status1 = PStatus1.None;
                 BroadcastLimber(pkmn, false);
                 BroadcastStatus1(pkmn, PStatusAction.Cured);
             }
@@ -461,9 +493,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns true if the pokemon fainted & removes it from activeBattlers
         // Broadcasts the event if it did
-        bool TryFaint()
-            => TryFaint(bDefender);
-        bool TryFaint(PPokemon pkmn)
+        bool CheckFaint(PPokemon pkmn)
         {
             if (pkmn.HP < 1)
             {
@@ -551,26 +581,40 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 bDefender.Status1Counter = 1;
             // Set sleep length
             if (status == PStatus1.Asleep)
-                bDefender.SleepTurns = (byte)PUtils.RNG.Next(PConstants.SleepMinTurns, PConstants.SleepMaxTurns + 1);
+                bDefender.SleepTurns = (byte)(PUtils.RNG.Next(PConstants.SleepMinTurns, PConstants.SleepMaxTurns + 1) + 1);
 
             BroadcastStatus1(bDefender, PStatusAction.Added);
 
             return true;
         }
 
+        // Returns false if the attack failed to hit or the defender fainted
         bool Ef_Hit()
         {
             if (AccuracyCheck())
                 return false;
             // CritCheck();
-            bDamage = CalculateDamage();
-            if (!TypeCheck())
+            if (!TypeCheck(bAttacker, bDefender))
                 return false;
-            DealDamage();
+            DealDamage(bDefender, (ushort)(CalculateDamage() * bEffectiveness * bDamageMultiplier));
             BroadcastEffectiveness(bEffectiveness);
             BroadcastCrit();
-            if (TryFaint())
+            if (CheckFaint(bDefender))
                 return false;
+            return true;
+        }
+        bool Ef_Hit__MaybeConfuse(int chance)
+        {
+            if (!Ef_Hit())
+                return false;
+            if (!PUtils.ApplyChance(chance, 100))
+                return true;
+            if (!bDefender.Status2.HasFlag(PStatus2.Confused))
+            {
+                bDefender.Status2 |= PStatus2.Confused;
+                bDefender.ConfusionTurns = (byte)(PUtils.RNG.Next(PConstants.ConfusionMinTurns, PConstants.ConfusionMaxTurns + 1) + 1);
+                BroadcastStatus2(bDefender, PStatus2.Confused, PStatusAction.Added);
+            }
             return true;
         }
         bool Ef_Hit__MaybeFlinch(int chance)
@@ -578,19 +622,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
-                return false;
+                return true;
             bDefender.Status2 |= PStatus2.Flinching;
             return true;
         }
 
+        bool TryForceStatus1(PStatus1 status)
+        {
+            if (AccuracyCheck())
+                return false;
+            if (!ApplyStatus1IfPossible(status, true))
+                return false;
+            return true;
+        }
         bool HitAndMaybeApplyStatus1(PStatus1 status, int chance)
         {
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
-                return false;
+                return true;
             if (!ApplyStatus1IfPossible(status, false))
-                return false;
+                return true;
             return true;
         }
 
@@ -599,7 +651,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
-                return false;
+                return true;
             ApplyStatChange(bDefender, stat, change);
             return true;
         }
@@ -608,7 +660,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!Ef_Hit())
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
-                return false;
+                return true;
             ApplyStatChange(bAttacker, stat, change);
             return true;
         }
@@ -628,15 +680,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             bAttacker.ProtectCounter++;
             bAttacker.Status2 |= PStatus2.Protected;
             BroadcastStatus2(bAttacker, PStatus2.Protected, PStatusAction.Added);
-            return true;
-        }
-
-        bool Ef_Toxic()
-        {
-            if (AccuracyCheck())
-                return false;
-            if (!ApplyStatus1IfPossible(PStatus1.BadlyPoisoned, true))
-                return false;
             return true;
         }
     }
