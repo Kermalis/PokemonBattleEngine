@@ -1347,6 +1347,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.RazorShell,
+                new PMoveData
+                {
+                    Type = PType.Water, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_DEF_By1, EffectParam = 50,
+                    PPTier = 2, Power = 75, Accuracy = 95, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Retaliate,
                 new PMoveData
                 {

@@ -434,6 +434,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PsychoBoost,
         QuickAttack,
         QuiverDance,
+        RazorShell,
         Retaliate, // TODO
         Return,
         RockPolish,

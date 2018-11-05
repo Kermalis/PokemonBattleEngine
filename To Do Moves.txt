@@ -356,7 +356,6 @@ Drill Run
 Dual Chop
 Horn Leech
 Sacred Sword
-Razor Shell
 Heat Crash
 Leaf Tornado
 Steamroller
