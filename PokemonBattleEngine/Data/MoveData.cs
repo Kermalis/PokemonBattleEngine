@@ -324,6 +324,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.CottonGuard,
+                new PMoveData
+                {
+                    Type = PType.Grass, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ChangeUser_DEF, EffectParam = +3,
+                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Crunch,
                 new PMoveData
                 {

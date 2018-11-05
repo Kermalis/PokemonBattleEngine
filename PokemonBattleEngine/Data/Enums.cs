@@ -341,6 +341,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Coil,
         Confusion,
         CosmicPower,
+        CottonGuard,
         Crunch,
         CrushClaw,
         Cut,
