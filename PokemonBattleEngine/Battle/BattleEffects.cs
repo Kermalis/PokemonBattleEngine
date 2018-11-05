@@ -446,7 +446,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // 50% chance to hit itself
                     if (PUtils.ApplyChance(50, 100))
                     {
-                        DealDamage(bAttacker, CalculateDamage(bAttacker, bDefender, 40, PMoveCategory.Physical));
+                        DealDamage(bAttacker, CalculateDamage(bAttacker, bAttacker, 40, PMoveCategory.Physical));
                         BroadcastStatus2(bAttacker, PStatus2.Confused, PStatusAction.CausedDamage);
                         CheckFaint(bAttacker);
                         return true;

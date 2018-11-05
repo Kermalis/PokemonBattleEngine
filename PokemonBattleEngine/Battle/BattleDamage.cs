@@ -50,22 +50,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
 
-        ushort CalculateBasePower(PPokemon attacker, PPokemon defender, byte movePower, PMoveCategory moveCategory)
+        // If power is 0, power is determined by bMove
+        ushort CalculateBasePower(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category)
         {
-            double basePower = movePower;
+            double basePower = power;
 
             // Moves with variable base power
-            switch (bMove)
+            if (power == 0)
             {
-                case PMove.Frustration:
-                    basePower = Math.Max(1, (byte.MaxValue - attacker.Shell.Friendship) / 2.5);
-                    break;
-                case PMove.HiddenPower:
-                    basePower = attacker.GetHiddenPowerBasePower();
-                    break;
-                case PMove.Return:
-                    basePower = Math.Max(1, attacker.Shell.Friendship / 2.5);
-                    break;
+                switch (bMove)
+                {
+                    case PMove.Frustration:
+                        basePower = Math.Max(1, (byte.MaxValue - attacker.Shell.Friendship) / 2.5);
+                        break;
+                    case PMove.HiddenPower:
+                        basePower = attacker.GetHiddenPowerBasePower();
+                        break;
+                    case PMove.Return:
+                        basePower = Math.Max(1, attacker.Shell.Friendship / 2.5);
+                        break;
+                    default:
+                        basePower = PMoveData.Data[bMove].Power;
+                        break;
+                }
             }
 
             // TODO: Stuff like mystic water
@@ -102,7 +109,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bMoveType == PType.Bug && attacker.Ability == PAbility.Swarm && attacker.HP <= attacker.MaxHP / 3)
                 basePower *= 1.5;
             // A Burned pokemon does half the damage when it is Burned unless it has the Guts ability
-            if (moveCategory == PMoveCategory.Physical && attacker.Status1 == PStatus1.Burned && attacker.Ability != PAbility.Guts)
+            if (category == PMoveCategory.Physical && attacker.Status1 == PStatus1.Burned && attacker.Ability != PAbility.Guts)
                 basePower /= 2;
             // Damage is halved when using Fire or Ice moves against a pokemon with the Thick Fat ability
             if (defender.Ability == PAbility.ThickFat && (bMoveType == PType.Fire || bMoveType == PType.Ice))
@@ -180,21 +187,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return (ushort)spDefense;
         }
         ushort CalculateDamage()
-            => CalculateDamage(bAttacker, bDefender, PMoveData.Data[bMove].Power, PMoveData.Data[bMove].Category);
-        ushort CalculateDamage(PPokemon attacker, PPokemon defender, byte movePower, PMoveCategory moveCategory)
+            => CalculateDamage(bAttacker, bDefender, 0, PMoveData.Data[bMove].Category);
+        // If power is 0, power is determined by bMove
+        ushort CalculateDamage(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category)
         {
             ushort damage;
             ushort a = 0, d = 0,
-                p = CalculateBasePower(attacker, defender, movePower, moveCategory);
+                p = CalculateBasePower(attacker, defender, power, category);
 
             // TODO: Determine a and d for moves like Foul Play and Psyshock
 
-            if (moveCategory == PMoveCategory.Physical)
+            if (category == PMoveCategory.Physical)
             {
                 a = CalculateAttack(attacker, defender);
                 d = CalculateDefense(attacker, defender);
             }
-            else if (moveCategory == PMoveCategory.Special)
+            else if (category == PMoveCategory.Special)
             {
                 a = CalculateSpAttack(attacker, defender);
                 d = CalculateSpDefense(attacker, defender);
