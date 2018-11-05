@@ -335,6 +335,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.ConfuseRay,
+                new PMoveData
+                {
+                    Type = PType.Ghost, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Confuse, EffectParam = 0,
+                    PPTier = 2, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Confusion,
                 new PMoveData
                 {

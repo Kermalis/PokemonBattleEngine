@@ -238,6 +238,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.ChangeUser_SPE:
                     ApplyStatChange(bAttacker, PStat.Speed, (sbyte)mData.EffectParam);
                     break;
+                case PMoveEffect.Confuse:
+                    TryForceStatus2(PStatus2.Confused);
+                    break;
+                case PMoveEffect.Fail:
+                case PMoveEffect.Moonlight: // TODO
+                case PMoveEffect.Transform: // TODO
+                    BroadcastFail();
+                    break;
                 case PMoveEffect.Hit:
                     Ef_Hit();
                     break;
@@ -368,11 +376,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.Toxic:
                     TryForceStatus1(PStatus1.BadlyPoisoned);
-                    break;
-                case PMoveEffect.Fail:
-                case PMoveEffect.Transform: // TODO
-                case PMoveEffect.Moonlight: // TODO
-                    BroadcastFail();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
@@ -624,6 +627,31 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return true;
         }
+        // Returns true if the status was applied
+        // Broadcasts the change if applied and required
+        // "tryingToForce" being true will broadcast events such as failing
+        bool ApplyStatus2IfPossible(PStatus2 status, bool tryingToForce)
+        {
+            if (status == PStatus2.Confused)
+            {
+                if (bDefender.Status2.HasFlag(PStatus2.Confused))
+                {
+                    if (tryingToForce)
+                        BroadcastFail();
+                    return false;
+                }
+                else
+                {
+                    bDefender.Status2 |= PStatus2.Confused;
+                    bDefender.ConfusionTurns = (byte)(PUtils.RNG.Next(PConstants.ConfusionMinTurns, PConstants.ConfusionMaxTurns + 1) + 1);
+                    BroadcastStatus2(bDefender, PStatus2.Confused, PStatusAction.Added);
+                    return true;
+                }
+            }
+
+            bDefender.Status2 |= status;
+            return true;
+        }
 
         // Returns false if the attack failed to hit or the defender fainted
         bool Ef_Hit()
@@ -646,11 +674,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
                 return false;
-            if (bDefender.Status2.HasFlag(PStatus2.Confused))
+            if (!ApplyStatus2IfPossible(PStatus2.Confused, false))
                 return false;
-            bDefender.Status2 |= PStatus2.Confused;
-            bDefender.ConfusionTurns = (byte)(PUtils.RNG.Next(PConstants.ConfusionMinTurns, PConstants.ConfusionMaxTurns + 1) + 1);
-            BroadcastStatus2(bDefender, PStatus2.Confused, PStatusAction.Added);
             return true;
         }
         bool Ef_Hit__MaybeFlinch(int chance)
@@ -659,7 +684,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             if (!PUtils.ApplyChance(chance, 100))
                 return false;
-            bDefender.Status2 |= PStatus2.Flinching;
+            if (!ApplyStatus2IfPossible(PStatus2.Flinching, false))
+                return false;
             return true;
         }
 
@@ -668,6 +694,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (AccuracyCheck())
                 return false;
             if (!ApplyStatus1IfPossible(status, true))
+                return false;
+            return true;
+        }
+        bool TryForceStatus2(PStatus2 status)
+        {
+            if (AccuracyCheck())
+                return false;
+            if (!ApplyStatus2IfPossible(status, true))
                 return false;
             return true;
         }

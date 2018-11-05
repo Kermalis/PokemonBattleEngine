@@ -56,7 +56,6 @@ Night Shade
 Mimic
 Recover
 Minimize
-Confuse Ray
 Defense Curl
 Barrier
 Light Screen

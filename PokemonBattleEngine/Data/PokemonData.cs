@@ -695,7 +695,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // aqua ring // egg move
                         // barrier
                         // brine
-                        // confuse ray
                         // endure
                         // mud sport
                         // refresh
@@ -709,6 +708,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
                         PMove.BodySlam, // Egg Move
+                        PMove.ConfuseRay, // Egg Move
                         PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
