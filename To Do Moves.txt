@@ -80,7 +80,6 @@ Leech Life
 Lovely Kiss
 Sky Attack
 Transform
-Dizzy Punch
 Spore
 Psywave
 Splash

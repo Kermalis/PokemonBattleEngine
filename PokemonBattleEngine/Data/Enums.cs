@@ -354,6 +354,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DarkPulse,
         Detect,
         Discharge,
+        DizzyPunch,
         DracoMeteor,
         DragonBreath,
         DragonClaw,
