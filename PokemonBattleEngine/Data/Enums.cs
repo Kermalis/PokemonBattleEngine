@@ -398,6 +398,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IronTail,
         Kinesis,
         LavaPlume,
+        LeafTornado,
         Leer,
         Lick,
         LowSweep,

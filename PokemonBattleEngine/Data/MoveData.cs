@@ -951,6 +951,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.LeafTornado,
+                new PMoveData
+                {
+                    Type = PType.Grass, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 50,
+                    PPTier = 2, Power = 65, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Leer,
                 new PMoveData
                 {
