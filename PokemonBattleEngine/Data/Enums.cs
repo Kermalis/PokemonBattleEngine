@@ -443,6 +443,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PoisonFang,
         PoisonGas,
         PoisonJab,
+        PoisonPowder,
         PoisonSting,
         Pound,
         PowerGem,
