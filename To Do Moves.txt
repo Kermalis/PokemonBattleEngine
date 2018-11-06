@@ -72,7 +72,6 @@ Barrage
 Leech Life
 Sky Attack
 Transform
-Spore
 Psywave
 Splash
 Crabhammer
