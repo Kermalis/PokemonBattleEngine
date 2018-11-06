@@ -462,6 +462,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RockTomb,
         SacredFire,
         SandAttack,
+        Scald,
         ScaryFace,
         Scratch,
         Screech,

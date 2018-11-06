@@ -572,7 +572,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // reset
                         // attract
                         // round
-                        // scald
                         // fling
                         // giga impact
                         // grass knot
@@ -629,6 +628,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Protect, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
+                        PMove.Scald, // TM
                         PMove.Slam, // Egg Move
                         PMove.Strength, // HM
                         PMove.Supersonic, // Egg Move
@@ -690,7 +690,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // attract
                         // round
-                        // scald
                         // swagger
                         // substitute
                         // aqua ring // egg move
@@ -717,6 +716,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MuddyWater, // Egg Move
                         PMove.Protect, // TM
                         PMove.Return, // TM
+                        PMove.Scald, // TM
                         PMove.Supersonic, // Egg Move
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM

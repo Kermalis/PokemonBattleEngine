@@ -320,7 +320,6 @@ Clear Smog
 Stored Power
 Quick Guard
 Ally Switch
-Scald
 Heal Pulse
 Hex
 Sky Drop
