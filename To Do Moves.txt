@@ -98,7 +98,6 @@ Thief
 Spider Web
 Mind Reader
 Nightmare
-Flame Wheel
 Snore
 Curse
 Flail

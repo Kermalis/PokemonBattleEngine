@@ -388,6 +388,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts status ending events & status causing immobility events
         bool MoveCancelCheck()
         {
+            PMoveData mData = PMoveData.Data[bMove];
+
             // Flinch first
             if (bAttacker.Status2.HasFlag(PStatus2.Flinching))
             {
@@ -413,8 +415,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PStatus1.Frozen:
-                    // 20% chance to thaw out
-                    if (PUtils.ApplyChance(20, 100))
+                    // Some moves always defrost the user, but if they don't, there is a 20% chance to thaw out
+                    if (mData.Flags.HasFlag(PMoveFlag.DefrostsUser) || PUtils.ApplyChance(20, 100))
                     {
                         bAttacker.Status1 = PStatus1.None;
                         BroadcastStatus1(bAttacker, PStatus1.Frozen, PStatusAction.Ended);

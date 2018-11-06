@@ -255,7 +255,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         AffectedByMagicCoat = 1 << 2,
         AffectedBySnatch = 1 << 3,
         AffectedByMirrorMove = 1 << 4,
-        SoundBased = 1 << 5
+        SoundBased = 1 << 5,
+        DefrostsUser = 1 << 6
     }
     public enum PMoveEffect : byte
     {
@@ -379,6 +380,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FirePunch,
         FlameCharge,
         Flamethrower,
+        FlameWheel,
         Flash,
         FlashCannon,
         FocusBlast,
