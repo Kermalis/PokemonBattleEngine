@@ -503,6 +503,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Strength,
         StringShot,
         StruggleBug,
+        StunSpore,
         Supersonic,
         SweetKiss,
         SweetScent,

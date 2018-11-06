@@ -37,7 +37,6 @@ Leech Seed
 Growth
 Razor Leaf
 Solar Beam
-Stun Spore
 Petal Dance
 Dragon Rage
 Fire Spin
