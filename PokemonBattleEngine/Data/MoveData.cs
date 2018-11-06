@@ -797,6 +797,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.GrassWhistle,
+                new PMoveData
+                {
+                    Type = PType.Grass, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Sleep, EffectParam = 0,
+                    PPTier = 3, Power = 0, Accuracy = 55, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove | PMoveFlag.SoundBased,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Growl,
                 new PMoveData
                 {
