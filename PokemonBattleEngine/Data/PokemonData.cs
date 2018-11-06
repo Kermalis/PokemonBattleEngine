@@ -1062,7 +1062,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // night shade 1 // DP
                         // ominous wind 1
                         Tuple.Create(11, PMove.QuickAttack),
-                        // hypnosis 20
+                        Tuple.Create(20, PMove.Hypnosis),
                         // pursuit 29 // DP
                         Tuple.Create(29, PMove.FaintAttack),
                         // nightmare 38

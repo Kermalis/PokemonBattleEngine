@@ -47,7 +47,6 @@ Thunder Wave
 Earthquake
 Fissure
 Dig
-Hypnosis
 Rage
 Night Shade
 Mimic

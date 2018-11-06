@@ -962,6 +962,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Hypnosis,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Sleep, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 60, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.IceBeam,
                 new PMoveData
                 {

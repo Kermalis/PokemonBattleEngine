@@ -405,6 +405,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HydroPump,
         HyperFang,
         HyperVoice,
+        Hypnosis,
         IceBeam,
         IcePunch,
         IceShard,
