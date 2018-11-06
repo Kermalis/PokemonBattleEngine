@@ -40,7 +40,7 @@ Solar Beam
 Petal Dance
 Dragon Rage
 Fire Spin
-Thunder Wave
+Thunder
 Earthquake
 Fissure
 Dig

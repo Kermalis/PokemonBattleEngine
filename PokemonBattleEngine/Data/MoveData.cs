@@ -2205,6 +2205,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.ThunderWave,
+                new PMoveData
+                {
+                    Type = PType.Electric, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Paralyze, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Toxic,
                 new PMoveData
                 {

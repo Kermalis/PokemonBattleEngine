@@ -704,6 +704,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (AccuracyCheck())
                 return false;
+            if (!TypeCheck(bAttacker, bDefender)) // Paralysis, Normalize
+                return false;
             if (!ApplyStatus1IfPossible(status, true))
                 return false;
             return true;
