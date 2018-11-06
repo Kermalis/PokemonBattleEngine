@@ -32,17 +32,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PStatus1.Burned:
                     BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.BurnDamageDenominator));
-                    CheckFaint(pkmn);
+                    FaintCheck(pkmn);
                     break;
                 case PStatus1.Poisoned:
                     BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.PoisonDamageDenominator));
-                    CheckFaint(pkmn);
+                    FaintCheck(pkmn);
                     break;
                 case PStatus1.BadlyPoisoned:
                     BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PConstants.ToxicDamageDenominator));
-                    if (CheckFaint(pkmn))
+                    if (FaintCheck(pkmn))
                         pkmn.Status1Counter = 0;
                     else
                         pkmn.Status1Counter++;
@@ -173,10 +173,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             bAttacker = attacker;
             bMove = attacker.Action.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
-            if (AttackCancelCheck())
+            if (MoveCancelCheck())
                 return;
             BroadcastMoveUsed();
-            PPReduce();
+            PPReduce(attacker, bMove);
 
             int aliveTargets = targets.Count(t => t != null);
             if (aliveTargets == 0)
@@ -204,6 +204,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PMoveData mData = PMoveData.Data[bMove];
             switch (mData.Effect)
             {
+                case PMoveEffect.Burn:
+                    TryForceStatus1(PStatus1.Burned);
+                    break;
                 case PMoveEffect.ChangeTarget_ACC:
                     ApplyStatChange(bDefender, PStat.Accuracy, (sbyte)mData.EffectParam);
                     break;
@@ -383,7 +386,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns true if an attack gets cancelled
         // Broadcasts status ending events & status causing immobility events
-        bool AttackCancelCheck()
+        bool MoveCancelCheck()
         {
             // Flinch first
             if (bAttacker.Status2.HasFlag(PStatus2.Flinching))
@@ -397,7 +400,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PStatus1.Asleep:
                     // Check if we can wake up
-                    if (bAttacker.Status1Counter >= bAttacker.SleepTurns)
+                    if (bAttacker.Status1Counter > bAttacker.SleepTurns)
                     {
                         bAttacker.Status1 = PStatus1.None;
                         bAttacker.Status1Counter = bAttacker.SleepTurns = 0;
@@ -436,7 +439,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bAttacker.Status2.HasFlag(PStatus2.Confused))
             {
                 // Check if we snap out of confusion
-                if (bAttacker.ConfusionCounter >= bAttacker.ConfusionTurns)
+                if (bAttacker.ConfusionCounter > bAttacker.ConfusionTurns)
                 {
                     bAttacker.Status2 &= ~PStatus2.Confused;
                     bAttacker.ConfusionCounter = bAttacker.ConfusionTurns = 0;
@@ -450,7 +453,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         DealDamage(bAttacker, CalculateDamage(bAttacker, bAttacker, 40, PMoveCategory.Physical));
                         BroadcastStatus2(bAttacker, PStatus2.Confused, PStatusAction.CausedDamage);
-                        CheckFaint(bAttacker);
+                        FaintCheck(bAttacker);
                         return true;
                     }
                 }
@@ -517,8 +520,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // Broadcasts the event
-        void PPReduce()
-            => PPReduce(bAttacker, bMove);
         void PPReduce(PPokemon pkmn, PMove move)
         {
             var moveIndex = Array.IndexOf(pkmn.Shell.Moves, move);
@@ -532,7 +533,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns true if the pokemon fainted & removes it from activeBattlers
         // Broadcasts the event if it did
-        bool CheckFaint(PPokemon pkmn)
+        bool FaintCheck(PPokemon pkmn)
         {
             if (pkmn.HP < 1)
             {
@@ -620,7 +621,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 bDefender.Status1Counter = 1;
             // Set sleep length
             if (status == PStatus1.Asleep)
-                bDefender.SleepTurns = (byte)(PUtils.RNG.Next(PConstants.SleepMinTurns, PConstants.SleepMaxTurns + 1) + 1);
+                bDefender.SleepTurns = (byte)PUtils.RNG.Next(PConstants.SleepMinTurns, PConstants.SleepMaxTurns + 1);
 
             BroadcastStatus1(bDefender, PStatusAction.Added);
 
@@ -642,7 +643,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                 {
                     bDefender.Status2 |= PStatus2.Confused;
-                    bDefender.ConfusionTurns = (byte)(PUtils.RNG.Next(PConstants.ConfusionMinTurns, PConstants.ConfusionMaxTurns + 1) + 1);
+                    bDefender.ConfusionTurns = (byte)PUtils.RNG.Next(PConstants.ConfusionMinTurns, PConstants.ConfusionMaxTurns + 1);
                     BroadcastStatus2(bDefender, PStatus2.Confused, PStatusAction.Added);
                     return true;
                 }
@@ -663,7 +664,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             DealDamage(bDefender, (ushort)(CalculateDamage() * bEffectiveness * bDamageMultiplier));
             BroadcastEffectiveness(bEffectiveness);
             BroadcastCrit();
-            if (CheckFaint(bDefender))
+            if (FaintCheck(bDefender))
                 return false;
             return true;
         }

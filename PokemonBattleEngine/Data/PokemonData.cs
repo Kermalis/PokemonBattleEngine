@@ -1092,7 +1092,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // round
                         // fling
                         // incinerate
-                        // will-o-wisp
                         // embargo
                         // shadow claw
                         // payback
@@ -1149,6 +1148,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
                         PMove.Toxic, // TM
+                        PMove.WillOWisp, // TM
                         PMove.XScissor, // TM
                     }
                 }

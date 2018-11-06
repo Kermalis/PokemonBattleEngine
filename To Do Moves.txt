@@ -159,7 +159,6 @@ Swallow
 Hail
 Torment
 Flatter
-Will-O-Wisp
 Memento
 Facade
 Focus Punch

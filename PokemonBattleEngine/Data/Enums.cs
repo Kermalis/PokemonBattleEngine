@@ -259,6 +259,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PMoveEffect : byte
     {
+        Burn,
         ChangeTarget_ACC,
         ChangeTarget_ATK,
         ChangeTarget_DEF,
@@ -509,6 +510,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Waterfall,
         WaterGun,
         WaterPulse,
+        WillOWisp,
         WingAttack,
         Withdraw,
         Workup,
