@@ -121,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(21, PMove.DoubleTeam),
                         Tuple.Create(26, PMove.Slam),
                         Tuple.Create(29, PMove.Thunderbolt),
-                        // sing 30 // gen 5 event (Singing Pikachu)
+                        Tuple.Create(30, PMove.Sing), // Gen 5 Event (Singing Pikachu)
                         // last resort 30 // gen 4 event (Kyoto Cross Media Experience 2009 Pikachu)
                         // endeavor 30 // gen 4 pichu event
                         // feint 34
@@ -583,7 +583,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // perish song
                         // present
                         // refresh
-                        // sing
                         // soak
                         // superpower
                         // water sport
@@ -629,6 +628,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.Scald, // TM
+                        PMove.Sing, // Egg Move
                         PMove.Slam, // Egg Move
                         PMove.Strength, // HM
                         PMove.Supersonic, // Egg Move

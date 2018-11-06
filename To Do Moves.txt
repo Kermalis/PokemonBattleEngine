@@ -21,7 +21,6 @@ Double-Edge
 Twineedle
 Pin Missile
 Roar
-Sing
 Sonic Boom
 Disable
 Mist

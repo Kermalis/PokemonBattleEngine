@@ -1831,6 +1831,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Sing,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Sleep, EffectParam = 0,
+                    PPTier = 3, Power = 0, Accuracy = 55, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove | PMoveFlag.SoundBased,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.ShockWave,
                 new PMoveData
                 {

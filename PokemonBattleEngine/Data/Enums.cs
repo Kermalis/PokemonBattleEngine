@@ -484,6 +484,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShellSmash,
         ShiftGear,
         SignalBeam,
+        Sing,
         ShockWave,
         Slam,
         Sludge,
