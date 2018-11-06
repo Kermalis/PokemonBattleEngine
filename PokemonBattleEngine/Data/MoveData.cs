@@ -1468,6 +1468,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.PowderSnow,
+                new PMoveData
+                {
+                    Type = PType.Ice, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
+                    PPTier = 5, Power = 40, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.PowerGem,
                 new PMoveData
                 {

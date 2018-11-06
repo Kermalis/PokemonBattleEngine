@@ -451,6 +451,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PoisonPowder,
         PoisonSting,
         Pound,
+        PowderSnow,
         PowerGem,
         PowerWhip,
         Protect,
