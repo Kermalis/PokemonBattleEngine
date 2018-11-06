@@ -130,7 +130,6 @@ Heal Bell
 Present
 Safeguard
 Pain Split
-Sacred Fire
 Magnitude
 Dynamic Punch
 Baton Pass
