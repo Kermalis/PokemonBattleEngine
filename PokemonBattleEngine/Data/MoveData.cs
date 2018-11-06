@@ -1864,6 +1864,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.SleepPowder,
+                new PMoveData
+                {
+                    Type = PType.Grass, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Sleep, EffectParam = 0,
+                    PPTier = 3, Power = 0, Accuracy = 75, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Sludge,
                 new PMoveData
                 {

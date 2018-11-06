@@ -487,6 +487,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Sing,
         ShockWave,
         Slam,
+        SleepPowder,
         Sludge,
         SludgeBomb,
         SludgeWave,
