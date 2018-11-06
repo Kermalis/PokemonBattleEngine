@@ -335,6 +335,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     ApplyStatChange(bAttacker, PStat.SpAttack, +2);
                     ApplyStatChange(bAttacker, PStat.Speed, +2);
                     break;
+                case PMoveEffect.Paralyze:
+                    TryForceStatus1(PStatus1.Paralyzed);
+                    break;
                 case PMoveEffect.Poison:
                     TryForceStatus1(PStatus1.Poisoned);
                     break;
