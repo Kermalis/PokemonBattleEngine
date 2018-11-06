@@ -420,6 +420,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LeafTornado,
         Leer,
         Lick,
+        LovelyKiss,
         LowSweep,
         LusterPurge,
         MachPunch,
