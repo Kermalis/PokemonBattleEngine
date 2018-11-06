@@ -30,17 +30,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (pkmn.Status1)
             {
                 case PStatus1.Burned:
-                    BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
+                    BroadcastStatus1(pkmn, PStatus1.Burned, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.BurnDamageDenominator));
                     FaintCheck(pkmn);
                     break;
                 case PStatus1.Poisoned:
-                    BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
+                    BroadcastStatus1(pkmn, PStatus1.Poisoned, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.PoisonDamageDenominator));
                     FaintCheck(pkmn);
                     break;
                 case PStatus1.BadlyPoisoned:
-                    BroadcastStatus1(pkmn, PStatusAction.CausedDamage);
+                    BroadcastStatus1(pkmn, PStatus1.BadlyPoisoned, PStatusAction.CausedDamage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PConstants.ToxicDamageDenominator));
                     if (FaintCheck(pkmn))
                         pkmn.Status1Counter = 0;
@@ -404,11 +404,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         bAttacker.Status1 = PStatus1.None;
                         bAttacker.Status1Counter = bAttacker.SleepTurns = 0;
-                        BroadcastStatus1(bAttacker, PStatusAction.Ended);
+                        BroadcastStatus1(bAttacker, PStatus1.Asleep, PStatusAction.Ended);
                     }
                     else
                     {
-                        BroadcastStatus1(bAttacker, PStatusAction.Activated);
+                        BroadcastStatus1(bAttacker, PStatus1.Asleep, PStatusAction.Activated);
                         return true;
                     }
                     break;
@@ -417,11 +417,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (PUtils.ApplyChance(20, 100))
                     {
                         bAttacker.Status1 = PStatus1.None;
-                        BroadcastStatus1(bAttacker, PStatusAction.Ended);
+                        BroadcastStatus1(bAttacker, PStatus1.Frozen, PStatusAction.Ended);
                     }
                     else
                     {
-                        BroadcastStatus1(bAttacker, PStatusAction.Activated);
+                        BroadcastStatus1(bAttacker, PStatus1.Frozen, PStatusAction.Activated);
                         return true;
                     }
                     break;
@@ -429,7 +429,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // 25% chance to be unable to move
                     if (PUtils.ApplyChance(25, 100))
                     {
-                        BroadcastStatus1(bAttacker, PStatusAction.Activated);
+                        BroadcastStatus1(bAttacker, PStatus1.Paralyzed, PStatusAction.Activated);
                         return true;
                     }
                     break;
@@ -515,7 +515,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 bAttacker.Status1 = PStatus1.None;
                 BroadcastLimber(pkmn, false);
-                BroadcastStatus1(pkmn, PStatusAction.Cured);
+                BroadcastStatus1(pkmn, PStatus1.Paralyzed, PStatusAction.Cured);
             }
         }
 
@@ -623,7 +623,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (status == PStatus1.Asleep)
                 bDefender.SleepTurns = (byte)PUtils.RNG.Next(PConstants.SleepMinTurns, PConstants.SleepMaxTurns + 1);
 
-            BroadcastStatus1(bDefender, PStatusAction.Added);
+            BroadcastStatus1(bDefender, status, PStatusAction.Added);
 
             return true;
         }

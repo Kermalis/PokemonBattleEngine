@@ -16,12 +16,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly PStatus1 Status1;
         public readonly PStatusAction StatusAction;
 
-        public PStatus1Packet(PPokemon pkmn, PStatusAction statusAction)
+        public PStatus1Packet(PPokemon pkmn, PStatus1 status, PStatusAction statusAction)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
-            bytes.Add((byte)(Status1 = pkmn.Status1));
+            bytes.Add((byte)(Status1 = status));
             bytes.Add((byte)(StatusAction = statusAction));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }

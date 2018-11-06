@@ -30,8 +30,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void BroadcastStatChange(PPokemon pkmn, PStat stat, sbyte change, bool isTooMuch)
             => OnNewEvent?.Invoke(new PPkmnStatChangedPacket(pkmn, stat, change, isTooMuch));
-        void BroadcastStatus1(PPokemon pkmn, PStatusAction statusAction)
-            => OnNewEvent?.Invoke(new PStatus1Packet(pkmn, statusAction));
+        void BroadcastStatus1(PPokemon pkmn, PStatus1 status, PStatusAction statusAction)
+            => OnNewEvent?.Invoke(new PStatus1Packet(pkmn, status, statusAction));
         void BroadcastStatus2(PPokemon pkmn, PStatus2 status, PStatusAction statusAction)
             => OnNewEvent?.Invoke(new PStatus2Packet(pkmn, status, statusAction));
         void BroadcastFail()
