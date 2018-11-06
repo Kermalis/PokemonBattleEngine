@@ -1369,6 +1369,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.PoisonGas,
+                new PMoveData
+                {
+                    Type = PType.Poison, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Poison, EffectParam = 0,
+                    PPTier = 8, Power = 0, Accuracy = 80, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.PoisonJab,
                 new PMoveData
                 {

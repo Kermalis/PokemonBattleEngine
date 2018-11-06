@@ -301,6 +301,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         Moonlight, // TODO
+        Poison,
         Protect, // TODO: If the user goes last, fail
         RaiseUser_ATK_ACC_By1,
         RaiseUser_ATK_DEF_By1,
@@ -440,6 +441,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Overheat,
         Peck,
         PoisonFang,
+        PoisonGas,
         PoisonJab,
         PoisonSting,
         Pound,
