@@ -1068,8 +1068,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // nightmare 38
                         Tuple.Create(47, PMove.DoubleTeam),
                         // haze 57
-                        // dark void 50 // Events
-                        // dark void 66
+                        Tuple.Create(50, PMove.DarkVoid), // Events
+                        Tuple.Create(66, PMove.DarkVoid),
                         // roar of time 50 // gen 4 event (Alamos Darkrai, Nintendo of Korea Darkrai, Cinema Darkrai)
                         // spacial rend 50 // gen 4 event (Alamos Darkrai, Nintendo of Korea Darkrai, Cinema Darkrai)
                         // embargo 75 // DP

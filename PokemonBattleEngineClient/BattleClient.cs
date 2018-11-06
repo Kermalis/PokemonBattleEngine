@@ -95,7 +95,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
                 EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-                Moves = new PMove[] { PMove.DarkPulse, PMove.DarkPulse, PMove.NastyPlot, PMove.DarkPulse }, // dark void, dark pulse, nasty plot, substitute
+                Moves = new PMove[] { PMove.DarkVoid, PMove.DarkPulse, PMove.NastyPlot, PMove.DarkPulse }, // dark void, dark pulse, nasty plot, substitute
                 PPUps = new byte[] { 3, 3, 3, 3 }
             };
         static readonly PTeamShell

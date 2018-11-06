@@ -312,6 +312,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_SPATK_SPDEF_By1,
         RaiseUser_SPATK_SPDEF_SPE_By1,
         RaiseUser_SPE_By2_ATK_By1,
+        Sleep,
         Toxic,
         Transform, // TODO
     }
@@ -355,6 +356,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         CrushClaw,
         Cut,
         DarkPulse,
+        DarkVoid,
         Detect,
         Discharge,
         DizzyPunch,
