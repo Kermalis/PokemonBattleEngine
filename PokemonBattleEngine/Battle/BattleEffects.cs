@@ -205,6 +205,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PMoveData mData = PMoveData.Data[bMove];
             switch (mData.Effect)
             {
+                case PMoveEffect.BrickBreak:
+                    Ef_BrickBreak();
+                    break;
                 case PMoveEffect.Burn:
                     TryForceStatus1(PStatus1.Burned);
                     break;
@@ -795,6 +798,32 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             team.LightScreenCount = PConstants.ReflectLightScreenTurns;
             BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Added);
+            return true;
+        }
+        bool Ef_BrickBreak()
+        {
+            if (AccuracyCheck())
+                return false;
+            // CritCheck();
+            if (!TypeCheck(bAttacker, bDefender))
+                return false;
+            PTeam team = teams[bDefender.Local ? 0 : 1];
+            if (team.ReflectCount > 0)
+            {
+                team.ReflectCount = 0;
+                BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Broke);
+            }
+            if (team.LightScreenCount > 0)
+            {
+                team.LightScreenCount = 0;
+                BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Broke);
+            }
+            DealDamage(bDefender, (ushort)(CalculateDamage() * bEffectiveness * bDamageMultiplier));
+            BroadcastEffectiveness(bEffectiveness);
+            if (bLandedCrit)
+                BroadcastCrit();
+            if (FaintCheck(bDefender))
+                return false;
             return true;
         }
     }

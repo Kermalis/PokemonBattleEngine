@@ -7,7 +7,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBattle
     {
-        private class PTeam
+        internal class PTeam
         {
             public readonly PTeamShell Shell;
             public readonly bool Local;
@@ -40,7 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         public readonly PBattleStyle BattleStyle;
-        PTeam[] teams = new PTeam[2];
+        internal PTeam[] teams = new PTeam[2];
         List<PPokemon> activeBattlers = new List<PPokemon>();
 
         public PBattle(PBattleStyle style, PTeamShell t0, PTeamShell t1)

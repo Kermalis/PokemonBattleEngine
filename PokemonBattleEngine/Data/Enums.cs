@@ -266,6 +266,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PMoveEffect : byte
     {
+        BrickBreak,
         Burn,
         ChangeTarget_ACC,
         ChangeTarget_ATK,
@@ -343,6 +344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Barrier,
         Bite,
         BlueFlare,
+        BrickBreak,
         BodySlam,
         BoltStrike,
         BoneClub,

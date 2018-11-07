@@ -162,7 +162,6 @@ Superpower
 Magic Coat
 Recycle
 Revenge
-Brick Break
 Yawn
 Knock Off
 Endeavor
