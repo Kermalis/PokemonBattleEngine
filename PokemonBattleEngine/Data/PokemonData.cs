@@ -127,7 +127,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // feint 34
                         Tuple.Create(37, PMove.Agility),
                         Tuple.Create(42, PMove.Discharge),
-                        // light screen 45
+                        Tuple.Create(45, PMove.LightScreen),
                         Tuple.Create(50, PMove.ExtremeSpeed), // Gen 5 event (ExtremeSpeed Pikachu)
                         // yawn 50 // gen 4 event (Sleeping Pikachu)
                         // rest 50 // gen 4 event (Sleeping Pikachu)
@@ -135,7 +135,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // light screen
                         // rain dance
                         // dig
                         // brick break
@@ -191,6 +190,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.IronTail, // Move Tutor
+                        PMove.LightScreen, // TM
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
@@ -467,7 +467,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // light screen
                         // rain dance
                         // facade
                         // rest
@@ -511,6 +510,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Frustration, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
+                        PMove.LightScreen, // TM
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
@@ -564,7 +564,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // hail
                         // blizzard
                         // hyper beam
-                        // light screen
                         // rain dance
                         // dig
                         // brick break
@@ -621,6 +620,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IcePunch, // Move Tutor
                         PMove.IcyWind, // Move Tutor
                         PMove.IronTail, // Move Tutor
+                        PMove.LightScreen, // TM
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MuddyWater, // Egg Move
                         PMove.MudSlap, // Gen 4 Move Tutor
@@ -767,13 +767,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // roar
                         // sunny day
                         // hyper beam
-                        // light screen
                         // rain dance
                         // telekinesis
                         // safeguard
                         // solar beam
                         // earthquake
-                        // reflect
                         // sandstorm
                         // facade
                         // rest
@@ -827,9 +825,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HoneClaws, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
+                        PMove.LightScreen, // TM
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
                         PMove.Psychic, // TM
+                        PMove.Reflect, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
@@ -888,13 +888,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // roar
                         // sunny day
                         // hyper beam
-                        // light screen
                         // rain dance
                         // telekinesis
                         // safeguard
                         // solar beam
                         // earthquake
-                        // reflect
                         // sandstorm
                         // facade
                         // rest
@@ -945,9 +943,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HoneClaws, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
+                        PMove.LightScreen, // TM
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
                         PMove.Psychic, // TM
+                        PMove.Reflect, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
@@ -993,12 +993,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // psyshock
                         // sunny day
                         // hyper beam
-                        // light screen
                         // rain dance
                         // telekinesis
                         // safeguard
                         // solar beam
-                        // Reflect
                         // facade
                         // rest
                         // attract
@@ -1034,9 +1032,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor
+                        PMove.LightScreen, // TM
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
                         PMove.Psychic, // TM
+                        PMove.Reflect, // TM
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
                         PMove.SignalBeam, // Move Tutor

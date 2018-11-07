@@ -304,6 +304,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeRaiseUser_SPATK_By1,
         Hit__MaybeRaiseUser_SPE_By1,
         Hit__MaybeToxic,
+        LightScreen,
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         Moonlight, // TODO
@@ -429,6 +430,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LeafTornado,
         Leer,
         Lick,
+        LightScreen,
         LovelyKiss,
         LowSweep,
         LusterPurge,

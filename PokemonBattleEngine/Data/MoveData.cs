@@ -1138,6 +1138,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.LightScreen,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.LightScreen, EffectParam = 0,
+                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.AllTeam
+                }
+            },
+            {
                 PMove.LovelyKiss,
                 new PMoveData
                 {

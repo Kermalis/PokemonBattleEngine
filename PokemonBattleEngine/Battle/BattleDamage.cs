@@ -75,11 +75,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Reflect reduces physical damage by 50% if there is one active battler, and by 33% if there is more than one
-            if (!ignoreReflectLightScreen && !bLandedCrit && category == PMoveCategory.Physical)
+            // Reflect & Light Screen reduce damage by 50% if there is one active battler or by 33% if there is more than one
+            if (!ignoreReflectLightScreen && !bLandedCrit)
             {
                 PTeam defenderTeam = teams[defender.Local ? 0 : 1];
-                if (defenderTeam.ReflectCount > 0)
+                if ((defenderTeam.ReflectCount > 0 && category == PMoveCategory.Physical)
+                    || (defenderTeam.LightScreenCount > 0 && category == PMoveCategory.Special))
                 {
                     if (defenderTeam.NumPkmnOnField == 1)
                         basePower *= 0.5;

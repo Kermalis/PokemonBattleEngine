@@ -51,7 +51,6 @@ Recover
 Minimize
 Defense Curl
 Barrier
-Light Screen
 Haze
 Focus Energy
 Bide

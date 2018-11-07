@@ -325,6 +325,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeToxic:
                     HitAndMaybeApplyStatus1(PStatus1.BadlyPoisoned, mData.EffectParam);
                     break;
+                case PMoveEffect.LightScreen:
+                    Ef_LightScreen();
+                    break;
                 case PMoveEffect.LowerTarget_ATK_DEF_By1:
                     ApplyStatChange(bDefender, PStat.Attack, -1);
                     ApplyStatChange(bDefender, PStat.Defense, -1);
@@ -780,6 +783,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             team.ReflectCount = PConstants.ReflectLightScreenTurns;
             BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Added);
+            return true;
+        }
+        bool Ef_LightScreen()
+        {
+            PTeam team = teams[bAttacker.Local ? 0 : 1];
+            if (team.LightScreenCount > 0)
+            {
+                BroadcastFail();
+                return false;
+            }
+            team.LightScreenCount = PConstants.ReflectLightScreenTurns;
+            BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Added);
             return true;
         }
     }
