@@ -23,19 +23,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BroadcastFaint(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PPkmnFaintedPacket(pkmn));
         void BroadcastCrit()
-        {
-            if (bLandedCrit)
-                OnNewEvent?.Invoke(new PMoveCritPacket());
-        }
-
+            => OnNewEvent?.Invoke(new PMoveCritPacket());
+        void BroadcastFail()
+            => OnNewEvent?.Invoke(new PMoveFailPacket());
         void BroadcastStatChange(PPokemon pkmn, PStat stat, sbyte change, bool isTooMuch)
             => OnNewEvent?.Invoke(new PPkmnStatChangedPacket(pkmn, stat, change, isTooMuch));
         void BroadcastStatus1(PPokemon pkmn, PStatus1 status, PStatusAction statusAction)
             => OnNewEvent?.Invoke(new PStatus1Packet(pkmn, status, statusAction));
         void BroadcastStatus2(PPokemon pkmn, PStatus2 status, PStatusAction statusAction)
             => OnNewEvent?.Invoke(new PStatus2Packet(pkmn, status, statusAction));
-        void BroadcastFail()
-            => OnNewEvent?.Invoke(new PMoveFailPacket());
+        void BroadcastReflectLightScreen(bool local, bool reflect, PReflectLightScreenAction action)
+            => OnNewEvent?.Invoke(new PMoveReflectLightScreenPacket(local, reflect, action));
         void BroadcastItemUsed(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PItemUsedPacket(pkmn));
         void BroadcastPPChanged(PPokemon pkmn, PMove move, int change)
@@ -192,6 +190,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
                     Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s2p.PokemonId).Shell.Nickname);
+                    break;
+                case PMoveReflectLightScreenPacket mrlsp:
+                    switch (mrlsp.Action)
+                    {
+                        case PReflectLightScreenAction.Added: message = "{0} raised {2} team's {1}!"; break;
+                        case PReflectLightScreenAction.Broke:
+                        case PReflectLightScreenAction.Ended: message = "{3} team's {0} wore off!"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(mrlsp.Action), $"Invalid protected action: {mrlsp.Action}");
+                    }
+                    Console.WriteLine(message, mrlsp.Reflect ? "Reflect" : "Light Screen", mrlsp.Reflect ? PStat.Defense : PStat.SpDefense, mrlsp.Local ? "your" : "the opposing", mrlsp.Local ? "Your" : "The opposing");
                     break;
                 case PItemUsedPacket iup:
                     switch (iup.Item)

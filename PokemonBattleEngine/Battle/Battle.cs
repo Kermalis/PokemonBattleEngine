@@ -13,6 +13,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             public readonly bool Local;
             public readonly PPokemon[] Party;
 
+            public int NumPkmnAlive => Party.Count(p => p.HP > 0);
+            public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PFieldPosition.None);
+
+            public byte ReflectCount; // Reflect
             public bool MonFaintedLastTurn; // Retaliate
 
             public PTeam(PTeamShell shell, bool local)
@@ -178,6 +182,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     pkmn.ProtectCounter = 0;
                 if (pkmn.HP > 0)
                     DoTurnEndedEffects(pkmn); // BattleEffects.cs
+            }
+            foreach (PTeam team in teams)
+            {
+                // Field
+                if (team.ReflectCount > 0)
+                {
+                    team.ReflectCount--;
+                    if (team.ReflectCount == 0)
+                        BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Ended);
+                }
             }
         }
     }

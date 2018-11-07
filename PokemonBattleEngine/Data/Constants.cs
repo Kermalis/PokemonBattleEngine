@@ -34,5 +34,7 @@
         public const byte ToxicDamageDenominator = 16; // [Default: 16 (1/16 damage increasingly each turn)]
 
         public const byte LeftoversDenominator = 16; // [Default: 16 (1/16 health each turn)]
+
+        public const byte ReflectLightScreenTurns = 5; // [Default: 5]
     }
 }

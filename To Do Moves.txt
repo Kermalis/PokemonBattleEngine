@@ -53,7 +53,6 @@ Defense Curl
 Barrier
 Light Screen
 Haze
-Reflect
 Focus Energy
 Bide
 Metronome

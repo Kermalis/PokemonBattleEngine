@@ -76,7 +76,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (action.Targets != (PTarget.AllyCenter | PTarget.FoeCenter))
                                 return false;
                             break;
-                        case PMoveTarget.AllFoes:
                         case PMoveTarget.AllFoesSurrounding:
                         case PMoveTarget.AllSurrounding:
                         case PMoveTarget.SingleFoeSurrounding:
@@ -85,14 +84,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (action.Targets != PTarget.FoeCenter)
                                 return false;
                             break;
-                        case PMoveTarget.AllTeam:
                         case PMoveTarget.Self:
                         case PMoveTarget.SelfOrAllySurrounding:
-                        case PMoveTarget.SingleAllySurrounding: // Client should send "AllyCenter" even though the move will fail
                             if (action.Targets != PTarget.AllyCenter)
                                 return false;
-                            break;
-                        case PMoveTarget.RandomFoeSurrounding:
                             break;
                     }
                     break;
@@ -104,7 +99,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (action.Targets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
                                 return false;
                             break;
-                        case PMoveTarget.AllFoes:
                         case PMoveTarget.AllFoesSurrounding:
                             if (action.Targets != (PTarget.FoeLeft | PTarget.FoeRight))
                                 return false;
@@ -120,12 +114,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 if (action.Targets != (PTarget.AllyLeft | PTarget.FoeLeft | PTarget.FoeRight))
                                     return false;
                             }
-                            break;
-                        case PMoveTarget.AllTeam:
-                            if (action.Targets != (PTarget.AllyLeft | PTarget.AllyRight))
-                                return false;
-                            break;
-                        case PMoveTarget.RandomFoeSurrounding:
                             break;
                         case PMoveTarget.Self:
                             if (pkmn.FieldPosition == PFieldPosition.Left)
@@ -181,10 +169,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (action.Targets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
                                 return false;
                             break;
-                        case PMoveTarget.AllFoes:
-                            if (action.Targets != (PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
-                                return false;
-                            break;
                         case PMoveTarget.AllFoesSurrounding:
                             if (pkmn.FieldPosition == PFieldPosition.Left)
                             {
@@ -218,12 +202,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 if (action.Targets != (PTarget.AllyCenter | PTarget.FoeLeft | PTarget.FoeCenter))
                                     return false;
                             }
-                            break;
-                        case PMoveTarget.AllTeam:
-                            if (action.Targets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight))
-                                return false;
-                            break;
-                        case PMoveTarget.RandomFoeSurrounding:
                             break;
                         case PMoveTarget.Self:
                             if (pkmn.FieldPosition == PFieldPosition.Left)
@@ -346,69 +324,83 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void SelectAction(PAction action)
         {
             PPokemon pkmn = PKnownInfo.Instance.Pokemon(action.PokemonId);
-            PTeam attackerTeam = teams[pkmn.Local ? 0 : 1]; // Attacker's team
-            PTeam opposingTeam = teams[pkmn.Local ? 1 : 0]; // Other team
             // TODO:
             // if (action == PDecision.Fight)
-            pkmn.Action = action;
 
-            // Choose target if move selects a random target naturally
-            if (PMoveData.Data[pkmn.Action.Move].Targets == PMoveTarget.RandomFoeSurrounding)
+            switch (PMoveData.Data[action.Move].Targets)
             {
-                switch (BattleStyle)
-                {
-                    case PBattleStyle.Single:
-                    case PBattleStyle.Rotation:
-                        action.Targets = PTarget.FoeCenter;
-                        break;
-                    case PBattleStyle.Double:
-                        action.Targets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeRight;
-                        break;
-                    case PBattleStyle.Triple:
-                        if (pkmn.FieldPosition == PFieldPosition.Left)
-                        {
-                            // If one is fainted, BattleEffects.cs->UseMove() will change the target
-                            action.Targets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeCenter : PTarget.FoeRight;
-                        }
-                        else if (pkmn.FieldPosition == PFieldPosition.Center)
-                        {
-                            // Keep randomly picking until a non-fainted foe is selected
-                            int r;
-                            roll:
-                            r = PUtils.RNG.Next(3);
-                            // Prioritize left
-                            if (r == 0)
+                // These two are not supposed to activate 2/3 times for double/triple battles, they affect the team itself
+                case PMoveTarget.AllFoes:
+                case PMoveTarget.AllTeam:
+                    if (pkmn.FieldPosition == PFieldPosition.Left)
+                        action.Targets = PTarget.AllyLeft;
+                    else if (pkmn.FieldPosition == PFieldPosition.Center)
+                        action.Targets = PTarget.AllyCenter;
+                    else
+                        action.Targets = PTarget.AllyRight;
+                    break;
+                case PMoveTarget.RandomFoeSurrounding:
+                    switch (BattleStyle)
+                    {
+                        case PBattleStyle.Single:
+                        case PBattleStyle.Rotation:
+                            action.Targets = PTarget.FoeCenter;
+                            break;
+                        case PBattleStyle.Double:
+                            action.Targets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeRight;
+                            break;
+                        case PBattleStyle.Triple:
+                            if (pkmn.FieldPosition == PFieldPosition.Left)
                             {
-                                if (opposingTeam.BattlerAtPosition(PFieldPosition.Left) != null)
-                                    action.Targets = PTarget.FoeLeft;
-                                else
-                                    goto roll;
+                                // If one is fainted, BattleEffects.cs->UseMove() will change the target
+                                action.Targets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeCenter : PTarget.FoeRight;
                             }
-                            // Prioritize center
-                            else if (r == 1)
+                            else if (pkmn.FieldPosition == PFieldPosition.Center)
                             {
-                                if (opposingTeam.BattlerAtPosition(PFieldPosition.Center) != null)
-                                    action.Targets = PTarget.FoeCenter;
+                                PTeam opposingTeam = teams[pkmn.Local ? 1 : 0]; // Other team
+                                // Keep randomly picking until a non-fainted foe is selected
+                                int r;
+                                roll:
+                                r = PUtils.RNG.Next(3);
+                                // Prioritize left
+                                if (r == 0)
+                                {
+                                    if (opposingTeam.BattlerAtPosition(PFieldPosition.Left) != null)
+                                        action.Targets = PTarget.FoeLeft;
+                                    else
+                                        goto roll;
+                                }
+                                // Prioritize center
+                                else if (r == 1)
+                                {
+                                    if (opposingTeam.BattlerAtPosition(PFieldPosition.Center) != null)
+                                        action.Targets = PTarget.FoeCenter;
+                                    else
+                                        goto roll;
+                                }
+                                // Prioritize right
                                 else
-                                    goto roll;
+                                {
+                                    if (opposingTeam.BattlerAtPosition(PFieldPosition.Right) != null)
+                                        action.Targets = PTarget.FoeRight;
+                                    else
+                                        goto roll;
+                                }
                             }
-                            // Prioritize right
                             else
                             {
-                                if (opposingTeam.BattlerAtPosition(PFieldPosition.Right) != null)
-                                    action.Targets = PTarget.FoeRight;
-                                else
-                                    goto roll;
+                                // If one is fainted, BattleEffects.cs->UseMove() will change the target
+                                action.Targets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeCenter;
                             }
-                        }
-                        else
-                        {
-                            // If one is fainted, BattleEffects.cs->UseMove() will change the target
-                            action.Targets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeCenter;
-                        }
-                        break;
-                }
+                            break;
+                    }
+                    break;
+                case PMoveTarget.SingleAllySurrounding:
+                    if (BattleStyle == PBattleStyle.Single || BattleStyle == PBattleStyle.Rotation)
+                        action.Targets = PTarget.AllyCenter;
+                    break;
             }
+            pkmn.Action = action;
         }
     }
 }

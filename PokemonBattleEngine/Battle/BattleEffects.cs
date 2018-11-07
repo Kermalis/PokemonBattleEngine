@@ -26,6 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void DoTurnEndedEffects(PPokemon pkmn)
         {
+            PTeam team = teams[pkmn.Local ? 0 : 1];
             // Major statuses
             switch (pkmn.Status1)
             {
@@ -382,6 +383,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     ApplyStatChange(bAttacker, PStat.Speed, +2);
                     ApplyStatChange(bAttacker, PStat.Attack, +1);
                     break;
+                case PMoveEffect.Reflect:
+                    Ef_Reflect();
+                    break;
                 case PMoveEffect.Sleep:
                     TryForceStatus1(PStatus1.Asleep);
                     break;
@@ -462,7 +466,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // 50% chance to hit itself
                     if (PUtils.ApplyChance(50, 100))
                     {
-                        DealDamage(bAttacker, CalculateDamage(bAttacker, bAttacker, 40, PMoveCategory.Physical));
+                        DealDamage(bAttacker, CalculateDamage(bAttacker, bAttacker, 40, PMoveCategory.Physical, true));
                         BroadcastStatus2(bAttacker, PStatus2.Confused, PStatusAction.CausedDamage);
                         FaintCheck(bAttacker);
                         return true;
@@ -674,7 +678,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             DealDamage(bDefender, (ushort)(CalculateDamage() * bEffectiveness * bDamageMultiplier));
             BroadcastEffectiveness(bEffectiveness);
-            BroadcastCrit();
+            if (bLandedCrit)
+                BroadcastCrit();
             if (FaintCheck(bDefender))
                 return false;
             return true;
@@ -763,6 +768,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             bAttacker.ProtectCounter++;
             bAttacker.Status2 |= PStatus2.Protected;
             BroadcastStatus2(bAttacker, PStatus2.Protected, PStatusAction.Added);
+            return true;
+        }
+        bool Ef_Reflect()
+        {
+            PTeam team = teams[bAttacker.Local ? 0 : 1];
+            if (team.ReflectCount > 0)
+            {
+                BroadcastFail();
+                return false;
+            }
+            team.ReflectCount = PConstants.ReflectLightScreenTurns;
+            BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Added);
             return true;
         }
     }

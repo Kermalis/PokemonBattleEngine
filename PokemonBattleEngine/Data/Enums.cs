@@ -89,7 +89,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         Added, // protected itself, became paralyzed, etc
         CausedDamage, // hurt from confusion, hurt from burn, etc
         Cured, // limber curing paralysis
-        Ended, // woke up, no longer confused, etc
+        Ended // woke up, no longer confused, etc
+    }
+    public enum PReflectLightScreenAction : byte
+    {
+        Added,
+        Broke,
+        Ended
     }
     public enum PType : byte
     {
@@ -313,6 +319,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_SPATK_SPDEF_By1,
         RaiseUser_SPATK_SPDEF_SPE_By1,
         RaiseUser_SPE_By2_ATK_By1,
+        Reflect,
         Sleep,
         Toxic,
         Transform, // TODO
@@ -463,6 +470,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         QuickAttack,
         QuiverDance,
         RazorShell,
+        Reflect,
         Retaliate, // TODO
         Return,
         RockClimb,

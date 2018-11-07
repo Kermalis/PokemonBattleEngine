@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // If power is 0, power is determined by bMove
-        ushort CalculateBasePower(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category)
+        ushort CalculateBasePower(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
         {
             double basePower = power;
 
@@ -72,6 +72,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     default:
                         basePower = PMoveData.Data[bMove].Power;
                         break;
+                }
+            }
+
+            // Reflect reduces physical damage by 50% if there is one active battler, and by 33% if there is more than one
+            if (!ignoreReflectLightScreen && !bLandedCrit && category == PMoveCategory.Physical)
+            {
+                PTeam defenderTeam = teams[defender.Local ? 0 : 1];
+                if (defenderTeam.ReflectCount > 0)
+                {
+                    if (defenderTeam.NumPkmnOnField == 1)
+                        basePower *= 0.5;
+                    else
+                        basePower *= 0.66;
                 }
             }
 
@@ -186,14 +199,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)spDefense;
         }
+
         ushort CalculateDamage()
-            => CalculateDamage(bAttacker, bDefender, 0, PMoveData.Data[bMove].Category);
+            => CalculateDamage(bAttacker, bDefender, 0, PMoveData.Data[bMove].Category, false);
         // If power is 0, power is determined by bMove
-        ushort CalculateDamage(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category)
+        ushort CalculateDamage(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
         {
             ushort damage;
             ushort a = 0, d = 0,
-                p = CalculateBasePower(attacker, defender, power, category);
+                p = CalculateBasePower(attacker, defender, power, category, ignoreReflectLightScreen);
 
             // TODO: Determine a and d for moves like Foul Play and Psyshock
 

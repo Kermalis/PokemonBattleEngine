@@ -207,6 +207,15 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                     WaitForBattlersResponses();
                     break;
+                case PMoveReflectLightScreenPacket mrlsp:
+                    foreach (Player client in Clients)
+                    {
+                        if (client == battlers[1])
+                            mrlsp.Local = !mrlsp.Local; // Correctly set locally owned for this team
+                        client.Send(packet);
+                    }
+                    WaitForBattlersResponses();
+                    break;
                 case PMovePPChangedPacket mpcp:
                     // Send only to the owner's client
                     int i = PKnownInfo.Instance.Pokemon(mpcp.PokemonId).Local ? 0 : 1;
