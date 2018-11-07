@@ -65,6 +65,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower = Math.Max(1, (byte.MaxValue - attacker.Shell.Friendship) / 2.5);
                         break;
                     case PMove.GrassKnot:
+                    case PMove.LowKick:
                         if (defenderPData.Weight >= 200.0)
                             basePower = 120;
                         else if (defenderPData.Weight >= 100.0)

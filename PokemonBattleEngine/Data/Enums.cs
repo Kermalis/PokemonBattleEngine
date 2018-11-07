@@ -437,6 +437,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Lick,
         LightScreen,
         LovelyKiss,
+        LowKick,
         LowSweep,
         LusterPurge,
         MachPunch,

@@ -148,7 +148,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fling
                         // volt switch
                         // thunder wave
-                        // grass knot
                         // swagger
                         // substitute
                         // wild charge
@@ -189,6 +188,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.DoubleTeam, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
+                        PMove.GrassKnot, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.IronTail, // Move Tutor
@@ -268,7 +268,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // skull bash
                         // endeavor // tutor
                         // knock off
-                        // low kick
                         // sleep talk
                         // snore
                         // stealth rock
@@ -299,6 +298,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IronDefense, // Move Tutor
                         PMove.IronHead, // Egg Move / Move Tutor
                         PMove.IronTail, // Move Tutor
+                        PMove.LowKick, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
@@ -377,7 +377,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // skull bash
                         // endeavor // tutor
                         // knock off
-                        // low kick
                         // outrage
                         // sleep talk
                         // snore
@@ -410,6 +409,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IronDefense, // Move Tutor
                         PMove.IronHead, // Egg Move / Move Tutor
                         PMove.IronTail, // Move Tutor
+                        PMove.LowKick, // Move Tutor
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
@@ -482,7 +482,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fling
                         // volt switch
                         // thunder wave
-                        // grass knot
                         // swagger
                         // substitute
                         // wild charge
@@ -514,6 +513,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.DoubleTeam, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
+                        PMove.GrassKnot, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.LightScreen, // TM
@@ -580,7 +580,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // round
                         // fling
                         // giga impact
-                        // grass knot
                         // swagger
                         // substitute
                         // belly drum // egg move
@@ -620,6 +619,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.FakeTears, // Move Tutor
                         PMove.FocusBlast, // TM
                         PMove.Frustration, // TM
+                        PMove.GrassKnot, // TM
                         PMove.Headbutt, // Gen 4 Move Tutor
                         PMove.HiddenPower, // TM
                         PMove.HyperVoice, // Move Tutor
@@ -792,7 +792,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // thunder wave
                         // psych up
                         // dream eater
-                        // grass knot
                         // swagger
                         // substitute
                         // covet // tutor
@@ -831,6 +830,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.EnergyBall, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
+                        PMove.GrassKnot, // TM
                         PMove.HiddenPower, // TM
                         PMove.HoneClaws, // TM
                         PMove.IceBeam, // TM
@@ -914,7 +914,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // thunder wave
                         // psych up
                         // dream eater
-                        // grass knot
                         // swagger
                         // substitute
                         // helping hand // tutor
@@ -950,6 +949,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.EnergyBall, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
+                        PMove.GrassKnot, // TM
                         PMove.HiddenPower, // TM
                         PMove.HoneClaws, // TM
                         PMove.IceBeam, // TM
@@ -1017,7 +1017,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // thunder wave
                         // psych up
                         // dream eater
-                        // grass knot
                         // swagger
                         // substitute
                         // trick room
@@ -1041,6 +1040,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.EnergyBall, // TM
                         PMove.Flash, // TM
                         PMove.Frustration, // TM
+                        PMove.GrassKnot, // TM
                         PMove.HiddenPower, // TM
                         PMove.IceBeam, // TM
                         PMove.IcyWind, // Move Tutor

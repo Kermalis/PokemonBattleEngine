@@ -28,7 +28,6 @@ Surf
 Blizzard
 Hyper Beam
 Submission
-Low Kick
 Counter
 Seismic Toss
 Absorb
