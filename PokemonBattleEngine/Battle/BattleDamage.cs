@@ -53,6 +53,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // If power is 0, power is determined by bMove
         ushort CalculateBasePower(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
         {
+            PPokemonData defenderPData = PPokemonData.Data[defender.Shell.Species];
             double basePower = power;
 
             // Moves with variable base power
@@ -62,6 +63,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     case PMove.Frustration:
                         basePower = Math.Max(1, (byte.MaxValue - attacker.Shell.Friendship) / 2.5);
+                        break;
+                    case PMove.GrassKnot:
+                        if (defenderPData.Weight >= 200.0)
+                            basePower = 120;
+                        else if (defenderPData.Weight >= 100.0)
+                            basePower = 100;
+                        else if (defenderPData.Weight >= 50.0)
+                            basePower = 80;
+                        else if (defenderPData.Weight >= 25.0)
+                            basePower = 60;
+                        else if (defenderPData.Weight >= 10.0)
+                            basePower = 40;
+                        else
+                            basePower = 20;
                         break;
                     case PMove.HiddenPower:
                         basePower = attacker.GetHiddenPowerBasePower();

@@ -404,6 +404,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Frustration,
         Glaciate,
         Glare,
+        GrassKnot,
         GrassWhistle,
         Growl,
         GunkShot,

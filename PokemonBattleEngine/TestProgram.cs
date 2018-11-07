@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
                 EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
-                Moves = new PMove[] { PMove.Thunderbolt, PMove.Thunderbolt, PMove.HiddenPower, PMove.Thunderbolt }, // substitute, thunderbolt, hidden power ice, grass knot
+                Moves = new PMove[] { PMove.Thunderbolt, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot }, // substitute, thunderbolt, hidden power ice, grass knot
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             azumarill = new PPokemonShell
@@ -97,12 +97,12 @@ namespace Kermalis.PokemonBattleEngine
             PTeamShell team0 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { azumarill, pikachu }
+                Party = { pikachu, azumarill }
             };
             PTeamShell team1 = new PTeamShell
             {
                 DisplayName = "Jess",
-                Party = { latios, darkrai }
+                Party = { darkrai, latios }
             };
 
             PBattle battle = new PBattle(PBattleStyle.Single, team0, team1);

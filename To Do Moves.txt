@@ -260,7 +260,6 @@ Cross Poison
 Stone Edge
 Captivate
 Stealth Rock
-Grass Knot
 Judgment
 Bug Bite
 Wood Hammer

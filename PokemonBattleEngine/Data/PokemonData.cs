@@ -12,6 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PAbility[] Abilities;
         public byte MinLevel;
         public bool ShinyLocked;
+        public double Weight; // Kilograms
         public Tuple<int, PMove>[] LevelUpMoves;
         public PMove[] OtherMoves;
 
@@ -105,6 +106,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
+                    Weight = 6.0,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
@@ -218,6 +220,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
+                    Weight = 6.5,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
@@ -322,6 +325,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     MinLevel = 14, // HGSS (Rock Tunnel)
                     ShinyLocked = false,
+                    Weight = 45.0,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Growl),
@@ -432,6 +436,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.Limber, PAbility.Imposter },
                     MinLevel = 10, // HGSS (Route 34, Route 35)
                     ShinyLocked = false,
+                    Weight = 4.0,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Transform),
@@ -452,6 +457,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
+                    Weight = 2.0,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.ThunderShock),
@@ -535,6 +541,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.ThickFat, PAbility.HugePower, PAbility.SapSipper },
                     MinLevel = 5, // B2W2 (Route 20, Flocessy Ranch, Relic Passage)
                     ShinyLocked = false,
+                    Weight = 28.5,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         // tackle 1
@@ -651,6 +658,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 5, // HGSS (Ruins of Alph)
                     ShinyLocked = false,
+                    Weight = 5.0,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.HiddenPower),
@@ -671,6 +679,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.ShellArmor, PAbility.Rattled },
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
+                    Weight = 52.5,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         // clamp 1
@@ -734,6 +743,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 35, // HG (Roaming)
                     ShinyLocked = false,
+                    Weight = 40.0,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         // psywave 1
@@ -855,6 +865,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 35, // SS (Roaming)
                     ShinyLocked = false,
+                    Weight = 60.0,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         // psywave 1
@@ -973,6 +984,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 50, // DPPt (Roaming)
                     ShinyLocked = false,
+                    Weight = 85.6,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         Tuple.Create(1, PMove.Confusion),
@@ -1056,6 +1068,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Abilities = new PAbility[] { PAbility.BadDreams },
                     MinLevel = 40, // DP (Newmoon Island)
                     ShinyLocked = false,
+                    Weight = 50.5,
                     LevelUpMoves = new Tuple<int, PMove>[]
                     {
                         // disable 1
