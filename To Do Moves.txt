@@ -50,7 +50,6 @@ Mimic
 Recover
 Minimize
 Defense Curl
-Barrier
 Haze
 Focus Energy
 Bide

@@ -340,6 +340,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Astonish,
         AuraSphere,
         AuroraBeam,
+        Barrier,
         Bite,
         BlueFlare,
         BodySlam,

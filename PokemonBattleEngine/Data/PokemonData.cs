@@ -693,7 +693,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // swagger
                         // substitute
                         // aqua ring // egg move
-                        // barrier
                         // brine
                         // endure
                         // mud sport
@@ -705,6 +704,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // mimic // gen 3 tutor
                         // natural gift // gen 4 tm
                         // secret power // gen 4 tm
+                        PMove.Barrier, // Egg Move
                         PMove.BodySlam, // Egg Move
                         PMove.ConfuseRay, // Egg Move
                         PMove.DoubleTeam, // TM
