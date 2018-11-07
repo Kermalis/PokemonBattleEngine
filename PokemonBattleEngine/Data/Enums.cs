@@ -154,6 +154,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DeepSeaTooth,
         Leftovers,
         LightBall,
+        LightClay,
         MetalPowder, // TODO
         SoulDew,
         ThickClub,

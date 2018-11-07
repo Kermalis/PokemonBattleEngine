@@ -784,7 +784,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastFail();
                 return false;
             }
-            team.ReflectCount = PConstants.ReflectLightScreenTurns;
+            team.ReflectCount = (byte)(PConstants.ReflectLightScreenTurns + (bAttacker.Shell.Item == PItem.LightClay ? PConstants.LightClayTurnExtension : 0));
             BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Added);
             return true;
         }
@@ -796,7 +796,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastFail();
                 return false;
             }
-            team.LightScreenCount = PConstants.ReflectLightScreenTurns;
+            team.LightScreenCount = (byte)(PConstants.ReflectLightScreenTurns + (bAttacker.Shell.Item == PItem.LightClay ? PConstants.LightClayTurnExtension : 0));
             BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Added);
             return true;
         }

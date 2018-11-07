@@ -36,5 +36,6 @@
         public const byte LeftoversDenominator = 16; // [Default: 16 (1/16 health each turn)]
 
         public const byte ReflectLightScreenTurns = 5; // [Default: 5]
+        public const byte LightClayTurnExtension = 3; // [Default: 3 (5+3 = 8 turns)]
     }
 }
