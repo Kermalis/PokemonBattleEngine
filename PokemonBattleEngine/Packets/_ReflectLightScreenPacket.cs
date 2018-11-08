@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PMoveReflectLightScreenPacket : INetPacket
+    public sealed class PReflectLightScreenPacket : INetPacket
     {
         public const short Code = 0x13;
         public IEnumerable<byte> Buffer => BuildBuffer();
@@ -16,13 +16,13 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly bool Reflect; // False for Light Screen
         public readonly PReflectLightScreenAction Action;
 
-        public PMoveReflectLightScreenPacket(bool local, bool reflect, PReflectLightScreenAction action)
+        public PReflectLightScreenPacket(bool local, bool reflect, PReflectLightScreenAction action)
         {
             Local = local;
             Reflect = reflect;
             Action = action;
         }
-        public PMoveReflectLightScreenPacket(byte[] buffer)
+        public PReflectLightScreenPacket(byte[] buffer)
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {

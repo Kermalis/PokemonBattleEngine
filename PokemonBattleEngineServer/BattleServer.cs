@@ -207,11 +207,11 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                     WaitForBattlersResponses();
                     break;
-                case PMoveReflectLightScreenPacket mrlsp:
+                case PReflectLightScreenPacket rlsp:
                     foreach (Player client in Clients)
                     {
                         if (client == battlers[1])
-                            mrlsp.Local = !mrlsp.Local; // Correctly set locally owned for this team
+                            rlsp.Local = !rlsp.Local; // Correctly set locally owned for this team
                         client.Send(packet);
                     }
                     WaitForBattlersResponses();

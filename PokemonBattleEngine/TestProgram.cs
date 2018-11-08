@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
                 EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
-                Moves = new PMove[] { PMove.Thunderbolt, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot }, // substitute, thunderbolt, hidden power ice, grass knot
+                Moves = new PMove[] { PMove.Substitute, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             azumarill = new PPokemonShell
@@ -85,7 +85,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
                 EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-                Moves = new PMove[] { PMove.DarkVoid, PMove.DarkPulse, PMove.NastyPlot, PMove.DarkPulse }, // dark void, dark pulse, nasty plot, substitute
+                Moves = new PMove[] { PMove.DarkVoid, PMove.DarkPulse, PMove.NastyPlot, PMove.Substitute },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             };
 
@@ -160,6 +160,8 @@ namespace Kermalis.PokemonBattleEngine
                         Move = p1_0.Shell.Moves[move],
                         Targets = PTarget.FoeCenter
                     };
+                    action.Move = PMove.Substitute;
+                    action.Targets = PTarget.AllyCenter;
                     valid = battle.SelectActionIfValid(action);
 
                     /*move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);

@@ -14,15 +14,15 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public readonly Guid PokemonId;
         public readonly PStatus1 Status1;
-        public readonly PStatusAction StatusAction;
+        public readonly PStatusAction Action;
 
-        public PStatus1Packet(PPokemon pkmn, PStatus1 status, PStatusAction statusAction)
+        public PStatus1Packet(PPokemon pkmn, PStatus1 status, PStatusAction action)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
             bytes.Add((byte)(Status1 = status));
-            bytes.Add((byte)(StatusAction = statusAction));
+            bytes.Add((byte)(Action = action));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PStatus1Packet(byte[] buffer)
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 PokemonId = new Guid(r.ReadBytes(0x10));
                 Status1 = (PStatus1)r.ReadByte();
-                StatusAction = (PStatusAction)r.ReadByte();
+                Action = (PStatusAction)r.ReadByte();
             }
         }
 

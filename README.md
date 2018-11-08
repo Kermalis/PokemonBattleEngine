@@ -19,15 +19,14 @@ Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
 ----
 # To Do:
 * Pokémon level validation
-* Fire moves should thaw frozen battlers
 * Switching out
 * Accuracy/Evasion math
 * Critical hits
-* Heaviness
 * Struggle
 * Weather
 * Turn order
-* Move targetting (In a triple battle; if a Pokémon targets a foe in the center and the foe faints before the attack is executed, which remaining foe gets hit?)
+* Move targetting: #2
+* Move targetting: A function that gets all valid targets for a move
 * Rotation battles
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PPkmnMovePacket : INetPacket
+    public sealed class PMoveUsedPacket : INetPacket
     {
         public const short Code = 0x09;
         public IEnumerable<byte> Buffer { get; }
@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly PMove Move;
         public readonly bool OwnsMove;
 
-        public PPkmnMovePacket(PPokemon pkmn, PMove move)
+        public PMoveUsedPacket(PPokemon pkmn, PMove move)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)((OwnsMove = pkmn.Shell.Moves.Contains(Move)) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PPkmnMovePacket(byte[] buffer)
+        public PMoveUsedPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))

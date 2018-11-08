@@ -59,6 +59,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         None,
         Fight,
     }
+    public enum PMoveCategory : byte
+    {
+        Status,
+        Physical,
+        Special
+    }
     public enum PStatus1 : byte
     {
         None,
@@ -79,16 +85,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         FocusEnergy = 1 << 3, // TODO
         Infatuated = 1 << 4, // TODO
         Protected = 1 << 5,
-        Tormented = 1 << 6, // TODO
-        Underground = 1 << 7, // TODO
-        Underwater = 1 << 8, // TODO
+        Substitute = 1 << 6,
+        Tormented = 1 << 7, // TODO
+        Underground = 1 << 8, // TODO
+        Underwater = 1 << 9, // TODO
     }
     public enum PStatusAction : byte
     {
         Activated, // flinch prevented movement, protect activated, etc
         Added, // protected itself, became paralyzed, etc
-        CausedDamage, // hurt from confusion, hurt from burn, etc
         Cured, // limber curing paralysis
+        Damage, // hurt from confusion, substitute took damage, etc
         Ended // woke up, no longer confused, etc
     }
     public enum PReflectLightScreenAction : byte
@@ -232,12 +239,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         Cresselia = 488, // TODO
         Darkrai = 491, // TODO
     }
-    public enum PMoveCategory : byte
-    {
-        Status,
-        Physical,
-        Special
-    }
     public enum PMoveTarget : byte // Used in MoveData
     {
         All,                   // Every battler (Ex. Perish Song)
@@ -324,6 +325,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_SPE_By2_ATK_By1,
         Reflect,
         Sleep,
+        Substitute,
         Toxic,
         Transform, // TODO
     }
@@ -520,6 +522,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StringShot,
         StruggleBug,
         StunSpore,
+        Substitute,
         Supersonic,
         SweetKiss,
         SweetScent,

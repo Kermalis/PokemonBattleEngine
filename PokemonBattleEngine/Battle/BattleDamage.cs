@@ -15,12 +15,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        // Returns false and broadcasts if an attack is ineffective
-        bool TypeCheck(PPokemon attacker, PPokemon defender)
+        // Returns the effectiveness (0.0, 0.5, 2.0)
+        double TypeCheck(PPokemon attacker, PPokemon defender)
         {
             PPokemonData attackerPData = PPokemonData.Data[attacker.Shell.Species];
             PPokemonData defenderPData = PPokemonData.Data[defender.Shell.Species];
             PMoveData mData = PMoveData.Data[bMove];
+            double effectiveness = 1;
 
             switch (bMove)
             {
@@ -36,18 +37,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (attackerPData.HasType(bMoveType))
                 bDamageMultiplier *= 1.5;
 
-            bEffectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)defenderPData.Type1];
+            effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)defenderPData.Type1];
             // Don't want to halve twice for a mono type
             if (defenderPData.Type1 != defenderPData.Type2)
-                bEffectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)defenderPData.Type2];
+                effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)defenderPData.Type2];
 
-            if (bEffectiveness == 0)
-            {
-                BroadcastEffectiveness(0);
-                return false;
-            }
-
-            return true;
+            return effectiveness;
         }
 
         // If power is 0, power is determined by bMove

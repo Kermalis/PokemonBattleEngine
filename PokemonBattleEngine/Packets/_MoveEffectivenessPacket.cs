@@ -15,11 +15,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly Guid PokemonId; // Defender
         public readonly double Effectiveness;
 
-        public PMoveEffectivenessPacket(PPokemon defender, double effectiveness)
+        public PMoveEffectivenessPacket(PPokemon pkmn, double effectiveness)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange((PokemonId = defender.Id).ToByteArray());
+            bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
             bytes.AddRange(BitConverter.GetBytes(Effectiveness = effectiveness));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }

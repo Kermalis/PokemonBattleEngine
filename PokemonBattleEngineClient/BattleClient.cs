@@ -31,7 +31,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
                 EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
-                Moves = new PMove[] { PMove.Thunderbolt, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot }, // substitute, thunderbolt, hidden power ice, grass knot
+                Moves = new PMove[] { PMove.Substitute, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             azumarill = new PPokemonShell
@@ -95,7 +95,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
                 EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-                Moves = new PMove[] { PMove.DarkVoid, PMove.DarkPulse, PMove.NastyPlot, PMove.DarkPulse }, // dark void, dark pulse, nasty plot, substitute
+                Moves = new PMove[] { PMove.DarkVoid, PMove.DarkPulse, PMove.NastyPlot, PMove.Substitute },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             };
         static readonly PTeamShell
@@ -141,7 +141,8 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PMoveMissedPacket _:
                 case PPkmnFaintedPacket _:
                 case PMoveFailPacket _:
-                case PMoveReflectLightScreenPacket _:
+                case PLimberPacket _:
+                case PReflectLightScreenPacket _:
                     Send(new PResponsePacket());
                     break;
 
@@ -188,14 +189,14 @@ namespace Kermalis.PokemonBattleEngineClient
                     pkmn.PP[i] = (byte)(pkmn.PP[i] + mpcp.Change);
                     Send(new PResponsePacket());
                     break;
-                case PPkmnMovePacket pmp:
-                    pkmn = PKnownInfo.Instance.Pokemon(pmp.PokemonId);
+                case PMoveUsedPacket mup:
+                    pkmn = PKnownInfo.Instance.Pokemon(mup.PokemonId);
                     // Reveal move if the pokemon owns it and it's not already revealed
-                    if (pmp.OwnsMove && !pkmn.Shell.Moves.Contains(pmp.Move))
+                    if (mup.OwnsMove && !pkmn.Shell.Moves.Contains(mup.Move))
                     {
                         // Set the first unknown move to the used move
                         i = Array.IndexOf(pkmn.Shell.Moves, PMove.MAX);
-                        pkmn.Shell.Moves[i] = pmp.Move;
+                        pkmn.Shell.Moves[i] = mup.Move;
                     }
                     Send(new PResponsePacket());
                     break;
@@ -204,7 +205,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     Send(new PResponsePacket());
                     break;
                 case PStatus1Packet s1p:
-                    switch (s1p.StatusAction)
+                    switch (s1p.Action)
                     {
                         case PStatusAction.Added:
                             PKnownInfo.Instance.Pokemon(s1p.PokemonId).Status1 = s1p.Status1;
@@ -216,7 +217,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     Send(new PResponsePacket());
                     break;
                 case PStatus2Packet s2p:
-                    switch (s2p.StatusAction)
+                    switch (s2p.Action)
                     {
                         case PStatusAction.Added:
                             PKnownInfo.Instance.Pokemon(s2p.PokemonId).Status2 |= s2p.Status2;

@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PPkmnSwitchInPacket.Code: packet = new PPkmnSwitchInPacket(buffer); break;
                 case PRequestActionsPacket.Code: packet = new PRequestActionsPacket(buffer); break;
                 case PSubmitActionsPacket.Code: packet = new PSubmitActionsPacket(buffer); break;
-                case PPkmnMovePacket.Code: packet = new PPkmnMovePacket(buffer); break;
+                case PMoveUsedPacket.Code: packet = new PMoveUsedPacket(buffer); break;
                 case PPkmnHPChangedPacket.Code: packet = new PPkmnHPChangedPacket(buffer); break;
                 case PMoveEffectivenessPacket.Code: packet = new PMoveEffectivenessPacket(buffer); break;
                 //case PPkmnFlinchedPacket.Code: packet = new PPkmnFlinchedPacket(buffer); break;
@@ -35,13 +35,13 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PPkmnStatChangedPacket.Code: packet = new PPkmnStatChangedPacket(buffer); break;
                 case PStatus1Packet.Code: packet = new PStatus1Packet(buffer); break;
                 case PStatus2Packet.Code: packet = new PStatus2Packet(buffer); break;
-                case PMoveReflectLightScreenPacket.Code: packet = new PMoveReflectLightScreenPacket(buffer); break;
+                case PReflectLightScreenPacket.Code: packet = new PReflectLightScreenPacket(buffer); break;
                 //case PStatus1CausedDamagePacket.Code: packet = new PStatus1CausedDamagePacket(buffer); break;
                 case PMoveFailPacket.Code: packet = new PMoveFailPacket(buffer); break;
                 case PItemUsedPacket.Code: packet = new PItemUsedPacket(buffer); break;
                 case PMovePPChangedPacket.Code: packet = new PMovePPChangedPacket(buffer); break;
                 //case PPkmnProtectPacket.Code: packet = new PPkmnProtectPacket(buffer); break;
-                case PAbilityLimberPacket.Code: packet = new PAbilityLimberPacket(buffer); break;
+                case PLimberPacket.Code: packet = new PLimberPacket(buffer); break;
                 //case PStatus2AddedPacket.Code: packet = new PStatus2AddedPacket(buffer); break;
                 //case PStatus2ActivatedPacket.Code: packet = new PStatus2ActivatedPacket(buffer); break;
                 //case PStatus2CausedDamagePacket.Code: packet = new PStatus2CausedDamagePacket(buffer); break;

@@ -29,7 +29,9 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public byte ConfusionCounter; // Confused
         public byte ConfusionTurns; // Amount of turns to be confused
+
         public byte ProtectCounter; // Protect
+        public ushort SubstituteHP; // Substitute
 
         public PMove PreviousMove;
         public PAction Action;
@@ -145,7 +147,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public override int GetHashCode() => Id.GetHashCode();
         public override string ToString()
         {
-            bool remotePokemon = Shell.Nature == PNature.MAX; // If the nature is unset, the program is not the server and does not own the Pokémon
+            bool remotePokemon = Shell.Nature == PNature.MAX; // If the nature is unset, the program is not the host and does not own the Pokémon
 
             string item = Shell.Item.ToString().Replace("MAX", "???");
             string nature = Shell.Nature.ToString().Replace("MAX", "???");
@@ -168,6 +170,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             str += $"Status1: {Status1}";
             str += Environment.NewLine;
             str += $"Status2: {Status2}";
+            if (!remotePokemon && Status2.HasFlag(PStatus2.Substitute))
+            {
+                str += Environment.NewLine;
+                str += $"Substitute HP: {SubstituteHP}";
+            }
             str += Environment.NewLine;
             str += $"Item: {item}";
             str += Environment.NewLine;

@@ -7,15 +7,15 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PAbilityLimberPacket : INetPacket
+    public sealed class PLimberPacket : INetPacket
     {
         public const short Code = 0x19;
         public IEnumerable<byte> Buffer { get; }
 
         public readonly Guid PokemonId;
-        public readonly bool Prevented;
+        public readonly bool Prevented; // TODO: Remember why I put this
 
-        public PAbilityLimberPacket(PPokemon pkmn, bool prevented)
+        public PLimberPacket(PPokemon pkmn, bool prevented)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)((Prevented = prevented) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PAbilityLimberPacket(byte[] buffer)
+        public PLimberPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
