@@ -235,6 +235,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.ChangeUser_DEF:
                     ApplyStatChange(bAttacker, PStat.Defense, (sbyte)mData.EffectParam);
                     break;
+                case PMoveEffect.ChangeUser_EVA:
+                    ApplyStatChange(bAttacker, PStat.Evasion, (sbyte)mData.EffectParam);
+                    break;
                 case PMoveEffect.ChangeUser_SPATK:
                     ApplyStatChange(bAttacker, PStat.SpAttack, (sbyte)mData.EffectParam);
                     break;
