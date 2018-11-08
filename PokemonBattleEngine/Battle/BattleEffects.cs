@@ -32,17 +32,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PStatus1.Burned:
                     BroadcastStatus1(pkmn, PStatus1.Burned, PStatusAction.Damage);
-                    DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.BurnDamageDenominator), 1, true);
+                    DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.BurnDamageDenominator), PEffectiveness.Normal, true);
                     FaintCheck(pkmn);
                     break;
                 case PStatus1.Poisoned:
                     BroadcastStatus1(pkmn, PStatus1.Poisoned, PStatusAction.Damage);
-                    DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.PoisonDamageDenominator), 1, true);
+                    DealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.PoisonDamageDenominator), PEffectiveness.Normal, true);
                     FaintCheck(pkmn);
                     break;
                 case PStatus1.BadlyPoisoned:
                     BroadcastStatus1(pkmn, PStatus1.BadlyPoisoned, PStatusAction.Damage);
-                    DealDamage(pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PConstants.ToxicDamageDenominator), 1, true);
+                    DealDamage(pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PConstants.ToxicDamageDenominator), PEffectiveness.Normal, true);
                     if (FaintCheck(pkmn))
                         pkmn.Status1Counter = 0;
                     else
@@ -501,7 +501,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // 50% chance to hit itself
                     if (PUtils.ApplyChance(50, 100))
                     {
-                        DealDamage(bAttacker, CalculateDamage(bAttacker, bAttacker, 40, PMoveCategory.Physical, true), 1, true);
+                        DealDamage(bAttacker, CalculateDamage(bAttacker, bAttacker, 40, PMoveCategory.Physical, true), PEffectiveness.Normal, true);
                         BroadcastStatus2(bAttacker, PStatus2.Confused, PStatusAction.Damage);
                         FaintCheck(bAttacker);
                         return true;
@@ -539,12 +539,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns false if no damage was done (ineffective)
         // Broadcasts the hp changing, effectiveness, substitute
-        bool DealDamage(PPokemon pkmn, ushort hp, double effectiveness, bool ignoreSubstitute)
+        bool DealDamage(PPokemon pkmn, ushort hp, PEffectiveness effectiveness, bool ignoreSubstitute)
         {
             // TODO: Return how much damage was done so hp drain moves can know
-            if (effectiveness == 0)
+            if (effectiveness == PEffectiveness.Ineffective)
             {
-                BroadcastEffectiveness(pkmn, 0);
+                BroadcastEffectiveness(pkmn, effectiveness);
                 return false;
             }
 
@@ -663,7 +663,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (tryingToForce)
                 {
                     BroadcastLimber(bDefender, true);
-                    BroadcastEffectiveness(bDefender, 0);
+                    BroadcastEffectiveness(bDefender, PEffectiveness.Ineffective);
                 }
                 return false;
             }
@@ -672,21 +672,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (status == PStatus1.Frozen && pData.HasType(PType.Ice))
             {
                 if (tryingToForce)
-                    BroadcastEffectiveness(bDefender, 0);
+                    BroadcastEffectiveness(bDefender, PEffectiveness.Ineffective);
                 return false;
             }
             // A Fire type pokemon cannot be burned
             if (status == PStatus1.Burned && pData.HasType(PType.Fire))
             {
                 if (tryingToForce)
-                    BroadcastEffectiveness(bDefender, 0);
+                    BroadcastEffectiveness(bDefender, PEffectiveness.Ineffective);
                 return false;
             }
             // A Poison or Steel type pokemon cannot be poisoned or badly poisoned
             if ((status == PStatus1.BadlyPoisoned || status == PStatus1.Poisoned) && (pData.HasType(PType.Poison) || pData.HasType(PType.Steel)))
             {
                 if (tryingToForce)
-                    BroadcastEffectiveness(bDefender, 0);
+                    BroadcastEffectiveness(bDefender, PEffectiveness.Ineffective);
                 return false;
             }
 
@@ -732,7 +732,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         ushort hpRequired = (ushort)(bAttacker.MaxHP / 4);
                         if (!bAttacker.Status2.HasFlag(PStatus2.Substitute) && hpRequired > 0 && bAttacker.HP > hpRequired)
                         {
-                            DealDamage(bAttacker, hpRequired, 1, true);
+                            DealDamage(bAttacker, hpRequired, PEffectiveness.Normal, true);
                             bAttacker.Status2 |= PStatus2.Substitute;
                             bAttacker.SubstituteHP = hpRequired;
                             BroadcastStatus2(bAttacker, PStatus2.Substitute, PStatusAction.Added);
@@ -752,7 +752,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (AccuracyCheck())
                 return false;
             // CritCheck();
-            if (!DealDamage(bDefender, (ushort)(CalculateDamage() * bDamageMultiplier), TypeCheck(bAttacker, bDefender), false))
+            PEffectiveness effectiveness = TypeCheck(bAttacker, bDefender);
+            if (!DealDamage(bDefender, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false))
                 return false;
             if (bLandedCrit)
                 BroadcastCrit();
@@ -787,9 +788,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (AccuracyCheck())
                 return false;
-            if (TypeCheck(bAttacker, bDefender) == 0) // Paralysis, Normalize
+            PEffectiveness effectiveness = TypeCheck(bAttacker, bDefender);
+            if (effectiveness == PEffectiveness.Ineffective) // Paralysis, Normalize
             {
-                BroadcastEffectiveness(bDefender, 0);
+                BroadcastEffectiveness(bDefender, effectiveness);
                 return false;
             }
             if (!ApplyStatus1IfPossible(status, true))
@@ -882,10 +884,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (AccuracyCheck())
                 return false;
             // CritCheck();
-            double effectiveness = TypeCheck(bAttacker, bDefender);
-            if (effectiveness == 0)
+            PEffectiveness effectiveness = TypeCheck(bAttacker, bDefender);
+            if (effectiveness == PEffectiveness.Ineffective)
             {
-                BroadcastEffectiveness(bDefender, 0);
+                BroadcastEffectiveness(bDefender, effectiveness);
                 return false;
             }
             PTeam team = teams[bDefender.Local ? 0 : 1];

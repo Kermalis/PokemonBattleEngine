@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PMoveMissedPacket(bAttacker));
         void BroadcastHPChanged(PPokemon pkmn, int change)
             => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, change));
-        void BroadcastEffectiveness(PPokemon pkmn, double effectiveness)
+        void BroadcastEffectiveness(PPokemon pkmn, PEffectiveness effectiveness)
             => OnNewEvent?.Invoke(new PMoveEffectivenessPacket(pkmn, effectiveness));
         void BroadcastFaint(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PPkmnFaintedPacket(pkmn));
@@ -64,14 +64,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, percentage, phcp.Change < 0 ? "lost" : "gained");
                     break;
                 case PMoveEffectivenessPacket mep:
-                    if (mep.Effectiveness == 0)
-                        message = "It doesn't affect {0}...";
-                    else if (mep.Effectiveness > 1)
-                        message = "It's super effective!";
-                    else if (mep.Effectiveness < 1)
-                        message = "It's not very effective...";
-                    else
-                        break;
+                    switch (mep.Effectiveness)
+                    {
+                        case PEffectiveness.Ineffective: message = "It doesn't affect {0}..."; break;
+                        case PEffectiveness.NotVeryEffective: message = "It's not very effective..."; break;
+                        case PEffectiveness.Normal: return;
+                        case PEffectiveness.SuperEffective: message = "It's super effective!"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness), $"Invalid effectiveness: {mep.Effectiveness}");
+                    }
                     Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mep.PokemonId).Shell.Nickname);
                     break;
                 case PMoveMissedPacket mmp:

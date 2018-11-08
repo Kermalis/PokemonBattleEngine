@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineServer
         public readonly ManualResetEvent ResetEvent = new ManualResetEvent(true);
 
         public PTeamShell Team;
-        
+
         public override void Send(INetPacket packet)
         {
             base.Send(packet);

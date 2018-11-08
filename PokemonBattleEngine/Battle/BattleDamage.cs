@@ -15,8 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        // Returns the effectiveness (0.0, 0.5, 2.0)
-        double TypeCheck(PPokemon attacker, PPokemon defender)
+        PEffectiveness TypeCheck(PPokemon attacker, PPokemon defender)
         {
             PPokemonData attackerPData = PPokemonData.Data[attacker.Shell.Species];
             PPokemonData defenderPData = PPokemonData.Data[defender.Shell.Species];
@@ -42,7 +41,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (defenderPData.Type1 != defenderPData.Type2)
                 effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)defenderPData.Type2];
 
-            return effectiveness;
+            if (effectiveness == 0)
+                return PEffectiveness.Ineffective;
+            else if (effectiveness == 0.5)
+                return PEffectiveness.NotVeryEffective;
+            else if (effectiveness == 1.0)
+                return PEffectiveness.Normal;
+            else
+                return PEffectiveness.SuperEffective;
         }
 
         // If power is 0, power is determined by bMove

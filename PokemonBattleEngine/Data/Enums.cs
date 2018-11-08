@@ -24,6 +24,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         Accuracy, // TODO
         Evasion // TODO
     }
+    public enum PEffectiveness : byte
+    {
+        Ineffective,
+        NotVeryEffective,
+        Normal,
+        SuperEffective
+    }
     public enum PBattleStyle : byte
     {
         Single,

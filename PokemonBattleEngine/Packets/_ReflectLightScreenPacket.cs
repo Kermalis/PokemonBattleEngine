@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
     {
         public const short Code = 0x13;
         public IEnumerable<byte> Buffer => BuildBuffer();
-        
+
         public bool Local;
         public readonly bool Reflect; // False for Light Screen
         public readonly PReflectLightScreenAction Action;
