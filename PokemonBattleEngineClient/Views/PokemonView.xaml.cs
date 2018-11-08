@@ -74,7 +74,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         void PokemonChanged()
         {
-            if (pokemon == null)
+            if (pokemon == null || pokemon.FieldPosition == PFieldPosition.None)
             {
                 Visible = false;
             }

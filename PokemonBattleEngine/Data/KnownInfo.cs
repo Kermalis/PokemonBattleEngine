@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
+    // TODO: Merge this with PBattle so clients can keep track of stuff like battlestyle, reflect, weather
+
     // "Local" represents team 0 while "Remote" represents team 1
     public sealed class PKnownInfo
     {

@@ -35,14 +35,20 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             Name = "Battle0"; // Temporary
         }
 
-        public void PokemonPositionChanged(PPokemon pkmn)
+        // pkmn.FieldPosition must be changed before calling this
+        public void PokemonPositionChanged(PPokemon pkmn, PFieldPosition oldPosition)
         {
-            // TODO: If battler was on the field already
-            if (pkmn.FieldPosition == PFieldPosition.None)
-                return;
-
-            PokemonView view = this.FindControl<PokemonView>($"Battler{(pkmn.Local ? 0 : 1)}_{pkmn.FieldPosition}");
-            view.Pokemon = pkmn;
+            PokemonView view;
+            if (oldPosition != PFieldPosition.None)
+            {
+                view = this.FindControl<PokemonView>($"Battler{(pkmn.Local ? 0 : 1)}_{oldPosition}");
+                view.Pokemon = view.Pokemon; // Force sprite/visibility/scale updates
+            }
+            if (pkmn.FieldPosition != PFieldPosition.None)
+            {
+                view = this.FindControl<PokemonView>($"Battler{(pkmn.Local ? 0 : 1)}_{pkmn.FieldPosition}");
+                view.Pokemon = pkmn;
+            }
 
             switch (Client.BattleStyle)
             {

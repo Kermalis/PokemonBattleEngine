@@ -51,17 +51,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             switch (packet)
             {
-                case PPkmnSwitchInPacket psip:
-                    Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance.Pokemon(psip.PokemonId).Shell.Nickname, PKnownInfo.Instance.DisplayName(psip.Local));
+                case PItemUsedPacket iup:
+                    switch (iup.Item)
+                    {
+                        case PItem.Leftovers: message = "restored a little HP using its Leftovers"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
+                    }
+                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Nickname, message);
                     break;
-                case PMoveUsedPacket mup:
-                    Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(mup.PokemonId).Shell.Nickname, mup.Move);
+                case PLimberPacket lp:
+                    Console.Write("{0}'s Limber: ", PKnownInfo.Instance.Pokemon(lp.PokemonId).Shell.Nickname);
                     break;
-                case PPkmnHPChangedPacket phcp:
-                    pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
-                    var hp = Math.Abs(phcp.Change);
-                    percentage = (double)hp / pkmn.MaxHP;
-                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, percentage, phcp.Change < 0 ? "lost" : "gained");
+                case PMoveCritPacket _:
+                    Console.WriteLine("A critical hit!");
                     break;
                 case PMoveEffectivenessPacket mep:
                     switch (mep.Effectiveness)
@@ -74,17 +76,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mep.PokemonId).Shell.Nickname);
                     break;
+                case PMoveFailPacket _:
+                    Console.WriteLine("But it failed!");
+                    break;
                 case PMoveMissedPacket mmp:
                     Console.WriteLine("{0}'s attack missed!", PKnownInfo.Instance.Pokemon(mmp.PokemonId).Shell.Nickname);
+                    break;
+                case PMoveUsedPacket mup:
+                    Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(mup.PokemonId).Shell.Nickname, mup.Move);
                     break;
                 case PPkmnFaintedPacket pfap:
                     Console.WriteLine("{0} fainted!", PKnownInfo.Instance.Pokemon(pfap.PokemonId).Shell.Nickname);
                     break;
-                case PMoveCritPacket _:
-                    Console.WriteLine("A critical hit!");
-                    break;
-                case PMoveFailPacket _:
-                    Console.WriteLine("But it failed!");
+                case PPkmnHPChangedPacket phcp:
+                    pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
+                    var hp = Math.Abs(phcp.Change);
+                    percentage = (double)hp / pkmn.MaxHP;
+                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, percentage, phcp.Change <= 0 ? "lost" : "gained");
                     break;
                 case PPkmnStatChangedPacket pscp:
                     switch (pscp.Change)
@@ -107,6 +115,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                     }
                     Console.WriteLine("{0}'s {1} {2}!", PKnownInfo.Instance.Pokemon(pscp.PokemonId).Shell.Nickname, pscp.Stat, message);
+                    break;
+                case PPkmnSwitchInPacket psip:
+                    Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance.Pokemon(psip.PokemonId).Shell.Nickname, PKnownInfo.Instance.DisplayName(psip.Local));
+                    break;
+                case PReflectLightScreenPacket rlsp:
+                    switch (rlsp.Action)
+                    {
+                        case PReflectLightScreenAction.Added: message = "{0} raised {2} team's {1}!"; break;
+                        case PReflectLightScreenAction.Broke:
+                        case PReflectLightScreenAction.Ended: message = "{3} team's {0} wore off!"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(rlsp.Action), $"Invalid reflect/lightscreen action: {rlsp.Action}");
+                    }
+                    Console.WriteLine(message, rlsp.Reflect ? "Reflect" : "Light Screen", rlsp.Reflect ? PStat.Defense : PStat.SpDefense, rlsp.Local ? "your" : "the opposing", rlsp.Local ? "Your" : "The opposing");
                     break;
                 case PStatus1Packet s1p:
                     switch (s1p.Status1)
@@ -199,27 +220,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
                     Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s2p.PokemonId).Shell.Nickname);
-                    break;
-                case PReflectLightScreenPacket rlsp:
-                    switch (rlsp.Action)
-                    {
-                        case PReflectLightScreenAction.Added: message = "{0} raised {2} team's {1}!"; break;
-                        case PReflectLightScreenAction.Broke:
-                        case PReflectLightScreenAction.Ended: message = "{3} team's {0} wore off!"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(rlsp.Action), $"Invalid reflect/lightscreen action: {rlsp.Action}");
-                    }
-                    Console.WriteLine(message, rlsp.Reflect ? "Reflect" : "Light Screen", rlsp.Reflect ? PStat.Defense : PStat.SpDefense, rlsp.Local ? "your" : "the opposing", rlsp.Local ? "Your" : "The opposing");
-                    break;
-                case PItemUsedPacket iup:
-                    switch (iup.Item)
-                    {
-                        case PItem.Leftovers: message = "restored a little HP using its Leftovers"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
-                    }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Nickname, message);
-                    break;
-                case PLimberPacket lp:
-                    Console.Write("{0}'s Limber: ", PKnownInfo.Instance.Pokemon(lp.PokemonId).Shell.Nickname);
                     break;
             }
         }
