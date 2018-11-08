@@ -2,7 +2,6 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Data;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
@@ -13,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public new event PropertyChangedEventHandler PropertyChanged;
 
         string message;
-        string Message
+        public string Message
         {
             get => message;
             set
@@ -21,20 +20,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 message = value;
                 OnPropertyChanged(nameof(Message));
                 IsMessageBoxVisible = !string.IsNullOrWhiteSpace(message);
-            }
-        }
-        bool isMessageBoxVisible;
-        bool IsMessageBoxVisible
-        {
-            get => isMessageBoxVisible;
-            set
-            {
-                isMessageBoxVisible = value;
                 OnPropertyChanged(nameof(IsMessageBoxVisible));
             }
         }
-
-        readonly List<string> messageQueue = new List<string>();
+        bool IsMessageBoxVisible { get; set; }
 
         public BattleClient Client;
 
@@ -44,32 +33,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             DataContext = this;
 
             Name = "Battle0"; // Temporary
-        }
-
-        public void AddMessage(string m, bool autoAdvance = false)
-        {
-            if (!isMessageBoxVisible && messageQueue.Count == 0)
-            {
-                Message = m;
-            }
-            else
-            {
-                messageQueue.Add(m);
-            }
-            if (autoAdvance)
-                AdvanceMessage();
-        }
-        public void AdvanceMessage()
-        {
-            if (messageQueue.Count == 0)
-            {
-                Message = null;
-            }
-            else
-            {
-                Message = messageQueue[0];
-                messageQueue.Remove(Message);
-            }
         }
 
         public void PokemonPositionChanged(PPokemon pkmn)

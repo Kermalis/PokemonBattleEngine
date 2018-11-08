@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngine.Util;
 using System;
 using System.Collections.Generic;
@@ -62,17 +63,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         // This constructor is to define an unknown remote pokemon
         // Local is set to false here
         // Moves are set to PMove.MAX which will be displayed as "???"
-        public PPokemon(Guid id, PSpecies species, string nickname, byte level, bool shiny, PGender gender)
+        public PPokemon(PPkmnSwitchInPacket psip)
         {
-            Id = id;
+            Id = psip.PokemonId;
             Local = false;
             Shell = new PPokemonShell
             {
-                Species = species,
-                Nickname = nickname,
-                Level = level,
-                Shiny = shiny,
-                Gender = gender,
+                Species = psip.Species,
+                Nickname = psip.Nickname,
+                Level = psip.Level,
+                Shiny = psip.Shiny,
+                Gender = psip.Gender,
                 Item = PItem.MAX,
                 Nature = PNature.MAX,
                 Ability = PAbility.MAX

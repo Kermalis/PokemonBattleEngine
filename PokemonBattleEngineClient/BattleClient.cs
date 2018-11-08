@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using System.Timers;
 using Ether.Network.Client;
 using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Battle;
@@ -45,11 +46,49 @@ namespace Kermalis.PokemonBattleEngineClient
             this.battleView.Client = this;
             this.actionsView = actionsView;
             this.actionsView.Client = this;
+
+            packetTimer.Elapsed += PacketTimer_Elapsed;
+            packetTimer.Start();
         }
 
+        List<INetPacket> packetQueue = new List<INetPacket>();
+        Timer packetTimer = new Timer(3000);
         public override void HandleMessage(INetPacket packet)
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\"");
+            switch (packet)
+            {
+                case PPlayerJoinedPacket pjp:
+                    // TODO: What if it's a spectator?
+                    battleView.Message = string.Format("{0} joined the game.", pjp.DisplayName);
+                    PKnownInfo.Instance.RemoteDisplayName = pjp.DisplayName;
+                    Send(new PResponsePacket());
+                    break;
+                case PRequestPartyPacket _:
+                    battleView.Message = "Sending team info...";
+                    PKnownInfo.Instance.LocalDisplayName = chosenTeam.DisplayName;
+                    Send(new PSubmitPartyPacket(chosenTeam));
+                    break;
+                case PSetPartyPacket spp:
+                    PKnownInfo.Instance.SetPartyPokemon(spp.Party, true);
+                    Send(new PResponsePacket());
+                    break;
+                default:
+                    packetQueue.Add(packet);
+                    Send(new PResponsePacket());
+                    break;
+            }
+        }
+        void PacketTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            INetPacket packet = packetQueue.FirstOrDefault();
+            if (packet == null)
+                return;
+            ProcessPacket(packet);
+            packetQueue.RemoveAt(0);
+        }
+        void ProcessPacket(INetPacket packet)
+        {
             PPokemon pkmn;
             int i;
             double d;
@@ -63,32 +102,15 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PMoveFailPacket _:
                 case PLimberPacket _:
                 case PReflectLightScreenPacket _:
-                    Send(new PResponsePacket());
                     break;
 
-                case PPlayerJoinedPacket pjp:
-                    battleView.AddMessage(string.Format("{0} joined the game.", pjp.DisplayName), true);
-                    // TODO: What if it's a spectator?
-                    PKnownInfo.Instance.RemoteDisplayName = pjp.DisplayName;
-                    Send(new PResponsePacket());
-                    break;
-                case PRequestPartyPacket _:
-                    battleView.AddMessage("Sending team info...", true);
-                    PKnownInfo.Instance.LocalDisplayName = chosenTeam.DisplayName;
-                    Send(new PSubmitPartyPacket(chosenTeam));
-                    break;
-                case PSetPartyPacket spp:
-                    PKnownInfo.Instance.SetPartyPokemon(spp.Party, true);
-                    Send(new PResponsePacket());
-                    break;
                 case PPkmnSwitchInPacket psip:
                     if (!psip.Local)
-                        PKnownInfo.Instance.AddRemotePokemon(psip.PokemonId, psip.Species, psip.Nickname, psip.Level, psip.Shiny, psip.HP, psip.MaxHP, psip.Gender);
+                        PKnownInfo.Instance.AddRemotePokemon(psip);
                     pkmn = PKnownInfo.Instance.Pokemon(psip.PokemonId);
                     pkmn.FieldPosition = psip.FieldPosition;
                     battleView.PokemonPositionChanged(pkmn);
-                    battleView.AddMessage(string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.Local)), true);
-                    Send(new PResponsePacket());
+                    battleView.Message = string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.Local));
                     break;
                 case PRequestActionsPacket _:
                     ActionsLoop(true);
@@ -99,15 +121,12 @@ namespace Kermalis.PokemonBattleEngineClient
 
                     var hp = Math.Abs(phcp.Change);
                     d = (double)hp / pkmn.MaxHP;
-                    battleView.AddMessage(string.Format("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, d, phcp.Change < 0 ? "lost" : "gained"), true);
-
-                    Send(new PResponsePacket());
+                    battleView.Message = string.Format("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, d, phcp.Change < 0 ? "lost" : "gained");
                     break;
                 case PMovePPChangedPacket mpcp:
                     pkmn = PKnownInfo.Instance.Pokemon(mpcp.PokemonId);
                     i = Array.IndexOf(pkmn.Shell.Moves, mpcp.Move);
                     pkmn.PP[i] = (byte)(pkmn.PP[i] + mpcp.Change);
-                    Send(new PResponsePacket());
                     break;
                 case PMoveUsedPacket mup:
                     pkmn = PKnownInfo.Instance.Pokemon(mup.PokemonId);
@@ -118,11 +137,9 @@ namespace Kermalis.PokemonBattleEngineClient
                         i = Array.IndexOf(pkmn.Shell.Moves, PMove.MAX);
                         pkmn.Shell.Moves[i] = mup.Move;
                     }
-                    Send(new PResponsePacket());
                     break;
                 case PPkmnStatChangedPacket pscp:
                     PBattle.ApplyStatChange(pscp);
-                    Send(new PResponsePacket());
                     break;
                 case PStatus1Packet s1p:
                     switch (s1p.Action)
@@ -134,7 +151,6 @@ namespace Kermalis.PokemonBattleEngineClient
                             PKnownInfo.Instance.Pokemon(s1p.PokemonId).Status1 = PStatus1.None;
                             break;
                     }
-                    Send(new PResponsePacket());
                     break;
                 case PStatus2Packet s2p:
                     switch (s2p.Action)
@@ -146,15 +162,11 @@ namespace Kermalis.PokemonBattleEngineClient
                             PKnownInfo.Instance.Pokemon(s2p.PokemonId).Status2 &= ~s2p.Status2;
                             break;
                     }
-                    Send(new PResponsePacket());
                     break;
                 case PItemUsedPacket iup:
                     PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Item = iup.Item;
-                    Send(new PResponsePacket());
                     break;
             }
-
-            PBattle.ConsoleBattleEventHandler(packet);
         }
 
         List<PPokemon> actions = new List<PPokemon>(3);
@@ -196,12 +208,12 @@ namespace Kermalis.PokemonBattleEngineClient
             int i = actions.FindIndex(p => p.Action.Decision == PDecision.None);
             if (i == -1)
             {
-                battleView.AddMessage($"Waiting for {PKnownInfo.Instance.RemoteDisplayName}...", true);
+                battleView.Message = $"Waiting for {PKnownInfo.Instance.RemoteDisplayName}...";
                 Send(new PSubmitActionsPacket(actions.Select(p => p.Action).ToArray()));
             }
             else
             {
-                battleView.AddMessage($"What will {actions[i].Shell.Nickname} do?", true);
+                battleView.Message = $"What will {actions[i].Shell.Nickname} do?";
                 actionsView.DisplayMoves(actions[i]);
             }
         }
@@ -214,7 +226,7 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             Debug.WriteLine("Connected to {0}", Socket.RemoteEndPoint);
             PKnownInfo.Instance.Clear();
-            battleView.AddMessage("Waiting for players...");
+            battleView.Message = "Waiting for players...";
         }
         protected override void OnDisconnected()
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Packets;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,25 +41,23 @@ namespace Kermalis.PokemonBattleEngine.Data
             else
                 remoteParty = list;
         }
-        public void AddRemotePokemon(Guid id, PSpecies species, string nickname, byte level, bool shiny, ushort hp, ushort maxHP, PGender gender)
+        public void AddRemotePokemon(PPkmnSwitchInPacket psip)
         {
-            PPokemon pkmn;
+            PPokemon pkmn = Pokemon(psip.PokemonId);
 
-            if (Pokemon(id) == null)
+            if (pkmn == null)
             {
                 if (remoteParty.Count == PConstants.MaxPartySize)
                     throw new InvalidOperationException("Too many Pokémon!");
 
                 // Use remote pokemon constructor, which sets Local to false and moves to PMove.MAX
-                pkmn = new PPokemon(id, species, nickname, level, shiny, gender);
+                pkmn = new PPokemon(psip);
                 remoteParty.Add(pkmn);
             }
-            else
-                pkmn = Pokemon(id);
 
             // If this pokemon was already added, it also already knows the info other than hp (opponent could have regenerator or could have been healed by an ally)
-            pkmn.HP = hp;
-            pkmn.MaxHP = maxHP;
+            pkmn.HP = psip.HP;
+            pkmn.MaxHP = psip.MaxHP;
         }
     }
 }
