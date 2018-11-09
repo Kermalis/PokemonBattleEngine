@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngineClient
             };
         static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team0 : team1; // Temporary
 
-        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Triple;
+        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Single;
         readonly BattleView battleView;
         readonly ActionsView actionsView;
 
@@ -109,7 +109,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             pkmn.Shell.Item = iup.Item;
                             message = "{0} restored a little HP using its Leftovers!";
                             break;
-                        default: return false;
+                        default: return true;
                     }
                     battleView.Message = string.Format(message, pkmn.Shell.Nickname);
                     break;
@@ -127,7 +127,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         case PEffectiveness.Ineffective: message = "It doesn't affect {0}..."; break;
                         case PEffectiveness.NotVeryEffective: message = "It's not very effective..."; break;
-                        case PEffectiveness.Normal: return false;
+                        case PEffectiveness.Normal: return true;
                         case PEffectiveness.SuperEffective: message = "It's super effective!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness), $"Invalid effectiveness: {mep.Effectiveness}");
                     }

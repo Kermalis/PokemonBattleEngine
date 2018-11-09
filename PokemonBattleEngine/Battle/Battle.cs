@@ -43,6 +43,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         internal PTeam[] teams = new PTeam[2];
         List<PPokemon> activeBattlers = new List<PPokemon>();
 
+        public bool AllAlive => activeBattlers.All(p => p.HP > 0); // Temporary
+
         public PBattle(PBattleStyle style, PTeamShell t0, PTeamShell t1)
         {
             PKnownInfo.Instance.Clear();
