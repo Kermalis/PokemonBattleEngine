@@ -317,6 +317,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         case PStatus2.Substitute:
+                            battleView.PokemonPositionChanged(pkmn, PFieldPosition.None);
                             switch (s2p.Action)
                             {
                                 case PStatusAction.Added: message = "{0} put in a substitute!"; break;

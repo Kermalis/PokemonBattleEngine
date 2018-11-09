@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             if (oldPosition != PFieldPosition.None)
             {
                 view = this.FindControl<PokemonView>($"Battler{(pkmn.Local ? 0 : 1)}_{oldPosition}");
-                view.Pokemon = view.Pokemon; // Force sprite/visibility/scale updates
+                view.PokemonChanged();
             }
             if (pkmn.FieldPosition != PFieldPosition.None)
             {
