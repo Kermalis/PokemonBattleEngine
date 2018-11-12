@@ -327,8 +327,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void SelectMove(MoveInfo moveInfo)
         {
-            pokemon.Action.Decision = PDecision.Fight;
-            pokemon.Action.Move = moveInfo.Move;
+            pokemon.SelectedAction.Decision = PDecision.Fight;
+            pokemon.SelectedAction.Move = moveInfo.Move;
             MovesVisible = false;
             DisplayTargets(moveInfo);
         }
@@ -341,7 +341,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 switch (mData.Targets)
                 {
                     case PMoveTarget.All:
-                        pokemon.Action.Targets = PTarget.AllyCenter | PTarget.FoeCenter;
+                        pokemon.SelectedAction.Targets = PTarget.AllyCenter | PTarget.FoeCenter;
                         break;
                     case PMoveTarget.AllFoes:
                     case PMoveTarget.AllFoesSurrounding:
@@ -350,13 +350,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     case PMoveTarget.SingleFoeSurrounding:
                     case PMoveTarget.SingleNotSelf:
                     case PMoveTarget.SingleSurrounding:
-                        pokemon.Action.Targets = PTarget.FoeCenter;
+                        pokemon.SelectedAction.Targets = PTarget.FoeCenter;
                         break;
                     case PMoveTarget.AllTeam:
                     case PMoveTarget.Self:
                     case PMoveTarget.SelfOrAllySurrounding:
                     case PMoveTarget.SingleAllySurrounding:
-                        pokemon.Action.Targets = PTarget.AllyCenter;
+                        pokemon.SelectedAction.Targets = PTarget.AllyCenter;
                         break;
                 }
                 Client.ActionSet();
@@ -730,12 +730,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             switch (arg)
             {
-                case "AllyLeft": pokemon.Action.Targets = targetAllyLeftResult; break;
-                case "AllyCenter": pokemon.Action.Targets = targetAllyCenterResult; break;
-                case "AllyRight": pokemon.Action.Targets = targetAllyRightResult; break;
-                case "FoeLeft": pokemon.Action.Targets = targetFoeLeftResult; break;
-                case "FoeCenter": pokemon.Action.Targets = targetFoeCenterResult; break;
-                case "FoeRight": pokemon.Action.Targets = targetFoeRightResult; break;
+                case "AllyLeft": pokemon.SelectedAction.Targets = targetAllyLeftResult; break;
+                case "AllyCenter": pokemon.SelectedAction.Targets = targetAllyCenterResult; break;
+                case "AllyRight": pokemon.SelectedAction.Targets = targetAllyRightResult; break;
+                case "FoeLeft": pokemon.SelectedAction.Targets = targetFoeLeftResult; break;
+                case "FoeCenter": pokemon.SelectedAction.Targets = targetFoeCenterResult; break;
+                case "FoeRight": pokemon.SelectedAction.Targets = targetFoeRightResult; break;
             }
             TargetsVisible = false;
             Client.ActionSet();

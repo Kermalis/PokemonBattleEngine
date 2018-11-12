@@ -44,8 +44,7 @@
       </ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate>
         <DataTemplate>
-          <Button Width="103" Height="30" IsEnabled="{Binding Enabled}"
-                  Content="{Binding Move}" Command="{Binding SelectMoveCommand}"
+          <Button Width="103" Height="30" Content="{Binding Move}" Command="{Binding SelectMoveCommand}"
                   Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4" Foreground="White"
                   FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
         </DataTemplate>

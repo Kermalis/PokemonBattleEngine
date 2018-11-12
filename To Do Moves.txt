@@ -24,7 +24,6 @@ Roar
 Sonic Boom
 Disable
 Mist
-Surf
 Blizzard
 Hyper Beam
 Submission
@@ -170,7 +169,6 @@ Refresh
 Grudge
 Snatch
 Secret Power
-Dive
 Arm Thrust
 Camouflage
 Blaze Kick

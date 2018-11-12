@@ -95,7 +95,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Substitute = 1 << 6,
         Tormented = 1 << 7, // TODO
         Underground = 1 << 8, // TODO
-        Underwater = 1 << 9, // TODO
+        Underwater = 1 << 9,
     }
     public enum PStatusAction : byte
     {
@@ -170,6 +170,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LightBall,
         LightClay,
         MetalPowder, // TODO
+        PowerHerb,
         SoulDew,
         ThickClub,
         MAX
@@ -262,7 +263,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SingleSurrounding,     // Single battler surrounding (Ex. Tackle)
     }
     [Flags]
-    public enum PMoveFlag : byte
+    public enum PMoveFlag : ushort
     {
         None = 0,
         MakesContact = 1 << 0,
@@ -271,7 +272,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         AffectedBySnatch = 1 << 3,
         AffectedByMirrorMove = 1 << 4,
         SoundBased = 1 << 5,
-        DefrostsUser = 1 << 6
+        DefrostsUser = 1 << 6,
+        HitsAirborne = 1 << 7,
+        HitsUnderground = 1 << 8,
+        HitsUnderwater = 1 << 9,
     }
     public enum PMoveEffect : byte
     {
@@ -290,6 +294,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChangeUser_SPDEF,
         ChangeUser_SPE,
         Confuse,
+        Dive,
         Fail,
         Hit,
         Hit__MaybeBurn,
@@ -381,6 +386,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DarkVoid,
         Detect,
         Discharge,
+        Dive,
         DizzyPunch,
         DracoMeteor,
         DragonBreath,
@@ -531,6 +537,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StunSpore,
         Substitute,
         Supersonic,
+        Surf,
         SweetKiss,
         SweetScent,
         Swift,

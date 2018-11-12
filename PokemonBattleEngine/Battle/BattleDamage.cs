@@ -114,15 +114,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Damage is halved when using fire moves while water sport is active
             /* if (type == Type.Fire && WaterSportActive())
              * basePower /= 2;*/
-            // An underground pokemon that gets hit with Earthquake takes twice the damage
-            /* if (move == PMove.Earthquake && efCurDefender.Pokemon.Status2.HasFlag(PStatus2.Underground))
-                basePower *= 2;*/
-            // An underwater pokemon that gets hit with Surf takes twice the damage
-            /* if (move == PMove.Surf && efCurDefender.Pokemon.Status2.HasFlag(PStatus2.Underwater))
-                basePower *= 2;*/
 
             // A Pikachu holding a Light Ball gets a 2x power boost
-            if (attacker.Shell.Item == PItem.LightBall && attacker.Shell.Species == PSpecies.Pikachu)
+            if (attacker.Item == PItem.LightBall && attacker.Shell.Species == PSpecies.Pikachu)
                 basePower *= 2;
             // Retaliate doubles power if the team has a pokemon that fainted the previous turn
             if (bMove == PMove.Retaliate && teams[attacker.Local ? 0 : 1].MonFaintedLastTurn)
@@ -156,7 +150,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (attacker.Ability == PAbility.HugePower || attacker.Ability == PAbility.PurePower)
                 attack *= 2;
             // A Cubone or Marowak holding a Thick Club gets a 2x attack boost
-            if (attacker.Shell.Item == PItem.ThickClub && (attacker.Shell.Species == PSpecies.Cubone || attacker.Shell.Species == PSpecies.Marowak))
+            if (attacker.Item == PItem.ThickClub && (attacker.Shell.Species == PSpecies.Cubone || attacker.Shell.Species == PSpecies.Marowak))
                 attack *= 2;
             // A pokemon with the Hustle ability gets a 1.5x attack boost
             if (attacker.Ability == PAbility.Hustle)
@@ -165,7 +159,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (attacker.Ability == PAbility.Guts && attacker.Status1 != PStatus1.None)
                 attack *= 1.5;
             // A pokemon holding a Choice Band gets a 1.5x attack boost
-            if (attacker.Shell.Item == PItem.ChoiceBand)
+            if (attacker.Item == PItem.ChoiceBand)
                 attack *= 1.5;
 
             return (ushort)attack;
@@ -175,7 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double defense = attacker.Defense * GetStatMultiplier(defender.DefenseChange);
 
             // A Ditto holding a Metal Powder gets a 2x defense boost
-            if (defender.Shell.Item == PItem.MetalPowder && defender.Shell.Species == PSpecies.Ditto)
+            if (defender.Item == PItem.MetalPowder && defender.Shell.Species == PSpecies.Ditto)
                 defense *= 2;
             // A pokemon with the Marvel Scale ability gets a 1.5x defense boost when afflicted with a status
             if (defender.Ability == PAbility.MarvelScale && defender.Status1 != PStatus1.None)
@@ -196,10 +190,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
              * spAttack *= 1.5;*/
 
             // A Clamperl holding a Deep Sea Tooth gets a 2x spAttack boost
-            if (attacker.Shell.Item == PItem.DeepSeaTooth && attacker.Shell.Species == PSpecies.Clamperl)
+            if (attacker.Item == PItem.DeepSeaTooth && attacker.Shell.Species == PSpecies.Clamperl)
                 spAttack *= 2;
             // A Latios or Latias holding a Soul Dew gets a 1.5x spAttack boost
-            if (attacker.Shell.Item == PItem.SoulDew && (attacker.Shell.Species == PSpecies.Latios || attacker.Shell.Species == PSpecies.Latias))
+            if (attacker.Item == PItem.SoulDew && (attacker.Shell.Species == PSpecies.Latios || attacker.Shell.Species == PSpecies.Latias))
                 spAttack *= 1.5;
 
             return (ushort)spAttack;
@@ -209,10 +203,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double spDefense = attacker.SpDefense * GetStatMultiplier(defender.SpDefenseChange);
 
             // A Clamperl holding a Deep Sea Scale gets a 2x spDefense boost
-            if (defender.Shell.Item == PItem.DeepSeaScale && defender.Shell.Species == PSpecies.Clamperl)
+            if (defender.Item == PItem.DeepSeaScale && defender.Shell.Species == PSpecies.Clamperl)
                 spDefense *= 2;
             // A Latios or Latias holding a Soul Dew gets a 1.5x spDefense boost
-            if (defender.Shell.Item == PItem.SoulDew && (defender.Shell.Species == PSpecies.Latios || defender.Shell.Species == PSpecies.Latias))
+            if (defender.Item == PItem.SoulDew && (defender.Shell.Species == PSpecies.Latios || defender.Shell.Species == PSpecies.Latias))
                 spDefense *= 1.5;
 
             return (ushort)spDefense;

@@ -5,6 +5,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
@@ -53,16 +54,6 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 OnPropertyChanged(nameof(Move));
             }
         }
-        bool enabled;
-        public bool Enabled
-        {
-            get => enabled;
-            set
-            {
-                enabled = value;
-                OnPropertyChanged(nameof(Enabled));
-            }
-        }
         IBrush brush;
         public IBrush Brush
         {
@@ -87,14 +78,24 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public MoveInfo(int i, PPokemon pkmn, ActionsView parent)
         {
             PMove move = pkmn.Shell.Moves[i];
-            var ttb = typeToBrush[move == PMove.None ? PType.Normal : PMoveData.Data[move].Type];
+            var ttb = typeToBrush[move == PMove.None ? PType.Normal : PMoveData.Data[move].Type]; // TODO: static GetMoveType() somewhere [hidden power, normalize]
 
-            Enabled = move != PMove.None && pkmn.PP[i] > 0;
+            bool enabled;
+            if (pkmn.LockedAction.Decision == PDecision.Fight)
+            {
+                enabled = pkmn.LockedAction.Move == move;
+            }
+            else
+            {
+                enabled = move != PMove.None && pkmn.PP[i] > 0;
+            }
             Move = move;
             Brush = ttb.Item1;
             BorderBrush = ttb.Item2;
 
-            SelectMoveCommand = ReactiveCommand.Create(() => parent.SelectMove(this));
+            var sub = new Subject<bool>();
+            SelectMoveCommand = ReactiveCommand.Create(() => parent.SelectMove(this), sub);
+            sub.OnNext(enabled);
         }
     }
 }

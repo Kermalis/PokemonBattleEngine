@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         internal PTeam[] teams = new PTeam[2];
         List<PPokemon> activeBattlers = new List<PPokemon>();
 
-        public bool AllAlive => activeBattlers.All(p => p.HP > 0); // Temporary
+        public bool TemporaryKeepBattlingBool => teams[0].NumPkmnOnField > 0 && teams[1].NumPkmnOnField > 0; // Temporary
 
         public PBattle(PBattleStyle style, PTeamShell t0, PTeamShell t1)
         {
@@ -140,7 +140,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 DoSwitchInEffects(pkmn); // BattleEffects.cs
         }
 
-        public bool IsReadyToRunTurn() => activeBattlers.All(b => b.Action.Decision != PDecision.None);
+        public bool IsReadyToRunTurn() => activeBattlers.All(b => b.SelectedAction.Decision != PDecision.None);
 
         public bool RunTurn()
         {
@@ -170,17 +170,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     continue;
                 DoPreMoveEffects(pkmn); // BattleEffects.cs
                 UseMove(pkmn); // BattleEffects.cs
-                pkmn.PreviousMove = bMove;
+                pkmn.PreviousAction = pkmn.SelectedAction;
             }
         }
         void TurnEnded()
         {
             foreach (PPokemon pkmn in activeBattlers.ToArray()) // Copy the list so a faint does not cause a collection modified exception
             {
-                pkmn.Action.Decision = PDecision.None;
+                pkmn.SelectedAction.Decision = PDecision.None;
                 pkmn.Status2 &= ~PStatus2.Flinching;
                 pkmn.Status2 &= ~PStatus2.Protected;
-                if (pkmn.PreviousMove != PMove.Protect && pkmn.PreviousMove != PMove.Detect)
+                if (pkmn.PreviousAction.Decision == PDecision.Fight && pkmn.PreviousAction.Move != PMove.Protect && pkmn.PreviousAction.Move != PMove.Detect)
                     pkmn.ProtectCounter = 0;
                 if (pkmn.HP > 0)
                     DoTurnEndedEffects(pkmn); // BattleEffects.cs

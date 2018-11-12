@@ -478,6 +478,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Dive,
+                new PMoveData
+                {
+                    Type = PType.Water, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Dive, EffectParam = 0,
+                    PPTier = 2, Power = 80, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.DizzyPunch,
                 new PMoveData
                 {
@@ -2125,6 +2136,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PPTier = 4, Power = 0, Accuracy = 55, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove | PMoveFlag.SoundBased,
                     Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
+                PMove.Surf,
+                new PMoveData
+                {
+                    Type = PType.Water, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 3, Power = 95, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.HitsUnderwater,
+                    Targets = PMoveTarget.AllSurrounding
                 }
             },
             {

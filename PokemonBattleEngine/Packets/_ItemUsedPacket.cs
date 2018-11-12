@@ -15,12 +15,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly Guid PokemonId;
         public readonly PItem Item;
 
-        public PItemUsedPacket(PPokemon pkmn)
+        public PItemUsedPacket(PPokemon pkmn, PItem item)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
-            bytes.AddRange(BitConverter.GetBytes((ushort)(Item = pkmn.Shell.Item)));
+            bytes.AddRange(BitConverter.GetBytes((ushort)(Item = item)));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PItemUsedPacket(byte[] buffer)

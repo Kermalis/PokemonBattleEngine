@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine
             PTeamShell team0 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { CompetitivePokemonShells.Pikachu, CompetitivePokemonShells.Azumarill }
+                Party = { CompetitivePokemonShells.Latias, CompetitivePokemonShells.Azumarill }
             };
             PTeamShell team1 = new PTeamShell
             {
@@ -52,13 +52,10 @@ namespace Kermalis.PokemonBattleEngine
                     bool valid;
 
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    action = new PAction
-                    {
-                        PokemonId = p0_0.Id,
-                        Decision = PDecision.Fight,
-                        Move = p0_0.Shell.Moves[move],
-                        Targets = PTarget.FoeCenter
-                    };
+                    action.PokemonId = p0_0.Id;
+                    action.Decision = PDecision.Fight;
+                    action.Move = p0_0.Shell.Moves[move];
+                    action.Targets = PTarget.FoeCenter;
                     valid = battle.SelectActionIfValid(action);
 
                     /*move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
@@ -71,15 +68,10 @@ namespace Kermalis.PokemonBattleEngine
                     valid = battle.SelectActionIfValid(action);*/
 
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    action = new PAction
-                    {
-                        PokemonId = p1_0.Id,
-                        Decision = PDecision.Fight,
-                        Move = p1_0.Shell.Moves[move],
-                        Targets = PTarget.FoeCenter
-                    };
-                    action.Move = PMove.Substitute;
-                    action.Targets = PTarget.AllyCenter;
+                    action.PokemonId = p1_0.Id;
+                    action.Decision = PDecision.Fight;
+                    action.Move = p1_0.Shell.Moves[move];
+                    action.Targets = PTarget.FoeCenter;
                     valid = battle.SelectActionIfValid(action);
 
                     /*move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
@@ -90,8 +82,6 @@ namespace Kermalis.PokemonBattleEngine
                         Targets = PTarget.FoeLeft
                     };
                     valid = battle.SelectActionIfValid(action);*/
-
-                    //Console.WriteLine();
                 } while (!battle.IsReadyToRunTurn());
                 battle.RunTurn();
 

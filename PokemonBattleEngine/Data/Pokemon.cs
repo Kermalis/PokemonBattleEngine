@@ -19,6 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte[] PP = new byte[PConstants.NumMoves], MaxPP = new byte[PConstants.NumMoves];
 
         public PAbility Ability;
+        public PItem Item;
         public PFieldPosition FieldPosition = PFieldPosition.None;
         public PStatus1 Status1;
         public PStatus2 Status2;
@@ -33,9 +34,8 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public byte ProtectCounter; // Protect
         public ushort SubstituteHP; // Substitute
-
-        public PMove PreviousMove;
-        public PAction Action;
+        
+        public PAction PreviousAction, LockedAction, SelectedAction;
         public int TurnOrder;
 
         public string OwnerDisplayName => Local ? PKnownInfo.Instance.LocalDisplayName : PKnownInfo.Instance.RemoteDisplayName;
@@ -45,8 +45,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             Shell = shell;
             Ability = Shell.Ability;
+            Item = Shell.Item;
             Id = id;
-            Action.PokemonId = id;
+            SelectedAction.PokemonId = id;
             CalculateStats();
             HP = MaxHP;
             for (int i = 0; i < PConstants.NumMoves; i++)
@@ -74,11 +75,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Level = psip.Level,
                 Shiny = psip.Shiny,
                 Gender = psip.Gender,
-                Item = PItem.MAX,
-                Nature = PNature.MAX,
-                Ability = PAbility.MAX
+                Nature = PNature.MAX
             };
             Ability = PAbility.MAX;
+            Item = PItem.MAX;
             for (int i = 0; i < PConstants.NumMoves; i++)
                 Shell.Moves[i] = PMove.MAX;
         }
@@ -150,7 +150,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             bool remotePokemon = Shell.Nature == PNature.MAX; // If the nature is unset, the program is not the host and does not own the Pokémon
 
-            string item = Shell.Item.ToString().Replace("MAX", "???");
+            string item = Item.ToString().Replace("MAX", "???");
             string nature = Shell.Nature.ToString().Replace("MAX", "???");
             string ability = Ability.ToString().Replace("MAX", "???");
             string[] moveStrs = new string[PConstants.NumMoves];

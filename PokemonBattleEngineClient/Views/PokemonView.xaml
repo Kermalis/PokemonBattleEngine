@@ -7,7 +7,7 @@
   </UserControl.RenderTransform>
   <!--<Border BorderBrush="{DynamicResource ThemeAccentBrush}" BorderThickness="1">-->
   <Image Name="Sprite"
-         ZIndex="1" Stretch="None"
+         ZIndex="1" Stretch="None" Opacity="{Binding SpriteOpacity}"
          HorizontalAlignment="Center" VerticalAlignment="Bottom"
          RenderOptions.BitmapInterpolationMode="Default"
          gif:GifImage.SourceUri="{Binding Source}">

@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngineClient
             team0 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { CompetitivePokemonShells.Cresselia, CompetitivePokemonShells.Latios, CompetitivePokemonShells.Darkrai }
+                Party = { CompetitivePokemonShells.Latios, CompetitivePokemonShells.Cresselia, CompetitivePokemonShells.Darkrai }
             },
             team1 = new PTeamShell
             {
@@ -106,8 +106,12 @@ namespace Kermalis.PokemonBattleEngineClient
                     switch (iup.Item)
                     {
                         case PItem.Leftovers:
-                            pkmn.Shell.Item = iup.Item;
+                            pkmn.Item = iup.Item;
                             message = "{0} restored a little HP using its Leftovers!";
+                            break;
+                        case PItem.PowerHerb:
+                            pkmn.Item = PItem.None;
+                            message = "{0} became fully charged due to its Power Herb!";
                             break;
                         default: return true;
                     }
@@ -326,6 +330,20 @@ namespace Kermalis.PokemonBattleEngineClient
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid substitute action: {s2p.Action}");
                             }
                             break;
+                        case PStatus2.Underwater:
+                            battleView.PokemonPositionChanged(pkmn, PFieldPosition.None);
+                            switch (s2p.Action)
+                            {
+                                case PStatusAction.Added:
+                                    message = "{0} hid underwater!";
+                                    pkmn.LockedAction = pkmn.SelectedAction;
+                                    break;
+                                case PStatusAction.Ended:
+                                    pkmn.LockedAction.Decision = PDecision.None;
+                                    return true;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid underwater action: {s2p.Action}");
+                            }
+                            break;
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
                     battleView.Message = string.Format(message, pkmn.Shell.Nickname);
@@ -344,7 +362,7 @@ namespace Kermalis.PokemonBattleEngineClient
             if (begin)
             {
                 foreach (PPokemon p in PKnownInfo.Instance.LocalParty)
-                    p.Action.Decision = PDecision.None;
+                    p.SelectedAction.Decision = PDecision.None;
                 actions.Clear();
                 switch (BattleStyle)
                 {
@@ -373,11 +391,11 @@ namespace Kermalis.PokemonBattleEngineClient
                         break;
                 }
             }
-            int i = actions.FindIndex(p => p.Action.Decision == PDecision.None);
+            int i = actions.FindIndex(p => p.SelectedAction.Decision == PDecision.None);
             if (i == -1)
             {
                 battleView.Message = $"Waiting for {PKnownInfo.Instance.RemoteDisplayName}...";
-                Send(new PSubmitActionsPacket(actions.Select(p => p.Action).ToArray()));
+                Send(new PSubmitActionsPacket(actions.Select(p => p.SelectedAction).ToArray()));
             }
             else
             {

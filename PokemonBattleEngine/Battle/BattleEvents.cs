@@ -34,8 +34,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PStatus2Packet(pkmn, status, statusAction));
         void BroadcastReflectLightScreen(bool local, bool reflect, PReflectLightScreenAction action)
             => OnNewEvent?.Invoke(new PReflectLightScreenPacket(local, reflect, action));
-        void BroadcastItemUsed(PPokemon pkmn)
-            => OnNewEvent?.Invoke(new PItemUsedPacket(pkmn));
+        void BroadcastItemUsed(PPokemon pkmn, PItem item)
+            => OnNewEvent?.Invoke(new PItemUsedPacket(pkmn, item));
         void BroadcastPPChanged(PPokemon pkmn, PMove move, int change)
             => OnNewEvent?.Invoke(new PMovePPChangedPacket(pkmn, move, change));
         void BroadcastLimber(PPokemon pkmn, bool prevented) // Prevented or cured
@@ -55,6 +55,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (iup.Item)
                     {
                         case PItem.Leftovers: message = "restored a little HP using its Leftovers"; break;
+                        case PItem.PowerHerb: message = "became fully charged due to its Power Herb"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
                     }
                     Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Nickname, message);
@@ -215,6 +216,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 case PStatusAction.Damage: message = "The substitute took damage for {0}!"; break;
                                 case PStatusAction.Ended: message = "{0}'s substitute faded!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid substitute action: {s2p.Action}");
+                            }
+                            break;
+                        case PStatus2.Underwater:
+                            switch (s2p.Action)
+                            {
+                                case PStatusAction.Added: message = "{0} hid underwater!"; break;
+                                case PStatusAction.Ended: return;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid underwater action: {s2p.Action}");
                             }
                             break;
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");

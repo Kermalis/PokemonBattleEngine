@@ -63,6 +63,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (pkmn.PP[Array.IndexOf(pkmn.Shell.Moves, action.Move)] < 1)
                 return false;
 
+            // If the mon has a locked action, it must be used
+            if (pkmn.LockedAction.Decision != PDecision.None
+                && (pkmn.LockedAction.Move != action.Move || pkmn.LockedAction.Targets != action.Targets))
+                return false;
+
             // Verify targets
             PMoveData mData = PMoveData.Data[action.Move];
             switch (BattleStyle)
@@ -400,7 +405,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         action.Targets = PTarget.AllyCenter;
                     break;
             }
-            pkmn.Action = action;
+            pkmn.SelectedAction = action;
         }
     }
 }

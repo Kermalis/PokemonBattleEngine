@@ -149,7 +149,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // volt switch
                         // thunder wave
                         // swagger
-                        // substitute
                         // wild charge
                         // bestow // egg
                         // bide
@@ -201,6 +200,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.ShockWave, // Gen 4 TM
                         PMove.SignalBeam, // Move Tutor
                         PMove.Strength, // HM
+                        PMove.Substitute, // TM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Tickle, // Egg Move
                         PMove.Thunder, // TM
@@ -258,7 +258,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fling
                         // incinerate
                         // swagger
-                        // substitute
                         // ancient power // egg
                         // belly drum
                         // chip away
@@ -309,6 +308,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.RockTomb, // TM
                         PMove.Screech, // Egg Move
                         PMove.Strength, // HM
+                        PMove.Substitute, // TM
                         PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
@@ -367,7 +367,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // giga impact
                         // stone edge
                         // swagger
-                        // substitute
                         // ancient power // egg move
                         // belly drum
                         // chip away
@@ -420,6 +419,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.RockTomb, // TM
                         PMove.Screech, // Egg Move
                         PMove.Strength, // HM
+                        PMove.Substitute, // TM
                         PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
@@ -483,7 +483,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // volt switch
                         // thunder wave
                         // swagger
-                        // substitute
                         // wild charge
                         // volt tackle // egg
                         // bestow
@@ -522,6 +521,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Protect, // TM
                         PMove.Return, // TM
                         PMove.ShockWave, // Gen 4 TM
+                        PMove.Substitute, // TM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Tickle, // Egg Move
                         PMove.Thunder, //TM
@@ -566,8 +566,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // surf
-                        // dive
                         // hail
                         // blizzard
                         // hyper beam
@@ -581,7 +579,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fling
                         // giga impact
                         // swagger
-                        // substitute
                         // belly drum // egg move
                         // encore
                         // future sight
@@ -615,6 +612,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.AquaTail, // Move Tutor
                         PMove.BodySlam, // Egg Move
                         PMove.Bulldoze, // TM
+                        PMove.Dive, // HM
                         PMove.DoubleTeam, // TM
                         PMove.FakeTears, // Move Tutor
                         PMove.FocusBlast, // TM
@@ -638,7 +636,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Sing, // Egg Move
                         PMove.Slam, // Egg Move
                         PMove.Strength, // HM
+                        PMove.Substitute, // TM
                         PMove.Supersonic, // Egg Move
+                        PMove.Surf, // HM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Tickle, // Egg Move
                         PMove.Toxic, // TM
@@ -690,8 +690,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // surf
-                        // dive
                         // hail
                         // blizzard
                         // rain dance
@@ -700,7 +698,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // attract
                         // round
                         // swagger
-                        // substitute
                         // aqua ring // egg move
                         // brine
                         // endure
@@ -716,6 +713,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Barrier, // Egg Move
                         PMove.BodySlam, // Egg Move
                         PMove.ConfuseRay, // Egg Move
+                        PMove.Dive, // HM
                         PMove.DoubleTeam, // TM
                         PMove.Frustration, // TM
                         PMove.HiddenPower, // TM
@@ -726,7 +724,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Protect, // TM
                         PMove.Return, // TM
                         PMove.Scald, // TM
+                        PMove.Substitute, // TM
                         PMove.Supersonic, // Egg Move
+                        PMove.Surf, // HM
                         PMove.Toxic, // TM
                         PMove.Waterfall, // HM
                         PMove.WaterPulse, // Egg Move
@@ -771,8 +771,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         // fly
-                        // surf
-                        // dive
                         // psyshock
                         // roar
                         // sunny day
@@ -793,7 +791,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // psych up
                         // dream eater
                         // swagger
-                        // substitute
                         // covet // tutor
                         // helping hand // tutor
                         // last resort // tutor
@@ -823,6 +820,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.CalmMind, // TM
                         PMove.ChargeBeam, // TM
                         PMove.Cut, // HM
+                        PMove.Dive, // HM
                         PMove.DracoMeteor, // Move Tutor
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
@@ -845,6 +843,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.ShadowBall, // TM
                         PMove.ShockWave, // Gen 4 TM
                         PMove.SteelWing, // TM
+                        PMove.Substitute, // TM
+                        PMove.Surf, // HM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
@@ -893,8 +893,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         // fly
-                        // surf
-                        // dive
                         // psyshock
                         // roar
                         // sunny day
@@ -915,7 +913,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // psych up
                         // dream eater
                         // swagger
-                        // substitute
                         // helping hand // tutor
                         // last resort // tutor
                         // magic coat // tutor
@@ -942,6 +939,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.CalmMind, // TM
                         PMove.ChargeBeam, // TM
                         PMove.Cut, // HM
+                        PMove.Dive, // HM
                         PMove.DracoMeteor, // Move Tutor
                         PMove.DragonClaw, // TM
                         PMove.DragonPulse, // Move Tutor
@@ -964,6 +962,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.ShadowBall, // TM
                         PMove.ShockWave, // Gen 4 TM
                         PMove.SteelWing, // TM
+                        PMove.Substitute, // TM
+                        PMove.Surf, // HM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Thunder, // TM
                         PMove.Thunderbolt, // TM
@@ -1018,7 +1018,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // psych up
                         // dream eater
                         // swagger
-                        // substitute
                         // trick room
                         // gravity // move tutor
                         // helping hand // tutor
@@ -1052,6 +1051,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
                         PMove.SignalBeam, // Move Tutor
+                        PMove.Substitute, // TM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Toxic, // TM
                         PMove.ZenHeadbutt, // Move Tutor
@@ -1113,7 +1113,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // psych up
                         // dream eater
                         // swagger
-                        // substitute
                         // drain punch // move tutor
                         // foul play // move tutor
                         // knock off // move tutor
@@ -1156,6 +1155,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.SludgeBomb, // TM
                         PMove.Snarl, // TM
                         PMove.Strength, // HM
+                        PMove.Substitute, // TM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.SwordsDance, // TM
                         PMove.Thunder, // TM

@@ -11,6 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         PPokemon bAttacker, bDefender;
         PMove bMove; PType bMoveType;
+        bool bUsedMove; // If true, moveused and ppreduced were already announced and should not be announced again (when targetting multiple pokemon)
         double bDamageMultiplier;
         bool bLandedCrit;
 
@@ -51,11 +52,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Items
-            switch (pkmn.Shell.Item)
+            switch (pkmn.Item)
             {
                 case PItem.Leftovers:
                     if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PConstants.LeftoversDenominator)))
-                        BroadcastItemUsed(pkmn);
+                        BroadcastItemUsed(pkmn, PItem.Leftovers);
                     break;
             }
 
@@ -65,12 +66,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void UseMove(PPokemon attacker)
         {
+            bUsedMove = false;
             PTeam attackerTeam = teams[attacker.Local ? 0 : 1]; // Attacker's team
             PTeam opposingTeam = teams[attacker.Local ? 1 : 0]; // Other team
 
             #region Targets
 
-            PTarget selectedTarget = attacker.Action.Targets;
+            PTarget selectedTarget = attacker.SelectedAction.Targets;
             var targets = new List<PPokemon>();
             if (selectedTarget.HasFlag(PTarget.AllyLeft))
             {
@@ -173,15 +175,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 attacker.Status1Counter++;
 
             bAttacker = attacker;
-            bMove = attacker.Action.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            bMove = attacker.SelectedAction.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
             if (MoveCancelCheck())
                 return;
-            BroadcastMoveUsed();
-            PPReduce(attacker, bMove);
 
             int aliveTargets = targets.Count(t => t != null);
             if (aliveTargets == 0)
             {
+                BroadcastMoveUsed();
+                PPReduce(attacker, bMove);
                 BroadcastFail();
                 return;
             }
@@ -212,40 +214,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     TryForceStatus1(PStatus1.Burned);
                     break;
                 case PMoveEffect.ChangeTarget_ACC:
-                    if (bDefender.Status2.HasFlag(PStatus2.Substitute))
-                        BroadcastFail();
-                    else
-                        ApplyStatChange(bDefender, PStat.Accuracy, (sbyte)mData.EffectParam);
+                    ChangeTargetStat(PStat.Accuracy, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_ATK:
-                    if (bDefender.Status2.HasFlag(PStatus2.Substitute))
-                        BroadcastFail();
-                    else
-                        ApplyStatChange(bDefender, PStat.Attack, (sbyte)mData.EffectParam);
+                    ChangeTargetStat(PStat.Attack, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_DEF:
-                    if (bDefender.Status2.HasFlag(PStatus2.Substitute))
-                        BroadcastFail();
-                    else
-                        ApplyStatChange(bDefender, PStat.Defense, (sbyte)mData.EffectParam);
+                    ChangeTargetStat(PStat.Defense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_EVA:
-                    if (bDefender.Status2.HasFlag(PStatus2.Substitute))
-                        BroadcastFail();
-                    else
-                        ApplyStatChange(bDefender, PStat.Evasion, (sbyte)mData.EffectParam);
+                    ChangeTargetStat(PStat.Evasion, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_SPDEF:
-                    if (bDefender.Status2.HasFlag(PStatus2.Substitute))
-                        BroadcastFail();
-                    else
-                        ApplyStatChange(bDefender, PStat.SpDefense, (sbyte)mData.EffectParam);
+                    ChangeTargetStat(PStat.SpDefense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeTarget_SPE:
-                    if (bDefender.Status2.HasFlag(PStatus2.Substitute))
-                        BroadcastFail();
-                    else
-                        ApplyStatChange(bDefender, PStat.Speed, (sbyte)mData.EffectParam);
+                    ChangeTargetStat(PStat.Speed, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_ATK:
                     ApplyStatChange(bAttacker, PStat.Attack, (sbyte)mData.EffectParam);
@@ -268,10 +252,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Confuse:
                     TryForceStatus2(PStatus2.Confused);
                     break;
+                case PMoveEffect.Dive:
+                    Ef_Dive();
+                    break;
                 case PMoveEffect.Fail:
                 case PMoveEffect.Moonlight: // TODO
                 case PMoveEffect.Transform: // TODO
-                    BroadcastFail();
+                    if (!bUsedMove)
+                    {
+                        bUsedMove = true;
+                        BroadcastMoveUsed();
+                        PPReduce(bAttacker, bMove);
+                        BroadcastFail();
+                    }
                     break;
                 case PMoveEffect.Hit:
                     Ef_Hit();
@@ -529,10 +522,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bAttacker.Ability == PAbility.NoGuard || bDefender.Ability == PAbility.NoGuard)
                 return false;
 
+            // Hitting underwater opponents
+            if (bDefender.Status2.HasFlag(PStatus2.Underwater))
+            {
+                if (mData.Flags.HasFlag(PMoveFlag.HitsUnderwater))
+                    bDamageMultiplier *= 2;
+                else
+                    goto miss;
+            }
+
             if (mData.Accuracy == 0 // Always-hit moves
                 || PUtils.ApplyChance(mData.Accuracy, 100) // Got lucky and landed a hit
                 )
                 return false;
+
+            miss:
             BroadcastMiss();
             return true;
         }
@@ -705,7 +709,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         // Returns true if the status was applied
         // Broadcasts the change if applied and required
-        // "tryingToForce" being true will broadcast events such as failing
+        // "tryingToForce" being true will broadcast failing
         bool ApplyStatus2IfPossible(PStatus2 status, bool tryingToForce)
         {
             switch (status)
@@ -749,6 +753,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Returns false if the attack failed to hit or the defender fainted
         bool Ef_Hit()
         {
+            if (!bUsedMove)
+            {
+                bUsedMove = true;
+                BroadcastMoveUsed();
+                PPReduce(bAttacker, bMove);
+            }
             if (AccuracyCheck())
                 return false;
             // CritCheck();
@@ -786,6 +796,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         bool TryForceStatus1(PStatus1 status)
         {
+            if (!bUsedMove)
+            {
+                bUsedMove = true;
+                BroadcastMoveUsed();
+                PPReduce(bAttacker, bMove);
+            }
             if (AccuracyCheck())
                 return false;
             PEffectiveness effectiveness = TypeCheck(bAttacker, bDefender);
@@ -800,6 +816,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         bool TryForceStatus2(PStatus2 status)
         {
+            if (!bUsedMove)
+            {
+                bUsedMove = true;
+                BroadcastMoveUsed();
+                PPReduce(bAttacker, bMove);
+            }
             if (AccuracyCheck())
                 return false;
             if (!ApplyStatus2IfPossible(status, true))
@@ -818,6 +840,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
 
+        bool ChangeTargetStat(PStat stat, sbyte change)
+        {
+            if (!bUsedMove)
+            {
+                bUsedMove = true;
+                BroadcastMoveUsed();
+                PPReduce(bAttacker, bMove);
+            }
+            if (bDefender.Status2.HasFlag(PStatus2.Substitute))
+            {
+                BroadcastFail();
+                return false;
+            }
+            else
+            {
+                ApplyStatChange(bDefender, stat, change);
+                return true;
+            }
+        }
         bool HitAndMaybeChangeTargetStat(PStat stat, sbyte change, int chance)
         {
             bool behindSubstitute = bDefender.Status2.HasFlag(PStatus2.Substitute);
@@ -840,6 +881,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         bool Ef_Protect()
         {
+            BroadcastMoveUsed();
+            PPReduce(bAttacker, bMove);
             // TODO: If the user goes last, fail
             ushort chance = ushort.MaxValue;
             for (int i = 0; i < bAttacker.ProtectCounter; i++)
@@ -857,30 +900,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         bool Ef_Reflect()
         {
+            BroadcastMoveUsed();
+            PPReduce(bAttacker, bMove);
             PTeam team = teams[bAttacker.Local ? 0 : 1];
             if (team.ReflectCount > 0)
             {
                 BroadcastFail();
                 return false;
             }
-            team.ReflectCount = (byte)(PConstants.ReflectLightScreenTurns + (bAttacker.Shell.Item == PItem.LightClay ? PConstants.LightClayTurnExtension : 0));
+            team.ReflectCount = (byte)(PConstants.ReflectLightScreenTurns + (bAttacker.Item == PItem.LightClay ? PConstants.LightClayTurnExtension : 0));
             BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Added);
             return true;
         }
         bool Ef_LightScreen()
         {
+            BroadcastMoveUsed();
+            PPReduce(bAttacker, bMove);
             PTeam team = teams[bAttacker.Local ? 0 : 1];
             if (team.LightScreenCount > 0)
             {
                 BroadcastFail();
                 return false;
             }
-            team.LightScreenCount = (byte)(PConstants.ReflectLightScreenTurns + (bAttacker.Shell.Item == PItem.LightClay ? PConstants.LightClayTurnExtension : 0));
+            team.LightScreenCount = (byte)(PConstants.ReflectLightScreenTurns + (bAttacker.Item == PItem.LightClay ? PConstants.LightClayTurnExtension : 0));
             BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Added);
             return true;
         }
         bool Ef_BrickBreak()
         {
+            BroadcastMoveUsed();
+            PPReduce(bAttacker, bMove);
             if (AccuracyCheck())
                 return false;
             // CritCheck();
@@ -907,6 +956,38 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (FaintCheck(bDefender))
                 return false;
             return true;
+        }
+        bool Ef_Dive()
+        {
+            top:
+            if (bAttacker.Status2.HasFlag(PStatus2.Underwater))
+            {
+                if (!bUsedMove)
+                {
+                    bUsedMove = true;
+                    BroadcastMoveUsed();
+                }
+                bAttacker.LockedAction.Decision = PDecision.None;
+                bAttacker.Status2 &= ~PStatus2.Underwater;
+                BroadcastStatus2(bAttacker, PStatus2.Underwater, PStatusAction.Ended);
+                return Ef_Hit();
+            }
+            else
+            {
+                bUsedMove = true;
+                BroadcastMoveUsed();
+                PPReduce(bAttacker, bMove);
+                bAttacker.LockedAction = bAttacker.SelectedAction;
+                bAttacker.Status2 |= PStatus2.Underwater;
+                BroadcastStatus2(bAttacker, PStatus2.Underwater, PStatusAction.Added);
+                if (bAttacker.Item == PItem.PowerHerb)
+                {
+                    bAttacker.Item = PItem.None;
+                    BroadcastItemUsed(bAttacker, PItem.PowerHerb);
+                    goto top;
+                }
+                return true;
+            }
         }
     }
 }
