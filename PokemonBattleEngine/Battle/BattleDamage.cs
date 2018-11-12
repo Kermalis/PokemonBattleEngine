@@ -19,18 +19,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             PPokemonData attackerPData = PPokemonData.Data[attacker.Shell.Species];
             PPokemonData defenderPData = PPokemonData.Data[defender.Shell.Species];
-            PMoveData mData = PMoveData.Data[bMove];
             double effectiveness = 1;
 
-            switch (bMove)
-            {
-                case PMove.HiddenPower:
-                    bMoveType = attacker.GetHiddenPowerType();
-                    break;
-                default:
-                    bMoveType = mData.Type;
-                    break;
-            }
+            bMoveType = PMoveData.GetMoveTypeForPokemon(attacker, bMove);
 
             // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost
             if (attackerPData.HasType(bMoveType))

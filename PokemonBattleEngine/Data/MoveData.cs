@@ -13,6 +13,16 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PMoveFlag Flags;
         public PMoveTarget Targets;
 
+        public static PType GetMoveTypeForPokemon(PPokemon pkmn, PMove move)
+        {
+            switch (move)
+            {
+                case PMove.None: return PType.Normal;
+                case PMove.HiddenPower: return pkmn.GetHiddenPowerType();
+                default: return Data[move].Type;
+            }
+        }
+
         public static Dictionary<PMove, PMoveData> Data = new Dictionary<PMove, PMoveData>()
         {
             {

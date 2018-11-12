@@ -78,7 +78,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public MoveInfo(int i, PPokemon pkmn, ActionsView parent)
         {
             PMove move = pkmn.Shell.Moves[i];
-            var ttb = typeToBrush[move == PMove.None ? PType.Normal : PMoveData.Data[move].Type]; // TODO: static GetMoveType() somewhere [hidden power, normalize]
+            var ttb = typeToBrush[PMoveData.GetMoveTypeForPokemon(pkmn, move)];
 
             bool enabled;
             if (pkmn.LockedAction.Decision == PDecision.Fight)
