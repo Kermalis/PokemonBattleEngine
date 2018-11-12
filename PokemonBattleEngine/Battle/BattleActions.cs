@@ -77,10 +77,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // Only center in single battles & rotation battles
                     switch (mData.Targets)
                     {
-                        case PMoveTarget.All:
-                            if (action.Targets != (PTarget.AllyCenter | PTarget.FoeCenter))
-                                return false;
-                            break;
                         case PMoveTarget.AllFoesSurrounding:
                         case PMoveTarget.AllSurrounding:
                         case PMoveTarget.SingleFoeSurrounding:
@@ -100,10 +96,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // No center in double battles
                     switch (mData.Targets)
                     {
-                        case PMoveTarget.All:
-                            if (action.Targets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
-                                return false;
-                            break;
                         case PMoveTarget.AllFoesSurrounding:
                             if (action.Targets != (PTarget.FoeLeft | PTarget.FoeRight))
                                 return false;
@@ -170,10 +162,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBattleStyle.Triple:
                     switch (mData.Targets)
                     {
-                        case PMoveTarget.All:
-                            if (action.Targets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
-                                return false;
-                            break;
                         case PMoveTarget.AllFoesSurrounding:
                             if (pkmn.FieldPosition == PFieldPosition.Left)
                             {
@@ -334,7 +322,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             switch (PMoveData.Data[action.Move].Targets)
             {
-                // These two are not supposed to activate 2/3 times for double/triple battles, they affect the team itself
+                // These three are not supposed to activate multiple times because they do not hit
+                case PMoveTarget.All:
                 case PMoveTarget.AllFoes:
                 case PMoveTarget.AllTeam:
                     if (pkmn.FieldPosition == PFieldPosition.Left)

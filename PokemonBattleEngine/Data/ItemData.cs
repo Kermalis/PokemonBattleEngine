@@ -9,6 +9,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public static Dictionary<PItem, PItemData> Data = new Dictionary<PItem, PItemData>()
         {
             { PItem.ChoiceBand, new PItemData { FlingPower = 10 } },
+            { PItem.DampRock, new PItemData { FlingPower = 60 } },
             { PItem.DeepSeaScale, new PItemData { FlingPower = 30 } },
             { PItem.DeepSeaTooth, new PItemData { FlingPower = 90 } },
             { PItem.Leftovers, new PItemData { FlingPower = 10 } },

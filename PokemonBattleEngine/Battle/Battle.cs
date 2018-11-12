@@ -43,6 +43,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         internal PTeam[] teams = new PTeam[2];
         List<PPokemon> activeBattlers = new List<PPokemon>();
 
+        public PWeather Weather { get; internal set; }
+        public byte WeatherCounter { get; internal set; }
+
         public bool TemporaryKeepBattlingBool => teams[0].NumPkmnOnField > 0 && teams[1].NumPkmnOnField > 0; // Temporary
 
         public PBattle(PBattleStyle style, PTeamShell t0, PTeamShell t1)
@@ -198,6 +201,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.LightScreenCount--;
                     if (team.LightScreenCount == 0)
                         BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Ended);
+                }
+            }
+            if (WeatherCounter > 0)
+            {
+                WeatherCounter--;
+                if (WeatherCounter == 0)
+                {
+                    PWeather w = Weather;
+                    Weather = PWeather.None;
+                    BroadcastWeather(w, PWeatherAction.Ended);
                 }
             }
         }

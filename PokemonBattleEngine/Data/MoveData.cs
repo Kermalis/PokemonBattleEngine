@@ -1654,6 +1654,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.RainDance,
+                new PMoveData
+                {
+                    Type = PType.Water, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.RainDance, EffectParam = 0,
+                    PPTier = 1, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.None,
+                    Targets = PMoveTarget.All
+                }
+            },
+            {
                 PMove.RazorShell,
                 new PMoveData
                 {

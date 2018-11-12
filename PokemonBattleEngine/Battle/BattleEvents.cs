@@ -34,6 +34,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PStatus2Packet(pkmn, status, statusAction));
         void BroadcastReflectLightScreen(bool local, bool reflect, PReflectLightScreenAction action)
             => OnNewEvent?.Invoke(new PReflectLightScreenPacket(local, reflect, action));
+        void BroadcastWeather(PWeather weather, PWeatherAction action)
+            => OnNewEvent?.Invoke(new PWeatherPacket(weather, action));
         void BroadcastItemUsed(PPokemon pkmn, PItem item)
             => OnNewEvent?.Invoke(new PItemUsedPacket(pkmn, item));
         void BroadcastPPChanged(PPokemon pkmn, PMove move, int change)
@@ -229,6 +231,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
                     Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s2p.PokemonId).Shell.Nickname);
+                    break;
+                case PWeatherPacket wp:
+                    switch (wp.Weather)
+                    {
+                        case PWeather.Raining:
+                            switch (wp.Action)
+                            {
+                                case PWeatherAction.Added: message = "It started to rain!"; break;
+                                case PWeatherAction.Ended: message = "The rain stopped."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(wp.Action), $"Invalid raining action: {wp.Action}");
+                            }
+                            break;
+                        default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
+                    }
+                    Console.WriteLine(message);
                     break;
             }
         }

@@ -38,6 +38,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         Triple,
         Rotation
     }
+    public enum PWeather : byte
+    {
+        None,
+        Raining,
+    }
     public enum PFieldPosition : byte
     {
         // Not on the field.
@@ -111,6 +116,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         Broke,
         Ended
     }
+    public enum PWeatherAction : byte
+    {
+        Added,
+        Ended
+    }
     public enum PType : byte
     {
         Bug,
@@ -164,6 +174,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         ChoiceBand, // TODO: Lock move
+        DampRock,
         DeepSeaScale,
         DeepSeaTooth,
         Leftovers,
@@ -326,6 +337,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Paralyze,
         Poison,
         Protect, // TODO: If the user goes last, fail
+        RainDance,
         RaiseUser_ATK_ACC_By1,
         RaiseUser_ATK_DEF_By1,
         RaiseUser_ATK_DEF_ACC_By1,
@@ -492,6 +504,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PsychoBoost,
         QuickAttack,
         QuiverDance,
+        RainDance,
         RazorShell,
         Reflect,
         Retaliate, // TODO

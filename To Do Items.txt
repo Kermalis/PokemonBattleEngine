@@ -202,7 +202,6 @@ Black Sludge
 Icy Rock
 Smooth Rock
 Heat Rock
-Damp Rock
 Grip Claw
 Choice Scarf
 Sticky Barb

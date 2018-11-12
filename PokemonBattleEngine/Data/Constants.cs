@@ -37,5 +37,8 @@
 
         public const byte ReflectLightScreenTurns = 5; // [Default: 5]
         public const byte LightClayTurnExtension = 3; // [Default: 3 (5+3 = 8 turns)]
+
+        public const byte RainTurns = 5; // [Default: 5]
+        public const byte DampRockTurnExtension = 3; // [Default: 3 (5+3 = 8 turns)]
     }
 }

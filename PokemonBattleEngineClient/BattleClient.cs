@@ -113,7 +113,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             pkmn.Item = PItem.None;
                             message = "{0} became fully charged due to its Power Herb!";
                             break;
-                        default: return true;
+                        default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
                     }
                     battleView.Message = string.Format(message, pkmn.Shell.Nickname);
                     break;
@@ -347,6 +347,27 @@ namespace Kermalis.PokemonBattleEngineClient
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
                     battleView.Message = string.Format(message, pkmn.Shell.Nickname);
+                    break;
+                case PWeatherPacket wp:
+                    switch (wp.Weather)
+                    {
+                        case PWeather.Raining:
+                            switch (wp.Action)
+                            {
+                                case PWeatherAction.Added:
+                                    PKnownInfo.Instance.Weather = PWeather.Raining;
+                                    message = "It started to rain!";
+                                    break;
+                                case PWeatherAction.Ended:
+                                    PKnownInfo.Instance.Weather = PWeather.None;
+                                    message = "The rain stopped.";
+                                    break;
+                                default: throw new ArgumentOutOfRangeException(nameof(wp.Action), $"Invalid raining action: {wp.Action}");
+                            }
+                            break;
+                        default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
+                    }
+                    battleView.Message = message;
                     break;
                 case PRequestActionsPacket _:
                     ActionsLoop(true);

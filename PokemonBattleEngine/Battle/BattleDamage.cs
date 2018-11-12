@@ -83,6 +83,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
+            // Rain increases water's power and reduces fire's power
+            if (Weather == PWeather.Raining)
+            {
+                if (bMoveType == PType.Water)
+                    basePower *= 1.5;
+                else if (bMoveType == PType.Fire)
+                    basePower *= 0.5;
+            }
             // Reflect & Light Screen reduce damage by 50% if there is one active battler or by 33% if there is more than one
             if (!ignoreReflectLightScreen && !bLandedCrit)
             {

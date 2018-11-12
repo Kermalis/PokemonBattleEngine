@@ -370,6 +370,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Protect:
                     Ef_Protect();
                     break;
+                case PMoveEffect.RainDance:
+                    Ef_RainDance();
+                    break;
                 case PMoveEffect.RaiseUser_ATK_ACC_By1:
                     ApplyStatChange(bAttacker, PStat.Attack, +1);
                     ApplyStatChange(bAttacker, PStat.Accuracy, +1);
@@ -988,6 +991,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 return true;
             }
+        }
+        bool Ef_RainDance()
+        {
+            BroadcastMoveUsed();
+            PPReduce(bAttacker, bMove);
+            if (Weather == PWeather.Raining)
+            {
+                BroadcastFail();
+                return false;
+            }
+            Weather = PWeather.Raining;
+            WeatherCounter = (byte)(PConstants.RainTurns + (bAttacker.Item == PItem.DampRock ? PConstants.DampRockTurnExtension : 0));
+            BroadcastWeather(Weather, PWeatherAction.Added);
+            return true;
         }
     }
 }

@@ -25,11 +25,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PPokemon[] LocalParty => localParty.ToArray();
         public PPokemon[] RemoteParty => remoteParty.ToArray();
 
+        public PWeather Weather;
+
         public void Clear()
         {
             LocalDisplayName = RemoteDisplayName = string.Empty;
             localParty.Clear();
             remoteParty.Clear();
+            Weather = PWeather.None;
         }
         public void SetPartyPokemon(PPokemon[] party, bool local)
         {

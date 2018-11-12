@@ -137,7 +137,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // rain dance
                         // dig
                         // brick break
                         // facade
@@ -195,6 +194,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
+                        PMove.RainDance, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.ShockWave, // Gen 4 TM
@@ -473,7 +473,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // rain dance
                         // facade
                         // rest
                         // attract
@@ -519,6 +518,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MegaPunch, // Gen 3 Move Tutor
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
+                        PMove.RainDance, // TM
                         PMove.Return, // TM
                         PMove.ShockWave, // Gen 4 TM
                         PMove.Substitute, // TM
@@ -559,7 +559,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double edge 25 // Gen 3 34, Gen 4 / BW 33, B2W2 25
                         // aqua ring 23 // Gen 3 / Gen 4 23 as Marill, B2W2 31
                         // superpower 42 // B2W2 42
-                        // rain dance 32 // Gen 3 / Gen 4 32 as Marill, B2W2 35
+                        Tuple.Create(32, PMove.RainDance), // Gen 3 / Gen 4 as Marill
+                        Tuple.Create(35, PMove.RainDance), // B2W2
                         Tuple.Create(42, PMove.HydroPump), // Gen 4 as Marill
                         Tuple.Create(46, PMove.HydroPump), // B2W2
                         // splash 1 // As Azurill
@@ -569,7 +570,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // hail
                         // blizzard
                         // hyper beam
-                        // rain dance
                         // dig
                         // brick break
                         // facade
@@ -630,6 +630,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MuddyWater, // Egg Move
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
+                        PMove.RainDance, // TM
                         PMove.Return, // TM
                         PMove.RockSmash, // TM
                         PMove.Scald, // TM
@@ -692,7 +693,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         // hail
                         // blizzard
-                        // rain dance
                         // facade
                         // rest
                         // attract
@@ -722,6 +722,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.IronDefense, // Move Tutor
                         PMove.MuddyWater, // Egg Move
                         PMove.Protect, // TM
+                        PMove.RainDance, // TM
                         PMove.Return, // TM
                         PMove.Scald, // TM
                         PMove.Substitute, // TM
@@ -775,7 +776,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // roar
                         // sunny day
                         // hyper beam
-                        // rain dance
                         // telekinesis
                         // safeguard
                         // solar beam
@@ -837,6 +837,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
                         PMove.Psychic, // TM
+                        PMove.RainDance, // TM
                         PMove.Reflect, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
@@ -897,7 +898,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // roar
                         // sunny day
                         // hyper beam
-                        // rain dance
                         // telekinesis
                         // safeguard
                         // solar beam
@@ -956,6 +956,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
                         PMove.Psychic, // TM
+                        PMove.RainDance, // TM
                         PMove.Reflect, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
@@ -1005,7 +1006,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // psyshock
                         // sunny day
                         // hyper beam
-                        // rain dance
                         // telekinesis
                         // safeguard
                         // solar beam
@@ -1047,6 +1047,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.MudSlap, // Gen 4 Move Tutor
                         PMove.Protect, // TM
                         PMove.Psychic, // TM
+                        PMove.RainDance, // TM
                         PMove.Reflect, // TM
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
@@ -1096,7 +1097,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // taunt
                         // blizzard
                         // hyper beam
-                        // rain dance
                         // brick break
                         // torment
                         // facade
@@ -1145,6 +1145,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.PoisonJab, // TM
                         PMove.Protect, // TM
                         PMove.Psychic, // TM
+                        PMove.RainDance, // TM
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.RockSlide, // TM
