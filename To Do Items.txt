@@ -201,7 +201,6 @@ Destiny Knot
 Black Sludge
 Icy Rock
 Smooth Rock
-Heat Rock
 Grip Claw
 Choice Scarf
 Sticky Barb

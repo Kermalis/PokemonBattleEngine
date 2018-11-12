@@ -40,5 +40,7 @@
 
         public const byte RainTurns = 5; // [Default: 5]
         public const byte DampRockTurnExtension = 3; // [Default: 3 (5+3 = 8 turns)]
+        public const byte SunTurns = 5; // [Default: 5]
+        public const byte HeatRockTurnExtension = 3; // [Default: 3 (5+3 = 8 turns)]
     }
 }

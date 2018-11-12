@@ -365,6 +365,20 @@ namespace Kermalis.PokemonBattleEngineClient
                                 default: throw new ArgumentOutOfRangeException(nameof(wp.Action), $"Invalid raining action: {wp.Action}");
                             }
                             break;
+                        case PWeather.Sunny:
+                            switch (wp.Action)
+                            {
+                                case PWeatherAction.Added:
+                                    PKnownInfo.Instance.Weather = PWeather.Sunny;
+                                    message = "The sunlight turned harsh!";
+                                    break;
+                                case PWeatherAction.Ended:
+                                    PKnownInfo.Instance.Weather = PWeather.None;
+                                    message = "The sunlight faded.";
+                                    break;
+                                default: throw new ArgumentOutOfRangeException(nameof(wp.Action), $"Invalid sunny action: {wp.Action}");
+                            }
+                            break;
                         default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
                     }
                     battleView.Message = message;

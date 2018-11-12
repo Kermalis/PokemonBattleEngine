@@ -1006,5 +1006,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastWeather(Weather, PWeatherAction.Added);
             return true;
         }
+        bool Ef_SunnyDay()
+        {
+            BroadcastMoveUsed();
+            PPReduce(bAttacker, bMove);
+            if (Weather == PWeather.Sunny)
+            {
+                BroadcastFail();
+                return false;
+            }
+            Weather = PWeather.Sunny;
+            WeatherCounter = (byte)(PConstants.SunTurns + (bAttacker.Item == PItem.HeatRock ? PConstants.HeatRockTurnExtension : 0));
+            BroadcastWeather(Weather, PWeatherAction.Added);
+            return true;
+        }
     }
 }

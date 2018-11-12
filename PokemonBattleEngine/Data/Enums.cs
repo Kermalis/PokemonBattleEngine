@@ -42,6 +42,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         Raining,
+        Sunny,
     }
     public enum PFieldPosition : byte
     {
@@ -177,6 +178,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DampRock,
         DeepSeaScale,
         DeepSeaTooth,
+        HeatRock,
         Leftovers,
         LightBall,
         LightClay,
@@ -350,6 +352,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reflect,
         Sleep,
         Substitute,
+        SunnyDay,
         Toxic,
         Transform, // TODO
     }
@@ -549,6 +552,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StruggleBug,
         StunSpore,
         Substitute,
+        SunnyDay,
         Supersonic,
         Surf,
         SweetKiss,
