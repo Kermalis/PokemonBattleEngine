@@ -241,7 +241,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // sunny day
                         // blizzard
                         // smack down
                         // earthquake
@@ -309,6 +308,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Screech, // Egg Move
                         PMove.Strength, // HM
                         PMove.Substitute, // TM
+                        PMove.SunnyDay, // TM
                         PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
@@ -347,7 +347,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // sunny day
                         // blizzard
                         // hyper beam
                         // smack down
@@ -420,6 +419,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Screech, // Egg Move
                         PMove.Strength, // HM
                         PMove.Substitute, // TM
+                        PMove.SunnyDay, // TM
                         PMove.SwordsDance, // TM
                         PMove.ThunderPunch, // Move Tutor
                         PMove.Toxic, // TM
@@ -774,7 +774,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fly
                         // psyshock
                         // roar
-                        // sunny day
                         // hyper beam
                         // telekinesis
                         // safeguard
@@ -845,6 +844,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.ShockWave, // Gen 4 TM
                         PMove.SteelWing, // TM
                         PMove.Substitute, // TM
+                        PMove.SunnyDay, // TM
                         PMove.Surf, // HM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Thunder, // TM
@@ -896,7 +896,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fly
                         // psyshock
                         // roar
-                        // sunny day
                         // hyper beam
                         // telekinesis
                         // safeguard
@@ -964,6 +963,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.ShockWave, // Gen 4 TM
                         PMove.SteelWing, // TM
                         PMove.Substitute, // TM
+                        PMove.SunnyDay, // TM
                         PMove.Surf, // HM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Thunder, // TM
@@ -1004,7 +1004,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OtherMoves = new PMove[]
                     {
                         // psyshock
-                        // sunny day
                         // hyper beam
                         // telekinesis
                         // safeguard
@@ -1053,6 +1052,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.ShadowBall, // TM
                         PMove.SignalBeam, // Move Tutor
                         PMove.Substitute, // TM
+                        PMove.SunnyDay, // TM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.Toxic, // TM
                         PMove.ZenHeadbutt, // Move Tutor
@@ -1093,7 +1093,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     OtherMoves = new PMove[]
                     {
-                        // sunny day
                         // taunt
                         // blizzard
                         // hyper beam
@@ -1157,6 +1156,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Snarl, // TM
                         PMove.Strength, // HM
                         PMove.Substitute, // TM
+                        PMove.SunnyDay, // TM
                         PMove.Swift, // Gen 4 Move Tutor
                         PMove.SwordsDance, // TM
                         PMove.Thunder, // TM

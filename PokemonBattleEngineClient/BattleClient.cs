@@ -52,7 +52,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
 
         List<INetPacket> packetQueue = new List<INetPacket>();
-        Timer packetTimer = new Timer(3000);
+        Timer packetTimer = new Timer(1000);
         public override void HandleMessage(INetPacket packet)
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\"");

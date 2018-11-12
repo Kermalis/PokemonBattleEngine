@@ -232,22 +232,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     ChangeTargetStat(PStat.Speed, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_ATK:
-                    ApplyStatChange(bAttacker, PStat.Attack, (sbyte)mData.EffectParam);
+                    ChangeUserStat(PStat.Attack, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_DEF:
-                    ApplyStatChange(bAttacker, PStat.Defense, (sbyte)mData.EffectParam);
+                    ChangeUserStat(PStat.Defense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_EVA:
-                    ApplyStatChange(bAttacker, PStat.Evasion, (sbyte)mData.EffectParam);
+                    ChangeUserStat(PStat.Evasion, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_SPATK:
-                    ApplyStatChange(bAttacker, PStat.SpAttack, (sbyte)mData.EffectParam);
+                    ChangeUserStat(PStat.SpAttack, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_SPDEF:
-                    ApplyStatChange(bAttacker, PStat.SpDefense, (sbyte)mData.EffectParam);
+                    ChangeUserStat(PStat.SpDefense, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.ChangeUser_SPE:
-                    ApplyStatChange(bAttacker, PStat.Speed, (sbyte)mData.EffectParam);
+                    ChangeUserStat(PStat.Speed, (sbyte)mData.EffectParam);
                     break;
                 case PMoveEffect.Confuse:
                     TryForceStatus2(PStatus2.Confused);
@@ -265,6 +265,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         PPReduce(bAttacker, bMove);
                         BroadcastFail();
                     }
+                    break;
+                case PMoveEffect.Growth:
+                    Ef_Growth();
                     break;
                 case PMoveEffect.Hit:
                     Ef_Hit();
@@ -311,7 +314,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1:
                     if (HitAndMaybeChangeUserStat(PStat.Defense, -1, mData.EffectParam))
                     {
-                        ApplyStatChange(bAttacker, PStat.SpDefense, -1);
+                        ChangeUserStat(PStat.SpDefense, -1);
                     }
                     break;
                 case PMoveEffect.Hit__MaybeLowerUser_SPATK_By2:
@@ -323,8 +326,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1:
                     if (HitAndMaybeChangeUserStat(PStat.Speed, -1, mData.EffectParam))
                     {
-                        ApplyStatChange(bAttacker, PStat.Defense, -1);
-                        ApplyStatChange(bAttacker, PStat.SpDefense, -1);
+                        ChangeUserStat(PStat.Defense, -1);
+                        ChangeUserStat(PStat.SpDefense, -1);
                     }
                     break;
                 case PMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
@@ -346,20 +349,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_LightScreen();
                     break;
                 case PMoveEffect.LowerTarget_ATK_DEF_By1:
-                    if (bDefender.Status2.HasFlag(PStatus2.Substitute))
-                        BroadcastFail();
-                    else
+                    if (ChangeTargetStat(PStat.Attack, -1))
                     {
-                        ApplyStatChange(bDefender, PStat.Attack, -1);
-                        ApplyStatChange(bDefender, PStat.Defense, -1);
+                        ChangeTargetStat(PStat.Defense, -1);
                     }
                     break;
                 case PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
-                    ApplyStatChange(bAttacker, PStat.Defense, -1);
-                    ApplyStatChange(bAttacker, PStat.SpDefense, -1);
-                    ApplyStatChange(bAttacker, PStat.Attack, +2);
-                    ApplyStatChange(bAttacker, PStat.SpAttack, +2);
-                    ApplyStatChange(bAttacker, PStat.Speed, +2);
+                    ChangeUserStat(PStat.Defense, -1);
+                    ChangeUserStat(PStat.SpDefense, -1);
+                    ChangeUserStat(PStat.Attack, +2);
+                    ChangeUserStat(PStat.SpAttack, +2);
+                    ChangeUserStat(PStat.Speed, +2);
                     break;
                 case PMoveEffect.Paralyze:
                     TryForceStatus1(PStatus1.Paralyzed);
@@ -374,42 +374,42 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_RainDance();
                     break;
                 case PMoveEffect.RaiseUser_ATK_ACC_By1:
-                    ApplyStatChange(bAttacker, PStat.Attack, +1);
-                    ApplyStatChange(bAttacker, PStat.Accuracy, +1);
+                    ChangeUserStat(PStat.Attack, +1);
+                    ChangeUserStat(PStat.Accuracy, +1);
                     break;
                 case PMoveEffect.RaiseUser_ATK_DEF_By1:
-                    ApplyStatChange(bAttacker, PStat.Attack, +1);
-                    ApplyStatChange(bAttacker, PStat.Defense, +1);
+                    ChangeUserStat(PStat.Attack, +1);
+                    ChangeUserStat(PStat.Defense, +1);
                     break;
                 case PMoveEffect.RaiseUser_ATK_DEF_ACC_By1:
-                    ApplyStatChange(bAttacker, PStat.Attack, +1);
-                    ApplyStatChange(bAttacker, PStat.Defense, +1);
-                    ApplyStatChange(bAttacker, PStat.Accuracy, +1);
+                    ChangeUserStat(PStat.Attack, +1);
+                    ChangeUserStat(PStat.Defense, +1);
+                    ChangeUserStat(PStat.Accuracy, +1);
                     break;
                 case PMoveEffect.RaiseUser_ATK_SPATK_By1:
-                    ApplyStatChange(bAttacker, PStat.Attack, +1);
-                    ApplyStatChange(bAttacker, PStat.SpAttack, +1);
+                    ChangeUserStat(PStat.Attack, +1);
+                    ChangeUserStat(PStat.SpAttack, +1);
                     break;
                 case PMoveEffect.RaiseUser_ATK_SPE_By1:
-                    ApplyStatChange(bAttacker, PStat.Attack, +1);
-                    ApplyStatChange(bAttacker, PStat.Speed, +1);
+                    ChangeUserStat(PStat.Attack, +1);
+                    ChangeUserStat(PStat.Speed, +1);
                     break;
                 case PMoveEffect.RaiseUser_DEF_SPDEF_By1:
-                    ApplyStatChange(bAttacker, PStat.Defense, +1);
-                    ApplyStatChange(bAttacker, PStat.SpDefense, +1);
+                    ChangeUserStat(PStat.Defense, +1);
+                    ChangeUserStat(PStat.SpDefense, +1);
                     break;
                 case PMoveEffect.RaiseUser_SPATK_SPDEF_By1:
-                    ApplyStatChange(bAttacker, PStat.SpAttack, +1);
-                    ApplyStatChange(bAttacker, PStat.SpDefense, +1);
+                    ChangeUserStat(PStat.SpAttack, +1);
+                    ChangeUserStat(PStat.SpDefense, +1);
                     break;
                 case PMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1:
-                    ApplyStatChange(bAttacker, PStat.SpAttack, +1);
-                    ApplyStatChange(bAttacker, PStat.SpDefense, +1);
-                    ApplyStatChange(bAttacker, PStat.Speed, +1);
+                    ChangeUserStat(PStat.SpAttack, +1);
+                    ChangeUserStat(PStat.SpDefense, +1);
+                    ChangeUserStat(PStat.Speed, +1);
                     break;
                 case PMoveEffect.RaiseUser_SPE_By2_ATK_By1:
-                    ApplyStatChange(bAttacker, PStat.Speed, +2);
-                    ApplyStatChange(bAttacker, PStat.Attack, +1);
+                    ChangeUserStat(PStat.Speed, +2);
+                    ChangeUserStat(PStat.Attack, +1);
                     break;
                 case PMoveEffect.Reflect:
                     Ef_Reflect();
@@ -419,6 +419,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.Substitute:
                     TryForceStatus2(PStatus2.Substitute);
+                    break;
+                case PMoveEffect.SunnyDay:
+                    Ef_SunnyDay();
                     break;
                 case PMoveEffect.Toxic:
                     TryForceStatus1(PStatus1.BadlyPoisoned);
@@ -862,6 +865,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return true;
             }
         }
+        bool ChangeUserStat(PStat stat, sbyte change)
+        {
+            if (!bUsedMove)
+            {
+                bUsedMove = true;
+                BroadcastMoveUsed();
+                PPReduce(bAttacker, bMove);
+            }
+            ApplyStatChange(bAttacker, stat, change);
+            return true;
+        }
         bool HitAndMaybeChangeTargetStat(PStat stat, sbyte change, int chance)
         {
             bool behindSubstitute = bDefender.Status2.HasFlag(PStatus2.Substitute);
@@ -1018,6 +1032,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Weather = PWeather.Sunny;
             WeatherCounter = (byte)(PConstants.SunTurns + (bAttacker.Item == PItem.HeatRock ? PConstants.HeatRockTurnExtension : 0));
             BroadcastWeather(Weather, PWeatherAction.Added);
+            return true;
+        }
+        bool Ef_Growth()
+        {
+            sbyte change = (sbyte)(Weather == PWeather.Sunny ? +2 : +1);
+            ChangeUserStat(PStat.Attack, change);
+            ChangeUserStat(PStat.SpAttack, change);
             return true;
         }
     }

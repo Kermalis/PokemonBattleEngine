@@ -884,6 +884,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Growth,
+                new PMoveData
+                {
+                    Type = PType.Grass, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Growth, EffectParam = 0,
+                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.GunkShot,
                 new PMoveData
                 {

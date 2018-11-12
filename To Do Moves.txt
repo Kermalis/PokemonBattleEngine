@@ -32,7 +32,6 @@ Seismic Toss
 Absorb
 Mega Drain
 Leech Seed
-Growth
 Razor Leaf
 Solar Beam
 Petal Dance

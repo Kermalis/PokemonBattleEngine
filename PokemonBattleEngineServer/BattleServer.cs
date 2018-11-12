@@ -175,7 +175,14 @@ namespace Kermalis.PokemonBattleEngineServer
                     {
                         Console.WriteLine("Players selected actions!");
                         state = ServerState.BattleProcessing;
-                        battle.RunTurn();
+                        try
+                        {
+                            battle.RunTurn();
+                        }
+                        catch (Exception e)
+                        {
+                            ;
+                        }
                         if (battle.TemporaryKeepBattlingBool)
                         {
                             SendTo(battlers, new PRequestActionsPacket());
