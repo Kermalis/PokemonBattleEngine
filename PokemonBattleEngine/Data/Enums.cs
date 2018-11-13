@@ -186,6 +186,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DeepSeaScale,
         DeepSeaTooth,
         HeatRock,
+        LaxIncense,
         Leftovers,
         LightBall,
         LightClay,

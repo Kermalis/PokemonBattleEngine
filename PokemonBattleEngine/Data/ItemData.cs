@@ -13,6 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.DampRock, new PItemData { FlingPower = 60 } },
             { PItem.DeepSeaScale, new PItemData { FlingPower = 30 } },
             { PItem.DeepSeaTooth, new PItemData { FlingPower = 90 } },
+            { PItem.LaxIncense, new PItemData { FlingPower = 10 } },
             { PItem.Leftovers, new PItemData { FlingPower = 10 } },
             { PItem.LightBall, new PItemData { FlingPower = 30 } },
             { PItem.LightClay, new PItemData { FlingPower = 30 } },
