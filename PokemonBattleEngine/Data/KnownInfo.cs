@@ -14,8 +14,8 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public string LocalDisplayName = string.Empty,
             RemoteDisplayName = string.Empty;
-        List<PPokemon> localParty = new List<PPokemon>(PConstants.MaxPartySize),
-            remoteParty = new List<PPokemon>(PConstants.MaxPartySize);
+        List<PPokemon> localParty = new List<PPokemon>(PSettings.MaxPartySize),
+            remoteParty = new List<PPokemon>(PSettings.MaxPartySize);
 
         public string DisplayName(bool local) => local ? LocalDisplayName : RemoteDisplayName;
         // Returns null if it doesn't exist
@@ -52,7 +52,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             if (pkmn == null)
             {
-                if (remoteParty.Count == PConstants.MaxPartySize)
+                if (remoteParty.Count == PSettings.MaxPartySize)
                     throw new InvalidOperationException("Too many Pokémon!");
 
                 // Use remote pokemon constructor, which sets Local to false and moves to PMove.MAX

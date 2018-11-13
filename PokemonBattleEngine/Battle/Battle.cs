@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 Shell = shell;
                 Local = local;
-                int min = Math.Min(shell.Party.Count, PConstants.MaxPartySize);
+                int min = Math.Min(shell.Party.Count, PSettings.MaxPartySize);
                 Party = new PPokemon[min];
                 for (int i = 0; i < min; i++)
                     Party[i] = new PPokemon(Guid.NewGuid(), Shell.Party[i]);

@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            var numPkmn = Math.Min(PConstants.MaxPartySize, (Party = party).Length);
+            var numPkmn = Math.Min(PSettings.MaxPartySize, (Party = party).Length);
             bytes.Add((byte)numPkmn);
             for (int i = 0; i < numPkmn; i++)
                 bytes.AddRange(Party[i].ToBytes());
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                var numPkmn = Math.Min(PConstants.MaxPartySize, r.ReadByte());
+                var numPkmn = Math.Min(PSettings.MaxPartySize, r.ReadByte());
                 Party = new PPokemon[numPkmn];
                 for (int i = 0; i < numPkmn; i++)
                     Party[i] = PPokemon.FromBytes(r);

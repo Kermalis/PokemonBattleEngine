@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         public PSpecies Species;
         public string Nickname;
-        public byte Level = PConstants.MaxLevel,
+        public byte Level = PSettings.MaxLevel,
             Friendship = byte.MaxValue;
         public bool Shiny;
         public PAbility Ability;
@@ -19,8 +19,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PItem Item;
         public byte[] EVs = new byte[6],
             IVs = new byte[6];
-        public PMove[] Moves = new PMove[PConstants.NumMoves];
-        public byte[] PPUps = new byte[PConstants.NumMoves];
+        public PMove[] Moves = new PMove[PSettings.NumMoves];
+        public byte[] PPUps = new byte[PSettings.NumMoves];
 
         // Throws ArgumentOutOfRangeException for the invalid information
         public static void ValidateMany(IEnumerable<PPokemonShell> shells)
@@ -46,11 +46,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate nickname
-            if (string.IsNullOrWhiteSpace(Nickname) || Nickname.Length > PConstants.MaxPokemonNameLength)
+            if (string.IsNullOrWhiteSpace(Nickname) || Nickname.Length > PSettings.MaxPokemonNameLength)
                 throw new ArgumentOutOfRangeException(nameof(Nickname));
 
             // Validate Level
-            if (Level < pData.MinLevel || Level > PConstants.MaxLevel)
+            if (Level < pData.MinLevel || Level > PSettings.MaxLevel)
                 throw new ArgumentOutOfRangeException(nameof(Level));
 
             // Validate Ability
@@ -83,15 +83,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate EVs
-            if (EVs == null || EVs.Length != 6 || EVs.Select(e => (int)e).Sum() > PConstants.MaxTotalEVs)
+            if (EVs == null || EVs.Length != 6 || EVs.Select(e => (int)e).Sum() > PSettings.MaxTotalEVs)
                 throw new ArgumentOutOfRangeException(nameof(EVs));
             // Validate IVs
-            if (IVs == null || IVs.Length != 6 || IVs.Any(i => i > PConstants.MaxIVs))
+            if (IVs == null || IVs.Length != 6 || IVs.Any(i => i > PSettings.MaxIVs))
                 throw new ArgumentOutOfRangeException(nameof(IVs));
 
             // Validate Moves
             IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).Union(pData.OtherMoves);
-            if (Moves == null || Moves.Length != PConstants.NumMoves // Illegal array
+            if (Moves == null || Moves.Length != PSettings.NumMoves // Illegal array
                 || Moves.Any(m => m != PMove.None && !legalMoves.Contains(m)) // Has a move not in the legal list
                 || Moves.Any(m => Moves.Count(m2 => m != PMove.None && m == m2) > 1) // Has a duplicate move
                 || Moves.All(m => m == PMove.None) // Has no moves
@@ -99,7 +99,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(Moves));
 
             // Validate PPUps
-            if (PPUps == null || PPUps.Length != PConstants.NumMoves || PPUps.Any(p => p > PConstants.MaxPPUps))
+            if (PPUps == null || PPUps.Length != PSettings.NumMoves || PPUps.Any(p => p > PSettings.MaxPPUps))
                 throw new ArgumentOutOfRangeException(nameof(PPUps));
         }
 
@@ -117,7 +117,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             bytes.AddRange(BitConverter.GetBytes((ushort)Item));
             bytes.AddRange(EVs);
             bytes.AddRange(IVs);
-            for (int i = 0; i < PConstants.NumMoves; i++)
+            for (int i = 0; i < PSettings.NumMoves; i++)
                 bytes.AddRange(BitConverter.GetBytes((ushort)Moves[i]));
             bytes.AddRange(PPUps);
             return bytes.ToArray();
@@ -138,16 +138,16 @@ namespace Kermalis.PokemonBattleEngine.Data
                 EVs = r.ReadBytes(6),
                 IVs = r.ReadBytes(6)
             };
-            for (int i = 0; i < PConstants.NumMoves; i++)
+            for (int i = 0; i < PSettings.NumMoves; i++)
                 pkmn.Moves[i] = (PMove)r.ReadUInt16();
-            pkmn.PPUps = r.ReadBytes(PConstants.NumMoves);
+            pkmn.PPUps = r.ReadBytes(PSettings.NumMoves);
             return pkmn;
         }
     }
     public sealed class PTeamShell
     {
         public string DisplayName;
-        public readonly List<PPokemonShell> Party = new List<PPokemonShell>(PConstants.MaxPartySize);
+        public readonly List<PPokemonShell> Party = new List<PPokemonShell>(PSettings.MaxPartySize);
 
         // Throws ArgumentOutOfRangeException for the invalid information
         public static void ValidateMany(IEnumerable<PTeamShell> shells)
@@ -162,11 +162,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         public void Validate()
         {
             // Validate display name
-            if (string.IsNullOrWhiteSpace(DisplayName) || DisplayName.Length > PConstants.MaxPlayerNameLength)
+            if (string.IsNullOrWhiteSpace(DisplayName) || DisplayName.Length > PSettings.MaxPlayerNameLength)
                 throw new ArgumentOutOfRangeException(nameof(DisplayName));
 
             // Validate Party
-            if (Party == null || Party.Count == 0 || Party.Count > PConstants.MaxPartySize)
+            if (Party == null || Party.Count == 0 || Party.Count > PSettings.MaxPartySize)
                 throw new ArgumentOutOfRangeException(nameof(Party));
             // Validate Party Pokemon
             PPokemonShell.ValidateMany(Party);
@@ -191,7 +191,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 DisplayName = PUtils.StringFromBytes(r)
             };
-            var numPkmn = Math.Min(PConstants.MaxPartySize, r.ReadByte());
+            var numPkmn = Math.Min(PSettings.MaxPartySize, r.ReadByte());
             for (int i = 0; i < numPkmn; i++)
                 team.Party.Add(PPokemonShell.FromBytes(r));
             return team;

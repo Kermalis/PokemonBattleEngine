@@ -13,13 +13,12 @@ For example, your opponent will not know your ability until your ability does so
 The opponent will never know your nature or hidden power damage/type unless they use context clues as a human.
 Therefore, a modified client cannot do anything more than an ordinary player (unless my code has exploits... in that case... create an issue!)
 
-There is a class with the engine constants that you can change for custom battles. Ever wanted to have level 200 Pokémon? Or 8 moves? You can do that!
-Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
+There is a settings file that you can change for custom battles. Ever wanted to have level 200 Pokémon? Or 8 moves? You can do that!
+Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 
 ----
 # To Do:
 * Switching out
-* Critical hits
 * Struggle
 * Weather
 * Turn order

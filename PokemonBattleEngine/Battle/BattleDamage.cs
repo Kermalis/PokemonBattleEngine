@@ -14,22 +14,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        PEffectiveness TypeCheck(PPokemon attacker, PPokemon defender)
+        PEffectiveness TypeCheck(PPokemon user, PPokemon target)
         {
-            PPokemonData attackerPData = PPokemonData.Data[attacker.Species];
-            PPokemonData defenderPData = PPokemonData.Data[defender.Species];
+            PPokemonData userPData = PPokemonData.Data[user.Species];
+            PPokemonData targetPData = PPokemonData.Data[target.Species];
             double effectiveness = 1;
 
-            bMoveType = PMoveData.GetMoveTypeForPokemon(attacker, bMove);
+            bMoveType = PMoveData.GetMoveTypeForPokemon(user, bMove);
 
             // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost
-            if (attackerPData.HasType(bMoveType))
+            if (userPData.HasType(bMoveType))
                 bDamageMultiplier *= 1.5;
 
-            effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)defenderPData.Type1];
+            effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)targetPData.Type1];
             // Don't want to halve twice for a mono type
-            if (defenderPData.Type1 != defenderPData.Type2)
-                effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)defenderPData.Type2];
+            if (targetPData.Type1 != targetPData.Type2)
+                effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)targetPData.Type2];
 
             if (effectiveness == 0)
                 return PEffectiveness.Ineffective;
@@ -42,9 +42,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // If power is 0, power is determined by bMove
-        ushort CalculateBasePower(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
+        ushort CalculateBasePower(PPokemon user, PPokemon target, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
         {
-            PPokemonData defenderPData = PPokemonData.Data[defender.Species];
+            PPokemonData targetPData = PPokemonData.Data[target.Species];
             double basePower = power;
 
             // Moves with variable base power
@@ -53,28 +53,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (bMove)
                 {
                     case PMove.Frustration:
-                        basePower = Math.Max(1, (byte.MaxValue - attacker.Shell.Friendship) / 2.5);
+                        basePower = Math.Max(1, (byte.MaxValue - user.Shell.Friendship) / 2.5);
                         break;
                     case PMove.GrassKnot:
                     case PMove.LowKick:
-                        if (defenderPData.Weight >= 200.0)
+                        if (targetPData.Weight >= 200.0)
                             basePower = 120;
-                        else if (defenderPData.Weight >= 100.0)
+                        else if (targetPData.Weight >= 100.0)
                             basePower = 100;
-                        else if (defenderPData.Weight >= 50.0)
+                        else if (targetPData.Weight >= 50.0)
                             basePower = 80;
-                        else if (defenderPData.Weight >= 25.0)
+                        else if (targetPData.Weight >= 25.0)
                             basePower = 60;
-                        else if (defenderPData.Weight >= 10.0)
+                        else if (targetPData.Weight >= 10.0)
                             basePower = 40;
                         else
                             basePower = 20;
                         break;
                     case PMove.HiddenPower:
-                        basePower = attacker.GetHiddenPowerBasePower();
+                        basePower = user.GetHiddenPowerBasePower();
                         break;
                     case PMove.Return:
-                        basePower = Math.Max(1, attacker.Shell.Friendship / 2.5);
+                        basePower = Math.Max(1, user.Shell.Friendship / 2.5);
                         break;
                     default:
                         basePower = PMoveData.Data[bMove].Power;
@@ -97,10 +97,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 0.5;
                     break;
             }
+            
             // Reflect & Light Screen reduce damage by 50% if there is one active battler or by 33% if there is more than one
             if (!ignoreReflectLightScreen && !bLandedCrit)
             {
-                PTeam defenderTeam = teams[defender.Local ? 0 : 1];
+                PTeam defenderTeam = teams[target.Local ? 0 : 1];
                 if ((defenderTeam.ReflectCount > 0 && category == PMoveCategory.Physical)
                     || (defenderTeam.LightScreenCount > 0 && category == PMoveCategory.Special))
                 {
@@ -121,70 +122,73 @@ namespace Kermalis.PokemonBattleEngine.Battle
              * basePower /= 2;*/
 
             // A Pikachu holding a Light Ball gets a 2x power boost
-            if (attacker.Item == PItem.LightBall && attacker.Shell.Species == PSpecies.Pikachu)
+            if (user.Item == PItem.LightBall && user.Shell.Species == PSpecies.Pikachu)
                 basePower *= 2;
             // Retaliate doubles power if the team has a pokemon that fainted the previous turn
-            if (bMove == PMove.Retaliate && teams[attacker.Local ? 0 : 1].MonFaintedLastTurn)
+            if (bMove == PMove.Retaliate && teams[user.Local ? 0 : 1].MonFaintedLastTurn)
                 basePower *= 2;
             // Overgrow gives a 1.5x boost to Grass attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Grass && attacker.Ability == PAbility.Overgrow && attacker.HP <= attacker.MaxHP / 3)
+            if (bMoveType == PType.Grass && user.Ability == PAbility.Overgrow && user.HP <= user.MaxHP / 3)
                 basePower *= 1.5;
             // Blaze gives a 1.5x boost to Fire attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Fire && attacker.Ability == PAbility.Blaze && attacker.HP <= attacker.MaxHP / 3)
+            if (bMoveType == PType.Fire && user.Ability == PAbility.Blaze && user.HP <= user.MaxHP / 3)
                 basePower *= 1.5;
             // Torrent gives a 1.5x boost to Water attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Water && attacker.Ability == PAbility.Torrent && attacker.HP <= attacker.MaxHP / 3)
+            if (bMoveType == PType.Water && user.Ability == PAbility.Torrent && user.HP <= user.MaxHP / 3)
                 basePower *= 1.5;
             // Swarm gives a 1.5x boost to Bug attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Bug && attacker.Ability == PAbility.Swarm && attacker.HP <= attacker.MaxHP / 3)
+            if (bMoveType == PType.Bug && user.Ability == PAbility.Swarm && user.HP <= user.MaxHP / 3)
                 basePower *= 1.5;
             // A Burned pokemon does half the damage when it is Burned unless it has the Guts ability
-            if (category == PMoveCategory.Physical && attacker.Status1 == PStatus1.Burned && attacker.Ability != PAbility.Guts)
+            if (category == PMoveCategory.Physical && user.Status1 == PStatus1.Burned && user.Ability != PAbility.Guts)
                 basePower /= 2;
             // Damage is halved when using Fire or Ice moves against a pokemon with the Thick Fat ability
-            if (defender.Ability == PAbility.ThickFat && (bMoveType == PType.Fire || bMoveType == PType.Ice))
+            if (target.Ability == PAbility.ThickFat && (bMoveType == PType.Fire || bMoveType == PType.Ice))
                 basePower /= 2;
 
             return (ushort)basePower;
         }
-        ushort CalculateAttack(PPokemon attacker, PPokemon defender)
+        ushort CalculateAttack(PPokemon user, PPokemon target)
         {
-            double attack = attacker.Attack * GetStatMultiplier(attacker.AttackChange);
+            // Negative Attack changes are ignored for critical hits
+            double attack = user.Attack * GetStatMultiplier(bLandedCrit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange);
 
             // Pokemon with the Huge Power or Pure Power ability get a 2x attack boost
-            if (attacker.Ability == PAbility.HugePower || attacker.Ability == PAbility.PurePower)
+            if (user.Ability == PAbility.HugePower || user.Ability == PAbility.PurePower)
                 attack *= 2;
             // A Cubone or Marowak holding a Thick Club gets a 2x attack boost
-            if (attacker.Item == PItem.ThickClub && (attacker.Shell.Species == PSpecies.Cubone || attacker.Shell.Species == PSpecies.Marowak))
+            if (user.Item == PItem.ThickClub && (user.Shell.Species == PSpecies.Cubone || user.Shell.Species == PSpecies.Marowak))
                 attack *= 2;
             // A pokemon with the Hustle ability gets a 1.5x attack boost
-            if (attacker.Ability == PAbility.Hustle)
+            if (user.Ability == PAbility.Hustle)
                 attack *= 1.5;
             // A pokemon with the Guts ability gets a 1.5x attack boost when afflicted with a status
-            if (attacker.Ability == PAbility.Guts && attacker.Status1 != PStatus1.None)
+            if (user.Ability == PAbility.Guts && user.Status1 != PStatus1.None)
                 attack *= 1.5;
             // A pokemon holding a Choice Band gets a 1.5x attack boost
-            if (attacker.Item == PItem.ChoiceBand)
+            if (user.Item == PItem.ChoiceBand)
                 attack *= 1.5;
 
             return (ushort)attack;
         }
-        ushort CalculateDefense(PPokemon attacker, PPokemon defender)
+        ushort CalculateDefense(PPokemon user, PPokemon target)
         {
-            double defense = attacker.Defense * GetStatMultiplier(defender.DefenseChange);
+            // Positive Defense changes are ignored for critical hits
+            double defense = user.Defense * GetStatMultiplier(bLandedCrit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange);
 
             // A Ditto holding a Metal Powder gets a 2x defense boost
-            if (defender.Item == PItem.MetalPowder && defender.Species == PSpecies.Ditto)
+            if (target.Item == PItem.MetalPowder && target.Species == PSpecies.Ditto)
                 defense *= 2;
             // A pokemon with the Marvel Scale ability gets a 1.5x defense boost when afflicted with a status
-            if (defender.Ability == PAbility.MarvelScale && defender.Status1 != PStatus1.None)
+            if (target.Ability == PAbility.MarvelScale && target.Status1 != PStatus1.None)
                 defense *= 1.5;
 
             return (ushort)defense;
         }
-        ushort CalculateSpAttack(PPokemon attacker, PPokemon defender)
+        ushort CalculateSpAttack(PPokemon user, PPokemon target)
         {
-            double spAttack = attacker.SpAttack * GetStatMultiplier(attacker.SpAttackChange);
+            // Negative SpAttack changes are ignored for critical hits
+            double spAttack = user.SpAttack * GetStatMultiplier(bLandedCrit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange);
 
             // TODO:
             // A pokemon with the Plus ability gets a 1.5x spAttack boost if a teammate has the Minus ability
@@ -195,51 +199,52 @@ namespace Kermalis.PokemonBattleEngine.Battle
              * spAttack *= 1.5;*/
 
             // A Clamperl holding a Deep Sea Tooth gets a 2x spAttack boost
-            if (attacker.Item == PItem.DeepSeaTooth && attacker.Shell.Species == PSpecies.Clamperl)
+            if (user.Item == PItem.DeepSeaTooth && user.Shell.Species == PSpecies.Clamperl)
                 spAttack *= 2;
             // A Latios or Latias holding a Soul Dew gets a 1.5x spAttack boost
-            if (attacker.Item == PItem.SoulDew && (attacker.Shell.Species == PSpecies.Latias || attacker.Shell.Species == PSpecies.Latios))
+            if (user.Item == PItem.SoulDew && (user.Shell.Species == PSpecies.Latias || user.Shell.Species == PSpecies.Latios))
                 spAttack *= 1.5;
 
             return (ushort)spAttack;
         }
-        ushort CalculateSpDefense(PPokemon attacker, PPokemon defender)
+        ushort CalculateSpDefense(PPokemon user, PPokemon target)
         {
-            double spDefense = attacker.SpDefense * GetStatMultiplier(defender.SpDefenseChange);
+            // Positive SpDefense changes are ignored for critical hits
+            double spDefense = user.SpDefense * GetStatMultiplier(bLandedCrit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange);
 
             // A Clamperl holding a Deep Sea Scale gets a 2x spDefense boost
-            if (defender.Item == PItem.DeepSeaScale && defender.Shell.Species == PSpecies.Clamperl)
+            if (target.Item == PItem.DeepSeaScale && target.Shell.Species == PSpecies.Clamperl)
                 spDefense *= 2;
             // A Latios or Latias holding a Soul Dew gets a 1.5x spDefense boost
-            if (defender.Item == PItem.SoulDew && (defender.Shell.Species == PSpecies.Latias || defender.Shell.Species == PSpecies.Latios))
+            if (target.Item == PItem.SoulDew && (target.Shell.Species == PSpecies.Latias || target.Shell.Species == PSpecies.Latios))
                 spDefense *= 1.5;
 
             return (ushort)spDefense;
         }
 
         ushort CalculateDamage()
-            => CalculateDamage(bAttacker, bDefender, 0, PMoveData.Data[bMove].Category, false);
+            => CalculateDamage(bUser, bTarget, 0, PMoveData.Data[bMove].Category, false);
         // If power is 0, power is determined by bMove
-        ushort CalculateDamage(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
+        ushort CalculateDamage(PPokemon user, PPokemon target, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
         {
             ushort damage;
             ushort a = 0, d = 0,
-                p = CalculateBasePower(attacker, defender, power, category, ignoreReflectLightScreen);
+                p = CalculateBasePower(user, target, power, category, ignoreReflectLightScreen);
 
             // TODO: Determine a and d for moves like Foul Play and Psyshock
 
             if (category == PMoveCategory.Physical)
             {
-                a = CalculateAttack(attacker, defender);
-                d = CalculateDefense(attacker, defender);
+                a = CalculateAttack(user, target);
+                d = CalculateDefense(user, target);
             }
             else if (category == PMoveCategory.Special)
             {
-                a = CalculateSpAttack(attacker, defender);
-                d = CalculateSpDefense(attacker, defender);
+                a = CalculateSpAttack(user, target);
+                d = CalculateSpDefense(user, target);
             }
 
-            damage = (ushort)(2 * attacker.Shell.Level / 5 + 2);
+            damage = (ushort)(2 * user.Shell.Level / 5 + 2);
             damage = (ushort)(damage * a * p / d);
             damage /= 50;
             return (ushort)(damage + 2);

@@ -13,9 +13,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BroadcastSwitchIn(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PPkmnSwitchInPacket(pkmn));
         void BroadcastMoveUsed()
-            => OnNewEvent?.Invoke(new PMoveUsedPacket(bAttacker, bMove));
+            => OnNewEvent?.Invoke(new PMoveUsedPacket(bUser, bMove));
         void BroadcastMiss()
-            => OnNewEvent?.Invoke(new PMoveMissedPacket(bAttacker));
+            => OnNewEvent?.Invoke(new PMoveMissedPacket(bUser));
         void BroadcastHPChanged(PPokemon pkmn, int change)
             => OnNewEvent?.Invoke(new PPkmnHPChangedPacket(pkmn, change));
         void BroadcastEffectiveness(PPokemon pkmn, PEffectiveness effectiveness)
@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BroadcastCrit()
             => OnNewEvent?.Invoke(new PMoveCritPacket());
         void BroadcastFail(PFailReason reason)
-            => OnNewEvent?.Invoke(new PMoveFailedPacket(bAttacker, reason));
+            => OnNewEvent?.Invoke(new PMoveFailedPacket(bUser, reason));
         void BroadcastStatChange(PPokemon pkmn, PStat stat, sbyte change, bool isTooMuch)
             => OnNewEvent?.Invoke(new PPkmnStatChangedPacket(pkmn, stat, change, isTooMuch));
         void BroadcastStatus1(PPokemon pkmn, PStatus1 status, PStatusAction statusAction)
@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BroadcastLimber(PPokemon pkmn, bool prevented) // Prevented or cured
             => OnNewEvent?.Invoke(new PLimberPacket(pkmn, prevented));
         void BroadcastTransform()
-            => OnNewEvent?.Invoke(new PTransformPacket(bAttacker, bDefender));
+            => OnNewEvent?.Invoke(new PTransformPacket(bUser, bTarget));
 
 
 

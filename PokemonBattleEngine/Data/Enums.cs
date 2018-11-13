@@ -95,7 +95,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Confused = 1 << 0,
         Cursed = 1 << 1, // TODO
         Flinching = 1 << 2,
-        FocusEnergy = 1 << 3, // TODO
+        Pumped = 1 << 3, // Focus Energy / Lansat Berry
         Infatuated = 1 << 4, // TODO
         Protected = 1 << 5,
         Substitute = 1 << 6,

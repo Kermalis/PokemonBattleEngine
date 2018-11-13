@@ -318,8 +318,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void DisplayMoves(PPokemon pkmn)
         {
-            var info = new MoveInfo[PConstants.NumMoves];
-            for (int i = 0; i < PConstants.NumMoves; i++)
+            var info = new MoveInfo[PSettings.NumMoves];
+            for (int i = 0; i < PSettings.NumMoves; i++)
                 info[i] = new MoveInfo(i, pokemon = pkmn, this);
             Moves = info;
             MovesVisible = true;

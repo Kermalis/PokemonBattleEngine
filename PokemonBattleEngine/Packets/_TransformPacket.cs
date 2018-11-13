@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes(TargetSpDefense = target.SpDefense));
             bytes.AddRange(BitConverter.GetBytes(TargetSpeed = target.Speed));
             bytes.Add((byte)(TargetAbility = target.Ability));
-            for (int i = 0; i < PConstants.NumMoves; i++)
+            for (int i = 0; i < PSettings.NumMoves; i++)
                 bytes.AddRange(BitConverter.GetBytes((ushort)target.Moves[i]));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
@@ -47,8 +47,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 TargetSpDefense = r.ReadUInt16();
                 TargetSpeed = r.ReadUInt16();
                 TargetAbility = (PAbility)r.ReadByte();
-                TargetMoves = new PMove[PConstants.NumMoves];
-                for (int i = 0; i < PConstants.NumMoves; i++)
+                TargetMoves = new PMove[PSettings.NumMoves];
+                for (int i = 0; i < PSettings.NumMoves; i++)
                     TargetMoves[i] = (PMove)r.ReadUInt16();
             }
         }

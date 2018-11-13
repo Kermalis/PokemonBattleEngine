@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngine
                     PAction action;
                     bool valid;
 
-                    move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
+                    move = (byte)PUtils.RNG.Next(0, PSettings.NumMoves);
                     action.PokemonId = p0_0.Id;
                     action.Decision = PDecision.Fight;
                     action.Move = p0_0.Moves[move];
@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngine
                     };
                     valid = battle.SelectActionIfValid(action);*/
 
-                    move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
+                    move = (byte)PUtils.RNG.Next(0, PSettings.NumMoves);
                     action.PokemonId = p1_0.Id;
                     action.Decision = PDecision.Fight;
                     action.Move = p1_0.Moves[move];

@@ -1,6 +1,6 @@
 ﻿namespace Kermalis.PokemonBattleEngine.Data
 {
-    public static class PConstants
+    public static class PSettings
     {
         public const byte MaxLevel = 100; // [Default: 100]
 
@@ -24,6 +24,8 @@
         // Transform will also change the Max PP of each copied move to PPMultiplier.
         public const byte PPMultiplier = 5; // [Default: 5]
         public const byte MaxPPUps = 3; // [Default: 3]
+
+        public const double CritMultiplier = 2.0; // [Default: 2.0]
 
         public const byte ConfusionMinTurns = 1; // [Default: 1]
         public const byte ConfusionMaxTurns = 4; // [Default: 4]
