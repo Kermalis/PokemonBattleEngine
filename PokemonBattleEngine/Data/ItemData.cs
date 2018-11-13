@@ -19,6 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.LightClay, new PItemData { FlingPower = 30 } },
             { PItem.MetalPowder, new PItemData { FlingPower = 10 } },
             { PItem.PowerHerb, new PItemData { FlingPower = 10 } },
+            { PItem.RazorClaw, new PItemData { FlingPower = 80 } },
             { PItem.SoulDew, new PItemData { FlingPower = 30 } },
             { PItem.ThickClub, new PItemData { FlingPower = 90 } },
             { PItem.WideLens, new PItemData { FlingPower = 10 } },

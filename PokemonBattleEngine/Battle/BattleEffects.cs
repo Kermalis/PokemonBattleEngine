@@ -583,6 +583,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 stage += 1;
             if (bUser.Ability == PAbility.SuperLuck)
                 stage += 1;
+            if (bUser.Item == PItem.RazorClaw)
+                stage += 1;
             if (bUser.Status2.HasFlag(PStatus2.Pumped))
                 stage += 2;
 
