@@ -17,8 +17,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         PEffectiveness TypeCheck(PPokemon attacker, PPokemon defender)
         {
-            PPokemonData attackerPData = PPokemonData.Data[attacker.Shell.Species];
-            PPokemonData defenderPData = PPokemonData.Data[defender.Shell.Species];
+            PPokemonData attackerPData = PPokemonData.Data[attacker.Species];
+            PPokemonData defenderPData = PPokemonData.Data[defender.Species];
             double effectiveness = 1;
 
             bMoveType = PMoveData.GetMoveTypeForPokemon(attacker, bMove);
@@ -45,7 +45,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // If power is 0, power is determined by bMove
         ushort CalculateBasePower(PPokemon attacker, PPokemon defender, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
         {
-            PPokemonData defenderPData = PPokemonData.Data[defender.Shell.Species];
+            PPokemonData defenderPData = PPokemonData.Data[defender.Species];
             double basePower = power;
 
             // Moves with variable base power
@@ -175,7 +175,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double defense = attacker.Defense * GetStatMultiplier(defender.DefenseChange);
 
             // A Ditto holding a Metal Powder gets a 2x defense boost
-            if (defender.Item == PItem.MetalPowder && defender.Shell.Species == PSpecies.Ditto)
+            if (defender.Item == PItem.MetalPowder && defender.Species == PSpecies.Ditto)
                 defense *= 2;
             // A pokemon with the Marvel Scale ability gets a 1.5x defense boost when afflicted with a status
             if (defender.Ability == PAbility.MarvelScale && defender.Status1 != PStatus1.None)
@@ -199,7 +199,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (attacker.Item == PItem.DeepSeaTooth && attacker.Shell.Species == PSpecies.Clamperl)
                 spAttack *= 2;
             // A Latios or Latias holding a Soul Dew gets a 1.5x spAttack boost
-            if (attacker.Item == PItem.SoulDew && (attacker.Shell.Species == PSpecies.Latios || attacker.Shell.Species == PSpecies.Latias))
+            if (attacker.Item == PItem.SoulDew && (attacker.Shell.Species == PSpecies.Latias || attacker.Shell.Species == PSpecies.Latios))
                 spAttack *= 1.5;
 
             return (ushort)spAttack;
@@ -212,7 +212,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (defender.Item == PItem.DeepSeaScale && defender.Shell.Species == PSpecies.Clamperl)
                 spDefense *= 2;
             // A Latios or Latias holding a Soul Dew gets a 1.5x spDefense boost
-            if (defender.Item == PItem.SoulDew && (defender.Shell.Species == PSpecies.Latios || defender.Shell.Species == PSpecies.Latias))
+            if (defender.Item == PItem.SoulDew && (defender.Shell.Species == PSpecies.Latias || defender.Shell.Species == PSpecies.Latios))
                 spDefense *= 1.5;
 
             return (ushort)spDefense;

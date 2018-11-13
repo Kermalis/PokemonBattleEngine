@@ -100,8 +100,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         Protected = 1 << 5,
         Substitute = 1 << 6,
         Tormented = 1 << 7, // TODO
-        Underground = 1 << 8, // TODO
-        Underwater = 1 << 9,
+        Transformed = 1 << 8,
+        Underground = 1 << 9, // TODO
+        Underwater = 1 << 10,
     }
     public enum PStatusAction : byte
     {
@@ -187,7 +188,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Leftovers,
         LightBall,
         LightClay,
-        MetalPowder, // TODO
+        MetalPowder,
         PowerHerb,
         SoulDew,
         ThickClub,
@@ -341,7 +342,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LightScreen,
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
-        Moonlight, // TODO
+        Moonlight,
         Paralyze,
         Poison,
         Protect, // TODO: If the user goes last, fail
@@ -360,7 +361,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Substitute,
         SunnyDay,
         Toxic,
-        Transform, // TODO
+        Transform,
     }
     public enum PMove : ushort
     {
@@ -489,7 +490,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MeteorMash,
         MirrorShot,
         MistBall,
-        Moonlight, // TODO
+        Moonlight,
         MudBomb,
         MuddyWater,
         MudSlap,
@@ -578,7 +579,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ThunderShock,
         ThunderWave,
         Toxic,
-        Transform, // TODO
+        Transform,
         VacuumWave,
         VCreate,
         ViceGrip,

@@ -42,6 +42,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PMovePPChangedPacket(pkmn, move, change));
         void BroadcastLimber(PPokemon pkmn, bool prevented) // Prevented or cured
             => OnNewEvent?.Invoke(new PLimberPacket(pkmn, prevented));
+        void BroadcastTransform()
+            => OnNewEvent?.Invoke(new PTransformPacket(bAttacker, bDefender));
 
 
 
@@ -237,6 +239,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
                     Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s2p.PokemonId).Shell.Nickname);
+                    break;
+                case PTransformPacket tp:
+                    Console.WriteLine("{0} transformed into {1}!", PKnownInfo.Instance.Pokemon(tp.UserId).Shell.Nickname, PKnownInfo.Instance.Pokemon(tp.TargetId).Shell.Nickname);
                     break;
                 case PWeatherPacket wp:
                     switch (wp.Weather)

@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
             bytes.AddRange(BitConverter.GetBytes((ushort)(Move = move)));
-            bytes.Add((byte)((OwnsMove = pkmn.Shell.Moves.Contains(Move)) ? 1 : 0));
+            bytes.Add((byte)((OwnsMove = pkmn.Moves.Contains(Move)) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PMoveUsedPacket(byte[] buffer)

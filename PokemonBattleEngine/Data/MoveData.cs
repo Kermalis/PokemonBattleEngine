@@ -2376,7 +2376,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Transform, EffectParam = 0,
                     PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
                     Flags = PMoveFlag.None,
-                    Targets = PMoveTarget.Self
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {

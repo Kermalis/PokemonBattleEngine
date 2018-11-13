@@ -63,7 +63,6 @@ Dream Eater
 Barrage
 Leech Life
 Sky Attack
-Transform
 Psywave
 Splash
 Crabhammer

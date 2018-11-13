@@ -104,9 +104,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 else
                 {
                     // Loading the correct sprite requires checking first
-                    uint species = (uint)pokemon.Shell.Species & 0xFFFF;
-                    uint forme = (uint)pokemon.Shell.Species >> 0x10;
-                    string shiny = pokemon.Shell.Shiny ? "-S" : "";
+                    uint species = (uint)pokemon.Species & 0xFFFF;
+                    uint forme = (uint)pokemon.Species >> 0x10;
+                    string shiny = pokemon.Shiny ? "-S" : "";
                     string sss = string.Format("{0}{1}{2}{3}", species, forme > 0 ? $"-{forme}" : "", orientation, shiny);
                     // Get available resources (including sprites)
                     string[] resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();

@@ -32,6 +32,7 @@ Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Spectators
 * AI
+* Typeless phenomena (Roost, Burn Up, Confusion Damage)
 
 ----
 # PokemonBattleEngine Uses:

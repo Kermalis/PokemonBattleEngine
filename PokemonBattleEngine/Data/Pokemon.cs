@@ -16,8 +16,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         public readonly PPokemonShell Shell;
 
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
+        public PMove[] Moves = new PMove[PConstants.NumMoves];
         public byte[] PP = new byte[PConstants.NumMoves], MaxPP = new byte[PConstants.NumMoves];
 
+        public PSpecies Species;
+        public bool Shiny;
         public PAbility Ability;
         public PItem Item;
         public PFieldPosition FieldPosition = PFieldPosition.None;
@@ -34,7 +37,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public byte ProtectCounter; // Protect
         public ushort SubstituteHP; // Substitute
-        
+
         public PAction PreviousAction, LockedAction, SelectedAction;
         public int TurnOrder;
 
@@ -44,12 +47,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PPokemon(Guid id, PPokemonShell shell)
         {
             Shell = shell;
+            Species = Shell.Species;
+            Shiny = Shell.Shiny;
             Ability = Shell.Ability;
             Item = Shell.Item;
             Id = id;
             SelectedAction.PokemonId = id;
             CalculateStats();
             HP = MaxHP;
+            Moves = Shell.Moves;
             for (int i = 0; i < PConstants.NumMoves; i++)
             {
                 PMove move = Shell.Moves[i];
@@ -70,22 +76,22 @@ namespace Kermalis.PokemonBattleEngine.Data
             Local = false;
             Shell = new PPokemonShell
             {
-                Species = psip.Species,
                 Nickname = psip.Nickname,
                 Level = psip.Level,
-                Shiny = psip.Shiny,
                 Gender = psip.Gender,
                 Nature = PNature.MAX
             };
+            Species = psip.Species;
+            Shiny = psip.Shiny;
             Ability = PAbility.MAX;
             Item = PItem.MAX;
             for (int i = 0; i < PConstants.NumMoves; i++)
-                Shell.Moves[i] = PMove.MAX;
+                Moves[i] = PMove.MAX;
         }
 
         void CalculateStats()
         {
-            PPokemonData pData = PPokemonData.Data[Shell.Species];
+            PPokemonData pData = PPokemonData.Data[Species];
 
             MaxHP = (ushort)(((2 * pData.HP + Shell.IVs[0] + (Shell.EVs[0] / 4)) * Shell.Level / PConstants.MaxLevel) + Shell.Level + 10);
 
@@ -102,6 +108,31 @@ namespace Kermalis.PokemonBattleEngine.Data
             SpAttack = OtherStat(pData.SpAttack);
             SpDefense = OtherStat(pData.SpDefense);
             Speed = OtherStat(pData.Speed);
+        }
+
+        // Transforms into "target" and sets both Pokémons' information to the parameters
+        // Also sets the status2 transformed bit
+        public void Transform(PPokemon target, ushort targetAttack, ushort targetDefense, ushort targetSpAttack, ushort targetSpDefense, ushort targetSpeed, PAbility targetAbility, PMove[] targetMoves)
+        {
+            Species = target.Species;
+            Shiny = target.Shiny;
+            Ability = target.Ability = targetAbility;
+            Attack = target.Attack = targetAttack;
+            Defense = target.Defense = targetDefense;
+            SpAttack = target.SpAttack = targetSpAttack;
+            SpDefense = target.SpDefense = targetSpDefense;
+            Speed = target.Speed = targetSpeed;
+            AttackChange = target.AttackChange;
+            DefenseChange = target.DefenseChange;
+            SpAttackChange = target.SpAttackChange;
+            SpDefenseChange = target.SpDefenseChange;
+            SpeedChange = target.SpeedChange;
+            AccuracyChange = target.AccuracyChange;
+            EvasionChange = target.EvasionChange;
+            Moves = target.Moves = targetMoves;
+            for (int i = 0; i < PConstants.NumMoves; i++)
+                PP[i] = MaxPP[i] = PConstants.PPMultiplier;
+            Status2 |= PStatus2.Transformed;
         }
 
         public PType GetHiddenPowerType()
@@ -156,7 +187,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             string[] moveStrs = new string[PConstants.NumMoves];
             for (int i = 0; i < PConstants.NumMoves; i++)
             {
-                string mStr = Shell.Moves[i].ToString().Replace("MAX", "???");
+                string mStr = Moves[i].ToString().Replace("MAX", "???");
                 if (!remotePokemon)
                     mStr += $" {PP[i]}/{MaxPP[i]}";
                 moveStrs[i] = mStr;
@@ -164,7 +195,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             string moves = moveStrs.Print(false);
 
             string str = string.Empty;
-            str += $"{Shell.Nickname}/{Shell.Species} {GenderSymbol} Lv.{Shell.Level}";
+            str += $"{Shell.Nickname}/{Species} {GenderSymbol} Lv.{Shell.Level}";
             str += Environment.NewLine;
             str += $"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})";
             str += Environment.NewLine;

@@ -23,12 +23,12 @@ namespace Kermalis.PokemonBattleEngineClient
             team0 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { CompetitivePokemonShells.Latios, CompetitivePokemonShells.Cresselia, CompetitivePokemonShells.Darkrai }
+                Party = { CompetitivePokemonShells.Latias_OU, CompetitivePokemonShells.Cresselia_UU, CompetitivePokemonShells.Darkrai_Uber }
             },
             team1 = new PTeamShell
             {
                 DisplayName = "Jess",
-                Party = { CompetitivePokemonShells.Azumarill, CompetitivePokemonShells.Pikachu, CompetitivePokemonShells.Latias }
+                Party = { CompetitivePokemonShells.Azumarill_UU, CompetitivePokemonShells.Pikachu_NU, CompetitivePokemonShells.Ditto_UU }
             };
         static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team0 : team1; // Temporary
 
@@ -154,17 +154,17 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PMovePPChangedPacket mpcp:
                     pkmn = PKnownInfo.Instance.Pokemon(mpcp.PokemonId);
-                    i = Array.IndexOf(pkmn.Shell.Moves, mpcp.Move);
+                    i = Array.IndexOf(pkmn.Moves, mpcp.Move);
                     pkmn.PP[i] = (byte)(pkmn.PP[i] + mpcp.Change);
                     return true;
                 case PMoveUsedPacket mup:
                     pkmn = PKnownInfo.Instance.Pokemon(mup.PokemonId);
                     // Reveal move if the pokemon owns it and it's not already revealed
-                    if (mup.OwnsMove && !pkmn.Shell.Moves.Contains(mup.Move))
+                    if (mup.OwnsMove && !pkmn.Moves.Contains(mup.Move))
                     {
                         // Set the first unknown move to the used move
-                        i = Array.IndexOf(pkmn.Shell.Moves, PMove.MAX);
-                        pkmn.Shell.Moves[i] = mup.Move;
+                        i = Array.IndexOf(pkmn.Moves, PMove.MAX);
+                        pkmn.Moves[i] = mup.Move;
                     }
                     message = "{0} used {1}!";
                     battleView.Message = string.Format(message, pkmn.Shell.Nickname, mup.Move);
@@ -355,6 +355,15 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     battleView.Message = string.Format(message, pkmn.Shell.Nickname);
                     break;
+                case PTransformPacket tp:
+                    {
+                        PPokemon user = PKnownInfo.Instance.Pokemon(tp.UserId),
+                            target = PKnownInfo.Instance.Pokemon(tp.TargetId);
+                        user.Transform(target, tp.TargetAttack, tp.TargetDefense, tp.TargetSpAttack, tp.TargetSpDefense, tp.TargetSpeed, tp.TargetAbility, tp.TargetMoves);
+                        battleView.PokemonPositionChanged(user, PFieldPosition.None);
+                        battleView.Message = string.Format("{0} transformed into {1}!", user.Shell.Nickname, target.Shell.Nickname);
+                        break;
+                    }
                 case PWeatherPacket wp:
                     switch (wp.Weather)
                     {

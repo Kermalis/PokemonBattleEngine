@@ -77,7 +77,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
 
         public MoveInfo(int i, PPokemon pkmn, ActionsView parent)
         {
-            PMove move = pkmn.Shell.Moves[i];
+            PMove move = pkmn.Moves[i];
             var ttb = typeToBrush[PMoveData.GetMoveTypeForPokemon(pkmn, move)];
 
             bool enabled;

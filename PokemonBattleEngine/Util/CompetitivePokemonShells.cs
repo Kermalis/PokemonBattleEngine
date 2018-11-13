@@ -5,7 +5,7 @@ namespace Kermalis.PokemonBattleEngine.Util
     public static class CompetitivePokemonShells
     {
         public static readonly PPokemonShell
-            Pikachu = new PPokemonShell
+            Pikachu_NU = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
                 Nickname = "Pikachu",
@@ -21,7 +21,23 @@ namespace Kermalis.PokemonBattleEngine.Util
                 Moves = new PMove[] { PMove.Substitute, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
-            Azumarill = new PPokemonShell
+            Ditto_UU = new PPokemonShell
+            {
+                Species = PSpecies.Ditto,
+                Nickname = "Doot",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.Leftovers, // Choice Scarf
+                Ability = PAbility.HugePower, // Imposter
+                Gender = PGender.Genderless,
+                Nature = PNature.Sassy,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
+                EVs = new byte[] { 252, 0, 4, 0, 0, 252 },
+                Moves = new PMove[] { PMove.Transform, PMove.None, PMove.None, PMove.None },
+                PPUps = new byte[] { 3, 0, 0, 0 }
+            },
+            Azumarill_UU = new PPokemonShell
             {
                 Species = PSpecies.Azumarill,
                 Nickname = "ZuWEEE",
@@ -37,7 +53,7 @@ namespace Kermalis.PokemonBattleEngine.Util
                 Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
-            Latias = new PPokemonShell
+            Latias_OU = new PPokemonShell
             {
                 Species = PSpecies.Latias,
                 Nickname = "Latias",
@@ -53,7 +69,7 @@ namespace Kermalis.PokemonBattleEngine.Util
                 Moves = new PMove[] { PMove.DracoMeteor, PMove.LightScreen, PMove.Surf, PMove.HiddenPower }, // draco meteor, surf, psyshock, roost
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
-            Latios = new PPokemonShell
+            Latios_OU = new PPokemonShell
             {
                 Species = PSpecies.Latios,
                 Nickname = "Latios",
@@ -69,7 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Util
                 Moves = new PMove[] { PMove.DracoMeteor, PMove.LightScreen, PMove.Surf, PMove.HiddenPower }, // draco meteor, surf, psyshock, hidden power fire
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
-            Cresselia = new PPokemonShell
+            Cresselia_UU = new PPokemonShell
             {
                 Species = PSpecies.Cresselia,
                 Nickname = "Crest",
@@ -85,7 +101,7 @@ namespace Kermalis.PokemonBattleEngine.Util
                 Moves = new PMove[] { PMove.Psychic, PMove.Moonlight, PMove.IceBeam, PMove.Toxic },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
-            Darkrai = new PPokemonShell
+            Darkrai_Uber = new PPokemonShell
             {
                 Species = PSpecies.Darkrai,
                 Nickname = "Darkrai",

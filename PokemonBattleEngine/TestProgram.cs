@@ -15,12 +15,12 @@ namespace Kermalis.PokemonBattleEngine
             PTeamShell team0 = new PTeamShell
             {
                 DisplayName = "Sasha",
-                Party = { CompetitivePokemonShells.Latias, CompetitivePokemonShells.Azumarill }
+                Party = { CompetitivePokemonShells.Ditto_UU, CompetitivePokemonShells.Azumarill_UU }
             };
             PTeamShell team1 = new PTeamShell
             {
                 DisplayName = "Jess",
-                Party = { CompetitivePokemonShells.Darkrai, CompetitivePokemonShells.Latios }
+                Party = { CompetitivePokemonShells.Darkrai_Uber, CompetitivePokemonShells.Latios_OU }
             };
 
             PBattle battle = new PBattle(PBattleStyle.Single, team0, team1);
@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
                     action.PokemonId = p0_0.Id;
                     action.Decision = PDecision.Fight;
-                    action.Move = p0_0.Shell.Moves[move];
+                    action.Move = p0_0.Moves[move];
                     action.Targets = PTarget.FoeCenter;
                     valid = battle.SelectActionIfValid(action);
 
@@ -70,7 +70,7 @@ namespace Kermalis.PokemonBattleEngine
                     move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
                     action.PokemonId = p1_0.Id;
                     action.Decision = PDecision.Fight;
-                    action.Move = p1_0.Shell.Moves[move];
+                    action.Move = p1_0.Moves[move];
                     action.Targets = PTarget.FoeCenter;
                     valid = battle.SelectActionIfValid(action);
 

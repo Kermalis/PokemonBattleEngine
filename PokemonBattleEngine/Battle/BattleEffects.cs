@@ -256,7 +256,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_Dive();
                     break;
                 case PMoveEffect.Fail:
-                case PMoveEffect.Transform: // TODO
                     if (!bUsedMove)
                     {
                         bUsedMove = true;
@@ -427,6 +426,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.Toxic:
                     TryForceStatus1(PStatus1.BadlyPoisoned);
+                    break;
+                case PMoveEffect.Transform:
+                    Ef_Transform();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
@@ -608,7 +610,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts the event
         void PPReduce(PPokemon pkmn, PMove move)
         {
-            var moveIndex = Array.IndexOf(pkmn.Shell.Moves, move);
+            var moveIndex = Array.IndexOf(pkmn.Moves, move);
             int amtToReduce = 1;
             // TODO: If target is not self and has pressure
             var oldPP = pkmn.PP[moveIndex];
@@ -667,7 +669,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
 
-            PPokemonData pData = PPokemonData.Data[bDefender.Shell.Species];
+            PPokemonData pData = PPokemonData.Data[bDefender.Species];
 
             // A Pokémon with Limber cannot be paralyzed unless the attacker has mold breaker
             if (status == PStatus1.Paralyzed && bDefender.Ability == PAbility.Limber)
@@ -1059,7 +1061,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastFail(PFailReason.HPFull);
                 return false;
-            }            
+            }
+            return true;
+        }
+        bool Ef_Transform()
+        {
+            BroadcastMoveUsed();
+            PPReduce(bAttacker, bMove);
+            if (bAttacker.Status2.HasFlag(PStatus2.Transformed)
+                || bDefender.Status2.HasFlag(PStatus2.Transformed)
+                || bDefender.Status2.HasFlag(PStatus2.Substitute))
+            {
+                BroadcastFail(PFailReason.Default);
+                return false;
+            }
+            if (AccuracyCheck())
+                return false;
+            bAttacker.Transform(bDefender, bDefender.Attack, bDefender.Defense, bDefender.SpAttack, bDefender.SpDefense, bDefender.Speed, bDefender.Ability, bDefender.Moves);
+            BroadcastTransform();
             return true;
         }
     }

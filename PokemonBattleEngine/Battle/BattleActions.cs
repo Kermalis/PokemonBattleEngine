@@ -54,13 +54,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
 
             // Invalid move
-            if (!pkmn.Shell.Moves.Contains(action.Move) || action.Move == PMove.None)
+            if (!pkmn.Moves.Contains(action.Move) || action.Move == PMove.None)
                 return false;
 
             // TODO: Struggle
 
             // Out of PP
-            if (pkmn.PP[Array.IndexOf(pkmn.Shell.Moves, action.Move)] < 1)
+            if (pkmn.PP[Array.IndexOf(pkmn.Moves, action.Move)] < 1)
                 return false;
 
             // If the mon has a locked action, it must be used
