@@ -553,6 +553,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Pokémon with the Hustle ability get a 20% accuracy reduction for physical moves
             if (bAttacker.Ability == PAbility.Hustle && mData.Category == PMoveCategory.Physical)
                 chance *= 0.8;
+            // Pokémon holding Wide Lens get a 10% accuracy boost
+            if (bAttacker.Item == PItem.WideLens)
+                chance *= 1.1;
             // Try to hit
             if (PUtils.ApplyChance((int)chance, 100))
                 return false;

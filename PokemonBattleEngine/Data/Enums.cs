@@ -192,6 +192,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PowerHerb,
         SoulDew,
         ThickClub,
+        WideLens,
         MAX
     }
     public enum PAbility : byte
