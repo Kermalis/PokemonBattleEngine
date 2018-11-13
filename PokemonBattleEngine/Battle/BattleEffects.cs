@@ -268,6 +268,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_Growth();
                     break;
                 case PMoveEffect.Hit:
+                case PMoveEffect.Hit__AlwaysCrit: // CritCheck()
                     Ef_Hit();
                     break;
                 case PMoveEffect.Hit__MaybeBurn:
@@ -572,7 +573,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             // If critical hits cannot be landed, return
             if (bTarget.Ability == PAbility.BattleArmor
-                || bTarget.Ability == PAbility.ShellArmor)
+                || bTarget.Ability == PAbility.ShellArmor
+                )
                 return;
 
             byte stage = 0;
@@ -589,8 +591,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case 3: chance = 33.3; break;
                 default: chance = 50; break;
             }
+
             // Try to score a critical hit
-            if (PUtils.ApplyChance((int)(chance * 100), 100*100))
+            if (PMoveData.Data[bMove].Effect == PMoveEffect.Hit__AlwaysCrit
+                || PUtils.ApplyChance((int)(chance * 100), 100*100)
+                )
             {
                 bLandedCrit = true;
                 bDamageMultiplier *= PSettings.CritMultiplier;
