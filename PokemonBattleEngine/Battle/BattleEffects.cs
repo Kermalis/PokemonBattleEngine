@@ -541,8 +541,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     goto miss;
             }
 
+            double adjustedStages = GetStatMultiplier(bAttacker.AccuracyChange, true) / GetStatMultiplier(bDefender.EvasionChange, true);
+            double chance = mData.Accuracy * adjustedStages;
             if (mData.Accuracy == 0 // Always-hit moves
-                || PUtils.ApplyChance(mData.Accuracy, 100) // Got lucky and landed a hit
+                || PUtils.ApplyChance((int)chance, 100) // Got lucky and landed a hit
                 )
                 return false;
 

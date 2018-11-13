@@ -6,7 +6,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
     public sealed partial class PBattle
     {
         // "forMissing" is true if the multiplier will be used for accuracy or evasion
-        // If this is used for evasion, "change" should be multiplied by -1 before being passed in (because evasion is for reducing a hit chance, not increasing)
         public double GetStatMultiplier(sbyte change, bool forMissing = false)
         {
             double baseVal = forMissing ? 3 : 2;

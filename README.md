@@ -20,7 +20,6 @@ Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
 # To Do:
 * Pokémon level validation
 * Switching out
-* Accuracy/Evasion math
 * Critical hits
 * Struggle
 * Weather
