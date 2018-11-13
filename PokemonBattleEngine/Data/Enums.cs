@@ -223,6 +223,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShellArmor,
         Sniper,
         Static, // TODO
+        SuperLuck,
         Swarm,
         ThickFat,
         Torrent,

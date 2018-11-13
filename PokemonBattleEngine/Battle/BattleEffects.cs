@@ -581,6 +581,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (mData.Flags.HasFlag(PMoveFlag.HighCritChance))
                 stage += 1;
+            if (bUser.Ability == PAbility.SuperLuck)
+                stage += 1;
             if (bUser.Status2.HasFlag(PStatus2.Pumped))
                 stage += 2;
 
