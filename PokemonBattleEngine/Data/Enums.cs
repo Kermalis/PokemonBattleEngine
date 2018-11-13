@@ -180,6 +180,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PItem : ushort
     {
         None,
+        BrightPowder,
         ChoiceBand, // TODO: Lock move
         DampRock,
         DeepSeaScale,

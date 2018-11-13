@@ -138,7 +138,6 @@ BridgeMail D
 BridgeMail T
 BridgeMail V
 BridgeMail M
-Bright Powder
 White Herb
 Macho Brace
 Exp. Share
