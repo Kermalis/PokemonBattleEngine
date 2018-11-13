@@ -22,9 +22,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             bMoveType = PMoveData.GetMoveTypeForPokemon(user, bMove);
 
-            // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost
+            // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost (2x if it has adaptability)
             if (userPData.HasType(bMoveType))
-                bDamageMultiplier *= 1.5;
+            {
+                if (user.Ability == PAbility.Adaptability)
+                    bDamageMultiplier *= 2.0;
+                else
+                    bDamageMultiplier *= 1.5;
+            }
             // Pokémon with the heatproof take half as much damage from fire attacks
             if (bMoveType == PType.Fire && target.Ability == PAbility.Heatproof)
                 bDamageMultiplier *= 0.5;
@@ -100,7 +105,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 0.5;
                     break;
             }
-            
+
             // Reflect & Light Screen reduce damage by 50% if there is one active battler or by 33% if there is more than one
             if (!ignoreReflectLightScreen && !bLandedCrit)
             {

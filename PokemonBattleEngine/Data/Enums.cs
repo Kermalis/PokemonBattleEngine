@@ -202,6 +202,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PAbility : byte
     {
         None, // Only used when an ability is removed
+        Adaptability,
         BadDreams, // TODO
         BattleArmor,
         Blaze,

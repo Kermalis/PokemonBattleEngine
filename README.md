@@ -23,7 +23,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Weather
 * Turn order
 * Move targetting: #2
-* Move targetting: A function that gets all valid targets for a move
 * Rotation battles
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
