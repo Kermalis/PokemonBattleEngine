@@ -92,6 +92,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.AirCutter,
+                new PMoveData
+                {
+                    Type = PType.Flying, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__HighCritChance, EffectParam = 0,
+                    PPTier = 5, Power = 55, Accuracy = 95, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.AirSlash,
                 new PMoveData
                 {

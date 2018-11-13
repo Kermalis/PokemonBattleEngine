@@ -379,6 +379,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AerialAce,
         Aeroblast,
         Agility,
+        AirCutter,
         AirSlash,
         Amnesia,
         AquaJet,
