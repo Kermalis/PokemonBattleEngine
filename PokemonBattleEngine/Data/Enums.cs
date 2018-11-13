@@ -385,6 +385,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AquaJet,
         AquaTail,
         Astonish,
+        AttackOrder,
         AuraSphere,
         AuroraBeam,
         Barrier,

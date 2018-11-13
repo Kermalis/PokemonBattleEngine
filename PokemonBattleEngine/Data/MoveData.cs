@@ -158,6 +158,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.AttackOrder,
+                new PMoveData
+                {
+                    Type = PType.Bug, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__HighCritChance, EffectParam = 0,
+                    PPTier = 3, Power = 90, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.AuraSphere,
                 new PMoveData
                 {
