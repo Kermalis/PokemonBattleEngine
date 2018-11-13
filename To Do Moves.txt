@@ -234,7 +234,6 @@ Defog
 Trick Room
 Leaf Storm
 Rock Wrecker
-Stone Edge
 Captivate
 Stealth Rock
 Judgment

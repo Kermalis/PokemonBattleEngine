@@ -364,7 +364,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fling
                         // incinerate
                         // giga impact
-                        // stone edge
                         // swagger
                         // ancient power // egg move
                         // belly drum
@@ -417,6 +416,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.RockSmash, // TM
                         PMove.RockTomb, // TM
                         PMove.Screech, // Egg Move
+                        PMove.StoneEdge, // TM
                         PMove.Strength, // HM
                         PMove.Substitute, // TM
                         PMove.SunnyDay, // TM
