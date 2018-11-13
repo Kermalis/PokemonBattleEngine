@@ -65,7 +65,6 @@ Leech Life
 Sky Attack
 Psywave
 Splash
-Crabhammer
 Explosion
 Fury Swipes
 Bonemerang
