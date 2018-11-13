@@ -201,7 +201,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None, // Only used when an ability is removed
         BadDreams, // TODO
-        BattleArmor, // TODO
+        BattleArmor,
         Blaze,
         Compoundeyes,
         Guts,

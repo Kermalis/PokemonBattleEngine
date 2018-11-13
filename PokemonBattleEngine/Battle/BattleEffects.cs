@@ -571,7 +571,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void CritCheck()
         {
             // If critical hits cannot be landed, return
-            if (bTarget.Ability == PAbility.ShellArmor)
+            if (bTarget.Ability == PAbility.BattleArmor
+                || bTarget.Ability == PAbility.ShellArmor)
                 return;
 
             byte stage = 0;
@@ -588,6 +589,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case 3: chance = 33.3; break;
                 default: chance = 50; break;
             }
+            // Try to score a critical hit
             if (PUtils.ApplyChance((int)(chance * 100), 100*100))
             {
                 bLandedCrit = true;

@@ -1,7 +1,6 @@
 Stench
 Drizzle
 Speed Boost
-Battle Armor
 Sturdy
 Damp
 Sand Veil
