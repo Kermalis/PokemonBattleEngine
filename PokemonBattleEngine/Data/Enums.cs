@@ -300,6 +300,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         HitsAirborne = 1 << 7,
         HitsUnderground = 1 << 8,
         HitsUnderwater = 1 << 9,
+        AlwaysCrit = 1 << 10,
+        HighCritChance = 1 << 11,
     }
     public enum PMoveEffect : byte
     {
@@ -322,8 +324,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         Fail,
         Growth,
         Hit,
-        Hit__AlwaysCrit,
-        Hit__HighCritChance,
         Hit__MaybeBurn,
         Hit__MaybeConfuse,
         Hit__MaybeFlinch,
@@ -390,6 +390,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AuroraBeam,
         Barrier,
         Bite,
+        BlazeKick,
         BlueFlare,
         BrickBreak,
         BodySlam,

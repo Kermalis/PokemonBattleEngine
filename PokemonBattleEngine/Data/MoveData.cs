@@ -74,9 +74,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Flying, Category = PMoveCategory.Special,
-                    Effect = PMoveEffect.Hit__HighCritChance, EffectParam = 0,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 1, Power = 100, Accuracy = 95, Priority = 0,
-                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.HighCritChance,
                     Targets = PMoveTarget.SingleNotSelf
                 }
             },
@@ -96,9 +96,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Flying, Category = PMoveCategory.Special,
-                    Effect = PMoveEffect.Hit__HighCritChance, EffectParam = 0,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 5, Power = 55, Accuracy = 95, Priority = 0,
-                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.HighCritChance,
                     Targets = PMoveTarget.AllFoesSurrounding
                 }
             },
@@ -162,9 +162,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Bug, Category = PMoveCategory.Physical,
-                    Effect = PMoveEffect.Hit__HighCritChance, EffectParam = 0,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 3, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.HighCritChance,
                     Targets = PMoveTarget.SingleSurrounding
                 }
             },
@@ -209,6 +209,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
                     PPTier = 5, Power = 60, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
+                PMove.BlazeKick,
+                new PMoveData
+                {
+                    Type = PType.Fire, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit__MaybeBurn, EffectParam = 10,
+                    PPTier = 2, Power = 85, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.HighCritChance,
                     Targets = PMoveTarget.SingleSurrounding
                 }
             },
@@ -855,9 +866,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Ice, Category = PMoveCategory.Special,
-                    Effect = PMoveEffect.Hit__AlwaysCrit, EffectParam = 0,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 2, Power = 40, Accuracy = 90, Priority = 0,
-                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.AlwaysCrit,
                     Targets = PMoveTarget.SingleSurrounding
                 }
             },
@@ -2153,9 +2164,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PMoveData
                 {
                     Type = PType.Fighting, Category = PMoveCategory.Physical,
-                    Effect = PMoveEffect.Hit__AlwaysCrit, EffectParam = 0,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
                     PPTier = 2, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.AlwaysCrit,
                     Targets = PMoveTarget.SingleSurrounding
                 }
             },

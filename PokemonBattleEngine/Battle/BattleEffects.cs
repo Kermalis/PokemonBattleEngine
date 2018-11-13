@@ -268,8 +268,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_Growth();
                     break;
                 case PMoveEffect.Hit:
-                case PMoveEffect.Hit__AlwaysCrit: // CritCheck()
-                case PMoveEffect.Hit__HighCritChance: // CritCheck()
                     Ef_Hit();
                     break;
                 case PMoveEffect.Hit__MaybeBurn:
@@ -581,7 +579,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PMoveData mData = PMoveData.Data[bMove];
             byte stage = 0;
 
-            if (mData.Effect == PMoveEffect.Hit__HighCritChance)
+            if (mData.Flags.HasFlag(PMoveFlag.HighCritChance))
                 stage += 1;
             if (bUser.Status2.HasFlag(PStatus2.Pumped))
                 stage += 2;
@@ -597,7 +595,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Try to score a critical hit
-            if (mData.Effect == PMoveEffect.Hit__AlwaysCrit
+            if (mData.Flags.HasFlag(PMoveFlag.AlwaysCrit)
                 || PUtils.ApplyChance((int)(chance * 100), 100*100)
                 )
             {
