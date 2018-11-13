@@ -18,7 +18,6 @@ Check [Constants.cs](PokemonBattleEngine/Data/Constants.cs)
 
 ----
 # To Do:
-* Pokémon level validation
 * Switching out
 * Critical hits
 * Struggle

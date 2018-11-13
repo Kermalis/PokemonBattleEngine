@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(Nickname));
 
             // Validate Level
-            if (Level == 0 || Level > PConstants.MaxLevel)
+            if (Level < pData.MinLevel || Level > PConstants.MaxLevel)
                 throw new ArgumentOutOfRangeException(nameof(Level));
 
             // Validate Ability
