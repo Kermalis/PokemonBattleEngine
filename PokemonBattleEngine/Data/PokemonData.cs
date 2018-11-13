@@ -784,7 +784,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // attract
                         // round
-                        // shadow claw
                         // giga impact
                         // thunder wave
                         // psych up
@@ -841,6 +840,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
+                        PMove.ShadowClaw, // TM
                         PMove.ShockWave, // Gen 4 TM
                         PMove.SteelWing, // TM
                         PMove.Substitute, // TM
@@ -906,7 +906,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // rest
                         // attract
                         // round
-                        // shadow claw
                         // giga impact
                         // thunder wave
                         // psych up
@@ -960,6 +959,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.Retaliate, // TM
                         PMove.Return, // TM
                         PMove.ShadowBall, // TM
+                        PMove.ShadowClaw, // TM
                         PMove.ShockWave, // Gen 4 TM
                         PMove.SteelWing, // TM
                         PMove.Substitute, // TM
@@ -1105,7 +1105,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fling
                         // incinerate
                         // embargo
-                        // shadow claw
                         // payback
                         // giga impact
                         // thunder wave
@@ -1151,6 +1150,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.RockSmash, // TM
                         PMove.RockTomb, // TM
                         PMove.ShadowBall, // TM
+                        PMove.ShadowClaw, // TM
                         PMove.ShockWave, // Gen 4 TM
                         PMove.SludgeBomb, // TM
                         PMove.Snarl, // TM
