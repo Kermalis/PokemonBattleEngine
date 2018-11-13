@@ -184,7 +184,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastMoveUsed();
                 PPReduce(attacker, bMove);
-                BroadcastFail();
+                BroadcastFail(PFailReason.Default);
                 return;
             }
             // Reduced damage if targetting multiple pokemon
@@ -256,14 +256,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_Dive();
                     break;
                 case PMoveEffect.Fail:
-                case PMoveEffect.Moonlight: // TODO
                 case PMoveEffect.Transform: // TODO
                     if (!bUsedMove)
                     {
                         bUsedMove = true;
                         BroadcastMoveUsed();
                         PPReduce(bAttacker, bMove);
-                        BroadcastFail();
+                        BroadcastFail(PFailReason.Default);
                     }
                     break;
                 case PMoveEffect.Growth:
@@ -360,6 +359,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     ChangeUserStat(PStat.Attack, +2);
                     ChangeUserStat(PStat.SpAttack, +2);
                     ChangeUserStat(PStat.Speed, +2);
+                    break;
+                case PMoveEffect.Moonlight:
+                    Ef_Moonlight();
                     break;
                 case PMoveEffect.Paralyze:
                     TryForceStatus1(PStatus1.Paralyzed);
@@ -661,7 +663,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 || bDefender.Status2.HasFlag(PStatus2.Substitute))
             {
                 if (tryingToForce)
-                    BroadcastFail();
+                    BroadcastFail(PFailReason.Default);
                 return false;
             }
 
@@ -752,7 +754,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
             }
             if (tryingToForce)
-                BroadcastFail();
+                BroadcastFail(PFailReason.Default);
             return false;
         }
 
@@ -856,7 +858,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (bDefender.Status2.HasFlag(PStatus2.Substitute))
             {
-                BroadcastFail();
+                BroadcastFail(PFailReason.Default);
                 return false;
             }
             else
@@ -907,7 +909,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!PUtils.ApplyChance(chance, ushort.MaxValue))
             {
                 bAttacker.ProtectCounter = 0;
-                BroadcastFail();
+                BroadcastFail(PFailReason.Default);
                 return false;
             }
             bAttacker.ProtectCounter++;
@@ -922,7 +924,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PTeam team = teams[bAttacker.Local ? 0 : 1];
             if (team.ReflectCount > 0)
             {
-                BroadcastFail();
+                BroadcastFail(PFailReason.Default);
                 return false;
             }
             team.ReflectCount = (byte)(PConstants.ReflectLightScreenTurns + (bAttacker.Item == PItem.LightClay ? PConstants.LightClayTurnExtension : 0));
@@ -936,7 +938,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PTeam team = teams[bAttacker.Local ? 0 : 1];
             if (team.LightScreenCount > 0)
             {
-                BroadcastFail();
+                BroadcastFail(PFailReason.Default);
                 return false;
             }
             team.LightScreenCount = (byte)(PConstants.ReflectLightScreenTurns + (bAttacker.Item == PItem.LightClay ? PConstants.LightClayTurnExtension : 0));
@@ -1012,7 +1014,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPReduce(bAttacker, bMove);
             if (Weather == PWeather.Raining)
             {
-                BroadcastFail();
+                BroadcastFail(PFailReason.Default);
                 return false;
             }
             Weather = PWeather.Raining;
@@ -1026,7 +1028,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPReduce(bAttacker, bMove);
             if (Weather == PWeather.Sunny)
             {
-                BroadcastFail();
+                BroadcastFail(PFailReason.Default);
                 return false;
             }
             Weather = PWeather.Sunny;
@@ -1039,6 +1041,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sbyte change = (sbyte)(Weather == PWeather.Sunny ? +2 : +1);
             ChangeUserStat(PStat.Attack, change);
             ChangeUserStat(PStat.SpAttack, change);
+            return true;
+        }
+        bool Ef_Moonlight()
+        {
+            BroadcastMoveUsed();
+            PPReduce(bAttacker, bMove);
+            double percentage;
+            switch (Weather)
+            {
+                case PWeather.None: percentage = 0.5; break;
+                case PWeather.Sunny: percentage = 0.66; break;
+                default: percentage = 0.25; break;
+            }
+            ushort hp = (ushort)(bAttacker.MaxHP * percentage);
+            if (!HealDamage(bAttacker, hp))
+            {
+                BroadcastFail(PFailReason.HPFull);
+                return false;
+            }            
             return true;
         }
     }

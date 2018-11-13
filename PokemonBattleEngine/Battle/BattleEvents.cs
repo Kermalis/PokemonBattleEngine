@@ -24,8 +24,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(new PPkmnFaintedPacket(pkmn));
         void BroadcastCrit()
             => OnNewEvent?.Invoke(new PMoveCritPacket());
-        void BroadcastFail()
-            => OnNewEvent?.Invoke(new PMoveFailPacket());
+        void BroadcastFail(PFailReason reason)
+            => OnNewEvent?.Invoke(new PMoveFailedPacket(bAttacker, reason));
         void BroadcastStatChange(PPokemon pkmn, PStat stat, sbyte change, bool isTooMuch)
             => OnNewEvent?.Invoke(new PPkmnStatChangedPacket(pkmn, stat, change, isTooMuch));
         void BroadcastStatus1(PPokemon pkmn, PStatus1 status, PStatusAction statusAction)
@@ -49,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             PPokemon pkmn;
             string message;
-            double percentage;
+            double d;
 
             switch (packet)
             {
@@ -79,8 +79,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mep.PokemonId).Shell.Nickname);
                     break;
-                case PMoveFailPacket _:
-                    Console.WriteLine("But it failed!");
+                case PMoveFailedPacket mfp:
+                    switch (mfp.Reason)
+                    {
+                        case PFailReason.Default: message = "But it failed!"; break;
+                        case PFailReason.HPFull: message = "{0}'s HP is full!"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(mfp.Reason), $"Invalid fail reason: {mfp.Reason}");
+                    }
+                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mfp.PokemonId).Shell.Nickname);
                     break;
                 case PMoveMissedPacket mmp:
                     Console.WriteLine("{0}'s attack missed!", PKnownInfo.Instance.Pokemon(mmp.PokemonId).Shell.Nickname);
@@ -94,8 +100,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PPkmnHPChangedPacket phcp:
                     pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
                     var hp = Math.Abs(phcp.Change);
-                    percentage = (double)hp / pkmn.MaxHP;
-                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, percentage, phcp.Change <= 0 ? "lost" : "gained");
+                    d = (double)hp / pkmn.MaxHP;
+                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, d, phcp.Change <= 0 ? "lost" : "gained");
                     break;
                 case PPkmnStatChangedPacket pscp:
                     switch (pscp.Change)

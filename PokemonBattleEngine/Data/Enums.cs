@@ -117,6 +117,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         Broke,
         Ended
     }
+    public enum PFailReason : byte
+    {
+        Default, // "But it failed!" and nothing else
+        HPFull, // Trying to use a healing move with max HP
+    }
     public enum PWeatherAction : byte
     {
         Added,

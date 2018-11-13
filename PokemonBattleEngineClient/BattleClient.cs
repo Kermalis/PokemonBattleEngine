@@ -52,7 +52,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
 
         List<INetPacket> packetQueue = new List<INetPacket>();
-        Timer packetTimer = new Timer(1000);
+        Timer packetTimer = new Timer(2000);
         public override void HandleMessage(INetPacket packet)
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\"");
@@ -137,8 +137,15 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     battleView.Message = string.Format(message, pkmn.Shell.Nickname);
                     break;
-                case PMoveFailPacket _:
-                    battleView.Message = "But it failed!";
+                case PMoveFailedPacket mfp:
+                    pkmn = PKnownInfo.Instance.Pokemon(mfp.PokemonId);
+                    switch (mfp.Reason)
+                    {
+                        case PFailReason.Default: message = "But it failed!"; break;
+                        case PFailReason.HPFull: message = "{0}'s HP is full!"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(mfp.Reason), $"Invalid fail reason: {mfp.Reason}");
+                    }
+                    battleView.Message = string.Format(message, pkmn.Shell.Nickname);
                     break;
                 case PMoveMissedPacket mmp:
                     pkmn = PKnownInfo.Instance.Pokemon(mmp.PokemonId);
