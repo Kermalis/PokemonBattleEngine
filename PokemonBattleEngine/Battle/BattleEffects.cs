@@ -694,18 +694,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Does not broadcast the event
         public static void ApplyStatChange(PPkmnStatChangedPacket packet)
-            => ApplyStatChange(PKnownInfo.Instance.Pokemon(packet.PokemonId), packet.Stat, packet.Change, null);
+            => ApplyStatChange(PKnownInfo.Instance.Pokemon(packet.PokemonId), packet.Stat, packet.Change, true, null);
         // Broadcasts the event
         void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)
-            => ApplyStatChange(pkmn, stat, change, this);
+            => ApplyStatChange(pkmn, stat, change, false, this);
         // Broadcasts the event if "battle" is not null
-        static unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change, PBattle battle)
+        static unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change, bool ignoreSimple, PBattle battle)
         {
+            if (!ignoreSimple && pkmn.Ability == PAbility.Simple)
+                change *= 2;
             bool isTooMuch = false;
             fixed (sbyte* ptr = &pkmn.AttackChange)
             {
                 sbyte* scPtr = ptr + (stat - PStat.Attack); // Points to the proper stat change sbyte
-                if (*scPtr < -PSettings.MaxStatChange || *scPtr > PSettings.MaxStatChange)
+                if (*scPtr <= -PSettings.MaxStatChange || *scPtr >= PSettings.MaxStatChange)
                     isTooMuch = true;
                 else
                     *scPtr = (sbyte)PUtils.Clamp(*scPtr + change, -PSettings.MaxStatChange, PSettings.MaxStatChange);
