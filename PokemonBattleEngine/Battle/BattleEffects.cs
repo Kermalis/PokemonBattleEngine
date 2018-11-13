@@ -38,7 +38,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (pkmn.Ability == PAbility.Heatproof)
                         damage /= 2;
                     DealDamage(pkmn, (ushort)damage, PEffectiveness.Normal, true);
-                    FaintCheck(pkmn);
+                    if (FaintCheck(pkmn))
+                        return;
                     break;
                 case PStatus1.Poisoned:
                     BroadcastStatus1(pkmn, PStatus1.Poisoned, PStatusAction.Damage);
@@ -49,10 +50,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastStatus1(pkmn, PStatus1.BadlyPoisoned, PStatusAction.Damage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PSettings.ToxicDamageDenominator), PEffectiveness.Normal, true);
                     if (FaintCheck(pkmn))
+                    {
                         pkmn.Status1Counter = 0;
+                        return;
+                    }
                     else
+                    {
                         pkmn.Status1Counter++;
-                    break;
+                        break;
+                    }
             }
 
             // Items
@@ -548,7 +554,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Moves that always hit
             if (mData.Accuracy == 0)
                 return false;
-            
+
             double chance = mData.Accuracy;
             chance *= GetStatMultiplier(bUser.AccuracyChange, true) / GetStatMultiplier(bTarget.EvasionChange, true); // Accuracy & Evasion changes
             // Pokémon with the Compoundeyes ability get a 30% accuracy boost
@@ -593,7 +599,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 stage += 2;
 
             double chance;
-            switch(stage)
+            switch (stage)
             {
                 case 0: chance = 6.25; break;
                 case 1: chance = 12.5; break;
@@ -604,7 +610,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             // Try to score a critical hit
             if (mData.Flags.HasFlag(PMoveFlag.AlwaysCrit)
-                || PUtils.ApplyChance((int)(chance * 100), 100*100)
+                || PUtils.ApplyChance((int)(chance * 100), 100 * 100)
                 )
             {
                 bLandedCrit = true;
