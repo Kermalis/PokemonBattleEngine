@@ -48,7 +48,6 @@ Keen Eye
 Hyper Cutter
 Pickup
 Truant
-Hustle
 Cute Charm
 Plus
 Minus

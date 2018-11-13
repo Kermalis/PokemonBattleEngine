@@ -550,6 +550,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Pokémon with the Compoundeyes ability get a 30% accuracy boost
             if (bAttacker.Ability == PAbility.Compoundeyes)
                 chance *= 1.3;
+            // Pokémon with the Hustle ability get a 20% accuracy reduction for physical moves
+            if (bAttacker.Ability == PAbility.Hustle && mData.Category == PMoveCategory.Physical)
+                chance *= 0.8;
             // Try to hit
             if (PUtils.ApplyChance((int)chance, 100))
                 return false;

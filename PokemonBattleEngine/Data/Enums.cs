@@ -203,7 +203,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Compoundeyes,
         Guts,
         HugePower,
-        Hustle, // TODO: Accuracy
+        Hustle,
         Imposter, // TODO
         Levitate, // TODO
         LightningRod, // TODO
