@@ -31,7 +31,6 @@ Seismic Toss
 Absorb
 Mega Drain
 Leech Seed
-Razor Leaf
 Solar Beam
 Petal Dance
 Dragon Rage

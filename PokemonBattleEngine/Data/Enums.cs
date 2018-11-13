@@ -537,6 +537,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         QuickAttack,
         QuiverDance,
         RainDance,
+        RazorLeaf,
         RazorShell,
         Reflect,
         Retaliate, // TODO
