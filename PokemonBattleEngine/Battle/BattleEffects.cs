@@ -570,6 +570,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void CritCheck()
         {
+            // If critical hits cannot be landed, return
+            if (bTarget.Ability == PAbility.ShellArmor)
+                return;
+
             byte stage = 0;
 
             if (bUser.Status2.HasFlag(PStatus2.Pumped))

@@ -220,7 +220,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rattled, // TODO
         RockHead, // TODO
         SapSipper, // TODO
-        ShellArmor, // TODO
+        ShellArmor,
         Static, // TODO
         Swarm,
         ThickFat,
