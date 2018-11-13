@@ -432,6 +432,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DragonRush,
         DoubleTeam,
         DrillPeck,
+        DrillRun,
         EarthPower,
         EggBomb,
         Electroweb,

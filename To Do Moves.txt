@@ -303,7 +303,6 @@ Grass Pledge
 Volt Switch
 Dragon Tail
 Wild Charge
-Drill Run
 Dual Chop
 Horn Leech
 Sacred Sword
