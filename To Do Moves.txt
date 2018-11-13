@@ -70,7 +70,6 @@ Rest
 Conversion
 Tri Attack
 Super Fang
-Slash
 Struggle
 Sketch
 Triple Kick

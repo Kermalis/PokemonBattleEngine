@@ -994,7 +994,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // mist 20
                         Tuple.Create(29, PMove.AuroraBeam),
                         // future sight 38
-                        // slash 47
+                        Tuple.Create(47, PMove.Slash),
                         Tuple.Create(57, PMove.Moonlight),
                         Tuple.Create(66, PMove.PsychoCut),
                         // psycho shift 75
