@@ -193,6 +193,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MetalPowder,
         PowerHerb,
         RazorClaw,
+        ScopeLens,
         SoulDew,
         ThickClub,
         WideLens,

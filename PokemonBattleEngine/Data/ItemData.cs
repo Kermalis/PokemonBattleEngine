@@ -4,7 +4,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PItemData
     {
-        public int FlingPower;
+        public byte FlingPower;
 
         public static Dictionary<PItem, PItemData> Data = new Dictionary<PItem, PItemData>()
         {
@@ -20,6 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.MetalPowder, new PItemData { FlingPower = 10 } },
             { PItem.PowerHerb, new PItemData { FlingPower = 10 } },
             { PItem.RazorClaw, new PItemData { FlingPower = 80 } },
+            { PItem.ScopeLens, new PItemData { FlingPower = 30 } },
             { PItem.SoulDew, new PItemData { FlingPower = 30 } },
             { PItem.ThickClub, new PItemData { FlingPower = 90 } },
             { PItem.WideLens, new PItemData { FlingPower = 10 } },
