@@ -221,6 +221,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RockHead, // TODO
         SapSipper, // TODO
         ShellArmor,
+        Sniper,
         Static, // TODO
         Swarm,
         ThickFat,

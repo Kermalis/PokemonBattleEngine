@@ -594,6 +594,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 bLandedCrit = true;
                 bDamageMultiplier *= PSettings.CritMultiplier;
+                if (bUser.Ability == PAbility.Sniper)
+                    bDamageMultiplier *= 1.5;
             }
         }
 
