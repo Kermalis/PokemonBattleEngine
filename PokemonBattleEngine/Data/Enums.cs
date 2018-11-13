@@ -487,6 +487,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         KarateChop,
         Kinesis,
         LavaPlume,
+        LeafBlade,
         LeafTornado,
         Leer,
         Lick,
