@@ -484,6 +484,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IronDefense,
         IronHead,
         IronTail,
+        KarateChop,
         Kinesis,
         LavaPlume,
         LeafTornado,
