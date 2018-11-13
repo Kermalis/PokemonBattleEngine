@@ -444,6 +444,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FlashCannon,
         FocusBlast,
         ForcePalm,
+        FrostBreath,
         Frustration,
         Glaciate,
         Glare,

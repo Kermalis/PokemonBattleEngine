@@ -308,7 +308,6 @@ Water Pledge
 Fire Pledge
 Grass Pledge
 Volt Switch
-Frost Breath
 Dragon Tail
 Wild Charge
 Drill Run

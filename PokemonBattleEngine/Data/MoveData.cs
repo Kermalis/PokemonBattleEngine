@@ -818,6 +818,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.FrostBreath,
+                new PMoveData
+                {
+                    Type = PType.Ice, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__AlwaysCrit, EffectParam = 0,
+                    PPTier = 2, Power = 40, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Frustration,
                 new PMoveData
                 {
