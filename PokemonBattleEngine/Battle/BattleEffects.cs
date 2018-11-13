@@ -541,11 +541,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     goto miss;
             }
 
-            double adjustedStages = GetStatMultiplier(bAttacker.AccuracyChange, true) / GetStatMultiplier(bDefender.EvasionChange, true);
-            double chance = mData.Accuracy * adjustedStages;
-            if (mData.Accuracy == 0 // Always-hit moves
-                || PUtils.ApplyChance((int)chance, 100) // Got lucky and landed a hit
-                )
+            // Moves that always hit
+            if (mData.Accuracy == 0)
+                return false;
+            
+            double chance = mData.Accuracy;
+            chance *= GetStatMultiplier(bAttacker.AccuracyChange, true) / GetStatMultiplier(bDefender.EvasionChange, true); // Accuracy & Evasion changes
+            // Pokémon with the Compoundeyes ability get a 30% accuracy boost
+            if (bAttacker.Ability == PAbility.Compoundeyes)
+                chance *= 1.3;
+            // Try to hit
+            if (PUtils.ApplyChance((int)chance, 100))
                 return false;
 
             miss:

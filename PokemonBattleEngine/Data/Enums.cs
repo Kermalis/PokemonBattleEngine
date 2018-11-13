@@ -200,6 +200,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BadDreams, // TODO
         BattleArmor, // TODO
         Blaze,
+        Compoundeyes,
         Guts,
         HugePower,
         Hustle, // TODO: Accuracy
