@@ -85,7 +85,6 @@ Snore
 Curse
 Flail
 Conversion 2
-Aeroblast
 Cotton Spore
 Reversal
 Spite

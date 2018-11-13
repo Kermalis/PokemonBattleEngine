@@ -70,6 +70,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Aeroblast,
+                new PMoveData
+                {
+                    Type = PType.Flying, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__HighCritChance, EffectParam = 0,
+                    PPTier = 1, Power = 100, Accuracy = 95, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleNotSelf
+                }
+            },
+            {
                 PMove.Agility,
                 new PMoveData
                 {
