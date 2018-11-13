@@ -996,7 +996,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // future sight 38
                         // slash 47
                         Tuple.Create(57, PMove.Moonlight),
-                        // psycho cut 66
+                        Tuple.Create(66, PMove.PsychoCut),
                         // psycho shift 75
                         // lunar dance 84
                         Tuple.Create(93, PMove.Psychic),

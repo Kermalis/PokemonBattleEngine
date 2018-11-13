@@ -533,6 +533,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Psybeam,
         Psychic,
         PsychoBoost,
+        PsychoCut,
         QuickAttack,
         QuiverDance,
         RainDance,

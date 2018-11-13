@@ -233,7 +233,6 @@ Shadow Claw
 Thunder Fang
 Ice Fang
 Fire Fang
-Psycho Cut
 Defog
 Trick Room
 Leaf Storm
