@@ -181,7 +181,6 @@ Icicle Spear
 Block
 Frenzy Plant
 Bounce
-Poison Tail
 Covet
 Volt Tackle
 Water Sport

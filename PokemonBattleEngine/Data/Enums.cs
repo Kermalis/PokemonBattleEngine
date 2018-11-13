@@ -524,6 +524,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PoisonJab,
         PoisonPowder,
         PoisonSting,
+        PoisonTail,
         Pound,
         PowderSnow,
         PowerGem,
