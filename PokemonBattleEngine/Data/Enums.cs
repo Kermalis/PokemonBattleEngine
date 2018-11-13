@@ -207,6 +207,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Blaze,
         Compoundeyes,
         Guts,
+        Heatproof,
         HugePower,
         Hustle,
         Imposter, // TODO

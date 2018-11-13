@@ -25,6 +25,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost
             if (userPData.HasType(bMoveType))
                 bDamageMultiplier *= 1.5;
+            // Pokémon with the heatproof take half as much damage from fire attacks
+            if (bMoveType == PType.Fire && target.Ability == PAbility.Heatproof)
+                bDamageMultiplier *= 0.5;
 
             effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)targetPData.Type1];
             // Don't want to halve twice for a mono type

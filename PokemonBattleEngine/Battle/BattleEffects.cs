@@ -33,7 +33,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PStatus1.Burned:
                     BroadcastStatus1(pkmn, PStatus1.Burned, PStatusAction.Damage);
-                    DealDamage(pkmn, (ushort)(pkmn.MaxHP / PSettings.BurnDamageDenominator), PEffectiveness.Normal, true);
+                    int damage = pkmn.MaxHP / PSettings.BurnDamageDenominator;
+                    // Pokémon with the Heatproof ability take half as much damage from burns
+                    if (pkmn.Ability == PAbility.Heatproof)
+                        damage /= 2;
+                    DealDamage(pkmn, (ushort)damage, PEffectiveness.Normal, true);
                     FaintCheck(pkmn);
                     break;
                 case PStatus1.Poisoned:
