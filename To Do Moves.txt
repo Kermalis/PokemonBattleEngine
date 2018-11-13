@@ -242,7 +242,6 @@ Defog
 Trick Room
 Leaf Storm
 Rock Wrecker
-Cross Poison
 Stone Edge
 Captivate
 Stealth Rock
