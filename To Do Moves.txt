@@ -245,7 +245,6 @@ Heal Order
 Head Smash
 Double Hit
 Roar of Time
-Spacial Rend
 Lunar Dance
 Crush Grip
 Magma Storm

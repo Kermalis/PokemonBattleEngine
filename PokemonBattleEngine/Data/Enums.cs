@@ -576,6 +576,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Smog,
         SmokeScreen,
         Snarl,
+        SpacialRend,
         Spark,
         Spore,
         SteelWing,
