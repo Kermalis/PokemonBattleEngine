@@ -117,6 +117,22 @@ namespace Kermalis.PokemonBattleEngine.Util
                 Moves = new PMove[] { PMove.DarkVoid, PMove.DarkPulse, PMove.NastyPlot, PMove.Substitute },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Cofagrigus_UU = new PPokemonShell
+            {
+                Species = PSpecies.Cofagrigus,
+                Nickname = "Coffee",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.Leftovers,
+                Ability = PAbility.Mummy,
+                Gender = PGender.Male,
+                Nature = PNature.Quiet,
+                IVs = new byte[] { 31, 31, 30, 30, 30, 30 }, // Hidden Power Fighting/70
+                EVs = new byte[] { 248, 0, 8, 252, 0, 0 },
+                Moves = new PMove[] { PMove.ShadowBall, PMove.HiddenPower, PMove.NastyPlot, PMove.ShadowBall }, // Shadow ball, hidden power fighting, nasty plot, trick room
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Genesect_Uber = new PPokemonShell
             {
                 Species = PSpecies.Genesect_Shock,

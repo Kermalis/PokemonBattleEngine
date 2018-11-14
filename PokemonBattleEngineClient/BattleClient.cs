@@ -69,9 +69,10 @@ namespace Kermalis.PokemonBattleEngineClient
                     var team = new PTeamShell { DisplayName = "Sasha", };
                     var possiblePokemon = new List<PPokemonShell>
                     {
-                        PCompetitivePokemonShells.Azumarill_UU, PCompetitivePokemonShells.Cresselia_UU, PCompetitivePokemonShells.Darkrai_Uber,
-                        PCompetitivePokemonShells.Ditto_UU, PCompetitivePokemonShells.Genesect_Uber, PCompetitivePokemonShells.Latias_OU,
-                        PCompetitivePokemonShells.Latios_OU, PCompetitivePokemonShells.Pikachu_NU };
+                        PCompetitivePokemonShells.Azumarill_UU, PCompetitivePokemonShells.Cresselia_UU, PCompetitivePokemonShells.Cofagrigus_UU,
+                        PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Ditto_UU, PCompetitivePokemonShells.Genesect_Uber,
+                        PCompetitivePokemonShells.Latias_OU, PCompetitivePokemonShells.Latios_OU, PCompetitivePokemonShells.Pikachu_NU
+                    };
                     Shuffle(possiblePokemon);
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
                     //team.Party[0] = PCompetitivePokemonShells.Azumarill_UU;

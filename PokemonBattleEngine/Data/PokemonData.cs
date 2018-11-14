@@ -1168,6 +1168,100 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Cofagrigus,
+                new PPokemonData
+                {
+                    HP = 58, Attack = 50, Defense = 145, SpAttack = 95, SpDefense = 105, Speed = 30,
+                    GenderRatio = PGender.M1F1,
+                    Type1 = PType.Ghost, Type2 = PType.Ghost,
+                    Abilities = new PAbility[] { PAbility.Mummy },
+                    MinLevel = 34, // Evolve Yamask
+                    ShinyLocked = false,
+                    Weight = 76.5,
+                    LevelUpMoves = new Tuple<int, PMove>[]
+                    {
+                        Tuple.Create(1, PMove.Astonish),
+                        Tuple.Create(1, PMove.Protect),
+                        // 1 disable
+                        // 1 haze
+                        // 5 disable
+                        // 9 haze
+                        // 13 night shade
+                        // 17 hex                        
+                        Tuple.Create(21, PMove.WillOWisp),
+                        // 25 ominous wind
+                        // 29 curse
+                        // 33 power split
+                        // 33 guard split
+                        Tuple.Create(34, PMove.ScaryFace),
+                        Tuple.Create(37, PMove.ShadowBall), // As Yamask
+                        Tuple.Create(39, PMove.ShadowBall),
+                        // 41 grudge as yamask
+                        // 45 grudge
+                        // 45 mean look as yamask
+                        // 51 mean look
+                        // 49 destiny bond as yamask
+                        // 57 destiny bond
+                    },
+                    OtherMoves = new PMove[]
+                    {
+                        // hyper beam // tm
+                        // telekinesis
+                        // safeguard
+                        // facade
+                        // rest
+                        // attract
+                        // thief
+                        // round
+                        // embargo
+                        // payback
+                        // giga impact
+                        // psych up
+                        // dream eater
+                        // swagger
+                        // trick room
+                        // disable // egg move
+                        // endure
+                        // heal block
+                        // imprison
+                        // memento
+                        // nightmare
+                        // after you // move tutor
+                        // block
+                        // knock off
+                        // magic coat
+                        // pain split
+                        // role play
+                        // skill swap
+                        // sleep talk
+                        // snatch
+                        // snore
+                        // spite
+                        // trick
+                        // wonder room
+                        PMove.CalmMind, // TM
+                        PMove.DarkPulse, // Move Tutor
+                        PMove.DoubleTeam, // TM
+                        PMove.EnergyBall, // TM
+                        PMove.FakeTears, // Egg Move
+                        PMove.Flash, // TM
+                        PMove.Frustration, // TM
+                        PMove.GrassKnot, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.IronDefense, // Move Tutor
+                        PMove.NastyPlot, // Egg Move
+                        PMove.Protect, // TM
+                        PMove.Psychic, // TM
+                        PMove.RainDance, // TM
+                        PMove.Return, // TM
+                        PMove.ShadowBall, // TM
+                        PMove.Substitute, // TM
+                        PMove.Toxic, // TM
+                        PMove.WillOWisp, // TM
+                    }
+                }
+            },
+            {
                 PSpecies.Genesect,
                 new PPokemonData
                 {
