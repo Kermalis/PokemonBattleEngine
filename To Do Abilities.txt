@@ -29,7 +29,6 @@ Lightning Rod
 Serene Grace
 Swift Swim
 Chlorophyll
-Illuminate
 Trace
 Poison Point
 Inner Focus
@@ -42,7 +41,6 @@ Sand Stream
 Pressure
 Early Bird
 Flame Body
-Run Away
 Keen Eye
 Hyper Cutter
 Pickup
@@ -95,7 +93,6 @@ Storm Drain
 Ice Body
 Solid Rock
 Snow Warning
-Honey Gather
 Frisk
 Reckless
 Multitype

@@ -214,8 +214,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         Download, // TODO
         Guts,
         Heatproof,
+        HoneyGather,
         HugePower,
         Hustle,
+        Illuminate,
         Imposter, // TODO
         Levitate, // TODO
         LightningRod, // TODO
@@ -228,6 +230,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PurePower,
         Rattled, // TODO
         RockHead, // TODO
+        RunAway,
         SapSipper, // TODO
         ShellArmor,
         Simple,

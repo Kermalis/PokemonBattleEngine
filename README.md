@@ -27,7 +27,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Spectators
 * AI
-* Typeless phenomena (Roost, Burn Up, Confusion Damage)
+* Typeless phenomena (Roost, Burn Up)
 
 ----
 # PokemonBattleEngine Uses:
