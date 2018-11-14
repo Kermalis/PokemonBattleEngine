@@ -19,22 +19,22 @@ namespace Kermalis.PokemonBattleEngineClient
         static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
-        static readonly PTeamShell
-            team0 = new PTeamShell
-            {
-                DisplayName = "Sasha",
-                Party = { CompetitivePokemonShells.Latias_OU, CompetitivePokemonShells.Cresselia_UU, CompetitivePokemonShells.Darkrai_Uber }
-            },
-            team1 = new PTeamShell
-            {
-                DisplayName = "Jess",
-                Party = { CompetitivePokemonShells.Azumarill_UU, CompetitivePokemonShells.Genesect_Uber, CompetitivePokemonShells.Ditto_UU }
-            };
-        static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team0 : team1; // Temporary
-
-        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Single;
+        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Triple;
         readonly BattleView battleView;
         readonly ActionsView actionsView;
+
+        // Fisher-Yates Shuffle
+        static void Shuffle<T>(IList<T> source)
+        {
+            var rng = new Random();
+            for (int a = 0; a < source.Count - 1; a++)
+            {
+                int b = rng.Next(a, source.Count);
+                T value = source[a];
+                source[a] = source[b];
+                source[b] = value;
+            }
+        }
 
         public BattleClient(string host, BattleView battleView, ActionsView actionsView)
         {
@@ -64,10 +64,18 @@ namespace Kermalis.PokemonBattleEngineClient
                     PKnownInfo.Instance.RemoteDisplayName = pjp.DisplayName;
                     Send(new PResponsePacket());
                     break;
-                case PRequestPartyPacket _:
+                case PRequestPartyPacket _: // Temporary
                     battleView.Message = "Sending team info...";
-                    PKnownInfo.Instance.LocalDisplayName = chosenTeam.DisplayName;
-                    Send(new PSubmitPartyPacket(chosenTeam));
+                    var team = new PTeamShell { DisplayName = "Sasha", };
+                    var possiblePokemon = new List<PPokemonShell>
+                    {
+                        PCompetitivePokemonShells.Azumarill_UU, PCompetitivePokemonShells.Cresselia_UU, PCompetitivePokemonShells.Darkrai_Uber,
+                        PCompetitivePokemonShells.Ditto_UU, PCompetitivePokemonShells.Genesect_Uber, PCompetitivePokemonShells.Latias_OU,
+                        PCompetitivePokemonShells.Latios_OU, PCompetitivePokemonShells.Pikachu_NU };
+                    Shuffle(possiblePokemon);
+                    team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
+                    PKnownInfo.Instance.LocalDisplayName = team.DisplayName;
+                    Send(new PSubmitPartyPacket(team));
                     break;
                 case PSetPartyPacket spp:
                     PKnownInfo.Instance.SetPartyPokemon(spp.Party, true);

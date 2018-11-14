@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonBattleEngine.Util
 {
-    public static class CompetitivePokemonShells
+    public static class PCompetitivePokemonShells
     {
         public static readonly PPokemonShell
             Pikachu_NU = new PPokemonShell
