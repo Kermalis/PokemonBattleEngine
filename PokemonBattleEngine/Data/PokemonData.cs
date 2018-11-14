@@ -1167,6 +1167,102 @@ namespace Kermalis.PokemonBattleEngine.Data
                     }
                 }
             },
+            {
+                PSpecies.Genesect,
+                new PPokemonData
+                {
+                    HP = 71, Attack = 120, Defense = 95, SpAttack = 120, SpDefense = 95, Speed = 99,
+                    GenderRatio = PGender.Genderless,
+                    Type1 = PType.Bug, Type2 = PType.Steel,
+                    Abilities = new PAbility[] { PAbility.Download },
+                    MinLevel = 15, // Event (Plasma Genesect)
+                    ShinyLocked = false,
+                    Weight = 82.5,
+                    LevelUpMoves = new Tuple<int, PMove>[]
+                    {
+                        Tuple.Create(1, PMove.MetalClaw),
+                        Tuple.Create(1, PMove.QuickAttack),
+                        Tuple.Create(1, PMove.Screech),
+                        // 1 magnet rise
+                        // 1 techno blast
+                        // 7 fury cutter
+                        // 11 lock-on
+                        Tuple.Create(15, PMove.MagnetBomb), // Event (Plasma Genesect)
+                        Tuple.Create(15, PMove.SignalBeam), // Event (Plasma Genesect)
+                        Tuple.Create(18, PMove.FlameCharge),
+                        Tuple.Create(22, PMove.MagnetBomb),
+                        Tuple.Create(29, PMove.Slash),
+                        Tuple.Create(33, PMove.MetalSound),
+                        Tuple.Create(40, PMove.SignalBeam),
+                        // 44 tri attack
+                        Tuple.Create(51, PMove.XScissor),
+                        Tuple.Create(55, PMove.BugBuzz),
+                        // 62 simple beam
+                        Tuple.Create(66, PMove.ZapCannon),
+                        // 73 hyper beam
+                        // 77 self-destruct
+                        Tuple.Create(100, PMove.ExtremeSpeed), // Event (Cinema Genesect)
+                        Tuple.Create(100, PMove.BlazeKick), // Event (Cinema Genesect)
+                        Tuple.Create(100, PMove.ShiftGear), // Event (Cinema Genesect)
+                    },
+                    OtherMoves = new PMove[]
+                    {
+                        // fly // hm
+                        // blizzard // tm
+                        // hyper beam
+                        // solar beam
+                        // facade
+                        // rest
+                        // round
+                        // explosion
+                        // giga impact
+                        // swagger
+                        // u-turn
+                        // bug bite // tutor
+                        // giga drain
+                        // gravity
+                        // last resort
+                        // magic coat
+                        // magnet rise
+                        // recycle
+                        // sleep talk
+                        // snore
+                        PMove.AerialAce, // TM
+                        PMove.ChargeBeam, // TM
+                        PMove.DarkPulse, // Move Tutor
+                        PMove.DoubleTeam, // TM
+                        PMove.Electroweb, // Move Tutor
+                        PMove.EnergyBall, // TM
+                        PMove.FlameCharge, // TM
+                        PMove.Flamethrower, // TM
+                        PMove.Flash, // TM
+                        PMove.FlashCannon, // TM
+                        PMove.Frustration, // TM
+                        PMove.GunkShot, // Move Tutor
+                        PMove.HiddenPower, // TM
+                        PMove.HoneClaws, // TM
+                        PMove.IceBeam, // TM
+                        PMove.IronDefense, // Move Tutor
+                        PMove.IronHead, // Move Tutor
+                        PMove.LightScreen, // TM
+                        PMove.Protect, // TM
+                        PMove.Psychic, // TM
+                        PMove.Reflect, // TM
+                        PMove.Return, // TM
+                        PMove.RockPolish, // TM
+                        PMove.ShadowClaw, // TM
+                        PMove.SignalBeam, // Move Tutor
+                        PMove.StruggleBug, // TM
+                        PMove.Substitute, // TM
+                        PMove.Thunder, // TM
+                        PMove.Thunderbolt, // TM
+                        PMove.ThunderWave, // TM
+                        PMove.Toxic, // TM
+                        PMove.XScissor, // TM
+                        PMove.ZenHeadbutt, // Move Tutor
+                    }
+                }
+            },
         };
 
         // Formes
@@ -1199,6 +1295,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             Data.Add(PSpecies.Unown_Z, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
             Data.Add(PSpecies.Unown_Exclamation, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
             Data.Add(PSpecies.Unown_Question, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+
+            Data.Add(PSpecies.Genesect_Burn, (PPokemonData)Data[PSpecies.Genesect].MemberwiseClone());
+            Data.Add(PSpecies.Genesect_Chill, (PPokemonData)Data[PSpecies.Genesect].MemberwiseClone());
+            Data.Add(PSpecies.Genesect_Douse, (PPokemonData)Data[PSpecies.Genesect].MemberwiseClone());
+            Data.Add(PSpecies.Genesect_Shock, (PPokemonData)Data[PSpecies.Genesect].MemberwiseClone());
         }
     }
 }

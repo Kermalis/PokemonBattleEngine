@@ -45,7 +45,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(Species));
             }
 
-            // Validate nickname
+            // Validate Shininess
+            if (Shiny && pData.ShinyLocked)
+                throw new ArgumentOutOfRangeException(nameof(Shiny));
+
+            // Validate Nickname
             if (string.IsNullOrWhiteSpace(Nickname) || Nickname.Length > PSettings.MaxPokemonNameLength)
                 throw new ArgumentOutOfRangeException(nameof(Nickname));
 
@@ -80,6 +84,35 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     throw new ArgumentOutOfRangeException(nameof(Item));
                 }
+            }
+
+            // Validate Forme-Specific Items
+            switch (Species)
+            {
+                case PSpecies.Genesect:
+                    if (Item == PItem.BurnDrive
+                        || Item == PItem.ChillDrive
+                        || Item == PItem.DouseDrive
+                        || Item == PItem.ShockDrive
+                        )
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Genesect_Burn:
+                    if (Item != PItem.BurnDrive)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Genesect_Chill:
+                    if (Item != PItem.ChillDrive)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Genesect_Douse:
+                    if (Item != PItem.DouseDrive)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Genesect_Shock:
+                    if (Item != PItem.ShockDrive)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
             }
 
             // Validate EVs

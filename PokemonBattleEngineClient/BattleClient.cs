@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngineClient
             team1 = new PTeamShell
             {
                 DisplayName = "Jess",
-                Party = { CompetitivePokemonShells.Azumarill_UU, CompetitivePokemonShells.Pikachu_NU, CompetitivePokemonShells.Ditto_UU }
+                Party = { CompetitivePokemonShells.Azumarill_UU, CompetitivePokemonShells.Genesect_Uber, CompetitivePokemonShells.Ditto_UU }
             };
         static PTeamShell chosenTeam = new Random().Next(0, 2) == 0 ? team0 : team1; // Temporary
 

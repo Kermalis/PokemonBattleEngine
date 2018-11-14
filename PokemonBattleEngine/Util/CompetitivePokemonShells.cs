@@ -116,6 +116,22 @@ namespace Kermalis.PokemonBattleEngine.Util
                 EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
                 Moves = new PMove[] { PMove.DarkVoid, PMove.DarkPulse, PMove.NastyPlot, PMove.Substitute },
                 PPUps = new byte[] { 3, 3, 3, 3 }
+            },
+            Genesect_Uber = new PPokemonShell
+            {
+                Species = PSpecies.Genesect,
+                Nickname = "Jessenect",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.Leftovers, // Choice Scarf
+                Ability = PAbility.Download,
+                Gender = PGender.Genderless,
+                Nature = PNature.Hasty,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
+                EVs = new byte[] { 0, 252, 0, 4, 0, 252 },
+                Moves = new PMove[] { PMove.XScissor, PMove.IceBeam, PMove.Flamethrower, PMove.IronHead }, // U-turn, Ice Beam, Flamethrower, Iron Head
+                PPUps = new byte[] { 3, 3, 3, 3 }
             };
     }
 }

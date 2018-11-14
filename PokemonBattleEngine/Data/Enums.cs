@@ -181,10 +181,13 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         BrightPowder,
+        BurnDrive,
+        ChillDrive,
         ChoiceBand, // TODO: Lock move
         DampRock,
         DeepSeaScale,
         DeepSeaTooth,
+        DouseDrive,
         HeatRock,
         LaxIncense,
         Leftovers,
@@ -194,6 +197,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PowerHerb,
         RazorClaw,
         ScopeLens,
+        ShockDrive,
         SoulDew,
         ThickClub,
         WideLens,
@@ -207,6 +211,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BattleArmor,
         Blaze,
         Compoundeyes,
+        Download, // TODO
         Guts,
         Heatproof,
         HugePower,
@@ -276,6 +281,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         Latios, // TODO
         Cresselia = 488, // TODO
         Darkrai = 491, // TODO
+        Genesect = 649 | (0 << 0x10), // TODO
+        Genesect_Burn = 649 | (1 << 0x10),
+        Genesect_Chill = 649 | (2 << 0x10),
+        Genesect_Douse = 649 | (3 << 0x10),
+        Genesect_Shock = 649 | (4 << 0x10),
     }
     public enum PMoveTarget : byte // Used in MoveData
     {
