@@ -22,7 +22,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Struggle
 * Weather
 * Turn order
-* Move targetting: #2
 * Rotation battles
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely

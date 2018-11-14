@@ -32,23 +32,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (pkmn.Status1)
             {
                 case PStatus1.Burned:
-                    BroadcastStatus1(pkmn, PStatus1.Burned, PStatusAction.Damage);
                     int damage = pkmn.MaxHP / PSettings.BurnDamageDenominator;
                     // Pokémon with the Heatproof ability take half as much damage from burns
                     if (pkmn.Ability == PAbility.Heatproof)
                         damage /= 2;
                     DealDamage(pkmn, (ushort)damage, PEffectiveness.Normal, true);
+                    BroadcastStatus1(pkmn, PStatus1.Burned, PStatusAction.Damage);
                     if (FaintCheck(pkmn))
                         return;
                     break;
                 case PStatus1.Poisoned:
-                    BroadcastStatus1(pkmn, PStatus1.Poisoned, PStatusAction.Damage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP / PSettings.PoisonDamageDenominator), PEffectiveness.Normal, true);
+                    BroadcastStatus1(pkmn, PStatus1.Poisoned, PStatusAction.Damage);
                     FaintCheck(pkmn);
                     break;
                 case PStatus1.BadlyPoisoned:
-                    BroadcastStatus1(pkmn, PStatus1.BadlyPoisoned, PStatusAction.Damage);
                     DealDamage(pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PSettings.ToxicDamageDenominator), PEffectiveness.Normal, true);
+                    BroadcastStatus1(pkmn, PStatus1.BadlyPoisoned, PStatusAction.Damage);
                     if (FaintCheck(pkmn))
                     {
                         pkmn.Status1Counter = 0;
@@ -79,6 +79,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             bUsedMove = false;
             PTeam attackerTeam = teams[user.Local ? 0 : 1]; // Attacker's team
             PTeam opposingTeam = teams[user.Local ? 1 : 0]; // Other team
+
+            bUser = user;
+            bMove = user.SelectedAction.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            PMoveData mData = PMoveData.Data[bMove];
 
             #region Targets
 
@@ -111,8 +115,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else if (BattleStyle == PBattleStyle.Triple)
                     {
-                        // TODO: Center fainted as well but move can hit anyone, who gets picked?
                         b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
+                        // Center fainted as well and user can reach far right
+                        if (b == null && (user.FieldPosition != PFieldPosition.Right || mData.Targets == PMoveTarget.SingleNotSelf))
+                        {
+                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                        }
                     }
                 }
                 targets.Add(b);
@@ -127,27 +135,38 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (user.FieldPosition == PFieldPosition.Left)
                         {
-                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                            // Right fainted as well and user can reach far left
+                            if (b == null && (user.FieldPosition != PFieldPosition.Left || mData.Targets == PMoveTarget.SingleNotSelf))
+                            {
+                                b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                            }
                         }
                         else if (user.FieldPosition == PFieldPosition.Right)
                         {
-                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                            // Left fainted as well and user can reach far right
+                            if (b == null && (user.FieldPosition != PFieldPosition.Right || mData.Targets == PMoveTarget.SingleNotSelf))
+                            {
+                                b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                            }
                         }
                         else // Center
                         {
-                            // If left fainted but not right, choose right, and vice versa
                             PPokemon oppLeft = opposingTeam.BattlerAtPosition(PFieldPosition.Left),
                                 oppRight = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                            // Left is dead but not right
                             if (oppLeft == null && oppRight != null)
                             {
                                 b = oppRight;
                             }
+                            // Right is dead but not left
                             else if (oppLeft != null && oppRight == null)
                             {
                                 b = oppLeft;
                             }
-                            // TODO: Find out if it should be random:
-                            else // Both alive; randomly select left or right
+                            // Randomly select left or right
+                            else
                             {
                                 b = PUtils.RNG.NextDouble() >= 0.5 ? oppLeft : oppRight;
                             }
@@ -168,8 +187,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else if (BattleStyle == PBattleStyle.Triple)
                     {
-                        // TODO: Center fainted as well but move can hit anyone, so pick far corner
                         b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
+                        // Center fainted as well and user can reach far left
+                        if (b == null && (user.FieldPosition != PFieldPosition.Left || mData.Targets == PMoveTarget.SingleNotSelf))
+                        {
+                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                        }
                     }
                 }
                 targets.Add(b);
@@ -184,8 +207,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Status1 == PStatus1.Asleep)
                 user.Status1Counter++;
 
-            bUser = user;
-            bMove = user.SelectedAction.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
             if (MoveCancelCheck())
                 return;
 
