@@ -1,7 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine.Data;
+using System;
 using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
@@ -11,6 +13,16 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
 
+        IBitmap bgSource;
+        IBitmap BGSource
+        {
+            get => bgSource;
+            set
+            {
+                bgSource = value;
+                OnPropertyChanged(nameof(BGSource));
+            }
+        }
         string message;
         public string Message
         {
@@ -25,7 +37,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         bool IsMessageBoxVisible { get; set; }
 
-        public BattleClient Client;
+        BattleClient client;
 
         public BattleView()
         {
@@ -33,6 +45,21 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             DataContext = this;
 
             Name = "Battle0"; // Temporary
+        }
+
+        public void SetClient(BattleClient client)
+        {
+            this.client = client;
+            string s;
+            switch (client.BattleStyle)
+            {
+                case PBattleStyle.Single: s = "1-s"; break;
+                case PBattleStyle.Double: s = "1-d"; break;
+                case PBattleStyle.Triple: s = "1-t"; break;
+                case PBattleStyle.Rotation: s = "1-r"; break;
+                default: throw new ArgumentOutOfRangeException(nameof(client.BattleStyle));
+            }
+            BGSource = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Backgrounds.{s}.png?assembly=PokemonBattleEngineClient"));
         }
 
         // pkmn.FieldPosition must be changed before calling this
@@ -50,7 +77,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 view.Pokemon = pkmn;
             }
 
-            switch (Client.BattleStyle)
+            switch (client.BattleStyle)
             {
                 case PBattleStyle.Single:
                     this.FindControl<PokemonView>("Battler0_Center").Location = new Point(75, 53);
@@ -82,6 +109,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
                     this.FindControl<PokemonView>("Battler1_Left").Location = new Point(421, -24);
                     break;
+                default: throw new ArgumentOutOfRangeException(nameof(client.BattleStyle));
             }
         }
     }

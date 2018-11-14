@@ -1,5 +1,4 @@
 ﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;

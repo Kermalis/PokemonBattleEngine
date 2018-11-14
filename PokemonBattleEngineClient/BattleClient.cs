@@ -6,10 +6,10 @@ using System.Net.Sockets;
 using System.Timers;
 using Ether.Network.Client;
 using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
-using Kermalis.PokemonBattleEngine.Util;
 using Kermalis.PokemonBattleEngineClient.Views;
 
 namespace Kermalis.PokemonBattleEngineClient
@@ -23,19 +23,6 @@ namespace Kermalis.PokemonBattleEngineClient
         readonly BattleView battleView;
         readonly ActionsView actionsView;
 
-        // Fisher-Yates Shuffle
-        static void Shuffle<T>(IList<T> source)
-        {
-            var rng = new Random();
-            for (int a = 0; a < source.Count - 1; a++)
-            {
-                int b = rng.Next(a, source.Count);
-                T value = source[a];
-                source[a] = source[b];
-                source[b] = value;
-            }
-        }
-
         public BattleClient(string host, BattleView battleView, ActionsView actionsView)
         {
             Configuration.Host = host;
@@ -43,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineClient
             Configuration.BufferSize = 1024;
 
             this.battleView = battleView;
-            this.battleView.Client = this;
+            this.battleView.SetClient(this);
             this.actionsView = actionsView;
             this.actionsView.Client = this;
 
@@ -73,7 +60,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Ditto_UU, PCompetitivePokemonShells.Genesect_Uber,
                         PCompetitivePokemonShells.Latias_OU, PCompetitivePokemonShells.Latios_OU, PCompetitivePokemonShells.Pikachu_NU
                     };
-                    Shuffle(possiblePokemon);
+                    possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
                     //team.Party[0] = PCompetitivePokemonShells.Azumarill_UU;
                     PKnownInfo.Instance.LocalDisplayName = team.DisplayName;

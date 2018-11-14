@@ -1,9 +1,10 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:view="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient">
+             xmlns:view="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient"
+             Background="Black">
   <Canvas Width="512" Height="384">
     <Canvas.Background>
-      <ImageBrush Source="resm:Kermalis.PokemonBattleEngineClient.Assets.Backgrounds.1-s.png?assembly=PokemonBattleEngineClient"/>
+      <ImageBrush Source="{Binding BGSource}"/>
     </Canvas.Background>
     <view:PokemonView Name="Battler0_Left" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
     <view:PokemonView Name="Battler0_Center" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
