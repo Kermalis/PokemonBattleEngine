@@ -224,6 +224,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Limber,
         MarvelScale,
         Minus, // TODO
+        Mummy, // TODO
         NoGuard,
         Overgrow,
         Plus, // TODO
@@ -284,6 +285,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Latios, // TODO
         Cresselia = 488, // TODO
         Darkrai = 491, // TODO
+        Cofagrigus = 563, // TODO
         Genesect = 649 | (0 << 0x10), // TODO
         Genesect_Burn = 649 | (1 << 0x10),
         Genesect_Chill = 649 | (2 << 0x10),
