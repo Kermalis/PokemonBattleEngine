@@ -19,6 +19,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 case PMove.None: return PType.Normal;
                 case PMove.HiddenPower: return pkmn.GetHiddenPowerType();
+                case PMove.TechnoBlast:
+                    switch (pkmn.Item)
+                    {
+                        case PItem.BurnDrive: return PType.Fire;
+                        case PItem.ChillDrive: return PType.Ice;
+                        case PItem.DouseDrive: return PType.Water;
+                        case PItem.ShockDrive: return PType.Electric;
+                        default: return Data[PMove.TechnoBlast].Type;
+                    }
                 default: return Data[move].Type;
             }
         }
@@ -2487,6 +2496,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PPTier = 6, Power = 0, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
                     Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
+                PMove.TechnoBlast,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 1, Power = 85, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
                 }
             },
             {

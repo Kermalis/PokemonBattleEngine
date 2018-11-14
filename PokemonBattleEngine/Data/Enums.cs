@@ -613,6 +613,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tackle,
         TailGlow,
         TailWhip,
+        TechnoBlast,
         TeeterDance,
         Teleport,
         Tickle,
