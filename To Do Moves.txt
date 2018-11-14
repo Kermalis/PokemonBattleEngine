@@ -46,7 +46,6 @@ Recover
 Minimize
 Defense Curl
 Haze
-Focus Energy
 Bide
 Metronome
 Mirror Move

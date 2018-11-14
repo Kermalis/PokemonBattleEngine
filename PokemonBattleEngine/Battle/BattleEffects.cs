@@ -295,6 +295,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastFail(PFailReason.Default);
                     }
                     break;
+                case PMoveEffect.FocusEnergy:
+                    TryForceStatus2(PStatus2.Pumped);
+                    break;
                 case PMoveEffect.Growth:
                     Ef_Growth();
                     break;
@@ -830,6 +833,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!bTarget.Status2.HasFlag(PStatus2.Substitute))
                     {
                         bTarget.Status2 |= status;
+                        return true;
+                    }
+                    break;
+                case PStatus2.Pumped:
+                    if (!bUser.Status2.HasFlag(PStatus2.Pumped))
+                    {
+                        bUser.Status2 |= status;
+                        BroadcastStatus2(bUser, PStatus2.Pumped, PStatusAction.Added);
                         return true;
                     }
                     break;

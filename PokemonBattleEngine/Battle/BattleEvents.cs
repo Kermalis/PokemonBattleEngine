@@ -219,6 +219,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid protected action: {s2p.Action}");
                             }
                             break;
+                        case PStatus2.Pumped:
+                            switch (s2p.Action)
+                            {
+                                case PStatusAction.Added: message = "{0} is getting pumped!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid pumped action: {s2p.Action}");
+                            }
+                            break;
                         case PStatus2.Substitute:
                             switch (s2p.Action)
                             {

@@ -74,6 +74,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         PCompetitivePokemonShells.Latios_OU, PCompetitivePokemonShells.Pikachu_NU };
                     Shuffle(possiblePokemon);
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
+                    //team.Party[0] = PCompetitivePokemonShells.Azumarill_UU;
                     PKnownInfo.Instance.LocalDisplayName = team.DisplayName;
                     Send(new PSubmitPartyPacket(team));
                     break;
@@ -333,6 +334,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                 case PStatusAction.Activated:
                                 case PStatusAction.Added: message = "{0} protected itself!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid protected action: {s2p.Action}");
+                            }
+                            break;
+                        case PStatus2.Pumped:
+                            switch (s2p.Action)
+                            {
+                                case PStatusAction.Added: message = "{0} is getting pumped!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid pumped action: {s2p.Action}");
                             }
                             break;
                         case PStatus2.Substitute:

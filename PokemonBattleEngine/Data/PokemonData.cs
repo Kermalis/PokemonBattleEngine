@@ -228,7 +228,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(7, PMove.BoneClub),
                         Tuple.Create(11, PMove.Headbutt),
                         Tuple.Create(13, PMove.Leer),
-                        // focus energy 17
+                        Tuple.Create(17, PMove.FocusEnergy),
                         // bonemerang 21
                         // rage 23
                         // false swipe 27
@@ -333,7 +333,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(1, PMove.Headbutt),
                         Tuple.Create(1, PMove.TailWhip),
                         Tuple.Create(13, PMove.Leer),
-                        // focus energy 17
+                        Tuple.Create(17, PMove.FocusEnergy),
                         // bonemerang 21
                         // rage 23
                         // false swipe 27
