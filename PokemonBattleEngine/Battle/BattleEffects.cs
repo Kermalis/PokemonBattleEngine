@@ -201,12 +201,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             #endregion
 
-            // TODO: Find a better place for this..?
-            if (user.Status2.HasFlag(PStatus2.Confused))
-                user.ConfusionCounter++;
-            if (user.Status1 == PStatus1.Asleep)
-                user.Status1Counter++;
-
             if (MoveCancelCheck())
                 return;
 
@@ -474,8 +468,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         bool MoveCancelCheck()
         {
             PMoveData mData = PMoveData.Data[bMove];
+            
+            // Increment counters first
+            if (bUser.Status2.HasFlag(PStatus2.Confused))
+                bUser.ConfusionCounter++;
+            if (bUser.Status1 == PStatus1.Asleep)
+                bUser.Status1Counter++;
 
-            // Flinch first
+            // Flinch happens before statuses
             if (bUser.Status2.HasFlag(PStatus2.Flinching))
             {
                 BroadcastStatus2(bUser, PStatus2.Flinching, PStatusAction.Activated);

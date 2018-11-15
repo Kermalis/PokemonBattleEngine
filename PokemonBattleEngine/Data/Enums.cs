@@ -184,6 +184,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BurnDrive,
         ChillDrive,
         ChoiceBand, // TODO: Lock move
+        ChoiceScarf, // TODO: Lock move
         DampRock,
         DeepSeaScale,
         DeepSeaTooth,

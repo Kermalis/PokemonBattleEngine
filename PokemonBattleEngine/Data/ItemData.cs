@@ -12,6 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.BurnDrive, new PItemData { FlingPower = 70 } },
             { PItem.ChillDrive, new PItemData { FlingPower = 70 } },
             { PItem.ChoiceBand, new PItemData { FlingPower = 10 } },
+            { PItem.ChoiceScarf, new PItemData { FlingPower = 10 } },
             { PItem.DampRock, new PItemData { FlingPower = 60 } },
             { PItem.DeepSeaScale, new PItemData { FlingPower = 30 } },
             { PItem.DeepSeaTooth, new PItemData { FlingPower = 90 } },

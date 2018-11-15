@@ -174,6 +174,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     double speed = pkmn.Speed * GetStatMultiplier(pkmn.SpeedChange);
 
+                    // Pokémon holding a Choice Scarf get a 50% speed increase
+                    if (pkmn.Item == PItem.ChoiceScarf)
+                        speed *= 1.5;
+                    // Paralyzed Pokémon get a 75% speed decrease
+                    if (pkmn.Status1 == PStatus1.Paralyzed)
+                        speed *= 0.25;
+
                     Debug.WriteLine("{0} {1}'s evaluated speed: {2}", pkmn.Local ? "Local" : "Remote", pkmn.Shell.Nickname, speed);
                     var tup = Tuple.Create(pkmn, speed);
                     if (evaluated.Count == 0)
