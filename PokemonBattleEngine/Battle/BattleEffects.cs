@@ -27,6 +27,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void DoTurnEndedEffects(PPokemon pkmn)
         {
             PTeam team = teams[pkmn.Local ? 0 : 1];
+
+            // Items
+            switch (pkmn.Item)
+            {
+                case PItem.Leftovers:
+                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PSettings.LeftoversDenominator)))
+                        BroadcastItemUsed(pkmn, PItem.Leftovers);
+                    break;
+            }
+
             // Major statuses
             switch (pkmn.Status1)
             {
@@ -58,15 +68,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Status1Counter++;
                         break;
                     }
-            }
-
-            // Items
-            switch (pkmn.Item)
-            {
-                case PItem.Leftovers:
-                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PSettings.LeftoversDenominator)))
-                        BroadcastItemUsed(pkmn, PItem.Leftovers);
-                    break;
             }
 
             // Abilities
