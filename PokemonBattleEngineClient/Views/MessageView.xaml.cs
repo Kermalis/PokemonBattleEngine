@@ -10,15 +10,22 @@ namespace Kermalis.PokemonBattleEngineClient.Views
     {
         ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
+        ListBox listBox;
         public MessageView()
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
+
+            listBox = this.FindControl<ListBox>("List");
         }
 
         public void Add(string value)
         {
-            Dispatcher.UIThread.InvokeAsync(() => Messages.Add(value));
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Messages.Add(value);
+                listBox.ScrollIntoView(value);
+            });
         }
     }
 }
