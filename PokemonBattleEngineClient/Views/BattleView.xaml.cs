@@ -43,8 +43,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
-
-            Name = "Battle0"; // Temporary
         }
 
         public void SetClient(BattleClient client)

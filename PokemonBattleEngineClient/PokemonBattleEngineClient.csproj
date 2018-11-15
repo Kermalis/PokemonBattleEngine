@@ -28,6 +28,7 @@
   <ItemGroup>
     <None Remove="Views\ActionsView.xaml" />
     <None Remove="Views\BattleView.xaml" />
+    <None Remove="Views\MessageView.xaml" />
     <None Remove="Views\PokemonView.xaml" />
   </ItemGroup>
 
@@ -49,6 +50,9 @@
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\BattleView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MessageView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\PokemonView.xaml">
