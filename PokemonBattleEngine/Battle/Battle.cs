@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
@@ -42,6 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public readonly PBattleStyle BattleStyle;
         internal PTeam[] teams = new PTeam[2];
         List<PPokemon> activeBattlers = new List<PPokemon>();
+        List<PPokemon> turnOrder = new List<PPokemon>();
 
         public PWeather Weather { get; internal set; }
         public byte WeatherCounter { get; internal set; }
@@ -158,17 +160,61 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void DetermineTurnOrder()
         {
-            // TODO: Turn order
-            // Temporary:
-            for (int i = 0; i < activeBattlers.Count; i++)
-                activeBattlers[i].TurnOrder = i;
+            turnOrder.Clear();
+            // Highest priority is +5, lowest is -7
+            for (int i = +5; i >= -7; i--)
+            {
+                IEnumerable<PPokemon> pkmnWithThisPriority = activeBattlers.Where(p => p.SelectedAction.Decision == PDecision.Fight && PMoveData.Data[p.SelectedAction.Move].Priority == i);
+                if (pkmnWithThisPriority.Count() == 0)
+                    continue;
+
+                Debug.WriteLine("Priority {0} bracket...", i);
+                var evaluated = new List<Tuple<PPokemon, double>>(); // TODO: two bools for wanting to go first or last
+                foreach (PPokemon pkmn in pkmnWithThisPriority)
+                {
+                    double speed = pkmn.Speed * GetStatMultiplier(pkmn.SpeedChange);
+
+                    Debug.WriteLine("{0} {1}'s evaluated speed: {2}", pkmn.Local ? "Local" : "Remote", pkmn.Shell.Nickname, speed);
+                    var tup = Tuple.Create(pkmn, speed);
+                    if (evaluated.Count == 0)
+                    {
+                        evaluated.Add(tup);
+                    }
+                    else
+                    {
+                        int pkmnTiedWith = evaluated.FindIndex(t => t.Item2 == speed);
+                        if (pkmnTiedWith != -1)
+                        {
+                            if (PUtils.RNG.NextBoolean()) // Randomly go before or after the Pokémon it tied with
+                            {
+                                if (pkmnTiedWith == evaluated.Count - 1)
+                                    evaluated.Add(tup);
+                                else
+                                    evaluated.Insert(pkmnTiedWith + 1, tup);
+                            }
+                            else
+                            {
+                                evaluated.Insert(pkmnTiedWith, tup);
+                            }
+                        }
+                        else
+                        {
+                            int pkmnToGoBefore = evaluated.FindIndex(t => t.Item2 < speed);
+                            if (pkmnToGoBefore == -1)
+                                evaluated.Add(tup); // All evaluated Pokémon are faster than this one
+                            else
+                                evaluated.Insert(pkmnToGoBefore, tup);
+                        }
+                    }
+                    Debug.WriteLine(evaluated.Select(t => $"{(t.Item1.Local ? "Local" : "Remote")} {t.Item1.Shell.Nickname} {t.Item2}").Print());
+                }
+                turnOrder.AddRange(evaluated.Select(t => t.Item1));
+            }
         }
         void RunMovesInOrder()
         {
-            PPokemon[] turnOrder = activeBattlers.OrderBy(b => b.TurnOrder).ToArray();
-            for (int i = 0; i < turnOrder.Length; i++)
+            foreach (PPokemon pkmn in turnOrder)
             {
-                PPokemon pkmn = turnOrder[i];
                 if (pkmn.HP < 1)
                     continue;
                 DoPreMoveEffects(pkmn); // BattleEffects.cs

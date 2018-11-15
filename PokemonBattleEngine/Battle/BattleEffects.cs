@@ -168,7 +168,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             // Randomly select left or right
                             else
                             {
-                                b = PUtils.RNG.NextDouble() >= 0.5 ? oppLeft : oppRight;
+                                b = PUtils.RNG.NextBoolean() ? oppLeft : oppRight;
                             }
                         }
                     }

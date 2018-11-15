@@ -18,7 +18,6 @@ namespace Kermalis.PokemonBattleEngine
             else if (val.CompareTo(max) > 0) return max;
             else return val;
         }
-
         public static string Print<T>(this IEnumerable<T> source, bool parenthesis = true)
         {
             string str = parenthesis ? "( " : "";
@@ -26,6 +25,7 @@ namespace Kermalis.PokemonBattleEngine
             str += parenthesis ? " )" : "";
             return str;
         }
+        public static bool NextBoolean(this Random rand) => rand.NextDouble() >= 0.5;
 
         public static byte[] StringToBytes(string str)
         {

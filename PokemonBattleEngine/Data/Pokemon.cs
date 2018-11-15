@@ -38,7 +38,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ushort SubstituteHP; // Substitute
 
         public PAction PreviousAction, LockedAction, SelectedAction;
-        public int TurnOrder;
 
         public string OwnerDisplayName => Local ? PKnownInfo.Instance.LocalDisplayName : PKnownInfo.Instance.RemoteDisplayName;
 

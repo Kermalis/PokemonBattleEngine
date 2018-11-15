@@ -11,10 +11,7 @@ namespace Kermalis.PokemonBattleEngineClient
     {
         public static readonly Random RNG = new Random();
 
-        public static T Sample<T>(this IEnumerable<T> source)
-        {
-            return source.ElementAt(RNG.Next(0, source.Count()));
-        }
+        public static T Sample<T>(this IEnumerable<T> source) => source.ElementAt(RNG.Next(0, source.Count()));
         // Fisher-Yates Shuffle
         public static void Shuffle<T>(this IList<T> source)
         {
