@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
@@ -10,6 +11,10 @@ namespace Kermalis.PokemonBattleEngineClient
     {
         public static readonly Random RNG = new Random();
 
+        public static T Sample<T>(this IEnumerable<T> source)
+        {
+            return source.ElementAt(RNG.Next(0, source.Count()));
+        }
         // Fisher-Yates Shuffle
         public static void Shuffle<T>(this IList<T> source)
         {

@@ -53,10 +53,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             string s;
             switch (client.BattleStyle)
             {
-                case PBattleStyle.Single: s = "1-s"; break;
-                case PBattleStyle.Double: s = "1-d"; break;
-                case PBattleStyle.Triple: s = "1-t"; break;
-                case PBattleStyle.Rotation: s = "1-r"; break;
+                case PBattleStyle.Single: s = new string[] { "1-s", "2-s", "3-s", "4-s", "5-s", "6-s", "8-s" }.Sample(); break;
+                case PBattleStyle.Double: s = new string[] { "1-d", "7-d" }.Sample(); break;
+                case PBattleStyle.Triple: s = new string[] { "1-t", "4-t", "5-t", "8-t" }.Sample(); break;
+                case PBattleStyle.Rotation: s = new string[] { "1-r", "2-r" }.Sample(); break;
                 default: throw new ArgumentOutOfRangeException(nameof(client.BattleStyle));
             }
             BGSource = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Backgrounds.{s}.png?assembly=PokemonBattleEngineClient"));
