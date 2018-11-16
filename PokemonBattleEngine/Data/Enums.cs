@@ -238,6 +238,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hustle,
         Illuminate,
         Imposter, // TODO
+        Justified, // TODO
         Levitate, // TODO
         LightningRod, // TODO
         Limber,
@@ -247,6 +248,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         NoGuard,
         Overgrow,
         Plus, // TODO
+        Pressure, // TODO
         PurePower,
         Rattled, // TODO
         RockHead, // TODO
@@ -299,6 +301,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Z = 201 | (25 << 0x10),
         Unown_Exclamation = 201 | (26 << 0x10),
         Unown_Question = 201 | (27 << 0x10),
+        Absol = 359,
         Clamperl = 366, // TODO
         Latias = 380, // TODO
         Latios, // TODO

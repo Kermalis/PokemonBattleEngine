@@ -53,6 +53,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Return, PMove.IcePunch },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Absol_RU = new PPokemonShell
+            {
+                Species = PSpecies.Absol,
+                Nickname = "Absoul",
+                Level = 100,
+                Friendship = 255,
+                Shiny = true,
+                Item = PItem.DreadPlate,
+                Ability = PAbility.SuperLuck,
+                Gender = PGender.Male,
+                Nature = PNature.Adamant,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
+                EVs = new byte[] { 0, 252, 4, 0, 0, 252 },
+                Moves = new PMove[] { PMove.NastyPlot, PMove.Scald, PMove.NightSlash, PMove.FireBlast }, // Sucker Punch, Superpower, Night Slash, Pursuit
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Latias_OU = new PPokemonShell
             {
                 Species = PSpecies.Latias,

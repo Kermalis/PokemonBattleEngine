@@ -226,6 +226,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(1, PMove.Growl),
                         Tuple.Create(3, PMove.TailWhip),
                         Tuple.Create(7, PMove.BoneClub),
+                        // 10 perish song (dream world)
+                        Tuple.Create(10, PMove.LowKick), // Dream World
                         Tuple.Create(11, PMove.Headbutt),
                         Tuple.Create(13, PMove.Leer),
                         Tuple.Create(17, PMove.FocusEnergy),
@@ -671,6 +673,139 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Absol,
+                new PPokemonData
+                {
+                    HP = 65, Attack = 130, Defense = 60, SpAttack = 75, SpDefense = 60, Speed = 75,
+                    GenderRatio = PGender.M1F1,
+                    Type1 = PType.Dark, Type2 = PType.Dark,
+                    Abilities = new PAbility[] { PAbility.Pressure, PAbility.SuperLuck, PAbility.Justified },
+                    MinLevel = 1, // Egg
+                    ShinyLocked = false,
+                    Weight = 47.0,
+                    LevelUpMoves = new Tuple<int, PMove>[]
+                    {
+                        Tuple.Create(1, PMove.Scratch),
+                        // 1 feint
+                        Tuple.Create(4, PMove.Leer),
+                        // 5 wish (gen 3 event [Wish Absol])
+                        Tuple.Create(9, PMove.QuickAttack),
+                        // 10 superpower (dream world)
+                        Tuple.Create(10, PMove.Megahorn), // Dream World
+                        // pursuit (12 b2w2)
+                        // taunt (9 bw, 17 b2w2)
+                        Tuple.Create(20, PMove.Bite),
+                        Tuple.Create(25, PMove.DoubleTeam),
+                        Tuple.Create(28, PMove.Slash),
+                        Tuple.Create(25, PMove.SwordsDance), // BW
+                        Tuple.Create(33, PMove.SwordsDance), // B2W2
+                        // 36 future sight
+                        Tuple.Create(41, PMove.NightSlash),
+                        Tuple.Create(44, PMove.Detect),
+                        Tuple.Create(49, PMove.PsychoCut),
+                        // sucker punch (44 bw, 52 bw2)
+                        // razor wind (17 bw, 57 bw2)
+                        // me first (57 bw, 60 bw2)
+                        // perish song (46 gen 3, 65 gen 4/5)
+                    },
+                    OtherMoves = new PMove[]
+                    {
+                        // hail // tm
+                        // taunt
+                        // blizzard
+                        // hyper beam
+                        // sandstorm
+                        // torment
+                        // facade
+                        // rest
+                        // attract
+                        // thief
+                        // round
+                        // echoed voice
+                        // false swipe
+                        // incinerate
+                        // payback
+                        // giga impact
+                        // psych up
+                        // dream eater
+                        // swagger
+                        // assurance // egg move
+                        // baton pass
+                        // curse
+                        // double edge
+                        // hex
+                        // magic coat
+                        // me first
+                        // mean look
+                        // perish song
+                        // punishment
+                        // sucker punch
+                        // bounce // move tutor
+                        // foul play
+                        // knock off
+                        // magic coat
+                        // role play
+                        // sleep talk
+                        // snatch
+                        // snore
+                        // spite
+                        // superpower
+                        // captivate // gen 4 tm
+                        // counter // gen 3 tutor
+                        // endure // gen 4 tm
+                        // fury cutter // gen 4 tutor
+                        // mimic // gen 3 tutor
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        PMove.AerialAce, // TM
+                        PMove.BodySlam, // Gen 3 Move Tutor
+                        PMove.CalmMind, // TM
+                        PMove.ChargeBeam, // TM
+                        PMove.Cut, // HM
+                        PMove.DarkPulse, // Move Tutor
+                        PMove.DoubleTeam, // TM
+                        PMove.FaintAttack, // Egg Move
+                        PMove.FireBlast, // TM
+                        PMove.Flamethrower, // TM
+                        PMove.Flash, // TM
+                        PMove.Frustration, // TM
+                        PMove.Headbutt, // Gen 4 Move Tutor
+                        PMove.HiddenPower, // TM
+                        PMove.HoneClaws, // TM
+                        PMove.IceBeam, // TM
+                        PMove.IcyWind, // Move Tutor
+                        PMove.IronTail, // Move Tutor
+                        PMove.Megahorn, // Egg Move
+                        PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
+                        PMove.RainDance, // TM
+                        PMove.Retaliate, // TM
+                        PMove.Return, // TM
+                        PMove.RockSlide, // TM
+                        PMove.RockSmash, // TM
+                        PMove.RockTomb, // TM
+                        PMove.ShadowBall, // TM
+                        PMove.ShadowClaw, // TM
+                        PMove.ShockWave, // Gen 4 TM
+                        PMove.Snarl, // TM
+                        PMove.StoneEdge, // TM
+                        PMove.Strength, // HM
+                        PMove.Substitute, // TM
+                        PMove.SunnyDay, // TM
+                        PMove.Swift, // Gen 4 Move Tutor
+                        PMove.SwordsDance, // TM
+                        PMove.Thunder, // TM
+                        PMove.Thunderbolt, // TM
+                        PMove.ThunderWave, // TM
+                        PMove.Toxic, // TM
+                        PMove.WaterPulse, // Gen 4 TM
+                        PMove.WillOWisp, // TM
+                        PMove.XScissor, // TM
+                        PMove.ZenHeadbutt, // Egg Move / Move Tutor
+                    }
+                }
+            },
+            {
                 PSpecies.Clamperl,
                 new PPokemonData
                 {
@@ -687,6 +822,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(1, PMove.IronDefense),
                         Tuple.Create(1, PMove.WaterGun),
                         // whirlpool 1
+                        // 10 captivate (dream world)
+                        // 10 aqua ring (dream world)
                         Tuple.Create(51, PMove.ShellSmash),
                     },
                     OtherMoves = new PMove[]
