@@ -81,6 +81,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PMove.HiddenPower:
                         basePower = user.GetHiddenPowerBasePower();
                         break;
+                    case PMove.Retaliate:
+                        basePower = PMoveData.Data[bMove].Power;
+                        // Retaliate doubles power if the team has a Pokémon that fainted the previous turn
+                        if (teams[user.Local ? 0 : 1].MonFaintedLastTurn)
+                            basePower *= 2;
+                        break;
                     case PMove.Return:
                         basePower = Math.Max(1, user.Shell.Friendship / 2.5);
                         break;
@@ -120,23 +126,81 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // TODO: Stuff like mystic water
-
-            // Damage is halved when using electric moves while mud sport is active
-            /* if (type == Type.Electric && MudSportActive())
-             * basePower /= 2;*/
-            // Damage is halved when using fire moves while water sport is active
-            /* if (type == Type.Fire && WaterSportActive())
-             * basePower /= 2;*/
+            switch (bMoveType)
+            {
+                case PType.Bug:
+                    if (user.Item == PItem.InsectPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Dark:
+                    if (user.Item == PItem.DreadPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Dragon:
+                    if (user.Item == PItem.DracoPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Electric:
+                    if (user.Item == PItem.ZapPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Fighting:
+                    if (user.Item == PItem.FistPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Fire:
+                    if (user.Item == PItem.FlamePlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Flying:
+                    if (user.Item == PItem.SkyPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Ghost:
+                    if (user.Item == PItem.SpookyPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Grass:
+                    if (user.Item == PItem.MeadowPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Ground:
+                    if (user.Item == PItem.EarthPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Ice:
+                    if (user.Item == PItem.IciclePlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Normal:
+                    break;
+                case PType.Poison:
+                    if (user.Item == PItem.ToxicPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Psychic:
+                    if (user.Item == PItem.MindPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Rock:
+                    if (user.Item == PItem.StonePlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Steel:
+                    if (user.Item == PItem.IronPlate)
+                        basePower *= 1.2;
+                    break;
+                case PType.Water:
+                    if (user.Item == PItem.SplashPlate)
+                        basePower *= 1.2;
+                    break;
+            }
 
             // Life Orb boosts power but deals damage to the user
             if (!ignoreLifeOrb && user.Item == PItem.LifeOrb)
                 basePower = basePower * 5324 / 4096;
             // A Pikachu holding a Light Ball gets a 2x power boost
             if (user.Item == PItem.LightBall && user.Shell.Species == PSpecies.Pikachu)
-                basePower *= 2;
-            // Retaliate doubles power if the team has a pokemon that fainted the previous turn
-            if (bMove == PMove.Retaliate && teams[user.Local ? 0 : 1].MonFaintedLastTurn)
                 basePower *= 2;
             // Overgrow gives a 1.5x boost to Grass attacks if the efCurAttacker is below 1/3 max HP
             if (bMoveType == PType.Grass && user.Ability == PAbility.Overgrow && user.HP <= user.MaxHP / 3)
