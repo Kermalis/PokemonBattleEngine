@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PMoveUsedPacket.Code: packet = new PMoveUsedPacket(buffer); break;
                 case PPkmnHPChangedPacket.Code: packet = new PPkmnHPChangedPacket(buffer); break;
                 case PMoveEffectivenessPacket.Code: packet = new PMoveEffectivenessPacket(buffer); break;
-                //case PPkmnFlinchedPacket.Code: packet = new PPkmnFlinchedPacket(buffer); break;
+                case PPkmnSwitchOutPacket.Code: packet = new PPkmnSwitchOutPacket(buffer); break;
                 case PMoveMissedPacket.Code: packet = new PMoveMissedPacket(buffer); break;
                 case PPkmnFaintedPacket.Code: packet = new PPkmnFaintedPacket(buffer); break;
                 case PMoveCritPacket.Code: packet = new PMoveCritPacket(buffer); break;

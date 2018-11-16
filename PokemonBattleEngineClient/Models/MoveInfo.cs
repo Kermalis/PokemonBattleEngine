@@ -83,7 +83,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             bool enabled;
             if (pkmn.LockedAction.Decision == PDecision.Fight)
             {
-                enabled = pkmn.LockedAction.Move == move;
+                enabled = pkmn.LockedAction.FightMove == move;
             }
             else
             {

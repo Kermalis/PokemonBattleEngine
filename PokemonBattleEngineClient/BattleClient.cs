@@ -217,6 +217,13 @@ namespace Kermalis.PokemonBattleEngineClient
                     battleView.PokemonPositionChanged(pkmn, pos);
                     messageView.Add(battleView.Message = string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.Local)));
                     break;
+                case PPkmnSwitchOutPacket psop:
+                    pkmn = PKnownInfo.Instance.Pokemon(psop.PokemonId);
+                    pos = pkmn.FieldPosition;
+                    pkmn.ClearForSwitch();
+                    battleView.PokemonPositionChanged(pkmn, pos);
+                    messageView.Add(battleView.Message = string.Format("{1} withdrew {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.Local)));
+                    break;
                 case PReflectLightScreenPacket rlsp:
                     switch (rlsp.Action)
                     {

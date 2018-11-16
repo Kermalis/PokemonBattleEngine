@@ -162,10 +162,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void DetermineTurnOrder()
         {
             turnOrder.Clear();
+            IEnumerable<PPokemon> pkmnSwitchingOut = activeBattlers.Where(p => p.SelectedAction.Decision == PDecision.Switch);
+            IEnumerable<PPokemon> pkmnFighting = activeBattlers.Where(p => p.SelectedAction.Decision == PDecision.Fight);
+            // Switching happens first:
+            turnOrder.AddRange(pkmnSwitchingOut);
+            // Moves:
             // Highest priority is +5, lowest is -7
             for (int i = +5; i >= -7; i--)
             {
-                IEnumerable<PPokemon> pkmnWithThisPriority = activeBattlers.Where(p => p.SelectedAction.Decision == PDecision.Fight && PMoveData.Data[p.SelectedAction.Move].Priority == i);
+                IEnumerable<PPokemon> pkmnWithThisPriority = pkmnFighting.Where(p => PMoveData.Data[p.SelectedAction.FightMove].Priority == i);
                 if (pkmnWithThisPriority.Count() == 0)
                     continue;
 
@@ -225,8 +230,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (pkmn.HP < 1)
                     continue;
-                DoPreMoveEffects(pkmn); // BattleEffects.cs
-                UseMove(pkmn); // BattleEffects.cs
+                switch (pkmn.SelectedAction.Decision)
+                {
+                    case PDecision.Fight:
+                        DoPreMoveEffects(pkmn); // BattleEffects.cs
+                        UseMove(pkmn); // BattleEffects.cs
+                        break;
+                    case PDecision.Switch:
+                        PFieldPosition pos = pkmn.FieldPosition;
+                        pkmn.ClearForSwitch();
+                        activeBattlers.Remove(pkmn);
+                        BroadcastSwitchOut(pkmn);
+                        PPokemon switchPkmn = PKnownInfo.Instance.Pokemon(pkmn.SelectedAction.SwitchPokemonId);
+                        switchPkmn.FieldPosition = pos;
+                        activeBattlers.Add(switchPkmn);
+                        BroadcastSwitchIn(switchPkmn);
+                        break;
+                }
                 pkmn.PreviousAction = pkmn.SelectedAction;
             }
         }
@@ -237,7 +257,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 pkmn.SelectedAction.Decision = PDecision.None;
                 pkmn.Status2 &= ~PStatus2.Flinching;
                 pkmn.Status2 &= ~PStatus2.Protected;
-                if (pkmn.PreviousAction.Decision == PDecision.Fight && pkmn.PreviousAction.Move != PMove.Protect && pkmn.PreviousAction.Move != PMove.Detect)
+                if (pkmn.PreviousAction.Decision == PDecision.Fight && pkmn.PreviousAction.FightMove != PMove.Protect && pkmn.PreviousAction.FightMove != PMove.Detect)
                     pkmn.ProtectCounter = 0;
                 if (pkmn.HP > 0)
                     DoTurnEndedEffects(pkmn); // BattleEffects.cs

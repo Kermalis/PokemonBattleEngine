@@ -12,6 +12,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void BroadcastSwitchIn(PPokemon pkmn)
             => OnNewEvent?.Invoke(new PPkmnSwitchInPacket(pkmn));
+        void BroadcastSwitchOut(PPokemon pkmn)
+            => OnNewEvent?.Invoke(new PPkmnSwitchOutPacket(pkmn));
         void BroadcastMoveUsed()
             => OnNewEvent?.Invoke(new PMoveUsedPacket(bUser, bMove));
         void BroadcastMiss()
@@ -129,6 +131,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PPkmnSwitchInPacket psip:
                     Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance.Pokemon(psip.PokemonId).Shell.Nickname, PKnownInfo.Instance.DisplayName(psip.Local));
+                    break;
+                case PPkmnSwitchOutPacket psop:
+                    pkmn = PKnownInfo.Instance.Pokemon(psop.PokemonId);
+                    Console.WriteLine("{1} withdrew {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.Local));
                     break;
                 case PReflectLightScreenPacket rlsp:
                     switch (rlsp.Action)

@@ -81,12 +81,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PTeam opposingTeam = teams[user.Local ? 1 : 0]; // Other team
 
             bUser = user;
-            bMove = user.SelectedAction.Move; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            bMove = user.SelectedAction.FightMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
             PMoveData mData = PMoveData.Data[bMove];
 
             #region Targets
 
-            PTarget selectedTarget = user.SelectedAction.Targets;
+            PTarget selectedTarget = user.SelectedAction.FightTargets;
             var targets = new List<PPokemon>();
             if (selectedTarget.HasFlag(PTarget.AllyLeft))
             {

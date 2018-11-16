@@ -18,7 +18,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 
 ----
 # To Do:
-* Switching out
+* Switching in after a faint
 * Struggle
 * Weather
 * Rotation battles

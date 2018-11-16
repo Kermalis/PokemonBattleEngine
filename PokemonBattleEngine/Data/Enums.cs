@@ -71,6 +71,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         Fight,
+        Switch
     }
     public enum PMoveCategory : byte
     {

@@ -108,6 +108,30 @@ namespace Kermalis.PokemonBattleEngine.Data
             Speed = OtherStat(pData.Speed);
         }
 
+        public void ClearForSwitch()
+        {
+            FieldPosition = PFieldPosition.None;
+
+            AttackChange = DefenseChange = SpAttackChange = SpDefenseChange = SpeedChange = AccuracyChange = EvasionChange = 0;
+
+            if (Status1 == PStatus1.Asleep)
+                Status1Counter = SleepTurns;
+            else if (Status1 == PStatus1.BadlyPoisoned)
+                Status1Counter = 1;
+
+            Status2 &= ~PStatus2.Confused;
+            ConfusionCounter = ConfusionTurns = 0;
+            Status2 &= ~PStatus2.Pumped;
+            Status2 &= ~PStatus2.Substitute;
+            SubstituteHP = 0;
+            Status2 &= ~PStatus2.Transformed;
+            Species = Shell.Species;
+            Ability = Shell.Ability;
+
+            if (Shell.Nature != PNature.MAX) // If the nature is unset, the program is not the host and does not own the Pokémon
+                CalculateStats();
+        }
+
         // Transforms into "target" and sets both Pokémons' information to the parameters
         // Also sets the status2 transformed bit
         public void Transform(PPokemon target, ushort targetAttack, ushort targetDefense, ushort targetSpAttack, ushort targetSpDefense, ushort targetSpeed, PAbility targetAbility, PMove[] targetMoves)

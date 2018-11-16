@@ -25,20 +25,17 @@ namespace Kermalis.PokemonBattleEngine
             PBattle battle = new PBattle(PBattleStyle.Single, team0, team1);
             battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
             battle.Start();
-            PPokemon p0_0 = PKnownInfo.Instance.LocalParty[0];
-            //PPokemon p0_1 = PKnownInfo.Instance.LocalParty[1];
-            PPokemon p1_0 = PKnownInfo.Instance.RemoteParty[0];
-            //PPokemon p1_1 = PKnownInfo.Instance.RemoteParty[1];
 
+            PPokemon lCenter = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center);
+            PPokemon rCenter = PKnownInfo.Instance.PokemonAtPosition(false, PFieldPosition.Center);
             Console.WriteLine();
             Console.WriteLine();
-            Console.WriteLine(p0_0);
+            Console.WriteLine(lCenter);
             Console.WriteLine();
-            //Console.WriteLine(p0_1);
-            Console.WriteLine(p1_0);
-            //Console.WriteLine(p1_1);
+            Console.WriteLine(rCenter);
+            Console.WriteLine();
 
-            while ((p0_0.HP > 0/* || p0_1.HP > 0*/) && (p1_0.HP > 0/* || p1_1.HP > 0*/))
+            while (battle.TemporaryKeepBattlingBool)
             {
                 Console.WriteLine();
                 Console.WriteLine();
@@ -47,50 +44,41 @@ namespace Kermalis.PokemonBattleEngine
                 do
                 {
                     byte move;
-                    PAction action;
+                    PAction action = new PAction();
                     bool valid;
 
                     move = (byte)PUtils.RNG.Next(0, PSettings.NumMoves);
-                    action.PokemonId = p0_0.Id;
+                    action.PokemonId = lCenter.Id;
                     action.Decision = PDecision.Fight;
-                    action.Move = p0_0.Moves[move];
-                    action.Targets = PTarget.FoeCenter;
+                    action.FightMove = lCenter.Moves[move];
+                    action.FightTargets = PTarget.FoeCenter;
                     valid = battle.SelectActionIfValid(action);
-
-                    /*move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    action = new PAction
-                    {
-                        PokemonId = p0_1.Id,
-                        Move = p0_1.Shell.Moves[move],
-                        Targets = PTarget.FoeLeft
-                    };
-                    valid = battle.SelectActionIfValid(action);*/
 
                     move = (byte)PUtils.RNG.Next(0, PSettings.NumMoves);
-                    action.PokemonId = p1_0.Id;
+                    action.PokemonId = rCenter.Id;
                     action.Decision = PDecision.Fight;
-                    action.Move = p1_0.Moves[move];
-                    action.Targets = PTarget.FoeCenter;
+                    action.FightMove = rCenter.Moves[move];
+                    action.FightTargets = PTarget.FoeCenter;
                     valid = battle.SelectActionIfValid(action);
 
-                    /*move = (byte)PUtils.RNG.Next(0, PConstants.NumMoves);
-                    action = new PAction
-                    {
-                        PokemonId = p1_1.Id,
-                        Move = p1_1.Shell.Moves[move],
-                        Targets = PTarget.FoeLeft
-                    };
-                    valid = battle.SelectActionIfValid(action);*/
                 } while (!battle.IsReadyToRunTurn());
-                battle.RunTurn();
+                try
+                {
+                    battle.RunTurn();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                }
 
+                lCenter = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center);
+                rCenter = PKnownInfo.Instance.PokemonAtPosition(false, PFieldPosition.Center);
                 Console.WriteLine();
                 Console.WriteLine();
-                Console.WriteLine(p0_0);
+                Console.WriteLine(lCenter);
                 Console.WriteLine();
-                //Console.WriteLine(p0_1);
-                Console.WriteLine(p1_0);
-                //Console.WriteLine(p1_1);
+                Console.WriteLine(rCenter);
+                Console.WriteLine();
             }
             Console.ReadKey();
         }
