@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // If power is 0, power is determined by bMove
-        ushort CalculateBasePower(PPokemon user, PPokemon target, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
+        ushort CalculateBasePower(PPokemon user, PPokemon target, byte power, PMoveCategory category, bool ignoreReflectLightScreen, bool ignoreLifeOrb)
         {
             PPokemonData targetPData = PPokemonData.Data[target.Species];
             double basePower = power;
@@ -129,6 +129,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             /* if (type == Type.Fire && WaterSportActive())
              * basePower /= 2;*/
 
+            // Life Orb boosts power but deals damage to the user
+            if (!ignoreLifeOrb && user.Item == PItem.LifeOrb)
+                basePower = basePower * 5324 / 4096;
             // A Pikachu holding a Light Ball gets a 2x power boost
             if (user.Item == PItem.LightBall && user.Shell.Species == PSpecies.Pikachu)
                 basePower *= 2;
@@ -212,6 +215,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // A Latios or Latias holding a Soul Dew gets a 1.5x spAttack boost
             if (user.Item == PItem.SoulDew && (user.Shell.Species == PSpecies.Latias || user.Shell.Species == PSpecies.Latios))
                 spAttack *= 1.5;
+            // A Pokémon holding a Choice Specs gets a 1.5x spAttack boost
+            if (user.Item == PItem.ChoiceSpecs)
+                spAttack *= 1.5;
 
             return (ushort)spAttack;
         }
@@ -231,13 +237,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         ushort CalculateDamage()
-            => CalculateDamage(bUser, bTarget, 0, PMoveData.Data[bMove].Category, false);
+            => CalculateDamage(bUser, bTarget, 0, PMoveData.Data[bMove].Category, false, false);
         // If power is 0, power is determined by bMove
-        ushort CalculateDamage(PPokemon user, PPokemon target, byte power, PMoveCategory category, bool ignoreReflectLightScreen)
+        ushort CalculateDamage(PPokemon user, PPokemon target, byte power, PMoveCategory category, bool ignoreReflectLightScreen, bool ignoreLifeOrb)
         {
             ushort damage;
             ushort a = 0, d = 0,
-                p = CalculateBasePower(user, target, power, category, ignoreReflectLightScreen);
+                p = CalculateBasePower(user, target, power, category, ignoreReflectLightScreen, ignoreLifeOrb);
 
             // TODO: Determine a and d for moves like Foul Play and Psyshock
 

@@ -538,7 +538,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // 50% chance to hit itself
                     if (PUtils.ApplyChance(50, 100))
                     {
-                        DealDamage(bUser, CalculateDamage(bUser, bUser, 40, PMoveCategory.Physical, true), PEffectiveness.Normal, true);
+                        DealDamage(bUser, CalculateDamage(bUser, bUser, 40, PMoveCategory.Physical, true, true), PEffectiveness.Normal, true);
                         BroadcastStatus2(bUser, PStatus2.Confused, PStatusAction.Damage);
                         FaintCheck(bUser);
                         return true;

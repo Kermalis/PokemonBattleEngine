@@ -185,6 +185,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChillDrive,
         ChoiceBand, // TODO: Lock move
         ChoiceScarf, // TODO: Lock move
+        ChoiceSpecs, // TODO: Lock move
         DampRock,
         DeepSeaScale,
         DeepSeaTooth,
@@ -192,6 +193,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HeatRock,
         LaxIncense,
         Leftovers,
+        LifeOrb, // TODO: Damage user
         LightBall,
         LightClay,
         MetalPowder,

@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine
                 Friendship = 255,
                 Shiny = false,
                 Item = PItem.ChoiceScarf,
-                Ability = PAbility.HugePower, // Imposter
+                Ability = PAbility.Imposter,
                 Gender = PGender.Genderless,
                 Nature = PNature.Sassy,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
@@ -60,7 +60,7 @@ namespace Kermalis.PokemonBattleEngine
                 Level = 100,
                 Friendship = 255,
                 Shiny = false,
-                Item = PItem.Leftovers, // life orb
+                Item = PItem.LifeOrb,
                 Ability = PAbility.Levitate,
                 Gender = PGender.Female,
                 Nature = PNature.Timid,
@@ -76,7 +76,7 @@ namespace Kermalis.PokemonBattleEngine
                 Level = 100,
                 Friendship = 255,
                 Shiny = false,
-                Item = PItem.Leftovers, // choice specs
+                Item = PItem.ChoiceSpecs,
                 Ability = PAbility.Levitate,
                 Gender = PGender.Male,
                 Nature = PNature.Timid,
