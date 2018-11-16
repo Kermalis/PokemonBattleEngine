@@ -10,19 +10,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
     [StructLayout(LayoutKind.Explicit)]
     public struct PAction
     {
-        [FieldOffset(4)]
-        public Guid PokemonId;
-        [FieldOffset(3)]
-        public PDecision Decision; // TODO (Switch, forfeit)
         [FieldOffset(0)]
-        public PMove Move;
+        public byte PokemonId;
+        [FieldOffset(1)]
+        public PDecision Decision; // TODO (Switch, forfeit)
         [FieldOffset(2)]
+        public PMove Move;
+        [FieldOffset(4)]
         public PTarget Targets;
 
         internal byte[] ToBytes()
         {
             var bytes = new List<byte>();
-            bytes.AddRange(PokemonId.ToByteArray());
+            bytes.Add(PokemonId);
             bytes.Add((byte)Decision);
             bytes.AddRange(BitConverter.GetBytes((ushort)Move));
             bytes.Add((byte)Targets);
@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return new PAction
             {
-                PokemonId = new Guid(r.ReadBytes(16)),
+                PokemonId = r.ReadByte(),
                 Decision = (PDecision)r.ReadByte(),
                 Move = (PMove)r.ReadUInt16(),
                 Targets = (PTarget)r.ReadByte()

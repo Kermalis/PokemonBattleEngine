@@ -20,14 +20,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             public byte ReflectCount, LightScreenCount; // Reflect & Light Screen
             public bool MonFaintedLastTurn; // Retaliate
 
-            public PTeam(PTeamShell shell, bool local)
+            public PTeam(PTeamShell shell, bool local, ref byte idCount)
             {
                 Shell = shell;
                 Local = local;
                 int min = Math.Min(shell.Party.Count, PSettings.MaxPartySize);
                 Party = new PPokemon[min];
                 for (int i = 0; i < min; i++)
-                    Party[i] = new PPokemon(Guid.NewGuid(), Shell.Party[i]);
+                    Party[i] = new PPokemon(idCount++, Shell.Party[i]);
 
                 if (Local)
                     PKnownInfo.Instance.LocalDisplayName = Shell.DisplayName;
@@ -55,8 +55,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PKnownInfo.Instance.Clear();
             BattleStyle = style;
 
-            teams[0] = new PTeam(t0, true);
-            teams[1] = new PTeam(t1, false);
+            byte idCount = 0;
+            teams[0] = new PTeam(t0, true, ref idCount);
+            teams[1] = new PTeam(t1, false, ref idCount);
 
             // Set pokemon field positions
             switch (BattleStyle)

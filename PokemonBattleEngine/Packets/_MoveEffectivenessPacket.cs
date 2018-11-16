@@ -12,14 +12,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x0B;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly Guid PokemonId; // Defender
+        public readonly byte PokemonId; // Defender
         public readonly PEffectiveness Effectiveness;
 
         public PMoveEffectivenessPacket(PPokemon pkmn, PEffectiveness effectiveness)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange((PokemonId = pkmn.Id).ToByteArray());
+            bytes.Add(PokemonId = pkmn.Id);
             bytes.Add((byte)(Effectiveness = effectiveness));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                PokemonId = new Guid(r.ReadBytes(0x10));
+                PokemonId = r.ReadByte();
                 Effectiveness = (PEffectiveness)r.ReadByte();
             }
         }

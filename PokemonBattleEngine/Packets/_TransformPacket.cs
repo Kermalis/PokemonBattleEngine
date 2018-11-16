@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x18;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly Guid UserId, TargetId;
+        public readonly byte UserId, TargetId;
         public readonly ushort TargetAttack, TargetDefense, TargetSpAttack, TargetSpDefense, TargetSpeed;
         public readonly PAbility TargetAbility;
         public readonly PMove[] TargetMoves;
@@ -21,8 +21,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange((UserId = user.Id).ToByteArray());
-            bytes.AddRange((TargetId = target.Id).ToByteArray());
+            bytes.Add(UserId = user.Id);
+            bytes.Add(TargetId = target.Id);
             bytes.AddRange(BitConverter.GetBytes(TargetAttack = target.Attack));
             bytes.AddRange(BitConverter.GetBytes(TargetDefense = target.Defense));
             bytes.AddRange(BitConverter.GetBytes(TargetSpAttack = target.SpAttack));
@@ -39,8 +39,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                UserId = new Guid(r.ReadBytes(0x10));
-                TargetId = new Guid(r.ReadBytes(0x10));
+                UserId = r.ReadByte();
+                TargetId = r.ReadByte();
                 TargetAttack = r.ReadUInt16();
                 TargetDefense = r.ReadUInt16();
                 TargetSpAttack = r.ReadUInt16();

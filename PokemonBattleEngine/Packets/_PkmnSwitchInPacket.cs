@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x06;
         public IEnumerable<byte> Buffer => BuildBuffer();
 
-        public readonly Guid PokemonId;
+        public readonly byte PokemonId;
         public bool Local;
         public readonly PSpecies Species;
         public readonly string Nickname;
@@ -40,7 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                PokemonId = new Guid(r.ReadBytes(0x10));
+                PokemonId = r.ReadByte();
                 Local = r.ReadBoolean();
                 Species = (PSpecies)r.ReadUInt32();
                 Nickname = PUtils.StringFromBytes(r);
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(PokemonId.ToByteArray());
+            bytes.Add(PokemonId);
             bytes.Add((byte)(Local ? 1 : 0));
             bytes.AddRange(BitConverter.GetBytes((uint)Species));
             bytes.AddRange(PUtils.StringToBytes(Nickname));

@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public string DisplayName(bool local) => local ? LocalDisplayName : RemoteDisplayName;
         // Returns null if it doesn't exist
-        public PPokemon Pokemon(Guid pkmnId) => localParty.Concat(remoteParty).SingleOrDefault(p => p.Id == pkmnId);
+        public PPokemon Pokemon(byte pkmnId) => localParty.Concat(remoteParty).SingleOrDefault(p => p.Id == pkmnId);
         // Returns null if the field position is empty
         public PPokemon PokemonAtPosition(bool local, PFieldPosition pos) => (local ? localParty : remoteParty).SingleOrDefault(p => p.FieldPosition == pos);
         public PPokemon[] LocalParty => localParty.ToArray();

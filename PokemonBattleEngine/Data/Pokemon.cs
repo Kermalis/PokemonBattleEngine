@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PPokemon
     {
-        public readonly Guid Id;
+        public readonly byte Id;
         // Not included in ToBytes() or FromBytes(). Set manually by the host and by PKnownInfo
         // True indicates this pokemon is owned by the client or team 0 in the eyes of the host/spectators
         public bool Local;
@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public string OwnerDisplayName => Local ? PKnownInfo.Instance.LocalDisplayName : PKnownInfo.Instance.RemoteDisplayName;
 
         // Stats & PP are set from the shell info, but Local will need to be manually set by the host
-        public PPokemon(Guid id, PPokemonShell shell)
+        public PPokemon(byte id, PPokemonShell shell)
         {
             Shell = shell;
             Species = Shell.Species;
@@ -159,13 +159,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal byte[] ToBytes()
         {
             var bytes = new List<byte>();
-            bytes.AddRange(Id.ToByteArray());
+            bytes.Add(Id);
             bytes.AddRange(Shell.ToBytes());
             return bytes.ToArray();
         }
         internal static PPokemon FromBytes(BinaryReader r)
         {
-            return new PPokemon(new Guid(r.ReadBytes(0x10)), PPokemonShell.FromBytes(r));
+            return new PPokemon(r.ReadByte(), PPokemonShell.FromBytes(r));
         }
 
         public override bool Equals(object obj)
