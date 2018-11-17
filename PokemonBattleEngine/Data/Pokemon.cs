@@ -74,9 +74,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             Local = false;
             Shell = new PPokemonShell
             {
+                Species = psip.Species,
+                Shiny = psip.Shiny,
                 Nickname = psip.Nickname,
                 Level = psip.Level,
                 Gender = psip.Gender,
+                Ability = PAbility.MAX,
+                Item = PItem.MAX,
                 Nature = PNature.MAX
             };
             Species = psip.Species;
@@ -111,6 +115,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         public void ClearForSwitch()
         {
             FieldPosition = PFieldPosition.None;
+            Species = Shell.Species;
+            Ability = Shell.Ability;
+            Shiny = Shell.Shiny;
 
             AttackChange = DefenseChange = SpAttackChange = SpDefenseChange = SpeedChange = AccuracyChange = EvasionChange = 0;
 
@@ -125,8 +132,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             Status2 &= ~PStatus2.Substitute;
             SubstituteHP = 0;
             Status2 &= ~PStatus2.Transformed;
-            Species = Shell.Species;
-            Ability = Shell.Ability;
 
             if (Shell.Nature != PNature.MAX) // If the nature is unset, the program is not the host and does not own the Pokémon
                 CalculateStats();

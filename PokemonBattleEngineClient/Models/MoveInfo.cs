@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             }
         }
 
-        public ReactiveCommand SelectMoveCommand { get; }
+        ReactiveCommand SelectMoveCommand { get; }
 
         PMove move;
         public PMove Move
@@ -55,7 +55,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             }
         }
         IBrush brush;
-        public IBrush Brush
+        IBrush Brush
         {
             get => brush;
             set
@@ -65,7 +65,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             }
         }
         IBrush borderBrush;
-        public IBrush BorderBrush
+        IBrush BorderBrush
         {
             get => borderBrush;
             set

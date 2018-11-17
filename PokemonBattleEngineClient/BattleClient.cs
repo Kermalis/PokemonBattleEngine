@@ -421,6 +421,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
 
         List<PPokemon> actions = new List<PPokemon>(3);
+        List<PPokemon> standBy = new List<PPokemon>(3);
         void ActionsLoop(bool begin)
         {
             PPokemon pkmn;
@@ -429,6 +430,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 foreach (PPokemon p in PKnownInfo.Instance.LocalParty)
                     p.SelectedAction.Decision = PDecision.None;
                 actions.Clear();
+                standBy.Clear();
                 switch (BattleStyle)
                 {
                     case PBattleStyle.Single:
@@ -464,8 +466,14 @@ namespace Kermalis.PokemonBattleEngineClient
             }
             else
             {
+                if (i != 0)
+                {
+                    PAction prevAction = actions[i - 1].SelectedAction;
+                    if (prevAction.Decision == PDecision.Switch)
+                        standBy.Add(PKnownInfo.Instance.Pokemon(prevAction.SwitchPokemonId));
+                }
                 battleView.Message = $"What will {actions[i].Shell.Nickname} do?";
-                actionsView.DisplayMoves(actions[i]);
+                actionsView.DisplayActions(PKnownInfo.Instance.LocalParty, actions[i], ref standBy);
             }
         }
         public void ActionSet()

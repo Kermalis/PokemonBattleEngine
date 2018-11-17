@@ -3,6 +3,7 @@ using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Models;
 using ReactiveUI;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -270,7 +271,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         PTarget targetAllyLeftResult, targetAllyCenterResult, targetAllyRightResult,
             targetFoeLeftResult, targetFoeCenterResult, targetFoeRightResult;
 
-        public ReactiveCommand SelectTargetCommand { get; }
+        ReactiveCommand SelectTargetCommand { get; }
 
         MoveInfo[] moves;
         MoveInfo[] Moves
@@ -280,6 +281,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 moves = value;
                 OnPropertyChanged(nameof(Moves));
+            }
+        }
+
+        PokemonInfo[] party;
+        PokemonInfo[] Party
+        {
+            get => party;
+            set
+            {
+                party = value;
+                OnPropertyChanged(nameof(Party));
             }
         }
 
@@ -305,7 +317,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         public BattleClient Client;
-        PPokemon pokemon;
+        public PPokemon Pokemon { get; private set; }
 
         public ActionsView()
         {
@@ -316,19 +328,34 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             MoveInfo.CreateBrushes();
         }
 
-        public void DisplayMoves(PPokemon pkmn)
+        public void DisplayActions(PPokemon[] party, PPokemon pkmn, ref List<PPokemon> standBy)
         {
-            var info = new MoveInfo[PSettings.NumMoves];
+            Pokemon = pkmn;
+
+            var pInfo = new PokemonInfo[party.Length];
+            for (int i = 0; i < party.Length; i++)
+                pInfo[i] = new PokemonInfo(party[i], this, ref standBy);
+            Party = pInfo;
+
+            var mInfo = new MoveInfo[PSettings.NumMoves];
             for (int i = 0; i < PSettings.NumMoves; i++)
-                info[i] = new MoveInfo(i, pokemon = pkmn, this);
-            Moves = info;
+                mInfo[i] = new MoveInfo(i, Pokemon, this);
+            Moves = mInfo;
+
             MovesVisible = true;
         }
 
+        public void SelectPokemon(PokemonInfo pkmnInfo)
+        {
+            Pokemon.SelectedAction.Decision = PDecision.Switch;
+            Pokemon.SelectedAction.SwitchPokemonId = pkmnInfo.Pokemon.Id;
+            MovesVisible = false;
+            Client.ActionSet();
+        }
         public void SelectMove(MoveInfo moveInfo)
         {
-            pokemon.SelectedAction.Decision = PDecision.Fight;
-            pokemon.SelectedAction.FightMove = moveInfo.Move;
+            Pokemon.SelectedAction.Decision = PDecision.Fight;
+            Pokemon.SelectedAction.FightMove = moveInfo.Move;
             MovesVisible = false;
             DisplayTargets(moveInfo);
         }
@@ -341,7 +368,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 switch (mData.Targets)
                 {
                     case PMoveTarget.All:
-                        pokemon.SelectedAction.FightTargets = PTarget.AllyCenter | PTarget.FoeCenter;
+                        Pokemon.SelectedAction.FightTargets = PTarget.AllyCenter | PTarget.FoeCenter;
                         break;
                     case PMoveTarget.AllFoes:
                     case PMoveTarget.AllFoesSurrounding:
@@ -350,13 +377,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     case PMoveTarget.SingleFoeSurrounding:
                     case PMoveTarget.SingleNotSelf:
                     case PMoveTarget.SingleSurrounding:
-                        pokemon.SelectedAction.FightTargets = PTarget.FoeCenter;
+                        Pokemon.SelectedAction.FightTargets = PTarget.FoeCenter;
                         break;
                     case PMoveTarget.AllTeam:
                     case PMoveTarget.Self:
                     case PMoveTarget.SelfOrAllySurrounding:
                     case PMoveTarget.SingleAllySurrounding:
-                        pokemon.SelectedAction.FightTargets = PTarget.AllyCenter;
+                        Pokemon.SelectedAction.FightTargets = PTarget.AllyCenter;
                         break;
                 }
                 Client.ActionSet();
@@ -400,7 +427,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             targetFoeLeftResult = targetFoeRightResult = PTarget.FoeLeft | PTarget.FoeRight;
                             break;
                         case PMoveTarget.AllSurrounding:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetAllyLeftEnabled = false;
                                 TargetAllyRightEnabled = true;
@@ -429,7 +456,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             break;
                         case PMoveTarget.RandomFoeSurrounding:
                         case PMoveTarget.Self:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetAllyLeftEnabled = true;
                                 TargetAllyRightEnabled = false;
@@ -452,7 +479,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             targetAllyRightResult = PTarget.AllyRight;
                             break;
                         case PMoveTarget.SingleAllySurrounding:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetAllyLeftEnabled = false;
                                 TargetAllyRightEnabled = true;
@@ -476,7 +503,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             break;
                         case PMoveTarget.SingleNotSelf:
                         case PMoveTarget.SingleSurrounding:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetAllyLeftEnabled = false;
                                 TargetAllyRightEnabled = true;
@@ -515,7 +542,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             targetFoeLeftResult = targetFoeCenterResult = targetFoeRightResult = PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight;
                             break;
                         case PMoveTarget.AllFoesSurrounding:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
                                 TargetFoeLeftEnabled = false;
@@ -523,7 +550,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                                 TargetLineFoeLeftFoeCenterEnabled = false;
                                 targetFoeCenterResult = targetFoeRightResult = PTarget.FoeCenter | PTarget.FoeRight;
                             }
-                            else if (pokemon.FieldPosition == PFieldPosition.Center)
+                            else if (Pokemon.FieldPosition == PFieldPosition.Center)
                             {
                                 TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
                                 TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = true;
@@ -541,7 +568,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             TargetLineFoeRightAllyLeftEnabled = TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = false;
                             break;
                         case PMoveTarget.AllSurrounding:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetFoeRightEnabled = TargetFoeCenterEnabled = TargetAllyCenterEnabled = true;
                                 TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = false;
@@ -549,7 +576,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                                 TargetLineFoeRightFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = true;
                                 targetAllyCenterResult = targetFoeCenterResult = targetFoeRightResult = PTarget.AllyCenter | PTarget.FoeCenter | PTarget.FoeRight;
                             }
-                            else if (pokemon.FieldPosition == PFieldPosition.Center)
+                            else if (Pokemon.FieldPosition == PFieldPosition.Center)
                             {
                                 TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
                                 TargetAllyCenterEnabled = false;
@@ -575,13 +602,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             break;
                         case PMoveTarget.RandomFoeSurrounding:
                         case PMoveTarget.Self:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetAllyLeftEnabled = true;
                                 TargetAllyCenterEnabled = TargetAllyRightEnabled = false;
                                 targetAllyLeftResult = PTarget.AllyLeft;
                             }
-                            else if (pokemon.FieldPosition == PFieldPosition.Center)
+                            else if (Pokemon.FieldPosition == PFieldPosition.Center)
                             {
                                 TargetAllyCenterEnabled = true;
                                 TargetAllyLeftEnabled = TargetAllyRightEnabled = false;
@@ -597,14 +624,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
                             break;
                         case PMoveTarget.SelfOrAllySurrounding:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetAllyLeftEnabled = TargetAllyCenterEnabled = true;
                                 TargetAllyRightEnabled = false;
                                 targetAllyLeftResult = PTarget.AllyLeft;
                                 targetAllyCenterResult = PTarget.AllyCenter;
                             }
-                            else if (pokemon.FieldPosition == PFieldPosition.Center)
+                            else if (Pokemon.FieldPosition == PFieldPosition.Center)
                             {
                                 TargetAllyCenterEnabled = TargetAllyLeftEnabled = TargetAllyRightEnabled = true;
                                 targetAllyLeftResult = PTarget.AllyLeft;
@@ -622,7 +649,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
                             break;
                         case PMoveTarget.SingleAllySurrounding:
-                            if (pokemon.FieldPosition == PFieldPosition.Left || pokemon.FieldPosition == PFieldPosition.Right)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left || Pokemon.FieldPosition == PFieldPosition.Right)
                             {
                                 TargetAllyCenterEnabled = true;
                                 TargetAllyLeftEnabled = TargetAllyRightEnabled = false;
@@ -639,14 +666,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
                             break;
                         case PMoveTarget.SingleFoeSurrounding:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
                                 TargetFoeLeftEnabled = false;
                                 targetFoeCenterResult = PTarget.FoeCenter;
                                 targetFoeRightResult = PTarget.FoeRight;
                             }
-                            else if (pokemon.FieldPosition == PFieldPosition.Center)
+                            else if (Pokemon.FieldPosition == PFieldPosition.Center)
                             {
                                 TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
                                 targetFoeLeftResult = PTarget.FoeLeft;
@@ -664,14 +691,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             TargetLineAllyLeftAllyCenterEnabled = TargetLineAllyRightAllyCenterEnabled = TargetLineFoeRightFoeCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftAllyRightEnabled = TargetLineFoeRightAllyLeftEnabled = false;
                             break;
                         case PMoveTarget.SingleNotSelf:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetAllyLeftEnabled = false;
                                 TargetAllyCenterEnabled = TargetAllyRightEnabled = true;
                                 targetAllyCenterResult = PTarget.AllyCenter;
                                 targetAllyRightResult = PTarget.AllyRight;
                             }
-                            else if (pokemon.FieldPosition == PFieldPosition.Center)
+                            else if (Pokemon.FieldPosition == PFieldPosition.Center)
                             {
                                 TargetAllyCenterEnabled = false;
                                 TargetAllyLeftEnabled = TargetAllyRightEnabled = true;
@@ -692,7 +719,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                             targetFoeRightResult = PTarget.FoeRight;
                             break;
                         case PMoveTarget.SingleSurrounding:
-                            if (pokemon.FieldPosition == PFieldPosition.Left)
+                            if (Pokemon.FieldPosition == PFieldPosition.Left)
                             {
                                 TargetAllyCenterEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
                                 TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = false;
@@ -700,7 +727,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                                 targetFoeCenterResult = PTarget.FoeCenter;
                                 targetFoeRightResult = PTarget.FoeRight;
                             }
-                            else if (pokemon.FieldPosition == PFieldPosition.Center)
+                            else if (Pokemon.FieldPosition == PFieldPosition.Center)
                             {
                                 TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;
                                 TargetAllyCenterEnabled = false;
@@ -730,12 +757,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             switch (arg)
             {
-                case "AllyLeft": pokemon.SelectedAction.FightTargets = targetAllyLeftResult; break;
-                case "AllyCenter": pokemon.SelectedAction.FightTargets = targetAllyCenterResult; break;
-                case "AllyRight": pokemon.SelectedAction.FightTargets = targetAllyRightResult; break;
-                case "FoeLeft": pokemon.SelectedAction.FightTargets = targetFoeLeftResult; break;
-                case "FoeCenter": pokemon.SelectedAction.FightTargets = targetFoeCenterResult; break;
-                case "FoeRight": pokemon.SelectedAction.FightTargets = targetFoeRightResult; break;
+                case "AllyLeft": Pokemon.SelectedAction.FightTargets = targetAllyLeftResult; break;
+                case "AllyCenter": Pokemon.SelectedAction.FightTargets = targetAllyCenterResult; break;
+                case "AllyRight": Pokemon.SelectedAction.FightTargets = targetAllyRightResult; break;
+                case "FoeLeft": Pokemon.SelectedAction.FightTargets = targetFoeLeftResult; break;
+                case "FoeCenter": Pokemon.SelectedAction.FightTargets = targetFoeCenterResult; break;
+                case "FoeRight": Pokemon.SelectedAction.FightTargets = targetFoeRightResult; break;
             }
             TargetsVisible = false;
             Client.ActionSet();

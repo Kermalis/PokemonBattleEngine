@@ -36,19 +36,35 @@
               Content="{Binding TargetAllyRight}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
               Command="{Binding SelectTargetCommand}" CommandParameter="AllyRight"/>
     </Canvas>
-    <ItemsControl Items="{Binding Moves}" Width="512" Height="128" IsVisible="{Binding MovesVisible}">
-      <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-          <StackPanel Orientation="Horizontal" Spacing="20" Margin="20"/>
-        </ItemsPanelTemplate>
-      </ItemsControl.ItemsPanel>
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <Button Width="103" Height="30" Content="{Binding Move}" Command="{Binding SelectMoveCommand}"
-                  Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4" Foreground="White"
-                  FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
+    <StackPanel Width="512" Height="128" IsVisible="{Binding MovesVisible}">
+      <ItemsControl Items="{Binding Moves}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" Spacing="20" Margin="20"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Button Width="103" Height="30" Content="{Binding Move}" Command="{Binding SelectMoveCommand}"
+                    Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4" Foreground="White"
+                    FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <ItemsControl Items="{Binding Party}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="12"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Button Width="73" Height="30" Content="{Binding Label}" Command="{Binding SelectPokemonCommand}"
+                    Background="Black" BorderThickness="4" Foreground="White"
+                    FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </StackPanel>
   </StackPanel>
 </UserControl>
