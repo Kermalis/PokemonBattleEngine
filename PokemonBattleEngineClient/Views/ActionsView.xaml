@@ -47,7 +47,12 @@
           <DataTemplate>
             <Button Width="103" Height="30" Content="{Binding Move}" Command="{Binding SelectMoveCommand}"
                     Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4" Foreground="White"
-                    FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+                    FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W">
+              <ToolTip.Tip>
+                <TextBlock Text="{Binding Description}" Foreground="Black"
+                           FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+              </ToolTip.Tip>
+            </Button>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>
@@ -61,7 +66,12 @@
           <DataTemplate>
             <Button Width="73" Height="30" Content="{Binding Label}" Command="{Binding SelectPokemonCommand}"
                     Background="Black" BorderThickness="4" Foreground="White"
-                    FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+                    FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W">
+              <ToolTip.Tip>
+                <TextBlock Text="{Binding Pokemon}" Foreground="Black"
+                           FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+              </ToolTip.Tip>
+            </Button>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

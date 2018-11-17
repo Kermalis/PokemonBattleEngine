@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
@@ -221,37 +222,23 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             string moves = moveStrs.Print(false);
 
-            string str = string.Empty;
-            str += $"{Shell.Nickname}/{Species} {GenderSymbol} Lv.{Shell.Level}";
-            str += Environment.NewLine;
-            str += $"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})";
-            str += Environment.NewLine;
-            str += $"Status1: {Status1}";
-            str += Environment.NewLine;
-            str += $"Status2: {Status2}";
-            if (!remotePokemon && Status2.HasFlag(PStatus2.Substitute))
-            {
-                str += Environment.NewLine;
-                str += $"Substitute HP: {SubstituteHP}";
-            }
-            str += Environment.NewLine;
-            str += $"Item: {item}";
-            str += Environment.NewLine;
-            str += $"Ability: {ability}";
-            if (!remotePokemon)
-            {
-                str += Environment.NewLine;
-                str += $"Nature: {nature}";
-            }
-            if (!remotePokemon)
-            {
-                str += Environment.NewLine;
-                str += $"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}";
-            }
-            str += Environment.NewLine;
-            str += $"Moves: {moves}";
+            var sb = new StringBuilder();
 
-            return str;
+            sb.AppendLine($"{Shell.Nickname}/{Species} {GenderSymbol} Lv.{Shell.Level}");
+            sb.AppendLine($"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})");
+            sb.AppendLine($"Status1: {Status1}");
+            sb.AppendLine($"Status2: {Status2}");
+            if (!remotePokemon && Status2.HasFlag(PStatus2.Substitute))
+                sb.AppendLine($"Substitute HP: {SubstituteHP}");
+            sb.AppendLine($"Item: {item}");
+            sb.AppendLine($"Ability: {ability}");
+            if (!remotePokemon)
+                sb.AppendLine($"Nature: {nature}");
+            if (!remotePokemon)
+                sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
+            sb.Append($"Moves: {moves}");
+
+            return sb.ToString();
         }
         public char GenderSymbol => Shell.Gender == PGender.Female ? '♀' : Shell.Gender == PGender.Male ? '♂' : ' ';
     }

@@ -9,11 +9,8 @@ using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
-    class MoveInfo : INotifyPropertyChanged
+    class MoveInfo
     {
-        void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        public event PropertyChangedEventHandler PropertyChanged;
-
         static Dictionary<PType, Tuple<SolidColorBrush, SolidColorBrush>> typeToBrush;
         public static void CreateBrushes()
         {
@@ -44,36 +41,10 @@ namespace Kermalis.PokemonBattleEngineClient.Models
 
         ReactiveCommand SelectMoveCommand { get; }
 
-        PMove move;
-        public PMove Move
-        {
-            get => move;
-            set
-            {
-                move = value;
-                OnPropertyChanged(nameof(Move));
-            }
-        }
-        IBrush brush;
-        IBrush Brush
-        {
-            get => brush;
-            set
-            {
-                brush = value;
-                OnPropertyChanged(nameof(Brush));
-            }
-        }
-        IBrush borderBrush;
-        IBrush BorderBrush
-        {
-            get => borderBrush;
-            set
-            {
-                borderBrush = value;
-                OnPropertyChanged(nameof(BorderBrush));
-            }
-        }
+        public PMove Move { get; }
+        IBrush Brush { get; }
+        IBrush BorderBrush { get; }
+        string Description { get; }
 
         public MoveInfo(int i, PPokemon pkmn, ActionsView parent)
         {
@@ -92,6 +63,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             Move = move;
             Brush = ttb.Item1;
             BorderBrush = ttb.Item2;
+            Description = move == PMove.None ? string.Empty : PMoveData.Data[move].ToString();
 
             var sub = new Subject<bool>();
             SelectMoveCommand = ReactiveCommand.Create(() => parent.SelectMove(this), sub);

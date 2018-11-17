@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
@@ -30,6 +31,24 @@ namespace Kermalis.PokemonBattleEngine.Data
                     }
                 default: return Data[move].Type;
             }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"Type: {Type}");
+            sb.AppendLine($"Category: {Category}");
+            sb.AppendLine($"Effect: {Effect}");
+            sb.AppendLine($"Effect Parameter: {EffectParam}");
+            sb.AppendLine($"PP: {PPTier * PSettings.PPMultiplier}");
+            sb.AppendLine($"Power: {(Power == 0 ? "--" : Power.ToString())}");
+            sb.AppendLine($"Accuracy: {(Accuracy == 0 ? "--" : Accuracy.ToString())}");
+            sb.AppendLine($"Priority: {Priority}");
+            sb.AppendLine($"Flags: {Flags}");
+            sb.Append($"Targets: {Targets}");
+
+            return sb.ToString();
         }
 
         public static Dictionary<PMove, PMoveData> Data = new Dictionary<PMove, PMoveData>()

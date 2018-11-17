@@ -12,9 +12,8 @@
          RenderOptions.BitmapInterpolationMode="Default"
          gif:GifImage.SourceUri="{Binding Source}">
     <ToolTip.Tip>
-      <StackPanel>
-        <TextBlock Classes="h1" Text="{Binding Pokemon}"/>
-      </StackPanel>
+      <TextBlock Text="{Binding Pokemon}"
+                 FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
     </ToolTip.Tip>
   </Image>
   <!--</Border>-->

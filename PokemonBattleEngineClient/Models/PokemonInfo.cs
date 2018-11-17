@@ -1,32 +1,17 @@
-﻿using Avalonia.Media;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Views;
 using ReactiveUI;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
-    class PokemonInfo : INotifyPropertyChanged
+    class PokemonInfo
     {
-        void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        public event PropertyChangedEventHandler PropertyChanged;
-
         ReactiveCommand SelectPokemonCommand { get; }
 
-        string label;
-        string Label
-        {
-            get => label;
-            set
-            {
-                label = value;
-                OnPropertyChanged(nameof(Label));
-            }
-        }
-
-        public readonly PPokemon Pokemon;
+        public PPokemon Pokemon { get; }
+        string Label { get; }
 
         public PokemonInfo(PPokemon pkmn, ActionsView parent, ref List<PPokemon> standBy)
         {
