@@ -44,287 +44,300 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
     public sealed partial class PBattle
     {
-        public bool IsActionValid(PAction action)
+        public bool AreActionsValid(PAction[] actions)
         {
-            PPokemon pkmn = PKnownInfo.Instance.Pokemon(action.PokemonId);
+            var standBy = new List<PPokemon>();
 
-            // Not on the field
-            if (pkmn.FieldPosition == PFieldPosition.None)
-                return false;
-
-            switch (action.Decision)
+            foreach (PAction action in actions)
             {
-                case PDecision.Fight:
-                    // Invalid move
-                    if (!pkmn.Moves.Contains(action.FightMove) || action.FightMove == PMove.None)
-                        return false;
+                PPokemon pkmn = PKnownInfo.Instance.Pokemon(action.PokemonId);
 
-                    // TODO: Struggle
+                // Not on the field
+                if (pkmn.FieldPosition == PFieldPosition.None)
+                    return false;
 
-                    // Out of PP
-                    if (pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] < 1)
-                        return false;
+                switch (action.Decision)
+                {
+                    case PDecision.Fight:
+                        // Invalid move
+                        if (!pkmn.Moves.Contains(action.FightMove) || action.FightMove == PMove.None)
+                            return false;
 
-                    // If the mon has a locked move, it must be used
-                    if (pkmn.LockedAction.Decision == PDecision.Fight
-                        && (pkmn.LockedAction.FightMove != action.FightMove || pkmn.LockedAction.FightTargets != action.FightTargets))
-                        return false;
+                        // TODO: Struggle
 
-                    // Verify targets
-                    PMoveData mData = PMoveData.Data[action.FightMove];
-                    switch (BattleStyle)
-                    {
-                        case PBattleStyle.Single:
-                        case PBattleStyle.Rotation:
-                            // Only center in single battles & rotation battles
-                            switch (mData.Targets)
-                            {
-                                case PMoveTarget.AllFoesSurrounding:
-                                case PMoveTarget.AllSurrounding:
-                                case PMoveTarget.SingleFoeSurrounding:
-                                case PMoveTarget.SingleNotSelf:
-                                case PMoveTarget.SingleSurrounding:
-                                    if (action.FightTargets != PTarget.FoeCenter)
-                                        return false;
-                                    break;
-                                case PMoveTarget.Self:
-                                case PMoveTarget.SelfOrAllySurrounding:
-                                    if (action.FightTargets != PTarget.AllyCenter)
-                                        return false;
-                                    break;
-                            }
-                            break;
-                        case PBattleStyle.Double:
-                            // No center in double battles
-                            switch (mData.Targets)
-                            {
-                                case PMoveTarget.AllFoesSurrounding:
-                                    if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeRight))
-                                        return false;
-                                    break;
-                                case PMoveTarget.AllSurrounding:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != (PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
+                        // Out of PP
+                        if (pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] < 1)
+                            return false;
+
+                        // If the mon has a locked move, it must be used
+                        if (pkmn.LockedAction.Decision == PDecision.Fight
+                            && (pkmn.LockedAction.FightMove != action.FightMove || pkmn.LockedAction.FightTargets != action.FightTargets))
+                            return false;
+
+                        // Verify targets
+                        PMoveData mData = PMoveData.Data[action.FightMove];
+                        switch (BattleStyle)
+                        {
+                            case PBattleStyle.Single:
+                            case PBattleStyle.Rotation:
+                                // Only center in single battles & rotation battles
+                                switch (mData.Targets)
+                                {
+                                    case PMoveTarget.AllFoesSurrounding:
+                                    case PMoveTarget.AllSurrounding:
+                                    case PMoveTarget.SingleFoeSurrounding:
+                                    case PMoveTarget.SingleNotSelf:
+                                    case PMoveTarget.SingleSurrounding:
+                                        if (action.FightTargets != PTarget.FoeCenter)
                                             return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.FoeLeft | PTarget.FoeRight))
-                                            return false;
-                                    }
-                                    break;
-                                case PMoveTarget.Self:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyLeft)
-                                            return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != PTarget.AllyRight)
-                                            return false;
-                                    }
-                                    break;
-                                case PMoveTarget.SelfOrAllySurrounding:
-                                    if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight)
-                                        return false;
-                                    break;
-                                case PMoveTarget.SingleAllySurrounding:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyRight)
-                                            return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != PTarget.AllyLeft)
-                                            return false;
-                                    }
-                                    break;
-                                case PMoveTarget.SingleFoeSurrounding:
-                                    if (action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeRight)
-                                        return false;
-                                    break;
-                                case PMoveTarget.SingleNotSelf:
-                                case PMoveTarget.SingleSurrounding:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeRight)
-                                            return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeRight)
-                                            return false;
-                                    }
-                                    break;
-                            }
-                            break;
-                        case PBattleStyle.Triple:
-                            switch (mData.Targets)
-                            {
-                                case PMoveTarget.AllFoesSurrounding:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != (PTarget.FoeCenter | PTarget.FoeRight))
-                                            return false;
-                                    }
-                                    else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                    {
-                                        if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
-                                            return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeCenter))
-                                            return false;
-                                    }
-                                    break;
-                                case PMoveTarget.AllSurrounding:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeCenter | PTarget.FoeRight))
-                                            return false;
-                                    }
-                                    else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                    {
-                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
-                                            return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeLeft | PTarget.FoeCenter))
-                                            return false;
-                                    }
-                                    break;
-                                case PMoveTarget.Self:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyLeft)
-                                            return false;
-                                    }
-                                    else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                    {
+                                        break;
+                                    case PMoveTarget.Self:
+                                    case PMoveTarget.SelfOrAllySurrounding:
                                         if (action.FightTargets != PTarget.AllyCenter)
                                             return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != PTarget.AllyRight)
+                                        break;
+                                }
+                                break;
+                            case PBattleStyle.Double:
+                                // No center in double battles
+                                switch (mData.Targets)
+                                {
+                                    case PMoveTarget.AllFoesSurrounding:
+                                        if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeRight))
                                             return false;
-                                    }
-                                    break;
-                                case PMoveTarget.SelfOrAllySurrounding:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyCenter)
-                                            return false;
-                                    }
-                                    else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.AllyRight)
-                                            return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.AllyRight)
-                                            return false;
-                                    }
-                                    break;
-                                case PMoveTarget.SingleAllySurrounding:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyCenter)
-                                            return false;
-                                    }
-                                    else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                    {
+                                        break;
+                                    case PMoveTarget.AllSurrounding:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != (PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != (PTarget.AllyLeft | PTarget.FoeLeft | PTarget.FoeRight))
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.Self:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft)
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PTarget.AllyRight)
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.SelfOrAllySurrounding:
                                         if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight)
                                             return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != PTarget.AllyCenter)
+                                        break;
+                                    case PMoveTarget.SingleAllySurrounding:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyRight)
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft)
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.SingleFoeSurrounding:
+                                        if (action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeRight)
                                             return false;
-                                    }
-                                    break;
-                                case PMoveTarget.SingleFoeSurrounding:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
-                                            return false;
-                                    }
-                                    else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                    {
-                                        if (action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
-                                            return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter)
-                                            return false;
-                                    }
-                                    break;
-                                case PMoveTarget.SingleNotSelf:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
-                                            return false;
-                                    }
-                                    else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
-                                            return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
-                                            return false;
-                                    }
-                                    break;
-                                case PMoveTarget.SingleSurrounding:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
-                                            return false;
-                                    }
-                                    else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                    {
-                                        if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
-                                            return false;
-                                    }
-                                    else
-                                    {
-                                        if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter)
-                                            return false;
-                                    }
-                                    break;
-                            }
-                            break;
-                    }
-                    return true;
-                case PDecision.Switch:
-                    PPokemon switchPkmn = PKnownInfo.Instance.Pokemon(action.SwitchPokemonId);
-                    // Validate the new battler's ID
-                    if (switchPkmn == null || switchPkmn.Id == pkmn.Id)
-                        return false;
-                    // Cannot switch into a foe's Pokémon
-                    if (switchPkmn.Local != pkmn.Local)
-                        return false;
-                    // Cannot switch while underground or underwater
-                    if (switchPkmn.Status2.HasFlag(PStatus2.Underground) || switchPkmn.Status2.HasFlag(PStatus2.Underwater))
-                        return false;
-                    return true;
+                                        break;
+                                    case PMoveTarget.SingleNotSelf:
+                                    case PMoveTarget.SingleSurrounding:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeRight)
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeRight)
+                                                return false;
+                                        }
+                                        break;
+                                }
+                                break;
+                            case PBattleStyle.Triple:
+                                switch (mData.Targets)
+                                {
+                                    case PMoveTarget.AllFoesSurrounding:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != (PTarget.FoeCenter | PTarget.FoeRight))
+                                                return false;
+                                        }
+                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeCenter))
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.AllSurrounding:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeCenter | PTarget.FoeRight))
+                                                return false;
+                                        }
+                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeLeft | PTarget.FoeCenter))
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.Self:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft)
+                                                return false;
+                                        }
+                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyCenter)
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PTarget.AllyRight)
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.SelfOrAllySurrounding:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyCenter)
+                                                return false;
+                                        }
+                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.AllyRight)
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.AllyRight)
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.SingleAllySurrounding:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyCenter)
+                                                return false;
+                                        }
+                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight)
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PTarget.AllyCenter)
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.SingleFoeSurrounding:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                                return false;
+                                        }
+                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter)
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.SingleNotSelf:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                                return false;
+                                        }
+                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                                return false;
+                                        }
+                                        break;
+                                    case PMoveTarget.SingleSurrounding:
+                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                                return false;
+                                        }
+                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                                return false;
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter)
+                                                return false;
+                                        }
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+                    case PDecision.Switch:
+                        PPokemon switchPkmn = PKnownInfo.Instance.Pokemon(action.SwitchPokemonId);
+                        // Validate the new battler's ID
+                        if (switchPkmn == null || switchPkmn.Id == pkmn.Id)
+                            return false;
+                        // Cannot switch into a foe's Pokémon
+                        if (switchPkmn.Local != pkmn.Local)
+                            return false;
+                        // Cannot switch while underground or underwater
+                        if (switchPkmn.Status2.HasFlag(PStatus2.Underground) || switchPkmn.Status2.HasFlag(PStatus2.Underwater))
+                            return false;
+                        // Cannot switch into a Pokémon already on the field
+                        if (switchPkmn.FieldPosition != PFieldPosition.None)
+                            return false;
+                        // Cannot switch into a Pokémon already selected to switch in this turn
+                        if (standBy.Contains(switchPkmn))
+                            return false;
+                        standBy.Add(switchPkmn);
+                        break;
+                }
             }
-            return false;
+            return true;
         }
-        // Returns true if the action was valid (and was selected)
-        public bool SelectActionIfValid(PAction action)
+        // Returns true if the actions were valid (and selected)
+        public bool SelectActionsIfValid(PAction[] actions)
         {
-            if (IsActionValid(action))
+            if (AreActionsValid(actions))
             {
-                SelectAction(action);
+                foreach (PAction action in actions)
+                    SelectAction(action);
                 return true;
             }
             return false;

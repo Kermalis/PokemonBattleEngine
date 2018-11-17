@@ -158,17 +158,7 @@ namespace Kermalis.PokemonBattleEngineServer
 
                 Console.WriteLine($"Received actions from {player.Team.DisplayName}");
 
-                bool valid = true;
-                foreach (PAction action in actions)
-                {
-                    if (!battle.SelectActionIfValid(action))
-                    {
-                        valid = false;
-                        break;
-                    }
-                }
-
-                if (valid)
+                if (battle.SelectActionsIfValid(actions))
                 {
                     Console.WriteLine("Actions are valid.");
                     if (battle.IsReadyToRunTurn())

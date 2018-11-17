@@ -44,22 +44,22 @@ namespace Kermalis.PokemonBattleEngine
                 do
                 {
                     byte move;
-                    PAction action = new PAction();
+                    PAction[] actions = new PAction[1];
                     bool valid;
 
                     move = (byte)PUtils.RNG.Next(0, PSettings.NumMoves);
-                    action.PokemonId = lCenter.Id;
-                    action.Decision = PDecision.Fight;
-                    action.FightMove = lCenter.Moves[move];
-                    action.FightTargets = PTarget.FoeCenter;
-                    valid = battle.SelectActionIfValid(action);
+                    actions[0].PokemonId = lCenter.Id;
+                    actions[0].Decision = PDecision.Fight;
+                    actions[0].FightMove = lCenter.Moves[move];
+                    actions[0].FightTargets = PTarget.FoeCenter;
+                    valid = battle.SelectActionsIfValid(actions);
 
                     move = (byte)PUtils.RNG.Next(0, PSettings.NumMoves);
-                    action.PokemonId = rCenter.Id;
-                    action.Decision = PDecision.Fight;
-                    action.FightMove = rCenter.Moves[move];
-                    action.FightTargets = PTarget.FoeCenter;
-                    valid = battle.SelectActionIfValid(action);
+                    actions[0].PokemonId = rCenter.Id;
+                    actions[0].Decision = PDecision.Fight;
+                    actions[0].FightMove = rCenter.Moves[move];
+                    actions[0].FightTargets = PTarget.FoeCenter;
+                    valid = battle.SelectActionsIfValid(actions);
 
                 } while (!battle.IsReadyToRunTurn());
                 try
