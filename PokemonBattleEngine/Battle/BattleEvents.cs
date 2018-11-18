@@ -54,6 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPokemon pkmn;
             string message;
             double d;
+            bool b;
 
             switch (packet)
             {
@@ -64,7 +65,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PItem.PowerHerb: message = "became fully charged due to its Power Herb"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
                     }
-                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(iup.PokemonId).Shell.Nickname, message);
+                    Console.WriteLine("{0} {1}!", PKnownInfo.Instance.Pokemon(iup.PokemonId).NameForTrainer(true), message);
                     break;
                 case PLimberPacket lp:
                     Console.Write("{0}'s Limber: ", PKnownInfo.Instance.Pokemon(lp.PokemonId).Shell.Nickname);
@@ -81,7 +82,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PEffectiveness.SuperEffective: message = "It's super effective!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness), $"Invalid effectiveness: {mep.Effectiveness}");
                     }
-                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mep.PokemonId).Shell.Nickname);
+                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mep.PokemonId).NameForTrainer(false));
                     break;
                 case PMoveFailedPacket mfp:
                     switch (mfp.Reason)
@@ -90,22 +91,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PFailReason.HPFull: message = "{0}'s HP is full!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mfp.Reason), $"Invalid fail reason: {mfp.Reason}");
                     }
-                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mfp.PokemonId).Shell.Nickname);
+                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(mfp.PokemonId).NameForTrainer(true));
                     break;
                 case PMoveMissedPacket mmp:
-                    Console.WriteLine("{0}'s attack missed!", PKnownInfo.Instance.Pokemon(mmp.PokemonId).Shell.Nickname);
+                    Console.WriteLine("{0}'s attack missed!", PKnownInfo.Instance.Pokemon(mmp.PokemonId).NameForTrainer(true));
                     break;
                 case PMoveUsedPacket mup:
-                    Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(mup.PokemonId).Shell.Nickname, mup.Move);
+                    Console.WriteLine("{0} used {1}!", PKnownInfo.Instance.Pokemon(mup.PokemonId).NameForTrainer(true), mup.Move);
                     break;
                 case PPkmnFaintedPacket pfap:
-                    Console.WriteLine("{0} fainted!", PKnownInfo.Instance.Pokemon(pfap.PokemonId).Shell.Nickname);
+                    Console.WriteLine("{0} fainted!", PKnownInfo.Instance.Pokemon(pfap.PokemonId).NameForTrainer(true));
                     break;
                 case PPkmnHPChangedPacket phcp:
                     pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
                     var hp = Math.Abs(phcp.Change);
                     d = (double)hp / pkmn.MaxHP;
-                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.Shell.Nickname, hp, d, phcp.Change <= 0 ? "lost" : "gained");
+                    Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", pkmn.NameForTrainer(true), hp, d, phcp.Change <= 0 ? "lost" : "gained");
                     break;
                 case PPkmnStatChangedPacket pscp:
                     switch (pscp.Change)
@@ -127,7 +128,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 throw new ArgumentOutOfRangeException(nameof(pscp.Change), $"Invalid stat change: {pscp.Change}"); // +0
                             break;
                     }
-                    Console.WriteLine("{0}'s {1} {2}!", PKnownInfo.Instance.Pokemon(pscp.PokemonId).Shell.Nickname, pscp.Stat, message);
+                    Console.WriteLine("{0}'s {1} {2}!", PKnownInfo.Instance.Pokemon(pscp.PokemonId).NameForTrainer(true), pscp.Stat, message);
                     break;
                 case PPkmnSwitchInPacket psip:
                     Console.WriteLine("{1} sent out {0}!", PKnownInfo.Instance.Pokemon(psip.PokemonId).Shell.Nickname, PKnownInfo.Instance.DisplayName(psip.Local));
@@ -195,9 +196,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                         default: throw new ArgumentOutOfRangeException(nameof(s1p.Status1), $"Invalid status1: {s1p.Status1}");
                     }
-                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s1p.PokemonId).Shell.Nickname);
+                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s1p.PokemonId).NameForTrainer(true));
                     break;
                 case PStatus2Packet s2p:
+                    b = true;
                     switch (s2p.Status2)
                     {
                         case PStatus2.Confused:
@@ -236,7 +238,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (s2p.Action)
                             {
                                 case PStatusAction.Added: message = "{0} put in a substitute!"; break;
-                                case PStatusAction.Damage: message = "The substitute took damage for {0}!"; break;
+                                case PStatusAction.Damage: message = "The substitute took damage for {0}!"; b = false; break;
                                 case PStatusAction.Ended: message = "{0}'s substitute faded!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid substitute action: {s2p.Action}");
                             }
@@ -251,10 +253,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
-                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s2p.PokemonId).Shell.Nickname);
+                    Console.WriteLine(message, PKnownInfo.Instance.Pokemon(s2p.PokemonId).NameForTrainer(b));
                     break;
                 case PTransformPacket tp:
-                    Console.WriteLine("{0} transformed into {1}!", PKnownInfo.Instance.Pokemon(tp.UserId).Shell.Nickname, PKnownInfo.Instance.Pokemon(tp.TargetId).Shell.Nickname);
+                    Console.WriteLine("{0} transformed into {1}!", PKnownInfo.Instance.Pokemon(tp.UserId).NameForTrainer(true), PKnownInfo.Instance.Pokemon(tp.TargetId).NameForTrainer(false));
                     break;
                 case PWeatherPacket wp:
                     switch (wp.Weather)

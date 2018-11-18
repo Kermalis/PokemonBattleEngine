@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             bMoveType = PMoveData.GetMoveTypeForPokemon(user, bMove);
 
-            // If a pokemon uses a move that shares a type with it, it gains a 1.5x power boost (2x if it has adaptability)
+            // If a pokemon uses a move that shares a type with it, it gains a 50% power boost (100% if it has adaptability)
             if (userPData.HasType(bMoveType))
             {
                 if (user.Ability == PAbility.Adaptability)
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                     bDamageMultiplier *= 1.5;
             }
-            // Pokémon with the heatproof take half as much damage from fire attacks
+            // Pokémon with Heatproof take half as much damage from fire attacks
             if (bMoveType == PType.Fire && target.Ability == PAbility.Heatproof)
                 bDamageMultiplier *= 0.5;
 
@@ -55,7 +55,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPokemonData targetPData = PPokemonData.Data[target.Species];
             double basePower = power;
 
-            // Moves with variable base power
             if (power == 0)
             {
                 switch (bMove)
@@ -83,9 +82,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     case PMove.Retaliate:
                         basePower = PMoveData.Data[bMove].Power;
-                        // Retaliate doubles power if the team has a Pokémon that fainted the previous turn
+                        // Retaliate gets a 100% power boost if the user's team has a Pokémon that fainted during the previous turn
                         if (teams[user.Local ? 0 : 1].MonFaintedLastTurn)
-                            basePower *= 2;
+                            basePower *= 2.0;
                         break;
                     case PMove.Return:
                         basePower = Math.Max(1, user.Shell.Friendship / 2.5);
@@ -131,6 +130,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Bug:
                     if (user.Item == PItem.InsectPlate)
                         basePower *= 1.2;
+                    // Swarm gives a 50% power boost to Bug attacks if the user is below 1/3 max HP
+                    if (user.Ability == PAbility.Swarm && user.HP <= user.MaxHP / 3)
+                        basePower *= 1.5;
                     break;
                 case PType.Dark:
                     if (user.Item == PItem.DreadPlate)
@@ -151,6 +153,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Fire:
                     if (user.Item == PItem.FlamePlate)
                         basePower *= 1.2;
+                    // Blaze gives a 50% power boost to Fire attacks if the user is below 1/3 max HP
+                    if (user.Ability == PAbility.Blaze && user.HP <= user.MaxHP / 3)
+                        basePower *= 1.5;
                     break;
                 case PType.Flying:
                     if (user.Item == PItem.SkyPlate)
@@ -163,6 +168,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Grass:
                     if (user.Item == PItem.MeadowPlate)
                         basePower *= 1.2;
+                    // Overgrow gives a 50% power boost to Grass attacks if the user is below 1/3 max HP
+                    if (user.Ability == PAbility.Overgrow && user.HP <= user.MaxHP / 3)
+                        basePower *= 1.5;
                     break;
                 case PType.Ground:
                     if (user.Item == PItem.EarthPlate)
@@ -193,33 +201,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Water:
                     if (user.Item == PItem.SplashPlate)
                         basePower *= 1.2;
+                    // Torrent gives a 50% power boost to Water attacks if the user is below 1/3 max HP
+                    if (user.Ability == PAbility.Torrent && user.HP <= user.MaxHP / 3)
+                        basePower *= 1.5;
                     break;
             }
 
             // Life Orb boosts power but deals damage to the user
             if (!ignoreLifeOrb && user.Item == PItem.LifeOrb)
                 basePower = basePower * 5324 / 4096;
-            // A Pikachu holding a Light Ball gets a 2x power boost
+            // A Pikachu holding a Light Ball gets a 100% power boost
             if (user.Item == PItem.LightBall && user.Shell.Species == PSpecies.Pikachu)
-                basePower *= 2;
-            // Overgrow gives a 1.5x boost to Grass attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Grass && user.Ability == PAbility.Overgrow && user.HP <= user.MaxHP / 3)
-                basePower *= 1.5;
-            // Blaze gives a 1.5x boost to Fire attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Fire && user.Ability == PAbility.Blaze && user.HP <= user.MaxHP / 3)
-                basePower *= 1.5;
-            // Torrent gives a 1.5x boost to Water attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Water && user.Ability == PAbility.Torrent && user.HP <= user.MaxHP / 3)
-                basePower *= 1.5;
-            // Swarm gives a 1.5x boost to Bug attacks if the efCurAttacker is below 1/3 max HP
-            if (bMoveType == PType.Bug && user.Ability == PAbility.Swarm && user.HP <= user.MaxHP / 3)
-                basePower *= 1.5;
-            // A Burned pokemon does half the damage when it is Burned unless it has the Guts ability
+                basePower *= 2.0;
+            // Damage is halved from a Burned Pokémon unless it has Guts
             if (category == PMoveCategory.Physical && user.Status1 == PStatus1.Burned && user.Ability != PAbility.Guts)
-                basePower /= 2;
-            // Damage is halved when using Fire or Ice moves against a pokemon with the Thick Fat ability
+                basePower *= 0.5;
+            // Damage is halved when using Fire or Ice moves against a Pokémon with Thick Fat
             if (target.Ability == PAbility.ThickFat && (bMoveType == PType.Fire || bMoveType == PType.Ice))
-                basePower /= 2;
+                basePower *= 0.5;
 
             return (ushort)basePower;
         }
@@ -228,19 +227,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Negative Attack changes are ignored for critical hits
             double attack = user.Attack * GetStatMultiplier(bLandedCrit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange);
 
-            // Pokemon with the Huge Power or Pure Power ability get a 2x attack boost
+            // Pokemon with Huge Power or Pure Power get a 100% Attack boost
             if (user.Ability == PAbility.HugePower || user.Ability == PAbility.PurePower)
-                attack *= 2;
-            // A Cubone or Marowak holding a Thick Club gets a 2x attack boost
+                attack *= 2.0;
+            // A Cubone or Marowak holding a Thick Club gets a 100% Attack boost
             if (user.Item == PItem.ThickClub && (user.Shell.Species == PSpecies.Cubone || user.Shell.Species == PSpecies.Marowak))
-                attack *= 2;
-            // A pokemon with the Hustle ability gets a 1.5x attack boost
+                attack *= 2.0;
+            // A Pokémon with Hustle gets a 50% Attack boost
             if (user.Ability == PAbility.Hustle)
                 attack *= 1.5;
-            // A pokemon with the Guts ability gets a 1.5x attack boost when afflicted with a status
+            // A Pokémon with Guts gets a 50% Attack boost when afflicted with a status
             if (user.Ability == PAbility.Guts && user.Status1 != PStatus1.None)
                 attack *= 1.5;
-            // A pokemon holding a Choice Band gets a 1.5x attack boost
+            // A Pokémon holding a Choice Band gets a 50% Attack boost
             if (user.Item == PItem.ChoiceBand)
                 attack *= 1.5;
 
@@ -251,10 +250,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Positive Defense changes are ignored for critical hits
             double defense = user.Defense * GetStatMultiplier(bLandedCrit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange);
 
-            // A Ditto holding a Metal Powder gets a 2x defense boost
+            // A Ditto holding a Metal Powder gets a 100% Defense boost
             if (target.Item == PItem.MetalPowder && target.Species == PSpecies.Ditto)
-                defense *= 2;
-            // A pokemon with the Marvel Scale ability gets a 1.5x defense boost when afflicted with a status
+                defense *= 2.0;
+            // A Pokémon with Marvel Scale gets a 50% Defense boost when afflicted with a status
             if (target.Ability == PAbility.MarvelScale && target.Status1 != PStatus1.None)
                 defense *= 1.5;
 
@@ -265,21 +264,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Negative SpAttack changes are ignored for critical hits
             double spAttack = user.SpAttack * GetStatMultiplier(bLandedCrit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange);
 
-            // TODO:
-            // A pokemon with the Plus ability gets a 1.5x spAttack boost if a teammate has the Minus ability
-            /* if (efCurAttacker.Ability == Ability.Plus && PartnerHasAbility(Ability.Minus))
-             * spAttack *= 1.5;*/
-            // A pokemon with the Minus ability gets a 1.5x spAttack boost if a teammate has the Plus ability
-            /* if (efCurAttacker.Ability == Ability.Minus && PartnerHasAbility(Ability.Plus))
-             * spAttack *= 1.5;*/
-
-            // A Clamperl holding a Deep Sea Tooth gets a 2x spAttack boost
+            // A Clamperl holding a Deep Sea Tooth gets a 100% SpAttack boost
             if (user.Item == PItem.DeepSeaTooth && user.Shell.Species == PSpecies.Clamperl)
-                spAttack *= 2;
-            // A Latios or Latias holding a Soul Dew gets a 1.5x spAttack boost
+                spAttack *= 2.0;
+            // A Latios or Latias holding a Soul Dew gets a 50% SpAttack boost
             if (user.Item == PItem.SoulDew && (user.Shell.Species == PSpecies.Latias || user.Shell.Species == PSpecies.Latios))
                 spAttack *= 1.5;
-            // A Pokémon holding a Choice Specs gets a 1.5x spAttack boost
+            // A Pokémon holding a Choice Specs gets a 50% SpAttack boost
             if (user.Item == PItem.ChoiceSpecs)
                 spAttack *= 1.5;
 
@@ -290,10 +281,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Positive SpDefense changes are ignored for critical hits
             double spDefense = user.SpDefense * GetStatMultiplier(bLandedCrit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange);
 
-            // A Clamperl holding a Deep Sea Scale gets a 2x spDefense boost
+            // A Clamperl holding a Deep Sea Scale gets a 100% SpDefense boost
             if (target.Item == PItem.DeepSeaScale && target.Shell.Species == PSpecies.Clamperl)
-                spDefense *= 2;
-            // A Latios or Latias holding a Soul Dew gets a 1.5x spDefense boost
+                spDefense *= 2.0;
+            // A Latios or Latias holding a Soul Dew gets a 50% SpDefense boost
             if (target.Item == PItem.SoulDew && (target.Shell.Species == PSpecies.Latias || target.Shell.Species == PSpecies.Latios))
                 spDefense *= 1.5;
 

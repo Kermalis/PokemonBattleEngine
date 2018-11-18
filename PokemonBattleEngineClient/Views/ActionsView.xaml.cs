@@ -393,17 +393,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 PPokemon pkmn;
 
                 pkmn = PKnownInfo.Instance.LocalParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Left);
-                TargetAllyLeft = pkmn?.Shell.Nickname + pkmn?.GenderSymbol;
+                TargetAllyLeft = pkmn?.NameWithGender;
                 pkmn = PKnownInfo.Instance.LocalParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Center);
-                TargetAllyCenter = pkmn?.Shell.Nickname + pkmn?.GenderSymbol;
+                TargetAllyCenter = pkmn?.NameWithGender;
                 pkmn = PKnownInfo.Instance.LocalParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Right);
-                TargetAllyRight = pkmn?.Shell.Nickname + pkmn?.GenderSymbol;
+                TargetAllyRight = pkmn?.NameWithGender;
                 pkmn = PKnownInfo.Instance.RemoteParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Left);
-                TargetFoeLeft = pkmn?.Shell.Nickname + pkmn?.GenderSymbol;
+                TargetFoeLeft = pkmn?.NameWithGender;
                 pkmn = PKnownInfo.Instance.RemoteParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Center);
-                TargetFoeCenter = pkmn?.Shell.Nickname + pkmn?.GenderSymbol;
+                TargetFoeCenter = pkmn?.NameWithGender;
                 pkmn = PKnownInfo.Instance.RemoteParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Right);
-                TargetFoeRight = pkmn?.Shell.Nickname + pkmn?.GenderSymbol;
+                TargetFoeRight = pkmn?.NameWithGender;
 
                 if (Client.BattleStyle == PBattleStyle.Double)
                 {

@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public PokemonInfo(PPokemon pkmn, ActionsView parent, ref List<PPokemon> standBy)
         {
             Pokemon = pkmn;
-            Label = pkmn.Shell.Nickname + pkmn.GenderSymbol;
+            Label = pkmn.NameWithGender;
 
             bool enabled = pkmn != parent.Pokemon && pkmn.FieldPosition == PFieldPosition.None && !standBy.Contains(pkmn) && pkmn.HP > 0;
 

@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Packets;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -14,6 +13,28 @@ namespace Kermalis.PokemonBattleEngine.Data
         // True indicates this pokemon is owned by the client or team 0 in the eyes of the host/spectators
         public bool Local;
         public readonly PPokemonShell Shell;
+
+        public string NameForTrainer(bool firstLetterCapitalized)
+        {
+            string prefix;
+            if (firstLetterCapitalized)
+            {
+                if (Local)
+                    prefix = "";
+                else
+                    prefix = "The foe's ";
+            }
+            else
+            {
+                if (Local)
+                    prefix = "";
+                else
+                    prefix = "the foe's ";
+            }
+            return prefix + Shell.Nickname;
+        }
+        public string NameWithGender => Shell.Nickname + GenderSymbol;
+        public string GenderSymbol => Shell.Gender == PGender.Female ? "♀" : Shell.Gender == PGender.Male ? "♂" : string.Empty;
 
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
         public PMove[] Moves = new PMove[PSettings.NumMoves];
@@ -240,6 +261,5 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             return sb.ToString();
         }
-        public char GenderSymbol => Shell.Gender == PGender.Female ? '♀' : Shell.Gender == PGender.Male ? '♂' : ' ';
     }
 }
