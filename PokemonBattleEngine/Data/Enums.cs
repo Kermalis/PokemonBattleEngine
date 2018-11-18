@@ -638,6 +638,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SpacialRend,
         Spark,
         Spore,
+        Steamroller,
         SteelWing,
         Stomp,
         StoneEdge,
