@@ -1135,7 +1135,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(10, PMove.ShockWave), // Dream World
                         Tuple.Create(15, PMove.DoubleTeam),
                         Tuple.Create(22, PMove.ShockWave),
-                        // 29 ominous wind
+                        Tuple.Create(29, PMove.OminousWind),
                         Tuple.Create(36, PMove.Substitute),
                         // 43 electro ball
                         // 50 hex
@@ -1290,7 +1290,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         // disable 1
                         // night shade 1 // DP
-                        // ominous wind 1
+                        Tuple.Create(1, PMove.OminousWind),
                         Tuple.Create(11, PMove.QuickAttack),
                         Tuple.Create(20, PMove.Hypnosis),
                         // pursuit 29 // DP
@@ -1405,7 +1405,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // 13 night shade
                         // 17 hex                        
                         Tuple.Create(21, PMove.WillOWisp),
-                        // 25 ominous wind
+                        Tuple.Create(25, PMove.OminousWind),
                         // 29 curse
                         // 33 power split
                         // 33 guard split

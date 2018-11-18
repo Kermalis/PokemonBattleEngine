@@ -65,7 +65,6 @@ namespace Kermalis.PokemonBattleEngineClient
                     };
                     possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
-                    team.Party[0].Moves[0] = PMove.Protect;
                     PKnownInfo.Instance.LocalDisplayName = team.DisplayName;
                     Send(new PSubmitPartyPacket(team));
                     break;

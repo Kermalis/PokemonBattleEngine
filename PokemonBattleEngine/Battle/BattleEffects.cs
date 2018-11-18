@@ -346,6 +346,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
                     HitAndMaybeChangeUserStats(new PStat[] { PStat.Attack }, new sbyte[] { +1 }, mData.EffectParam);
                     break;
+                case PMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1:
+                    HitAndMaybeChangeUserStats(new PStat[] { PStat.Attack, PStat.Defense, PStat.SpAttack, PStat.SpDefense, PStat.Speed }, new sbyte[] { +1, +1, +1, +1, +1 }, mData.EffectParam);
+                    break;
                 case PMoveEffect.Hit__MaybeRaiseUser_DEF_By1:
                     HitAndMaybeChangeUserStats(new PStat[] { PStat.Defense }, new sbyte[] { +1 }, mData.EffectParam);
                     break;
