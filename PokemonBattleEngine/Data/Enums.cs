@@ -434,6 +434,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AirCutter,
         AirSlash,
         Amnesia,
+        AncientPower,
         AquaJet,
         AquaTail,
         Astonish,

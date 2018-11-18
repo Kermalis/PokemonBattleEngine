@@ -259,8 +259,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // fling
                         // incinerate
                         // swagger
-                        // ancient power // egg
-                        // belly drum
+                        // belly drum // egg
                         // chip away
                         // double kick
                         // endure
@@ -283,6 +282,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
+                        PMove.AncientPower, // Egg Move
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.Bulldoze, // TM
                         PMove.Detect, // Egg Move
@@ -367,8 +367,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // incinerate
                         // giga impact
                         // swagger
-                        // ancient power // egg move
-                        // belly drum
+                        // belly drum // egg
                         // chip away
                         // double kick
                         // endure
@@ -392,6 +391,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // secret power // gen 4 tm
                         // seismic toss // gen 3 tutor
                         PMove.AerialAce, // TM
+                        PMove.AncientPower, // Egg Move
                         PMove.BodySlam, // Gen 3 Move Tutor
                         PMove.Bulldoze, // TM
                         PMove.Detect, // Egg Move

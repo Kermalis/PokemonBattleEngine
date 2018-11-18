@@ -153,6 +153,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.AncientPower,
+                new PMoveData
+                {
+                    Type = PType.Rock, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1, EffectParam = 10,
+                    PPTier = 1, Power = 60, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.AquaJet,
                 new PMoveData
                 {
