@@ -370,6 +370,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
                     ChangeUserStats(new PStat[] { PStat.Defense, PStat.SpDefense, PStat.Attack, PStat.SpAttack, PStat.Speed }, new sbyte[] { -1, -1, +2, +2, +2 });
                     break;
+                case PMoveEffect.Minimize:
+                    TryForceStatus2(PStatus2.Minimized);
+                    break;
                 case PMoveEffect.Moonlight:
                     Ef_Moonlight();
                     break;
@@ -808,6 +811,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         return true;
                     }
                     break;
+                case PStatus2.Minimized:
+                    bUser.Status2 |= PStatus2.Minimized;
+                    BroadcastStatus2(bUser, PStatus2.Minimized, PStatusAction.Added);
+                    ApplyStatChange(bUser, PStat.Evasion, +2);
+                    return true;
                 case PStatus2.Protected:
                     {
                         // TODO: If the user goes last, fail

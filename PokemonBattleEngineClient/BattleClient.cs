@@ -327,6 +327,12 @@ namespace Kermalis.PokemonBattleEngineClient
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid flinching action: {s2p.Action}");
                             }
                             break;
+                        case PStatus2.Minimized:
+                            switch (s2p.Action)
+                            {
+                                case PStatusAction.Added: return true;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid minimized action: {s2p.Action}");
+                            }
                         case PStatus2.Protected:
                             switch (s2p.Action)
                             {

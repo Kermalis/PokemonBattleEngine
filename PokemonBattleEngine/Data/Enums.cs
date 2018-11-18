@@ -96,14 +96,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         Confused = 1 << 0,
         Cursed = 1 << 1, // TODO
         Flinching = 1 << 2,
-        Pumped = 1 << 3, // Focus Energy / Lansat Berry
-        Infatuated = 1 << 4, // TODO
+        Infatuated = 1 << 3, // TODO
+        Minimized = 1 << 4,
         Protected = 1 << 5,
-        Substitute = 1 << 6,
-        Tormented = 1 << 7, // TODO
-        Transformed = 1 << 8,
-        Underground = 1 << 9, // TODO
-        Underwater = 1 << 10,
+        Pumped = 1 << 6, // Focus Energy / Lansat Berry
+        Substitute = 1 << 7,
+        Tormented = 1 << 8, // TODO
+        Transformed = 1 << 9,
+        Underground = 1 << 10, // TODO
+        Underwater = 1 << 11,
     }
     public enum PStatusAction : byte
     {
@@ -401,6 +402,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LightScreen,
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
+        Minimize,
         Moonlight,
         Paralyze,
         Poison,
@@ -560,6 +562,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MetalClaw,
         MetalSound,
         MeteorMash,
+        Minimize,
         MirrorShot,
         MistBall,
         Moonlight,

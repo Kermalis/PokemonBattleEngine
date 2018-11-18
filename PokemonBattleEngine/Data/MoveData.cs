@@ -1539,6 +1539,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Minimize,
+                new PMoveData
+                {
+                    Type = PType.Normal, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Minimize, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.MirrorShot,
                 new PMoveData
                 {

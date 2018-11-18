@@ -43,7 +43,6 @@ Rage
 Night Shade
 Mimic
 Recover
-Minimize
 Defense Curl
 Haze
 Bide
