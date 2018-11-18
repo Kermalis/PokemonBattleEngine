@@ -620,6 +620,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShellSmash,
         ShiftGear,
         SignalBeam,
+        SilverWind,
         Sing,
         ShockWave,
         Slam,

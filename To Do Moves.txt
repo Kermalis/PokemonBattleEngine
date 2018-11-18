@@ -167,7 +167,6 @@ Hydro Cannon
 Weather Ball
 Aromatherapy
 Odor Sleuth
-Silver Wind
 Water Spout
 Sky Uppercut
 Sand Tomb
