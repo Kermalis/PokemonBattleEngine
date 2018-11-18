@@ -7,7 +7,6 @@ Gust
 Whirlwind
 Fly
 Bind
-Stomp
 Double Kick
 Jump Kick
 Rolling Kick

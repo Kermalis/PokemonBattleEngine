@@ -639,6 +639,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Spark,
         Spore,
         SteelWing,
+        Stomp,
         StoneEdge,
         StormThrow,
         Strength,

@@ -556,16 +556,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             double chance = mData.Accuracy;
             chance *= GetStatMultiplier(bUser.AccuracyChange, true) / GetStatMultiplier(bTarget.EvasionChange, true); // Accuracy & Evasion changes
-            // Pokémon with the Compoundeyes ability get a 30% accuracy boost
+            // Pokémon with Compoundeyes get a 30% Accuracy boost
             if (bUser.Ability == PAbility.Compoundeyes)
                 chance *= 1.3;
-            // Pokémon with the Hustle ability get a 20% accuracy reduction for physical moves
+            // Pokémon with Hustle get a 20% Accuracy reduction for Physical moves
             if (bUser.Ability == PAbility.Hustle && mData.Category == PMoveCategory.Physical)
                 chance *= 0.8;
-            // Pokémon holding BrightPowder or Lax Incense get a 10% evasion boost
+            // Pokémon holding a BrightPowder or Lax Incense get a 10% Evasion boost
             if (bTarget.Item == PItem.BrightPowder)
                 chance *= 0.9;
-            // Pokémon holding Wide Lens get a 10% accuracy boost
+            // Pokémon holding a Wide Lens get a 10% Accuracy boost
             if (bUser.Item == PItem.WideLens)
                 chance *= 1.1;
             // Try to hit

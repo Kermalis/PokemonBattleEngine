@@ -89,6 +89,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PMove.Return:
                         basePower = Math.Max(1, user.Shell.Friendship / 2.5);
                         break;
+                    case PMove.Stomp:
+                        basePower = PMoveData.Data[bMove].Power;
+                        // Stomp gets a 100% power boost if the target is minimized
+                        if (bTarget.Status2.HasFlag(PStatus2.Minimized))
+                            basePower *= 2.0;
+                        break;
                     default:
                         basePower = PMoveData.Data[bMove].Power;
                         break;
