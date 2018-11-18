@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineClient
         static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
-        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Triple;
+        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Double;
         readonly BattleView battleView;
         readonly ActionsView actionsView;
         readonly MessageView messageView;
@@ -58,14 +58,14 @@ namespace Kermalis.PokemonBattleEngineClient
                     var team = new PTeamShell { DisplayName = "Sasha", };
                     var possiblePokemon = new List<PPokemonShell>
                     {
-                        PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Azumarill_UU, PCompetitivePokemonShells.Cresselia_UU,
-                        PCompetitivePokemonShells.Cofagrigus_UU, PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Ditto_UU,
+                        PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Azumarill_UU, PCompetitivePokemonShells.Cofagrigus_UU,
+                        PCompetitivePokemonShells.Cresselia_UU, PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Ditto_UU,
                         PCompetitivePokemonShells.Genesect_Uber, PCompetitivePokemonShells.Latias_OU, PCompetitivePokemonShells.Latios_OU,
                         PCompetitivePokemonShells.Pikachu_NU, PCompetitivePokemonShells.Rotom_Wash_OU
                     };
                     possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
-                    //team.Party[0] = PCompetitivePokemonShells.Azumarill_UU;
+                    team.Party[0].Moves[0] = PMove.Protect;
                     PKnownInfo.Instance.LocalDisplayName = team.DisplayName;
                     Send(new PSubmitPartyPacket(team));
                     break;

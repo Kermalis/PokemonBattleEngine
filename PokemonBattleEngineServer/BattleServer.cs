@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineServer
             BattleProcessing, // Battle is running and sending events
         }
         ServerState state = ServerState.Startup;
-        readonly PBattleStyle intendedBattleStyle = PBattleStyle.Triple; // TODO: Let the client know what kind of style this server is running (matchmaking)
+        readonly PBattleStyle intendedBattleStyle = PBattleStyle.Double; // TODO: Let the client know what kind of style this server is running (matchmaking)
         PBattle battle;
         Player[] battlers;
 

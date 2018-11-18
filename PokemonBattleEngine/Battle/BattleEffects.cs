@@ -239,40 +239,40 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     TryForceStatus1(PStatus1.Burned);
                     break;
                 case PMoveEffect.ChangeTarget_ACC:
-                    ChangeTargetStat(PStat.Accuracy, (sbyte)mData.EffectParam);
+                    ChangeTargetStats(new PStat[] { PStat.Accuracy }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeTarget_ATK:
-                    ChangeTargetStat(PStat.Attack, (sbyte)mData.EffectParam);
+                    ChangeTargetStats(new PStat[] { PStat.Attack }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeTarget_DEF:
-                    ChangeTargetStat(PStat.Defense, (sbyte)mData.EffectParam);
+                    ChangeTargetStats(new PStat[] { PStat.Defense }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeTarget_EVA:
-                    ChangeTargetStat(PStat.Evasion, (sbyte)mData.EffectParam);
+                    ChangeTargetStats(new PStat[] { PStat.Evasion }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeTarget_SPDEF:
-                    ChangeTargetStat(PStat.SpDefense, (sbyte)mData.EffectParam);
+                    ChangeTargetStats(new PStat[] { PStat.SpDefense }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeTarget_SPE:
-                    ChangeTargetStat(PStat.Speed, (sbyte)mData.EffectParam);
+                    ChangeTargetStats(new PStat[] { PStat.Speed }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeUser_ATK:
-                    ChangeUserStat(PStat.Attack, (sbyte)mData.EffectParam);
+                    ChangeUserStats(new PStat[] { PStat.Attack }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeUser_DEF:
-                    ChangeUserStat(PStat.Defense, (sbyte)mData.EffectParam);
+                    ChangeUserStats(new PStat[] { PStat.Defense }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeUser_EVA:
-                    ChangeUserStat(PStat.Evasion, (sbyte)mData.EffectParam);
+                    ChangeUserStats(new PStat[] { PStat.Evasion }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeUser_SPATK:
-                    ChangeUserStat(PStat.SpAttack, (sbyte)mData.EffectParam);
+                    ChangeUserStats(new PStat[] { PStat.SpAttack }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeUser_SPDEF:
-                    ChangeUserStat(PStat.SpDefense, (sbyte)mData.EffectParam);
+                    ChangeUserStats(new PStat[] { PStat.SpDefense }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.ChangeUser_SPE:
-                    ChangeUserStat(PStat.Speed, (sbyte)mData.EffectParam);
+                    ChangeUserStats(new PStat[] { PStat.Speed }, new sbyte[] { (sbyte)mData.EffectParam });
                     break;
                 case PMoveEffect.Confuse:
                     TryForceStatus2(PStatus2.Confused);
@@ -281,13 +281,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_Dive();
                     break;
                 case PMoveEffect.Fail:
-                    if (!bUsedMove)
-                    {
-                        bUsedMove = true;
-                        BroadcastMoveUsed();
-                        PPReduce(bUser, bMove);
-                        BroadcastFail(PFailReason.Default);
-                    }
+                    Ef_Fail();
                     break;
                 case PMoveEffect.FocusEnergy:
                     TryForceStatus2(PStatus2.Pumped);
@@ -311,25 +305,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     HitAndMaybeApplyStatus1(PStatus1.Frozen, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerTarget_ACC_By1:
-                    HitAndMaybeChangeTargetStat(PStat.Accuracy, -1, mData.EffectParam);
+                    HitAndMaybeChangeTargetStats(new PStat[] { PStat.Accuracy }, new sbyte[] { -1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerTarget_ATK_By1:
-                    HitAndMaybeChangeTargetStat(PStat.Attack, -1, mData.EffectParam);
+                    HitAndMaybeChangeTargetStats(new PStat[] { PStat.Attack }, new sbyte[] { -1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerTarget_DEF_By1:
-                    HitAndMaybeChangeTargetStat(PStat.Defense, -1, mData.EffectParam);
+                    HitAndMaybeChangeTargetStats(new PStat[] { PStat.Defense }, new sbyte[] { -1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerTarget_SPATK_By1:
-                    HitAndMaybeChangeTargetStat(PStat.SpAttack, -1, mData.EffectParam);
+                    HitAndMaybeChangeTargetStats(new PStat[] { PStat.SpAttack }, new sbyte[] { -1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1:
-                    HitAndMaybeChangeTargetStat(PStat.SpDefense, -1, mData.EffectParam);
+                    HitAndMaybeChangeTargetStats(new PStat[] { PStat.SpDefense }, new sbyte[] { -1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2:
-                    HitAndMaybeChangeTargetStat(PStat.SpDefense, -2, mData.EffectParam);
+                    HitAndMaybeChangeTargetStats(new PStat[] { PStat.SpDefense }, new sbyte[] { -2 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerTarget_SPE_By1:
-                    HitAndMaybeChangeTargetStat(PStat.Speed, -1, mData.EffectParam);
+                    HitAndMaybeChangeTargetStats(new PStat[] { PStat.Speed }, new sbyte[] { -1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeParalyze:
                     HitAndMaybeApplyStatus1(PStatus1.Paralyzed, mData.EffectParam);
@@ -338,35 +332,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     HitAndMaybeApplyStatus1(PStatus1.Poisoned, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1:
-                    if (HitAndMaybeChangeUserStat(PStat.Defense, -1, mData.EffectParam))
-                    {
-                        ChangeUserStat(PStat.SpDefense, -1);
-                    }
+                    HitAndMaybeChangeUserStats(new PStat[] { PStat.Defense, PStat.SpDefense }, new sbyte[] { -1, -1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerUser_SPATK_By2:
-                    HitAndMaybeChangeUserStat(PStat.SpAttack, -2, mData.EffectParam);
+                    HitAndMaybeChangeUserStats(new PStat[] { PStat.SpAttack }, new sbyte[] { -2 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerUser_SPE_By1:
-                    HitAndMaybeChangeUserStat(PStat.Speed, -1, mData.EffectParam);
+                    HitAndMaybeChangeUserStats(new PStat[] { PStat.Speed }, new sbyte[] { -1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1:
-                    if (HitAndMaybeChangeUserStat(PStat.Speed, -1, mData.EffectParam))
-                    {
-                        ChangeUserStat(PStat.Defense, -1);
-                        ChangeUserStat(PStat.SpDefense, -1);
-                    }
+                    HitAndMaybeChangeUserStats(new PStat[] { PStat.Speed, PStat.Defense, PStat.SpDefense }, new sbyte[] { -1, -1, -1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
-                    HitAndMaybeChangeUserStat(PStat.Attack, +1, mData.EffectParam);
+                    HitAndMaybeChangeUserStats(new PStat[] { PStat.Attack }, new sbyte[] { +1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeRaiseUser_DEF_By1:
-                    HitAndMaybeChangeUserStat(PStat.Defense, +1, mData.EffectParam);
+                    HitAndMaybeChangeUserStats(new PStat[] { PStat.Defense }, new sbyte[] { +1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeRaiseUser_SPATK_By1:
-                    HitAndMaybeChangeUserStat(PStat.SpAttack, +1, mData.EffectParam);
+                    HitAndMaybeChangeUserStats(new PStat[] { PStat.SpAttack }, new sbyte[] { +1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeRaiseUser_SPE_By1:
-                    HitAndMaybeChangeUserStat(PStat.Speed, +1, mData.EffectParam);
+                    HitAndMaybeChangeUserStats(new PStat[] { PStat.Speed }, new sbyte[] { +1 }, mData.EffectParam);
                     break;
                 case PMoveEffect.Hit__MaybeToxic:
                     HitAndMaybeApplyStatus1(PStatus1.BadlyPoisoned, mData.EffectParam);
@@ -375,17 +362,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_LightScreen();
                     break;
                 case PMoveEffect.LowerTarget_ATK_DEF_By1:
-                    if (ChangeTargetStat(PStat.Attack, -1))
-                    {
-                        ChangeTargetStat(PStat.Defense, -1);
-                    }
+                    ChangeTargetStats(new PStat[] { PStat.Attack, PStat.Defense }, new sbyte[] { -1, -1 });
                     break;
                 case PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
-                    ChangeUserStat(PStat.Defense, -1);
-                    ChangeUserStat(PStat.SpDefense, -1);
-                    ChangeUserStat(PStat.Attack, +2);
-                    ChangeUserStat(PStat.SpAttack, +2);
-                    ChangeUserStat(PStat.Speed, +2);
+                    ChangeUserStats(new PStat[] { PStat.Defense, PStat.SpDefense, PStat.Attack, PStat.SpAttack, PStat.Speed }, new sbyte[] { -1, -1, +2, +2, +2 });
                     break;
                 case PMoveEffect.Moonlight:
                     Ef_Moonlight();
@@ -397,48 +377,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     TryForceStatus1(PStatus1.Poisoned);
                     break;
                 case PMoveEffect.Protect:
-                    Ef_Protect();
+                    TryForceStatus2(PStatus2.Protected);
                     break;
                 case PMoveEffect.RainDance:
                     Ef_RainDance();
                     break;
                 case PMoveEffect.RaiseUser_ATK_ACC_By1:
-                    ChangeUserStat(PStat.Attack, +1);
-                    ChangeUserStat(PStat.Accuracy, +1);
+                    ChangeUserStats(new PStat[] { PStat.Attack, PStat.Accuracy }, new sbyte[] { +1, +1 });
                     break;
                 case PMoveEffect.RaiseUser_ATK_DEF_By1:
-                    ChangeUserStat(PStat.Attack, +1);
-                    ChangeUserStat(PStat.Defense, +1);
+                    ChangeUserStats(new PStat[] { PStat.Attack, PStat.Defense }, new sbyte[] { +1, +1 });
                     break;
                 case PMoveEffect.RaiseUser_ATK_DEF_ACC_By1:
-                    ChangeUserStat(PStat.Attack, +1);
-                    ChangeUserStat(PStat.Defense, +1);
-                    ChangeUserStat(PStat.Accuracy, +1);
+                    ChangeUserStats(new PStat[] { PStat.Attack, PStat.Defense, PStat.Accuracy }, new sbyte[] { +1, +1, +1 });
                     break;
                 case PMoveEffect.RaiseUser_ATK_SPATK_By1:
-                    ChangeUserStat(PStat.Attack, +1);
-                    ChangeUserStat(PStat.SpAttack, +1);
+                    ChangeUserStats(new PStat[] { PStat.Attack, PStat.SpAttack }, new sbyte[] { +1, +1 });
                     break;
                 case PMoveEffect.RaiseUser_ATK_SPE_By1:
-                    ChangeUserStat(PStat.Attack, +1);
-                    ChangeUserStat(PStat.Speed, +1);
+                    ChangeUserStats(new PStat[] { PStat.Attack, PStat.Speed }, new sbyte[] { +1, +1 });
                     break;
                 case PMoveEffect.RaiseUser_DEF_SPDEF_By1:
-                    ChangeUserStat(PStat.Defense, +1);
-                    ChangeUserStat(PStat.SpDefense, +1);
+                    ChangeUserStats(new PStat[] { PStat.Defense, PStat.SpDefense }, new sbyte[] { +1, +1 });
                     break;
                 case PMoveEffect.RaiseUser_SPATK_SPDEF_By1:
-                    ChangeUserStat(PStat.SpAttack, +1);
-                    ChangeUserStat(PStat.SpDefense, +1);
+                    ChangeUserStats(new PStat[] { PStat.SpAttack, PStat.SpDefense }, new sbyte[] { +1, +1 });
                     break;
                 case PMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1:
-                    ChangeUserStat(PStat.SpAttack, +1);
-                    ChangeUserStat(PStat.SpDefense, +1);
-                    ChangeUserStat(PStat.Speed, +1);
+                    ChangeUserStats(new PStat[] { PStat.SpAttack, PStat.SpDefense, PStat.Speed }, new sbyte[] { +1, +1, +1 });
                     break;
                 case PMoveEffect.RaiseUser_SPE_By2_ATK_By1:
-                    ChangeUserStat(PStat.Speed, +2);
-                    ChangeUserStat(PStat.Attack, +1);
+                    ChangeUserStats(new PStat[] { PStat.Speed, PStat.Attack }, new sbyte[] { +2, +1 });
                     break;
                 case PMoveEffect.Reflect:
                     Ef_Reflect();
@@ -468,7 +437,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         bool MoveCancelCheck()
         {
             PMoveData mData = PMoveData.Data[bMove];
-            
+
             // Increment counters first
             if (bUser.Status2.HasFlag(PStatus2.Confused))
                 bUser.ConfusionCounter++;
@@ -836,6 +805,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         return true;
                     }
                     break;
+                case PStatus2.Protected:
+                    {
+                        // TODO: If the user goes last, fail
+                        ushort chance = ushort.MaxValue;
+                        for (int i = 0; i < bUser.ProtectCounter; i++)
+                            chance /= 2;
+                        if (PUtils.ApplyChance(chance, ushort.MaxValue))
+                        {
+                            bUser.Status2 |= PStatus2.Protected;
+                            bUser.ProtectCounter++;
+                            BroadcastStatus2(bUser, PStatus2.Protected, PStatusAction.Added);
+                            return true;
+                        }
+                        bUser.ProtectCounter = 0;
+                    }
+                    break;
                 case PStatus2.Pumped:
                     if (!bUser.Status2.HasFlag(PStatus2.Pumped))
                     {
@@ -863,7 +848,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
-        // Returns false if the attack failed to hit or the defender fainted
+        // Returns false if the attack failed to hit or the target fainted
         bool Ef_Hit()
         {
             if (!bUsedMove)
@@ -884,30 +869,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             return true;
         }
-        bool Ef_Hit__MaybeConfuse(int chance)
+        void Ef_Hit__MaybeConfuse(int chance)
         {
             bool behindSubstitute = bTarget.Status2.HasFlag(PStatus2.Substitute);
             if (!Ef_Hit())
-                return false;
-            if (behindSubstitute || !PUtils.ApplyChance(chance, 100))
-                return false;
-            if (!ApplyStatus2IfPossible(PStatus2.Confused, false))
-                return false;
-            return true;
+                return;
+            if (!behindSubstitute && PUtils.ApplyChance(chance, 100))
+            {
+                ApplyStatus2IfPossible(PStatus2.Confused, false);
+            }
         }
-        bool Ef_Hit__MaybeFlinch(int chance)
+        void Ef_Hit__MaybeFlinch(int chance)
         {
             bool behindSubstitute = bTarget.Status2.HasFlag(PStatus2.Substitute);
             if (!Ef_Hit())
-                return false;
-            if (behindSubstitute || !PUtils.ApplyChance(chance, 100))
-                return false;
-            if (!ApplyStatus2IfPossible(PStatus2.Flinching, false))
-                return false;
-            return true;
+                return;
+            if (!behindSubstitute && PUtils.ApplyChance(chance, 100))
+            {
+                ApplyStatus2IfPossible(PStatus2.Flinching, false);
+            }
         }
 
-        bool TryForceStatus1(PStatus1 status)
+        void TryForceStatus1(PStatus1 status)
         {
             if (!bUsedMove)
             {
@@ -916,18 +899,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PPReduce(bUser, bMove);
             }
             if (AccuracyCheck())
-                return false;
+                return;
             PEffectiveness effectiveness = TypeCheck(bUser, bTarget);
             if (effectiveness == PEffectiveness.Ineffective) // Paralysis, Normalize
             {
                 BroadcastEffectiveness(bTarget, effectiveness);
-                return false;
             }
-            if (!ApplyStatus1IfPossible(status, true))
-                return false;
-            return true;
+            else
+            {
+                ApplyStatus1IfPossible(status, true);
+            }
         }
-        bool TryForceStatus2(PStatus2 status)
+        void TryForceStatus2(PStatus2 status)
         {
             if (!bUsedMove)
             {
@@ -936,24 +919,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PPReduce(bUser, bMove);
             }
             if (AccuracyCheck())
-                return false;
-            if (!ApplyStatus2IfPossible(status, true))
-                return false;
-            return true;
+                return;
+            ApplyStatus2IfPossible(status, true);
         }
-        bool HitAndMaybeApplyStatus1(PStatus1 status, int chance)
+        void HitAndMaybeApplyStatus1(PStatus1 status, int chance)
         {
             bool behindSubstitute = bTarget.Status2.HasFlag(PStatus2.Substitute);
             if (!Ef_Hit())
-                return false;
-            if (behindSubstitute || !PUtils.ApplyChance(chance, 100))
-                return false;
-            if (!ApplyStatus1IfPossible(status, false))
-                return false;
-            return true;
+                return;
+            if (!behindSubstitute && PUtils.ApplyChance(chance, 100))
+            {
+                ApplyStatus1IfPossible(status, false);
+            }
         }
 
-        bool ChangeTargetStat(PStat stat, sbyte change)
+        void ChangeTargetStats(PStat[] stats, sbyte[] changes)
         {
             if (!bUsedMove)
             {
@@ -964,15 +944,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bTarget.Status2.HasFlag(PStatus2.Substitute))
             {
                 BroadcastFail(PFailReason.Default);
-                return false;
             }
             else
             {
-                ApplyStatChange(bTarget, stat, change);
-                return true;
+                for (int i = 0; i < stats.Length; i++)
+                    ApplyStatChange(bTarget, stats[i], changes[i]);
             }
         }
-        bool ChangeUserStat(PStat stat, sbyte change)
+        void ChangeUserStats(PStat[] stats, sbyte[] changes)
         {
             if (!bUsedMove)
             {
@@ -980,49 +959,61 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastMoveUsed();
                 PPReduce(bUser, bMove);
             }
-            ApplyStatChange(bUser, stat, change);
-            return true;
+            for (int i = 0; i < stats.Length; i++)
+            {
+                ApplyStatChange(bUser, stats[i], changes[i]);
+            }
         }
-        bool HitAndMaybeChangeTargetStat(PStat stat, sbyte change, int chance)
+        void HitAndMaybeChangeTargetStats(PStat[] stats, sbyte[] changes, int chance)
         {
             bool behindSubstitute = bTarget.Status2.HasFlag(PStatus2.Substitute);
             if (!Ef_Hit())
-                return false;
-            if (behindSubstitute || !PUtils.ApplyChance(chance, 100))
-                return false;
-            ApplyStatChange(bTarget, stat, change);
-            return true;
+                return;
+            if (!behindSubstitute && PUtils.ApplyChance(chance, 100))
+            {
+                for (int i = 0; i < stats.Length; i++)
+                {
+                    ApplyStatChange(bTarget, stats[i], changes[i]);
+                }
+            }
         }
-        bool HitAndMaybeChangeUserStat(PStat stat, sbyte change, int chance)
+        void HitAndMaybeChangeUserStats(PStat[] stats, sbyte[] changes, int chance)
         {
-            if (!Ef_Hit())
-                return false;
-            if (!PUtils.ApplyChance(chance, 100))
-                return false;
-            ApplyStatChange(bUser, stat, change);
-            return true;
+            if (!bUsedMove)
+            {
+                bUsedMove = true;
+                BroadcastMoveUsed();
+                PPReduce(bUser, bMove);
+            }
+            if (AccuracyCheck())
+                return;
+            CritCheck();
+            PEffectiveness effectiveness = TypeCheck(bUser, bTarget);
+            if (!DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false))
+                return;
+            if (bLandedCrit)
+                BroadcastCrit();
+            FaintCheck(bTarget);
+            if (PUtils.ApplyChance(chance, 100))
+            {
+                for (int i = 0; i < stats.Length; i++)
+                {
+                    ApplyStatChange(bUser, stats[i], changes[i]);
+                }
+            }
         }
 
-        bool Ef_Protect()
+        void Ef_Fail()
         {
-            BroadcastMoveUsed();
-            PPReduce(bUser, bMove);
-            // TODO: If the user goes last, fail
-            ushort chance = ushort.MaxValue;
-            for (int i = 0; i < bUser.ProtectCounter; i++)
-                chance /= 2;
-            if (!PUtils.ApplyChance(chance, ushort.MaxValue))
+            if (!bUsedMove)
             {
-                bUser.ProtectCounter = 0;
+                bUsedMove = true;
+                BroadcastMoveUsed();
+                PPReduce(bUser, bMove);
                 BroadcastFail(PFailReason.Default);
-                return false;
             }
-            bUser.ProtectCounter++;
-            bUser.Status2 |= PStatus2.Protected;
-            BroadcastStatus2(bUser, PStatus2.Protected, PStatusAction.Added);
-            return true;
         }
-        bool Ef_Reflect()
+        void Ef_Reflect()
         {
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
@@ -1030,13 +1021,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (team.ReflectCount > 0)
             {
                 BroadcastFail(PFailReason.Default);
-                return false;
             }
-            team.ReflectCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
-            BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Added);
-            return true;
+            else
+            {
+                team.ReflectCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
+                BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Added);
+            }
         }
-        bool Ef_LightScreen()
+        void Ef_LightScreen()
         {
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
@@ -1044,44 +1036,45 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (team.LightScreenCount > 0)
             {
                 BroadcastFail(PFailReason.Default);
-                return false;
             }
-            team.LightScreenCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
-            BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Added);
-            return true;
+            else
+            {
+                team.LightScreenCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
+                BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Added);
+            }
         }
-        bool Ef_BrickBreak()
+        void Ef_BrickBreak()
         {
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
             if (AccuracyCheck())
-                return false;
+                return;
             CritCheck();
             PEffectiveness effectiveness = TypeCheck(bUser, bTarget);
             if (effectiveness == PEffectiveness.Ineffective)
             {
                 BroadcastEffectiveness(bTarget, effectiveness);
-                return false;
             }
-            PTeam team = teams[bTarget.Local ? 0 : 1];
-            if (team.ReflectCount > 0)
+            else
             {
-                team.ReflectCount = 0;
-                BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Broke);
+                PTeam team = teams[bTarget.Local ? 0 : 1];
+                if (team.ReflectCount > 0)
+                {
+                    team.ReflectCount = 0;
+                    BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Broke);
+                }
+                if (team.LightScreenCount > 0)
+                {
+                    team.LightScreenCount = 0;
+                    BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Broke);
+                }
+                DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false);
+                if (bLandedCrit)
+                    BroadcastCrit();
+                FaintCheck(bTarget);
             }
-            if (team.LightScreenCount > 0)
-            {
-                team.LightScreenCount = 0;
-                BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Broke);
-            }
-            DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false);
-            if (bLandedCrit)
-                BroadcastCrit();
-            if (FaintCheck(bTarget))
-                return false;
-            return true;
         }
-        bool Ef_Dive()
+        void Ef_Dive()
         {
             top:
             if (bUser.Status2.HasFlag(PStatus2.Underwater))
@@ -1094,7 +1087,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 bUser.LockedAction.Decision = PDecision.None;
                 bUser.Status2 &= ~PStatus2.Underwater;
                 BroadcastStatus2(bUser, PStatus2.Underwater, PStatusAction.Ended);
-                return Ef_Hit();
+                Ef_Hit();
             }
             else
             {
@@ -1110,45 +1103,44 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastItemUsed(bUser, PItem.PowerHerb);
                     goto top;
                 }
-                return true;
             }
         }
-        bool Ef_RainDance()
+        void Ef_RainDance()
         {
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
             if (Weather == PWeather.Raining)
             {
                 BroadcastFail(PFailReason.Default);
-                return false;
             }
-            Weather = PWeather.Raining;
-            WeatherCounter = (byte)(PSettings.RainTurns + (bUser.Item == PItem.DampRock ? PSettings.DampRockTurnExtension : 0));
-            BroadcastWeather(Weather, PWeatherAction.Added);
-            return true;
+            else
+            {
+                Weather = PWeather.Raining;
+                WeatherCounter = (byte)(PSettings.RainTurns + (bUser.Item == PItem.DampRock ? PSettings.DampRockTurnExtension : 0));
+                BroadcastWeather(Weather, PWeatherAction.Added);
+            }
         }
-        bool Ef_SunnyDay()
+        void Ef_SunnyDay()
         {
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
             if (Weather == PWeather.Sunny)
             {
                 BroadcastFail(PFailReason.Default);
-                return false;
             }
-            Weather = PWeather.Sunny;
-            WeatherCounter = (byte)(PSettings.SunTurns + (bUser.Item == PItem.HeatRock ? PSettings.HeatRockTurnExtension : 0));
-            BroadcastWeather(Weather, PWeatherAction.Added);
-            return true;
+            else
+            {
+                Weather = PWeather.Sunny;
+                WeatherCounter = (byte)(PSettings.SunTurns + (bUser.Item == PItem.HeatRock ? PSettings.HeatRockTurnExtension : 0));
+                BroadcastWeather(Weather, PWeatherAction.Added);
+            }
         }
-        bool Ef_Growth()
+        void Ef_Growth()
         {
             sbyte change = (sbyte)(Weather == PWeather.Sunny ? +2 : +1);
-            ChangeUserStat(PStat.Attack, change);
-            ChangeUserStat(PStat.SpAttack, change);
-            return true;
+            ChangeUserStats(new PStat[] { PStat.Attack, PStat.SpAttack }, new sbyte[] { change, change });
         }
-        bool Ef_Moonlight()
+        void Ef_Moonlight()
         {
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
@@ -1163,11 +1155,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!HealDamage(bUser, hp))
             {
                 BroadcastFail(PFailReason.HPFull);
-                return false;
             }
-            return true;
         }
-        bool Ef_Transform()
+        void Ef_Transform()
         {
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
@@ -1176,13 +1166,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 || bTarget.Status2.HasFlag(PStatus2.Substitute))
             {
                 BroadcastFail(PFailReason.Default);
-                return false;
+                return;
             }
             if (AccuracyCheck())
-                return false;
+                return;
             bUser.Transform(bTarget, bTarget.Attack, bTarget.Defense, bTarget.SpAttack, bTarget.SpDefense, bTarget.Speed, bTarget.Ability, bTarget.Moves);
             BroadcastTransform();
-            return true;
         }
     }
 }

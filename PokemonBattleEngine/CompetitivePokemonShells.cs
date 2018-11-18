@@ -162,7 +162,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Quiet,
                 IVs = new byte[] { 31, 31, 30, 30, 30, 30 }, // Hidden Power Fighting/70
                 EVs = new byte[] { 248, 0, 8, 252, 0, 0 },
-                Moves = new PMove[] { PMove.ShadowBall, PMove.HiddenPower, PMove.NastyPlot, PMove.ShadowBall }, // Shadow ball, hidden power fighting, nasty plot, trick room
+                Moves = new PMove[] { PMove.ShadowBall, PMove.HiddenPower, PMove.NastyPlot, PMove.DarkPulse }, // Shadow ball, hidden power fighting, nasty plot, trick room
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Genesect_Uber = new PPokemonShell
