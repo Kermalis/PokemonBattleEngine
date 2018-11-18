@@ -101,6 +101,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.DracoMeteor, PMove.LightScreen, PMove.Surf, PMove.HiddenPower }, // draco meteor, surf, psyshock, hidden power fire
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Rotom_Wash_OU = new PPokemonShell
+            {
+                Species = PSpecies.Rotom_Wash,
+                Nickname = "Wahooey",
+                Level = 100,
+                Friendship = 255,
+                Item = PItem.Leftovers,
+                Shiny = false,
+                Ability = PAbility.Levitate,
+                Gender = PGender.Genderless,
+                Nature = PNature.Modest,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
+                EVs = new byte[] { 232, 0, 0, 56, 0, 220 },
+                Moves = new PMove[] { PMove.HydroPump, PMove.WillOWisp, PMove.ThunderShock, PMove.ThunderWave }, // Volt Switch, Hydro Pump, Will-O-Wisp, Pain Split
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Cresselia_UU = new PPokemonShell
             {
                 Species = PSpecies.Cresselia,

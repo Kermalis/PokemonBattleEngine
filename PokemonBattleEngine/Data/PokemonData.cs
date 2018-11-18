@@ -1113,6 +1113,85 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Rotom,
+                new PPokemonData
+                {
+                    HP = 50, Attack = 50, Defense = 77, SpAttack = 95, SpDefense = 77, Speed = 91,
+                    GenderRatio = PGender.Genderless,
+                    Type1 = PType.Electric, Type2 = PType.Ghost,
+                    Abilities = new PAbility[] { PAbility.Levitate },
+                    MinLevel = 1, // Egg
+                    ShinyLocked = false,
+                    Weight = 0.3,
+                    LevelUpMoves = new Tuple<int, PMove>[]
+                    {
+                        Tuple.Create(1, PMove.ThunderShock),
+                        // 1 trick
+                        Tuple.Create(1, PMove.Astonish),
+                        Tuple.Create(1, PMove.ThunderWave),
+                        Tuple.Create(1, PMove.ConfuseRay),
+                        // 8 uproar
+                        Tuple.Create(10, PMove.SignalBeam), // Dream World
+                        Tuple.Create(10, PMove.ShockWave), // Dream World
+                        Tuple.Create(15, PMove.DoubleTeam),
+                        Tuple.Create(22, PMove.ShockWave),
+                        // 29 ominous wind
+                        Tuple.Create(36, PMove.Substitute),
+                        // 43 electro ball
+                        // 50 hex
+                        // 57 charge (43 gen 4)
+                        Tuple.Create(50, PMove.Discharge), // Gen 4
+                        Tuple.Create(64, PMove.Discharge),
+                    },
+                    OtherMoves = new PMove[]
+                    {
+                        // telekinesis // tm
+                        // facade
+                        // rest
+                        // thief
+                        // round
+                        // volt switch
+                        // psych up
+                        // dream eater
+                        // swagger
+                        // pain split // tutor
+                        // sleep talk
+                        // snatch
+                        // snore
+                        // spite
+                        // trick
+                        // uproar
+                        // endure // gen 4 tm
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        // sucker punch // gen 4 tutor
+                        PMove.ChargeBeam, // TM
+                        PMove.DarkPulse, // Move Tutor
+                        PMove.DoubleTeam, // TM
+                        PMove.Electroweb, // Move Tutor
+                        PMove.Flash, // TM
+                        PMove.Frustration, // TM
+                        PMove.HiddenPower, // TM
+                        PMove.LightScreen, // TM
+                        PMove.MudSlap, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
+                        PMove.RainDance, // TM
+                        PMove.Reflect, // TM
+                        PMove.Return, // TM
+                        PMove.ShadowBall, // TM
+                        PMove.SignalBeam, // Move Tutor
+                        PMove.Substitute, // TM
+                        PMove.SunnyDay, // TM
+                        PMove.Swift, // Gen 4 Move Tutor
+                        PMove.Thunder, // TM
+                        PMove.Thunderbolt, // TM
+                        PMove.ThunderWave, // TM
+                        PMove.Toxic, // TM
+                        PMove.WillOWisp, // TM
+                    }
+                }
+            },
+            {
                 PSpecies.Cresselia,
                 new PPokemonData
                 {
@@ -1526,6 +1605,53 @@ namespace Kermalis.PokemonBattleEngine.Data
             Data.Add(PSpecies.Unown_Z, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
             Data.Add(PSpecies.Unown_Exclamation, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
             Data.Add(PSpecies.Unown_Question, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
+
+            IEnumerable<PMove> otherMoves = Data[PSpecies.Rotom].OtherMoves;
+            Data.Add(PSpecies.Rotom_Fan, (PPokemonData)Data[PSpecies.Rotom].MemberwiseClone());
+            Data[PSpecies.Rotom_Fan].HP = 50;
+            Data[PSpecies.Rotom_Fan].HP = 65;
+            Data[PSpecies.Rotom_Fan].HP = 107;
+            Data[PSpecies.Rotom_Fan].HP = 105;
+            Data[PSpecies.Rotom_Fan].HP = 107;
+            Data[PSpecies.Rotom_Fan].HP = 86;
+            Data[PSpecies.Rotom_Fan].Type2 = PType.Flying;
+            Data[PSpecies.Rotom_Fan].OtherMoves = otherMoves.Concat(new PMove[] { PMove.AirSlash }).ToArray();
+            Data.Add(PSpecies.Rotom_Frost, (PPokemonData)Data[PSpecies.Rotom].MemberwiseClone());
+            Data[PSpecies.Rotom_Frost].HP = 50;
+            Data[PSpecies.Rotom_Frost].HP = 65;
+            Data[PSpecies.Rotom_Frost].HP = 107;
+            Data[PSpecies.Rotom_Frost].HP = 105;
+            Data[PSpecies.Rotom_Frost].HP = 107;
+            Data[PSpecies.Rotom_Frost].HP = 86;
+            Data[PSpecies.Rotom_Frost].Type2 = PType.Ice;
+            //Data[PSpecies.Rotom_Frost].OtherMoves = otherMoves.Concat(new PMove[] { PMove.Blizzard }).ToArray();
+            Data.Add(PSpecies.Rotom_Heat, (PPokemonData)Data[PSpecies.Rotom].MemberwiseClone());
+            Data[PSpecies.Rotom_Heat].HP = 50;
+            Data[PSpecies.Rotom_Heat].HP = 65;
+            Data[PSpecies.Rotom_Heat].HP = 107;
+            Data[PSpecies.Rotom_Heat].HP = 105;
+            Data[PSpecies.Rotom_Heat].HP = 107;
+            Data[PSpecies.Rotom_Heat].HP = 86;
+            Data[PSpecies.Rotom_Heat].Type2 = PType.Fire;
+            Data[PSpecies.Rotom_Heat].OtherMoves = otherMoves.Concat(new PMove[] { PMove.Overheat }).ToArray();
+            Data.Add(PSpecies.Rotom_Mow, (PPokemonData)Data[PSpecies.Rotom].MemberwiseClone());
+            Data[PSpecies.Rotom_Mow].HP = 50;
+            Data[PSpecies.Rotom_Mow].HP = 65;
+            Data[PSpecies.Rotom_Mow].HP = 107;
+            Data[PSpecies.Rotom_Mow].HP = 105;
+            Data[PSpecies.Rotom_Mow].HP = 107;
+            Data[PSpecies.Rotom_Mow].HP = 86;
+            Data[PSpecies.Rotom_Mow].Type2 = PType.Grass;
+            //Data[PSpecies.Rotom_Mow].OtherMoves = otherMoves.Concat(new PMove[] { PMove.LeafStorm }).ToArray();
+            Data.Add(PSpecies.Rotom_Wash, (PPokemonData)Data[PSpecies.Rotom].MemberwiseClone());
+            Data[PSpecies.Rotom_Wash].HP = 50;
+            Data[PSpecies.Rotom_Wash].HP = 65;
+            Data[PSpecies.Rotom_Wash].HP = 107;
+            Data[PSpecies.Rotom_Wash].HP = 105;
+            Data[PSpecies.Rotom_Wash].HP = 107;
+            Data[PSpecies.Rotom_Wash].HP = 86;
+            Data[PSpecies.Rotom_Wash].Type2 = PType.Water;
+            Data[PSpecies.Rotom_Wash].OtherMoves = otherMoves.Concat(new PMove[] { PMove.HydroPump }).ToArray();
 
             Data.Add(PSpecies.Genesect_Burn, (PPokemonData)Data[PSpecies.Genesect].MemberwiseClone());
             Data.Add(PSpecies.Genesect_Chill, (PPokemonData)Data[PSpecies.Genesect].MemberwiseClone());

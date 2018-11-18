@@ -85,7 +85,27 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
 
-            // Validate Forme-Specific Items
+            // Validate EVs
+            if (EVs == null || EVs.Length != 6 || EVs.Select(e => (int)e).Sum() > PSettings.MaxTotalEVs)
+                throw new ArgumentOutOfRangeException(nameof(EVs));
+            // Validate IVs
+            if (IVs == null || IVs.Length != 6 || IVs.Any(i => i > PSettings.MaxIVs))
+                throw new ArgumentOutOfRangeException(nameof(IVs));
+
+            // Validate Moves
+            IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).Union(pData.OtherMoves);
+            if (Moves == null || Moves.Length != PSettings.NumMoves // Illegal array
+                || Moves.Any(m => m != PMove.None && !legalMoves.Contains(m)) // Has a move not in the legal list
+                || Moves.Any(m => Moves.Count(m2 => m != PMove.None && m == m2) > 1) // Has a duplicate move
+                || Moves.All(m => m == PMove.None) // Has no moves
+                )
+                throw new ArgumentOutOfRangeException(nameof(Moves));
+
+            // Validate PPUps
+            if (PPUps == null || PPUps.Length != PSettings.NumMoves || PPUps.Any(p => p > PSettings.MaxPPUps))
+                throw new ArgumentOutOfRangeException(nameof(PPUps));
+
+            // Validate Forme-Specific Requirements
             switch (Species)
             {
                 case PSpecies.Genesect:
@@ -113,26 +133,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         throw new ArgumentOutOfRangeException(nameof(Item));
                     break;
             }
-
-            // Validate EVs
-            if (EVs == null || EVs.Length != 6 || EVs.Select(e => (int)e).Sum() > PSettings.MaxTotalEVs)
-                throw new ArgumentOutOfRangeException(nameof(EVs));
-            // Validate IVs
-            if (IVs == null || IVs.Length != 6 || IVs.Any(i => i > PSettings.MaxIVs))
-                throw new ArgumentOutOfRangeException(nameof(IVs));
-
-            // Validate Moves
-            IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).Union(pData.OtherMoves);
-            if (Moves == null || Moves.Length != PSettings.NumMoves // Illegal array
-                || Moves.Any(m => m != PMove.None && !legalMoves.Contains(m)) // Has a move not in the legal list
-                || Moves.Any(m => Moves.Count(m2 => m != PMove.None && m == m2) > 1) // Has a duplicate move
-                || Moves.All(m => m == PMove.None) // Has no moves
-                )
-                throw new ArgumentOutOfRangeException(nameof(Moves));
-
-            // Validate PPUps
-            if (PPUps == null || PPUps.Length != PSettings.NumMoves || PPUps.Any(p => p > PSettings.MaxPPUps))
-                throw new ArgumentOutOfRangeException(nameof(PPUps));
         }
 
         internal byte[] ToBytes()

@@ -306,6 +306,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         Clamperl = 366, // TODO
         Latias = 380, // TODO
         Latios, // TODO
+        Rotom = 479 | (0 << 0x10), // TODO
+        Rotom_Fan = 479 | (1 << 0x10),
+        Rotom_Frost = 479 | (2 << 0x10), // TODO
+        Rotom_Heat = 479 | (3 << 0x10),
+        Rotom_Mow = 479 | (4 << 0x10), // TODO
+        Rotom_Wash = 479 | (5 << 0x10),
         Cresselia = 488, // TODO
         Darkrai = 491, // TODO
         Cofagrigus = 563, // TODO

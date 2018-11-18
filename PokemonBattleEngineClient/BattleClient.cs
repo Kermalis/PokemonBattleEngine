@@ -61,7 +61,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Azumarill_UU, PCompetitivePokemonShells.Cresselia_UU,
                         PCompetitivePokemonShells.Cofagrigus_UU, PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Ditto_UU,
                         PCompetitivePokemonShells.Genesect_Uber, PCompetitivePokemonShells.Latias_OU, PCompetitivePokemonShells.Latios_OU,
-                        PCompetitivePokemonShells.Pikachu_NU
+                        PCompetitivePokemonShells.Pikachu_NU, PCompetitivePokemonShells.Rotom_Wash_OU
                     };
                     possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
