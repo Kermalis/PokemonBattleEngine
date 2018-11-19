@@ -15,12 +15,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public bool Local;
         public readonly PTeamStatus Status;
         public readonly PTeamStatusAction Action;
+        public readonly byte VictimId; // Victim of PTeamStatusAction.CausedDamage
 
-        public PTeamStatusPacket(bool local, PTeamStatus status, PTeamStatusAction action)
+        public PTeamStatusPacket(bool local, PTeamStatus status, PTeamStatusAction action, byte victimId)
         {
             Local = local;
             Status = status;
             Action = action;
+            VictimId = victimId;
         }
         public PTeamStatusPacket(byte[] buffer)
         {
@@ -30,6 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Local = r.ReadBoolean();
                 Status = (PTeamStatus)r.ReadByte();
                 Action = (PTeamStatusAction)r.ReadByte();
+                VictimId = r.ReadByte();
             }
         }
         IEnumerable<byte> BuildBuffer()
@@ -39,6 +42,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)(Local ? 1 : 0));
             bytes.Add((byte)Status);
             bytes.Add((byte)Action);
+            bytes.Add(VictimId);
             return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
 

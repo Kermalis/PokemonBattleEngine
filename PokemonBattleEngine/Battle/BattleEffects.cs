@@ -15,6 +15,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void DoSwitchInEffects(PPokemon pkmn)
         {
+            PPokemonData pData = PPokemonData.Data[pkmn.Species]; // TODO: this is only needed for types, so when types are a part of PPokemon, use them instead
+            PTeam team = Teams[pkmn.Local ? 0 : 1];
+
+            // Entry Hazards
+            if (team.Status.HasFlag(PTeamStatus.Spikes)
+                && pkmn.Ability != PAbility.Levitate
+                && !pData.HasType(PType.Flying)
+                )
+            {
+                double denominator = 10.0 - (2 * team.SpikeCount);
+                ushort damage = (ushort)(pkmn.MaxHP / denominator);
+                DealDamage(pkmn, damage, PEffectiveness.Normal, true);
+                BroadcastTeamStatus(team.Local, PTeamStatus.Spikes, PTeamStatusAction.Damage, pkmn.Id);
+            }
+
             // Abilities
             Ab_LimberCure(pkmn);
         }
@@ -417,6 +432,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.Sleep:
                     TryForceStatus1(PStatus1.Asleep);
+                    break;
+                case PMoveEffect.Spikes:
+                    Ef_Spikes();
                     break;
                 case PMoveEffect.Substitute:
                     TryForceStatus2(PStatus2.Substitute);
@@ -1181,6 +1199,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             bUser.Transform(bTarget, bTarget.Attack, bTarget.Defense, bTarget.SpAttack, bTarget.SpDefense, bTarget.Speed, bTarget.Ability, bTarget.Moves);
             BroadcastTransform();
+        }
+        void Ef_Spikes()
+        {
+            BroadcastMoveUsed();
+            PPReduce(bUser, bMove);
+            PTeam opposingTeam = Teams[bUser.Local ? 1 : 0];
+            if (opposingTeam.SpikeCount >= 3)
+            {
+                BroadcastFail(PFailReason.Default);
+            }
+            else
+            {
+                opposingTeam.Status |= PTeamStatus.Spikes;
+                opposingTeam.SpikeCount++;
+                BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.Spikes, PTeamStatusAction.Added);
+            }
         }
     }
 }

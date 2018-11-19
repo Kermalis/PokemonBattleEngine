@@ -2364,6 +2364,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Spikes,
+                new PMoveData
+                {
+                    Type = PType.Ground, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Spikes, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedByMagicCoat,
+                    Targets = PMoveTarget.AllFoes
+                }
+            },
+            {
                 PMove.Spore,
                 new PMoveData
                 {

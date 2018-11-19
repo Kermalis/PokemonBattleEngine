@@ -18,6 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public PTeamStatus Status;
         public byte ReflectCount, LightScreenCount; // Reflect & Light Screen
+        public byte SpikeCount; // Spikes
         public bool MonFaintedLastTurn; // Retaliate
 
         // Host constructor
@@ -190,7 +191,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
 
             DetermineTurnOrder();
-            RunMovesInOrder();
+            RunActionsInOrder();
             TurnEnded();
 
             return true;
@@ -260,7 +261,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 turnOrder.AddRange(evaluated.Select(t => t.Item1));
             }
         }
-        void RunMovesInOrder()
+        void RunActionsInOrder()
         {
             foreach (PPokemon pkmn in turnOrder)
             {
@@ -281,6 +282,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         switchPkmn.FieldPosition = pos;
                         activeBattlers.Add(switchPkmn);
                         BroadcastSwitchIn(switchPkmn);
+                        DoSwitchInEffects(switchPkmn);
                         break;
                 }
                 pkmn.PreviousAction = pkmn.SelectedAction;

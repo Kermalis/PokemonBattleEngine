@@ -400,9 +400,29 @@ namespace Kermalis.PokemonBattleEngineClient
                                 default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid reflect action: {tsp.Action}");
                             }
                             break;
+                        case PTeamStatus.Spikes:
+                            switch (tsp.Action)
+                            {
+                                case PTeamStatusAction.Added:
+                                    team.SpikeCount++;
+                                    message = "Spikes were scattered all around the feet of {2} team!";
+                                    break;
+                                case PTeamStatusAction.Cleared:
+                                    team.SpikeCount = 0;
+                                    message = "The spikes disappeared from around {2} team's feet!";
+                                    break;
+                                case PTeamStatusAction.Damage: message = "{3} is hurt by the spikes!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid spikes action: {tsp.Action}");
+                            }
+                            break;
                         default: throw new ArgumentOutOfRangeException(nameof(tsp.Status), $"Invalid team status: {tsp.Status}");
                     }
-                    messageView.Add(battleView.Message = string.Format(message, tsp.Local ? "your" : "the opposing", tsp.Local ? "Your" : "The opposing"));
+                    messageView.Add(battleView.Message = string.Format(message,
+                        tsp.Local ? "your" : "the opposing",
+                        tsp.Local ? "Your" : "The opposing",
+                        tsp.Local ? "your" : "the foe's",
+                        Battle.GetPokemon(tsp.VictimId).NameForTrainer(true)
+                        ));
                     break;
                 case PTransformPacket tp:
                     {

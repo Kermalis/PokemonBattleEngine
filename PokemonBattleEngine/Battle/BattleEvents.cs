@@ -34,8 +34,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PStatus1Packet(pkmn, status, statusAction));
         void BroadcastStatus2(PPokemon pkmn, PStatus2 status, PStatusAction statusAction)
             => OnNewEvent?.Invoke(this, new PStatus2Packet(pkmn, status, statusAction));
-        void BroadcastTeamStatus(bool local, PTeamStatus status, PTeamStatusAction action)
-            => OnNewEvent?.Invoke(this, new PTeamStatusPacket(local, status, action));
+        void BroadcastTeamStatus(bool local, PTeamStatus status, PTeamStatusAction action, byte victimId = 0)
+            => OnNewEvent?.Invoke(this, new PTeamStatusPacket(local, status, action, victimId));
         void BroadcastWeather(PWeather weather, PWeatherAction action)
             => OnNewEvent?.Invoke(this, new PWeatherPacket(weather, action));
         void BroadcastItemUsed(PPokemon pkmn, PItem item)
@@ -272,9 +272,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid reflect action: {tsp.Action}");
                             }
                             break;
+                        case PTeamStatus.Spikes:
+                            switch (tsp.Action)
+                            {
+                                case PTeamStatusAction.Added: message = "Spikes were scattered all around the feet of {2} team!"; break;
+                                case PTeamStatusAction.Cleared: message = "The spikes disappeared from around {2} team's feet!"; break;
+                                case PTeamStatusAction.Damage: message = "{3} is hurt by the spikes!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid spikes action: {tsp.Action}");
+                            }
+                            break;
                         default: throw new ArgumentOutOfRangeException(nameof(tsp.Status), $"Invalid team status: {tsp.Status}");
                     }
-                    Console.WriteLine(message, tsp.Local ? "your" : "the opposing", tsp.Local ? "Your" : "The opposing");
+                    Console.WriteLine(message,
+                        tsp.Local ? "your" : "the opposing",
+                        tsp.Local ? "Your" : "The opposing",
+                        tsp.Local ? "your" : "the foe's",
+                        battle.GetPokemon(tsp.VictimId).NameForTrainer(true)
+                        );
                     break;
                 case PTransformPacket tp:
                     Console.WriteLine("{0} transformed into {1}!", battle.GetPokemon(tp.UserId).NameForTrainer(true), battle.GetPokemon(tp.TargetId).NameForTrainer(false));

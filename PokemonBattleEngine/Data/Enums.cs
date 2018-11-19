@@ -111,11 +111,10 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         LightScreen = 1 << 0,
-        PoisonSpikes = 1 << 1, // TODO
-        Reflect = 1 << 2,
-        Spikes = 1 << 3, // TODO
-        StealthRock = 1 << 4, // TODO
-        ToxicSpikes = 1 << 5 // TODO
+        Reflect = 1 << 1,
+        Spikes = 1 << 2,
+        StealthRock = 1 << 3, // TODO
+        ToxicSpikes = 1 << 4 // TODO
     }
     public enum PStatusAction : byte
     {
@@ -127,9 +126,10 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PTeamStatusAction : byte
     {
-        Added,
-        Cleared,
-        Ended
+        Added, // set up
+        Cleared, // brick break destroying reflect, defog clearing spikes, etc
+        Damage, // hazard causing damage
+        Ended // reflect & light screen wearing off
     }
     public enum PFailReason : byte
     {
@@ -252,7 +252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Illuminate,
         Imposter, // TODO
         Justified, // TODO
-        Levitate, // TODO
+        Levitate, // TODO: Immunity to ground-type moves
         LightningRod, // TODO
         Limber,
         MarvelScale,
@@ -430,6 +430,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_SPE_By2_ATK_By1,
         Reflect,
         Sleep,
+        Spikes,
         Substitute,
         SunnyDay,
         Toxic,
@@ -648,6 +649,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Snarl,
         SpacialRend,
         Spark,
+        Spikes,
         Spore,
         Steamroller,
         SteelWing,
