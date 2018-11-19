@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             foreach (PAction action in actions)
             {
-                PPokemon pkmn = PKnownInfo.Instance.Pokemon(action.PokemonId);
+                PPokemon pkmn = GetPokemon(action.PokemonId);
 
                 // Not on the field
                 if (pkmn.FieldPosition == PFieldPosition.None)
@@ -309,7 +309,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         break;
                     case PDecision.Switch:
-                        PPokemon switchPkmn = PKnownInfo.Instance.Pokemon(action.SwitchPokemonId);
+                        PPokemon switchPkmn = GetPokemon(action.SwitchPokemonId);
                         // Validate the new battler's ID
                         if (switchPkmn == null || switchPkmn.Id == pkmn.Id)
                             return false;
@@ -344,7 +344,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void SelectAction(PAction action)
         {
-            PPokemon pkmn = PKnownInfo.Instance.Pokemon(action.PokemonId);
+            PPokemon pkmn = GetPokemon(action.PokemonId);
             switch (action.Decision)
             {
                 case PDecision.Fight:
@@ -379,7 +379,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                     else if (pkmn.FieldPosition == PFieldPosition.Center)
                                     {
-                                        PTeam opposingTeam = teams[pkmn.Local ? 1 : 0]; // Other team
+                                        PTeam opposingTeam = Teams[pkmn.Local ? 1 : 0]; // Other team
                                                                                         // Keep randomly picking until a non-fainted foe is selected
                                         int r;
                                         roll:
@@ -387,7 +387,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         // Prioritize left
                                         if (r == 0)
                                         {
-                                            if (opposingTeam.BattlerAtPosition(PFieldPosition.Left) != null)
+                                            if (opposingTeam.PokemonAtPosition(PFieldPosition.Left) != null)
                                                 action.FightTargets = PTarget.FoeLeft;
                                             else
                                                 goto roll;
@@ -395,7 +395,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         // Prioritize center
                                         else if (r == 1)
                                         {
-                                            if (opposingTeam.BattlerAtPosition(PFieldPosition.Center) != null)
+                                            if (opposingTeam.PokemonAtPosition(PFieldPosition.Center) != null)
                                                 action.FightTargets = PTarget.FoeCenter;
                                             else
                                                 goto roll;
@@ -403,7 +403,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         // Prioritize right
                                         else
                                         {
-                                            if (opposingTeam.BattlerAtPosition(PFieldPosition.Right) != null)
+                                            if (opposingTeam.PokemonAtPosition(PFieldPosition.Right) != null)
                                                 action.FightTargets = PTarget.FoeRight;
                                             else
                                                 goto roll;

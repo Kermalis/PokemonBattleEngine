@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +25,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void DoTurnEndedEffects(PPokemon pkmn)
         {
-            PTeam team = teams[pkmn.Local ? 0 : 1];
-
             // Items
             switch (pkmn.Item)
             {
@@ -77,8 +74,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void UseMove(PPokemon user)
         {
             bUsedMove = false;
-            PTeam attackerTeam = teams[user.Local ? 0 : 1]; // Attacker's team
-            PTeam opposingTeam = teams[user.Local ? 1 : 0]; // Other team
+            PTeam attackerTeam = Teams[user.Local ? 0 : 1]; // Attacker's team
+            PTeam opposingTeam = Teams[user.Local ? 1 : 0]; // Other team
 
             bUser = user;
             bMove = user.SelectedAction.FightMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
@@ -90,36 +87,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var targets = new List<PPokemon>();
             if (selectedTarget.HasFlag(PTarget.AllyLeft))
             {
-                PPokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Left);
+                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Left);
                 targets.Add(b);
             }
             if (selectedTarget.HasFlag(PTarget.AllyCenter))
             {
-                PPokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Center);
+                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Center);
                 targets.Add(b);
             }
             if (selectedTarget.HasFlag(PTarget.AllyRight))
             {
-                PPokemon b = attackerTeam.BattlerAtPosition(PFieldPosition.Right);
+                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Right);
                 targets.Add(b);
             }
             if (selectedTarget.HasFlag(PTarget.FoeLeft))
             {
-                PPokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
                     if (BattleStyle == PBattleStyle.Double)
                     {
-                        b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
                     }
                     else if (BattleStyle == PBattleStyle.Triple)
                     {
-                        b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
+                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
                         // Center fainted as well and user can reach far right
                         if (b == null && (user.FieldPosition != PFieldPosition.Right || mData.Targets == PMoveTarget.SingleNotSelf))
                         {
-                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
                         }
                     }
                 }
@@ -127,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (selectedTarget.HasFlag(PTarget.FoeCenter))
             {
-                PPokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
+                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
@@ -135,26 +132,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (user.FieldPosition == PFieldPosition.Left)
                         {
-                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
                             // Right fainted as well and user can reach far left
                             if (b == null && (user.FieldPosition != PFieldPosition.Left || mData.Targets == PMoveTarget.SingleNotSelf))
                             {
-                                b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                                b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
                             }
                         }
                         else if (user.FieldPosition == PFieldPosition.Right)
                         {
-                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
                             // Left fainted as well and user can reach far right
                             if (b == null && (user.FieldPosition != PFieldPosition.Right || mData.Targets == PMoveTarget.SingleNotSelf))
                             {
-                                b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                                b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
                             }
                         }
                         else // Center
                         {
-                            PPokemon oppLeft = opposingTeam.BattlerAtPosition(PFieldPosition.Left),
-                                oppRight = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                            PPokemon oppLeft = opposingTeam.PokemonAtPosition(PFieldPosition.Left),
+                                oppRight = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
                             // Left is dead but not right
                             if (oppLeft == null && oppRight != null)
                             {
@@ -177,21 +174,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (selectedTarget.HasFlag(PTarget.FoeRight))
             {
-                PPokemon b = opposingTeam.BattlerAtPosition(PFieldPosition.Right);
+                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
                     if (BattleStyle == PBattleStyle.Double)
                     {
-                        b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
                     }
                     else if (BattleStyle == PBattleStyle.Triple)
                     {
-                        b = opposingTeam.BattlerAtPosition(PFieldPosition.Center);
+                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
                         // Center fainted as well and user can reach far left
                         if (b == null && (user.FieldPosition != PFieldPosition.Left || mData.Targets == PMoveTarget.SingleNotSelf))
                         {
-                            b = opposingTeam.BattlerAtPosition(PFieldPosition.Left);
+                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
                         }
                     }
                 }
@@ -701,14 +698,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
-        // Does not broadcast the event
-        public static void ApplyStatChange(PPkmnStatChangedPacket packet)
-            => ApplyStatChange(PKnownInfo.Instance.Pokemon(packet.PokemonId), packet.Stat, packet.Change, true, null);
         // Broadcasts the event
         void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change)
             => ApplyStatChange(pkmn, stat, change, false, this);
-        // Broadcasts the event if "battle" is not null
-        static unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change, bool ignoreSimple, PBattle battle)
+        // Pass in the battle to broadcast the event. If you do not want to broadcast it, just pass in null
+        public static unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change, bool ignoreSimple, PBattle battle)
         {
             if (!ignoreSimple && pkmn.Ability == PAbility.Simple)
                 change *= 2;
@@ -1028,7 +1022,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
-            PTeam team = teams[bUser.Local ? 0 : 1];
+            PTeam team = Teams[bUser.Local ? 0 : 1];
             if (team.ReflectCount > 0)
             {
                 BroadcastFail(PFailReason.Default);
@@ -1043,7 +1037,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
-            PTeam team = teams[bUser.Local ? 0 : 1];
+            PTeam team = Teams[bUser.Local ? 0 : 1];
             if (team.LightScreenCount > 0)
             {
                 BroadcastFail(PFailReason.Default);
@@ -1068,7 +1062,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PTeam team = teams[bTarget.Local ? 0 : 1];
+                PTeam team = Teams[bTarget.Local ? 0 : 1];
                 if (team.ReflectCount > 0)
                 {
                     team.ReflectCount = 0;

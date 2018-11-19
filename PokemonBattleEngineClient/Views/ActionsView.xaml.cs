@@ -328,14 +328,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             MoveInfo.CreateBrushes();
         }
 
-        public void DisplayActions(PPokemon[] party, PPokemon pkmn, ref List<PPokemon> standBy)
+        public void DisplayActions(IEnumerable<PPokemon> party, PPokemon pkmn, List<PPokemon> standBy)
         {
             Pokemon = pkmn;
-
-            var pInfo = new PokemonInfo[party.Length];
-            for (int i = 0; i < party.Length; i++)
-                pInfo[i] = new PokemonInfo(party[i], this, ref standBy);
-            Party = pInfo;
+            
+            Party = party.Select(p => new PokemonInfo(p, this, standBy)).ToArray();
 
             var mInfo = new MoveInfo[PSettings.NumMoves];
             for (int i = 0; i < PSettings.NumMoves; i++)
@@ -363,7 +360,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             PMoveData mData = PMoveData.Data[moveInfo.Move];
 
-            if (Client.BattleStyle == PBattleStyle.Single || Client.BattleStyle == PBattleStyle.Rotation)
+            if (Client.Battle.BattleStyle == PBattleStyle.Single || Client.Battle.BattleStyle == PBattleStyle.Rotation)
             {
                 switch (mData.Targets)
                 {
@@ -392,20 +389,20 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 PPokemon pkmn;
 
-                pkmn = PKnownInfo.Instance.LocalParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Left);
+                pkmn = Client.Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left);
                 TargetAllyLeft = pkmn?.NameWithGender;
-                pkmn = PKnownInfo.Instance.LocalParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Center);
+                pkmn = Client.Battle.Teams[0].PokemonAtPosition(PFieldPosition.Center);
                 TargetAllyCenter = pkmn?.NameWithGender;
-                pkmn = PKnownInfo.Instance.LocalParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Right);
+                pkmn = Client.Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right);
                 TargetAllyRight = pkmn?.NameWithGender;
-                pkmn = PKnownInfo.Instance.RemoteParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Left);
+                pkmn = Client.Battle.Teams[1].PokemonAtPosition(PFieldPosition.Left);
                 TargetFoeLeft = pkmn?.NameWithGender;
-                pkmn = PKnownInfo.Instance.RemoteParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Center);
+                pkmn = Client.Battle.Teams[1].PokemonAtPosition(PFieldPosition.Center);
                 TargetFoeCenter = pkmn?.NameWithGender;
-                pkmn = PKnownInfo.Instance.RemoteParty.SingleOrDefault(p => p.FieldPosition == PFieldPosition.Right);
+                pkmn = Client.Battle.Teams[1].PokemonAtPosition(PFieldPosition.Right);
                 TargetFoeRight = pkmn?.NameWithGender;
 
-                if (Client.BattleStyle == PBattleStyle.Double)
+                if (Client.Battle.BattleStyle == PBattleStyle.Double)
                 {
                     const double baseX = 142;
                     LeftX = baseX + 0; RightX = baseX + 128; LeftLineX = baseX + 44; CenterLineX = baseX + 98; RightLineX = baseX + 300;

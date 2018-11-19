@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineClient
         static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
-        public PBattleStyle BattleStyle { get; private set; } = PBattleStyle.Double;
+        public PBattle Battle;
         readonly BattleView battleView;
         readonly ActionsView actionsView;
         readonly MessageView messageView;
@@ -30,8 +30,9 @@ namespace Kermalis.PokemonBattleEngineClient
             Configuration.Port = 8888;
             Configuration.BufferSize = 1024;
 
+            Battle = new PBattle(PBattleStyle.Double);
             this.battleView = battleView;
-            this.battleView.SetClient(this);
+            this.battleView.SetBattle(Battle);
             this.actionsView = actionsView;
             this.actionsView.Client = this;
             this.messageView = messageView;
@@ -50,12 +51,12 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PPlayerJoinedPacket pjp:
                     // TODO: What if it's a spectator?
                     messageView.Add(battleView.Message = string.Format("{0} joined the game.", pjp.DisplayName));
-                    PKnownInfo.Instance.RemoteDisplayName = pjp.DisplayName;
+                    Battle.Teams[1].TrainerName = pjp.DisplayName;
                     Send(new PResponsePacket());
                     break;
                 case PRequestPartyPacket _: // Temporary
                     messageView.Add(battleView.Message = "Sending team info...");
-                    var team = new PTeamShell { DisplayName = "Sasha", };
+                    var team = new PTeamShell { PlayerName = "Sasha", };
                     var possiblePokemon = new List<PPokemonShell>
                     {
                         PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Azumarill_UU, PCompetitivePokemonShells.Cofagrigus_UU,
@@ -65,11 +66,11 @@ namespace Kermalis.PokemonBattleEngineClient
                     };
                     possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
-                    PKnownInfo.Instance.LocalDisplayName = team.DisplayName;
+                    Battle.Teams[0].TrainerName = team.PlayerName;
                     Send(new PSubmitPartyPacket(team));
                     break;
                 case PSetPartyPacket spp:
-                    PKnownInfo.Instance.SetPartyPokemon(spp.Party, true);
+                    Battle.Teams[0].SetParty(spp.Party);
                     Send(new PResponsePacket());
                     break;
                 default:
@@ -102,7 +103,7 @@ namespace Kermalis.PokemonBattleEngineClient
             switch (packet)
             {
                 case PItemUsedPacket iup:
-                    pkmn = PKnownInfo.Instance.Pokemon(iup.PokemonId);
+                    pkmn = Battle.GetPokemon(iup.PokemonId);
                     switch (iup.Item)
                     {
                         case PItem.Leftovers:
@@ -118,7 +119,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     messageView.Add(battleView.Message = string.Format(message, pkmn.NameForTrainer(true)));
                     break;
                 case PLimberPacket lp:
-                    pkmn = PKnownInfo.Instance.Pokemon(lp.PokemonId);
+                    pkmn = Battle.GetPokemon(lp.PokemonId);
                     message = "{0}'s Limber"; // TODO: Ability stuff
                     messageView.Add(battleView.Message = string.Format(message, pkmn.Shell.Nickname));
                     break;
@@ -126,7 +127,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     messageView.Add(battleView.Message = "A critical hit!");
                     break;
                 case PMoveEffectivenessPacket mep:
-                    pkmn = PKnownInfo.Instance.Pokemon(mep.PokemonId);
+                    pkmn = Battle.GetPokemon(mep.PokemonId);
                     switch (mep.Effectiveness)
                     {
                         case PEffectiveness.Ineffective: message = "It doesn't affect {0}..."; break;
@@ -138,7 +139,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     messageView.Add(battleView.Message = string.Format(message, pkmn.NameForTrainer(false)));
                     break;
                 case PMoveFailedPacket mfp:
-                    pkmn = PKnownInfo.Instance.Pokemon(mfp.PokemonId);
+                    pkmn = Battle.GetPokemon(mfp.PokemonId);
                     switch (mfp.Reason)
                     {
                         case PFailReason.Default: message = "But it failed!"; break;
@@ -148,17 +149,17 @@ namespace Kermalis.PokemonBattleEngineClient
                     messageView.Add(battleView.Message = string.Format(message, pkmn.NameForTrainer(true)));
                     break;
                 case PMoveMissedPacket mmp:
-                    pkmn = PKnownInfo.Instance.Pokemon(mmp.PokemonId);
+                    pkmn = Battle.GetPokemon(mmp.PokemonId);
                     message = "{0}'s attack missed!";
                     messageView.Add(battleView.Message = string.Format(message, pkmn.NameForTrainer(true)));
                     break;
                 case PMovePPChangedPacket mpcp:
-                    pkmn = PKnownInfo.Instance.Pokemon(mpcp.PokemonId);
+                    pkmn = Battle.GetPokemon(mpcp.PokemonId);
                     i = Array.IndexOf(pkmn.Moves, mpcp.Move);
                     pkmn.PP[i] = (byte)(pkmn.PP[i] + mpcp.Change);
                     return true;
                 case PMoveUsedPacket mup:
-                    pkmn = PKnownInfo.Instance.Pokemon(mup.PokemonId);
+                    pkmn = Battle.GetPokemon(mup.PokemonId);
                     // Reveal move if the pokemon owns it and it's not already revealed
                     if (mup.OwnsMove && !pkmn.Moves.Contains(mup.Move))
                     {
@@ -170,7 +171,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     messageView.Add(battleView.Message = string.Format(message, pkmn.NameForTrainer(true), mup.Move));
                     break;
                 case PPkmnFaintedPacket pfap:
-                    pkmn = PKnownInfo.Instance.Pokemon(pfap.PokemonId);
+                    pkmn = Battle.GetPokemon(pfap.PokemonId);
                     pos = pkmn.FieldPosition;
                     pkmn.FieldPosition = PFieldPosition.None;
                     battleView.PokemonPositionChanged(pkmn, pos);
@@ -178,15 +179,15 @@ namespace Kermalis.PokemonBattleEngineClient
                     messageView.Add(battleView.Message = string.Format(message, pkmn.NameForTrainer(true)));
                     break;
                 case PPkmnHPChangedPacket phcp:
-                    pkmn = PKnownInfo.Instance.Pokemon(phcp.PokemonId);
+                    pkmn = Battle.GetPokemon(phcp.PokemonId);
                     pkmn.HP = (ushort)(pkmn.HP + phcp.Change);
                     var hp = Math.Abs(phcp.Change);
                     d = (double)hp / pkmn.MaxHP;
                     messageView.Add(battleView.Message = string.Format("{0} {3} {1} ({2:P2}) HP!", pkmn.NameForTrainer(true), hp, d, phcp.Change <= 0 ? "lost" : "gained"));
                     break;
                 case PPkmnStatChangedPacket pscp:
-                    PBattle.ApplyStatChange(pscp);
-                    pkmn = PKnownInfo.Instance.Pokemon(pscp.PokemonId);
+                    PBattle.ApplyStatChange(Battle.GetPokemon(pscp.PokemonId), pscp.Stat, pscp.Change, true, null);
+                    pkmn = Battle.GetPokemon(pscp.PokemonId);
                     switch (pscp.Change)
                     {
                         case -2: message = "harshly fell"; break;
@@ -210,19 +211,19 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PPkmnSwitchInPacket psip:
                     if (!psip.Local)
-                        PKnownInfo.Instance.AddRemotePokemon(psip);
-                    pkmn = PKnownInfo.Instance.Pokemon(psip.PokemonId);
+                        Battle.RemotePokemonSwitchedIn(psip);
+                    pkmn = Battle.GetPokemon(psip.PokemonId);
                     pos = pkmn.FieldPosition;
                     pkmn.FieldPosition = psip.FieldPosition;
                     battleView.PokemonPositionChanged(pkmn, pos);
-                    messageView.Add(battleView.Message = string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.Local)));
+                    messageView.Add(battleView.Message = string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, Battle.Teams[pkmn.Local ? 0 : 1].TrainerName));
                     break;
                 case PPkmnSwitchOutPacket psop:
-                    pkmn = PKnownInfo.Instance.Pokemon(psop.PokemonId);
+                    pkmn = Battle.GetPokemon(psop.PokemonId);
                     pos = pkmn.FieldPosition;
                     pkmn.ClearForSwitch();
                     battleView.PokemonPositionChanged(pkmn, pos);
-                    messageView.Add(battleView.Message = string.Format("{1} withdrew {0}!", pkmn.Shell.Nickname, PKnownInfo.Instance.DisplayName(pkmn.Local)));
+                    messageView.Add(battleView.Message = string.Format("{1} withdrew {0}!", pkmn.Shell.Nickname, Battle.Teams[pkmn.Local ? 0 : 1].TrainerName));
                     break;
                 case PReflectLightScreenPacket rlsp:
                     switch (rlsp.Action)
@@ -235,7 +236,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     messageView.Add(battleView.Message = string.Format(message, rlsp.Reflect ? "Reflect" : "Light Screen", rlsp.Reflect ? PStat.Defense : PStat.SpDefense, rlsp.Local ? "your" : "the opposing", rlsp.Local ? "Your" : "The opposing"));
                     break;
                 case PStatus1Packet s1p:
-                    pkmn = PKnownInfo.Instance.Pokemon(s1p.PokemonId);
+                    pkmn = Battle.GetPokemon(s1p.PokemonId);
                     switch (s1p.Action)
                     {
                         case PStatusAction.Added:
@@ -298,7 +299,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PStatus2Packet s2p:
                     b = true;
-                    pkmn = PKnownInfo.Instance.Pokemon(s2p.PokemonId);
+                    pkmn = Battle.GetPokemon(s2p.PokemonId);
                     switch (s2p.Action)
                     {
                         case PStatusAction.Added:
@@ -378,41 +379,38 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PTransformPacket tp:
                     {
-                        PPokemon user = PKnownInfo.Instance.Pokemon(tp.UserId),
-                            target = PKnownInfo.Instance.Pokemon(tp.TargetId);
+                        PPokemon user = Battle.GetPokemon(tp.UserId),
+                            target = Battle.GetPokemon(tp.TargetId);
                         user.Transform(target, tp.TargetAttack, tp.TargetDefense, tp.TargetSpAttack, tp.TargetSpDefense, tp.TargetSpeed, tp.TargetAbility, tp.TargetMoves);
                         battleView.PokemonPositionChanged(user, PFieldPosition.None);
                         messageView.Add(battleView.Message = string.Format("{0} transformed into {1}!", user.NameForTrainer(true), target.NameForTrainer(false)));
                         break;
                     }
                 case PWeatherPacket wp:
+                    switch (wp.Action)
+                    {
+                        case PWeatherAction.Added:
+                            Battle.Weather = wp.Weather;
+                            break;
+                        case PWeatherAction.Ended:
+                            Battle.Weather = PWeather.None;
+                            break;
+                    }
                     switch (wp.Weather)
                     {
                         case PWeather.Raining:
                             switch (wp.Action)
                             {
-                                case PWeatherAction.Added:
-                                    PKnownInfo.Instance.Weather = PWeather.Raining;
-                                    message = "It started to rain!";
-                                    break;
-                                case PWeatherAction.Ended:
-                                    PKnownInfo.Instance.Weather = PWeather.None;
-                                    message = "The rain stopped.";
-                                    break;
+                                case PWeatherAction.Added: message = "It started to rain!"; break;
+                                case PWeatherAction.Ended: message = "The rain stopped."; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(wp.Action), $"Invalid raining action: {wp.Action}");
                             }
                             break;
                         case PWeather.Sunny:
                             switch (wp.Action)
                             {
-                                case PWeatherAction.Added:
-                                    PKnownInfo.Instance.Weather = PWeather.Sunny;
-                                    message = "The sunlight turned harsh!";
-                                    break;
-                                case PWeatherAction.Ended:
-                                    PKnownInfo.Instance.Weather = PWeather.None;
-                                    message = "The sunlight faded.";
-                                    break;
+                                case PWeatherAction.Added: message = "The sunlight turned harsh!"; break;
+                                case PWeatherAction.Ended: message = "The sunlight faded."; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(wp.Action), $"Invalid sunny action: {wp.Action}");
                             }
                             break;
@@ -434,32 +432,32 @@ namespace Kermalis.PokemonBattleEngineClient
             PPokemon pkmn;
             if (begin)
             {
-                foreach (PPokemon p in PKnownInfo.Instance.LocalParty)
+                foreach (PPokemon p in Battle.Teams[0].Party)
                     p.SelectedAction.Decision = PDecision.None;
                 actions.Clear();
                 standBy.Clear();
-                switch (BattleStyle)
+                switch (Battle.BattleStyle)
                 {
                     case PBattleStyle.Single:
                     case PBattleStyle.Rotation:
-                        actions.Add(PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center));
+                        actions.Add(Battle.Teams[0].PokemonAtPosition(PFieldPosition.Center));
                         break;
                     case PBattleStyle.Double:
-                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Left);
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left);
                         if (pkmn != null)
                             actions.Add(pkmn);
-                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Right);
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right);
                         if (pkmn != null)
                             actions.Add(pkmn);
                         break;
                     case PBattleStyle.Triple:
-                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Left);
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left);
                         if (pkmn != null)
                             actions.Add(pkmn);
-                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center);
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Center);
                         if (pkmn != null)
                             actions.Add(pkmn);
-                        pkmn = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Right);
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right);
                         if (pkmn != null)
                             actions.Add(pkmn);
                         break;
@@ -468,7 +466,7 @@ namespace Kermalis.PokemonBattleEngineClient
             int i = actions.FindIndex(p => p.SelectedAction.Decision == PDecision.None);
             if (i == -1)
             {
-                battleView.Message = $"Waiting for {PKnownInfo.Instance.RemoteDisplayName}...";
+                battleView.Message = $"Waiting for {Battle.Teams[1].TrainerName}...";
                 Send(new PSubmitActionsPacket(actions.Select(p => p.SelectedAction).ToArray()));
             }
             else
@@ -477,10 +475,10 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     PAction prevAction = actions[i - 1].SelectedAction;
                     if (prevAction.Decision == PDecision.Switch)
-                        standBy.Add(PKnownInfo.Instance.Pokemon(prevAction.SwitchPokemonId));
+                        standBy.Add(Battle.GetPokemon(prevAction.SwitchPokemonId));
                 }
                 battleView.Message = $"What will {actions[i].Shell.Nickname} do?";
-                actionsView.DisplayActions(PKnownInfo.Instance.LocalParty, actions[i], ref standBy);
+                actionsView.DisplayActions(Battle.Teams[0].Party, actions[i], standBy);
             }
         }
         public void ActionSet()
@@ -491,7 +489,6 @@ namespace Kermalis.PokemonBattleEngineClient
         protected override void OnConnected()
         {
             Debug.WriteLine("Connected to {0}", Socket.RemoteEndPoint);
-            PKnownInfo.Instance.Clear();
             battleView.Message = "Waiting for players...";
         }
         protected override void OnDisconnected()

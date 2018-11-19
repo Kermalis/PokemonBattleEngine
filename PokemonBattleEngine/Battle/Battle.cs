@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,137 +7,153 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    public sealed partial class PBattle
+    public sealed class PTeam
     {
-        internal class PTeam
+        public string TrainerName;
+        public readonly bool Local;
+        public List<PPokemon> Party { get; private set; }
+
+        public int NumPkmnAlive => Party.Count(p => p.HP > 0);
+        public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PFieldPosition.None);
+
+        public byte ReflectCount, LightScreenCount; // Reflect & Light Screen
+        public bool MonFaintedLastTurn; // Retaliate
+
+        // Host constructor
+        internal PTeam(PTeamShell shell, bool local, ref byte idCount)
         {
-            public readonly PTeamShell Shell;
-            public readonly bool Local;
-            public readonly PPokemon[] Party;
-
-            public int NumPkmnAlive => Party.Count(p => p.HP > 0);
-            public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PFieldPosition.None);
-
-            public byte ReflectCount, LightScreenCount; // Reflect & Light Screen
-            public bool MonFaintedLastTurn; // Retaliate
-
-            public PTeam(PTeamShell shell, bool local, ref byte idCount)
-            {
-                Shell = shell;
-                Local = local;
-                int min = Math.Min(shell.Party.Count, PSettings.MaxPartySize);
-                Party = new PPokemon[min];
-                for (int i = 0; i < min; i++)
-                    Party[i] = new PPokemon(idCount++, Shell.Party[i]);
-
-                if (Local)
-                    PKnownInfo.Instance.LocalDisplayName = Shell.DisplayName;
-                else
-                    PKnownInfo.Instance.RemoteDisplayName = Shell.DisplayName;
-                PKnownInfo.Instance.SetPartyPokemon(Party, Local);
-            }
-
-            // Returns null if there is no pokemon at that position
-            public PPokemon BattlerAtPosition(PFieldPosition pos) => Party.SingleOrDefault(p => p.FieldPosition == pos);
+            TrainerName = shell.PlayerName;
+            Local = local;
+            Party = new List<PPokemon>(PSettings.MaxPartySize);
+            for (int i = 0; i < shell.Party.Count; i++)
+                Party.Add(new PPokemon(idCount++, shell.Party[i]) { Local = local });
+        }
+        // Client constructor
+        internal PTeam(bool local)
+        {
+            Local = local;
+            Party = new List<PPokemon>(PSettings.MaxPartySize);
         }
 
+        // Returns null if there is no Pokémon at that position
+        public PPokemon PokemonAtPosition(PFieldPosition pos) => Party.SingleOrDefault(p => p.FieldPosition == pos);
+
+        public void SetParty(IEnumerable<PPokemon> party)
+        {
+            Party = new List<PPokemon>(party);
+            foreach (PPokemon p in Party)
+                p.Local = Local;
+        }
+    }
+    public sealed partial class PBattle
+    {
         public readonly PBattleStyle BattleStyle;
-        internal PTeam[] teams = new PTeam[2];
+        public readonly PTeam[] Teams = new PTeam[2];
         List<PPokemon> activeBattlers = new List<PPokemon>();
         List<PPokemon> turnOrder = new List<PPokemon>();
 
-        public PWeather Weather { get; internal set; }
-        public byte WeatherCounter { get; internal set; }
+        public PWeather Weather;
+        public byte WeatherCounter;
 
-        public bool TemporaryKeepBattlingBool => teams[0].NumPkmnOnField > 0 && teams[1].NumPkmnOnField > 0; // Temporary
+        // Returns null if it doesn't exist
+        public PPokemon GetPokemon(byte pkmnId) => Teams[0].Party.Concat(Teams[1].Party).SingleOrDefault(p => p.Id == pkmnId);
+        public bool TemporaryKeepBattlingBool => Teams[0].NumPkmnOnField > 0 && Teams[1].NumPkmnOnField > 0; // Temporary
 
+        // Host constructor
         public PBattle(PBattleStyle style, PTeamShell t0, PTeamShell t1)
         {
-            PKnownInfo.Instance.Clear();
             BattleStyle = style;
 
             byte idCount = 0;
-            teams[0] = new PTeam(t0, true, ref idCount);
-            teams[1] = new PTeam(t1, false, ref idCount);
+            Teams[0] = new PTeam(t0, true, ref idCount);
+            Teams[1] = new PTeam(t1, false, ref idCount);
 
             // Set pokemon field positions
             switch (BattleStyle)
             {
                 case PBattleStyle.Single:
-                    teams[0].Party[0].FieldPosition = PFieldPosition.Center;
-                    activeBattlers.Add(teams[0].Party[0]);
-                    teams[1].Party[0].FieldPosition = PFieldPosition.Center;
-                    activeBattlers.Add(teams[1].Party[0]);
+                    Teams[0].Party[0].FieldPosition = PFieldPosition.Center;
+                    activeBattlers.Add(Teams[0].Party[0]);
+                    Teams[1].Party[0].FieldPosition = PFieldPosition.Center;
+                    activeBattlers.Add(Teams[1].Party[0]);
                     break;
                 case PBattleStyle.Double:
-                    teams[0].Party[0].FieldPosition = PFieldPosition.Left;
-                    activeBattlers.Add(teams[0].Party[0]);
-                    if (teams[0].Party.Length > 1)
+                    Teams[0].Party[0].FieldPosition = PFieldPosition.Left;
+                    activeBattlers.Add(Teams[0].Party[0]);
+                    if (Teams[0].Party.Count > 1)
                     {
-                        teams[0].Party[1].FieldPosition = PFieldPosition.Right;
-                        activeBattlers.Add(teams[0].Party[1]);
+                        Teams[0].Party[1].FieldPosition = PFieldPosition.Right;
+                        activeBattlers.Add(Teams[0].Party[1]);
                     }
-                    teams[1].Party[0].FieldPosition = PFieldPosition.Left;
-                    activeBattlers.Add(teams[1].Party[0]);
-                    if (teams[1].Party.Length > 1)
+                    Teams[1].Party[0].FieldPosition = PFieldPosition.Left;
+                    activeBattlers.Add(Teams[1].Party[0]);
+                    if (Teams[1].Party.Count > 1)
                     {
-                        teams[1].Party[1].FieldPosition = PFieldPosition.Right;
-                        activeBattlers.Add(teams[1].Party[1]);
+                        Teams[1].Party[1].FieldPosition = PFieldPosition.Right;
+                        activeBattlers.Add(Teams[1].Party[1]);
                     }
                     break;
                 case PBattleStyle.Triple:
-                    teams[0].Party[0].FieldPosition = PFieldPosition.Left;
-                    activeBattlers.Add(teams[0].Party[0]);
-                    if (teams[0].Party.Length > 1)
+                    Teams[0].Party[0].FieldPosition = PFieldPosition.Left;
+                    activeBattlers.Add(Teams[0].Party[0]);
+                    if (Teams[0].Party.Count > 1)
                     {
-                        teams[0].Party[1].FieldPosition = PFieldPosition.Center;
-                        activeBattlers.Add(teams[0].Party[1]);
+                        Teams[0].Party[1].FieldPosition = PFieldPosition.Center;
+                        activeBattlers.Add(Teams[0].Party[1]);
                     }
-                    if (teams[0].Party.Length > 2)
+                    if (Teams[0].Party.Count > 2)
                     {
-                        teams[0].Party[2].FieldPosition = PFieldPosition.Right;
-                        activeBattlers.Add(teams[0].Party[2]);
+                        Teams[0].Party[2].FieldPosition = PFieldPosition.Right;
+                        activeBattlers.Add(Teams[0].Party[2]);
                     }
-                    teams[1].Party[0].FieldPosition = PFieldPosition.Left;
-                    activeBattlers.Add(teams[1].Party[0]);
-                    if (teams[1].Party.Length > 1)
+                    Teams[1].Party[0].FieldPosition = PFieldPosition.Left;
+                    activeBattlers.Add(Teams[1].Party[0]);
+                    if (Teams[1].Party.Count > 1)
                     {
-                        teams[1].Party[1].FieldPosition = PFieldPosition.Center;
-                        activeBattlers.Add(teams[1].Party[1]);
+                        Teams[1].Party[1].FieldPosition = PFieldPosition.Center;
+                        activeBattlers.Add(Teams[1].Party[1]);
                     }
-                    if (teams[1].Party.Length > 2)
+                    if (Teams[1].Party.Count > 2)
                     {
-                        teams[1].Party[2].FieldPosition = PFieldPosition.Right;
-                        activeBattlers.Add(teams[1].Party[2]);
+                        Teams[1].Party[2].FieldPosition = PFieldPosition.Right;
+                        activeBattlers.Add(Teams[1].Party[2]);
                     }
                     break;
                 case PBattleStyle.Rotation:
-                    teams[0].Party[0].FieldPosition = PFieldPosition.Center;
-                    activeBattlers.Add(teams[0].Party[0]);
-                    if (teams[0].Party.Length > 1)
+                    Teams[0].Party[0].FieldPosition = PFieldPosition.Center;
+                    activeBattlers.Add(Teams[0].Party[0]);
+                    if (Teams[0].Party.Count > 1)
                     {
-                        teams[0].Party[1].FieldPosition = PFieldPosition.Left;
-                        activeBattlers.Add(teams[0].Party[1]);
+                        Teams[0].Party[1].FieldPosition = PFieldPosition.Left;
+                        activeBattlers.Add(Teams[0].Party[1]);
                     }
-                    if (teams[0].Party.Length > 2)
+                    if (Teams[0].Party.Count > 2)
                     {
-                        teams[0].Party[2].FieldPosition = PFieldPosition.Right;
-                        activeBattlers.Add(teams[0].Party[2]);
+                        Teams[0].Party[2].FieldPosition = PFieldPosition.Right;
+                        activeBattlers.Add(Teams[0].Party[2]);
                     }
-                    teams[1].Party[0].FieldPosition = PFieldPosition.Center;
-                    activeBattlers.Add(teams[1].Party[0]);
-                    if (teams[1].Party.Length > 1)
+                    Teams[1].Party[0].FieldPosition = PFieldPosition.Center;
+                    activeBattlers.Add(Teams[1].Party[0]);
+                    if (Teams[1].Party.Count > 1)
                     {
-                        teams[1].Party[1].FieldPosition = PFieldPosition.Left;
-                        activeBattlers.Add(teams[1].Party[1]);
+                        Teams[1].Party[1].FieldPosition = PFieldPosition.Left;
+                        activeBattlers.Add(Teams[1].Party[1]);
                     }
-                    if (teams[1].Party.Length > 2)
+                    if (Teams[1].Party.Count > 2)
                     {
-                        teams[1].Party[2].FieldPosition = PFieldPosition.Right;
-                        activeBattlers.Add(teams[1].Party[2]);
+                        Teams[1].Party[2].FieldPosition = PFieldPosition.Right;
+                        activeBattlers.Add(Teams[1].Party[2]);
                     }
                     break;
             }
+        }
+        // Client constructor
+        public PBattle(PBattleStyle style)
+        {
+            BattleStyle = style;
+
+            Teams[0] = new PTeam(true);
+            Teams[1] = new PTeam(false);
         }
         public void Start()
         {
@@ -147,6 +164,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         public bool IsReadyToRunTurn() => activeBattlers.All(b => b.SelectedAction.Decision != PDecision.None);
+
+        public void RemotePokemonSwitchedIn(PPkmnSwitchInPacket psip)
+        {
+            if (psip.Local)
+                return;
+            PPokemon pkmn = GetPokemon(psip.PokemonId);
+
+            if (pkmn == null)
+            {
+                // Use remote Pokémon constructor which sets Local to false and moves to PMove.MAX
+                pkmn = new PPokemon(psip);
+                Teams[1].Party.Add(pkmn);
+            }
+
+            // If this Pokémon was already added, the client already knows info other than hp (could have regenerator or could have been healed by an ally)
+            pkmn.HP = psip.HP;
+            pkmn.MaxHP = psip.MaxHP;
+        }
 
         public bool RunTurn()
         {
@@ -241,7 +276,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.ClearForSwitch();
                         activeBattlers.Remove(pkmn);
                         BroadcastSwitchOut(pkmn);
-                        PPokemon switchPkmn = PKnownInfo.Instance.Pokemon(pkmn.SelectedAction.SwitchPokemonId);
+                        PPokemon switchPkmn = GetPokemon(pkmn.SelectedAction.SwitchPokemonId);
                         switchPkmn.FieldPosition = pos;
                         activeBattlers.Add(switchPkmn);
                         BroadcastSwitchIn(switchPkmn);
@@ -262,7 +297,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (pkmn.HP > 0)
                     DoTurnEndedEffects(pkmn); // BattleEffects.cs
             }
-            foreach (PTeam team in teams)
+            foreach (PTeam team in Teams)
             {
                 if (team.ReflectCount > 0)
                 {

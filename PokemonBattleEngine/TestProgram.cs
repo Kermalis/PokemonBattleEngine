@@ -13,12 +13,12 @@ namespace Kermalis.PokemonBattleEngine
 
             PTeamShell team0 = new PTeamShell
             {
-                DisplayName = "Sasha",
+                PlayerName = "Sasha",
                 Party = { PCompetitivePokemonShells.Ditto_UU, PCompetitivePokemonShells.Azumarill_UU }
             };
             PTeamShell team1 = new PTeamShell
             {
-                DisplayName = "Jess",
+                PlayerName = "Jess",
                 Party = { PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Latios_OU }
             };
 
@@ -26,8 +26,8 @@ namespace Kermalis.PokemonBattleEngine
             battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
             battle.Start();
 
-            PPokemon lCenter = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center);
-            PPokemon rCenter = PKnownInfo.Instance.PokemonAtPosition(false, PFieldPosition.Center);
+            PPokemon lCenter = battle.Teams[0].PokemonAtPosition(PFieldPosition.Center);
+            PPokemon rCenter = battle.Teams[1].PokemonAtPosition(PFieldPosition.Center);
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine(lCenter);
@@ -71,8 +71,8 @@ namespace Kermalis.PokemonBattleEngine
                     Console.WriteLine(e.StackTrace);
                 }
 
-                lCenter = PKnownInfo.Instance.PokemonAtPosition(true, PFieldPosition.Center);
-                rCenter = PKnownInfo.Instance.PokemonAtPosition(false, PFieldPosition.Center);
+                lCenter = battle.Teams[0].PokemonAtPosition(PFieldPosition.Center);
+                rCenter = battle.Teams[1].PokemonAtPosition(PFieldPosition.Center);
                 Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine(lCenter);

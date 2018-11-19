@@ -91,16 +91,16 @@ namespace Kermalis.PokemonBattleEngineServer
                 if (state != ServerState.WaitingForParties)
                     return;
 
-                player.Team = team;
+                player.Shell = team;
 
-                if (battlers[0].Team != null && battlers[1].Team != null)
+                if (battlers[0].Shell != null && battlers[1].Shell != null)
                 {
                     // Temporary:
                     if (false)
                     {
                         try
                         {
-                            PTeamShell.ValidateMany(battlers.Select(b => b.Team));
+                            PTeamShell.ValidateMany(battlers.Select(b => b.Shell));
                         }
                         catch
                         {
@@ -127,17 +127,17 @@ namespace Kermalis.PokemonBattleEngineServer
 
                 Console.WriteLine("Battle starting!");
 
-                battle = new PBattle(intendedBattleStyle, battlers[0].Team, battlers[1].Team);
+                battle = new PBattle(intendedBattleStyle, battlers[0].Shell, battlers[1].Shell);
                 battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
                 battle.OnNewEvent += BattleEventHandler;
 
                 // Send opponent names
-                battlers[0].Send(new PPlayerJoinedPacket(battlers[1].Id, battlers[1].Team.DisplayName));
-                battlers[1].Send(new PPlayerJoinedPacket(battlers[0].Id, battlers[0].Team.DisplayName));
+                battlers[0].Send(new PPlayerJoinedPacket(battlers[1].Id, battlers[1].Shell.PlayerName));
+                battlers[1].Send(new PPlayerJoinedPacket(battlers[0].Id, battlers[0].Shell.PlayerName));
                 WaitForBattlersResponses();
                 // Send players their parties
-                battlers[0].Send(new PSetPartyPacket(PKnownInfo.Instance.LocalParty));
-                battlers[1].Send(new PSetPartyPacket(PKnownInfo.Instance.RemoteParty));
+                battlers[0].Send(new PSetPartyPacket(battle.Teams[0].Party.ToArray()));
+                battlers[1].Send(new PSetPartyPacket(battle.Teams[1].Party.ToArray()));
                 WaitForBattlersResponses();
 
                 state = ServerState.BattleProcessing;
@@ -156,7 +156,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 if (state != ServerState.WaitingForActions)
                     return;
 
-                Console.WriteLine($"Received actions from {player.Team.DisplayName}");
+                Console.WriteLine($"Received actions from {player.Shell.PlayerName}");
 
                 if (battle.SelectActionsIfValid(actions))
                 {
@@ -187,7 +187,7 @@ namespace Kermalis.PokemonBattleEngineServer
             battlers[0].ResetEvent.WaitOne();
             battlers[1].ResetEvent.WaitOne();
         }
-        void BattleEventHandler(INetPacket packet)
+        void BattleEventHandler(PBattle battle, INetPacket packet)
         {
             switch (packet)
             {
@@ -211,7 +211,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     break;
                 case PMovePPChangedPacket mpcp:
                     // Send only to the owner's client
-                    int i = PKnownInfo.Instance.Pokemon(mpcp.PokemonId).Local ? 0 : 1;
+                    int i = battle.GetPokemon(mpcp.PokemonId).Local ? 0 : 1;
                     battlers[i].Send(mpcp);
                     battlers[i].ResetEvent.WaitOne(); // Wait for response
                     break;

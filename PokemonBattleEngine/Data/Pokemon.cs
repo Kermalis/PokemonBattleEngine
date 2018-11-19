@@ -61,8 +61,6 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public PAction PreviousAction, LockedAction, SelectedAction;
 
-        public string OwnerDisplayName => Local ? PKnownInfo.Instance.LocalDisplayName : PKnownInfo.Instance.RemoteDisplayName;
-
         // Stats & PP are set from the shell info, but Local will need to be manually set by the host
         public PPokemon(byte id, PPokemonShell shell)
         {

@@ -13,7 +13,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public PPokemon Pokemon { get; }
         string Label { get; }
 
-        public PokemonInfo(PPokemon pkmn, ActionsView parent, ref List<PPokemon> standBy)
+        public PokemonInfo(PPokemon pkmn, ActionsView parent, List<PPokemon> standBy)
         {
             Pokemon = pkmn;
             Label = pkmn.NameWithGender;

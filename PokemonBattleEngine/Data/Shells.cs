@@ -178,7 +178,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public sealed class PTeamShell
     {
-        public string DisplayName;
+        public string PlayerName;
         public readonly List<PPokemonShell> Party = new List<PPokemonShell>(PSettings.MaxPartySize);
 
         // Throws ArgumentOutOfRangeException for the invalid information
@@ -194,8 +194,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         public void Validate()
         {
             // Validate display name
-            if (string.IsNullOrWhiteSpace(DisplayName) || DisplayName.Length > PSettings.MaxPlayerNameLength)
-                throw new ArgumentOutOfRangeException(nameof(DisplayName));
+            if (string.IsNullOrWhiteSpace(PlayerName) || PlayerName.Length > PSettings.MaxPlayerNameLength)
+                throw new ArgumentOutOfRangeException(nameof(PlayerName));
 
             // Validate Party
             if (Party == null || Party.Count == 0 || Party.Count > PSettings.MaxPartySize)
@@ -208,7 +208,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             var bytes = new List<byte>();
 
-            bytes.AddRange(PUtils.StringToBytes(DisplayName));
+            bytes.AddRange(PUtils.StringToBytes(PlayerName));
 
             var numPkmn = (byte)Party.Count;
             bytes.Add(numPkmn);
@@ -221,7 +221,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             var team = new PTeamShell
             {
-                DisplayName = PUtils.StringFromBytes(r)
+                PlayerName = PUtils.StringFromBytes(r)
             };
             var numPkmn = Math.Min(PSettings.MaxPartySize, r.ReadByte());
             for (int i = 0; i < numPkmn; i++)

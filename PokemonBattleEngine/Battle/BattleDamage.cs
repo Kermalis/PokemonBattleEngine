@@ -83,7 +83,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PMove.Retaliate:
                         basePower = PMoveData.Data[bMove].Power;
                         // Retaliate gets a 100% power boost if the user's team has a Pokémon that fainted during the previous turn
-                        if (teams[user.Local ? 0 : 1].MonFaintedLastTurn)
+                        if (Teams[user.Local ? 0 : 1].MonFaintedLastTurn)
                             basePower *= 2.0;
                         break;
                     case PMove.Return:
@@ -121,7 +121,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Reflect & Light Screen reduce damage by 50% if there is one active battler or by 33% if there is more than one
             if (!ignoreReflectLightScreen && !bLandedCrit)
             {
-                PTeam defenderTeam = teams[target.Local ? 0 : 1];
+                PTeam defenderTeam = Teams[target.Local ? 0 : 1];
                 if ((defenderTeam.ReflectCount > 0 && category == PMoveCategory.Physical)
                     || (defenderTeam.LightScreenCount > 0 && category == PMoveCategory.Special))
                 {
