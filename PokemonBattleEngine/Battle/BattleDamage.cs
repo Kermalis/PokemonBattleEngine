@@ -122,8 +122,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (!ignoreReflectLightScreen && !bLandedCrit)
             {
                 PTeam defenderTeam = Teams[target.Local ? 0 : 1];
-                if ((defenderTeam.ReflectCount > 0 && category == PMoveCategory.Physical)
-                    || (defenderTeam.LightScreenCount > 0 && category == PMoveCategory.Special))
+                if ((defenderTeam.Status.HasFlag(PTeamStatus.Reflect) && category == PMoveCategory.Physical)
+                    || (defenderTeam.Status.HasFlag(PTeamStatus.LightScreen) && category == PMoveCategory.Special))
                 {
                     if (defenderTeam.NumPkmnOnField == 1)
                         basePower *= 0.5;

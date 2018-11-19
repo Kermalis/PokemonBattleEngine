@@ -21,7 +21,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Struggle
 * Rotation battles, triple battle shifting
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
-* Team flags (Toxic Spikes, Light Screen, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Spectators
 * AI

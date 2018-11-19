@@ -99,6 +99,7 @@ namespace Kermalis.PokemonBattleEngineClient
             bool b;
             PFieldPosition pos;
             string message;
+            PTeam team;
 
             switch (packet)
             {
@@ -224,16 +225,6 @@ namespace Kermalis.PokemonBattleEngineClient
                     pkmn.ClearForSwitch();
                     battleView.PokemonPositionChanged(pkmn, pos);
                     messageView.Add(battleView.Message = string.Format("{1} withdrew {0}!", pkmn.Shell.Nickname, Battle.Teams[pkmn.Local ? 0 : 1].TrainerName));
-                    break;
-                case PReflectLightScreenPacket rlsp:
-                    switch (rlsp.Action)
-                    {
-                        case PReflectLightScreenAction.Added: message = "{0} raised {2} team's {1}!"; break;
-                        case PReflectLightScreenAction.Broke:
-                        case PReflectLightScreenAction.Ended: message = "{3} team's {0} wore off!"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(rlsp.Action), $"Invalid reflect/lightscreen action: {rlsp.Action}");
-                    }
-                    messageView.Add(battleView.Message = string.Format(message, rlsp.Reflect ? "Reflect" : "Light Screen", rlsp.Reflect ? PStat.Defense : PStat.SpDefense, rlsp.Local ? "your" : "the opposing", rlsp.Local ? "Your" : "The opposing"));
                     break;
                 case PStatus1Packet s1p:
                     pkmn = Battle.GetPokemon(s1p.PokemonId);
@@ -376,6 +367,42 @@ namespace Kermalis.PokemonBattleEngineClient
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
                     messageView.Add(battleView.Message = string.Format(message, pkmn.NameForTrainer(b)));
+                    break;
+                case PTeamStatusPacket tsp:
+                    team = Battle.Teams[tsp.Local ? 0 : 1];
+                    switch (tsp.Action)
+                    {
+                        case PTeamStatusAction.Added:
+                            team.Status |= tsp.Status;
+                            break;
+                        case PTeamStatusAction.Cleared:
+                        case PTeamStatusAction.Ended:
+                            team.Status &= ~tsp.Status;
+                            break;
+                    }
+                    switch (tsp.Status)
+                    {
+                        case PTeamStatus.LightScreen:
+                            switch (tsp.Action)
+                            {
+                                case PTeamStatusAction.Added: message = "Light Screen raised {0} team's Special Defense!"; break;
+                                case PTeamStatusAction.Cleared:
+                                case PTeamStatusAction.Ended: message = "{1} team's Light Screen wore off!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid light screen action: {tsp.Action}");
+                            }
+                            break;
+                        case PTeamStatus.Reflect:
+                            switch (tsp.Action)
+                            {
+                                case PTeamStatusAction.Added: message = "Reflect raised {0} team's Defense!"; break;
+                                case PTeamStatusAction.Cleared:
+                                case PTeamStatusAction.Ended: message = "{1} team's Reflect wore off!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid reflect action: {tsp.Action}");
+                            }
+                            break;
+                        default: throw new ArgumentOutOfRangeException(nameof(tsp.Status), $"Invalid team status: {tsp.Status}");
+                    }
+                    messageView.Add(battleView.Message = string.Format(message, tsp.Local ? "your" : "the opposing", tsp.Local ? "Your" : "The opposing"));
                     break;
                 case PTransformPacket tp:
                     {

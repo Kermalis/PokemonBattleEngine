@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PPkmnStatChangedPacket.Code: packet = new PPkmnStatChangedPacket(buffer); break;
                 case PStatus1Packet.Code: packet = new PStatus1Packet(buffer); break;
                 case PStatus2Packet.Code: packet = new PStatus2Packet(buffer); break;
-                case PReflectLightScreenPacket.Code: packet = new PReflectLightScreenPacket(buffer); break;
+                case PTeamStatusPacket.Code: packet = new PTeamStatusPacket(buffer); break;
                 case PWeatherPacket.Code: packet = new PWeatherPacket(buffer); break;
                 case PMoveFailedPacket.Code: packet = new PMoveFailedPacket(buffer); break;
                 case PItemUsedPacket.Code: packet = new PItemUsedPacket(buffer); break;

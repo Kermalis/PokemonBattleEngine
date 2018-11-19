@@ -1023,14 +1023,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
             PTeam team = Teams[bUser.Local ? 0 : 1];
-            if (team.ReflectCount > 0)
+            if (team.Status.HasFlag(PTeamStatus.Reflect))
             {
                 BroadcastFail(PFailReason.Default);
             }
             else
             {
+                team.Status |= PTeamStatus.Reflect;
                 team.ReflectCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
-                BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Added);
+                BroadcastTeamStatus(team.Local, PTeamStatus.Reflect, PTeamStatusAction.Added);
             }
         }
         void Ef_LightScreen()
@@ -1038,14 +1039,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed();
             PPReduce(bUser, bMove);
             PTeam team = Teams[bUser.Local ? 0 : 1];
-            if (team.LightScreenCount > 0)
+            if (team.Status.HasFlag(PTeamStatus.LightScreen))
             {
                 BroadcastFail(PFailReason.Default);
             }
             else
             {
+                team.Status |= PTeamStatus.LightScreen;
                 team.LightScreenCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
-                BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Added);
+                BroadcastTeamStatus(team.Local, PTeamStatus.LightScreen, PTeamStatusAction.Added);
             }
         }
         void Ef_BrickBreak()
@@ -1063,15 +1065,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 PTeam team = Teams[bTarget.Local ? 0 : 1];
-                if (team.ReflectCount > 0)
+                if (team.Status.HasFlag(PTeamStatus.Reflect))
                 {
+                    team.Status &= ~PTeamStatus.Reflect;
                     team.ReflectCount = 0;
-                    BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Broke);
+                    BroadcastTeamStatus(team.Local, PTeamStatus.Reflect, PTeamStatusAction.Cleared);
                 }
-                if (team.LightScreenCount > 0)
+                if (team.Status.HasFlag(PTeamStatus.LightScreen))
                 {
+                    team.Status &= ~PTeamStatus.LightScreen;
                     team.LightScreenCount = 0;
-                    BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Broke);
+                    BroadcastTeamStatus(team.Local, PTeamStatus.LightScreen, PTeamStatusAction.Cleared);
                 }
                 DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false);
                 if (bLandedCrit)

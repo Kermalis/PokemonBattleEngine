@@ -106,6 +106,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         Underground = 1 << 10, // TODO
         Underwater = 1 << 11,
     }
+    [Flags]
+    public enum PTeamStatus : byte
+    {
+        None,
+        LightScreen = 1 << 0,
+        PoisonSpikes = 1 << 1, // TODO
+        Reflect = 1 << 2,
+        Spikes = 1 << 3, // TODO
+        StealthRock = 1 << 4, // TODO
+        ToxicSpikes = 1 << 5 // TODO
+    }
     public enum PStatusAction : byte
     {
         Activated, // flinch prevented movement, protect activated, etc
@@ -114,10 +125,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         Damage, // hurt from confusion, substitute took damage, etc
         Ended // woke up, no longer confused, etc
     }
-    public enum PReflectLightScreenAction : byte
+    public enum PTeamStatusAction : byte
     {
         Added,
-        Broke,
+        Cleared,
         Ended
     }
     public enum PFailReason : byte

@@ -34,8 +34,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PStatus1Packet(pkmn, status, statusAction));
         void BroadcastStatus2(PPokemon pkmn, PStatus2 status, PStatusAction statusAction)
             => OnNewEvent?.Invoke(this, new PStatus2Packet(pkmn, status, statusAction));
-        void BroadcastReflectLightScreen(bool local, bool reflect, PReflectLightScreenAction action)
-            => OnNewEvent?.Invoke(this, new PReflectLightScreenPacket(local, reflect, action));
+        void BroadcastTeamStatus(bool local, PTeamStatus status, PTeamStatusAction action)
+            => OnNewEvent?.Invoke(this, new PTeamStatusPacket(local, status, action));
         void BroadcastWeather(PWeather weather, PWeatherAction action)
             => OnNewEvent?.Invoke(this, new PWeatherPacket(weather, action));
         void BroadcastItemUsed(PPokemon pkmn, PItem item)
@@ -136,16 +136,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PPkmnSwitchOutPacket psop:
                     pkmn = battle.GetPokemon(psop.PokemonId);
                     Console.WriteLine("{1} withdrew {0}!", pkmn.Shell.Nickname, battle.Teams[pkmn.Local ? 0 : 1].TrainerName);
-                    break;
-                case PReflectLightScreenPacket rlsp:
-                    switch (rlsp.Action)
-                    {
-                        case PReflectLightScreenAction.Added: message = "{0} raised {2} team's {1}!"; break;
-                        case PReflectLightScreenAction.Broke:
-                        case PReflectLightScreenAction.Ended: message = "{3} team's {0} wore off!"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(rlsp.Action), $"Invalid reflect/lightscreen action: {rlsp.Action}");
-                    }
-                    Console.WriteLine(message, rlsp.Reflect ? "Reflect" : "Light Screen", rlsp.Reflect ? PStat.Defense : PStat.SpDefense, rlsp.Local ? "your" : "the opposing", rlsp.Local ? "Your" : "The opposing");
                     break;
                 case PStatus1Packet s1p:
                     switch (s1p.Status1)
@@ -260,6 +250,31 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
                     Console.WriteLine(message, battle.GetPokemon(s2p.PokemonId).NameForTrainer(b));
+                    break;
+                case PTeamStatusPacket tsp:
+                    switch (tsp.Status)
+                    {
+                        case PTeamStatus.LightScreen:
+                            switch (tsp.Action)
+                            {
+                                case PTeamStatusAction.Added: message = "Light Screen raised {0} team's Special Defense!"; break;
+                                case PTeamStatusAction.Cleared:
+                                case PTeamStatusAction.Ended: message = "{1} team's Light Screen wore off!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid light screen action: {tsp.Action}");
+                            }
+                            break;
+                        case PTeamStatus.Reflect:
+                            switch (tsp.Action)
+                            {
+                                case PTeamStatusAction.Added: message = "Reflect raised {0} team's Defense!"; break;
+                                case PTeamStatusAction.Cleared:
+                                case PTeamStatusAction.Ended: message = "{1} team's Reflect wore off!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid reflect action: {tsp.Action}");
+                            }
+                            break;
+                        default: throw new ArgumentOutOfRangeException(nameof(tsp.Status), $"Invalid team status: {tsp.Status}");
+                    }
+                    Console.WriteLine(message, tsp.Local ? "your" : "the opposing", tsp.Local ? "Your" : "The opposing");
                     break;
                 case PTransformPacket tp:
                     Console.WriteLine("{0} transformed into {1}!", battle.GetPokemon(tp.UserId).NameForTrainer(true), battle.GetPokemon(tp.TargetId).NameForTrainer(false));

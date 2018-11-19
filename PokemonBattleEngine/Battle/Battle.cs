@@ -16,6 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public int NumPkmnAlive => Party.Count(p => p.HP > 0);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PFieldPosition.None);
 
+        public PTeamStatus Status;
         public byte ReflectCount, LightScreenCount; // Reflect & Light Screen
         public bool MonFaintedLastTurn; // Retaliate
 
@@ -299,17 +300,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             foreach (PTeam team in Teams)
             {
-                if (team.ReflectCount > 0)
+                if (team.Status.HasFlag(PTeamStatus.Reflect))
                 {
                     team.ReflectCount--;
                     if (team.ReflectCount == 0)
-                        BroadcastReflectLightScreen(team.Local, true, PReflectLightScreenAction.Ended);
+                    {
+                        team.Status &= ~PTeamStatus.Reflect;
+                        BroadcastTeamStatus(team.Local, PTeamStatus.Reflect, PTeamStatusAction.Ended);
+                    }
                 }
-                if (team.LightScreenCount > 0)
+                if (team.Status.HasFlag(PTeamStatus.LightScreen))
                 {
                     team.LightScreenCount--;
                     if (team.LightScreenCount == 0)
-                        BroadcastReflectLightScreen(team.Local, false, PReflectLightScreenAction.Ended);
+                    {
+                        team.Status &= ~PTeamStatus.LightScreen;
+                        BroadcastTeamStatus(team.Local, PTeamStatus.LightScreen, PTeamStatusAction.Ended);
+                    }
                 }
             }
             if (WeatherCounter > 0)
