@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine
             Pikachu_NU = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
-                Nickname = "Pikachu",
+                Nickname = "Poof",
                 Level = 100,
                 Friendship = 255,
                 Shiny = false,
@@ -19,6 +19,22 @@ namespace Kermalis.PokemonBattleEngine
                 IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power Ice/70
                 EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
                 Moves = new PMove[] { PMove.Substitute, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
+            Marowak_VGC = new PPokemonShell
+            {
+                Species = PSpecies.Marowak,
+                Nickname = "Mawoogo",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.ThickClub,
+                Ability = PAbility.LightningRod,
+                Gender = PGender.Male,
+                Nature = PNature.Brave,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 0 },
+                EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
+                Moves = new PMove[] { PMove.EarthPower, PMove.RockSlide, PMove.FirePunch, PMove.SwordsDance }, // earthquake, rock slide, fire punch, swords dance
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Ditto_UU = new PPokemonShell
@@ -59,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nickname = "Absoul",
                 Level = 100,
                 Friendship = 255,
-                Shiny = true,
+                Shiny = false,
                 Item = PItem.DreadPlate,
                 Ability = PAbility.SuperLuck,
                 Gender = PGender.Male,
@@ -72,7 +88,7 @@ namespace Kermalis.PokemonBattleEngine
             Latias_OU = new PPokemonShell
             {
                 Species = PSpecies.Latias,
-                Nickname = "Latias",
+                Nickname = "Lani",
                 Level = 100,
                 Friendship = 255,
                 Shiny = false,
@@ -88,7 +104,7 @@ namespace Kermalis.PokemonBattleEngine
             Latios_OU = new PPokemonShell
             {
                 Species = PSpecies.Latios,
-                Nickname = "Latios",
+                Nickname = "Loomo",
                 Level = 100,
                 Friendship = 255,
                 Shiny = false,
@@ -124,7 +140,7 @@ namespace Kermalis.PokemonBattleEngine
                 Level = 100,
                 Friendship = 255,
                 Item = PItem.Leftovers,
-                Shiny = true,
+                Shiny = false,
                 Ability = PAbility.Levitate,
                 Gender = PGender.Female,
                 Nature = PNature.Bold,
@@ -136,10 +152,10 @@ namespace Kermalis.PokemonBattleEngine
             Darkrai_Uber = new PPokemonShell
             {
                 Species = PSpecies.Darkrai,
-                Nickname = "Darkrai",
+                Nickname = "Kylo",
                 Level = 100,
                 Friendship = 255,
-                Shiny = true,
+                Shiny = false,
                 Item = PItem.Leftovers,
                 Ability = PAbility.BadDreams,
                 Gender = PGender.Genderless,
