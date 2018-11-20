@@ -2716,6 +2716,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.ToxicSpikes,
+                new PMoveData
+                {
+                    Type = PType.Poison, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.ToxicSpikes, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedByMagicCoat,
+                    Targets = PMoveTarget.AllFoes
+                }
+            },
+            {
                 PMove.Transform,
                 new PMoveData
                 {

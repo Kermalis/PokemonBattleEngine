@@ -19,15 +19,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PTeam team = Teams[pkmn.Local ? 0 : 1];
 
             // Entry Hazards
-            if (team.Status.HasFlag(PTeamStatus.Spikes)
-                && pkmn.Ability != PAbility.Levitate
-                && !pData.HasType(PType.Flying)
-                )
+            if (team.Status.HasFlag(PTeamStatus.Spikes) && !pData.HasType(PType.Flying) && pkmn.Ability != PAbility.Levitate)
             {
                 double denominator = 10.0 - (2 * team.SpikeCount);
                 ushort damage = (ushort)(pkmn.MaxHP / denominator);
                 DealDamage(pkmn, damage, PEffectiveness.Normal, true);
                 BroadcastTeamStatus(team.Local, PTeamStatus.Spikes, PTeamStatusAction.Damage, pkmn.Id);
+            }
+            if (team.Status.HasFlag(PTeamStatus.ToxicSpikes))
+            {
+                // Grounded Poison types remove the toxic spikes
+                if (pData.HasType(PType.Poison) && pkmn.Ability != PAbility.Levitate && !pData.HasType(PType.Flying))
+                {
+                    BroadcastTeamStatus(team.Local, PTeamStatus.ToxicSpikes, PTeamStatusAction.Cleared);
+                }
+                // Steel types and floating Pokémon don't get poisoned
+                else if (pkmn.Status1 == PStatus1.None && !pData.HasType(PType.Steel) && !pData.HasType(PType.Flying) && pkmn.Ability != PAbility.Levitate)
+                {
+                    PStatus1 status = team.ToxicSpikeCount == 1 ? PStatus1.Poisoned : PStatus1.BadlyPoisoned;
+                    pkmn.Status1 = status;
+                    if (status == PStatus1.BadlyPoisoned)
+                        pkmn.Status1Counter = 1;
+                    BroadcastStatus1(pkmn, status, PStatusAction.Added);
+                }
             }
 
             // Abilities
@@ -444,6 +458,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.Toxic:
                     TryForceStatus1(PStatus1.BadlyPoisoned);
+                    break;
+                case PMoveEffect.ToxicSpikes:
+                    Ef_ToxicSpikes();
                     break;
                 case PMoveEffect.Transform:
                     Ef_Transform();
@@ -1214,6 +1231,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 opposingTeam.Status |= PTeamStatus.Spikes;
                 opposingTeam.SpikeCount++;
                 BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.Spikes, PTeamStatusAction.Added);
+            }
+        }
+        void Ef_ToxicSpikes()
+        {
+            BroadcastMoveUsed();
+            PPReduce(bUser, bMove);
+            PTeam opposingTeam = Teams[bUser.Local ? 1 : 0];
+            if (opposingTeam.ToxicSpikeCount >= 2)
+            {
+                BroadcastFail(PFailReason.Default);
+            }
+            else
+            {
+                opposingTeam.Status |= PTeamStatus.ToxicSpikes;
+                opposingTeam.ToxicSpikeCount++;
+                BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.ToxicSpikes, PTeamStatusAction.Added);
             }
         }
     }

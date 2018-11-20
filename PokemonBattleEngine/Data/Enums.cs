@@ -112,9 +112,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         None,
         LightScreen = 1 << 0,
         Reflect = 1 << 1,
-        Spikes = 1 << 2,
+        Spikes = 1 << 2, // TODO: Gravity, magnet rise, magic guard, iron ball, baton pass with ingrain, air balloon
         StealthRock = 1 << 3, // TODO
-        ToxicSpikes = 1 << 4 // TODO
+        ToxicSpikes = 1 << 4 // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
     }
     public enum PStatusAction : byte
     {
@@ -434,6 +434,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Substitute,
         SunnyDay,
         Toxic,
+        ToxicSpikes,
         Transform,
     }
     public enum PMove : ushort
@@ -681,6 +682,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ThunderShock,
         ThunderWave,
         Toxic,
+        ToxicSpikes,
         Transform,
         VacuumWave,
         VCreate,

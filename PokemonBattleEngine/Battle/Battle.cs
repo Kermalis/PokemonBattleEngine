@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public PTeamStatus Status;
         public byte ReflectCount, LightScreenCount; // Reflect & Light Screen
-        public byte SpikeCount; // Spikes
+        public byte SpikeCount, ToxicSpikeCount; // Spikes & Toxic Spikes
         public bool MonFaintedLastTurn; // Retaliate
 
         // Host constructor

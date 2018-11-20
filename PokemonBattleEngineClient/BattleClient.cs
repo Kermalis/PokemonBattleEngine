@@ -415,6 +415,20 @@ namespace Kermalis.PokemonBattleEngineClient
                                 default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid spikes action: {tsp.Action}");
                             }
                             break;
+                        case PTeamStatus.ToxicSpikes:
+                            switch (tsp.Action)
+                            {
+                                case PTeamStatusAction.Added:
+                                    team.ToxicSpikeCount++;
+                                    message = "Poison spikes were scattered all around {2} team's feet!";
+                                    break;
+                                case PTeamStatusAction.Cleared:
+                                    team.ToxicSpikeCount = 0;
+                                    message = "The poison spikes disappeared from around {2} team's feet!";
+                                    break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid toxic spikes action: {tsp.Action}");
+                            }
+                            break;
                         default: throw new ArgumentOutOfRangeException(nameof(tsp.Status), $"Invalid team status: {tsp.Status}");
                     }
                     messageView.Add(battleView.Message = string.Format(message,
