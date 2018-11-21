@@ -25,25 +25,26 @@ namespace Kermalis.PokemonBattleEngine.Data
         public static readonly double[,] TypeEffectiveness = new double[,]
         {
             // Defender
-            //    Bug     Dark   Dragon Electric Fighting     Fire   Flying    Ghost    Grass   Ground      Ice   Normal   Poison  Psychic     Rock    Steel    Water
-            {     1.0,     2.0,     1.0,     1.0,     0.5,     0.5,     0.5,     0.5,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     1.0,     0.5,     1.0}, // Bug
-            {     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5,     1.0}, // Dark
-            {     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}, // Dragon
-            {     1.0,     1.0,     0.5,     0.5,     1.0,     1.0,     2.0,     1.0,     0.5,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0}, // Electric
-            {     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.0,     1.0,     1.0,     2.0,     2.0,     0.5,     0.5,     2.0,     2.0,     1.0}, // Fighting
-            {     2.0,     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5}, // Fire
-            {     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}, // Flying
-            {     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.0,     1.0,     2.0,     1.0,     0.5,     1.0}, // Ghost
-            {     0.5,     1.0,     0.5,     1.0,     1.0,     0.5,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     1.0,     2.0,     0.5,     2.0}, // Grass
-            {     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     0.0,     1.0,     0.5,     1.0,     1.0,     1.0,     2.0,     1.0,     2.0,     2.0,     1.0}, // Ground
-            {     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     2.0,     2.0,     0.5,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5}, // Ice
-            {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}, // Normal
-            {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5,     1.0,     1.0,     0.5,     1.0,     0.5,     0.0,     1.0}, // Poison
-            {     1.0,     0.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     0.5,     1.0,     0.5,     1.0}, // Psychic
-            {     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}, // Rock
-            {     1.0,     1.0,     1.0,     0.5,     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     2.0,     0.5,     0.5}, // Steel
-            {     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5}, // Water
-                                                                                                                                                                        // Attacker
+            //   None      Bug     Dark   Dragon Electric Fighting     Fire   Flying    Ghost    Grass   Ground      Ice   Normal   Poison  Psychic     Rock    Steel    Water
+            {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0}, // None
+            {     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     0.5,     0.5,     0.5,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     1.0,     0.5,     1.0}, // Bug
+            {     1.0,     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5,     1.0}, // Dark
+            {     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}, // Dragon
+            {     1.0,     1.0,     1.0,     0.5,     0.5,     1.0,     1.0,     2.0,     1.0,     0.5,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0}, // Electric
+            {     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.0,     1.0,     1.0,     2.0,     2.0,     0.5,     0.5,     2.0,     2.0,     1.0}, // Fighting
+            {     1.0,     2.0,     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5}, // Fire
+            {     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}, // Flying
+            {     1.0,     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.0,     1.0,     2.0,     1.0,     0.5,     1.0}, // Ghost
+            {     1.0,     0.5,     1.0,     0.5,     1.0,     1.0,     0.5,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     1.0,     2.0,     0.5,     2.0}, // Grass
+            {     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     0.0,     1.0,     0.5,     1.0,     1.0,     1.0,     2.0,     1.0,     2.0,     2.0,     1.0}, // Ground
+            {     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     2.0,     2.0,     0.5,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5}, // Ice
+            {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}, // Normal
+            {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5,     1.0,     1.0,     0.5,     1.0,     0.5,     0.0,     1.0}, // Poison
+            {     1.0,     1.0,     0.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     0.5,     1.0,     0.5,     1.0}, // Psychic
+            {     1.0,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}, // Rock
+            {     1.0,     1.0,     1.0,     1.0,     0.5,     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     2.0,     0.5,     0.5}, // Steel
+            {     1.0,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5}, // Water
+                                                                                                                                                                                 // Attacker
         };
         public static readonly Dictionary<PNature, sbyte[]> NatureBoosts = new Dictionary<PNature, sbyte[]>
         {
@@ -102,7 +103,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 35, Attack = 55, Defense = 30, SpAttack = 50, SpDefense = 40, Speed = 90,
                     GenderRatio = PGender.M1F1,
-                    Type1 = PType.Electric, Type2 = PType.Electric,
+                    Type1 = PType.Electric, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
@@ -216,7 +217,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 50, Attack = 50, Defense = 95, SpAttack = 40, SpDefense = 50, Speed = 35,
                     GenderRatio = PGender.M1F1,
-                    Type1 = PType.Ground, Type2 = PType.Ground,
+                    Type1 = PType.Ground, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
@@ -269,7 +270,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // knock off
                         // sleep talk
                         // snore
-                        // stealth rock
                         // uproar
                         // captivate // gen 4 tm
                         // counter // gen 3 tutor
@@ -308,6 +308,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.RockSmash, // TM
                         PMove.RockTomb, // TM
                         PMove.Screech, // Egg Move
+                        PMove.StealthRock, // Move Tutor
                         PMove.Strength, // HM
                         PMove.Substitute, // TM
                         PMove.SunnyDay, // TM
@@ -323,7 +324,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 60, Attack = 80, Defense = 110, SpAttack = 50, SpDefense = 80, Speed = 45,
                     GenderRatio = PGender.M1F1,
-                    Type1 = PType.Ground, Type2 = PType.Ground,
+                    Type1 = PType.Ground, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     MinLevel = 14, // HGSS (Rock Tunnel)
                     ShinyLocked = false,
@@ -378,7 +379,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // outrage
                         // sleep talk
                         // snore
-                        // stealth rock
                         // uproar
                         // captivate // gen 4 tm
                         // counter // gen 3 tutor
@@ -418,6 +418,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         PMove.RockSmash, // TM
                         PMove.RockTomb, // TM
                         PMove.Screech, // Egg Move
+                        PMove.StealthRock, // Move Tutor
                         PMove.StoneEdge, // TM
                         PMove.Strength, // HM
                         PMove.Substitute, // TM
@@ -434,7 +435,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 48, Attack = 48, Defense = 48, SpAttack = 48, SpDefense = 48, Speed = 48,
                     GenderRatio = PGender.Genderless,
-                    Type1 = PType.Normal, Type2 = PType.Normal,
+                    Type1 = PType.Normal, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Limber, PAbility.Imposter },
                     MinLevel = 10, // HGSS (Route 34, Route 35)
                     ShinyLocked = false,
@@ -455,7 +456,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 20, Attack = 40, Defense = 15, SpAttack = 35, SpDefense = 35, Speed = 60,
                     GenderRatio = PGender.M1F1,
-                    Type1 = PType.Electric, Type2 = PType.Electric,
+                    Type1 = PType.Electric, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
@@ -539,7 +540,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 100, Attack = 50, Defense = 80, SpAttack = 50, SpDefense = 80, Speed = 50,
                     GenderRatio = PGender.M1F1,
-                    Type1 = PType.Water, Type2 = PType.Water,
+                    Type1 = PType.Water, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.ThickFat, PAbility.HugePower, PAbility.SapSipper },
                     MinLevel = 5, // B2W2 (Route 20, Flocessy Ranch, Relic Passage)
                     ShinyLocked = false,
@@ -657,7 +658,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
                     GenderRatio = PGender.Genderless,
-                    Type1 = PType.Psychic, Type2 = PType.Psychic,
+                    Type1 = PType.Psychic, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 5, // HGSS (Ruins of Alph)
                     ShinyLocked = false,
@@ -678,7 +679,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 65, Attack = 130, Defense = 60, SpAttack = 75, SpDefense = 60, Speed = 75,
                     GenderRatio = PGender.M1F1,
-                    Type1 = PType.Dark, Type2 = PType.Dark,
+                    Type1 = PType.Dark, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Pressure, PAbility.SuperLuck, PAbility.Justified },
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
@@ -811,7 +812,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 35, Attack = 64, Defense = 85, SpAttack = 74, SpDefense = 55, Speed = 32,
                     GenderRatio = PGender.M1F1,
-                    Type1 = PType.Water, Type2 = PType.Water,
+                    Type1 = PType.Water, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.ShellArmor, PAbility.Rattled },
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
@@ -1197,7 +1198,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 70, Defense = 120, SpAttack = 75, SpDefense = 130, Speed = 85,
                     GenderRatio = PGender.Female,
-                    Type1 = PType.Psychic, Type2 = PType.Psychic,
+                    Type1 = PType.Psychic, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 50, // DPPt (Roaming)
                     ShinyLocked = false,
@@ -1281,7 +1282,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 70, Attack = 90, Defense = 90, SpAttack = 135, SpDefense = 90, Speed = 125,
                     GenderRatio = PGender.Genderless,
-                    Type1 = PType.Dark, Type2 = PType.Dark,
+                    Type1 = PType.Dark, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.BadDreams },
                     MinLevel = 40, // DP (Newmoon Island)
                     ShinyLocked = false,
@@ -1389,7 +1390,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 58, Attack = 50, Defense = 145, SpAttack = 95, SpDefense = 105, Speed = 30,
                     GenderRatio = PGender.M1F1,
-                    Type1 = PType.Ghost, Type2 = PType.Ghost,
+                    Type1 = PType.Ghost, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Mummy },
                     MinLevel = 34, // Evolve Yamask
                     ShinyLocked = false,

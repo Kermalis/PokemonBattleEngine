@@ -25,6 +25,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ushort damage = (ushort)(pkmn.MaxHP / denominator);
                 DealDamage(pkmn, damage, PEffectiveness.Normal, true);
                 BroadcastTeamStatus(team.Local, PTeamStatus.Spikes, PTeamStatusAction.Damage, pkmn.Id);
+                if (FaintCheck(pkmn))
+                    return;
             }
             if (team.Status.HasFlag(PTeamStatus.ToxicSpikes))
             {
@@ -42,6 +44,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Status1Counter = 1;
                     BroadcastStatus1(pkmn, status, PStatusAction.Added);
                 }
+            }
+            if (team.Status.HasFlag(PTeamStatus.StealthRock))
+            {
+                double effectiveness = 0.125;
+                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type1];
+                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type2];
+                ushort damage = (ushort)(pkmn.MaxHP * effectiveness);
+                DealDamage(pkmn, damage, PEffectiveness.Normal, true);
+                BroadcastTeamStatus(team.Local, PTeamStatus.StealthRock, PTeamStatusAction.Damage, pkmn.Id);
+                if (FaintCheck(pkmn))
+                    return;
             }
 
             // Abilities
@@ -388,7 +401,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     HitAndMaybeApplyStatus1(PStatus1.BadlyPoisoned, mData.EffectParam);
                     break;
                 case PMoveEffect.LightScreen:
-                    Ef_LightScreen();
+                    TryForceTeamStatus(PTeamStatus.LightScreen);
                     break;
                 case PMoveEffect.LowerTarget_ATK_DEF_By1:
                     ChangeTargetStats(new PStat[] { PStat.Attack, PStat.Defense }, new sbyte[] { -1, -1 });
@@ -442,13 +455,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     ChangeUserStats(new PStat[] { PStat.Speed, PStat.Attack }, new sbyte[] { +2, +1 });
                     break;
                 case PMoveEffect.Reflect:
-                    Ef_Reflect();
+                    TryForceTeamStatus(PTeamStatus.Reflect);
                     break;
                 case PMoveEffect.Sleep:
                     TryForceStatus1(PStatus1.Asleep);
                     break;
                 case PMoveEffect.Spikes:
-                    Ef_Spikes();
+                    TryForceTeamStatus(PTeamStatus.Spikes);
+                    break;
+                case PMoveEffect.StealthRock:
+                    TryForceTeamStatus(PTeamStatus.StealthRock);
                     break;
                 case PMoveEffect.Substitute:
                     TryForceStatus2(PStatus2.Substitute);
@@ -460,7 +476,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     TryForceStatus1(PStatus1.BadlyPoisoned);
                     break;
                 case PMoveEffect.ToxicSpikes:
-                    Ef_ToxicSpikes();
+                    TryForceTeamStatus(PTeamStatus.ToxicSpikes);
                     break;
                 case PMoveEffect.Transform:
                     Ef_Transform();
@@ -719,7 +735,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPPChanged(pkmn, move, -reduceAmt);
         }
 
-        // Returns true if the pokemon fainted & removes it from activeBattlers
+        // Returns true if the Pokémon fainted & removes it from activeBattlers
         // Broadcasts the event if it did
         bool FaintCheck(PPokemon pkmn)
         {
@@ -962,6 +978,61 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             ApplyStatus2IfPossible(status, true);
         }
+        void TryForceTeamStatus(PTeamStatus status)
+        {
+            BroadcastMoveUsed();
+            PPReduce(bUser, bMove);
+            PTeam userTeam = Teams[bUser.Local ? 0 : 1];
+            PTeam opposingTeam = Teams[bUser.Local ? 1 : 0];
+            switch (status)
+            {
+                case PTeamStatus.LightScreen:
+                    if (!userTeam.Status.HasFlag(PTeamStatus.LightScreen))
+                    {
+                        userTeam.Status |= PTeamStatus.LightScreen;
+                        userTeam.LightScreenCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
+                        BroadcastTeamStatus(userTeam.Local, PTeamStatus.LightScreen, PTeamStatusAction.Added);
+                        return;
+                    }
+                    break;
+                case PTeamStatus.Reflect:
+                    if (!userTeam.Status.HasFlag(PTeamStatus.Reflect))
+                    {
+                        userTeam.Status |= PTeamStatus.Reflect;
+                        userTeam.ReflectCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
+                        BroadcastTeamStatus(userTeam.Local, PTeamStatus.Reflect, PTeamStatusAction.Added);
+                        return;
+                    }
+                    break;
+                case PTeamStatus.Spikes:
+                    if (opposingTeam.SpikeCount < 3)
+                    {
+                        opposingTeam.Status |= PTeamStatus.Spikes;
+                        opposingTeam.SpikeCount++;
+                        BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.Spikes, PTeamStatusAction.Added);
+                        return;
+                    }
+                    break;
+                case PTeamStatus.StealthRock:
+                    if (!opposingTeam.Status.HasFlag(PTeamStatus.StealthRock))
+                    {
+                        opposingTeam.Status |= PTeamStatus.StealthRock;
+                        BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.StealthRock, PTeamStatusAction.Added);
+                        return;
+                    }
+                    break;
+                case PTeamStatus.ToxicSpikes:
+                    if (opposingTeam.ToxicSpikeCount < 2)
+                    {
+                        opposingTeam.Status |= PTeamStatus.ToxicSpikes;
+                        opposingTeam.ToxicSpikeCount++;
+                        BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.ToxicSpikes, PTeamStatusAction.Added);
+                        return;
+                    }
+                    break;
+            }
+            BroadcastFail(PFailReason.Default);
+        }
         void HitAndMaybeApplyStatus1(PStatus1 status, int chance)
         {
             bool behindSubstitute = bTarget.Status2.HasFlag(PStatus2.Substitute);
@@ -1051,38 +1122,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastMoveUsed();
                 PPReduce(bUser, bMove);
                 BroadcastFail(PFailReason.Default);
-            }
-        }
-        void Ef_Reflect()
-        {
-            BroadcastMoveUsed();
-            PPReduce(bUser, bMove);
-            PTeam team = Teams[bUser.Local ? 0 : 1];
-            if (team.Status.HasFlag(PTeamStatus.Reflect))
-            {
-                BroadcastFail(PFailReason.Default);
-            }
-            else
-            {
-                team.Status |= PTeamStatus.Reflect;
-                team.ReflectCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
-                BroadcastTeamStatus(team.Local, PTeamStatus.Reflect, PTeamStatusAction.Added);
-            }
-        }
-        void Ef_LightScreen()
-        {
-            BroadcastMoveUsed();
-            PPReduce(bUser, bMove);
-            PTeam team = Teams[bUser.Local ? 0 : 1];
-            if (team.Status.HasFlag(PTeamStatus.LightScreen))
-            {
-                BroadcastFail(PFailReason.Default);
-            }
-            else
-            {
-                team.Status |= PTeamStatus.LightScreen;
-                team.LightScreenCount = (byte)(PSettings.ReflectLightScreenTurns + (bUser.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
-                BroadcastTeamStatus(team.Local, PTeamStatus.LightScreen, PTeamStatusAction.Added);
             }
         }
         void Ef_BrickBreak()
@@ -1216,38 +1255,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             bUser.Transform(bTarget, bTarget.Attack, bTarget.Defense, bTarget.SpAttack, bTarget.SpDefense, bTarget.Speed, bTarget.Ability, bTarget.Moves);
             BroadcastTransform();
-        }
-        void Ef_Spikes()
-        {
-            BroadcastMoveUsed();
-            PPReduce(bUser, bMove);
-            PTeam opposingTeam = Teams[bUser.Local ? 1 : 0];
-            if (opposingTeam.SpikeCount >= 3)
-            {
-                BroadcastFail(PFailReason.Default);
-            }
-            else
-            {
-                opposingTeam.Status |= PTeamStatus.Spikes;
-                opposingTeam.SpikeCount++;
-                BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.Spikes, PTeamStatusAction.Added);
-            }
-        }
-        void Ef_ToxicSpikes()
-        {
-            BroadcastMoveUsed();
-            PPReduce(bUser, bMove);
-            PTeam opposingTeam = Teams[bUser.Local ? 1 : 0];
-            if (opposingTeam.ToxicSpikeCount >= 2)
-            {
-                BroadcastFail(PFailReason.Default);
-            }
-            else
-            {
-                opposingTeam.Status |= PTeamStatus.ToxicSpikes;
-                opposingTeam.ToxicSpikeCount++;
-                BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.ToxicSpikes, PTeamStatusAction.Added);
-            }
         }
     }
 }

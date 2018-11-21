@@ -113,7 +113,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LightScreen = 1 << 0,
         Reflect = 1 << 1,
         Spikes = 1 << 2, // TODO: Gravity, magnet rise, magic guard, iron ball, baton pass with ingrain, air balloon
-        StealthRock = 1 << 3, // TODO
+        StealthRock = 1 << 3, // TODO: magic guard, castform transforms after taking damage
         ToxicSpikes = 1 << 4 // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
     }
     public enum PStatusAction : byte
@@ -143,6 +143,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PType : byte
     {
+        None,
         Bug,
         Dark,
         Dragon,
@@ -431,6 +432,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reflect,
         Sleep,
         Spikes,
+        StealthRock,
         Substitute,
         SunnyDay,
         Toxic,
@@ -652,6 +654,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Spark,
         Spikes,
         Spore,
+        StealthRock,
         Steamroller,
         SteelWing,
         Stomp,

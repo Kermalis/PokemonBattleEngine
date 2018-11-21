@@ -252,6 +252,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Console.WriteLine(message, battle.GetPokemon(s2p.PokemonId).NameForTrainer(b));
                     break;
                 case PTeamStatusPacket tsp:
+                    b = false;
                     switch (tsp.Status)
                     {
                         case PTeamStatus.LightScreen:
@@ -277,8 +278,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 case PTeamStatusAction.Added: message = "Spikes were scattered all around the feet of {2} team!"; break;
                                 case PTeamStatusAction.Cleared: message = "The spikes disappeared from around {2} team's feet!"; break;
-                                case PTeamStatusAction.Damage: message = "{3} is hurt by the spikes!"; break;
+                                case PTeamStatusAction.Damage: message = "{4} is hurt by the spikes!"; b = true; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid spikes action: {tsp.Action}");
+                            }
+                            break;
+                        case PTeamStatus.StealthRock:
+                            switch (tsp.Action)
+                            {
+                                case PTeamStatusAction.Added: message = "Pointed stones float in the air around {3} team!"; break;
+                                case PTeamStatusAction.Cleared: message = "The pointed stones disappeared from around {2} team!"; break;
+                                case PTeamStatusAction.Damage: message = "Pointed stones dug into {4}!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid stealth rock action: {tsp.Action}");
                             }
                             break;
                         case PTeamStatus.ToxicSpikes:
@@ -295,7 +305,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         tsp.Local ? "your" : "the opposing",
                         tsp.Local ? "Your" : "The opposing",
                         tsp.Local ? "your" : "the foe's",
-                        battle.GetPokemon(tsp.VictimId).NameForTrainer(true)
+                        tsp.Local ? "your" : "your foe's",
+                        battle.GetPokemon(tsp.VictimId).NameForTrainer(b)
                         );
                     break;
                 case PTransformPacket tp:

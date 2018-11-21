@@ -2386,6 +2386,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.StealthRock,
+                new PMoveData
+                {
+                    Type = PType.Rock, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.StealthRock, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedByMagicCoat,
+                    Targets = PMoveTarget.AllFoes
+                }
+            },
+            {
                 PMove.Steamroller,
                 new PMoveData
                 {

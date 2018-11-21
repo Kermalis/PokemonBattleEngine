@@ -228,7 +228,6 @@ Trick Room
 Leaf Storm
 Rock Wrecker
 Captivate
-Stealth Rock
 Judgment
 Bug Bite
 Wood Hammer

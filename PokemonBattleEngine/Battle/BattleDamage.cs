@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             bMoveType = PMoveData.GetMoveTypeForPokemon(user, bMove);
 
-            // If a pokemon uses a move that shares a type with it, it gains a 50% power boost (100% if it has adaptability)
+            // If a pokemon uses a move that shares a type with it, it gains a 50% power boost (100% if it has Adaptability)
             if (userPData.HasType(bMoveType))
             {
                 if (user.Ability == PAbility.Adaptability)
@@ -35,9 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 bDamageMultiplier *= 0.5;
 
             effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)targetPData.Type1];
-            // Don't want to halve twice for a mono type
-            if (targetPData.Type1 != targetPData.Type2)
-                effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)targetPData.Type2];
+            effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)targetPData.Type2];
 
             if (effectiveness == 0)
                 return PEffectiveness.Ineffective;
