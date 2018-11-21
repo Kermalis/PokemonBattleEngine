@@ -150,6 +150,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                         case PStatus1.BadlyPoisoned:
+                            switch (s1p.Action)
+                            {
+                                case PStatusAction.Added: message = "{0} was badly poisoned!"; break;
+                                case PStatusAction.Damage: message = "{0} was hurt by poison!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.Action), $"Invalid badlypoisoned action: {s1p.Action}");
+                            }
+                            break;
                         case PStatus1.Poisoned:
                             switch (s1p.Action)
                             {
