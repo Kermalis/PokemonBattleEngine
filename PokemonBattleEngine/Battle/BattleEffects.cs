@@ -28,6 +28,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (FaintCheck(pkmn))
                     return;
             }
+            if (team.Status.HasFlag(PTeamStatus.StealthRock))
+            {
+                double effectiveness = 0.125;
+                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type1];
+                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type2];
+                ushort damage = (ushort)(pkmn.MaxHP * effectiveness);
+                DealDamage(pkmn, damage, PEffectiveness.Normal, true);
+                BroadcastTeamStatus(team.Local, PTeamStatus.StealthRock, PTeamStatusAction.Damage, pkmn.Id);
+                if (FaintCheck(pkmn))
+                    return;
+            }
             if (team.Status.HasFlag(PTeamStatus.ToxicSpikes))
             {
                 // Grounded Poison types remove the toxic spikes
@@ -44,17 +55,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Status1Counter = 1;
                     BroadcastStatus1(pkmn, status, PStatusAction.Added);
                 }
-            }
-            if (team.Status.HasFlag(PTeamStatus.StealthRock))
-            {
-                double effectiveness = 0.125;
-                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type1];
-                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type2];
-                ushort damage = (ushort)(pkmn.MaxHP * effectiveness);
-                DealDamage(pkmn, damage, PEffectiveness.Normal, true);
-                BroadcastTeamStatus(team.Local, PTeamStatus.StealthRock, PTeamStatusAction.Damage, pkmn.Id);
-                if (FaintCheck(pkmn))
-                    return;
             }
 
             // Abilities
