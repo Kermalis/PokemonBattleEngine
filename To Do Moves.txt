@@ -29,7 +29,6 @@ Counter
 Seismic Toss
 Absorb
 Mega Drain
-Leech Seed
 Solar Beam
 Petal Dance
 Dragon Rage

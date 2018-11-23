@@ -1352,6 +1352,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.LeechSeed,
+                new PMoveData
+                {
+                    Type = PType.Grass, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.LeechSeed, EffectParam = 0,
+                    PPTier = 2, Power = 0, Accuracy = 90, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Leer,
                 new PMoveData
                 {

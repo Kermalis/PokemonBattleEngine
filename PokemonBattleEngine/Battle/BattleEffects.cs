@@ -67,6 +67,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void DoTurnEndedEffects(PPokemon pkmn)
         {
+            PTeam userTeam = Teams[pkmn.Local ? 0 : 1];
+            PTeam opposingTeam = Teams[pkmn.Local ? 1 : 0];
+
             // Items
             switch (pkmn.Item)
             {
@@ -107,6 +110,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Status1Counter++;
                         break;
                     }
+            }
+
+            // Minor statuses
+            if (pkmn.Status2.HasFlag(PStatus2.LeechSeed))
+            {
+                PPokemon seeder = opposingTeam.PokemonAtPosition(pkmn.SeededPosition);
+                if (seeder != null)
+                {
+                    ushort hp = (ushort)(pkmn.MaxHP / PSettings.LeechSeedDenominator);
+                    ushort amtDealt = DealDamage(pkmn, hp, PEffectiveness.Normal, true);
+                    HealDamage(seeder, amtDealt);
+                    BroadcastStatus2(pkmn, PStatus2.LeechSeed, PStatusAction.Damage);
+                    if (FaintCheck(pkmn))
+                        return;
+                }
             }
 
             // Abilities
@@ -400,6 +418,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybeToxic:
                     HitAndMaybeApplyStatus1(PStatus1.BadlyPoisoned, mData.EffectParam);
                     break;
+                case PMoveEffect.LeechSeed:
+                    TryForceStatus2(PStatus2.LeechSeed);
+                    break;
                 case PMoveEffect.LightScreen:
                     TryForceTeamStatus(PTeamStatus.LightScreen);
                     break;
@@ -667,20 +688,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        // Returns false if no damage was done (ineffective)
+        // Returns amount of damage done
         // Broadcasts the hp changing, effectiveness, substitute
-        bool DealDamage(PPokemon pkmn, ushort hp, PEffectiveness effectiveness, bool ignoreSubstitute)
+        ushort DealDamage(PPokemon pkmn, ushort hp, PEffectiveness effectiveness, bool ignoreSubstitute)
         {
-            // TODO: Return how much damage was done so hp drain moves can know
             if (effectiveness == PEffectiveness.Ineffective)
             {
                 BroadcastEffectiveness(pkmn, effectiveness);
-                return false;
+                return 0;
             }
 
             if (!ignoreSubstitute && pkmn.Status2.HasFlag(PStatus2.Substitute))
             {
+                ushort oldHP = pkmn.SubstituteHP;
                 pkmn.SubstituteHP = (ushort)Math.Max(0, pkmn.SubstituteHP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
+                ushort damageAmt = (ushort)(oldHP - pkmn.SubstituteHP);
                 BroadcastStatus2(pkmn, PStatus2.Substitute, PStatusAction.Damage);
                 BroadcastEffectiveness(pkmn, effectiveness);
                 if (pkmn.SubstituteHP == 0)
@@ -688,16 +710,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     pkmn.Status2 &= ~PStatus2.Substitute;
                     BroadcastStatus2(pkmn, PStatus2.Substitute, PStatusAction.Ended);
                 }
+                return damageAmt;
             }
             else
             {
                 ushort oldHP = pkmn.HP;
                 pkmn.HP = (ushort)Math.Max(0, pkmn.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
-                int damageAmt = oldHP - pkmn.HP;
+                ushort damageAmt = (ushort)(oldHP - pkmn.HP);
                 BroadcastHPChanged(pkmn, -damageAmt);
                 BroadcastEffectiveness(pkmn, effectiveness);
+                return damageAmt;
             }
-            return true;
         }
 
         // Returns true if it healed
@@ -837,6 +860,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // "tryingToForce" being true will broadcast failing
         bool ApplyStatus2IfPossible(PStatus2 status, bool tryingToForce)
         {
+            PPokemonData pData = PPokemonData.Data[bTarget.Species];
+
             switch (status)
             {
                 case PStatus2.Confused:
@@ -853,6 +878,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!bTarget.Status2.HasFlag(PStatus2.Substitute))
                     {
                         bTarget.Status2 |= status;
+                        return true;
+                    }
+                    break;
+                case PStatus2.LeechSeed:
+                    if (!bTarget.Status2.HasFlag(PStatus2.LeechSeed)
+                        && !bTarget.Status2.HasFlag(PStatus2.Substitute)
+                        && !pData.HasType(PType.Grass))
+                    {
+                        bTarget.Status2 |= PStatus2.LeechSeed;
+                        bTarget.SeededPosition = bUser.FieldPosition;
+                        BroadcastStatus2(bTarget, PStatus2.LeechSeed, PStatusAction.Added);
                         return true;
                     }
                     break;
@@ -917,7 +953,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             CritCheck();
             PEffectiveness effectiveness = TypeCheck(bUser, bTarget);
-            if (!DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false))
+            if (DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false) == 0)
                 return false;
             if (bLandedCrit)
                 BroadcastCrit();
@@ -1100,7 +1136,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             CritCheck();
             PEffectiveness effectiveness = TypeCheck(bUser, bTarget);
-            if (!DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false))
+            if (DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false) == 0)
                 return;
             if (bLandedCrit)
                 BroadcastCrit();

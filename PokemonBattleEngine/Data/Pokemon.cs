@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public bool Shiny;
         public PAbility Ability;
         public PItem Item;
-        public PFieldPosition FieldPosition = PFieldPosition.None;
+        public PFieldPosition FieldPosition;
         public PStatus1 Status1;
         public PStatus2 Status2;
         // These are in a set order; see BattleEffects->ApplyStatChange()
@@ -58,6 +58,8 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public byte ProtectCounter; // Protect
         public ushort SubstituteHP; // Substitute
+
+        public PFieldPosition SeededPosition; // The position to return leech seed HP to on the opposing team
 
         public PAction PreviousAction, LockedAction, SelectedAction;
 
@@ -148,6 +150,8 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             Status2 &= ~PStatus2.Confused;
             ConfusionCounter = ConfusionTurns = 0;
+            Status2 &= ~PStatus2.LeechSeed;
+            SeededPosition = PFieldPosition.None;
             Status2 &= ~PStatus2.Pumped;
             Status2 &= ~PStatus2.Substitute;
             SubstituteHP = 0;

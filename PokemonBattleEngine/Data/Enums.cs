@@ -97,14 +97,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         Cursed = 1 << 1, // TODO
         Flinching = 1 << 2,
         Infatuated = 1 << 3, // TODO
-        Minimized = 1 << 4,
-        Protected = 1 << 5,
-        Pumped = 1 << 6, // Focus Energy / Lansat Berry
-        Substitute = 1 << 7,
-        Tormented = 1 << 8, // TODO
-        Transformed = 1 << 9,
-        Underground = 1 << 10, // TODO
-        Underwater = 1 << 11,
+        LeechSeed = 1 << 4,
+        Minimized = 1 << 5,
+        Protected = 1 << 6,
+        Pumped = 1 << 7, // Focus Energy / Lansat Berry
+        Substitute = 1 << 8,
+        Tormented = 1 << 9, // TODO
+        Transformed = 1 << 10,
+        Underground = 1 << 11, // TODO
+        Underwater = 1 << 12,
     }
     [Flags]
     public enum PTeamStatus : byte
@@ -412,6 +413,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeRaiseUser_SPATK_By1,
         Hit__MaybeRaiseUser_SPE_By1,
         Hit__MaybeToxic,
+        LeechSeed,
         LightScreen,
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
@@ -561,6 +563,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LavaPlume,
         LeafBlade,
         LeafTornado,
+        LeechSeed,
         Leer,
         Lick,
         LightScreen,
