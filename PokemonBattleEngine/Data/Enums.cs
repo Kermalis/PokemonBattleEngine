@@ -133,8 +133,9 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PFailReason : byte
     {
-        Default, // "But it failed!" and nothing else
+        Default, // "But it failed!"
         HPFull, // Trying to use a healing move with max HP
+        NoTarget, // All opponents fainted already
     }
     public enum PWeatherAction : byte
     {

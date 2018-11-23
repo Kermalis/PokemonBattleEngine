@@ -248,7 +248,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastMoveUsed();
                 PPReduce(user, bMove);
-                BroadcastFail(PFailReason.Default);
+                BroadcastFail(PFailReason.NoTarget);
                 return;
             }
             // Reduced damage if targetting multiple pokemon

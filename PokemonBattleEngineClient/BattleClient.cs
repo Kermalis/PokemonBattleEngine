@@ -145,6 +145,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         case PFailReason.Default: message = "But it failed!"; break;
                         case PFailReason.HPFull: message = "{0}'s HP is full!"; break;
+                        case PFailReason.NoTarget: message = "There was no target..."; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mfp.Reason), $"Invalid fail reason: {mfp.Reason}");
                     }
                     messageView.Add(battleView.Message = string.Format(message, pkmn.NameForTrainer(true)));

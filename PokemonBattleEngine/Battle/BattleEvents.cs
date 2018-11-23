@@ -89,6 +89,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PFailReason.Default: message = "But it failed!"; break;
                         case PFailReason.HPFull: message = "{0}'s HP is full!"; break;
+                        case PFailReason.NoTarget: message = "There was no target..."; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mfp.Reason), $"Invalid fail reason: {mfp.Reason}");
                     }
                     Console.WriteLine(message, battle.GetPokemon(mfp.PokemonId).NameForTrainer(true));
