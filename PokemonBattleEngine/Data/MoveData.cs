@@ -549,6 +549,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Curse,
+                new PMoveData
+                {
+                    Type = PType.Ghost, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Curse, EffectParam = 0,
+                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.None,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Cut,
                 new PMoveData
                 {

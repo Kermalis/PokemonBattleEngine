@@ -12,13 +12,13 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x0E;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte PokemonId;
+        public readonly byte VictimId;
 
-        public PPkmnFaintedPacket(PPokemon pkmn)
+        public PPkmnFaintedPacket(PPokemon victim)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(PokemonId = pkmn.Id);
+            bytes.Add(VictimId = victim.Id);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PPkmnFaintedPacket(byte[] buffer)
@@ -27,7 +27,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                PokemonId = r.ReadByte();
+                VictimId = r.ReadByte();
             }
         }
 

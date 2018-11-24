@@ -7,6 +7,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
+    // TODO: Transform this into an ability action packet
     public sealed class PLimberPacket : INetPacket
     {
         public const short Code = 0x19;

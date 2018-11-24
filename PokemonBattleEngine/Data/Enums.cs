@@ -94,7 +94,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         Confused = 1 << 0,
-        Cursed = 1 << 1, // TODO
+        Cursed = 1 << 1,
         Flinching = 1 << 2,
         Infatuated = 1 << 3, // TODO
         LeechSeed = 1 << 4,
@@ -385,6 +385,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChangeUser_SPDEF,
         ChangeUser_SPE,
         Confuse,
+        Curse,
         Dive,
         Fail,
         FocusEnergy,
@@ -490,6 +491,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         CrossPoison,
         Crunch,
         CrushClaw,
+        Curse,
         Cut,
         DarkPulse,
         DarkVoid,

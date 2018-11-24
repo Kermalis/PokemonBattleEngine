@@ -74,7 +74,6 @@ Spider Web
 Mind Reader
 Nightmare
 Snore
-Curse
 Flail
 Conversion 2
 Cotton Spore

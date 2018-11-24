@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly PTeamStatusAction Action;
         public readonly byte VictimId; // Victim of PTeamStatusAction.CausedDamage
 
-        public PTeamStatusPacket(bool local, PTeamStatus status, PTeamStatusAction action, byte victimId)
+        public PTeamStatusPacket(bool local, PTeamStatus status, PTeamStatusAction action, byte victimId) // TODO: Change victimId to a PPokemon and have null checks
         {
             Local = local;
             Status = status;

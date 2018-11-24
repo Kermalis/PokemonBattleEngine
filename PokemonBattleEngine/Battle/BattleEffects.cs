@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 double denominator = 10.0 - (2 * team.SpikeCount);
                 ushort damage = (ushort)(pkmn.MaxHP / denominator);
-                DealDamage(pkmn, damage, PEffectiveness.Normal, true);
+                DealDamage(pkmn, pkmn, damage, PEffectiveness.Normal, true);
                 BroadcastTeamStatus(team.Local, PTeamStatus.Spikes, PTeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
                     return;
@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type1];
                 effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type2];
                 ushort damage = (ushort)(pkmn.MaxHP * effectiveness);
-                DealDamage(pkmn, damage, PEffectiveness.Normal, true);
+                DealDamage(pkmn, pkmn, damage, PEffectiveness.Normal, true);
                 BroadcastTeamStatus(team.Local, PTeamStatus.StealthRock, PTeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
                     return;
@@ -53,7 +53,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     pkmn.Status1 = status;
                     if (status == PStatus1.BadlyPoisoned)
                         pkmn.Status1Counter = 1;
-                    BroadcastStatus1(pkmn, status, PStatusAction.Added);
+                    BroadcastStatus1(pkmn, pkmn, status, PStatusAction.Added);
                 }
             }
 
@@ -87,19 +87,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // Pokémon with the Heatproof ability take half as much damage from burns
                     if (pkmn.Ability == PAbility.Heatproof)
                         damage /= 2;
-                    DealDamage(pkmn, (ushort)damage, PEffectiveness.Normal, true);
-                    BroadcastStatus1(pkmn, PStatus1.Burned, PStatusAction.Damage);
+                    DealDamage(pkmn, pkmn, (ushort)damage, PEffectiveness.Normal, true);
+                    BroadcastStatus1(pkmn, pkmn, PStatus1.Burned, PStatusAction.Damage);
                     if (FaintCheck(pkmn))
                         return;
                     break;
                 case PStatus1.Poisoned:
-                    DealDamage(pkmn, (ushort)(pkmn.MaxHP / PSettings.PoisonDamageDenominator), PEffectiveness.Normal, true);
-                    BroadcastStatus1(pkmn, PStatus1.Poisoned, PStatusAction.Damage);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PSettings.PoisonDamageDenominator), PEffectiveness.Normal, true);
+                    BroadcastStatus1(pkmn, pkmn, PStatus1.Poisoned, PStatusAction.Damage);
                     FaintCheck(pkmn);
                     break;
                 case PStatus1.BadlyPoisoned:
-                    DealDamage(pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PSettings.ToxicDamageDenominator), PEffectiveness.Normal, true);
-                    BroadcastStatus1(pkmn, PStatus1.BadlyPoisoned, PStatusAction.Damage);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PSettings.ToxicDamageDenominator), PEffectiveness.Normal, true);
+                    BroadcastStatus1(pkmn, pkmn, PStatus1.BadlyPoisoned, PStatusAction.Damage);
                     if (FaintCheck(pkmn))
                     {
                         pkmn.Status1Counter = 0;
@@ -119,12 +119,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (seeder != null)
                 {
                     ushort hp = (ushort)(pkmn.MaxHP / PSettings.LeechSeedDenominator);
-                    ushort amtDealt = DealDamage(pkmn, hp, PEffectiveness.Normal, true);
+                    ushort amtDealt = DealDamage(seeder, pkmn, hp, PEffectiveness.Normal, true);
                     HealDamage(seeder, amtDealt);
-                    BroadcastStatus2(pkmn, PStatus2.LeechSeed, PStatusAction.Damage);
+                    BroadcastStatus2(seeder, pkmn, PStatus2.LeechSeed, PStatusAction.Damage);
                     if (FaintCheck(pkmn))
                         return;
                 }
+            }
+            if (pkmn.Status2.HasFlag(PStatus2.Cursed))
+            {
+                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PSettings.CurseDenominator), PEffectiveness.Normal, true);
+                BroadcastStatus2(pkmn, pkmn, PStatus2.Cursed, PStatusAction.Damage);
+                if (FaintCheck(pkmn))
+                    return;
             }
 
             // Abilities
@@ -134,133 +141,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void UseMove(PPokemon user)
         {
             bUsedMove = false;
-            PTeam attackerTeam = Teams[user.Local ? 0 : 1]; // Attacker's team
-            PTeam opposingTeam = Teams[user.Local ? 1 : 0]; // Other team
-
             bUser = user;
             bMove = user.SelectedAction.FightMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
-            PMoveData mData = PMoveData.Data[bMove];
-
-            #region Targets
-
-            PTarget selectedTarget = user.SelectedAction.FightTargets;
-            var targets = new List<PPokemon>();
-            if (selectedTarget.HasFlag(PTarget.AllyLeft))
-            {
-                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Left);
-                targets.Add(b);
-            }
-            if (selectedTarget.HasFlag(PTarget.AllyCenter))
-            {
-                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Center);
-                targets.Add(b);
-            }
-            if (selectedTarget.HasFlag(PTarget.AllyRight))
-            {
-                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Right);
-                targets.Add(b);
-            }
-            if (selectedTarget.HasFlag(PTarget.FoeLeft))
-            {
-                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
-                // Target fainted, fallback to its teammate
-                if (b == null)
-                {
-                    if (BattleStyle == PBattleStyle.Double)
-                    {
-                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
-                    }
-                    else if (BattleStyle == PBattleStyle.Triple)
-                    {
-                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
-                        // Center fainted as well and user can reach far right
-                        if (b == null && (user.FieldPosition != PFieldPosition.Right || mData.Targets == PMoveTarget.SingleNotSelf))
-                        {
-                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
-                        }
-                    }
-                }
-                targets.Add(b);
-            }
-            if (selectedTarget.HasFlag(PTarget.FoeCenter))
-            {
-                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
-                // Target fainted, fallback to its teammate
-                if (b == null)
-                {
-                    if (BattleStyle == PBattleStyle.Triple)
-                    {
-                        if (user.FieldPosition == PFieldPosition.Left)
-                        {
-                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
-                            // Right fainted as well and user can reach far left
-                            if (b == null && (user.FieldPosition != PFieldPosition.Left || mData.Targets == PMoveTarget.SingleNotSelf))
-                            {
-                                b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
-                            }
-                        }
-                        else if (user.FieldPosition == PFieldPosition.Right)
-                        {
-                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
-                            // Left fainted as well and user can reach far right
-                            if (b == null && (user.FieldPosition != PFieldPosition.Right || mData.Targets == PMoveTarget.SingleNotSelf))
-                            {
-                                b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
-                            }
-                        }
-                        else // Center
-                        {
-                            PPokemon oppLeft = opposingTeam.PokemonAtPosition(PFieldPosition.Left),
-                                oppRight = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
-                            // Left is dead but not right
-                            if (oppLeft == null && oppRight != null)
-                            {
-                                b = oppRight;
-                            }
-                            // Right is dead but not left
-                            else if (oppLeft != null && oppRight == null)
-                            {
-                                b = oppLeft;
-                            }
-                            // Randomly select left or right
-                            else
-                            {
-                                b = PUtils.RNG.NextBoolean() ? oppLeft : oppRight;
-                            }
-                        }
-                    }
-                }
-                targets.Add(b);
-            }
-            if (selectedTarget.HasFlag(PTarget.FoeRight))
-            {
-                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
-                // Target fainted, fallback to its teammate
-                if (b == null)
-                {
-                    if (BattleStyle == PBattleStyle.Double)
-                    {
-                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
-                    }
-                    else if (BattleStyle == PBattleStyle.Triple)
-                    {
-                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
-                        // Center fainted as well and user can reach far left
-                        if (b == null && (user.FieldPosition != PFieldPosition.Left || mData.Targets == PMoveTarget.SingleNotSelf))
-                        {
-                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
-                        }
-                    }
-                }
-                targets.Add(b);
-            }
-            targets = targets.Distinct().ToList(); // Remove duplicate targets
-
-            #endregion
 
             if (MoveCancelCheck())
                 return;
 
+            PPokemon[] targets = GetRuntimeTargets(user.SelectedAction.FightTargets, user, PMoveData.Data[bMove].Targets == PMoveTarget.SingleNotSelf);
             int aliveTargets = targets.Count(t => t != null);
             if (aliveTargets == 0)
             {
@@ -333,6 +220,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.Confuse:
                     TryForceStatus2(PStatus2.Confused);
+                    break;
+                case PMoveEffect.Curse:
+                    Ef_Curse();
                     break;
                 case PMoveEffect.Dive:
                     Ef_Dive();
@@ -522,7 +412,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Flinch happens before statuses
             if (bUser.Status2.HasFlag(PStatus2.Flinching))
             {
-                BroadcastStatus2(bUser, PStatus2.Flinching, PStatusAction.Activated);
+                BroadcastStatus2(bUser, bUser, PStatus2.Flinching, PStatusAction.Activated);
                 return true;
             }
 
@@ -535,11 +425,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         bUser.Status1 = PStatus1.None;
                         bUser.Status1Counter = bUser.SleepTurns = 0;
-                        BroadcastStatus1(bUser, PStatus1.Asleep, PStatusAction.Ended);
+                        BroadcastStatus1(bUser, bUser, PStatus1.Asleep, PStatusAction.Ended);
                     }
                     else
                     {
-                        BroadcastStatus1(bUser, PStatus1.Asleep, PStatusAction.Activated);
+                        BroadcastStatus1(bUser, bUser, PStatus1.Asleep, PStatusAction.Activated);
                         return true;
                     }
                     break;
@@ -548,11 +438,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (mData.Flags.HasFlag(PMoveFlag.DefrostsUser) || PUtils.ApplyChance(20, 100))
                     {
                         bUser.Status1 = PStatus1.None;
-                        BroadcastStatus1(bUser, PStatus1.Frozen, PStatusAction.Ended);
+                        BroadcastStatus1(bUser, bUser, PStatus1.Frozen, PStatusAction.Ended);
                     }
                     else
                     {
-                        BroadcastStatus1(bUser, PStatus1.Frozen, PStatusAction.Activated);
+                        BroadcastStatus1(bUser, bUser, PStatus1.Frozen, PStatusAction.Activated);
                         return true;
                     }
                     break;
@@ -560,7 +450,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // 25% chance to be unable to move
                     if (PUtils.ApplyChance(25, 100))
                     {
-                        BroadcastStatus1(bUser, PStatus1.Paralyzed, PStatusAction.Activated);
+                        BroadcastStatus1(bUser, bUser, PStatus1.Paralyzed, PStatusAction.Activated);
                         return true;
                     }
                     break;
@@ -574,16 +464,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     bUser.Status2 &= ~PStatus2.Confused;
                     bUser.ConfusionCounter = bUser.ConfusionTurns = 0;
-                    BroadcastStatus2(bUser, PStatus2.Confused, PStatusAction.Ended);
+                    BroadcastStatus2(bUser, bUser, PStatus2.Confused, PStatusAction.Ended);
                 }
                 else
                 {
-                    BroadcastStatus2(bUser, PStatus2.Confused, PStatusAction.Activated);
+                    BroadcastStatus2(bUser, bUser, PStatus2.Confused, PStatusAction.Activated);
                     // 50% chance to hit itself
                     if (PUtils.ApplyChance(50, 100))
                     {
-                        DealDamage(bUser, CalculateDamage(bUser, bUser, 40, PMoveCategory.Physical, true, true), PEffectiveness.Normal, true);
-                        BroadcastStatus2(bUser, PStatus2.Confused, PStatusAction.Damage);
+                        DealDamage(bUser, bUser, CalculateDamage(bUser, bUser, 40, PMoveCategory.Physical, true, true), PEffectiveness.Normal, true);
+                        BroadcastStatus2(bUser, bUser, PStatus2.Confused, PStatusAction.Damage);
                         FaintCheck(bUser);
                         return true;
                     }
@@ -602,7 +492,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (bTarget.Status2.HasFlag(PStatus2.Protected) && mData.Flags.HasFlag(PMoveFlag.AffectedByProtect))
             {
-                BroadcastStatus2(bTarget, PStatus2.Protected, PStatusAction.Activated);
+                BroadcastStatus2(bUser, bTarget, PStatus2.Protected, PStatusAction.Activated);
                 return true;
             }
 
@@ -690,35 +580,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns amount of damage done
         // Broadcasts the hp changing, effectiveness, substitute
-        ushort DealDamage(PPokemon pkmn, ushort hp, PEffectiveness effectiveness, bool ignoreSubstitute)
+        ushort DealDamage(PPokemon culprit, PPokemon victim, ushort hp, PEffectiveness effectiveness, bool ignoreSubstitute)
         {
             if (effectiveness == PEffectiveness.Ineffective)
             {
-                BroadcastEffectiveness(pkmn, effectiveness);
+                BroadcastEffectiveness(victim, effectiveness);
                 return 0;
             }
 
-            if (!ignoreSubstitute && pkmn.Status2.HasFlag(PStatus2.Substitute))
+            if (!ignoreSubstitute && victim.Status2.HasFlag(PStatus2.Substitute))
             {
-                ushort oldHP = pkmn.SubstituteHP;
-                pkmn.SubstituteHP = (ushort)Math.Max(0, pkmn.SubstituteHP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
-                ushort damageAmt = (ushort)(oldHP - pkmn.SubstituteHP);
-                BroadcastStatus2(pkmn, PStatus2.Substitute, PStatusAction.Damage);
-                BroadcastEffectiveness(pkmn, effectiveness);
-                if (pkmn.SubstituteHP == 0)
+                ushort oldHP = victim.SubstituteHP;
+                victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
+                ushort damageAmt = (ushort)(oldHP - victim.SubstituteHP);
+                BroadcastStatus2(culprit, victim, PStatus2.Substitute, PStatusAction.Damage);
+                BroadcastEffectiveness(victim, effectiveness);
+                if (victim.SubstituteHP == 0)
                 {
-                    pkmn.Status2 &= ~PStatus2.Substitute;
-                    BroadcastStatus2(pkmn, PStatus2.Substitute, PStatusAction.Ended);
+                    victim.Status2 &= ~PStatus2.Substitute;
+                    BroadcastStatus2(culprit, victim, PStatus2.Substitute, PStatusAction.Ended);
                 }
                 return damageAmt;
             }
             else
             {
-                ushort oldHP = pkmn.HP;
-                pkmn.HP = (ushort)Math.Max(0, pkmn.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
-                ushort damageAmt = (ushort)(oldHP - pkmn.HP);
-                BroadcastHPChanged(pkmn, -damageAmt);
-                BroadcastEffectiveness(pkmn, effectiveness);
+                ushort oldHP = victim.HP;
+                victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
+                ushort damageAmt = (ushort)(oldHP - victim.HP);
+                BroadcastHPChanged(victim, -damageAmt);
+                BroadcastEffectiveness(victim, effectiveness);
                 return damageAmt;
             }
         }
@@ -742,7 +632,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 bUser.Status1 = PStatus1.None;
                 BroadcastLimber(pkmn, false);
-                BroadcastStatus1(pkmn, PStatus1.Paralyzed, PStatusAction.Cured);
+                BroadcastStatus1(pkmn, pkmn, PStatus1.Paralyzed, PStatusAction.Cured);
             }
         }
 
@@ -851,7 +741,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (status == PStatus1.Asleep)
                 bTarget.SleepTurns = (byte)PUtils.RNG.Next(PSettings.SleepMinTurns, PSettings.SleepMaxTurns + 1);
 
-            BroadcastStatus1(bTarget, status, PStatusAction.Added);
+            BroadcastStatus1(bUser, bTarget, status, PStatusAction.Added);
 
             return true;
         }
@@ -870,7 +760,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         bTarget.Status2 |= PStatus2.Confused;
                         bTarget.ConfusionTurns = (byte)PUtils.RNG.Next(PSettings.ConfusionMinTurns, PSettings.ConfusionMaxTurns + 1);
-                        BroadcastStatus2(bTarget, PStatus2.Confused, PStatusAction.Added);
+                        BroadcastStatus2(bUser, bTarget, PStatus2.Confused, PStatusAction.Added);
+                        return true;
+                    }
+                    break;
+                case PStatus2.Cursed:
+                    if (!bTarget.Status2.HasFlag(PStatus2.Cursed))
+                    {
+                        bTarget.Status2 |= PStatus2.Cursed;
+                        BroadcastStatus2(bUser, bTarget, PStatus2.Cursed, PStatusAction.Added);
+                        DealDamage(bUser, bUser, (ushort)(bUser.MaxHP / 2), PEffectiveness.Normal, true);
                         return true;
                     }
                     break;
@@ -888,13 +787,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         bTarget.Status2 |= PStatus2.LeechSeed;
                         bTarget.SeededPosition = bUser.FieldPosition;
-                        BroadcastStatus2(bTarget, PStatus2.LeechSeed, PStatusAction.Added);
+                        BroadcastStatus2(bUser, bTarget, PStatus2.LeechSeed, PStatusAction.Added);
                         return true;
                     }
                     break;
                 case PStatus2.Minimized:
                     bUser.Status2 |= PStatus2.Minimized;
-                    BroadcastStatus2(bUser, PStatus2.Minimized, PStatusAction.Added);
+                    BroadcastStatus2(bUser, bUser, PStatus2.Minimized, PStatusAction.Added);
                     ApplyStatChange(bUser, PStat.Evasion, +2);
                     return true;
                 case PStatus2.Protected:
@@ -907,7 +806,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             bUser.Status2 |= PStatus2.Protected;
                             bUser.ProtectCounter++;
-                            BroadcastStatus2(bUser, PStatus2.Protected, PStatusAction.Added);
+                            BroadcastStatus2(bUser, bUser, PStatus2.Protected, PStatusAction.Added);
                             return true;
                         }
                         bUser.ProtectCounter = 0;
@@ -917,7 +816,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!bUser.Status2.HasFlag(PStatus2.Pumped))
                     {
                         bUser.Status2 |= status;
-                        BroadcastStatus2(bUser, PStatus2.Pumped, PStatusAction.Added);
+                        BroadcastStatus2(bUser, bUser, PStatus2.Pumped, PStatusAction.Added);
                         return true;
                     }
                     break;
@@ -926,10 +825,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         ushort hpRequired = (ushort)(bUser.MaxHP / 4);
                         if (!bUser.Status2.HasFlag(PStatus2.Substitute) && hpRequired > 0 && bUser.HP > hpRequired)
                         {
-                            DealDamage(bUser, hpRequired, PEffectiveness.Normal, true);
+                            DealDamage(bUser, bUser, hpRequired, PEffectiveness.Normal, true);
                             bUser.Status2 |= PStatus2.Substitute;
                             bUser.SubstituteHP = hpRequired;
-                            BroadcastStatus2(bUser, PStatus2.Substitute, PStatusAction.Added);
+                            BroadcastStatus2(bUser, bUser, PStatus2.Substitute, PStatusAction.Added);
                             return true;
                         }
                     }
@@ -953,7 +852,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             CritCheck();
             PEffectiveness effectiveness = TypeCheck(bUser, bTarget);
-            if (DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false) == 0)
+            if (DealDamage(bUser, bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false) == 0)
                 return false;
             if (bLandedCrit)
                 BroadcastCrit();
@@ -1136,7 +1035,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             CritCheck();
             PEffectiveness effectiveness = TypeCheck(bUser, bTarget);
-            if (DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false) == 0)
+            if (DealDamage(bUser, bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false) == 0)
                 return;
             if (bLandedCrit)
                 BroadcastCrit();
@@ -1187,7 +1086,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.LightScreenCount = 0;
                     BroadcastTeamStatus(team.Local, PTeamStatus.LightScreen, PTeamStatusAction.Cleared);
                 }
-                DealDamage(bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false);
+                DealDamage(bUser, bTarget, (ushort)(CalculateDamage() * bDamageMultiplier), effectiveness, false);
                 if (bLandedCrit)
                     BroadcastCrit();
                 FaintCheck(bTarget);
@@ -1205,7 +1104,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 bUser.LockedAction.Decision = PDecision.None;
                 bUser.Status2 &= ~PStatus2.Underwater;
-                BroadcastStatus2(bUser, PStatus2.Underwater, PStatusAction.Ended);
+                BroadcastStatus2(bUser, bUser, PStatus2.Underwater, PStatusAction.Ended);
                 Ef_Hit();
             }
             else
@@ -1215,7 +1114,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PPReduce(bUser, bMove);
                 bUser.LockedAction = bUser.SelectedAction;
                 bUser.Status2 |= PStatus2.Underwater;
-                BroadcastStatus2(bUser, PStatus2.Underwater, PStatusAction.Added);
+                BroadcastStatus2(bUser, bUser, PStatus2.Underwater, PStatusAction.Added);
                 if (bUser.Item == PItem.PowerHerb)
                 {
                     bUser.Item = PItem.None;
@@ -1291,6 +1190,51 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             bUser.Transform(bTarget, bTarget.Attack, bTarget.Defense, bTarget.SpAttack, bTarget.SpDefense, bTarget.Speed, bTarget.Ability, bTarget.Moves);
             BroadcastTransform();
+        }
+        void Ef_Curse()
+        {
+            BroadcastMoveUsed();
+            PPReduce(bUser, bMove);
+
+            PPokemonData pData = PPokemonData.Data[bUser.Species];
+            if (pData.HasType(PType.Ghost))
+            {
+                if (AccuracyCheck())
+                    return;
+                PFieldPosition prioritizedPos = GetPositionAcross(BattleStyle, bUser.FieldPosition);
+                PTarget target;
+                if (prioritizedPos == PFieldPosition.Left)
+                    target = PTarget.FoeLeft;
+                else if (prioritizedPos == PFieldPosition.Center)
+                    target = PTarget.FoeCenter;
+                else
+                    target = PTarget.FoeRight;
+                PPokemon[] targets = GetRuntimeTargets(target, bUser, false);
+                if (targets.Length == 0)
+                {
+                    BroadcastFail(PFailReason.NoTarget);
+                }
+                else
+                {
+                    bTarget = targets[0];
+                    ApplyStatus2IfPossible(PStatus2.Cursed, true);
+                }
+            }
+            else
+            {
+                if (bUser.SpeedChange == -PSettings.MaxStatChange
+                    && bUser.AttackChange == PSettings.MaxStatChange
+                    && bUser.DefenseChange == PSettings.MaxStatChange)
+                {
+                    BroadcastFail(PFailReason.Default);
+                }
+                else
+                {
+                    ApplyStatChange(bUser, PStat.Speed, -1);
+                    ApplyStatChange(bUser, PStat.Attack, +1);
+                    ApplyStatChange(bUser, PStat.Defense, +1);
+                }
+            }
         }
     }
 }

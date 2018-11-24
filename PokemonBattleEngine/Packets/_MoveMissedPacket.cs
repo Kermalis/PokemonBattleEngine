@@ -7,18 +7,19 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
+    // TODO: Include victimID for "victim evaded the attack!"
     public sealed class PMoveMissedPacket : INetPacket
     {
         public const short Code = 0x0D;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte PokemonId;
+        public readonly byte CulpritId;
 
-        public PMoveMissedPacket(PPokemon pkmn)
+        public PMoveMissedPacket(PPokemon culprit)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(PokemonId = pkmn.Id);
+            bytes.Add(CulpritId = culprit.Id);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PMoveMissedPacket(byte[] buffer)
@@ -27,7 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                PokemonId = r.ReadByte();
+                CulpritId = r.ReadByte();
             }
         }
 

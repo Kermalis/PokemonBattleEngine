@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
+    // TODO: Include IDs
     public sealed class PMoveCritPacket : INetPacket
     {
         public const short Code = 0x0F;

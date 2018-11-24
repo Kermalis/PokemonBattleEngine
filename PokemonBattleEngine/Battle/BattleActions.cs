@@ -426,5 +426,152 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             pkmn.SelectedAction = action;
         }
+
+        public static PFieldPosition GetPositionAcross(PBattleStyle style, PFieldPosition pos)
+        {
+            switch (style)
+            {
+                case PBattleStyle.Single:
+                case PBattleStyle.Rotation:
+                    if (pos == PFieldPosition.Center)
+                        return PFieldPosition.Center;
+                    break;
+                case PBattleStyle.Double:
+                    if (pos == PFieldPosition.Left)
+                        return PFieldPosition.Right;
+                    else if (pos == PFieldPosition.Right)
+                        return PFieldPosition.Left;
+                    break;
+                case PBattleStyle.Triple:
+                    if (pos == PFieldPosition.Left)
+                        return PFieldPosition.Right;
+                    else if (pos == PFieldPosition.Center)
+                        return PFieldPosition.Center;
+                    else if (pos == PFieldPosition.Right)
+                        return PFieldPosition.Left;
+                    break;
+            }
+            return PFieldPosition.None;
+        }
+        // Gets Pokémon that can be hit at the moment
+        // For example, if "FoeCenter" is passed in, logic will be used to fall-back to another opponent that can be hit if FoeCenter fainted
+        // For each flag passed in, zero or one opponent will be returned for it
+        PPokemon[] GetRuntimeTargets(PTarget requestedTargets, PPokemon user, bool canHitFarCorners)
+        {
+            PTeam attackerTeam = Teams[user.Local ? 0 : 1]; // Attacker's team
+            PTeam opposingTeam = Teams[user.Local ? 1 : 0]; // Other team
+
+            var targets = new List<PPokemon>();
+            if (requestedTargets.HasFlag(PTarget.AllyLeft))
+            {
+                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Left);
+                targets.Add(b);
+            }
+            if (requestedTargets.HasFlag(PTarget.AllyCenter))
+            {
+                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Center);
+                targets.Add(b);
+            }
+            if (requestedTargets.HasFlag(PTarget.AllyRight))
+            {
+                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Right);
+                targets.Add(b);
+            }
+            if (requestedTargets.HasFlag(PTarget.FoeLeft))
+            {
+                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                // Target fainted, fallback to its teammate
+                if (b == null)
+                {
+                    if (BattleStyle == PBattleStyle.Double)
+                    {
+                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                    }
+                    else if (BattleStyle == PBattleStyle.Triple)
+                    {
+                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
+                        // Center fainted as well and user can reach far right
+                        if (b == null && (user.FieldPosition != PFieldPosition.Right || canHitFarCorners))
+                        {
+                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                        }
+                    }
+                }
+                targets.Add(b);
+            }
+            if (requestedTargets.HasFlag(PTarget.FoeCenter))
+            {
+                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
+                // Target fainted, fallback to its teammate
+                if (b == null)
+                {
+                    if (BattleStyle == PBattleStyle.Triple)
+                    {
+                        if (user.FieldPosition == PFieldPosition.Left)
+                        {
+                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                            // Right fainted as well and user can reach far left
+                            if (b == null && (user.FieldPosition != PFieldPosition.Left || canHitFarCorners))
+                            {
+                                b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                            }
+                        }
+                        else if (user.FieldPosition == PFieldPosition.Right)
+                        {
+                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                            // Left fainted as well and user can reach far right
+                            if (b == null && (user.FieldPosition != PFieldPosition.Right || canHitFarCorners))
+                            {
+                                b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                            }
+                        }
+                        else // Center
+                        {
+                            PPokemon oppLeft = opposingTeam.PokemonAtPosition(PFieldPosition.Left),
+                                oppRight = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                            // Left is dead but not right
+                            if (oppLeft == null && oppRight != null)
+                            {
+                                b = oppRight;
+                            }
+                            // Right is dead but not left
+                            else if (oppLeft != null && oppRight == null)
+                            {
+                                b = oppLeft;
+                            }
+                            // Randomly select left or right
+                            else
+                            {
+                                b = PUtils.RNG.NextBoolean() ? oppLeft : oppRight;
+                            }
+                        }
+                    }
+                }
+                targets.Add(b);
+            }
+            if (requestedTargets.HasFlag(PTarget.FoeRight))
+            {
+                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                // Target fainted, fallback to its teammate
+                if (b == null)
+                {
+                    if (BattleStyle == PBattleStyle.Double)
+                    {
+                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                    }
+                    else if (BattleStyle == PBattleStyle.Triple)
+                    {
+                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
+                        // Center fainted as well and user can reach far left
+                        if (b == null && (user.FieldPosition != PFieldPosition.Left || canHitFarCorners))
+                        {
+                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                        }
+                    }
+                }
+                targets.Add(b);
+            }
+            return targets.Distinct().ToArray(); // Remove duplicate targets
+        }
     }
 }

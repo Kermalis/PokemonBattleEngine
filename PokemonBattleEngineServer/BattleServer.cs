@@ -211,7 +211,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     break;
                 case PMovePPChangedPacket mpcp:
                     // Send only to the owner's client
-                    int i = battle.GetPokemon(mpcp.PokemonId).Local ? 0 : 1;
+                    int i = battle.GetPokemon(mpcp.VictimId).Local ? 0 : 1;
                     battlers[i].Send(mpcp);
                     battlers[i].ResetEvent.WaitOne(); // Wait for response
                     break;

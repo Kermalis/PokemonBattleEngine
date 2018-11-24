@@ -12,25 +12,25 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x18;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte UserId, TargetId;
+        public readonly byte CulpritId, VictimId;
         public readonly ushort TargetAttack, TargetDefense, TargetSpAttack, TargetSpDefense, TargetSpeed;
         public readonly PAbility TargetAbility;
         public readonly PMove[] TargetMoves;
 
-        public PTransformPacket(PPokemon user, PPokemon target)
+        public PTransformPacket(PPokemon culprit, PPokemon victim)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(UserId = user.Id);
-            bytes.Add(TargetId = target.Id);
-            bytes.AddRange(BitConverter.GetBytes(TargetAttack = target.Attack));
-            bytes.AddRange(BitConverter.GetBytes(TargetDefense = target.Defense));
-            bytes.AddRange(BitConverter.GetBytes(TargetSpAttack = target.SpAttack));
-            bytes.AddRange(BitConverter.GetBytes(TargetSpDefense = target.SpDefense));
-            bytes.AddRange(BitConverter.GetBytes(TargetSpeed = target.Speed));
-            bytes.Add((byte)(TargetAbility = target.Ability));
+            bytes.Add(CulpritId = culprit.Id);
+            bytes.Add(VictimId = victim.Id);
+            bytes.AddRange(BitConverter.GetBytes(TargetAttack = victim.Attack));
+            bytes.AddRange(BitConverter.GetBytes(TargetDefense = victim.Defense));
+            bytes.AddRange(BitConverter.GetBytes(TargetSpAttack = victim.SpAttack));
+            bytes.AddRange(BitConverter.GetBytes(TargetSpDefense = victim.SpDefense));
+            bytes.AddRange(BitConverter.GetBytes(TargetSpeed = victim.Speed));
+            bytes.Add((byte)(TargetAbility = victim.Ability));
             for (int i = 0; i < PSettings.NumMoves; i++)
-                bytes.AddRange(BitConverter.GetBytes((ushort)target.Moves[i]));
+                bytes.AddRange(BitConverter.GetBytes((ushort)victim.Moves[i]));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PTransformPacket(byte[] buffer)
@@ -39,8 +39,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                UserId = r.ReadByte();
-                TargetId = r.ReadByte();
+                CulpritId = r.ReadByte();
+                VictimId = r.ReadByte();
                 TargetAttack = r.ReadUInt16();
                 TargetDefense = r.ReadUInt16();
                 TargetSpAttack = r.ReadUInt16();
