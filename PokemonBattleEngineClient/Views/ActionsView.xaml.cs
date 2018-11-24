@@ -405,7 +405,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 if (Client.Battle.BattleStyle == PBattleStyle.Double)
                 {
                     const double baseX = 142;
-                    LeftX = baseX + 0; RightX = baseX + 128; LeftLineX = baseX + 44; CenterLineX = baseX + 98; RightLineX = baseX + 300;
+                    LeftX = baseX + 0; RightX = baseX + 128; LeftLineX = baseX + 44; CenterLineX = baseX + 98; RightLineX = baseX + 172;
                     CenterTargetsVisible = false;
                     TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineAllyRightAllyCenterEnabled = false;
                     switch (mData.Targets)
