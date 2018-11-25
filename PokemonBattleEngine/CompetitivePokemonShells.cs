@@ -53,6 +53,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Transform, PMove.None, PMove.None, PMove.None },
                 PPUps = new byte[] { 3, 0, 0, 0 }
             },
+            Crobat_OU = new PPokemonShell
+            {
+                Species = PSpecies.Crobat,
+                Nickname = "Caro",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.BlackSludge,
+                Ability = PAbility.InnerFocus,
+                Gender = PGender.Female,
+                Nature = PNature.Jolly,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
+                EVs = new byte[] { 252, 0, 4, 0, 0, 252, },
+                Moves = new PMove[] { PMove.QuiverDance, PMove.Moonlight, PMove.Aeroblast, PMove.Toxic }, // Taunt, Roost, Brave Bird, Toxic
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Azumarill_UU = new PPokemonShell
             {
                 Species = PSpecies.Azumarill,

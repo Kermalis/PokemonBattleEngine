@@ -24,6 +24,8 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Spectators
 * AI
+* Specific place for event Pokémon shells
+* Better validation for Pokémon (include enums for egg/tm/tutor/dreamworld and programmatically deduce how the Pokémon was obtained)
 
 ----
 # PokemonBattleEngine Uses:

@@ -451,6 +451,102 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Crobat,
+                new PPokemonData
+                {
+                    HP = 85, Attack = 90, Defense = 80, SpAttack = 70, SpDefense = 80, Speed = 130,
+                    GenderRatio = PGender.M1F1,
+                    Type1 = PType.Poison, Type2 = PType.Flying,
+                    Abilities = new PAbility[] { PAbility.InnerFocus, PAbility.Infiltrator },
+                    MinLevel = 11, // Catch Golbat in DPPt (Oreburgh Gate level 10) and evolve it
+                    ShinyLocked = false,
+                    Weight = 75.0,
+                    LevelUpMoves = new Tuple<int, PMove>[]
+                    {
+                        Tuple.Create(1, PMove.CrossPoison),
+                        Tuple.Create(1, PMove.Screech),
+                        // 1 leech life
+                        Tuple.Create(1, PMove.Supersonic),
+                        Tuple.Create(1, PMove.Astonish),
+                        Tuple.Create(12, PMove.Bite), // 13 bw
+                        Tuple.Create(15, PMove.WingAttack),  // 17 bw
+                        Tuple.Create(19, PMove.ConfuseRay), // 21 bw
+                        Tuple.Create(24, PMove.Swift),
+                        Tuple.Create(27, PMove.AirCutter), // BW
+                        Tuple.Create(28, PMove.AirCutter), // B2W2
+                        // acrobatics (33 b2, 39 bw)
+                        // mean look (33 bw, 38 b2)
+                        Tuple.Create(42, PMove.PoisonFang), // 45 bw
+                        // haze (47 b2, 51 bw)
+                        Tuple.Create(52, PMove.AirSlash), // 57 bw
+                    },
+                    OtherMoves = new PMove[]
+                    {
+                        // fly // hm
+                        // venoshock // tm
+                        // taunt
+                        // hyper beam
+                        // torment
+                        // facade
+                        // rest
+                        // attract
+                        // thief
+                        // round
+                        // acrobatics
+                        // payback
+                        // giga impact
+                        // swagger
+                        // pluck
+                        // u-turn
+                        // brave bird // egg
+                        // defog
+                        // giga drain
+                        // gust
+                        // pursuit
+                        // whirlwind
+                        // giga drain // tutor
+                        // roost
+                        // sky attack
+                        // sleep talk
+                        // snatch
+                        // snore
+                        // super fang
+                        // tailwind
+                        // uproar
+                        // captivate // gen 4 tm
+                        // double edge // gen 3 tutor
+                        // endure // gen 4 tm
+                        // mimic // gen 3 tutor
+                        // natural gift // gen 4 tm
+                        // secret power // gen 4 tm
+                        // twister // gen 4 tutor
+                        PMove.AerialAce, // TM
+                        PMove.Curse, // Egg Move
+                        PMove.DarkPulse, // Move Tutor
+                        PMove.DoubleTeam, // TM
+                        PMove.FaintAttack, // Egg Move
+                        PMove.Frustration, // TM
+                        PMove.HeatWave, // Move Tutor
+                        PMove.HiddenPower, // TM
+                        PMove.Hypnosis, // Egg Move
+                        PMove.NastyPlot, // Egg Move
+                        PMove.OminousWind, // Gen 4 Move Tutor
+                        PMove.Protect, // TM
+                        PMove.QuickAttack, // Egg Move
+                        PMove.RainDance, // TM
+                        PMove.Return, // TM
+                        PMove.ShadowBall, // TM
+                        PMove.SludgeBomb, // TM
+                        PMove.SteelWing, // Egg Move
+                        PMove.Substitute, // TM
+                        PMove.SunnyDay, // TM
+                        PMove.Toxic, // TM
+                        PMove.XScissor, // TM
+                        PMove.ZenHeadbutt, // Egg Move / Move Tutor
+                    }
+                }
+            },
+            {
                 PSpecies.Pichu,
                 new PPokemonData
                 {

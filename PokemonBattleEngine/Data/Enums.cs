@@ -196,6 +196,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PItem : ushort
     {
         None,
+        BlackSludge, // TODO
         BrightPowder,
         BurnDrive,
         ChillDrive,
@@ -253,6 +254,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         HugePower,
         Hustle,
         Illuminate,
+        Infiltrator, // TODO
+        InnerFocus, // TODO
         Imposter, // TODO
         Justified, // TODO
         Levitate, // TODO: Immunity to ground-type moves
@@ -287,6 +290,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Cubone = 104, // TODO
         Marowak, // TODO
         Ditto = 132,
+        Crobat = 169, // TODO
         Pichu = 172, // TODO
         Azumarill = 184, // TODO
         Unown_A = 201 | (0 << 0x10),
