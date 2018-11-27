@@ -15,6 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public readonly byte CulpritId, VictimId;
         public readonly ushort TargetAttack, TargetDefense, TargetSpAttack, TargetSpDefense, TargetSpeed;
         public readonly PAbility TargetAbility;
+        public readonly PType TargetType1, TargetType2;
         public readonly PMove[] TargetMoves;
 
         public PTransformPacket(PPokemon culprit, PPokemon victim)
@@ -29,6 +30,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes(TargetSpDefense = victim.SpDefense));
             bytes.AddRange(BitConverter.GetBytes(TargetSpeed = victim.Speed));
             bytes.Add((byte)(TargetAbility = victim.Ability));
+            bytes.Add((byte)(TargetType1 = victim.Type1));
+            bytes.Add((byte)(TargetType2 = victim.Type2));
             for (int i = 0; i < PSettings.NumMoves; i++)
                 bytes.AddRange(BitConverter.GetBytes((ushort)victim.Moves[i]));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
@@ -47,6 +50,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 TargetSpDefense = r.ReadUInt16();
                 TargetSpeed = r.ReadUInt16();
                 TargetAbility = (PAbility)r.ReadByte();
+                TargetType1 = (PType)r.ReadByte();
+                TargetType2 = (PType)r.ReadByte();
                 TargetMoves = new PMove[PSettings.NumMoves];
                 for (int i = 0; i < PSettings.NumMoves; i++)
                     TargetMoves[i] = (PMove)r.ReadUInt16();

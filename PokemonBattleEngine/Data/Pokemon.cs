@@ -9,8 +9,8 @@ namespace Kermalis.PokemonBattleEngine.Data
     public sealed class PPokemon
     {
         public readonly byte Id;
-        // Not included in ToBytes() or FromBytes(). Set manually by the host and by PKnownInfo
-        // True indicates this pokemon is owned by the client or team 0 in the eyes of the host/spectators
+        // Not included in ToBytes() or FromBytes(). Set manually by the host
+        // True indicates this Pokémon is owned by the client or team 0 in the eyes of the host/spectators
         public bool Local;
         public readonly PPokemonShell Shell;
 
@@ -43,6 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PSpecies Species;
         public bool Shiny;
         public PAbility Ability;
+        public PType Type1, Type2;
         public PItem Item;
         public PFieldPosition FieldPosition;
         public PStatus1 Status1;
@@ -51,15 +52,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
 
         public byte Status1Counter; // Toxic/Sleep
-        public byte SleepTurns; // Amount of turns to sleep
+        public byte SleepTurns; // Amount of turns to Sleep
 
         public byte ConfusionCounter; // Confused
-        public byte ConfusionTurns; // Amount of turns to be confused
+        public byte ConfusionTurns; // Amount of turns to be Confused
 
         public byte ProtectCounter; // Protect
         public ushort SubstituteHP; // Substitute
 
-        public PFieldPosition SeededPosition; // The position to return leech seed HP to on the opposing team
+        public PFieldPosition SeededPosition; // The position to return Leech Seed HP to on the opposing team
 
         public PAction PreviousAction, LockedAction, SelectedAction;
 
@@ -86,10 +87,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PP[i] = MaxPP[i] = (byte)movePP;
                 }
             }
+            Type1 = PPokemonData.Data[Species].Type1;
+            Type2 = PPokemonData.Data[Species].Type2;
         }
-        // This constructor is to define an unknown remote pokemon
+        // This constructor is to define an unknown remote Pokémon
         // Local is set to false here
-        // Moves are set to PMove.MAX which will be displayed as "???"
         public PPokemon(PPkmnSwitchInPacket psip)
         {
             Id = psip.PokemonId;
@@ -111,7 +113,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             Item = PItem.MAX;
             for (int i = 0; i < PSettings.NumMoves; i++)
                 Moves[i] = PMove.MAX;
+            Type1 = PPokemonData.Data[Species].Type1;
+            Type2 = PPokemonData.Data[Species].Type2;
         }
+
+        public bool HasType(PType type) => Type1 == type || Type2 == type;
 
         void CalculateStats()
         {
@@ -162,12 +168,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
 
         // Transforms into "target" and sets both Pokémons' information to the parameters
-        // Also sets the status2 transformed bit
-        public void Transform(PPokemon target, ushort targetAttack, ushort targetDefense, ushort targetSpAttack, ushort targetSpDefense, ushort targetSpeed, PAbility targetAbility, PMove[] targetMoves)
+        // Also sets the Status2 transformed bit
+        public void Transform(PPokemon target, ushort targetAttack, ushort targetDefense, ushort targetSpAttack, ushort targetSpDefense, ushort targetSpeed, PAbility targetAbility, PType targetType1, PType targetType2, PMove[] targetMoves)
         {
             Species = target.Species;
             Shiny = target.Shiny;
             Ability = target.Ability = targetAbility;
+            Type1 = target.Type1 = targetType1;
+            Type2 = target.Type2 = targetType2;
             Attack = target.Attack = targetAttack;
             Defense = target.Defense = targetDefense;
             SpAttack = target.SpAttack = targetSpAttack;

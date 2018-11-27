@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PRequestPartyPacket _: // Temporary
                     messageView.Add(battleView.Message = "Sending team info...");
-                    var team = new PTeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample(), };
+                    var team = new PTeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Vicki" }.Sample(), };
                     var possiblePokemon = new List<PPokemonShell>
                     {
                         PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Azumarill_UU, PCompetitivePokemonShells.Cofagrigus_UU,
@@ -501,7 +501,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PTransformPacket tp:
                     culprit = Battle.GetPokemon(tp.CulpritId);
                     victim = Battle.GetPokemon(tp.VictimId);
-                    culprit.Transform(victim, tp.TargetAttack, tp.TargetDefense, tp.TargetSpAttack, tp.TargetSpDefense, tp.TargetSpeed, tp.TargetAbility, tp.TargetMoves);
+                    culprit.Transform(victim, tp.TargetAttack, tp.TargetDefense, tp.TargetSpAttack, tp.TargetSpDefense, tp.TargetSpeed, tp.TargetAbility, tp.TargetType1, tp.TargetType2, tp.TargetMoves);
                     battleView.PokemonPositionChanged(culprit, PFieldPosition.None);
                     messageView.Add(battleView.Message = string.Format("{0} transformed into {1}!", culprit.NameForTrainer(true), victim.NameForTrainer(false)));
                     break;

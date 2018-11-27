@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         ushort CalculateBasePower(PPokemon user, PPokemon target, PMove move, PType moveType, byte power, PMoveCategory moveCategory, bool ignoreReflectLightScreen, bool ignoreLifeOrb, bool criticalHit)
         {
-            PPokemonData userPData = PPokemonData.Data[user.Species];
+            PMoveData mData = PMoveData.Data[move];
             PPokemonData targetPData = PPokemonData.Data[target.Species];
             double basePower = power;
 
@@ -117,7 +117,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // If a Pokémon uses a move that shares a type with it, it gains a 50% power boost (100% if it has Adaptability)
-            if (userPData.HasType(moveType))
+            if (user.HasType(moveType))
             {
                 if (user.Ability == PAbility.Adaptability)
                     basePower *= 2.0;
@@ -210,10 +210,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // If a Pokémon is underground and gets hit by a move that can hit underground targets, power is boosted by 100%
-            if (target.Status2.HasFlag(PStatus2.Underground) && PMoveData.Data[move].Flags.HasFlag(PMoveFlag.HitsUnderground))
+            if (target.Status2.HasFlag(PStatus2.Underground) && mData.Flags.HasFlag(PMoveFlag.HitsUnderground))
                 basePower *= 2.0;
             // If a Pokémon is underwater and gets hit by a move that can hit underwater targets, power is boosted by 100%
-            if (target.Status2.HasFlag(PStatus2.Underwater) && PMoveData.Data[move].Flags.HasFlag(PMoveFlag.HitsUnderwater))
+            if (target.Status2.HasFlag(PStatus2.Underwater) && mData.Flags.HasFlag(PMoveFlag.HitsUnderwater))
                 basePower *= 2.0;
 
             // Life Orb boosts power but deals damage to the user

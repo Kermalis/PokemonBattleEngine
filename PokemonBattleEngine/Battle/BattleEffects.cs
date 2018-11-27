@@ -7,44 +7,49 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         void DoSwitchInEffects(PPokemon pkmn)
         {
-            PPokemonData pData = PPokemonData.Data[pkmn.Species]; // TODO: this is only needed for types, so when types are a part of PPokemon, use them instead
             PTeam team = Teams[pkmn.Local ? 0 : 1];
 
             // Entry Hazards
-            if (team.Status.HasFlag(PTeamStatus.Spikes) && !pData.HasType(PType.Flying) && pkmn.Ability != PAbility.Levitate)
+            if (team.Status.HasFlag(PTeamStatus.Spikes) && !pkmn.HasType(PType.Flying) && pkmn.Ability != PAbility.Levitate)
             {
                 double denominator = 10.0 - (2 * team.SpikeCount);
                 ushort damage = (ushort)(pkmn.MaxHP / denominator);
                 DealDamage(pkmn, pkmn, damage, PEffectiveness.Normal, true);
                 BroadcastTeamStatus(team.Local, PTeamStatus.Spikes, PTeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
+                {
                     return;
+                }
             }
             if (team.Status.HasFlag(PTeamStatus.StealthRock))
             {
                 double effectiveness = 0.125;
-                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type1];
-                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pData.Type2];
+                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pkmn.Type1];
+                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pkmn.Type2];
                 ushort damage = (ushort)(pkmn.MaxHP * effectiveness);
                 DealDamage(pkmn, pkmn, damage, PEffectiveness.Normal, true);
                 BroadcastTeamStatus(team.Local, PTeamStatus.StealthRock, PTeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
+                {
                     return;
+                }
             }
             if (team.Status.HasFlag(PTeamStatus.ToxicSpikes))
             {
-                // Grounded Poison types remove the toxic spikes
-                if (pData.HasType(PType.Poison) && pkmn.Ability != PAbility.Levitate && !pData.HasType(PType.Flying))
+                // Grounded Poison types remove the Toxic Spikes
+                if (pkmn.HasType(PType.Poison) && pkmn.Ability != PAbility.Levitate && !pkmn.HasType(PType.Flying))
                 {
                     BroadcastTeamStatus(team.Local, PTeamStatus.ToxicSpikes, PTeamStatusAction.Cleared);
                 }
-                // Steel types and floating Pokémon don't get poisoned
-                else if (pkmn.Status1 == PStatus1.None && !pData.HasType(PType.Steel) && !pData.HasType(PType.Flying) && pkmn.Ability != PAbility.Levitate)
+                // Steel types and floating Pokémon don't get Poisoned
+                else if (pkmn.Status1 == PStatus1.None && !pkmn.HasType(PType.Steel) && !pkmn.HasType(PType.Flying) && pkmn.Ability != PAbility.Levitate)
                 {
                     PStatus1 status = team.ToxicSpikeCount == 1 ? PStatus1.Poisoned : PStatus1.BadlyPoisoned;
                     pkmn.Status1 = status;
                     if (status == PStatus1.BadlyPoisoned)
+                    {
                         pkmn.Status1Counter = 1;
+                    }
                     BroadcastStatus1(pkmn, pkmn, status, PStatusAction.Added);
                 }
             }
@@ -679,9 +684,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
 
-            PPokemonData pData = PPokemonData.Data[target.Species];
-
-            // A Pokémon with Limber cannot be paralyzed unless the attacker has mold breaker
+            // A Pokémon with Limber cannot be Paralyzed unless the attacker has Mold Breaker
             if (status == PStatus1.Paralyzed && target.Ability == PAbility.Limber)
             {
                 if (tryingToForce)
@@ -692,22 +695,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
 
-            // An Ice type pokemon cannot be Frozen
-            if (status == PStatus1.Frozen && pData.HasType(PType.Ice))
+            // An Ice type Pokémon cannot be Frozen
+            if (status == PStatus1.Frozen && target.HasType(PType.Ice))
             {
                 if (tryingToForce)
                     BroadcastEffectiveness(target, PEffectiveness.Ineffective);
                 return false;
             }
-            // A Fire type pokemon cannot be burned
-            if (status == PStatus1.Burned && pData.HasType(PType.Fire))
+            // A Fire type Pokémon cannot be Burned
+            if (status == PStatus1.Burned && target.HasType(PType.Fire))
             {
                 if (tryingToForce)
                     BroadcastEffectiveness(target, PEffectiveness.Ineffective);
                 return false;
             }
-            // A Poison or Steel type pokemon cannot be poisoned or badly poisoned
-            if ((status == PStatus1.BadlyPoisoned || status == PStatus1.Poisoned) && (pData.HasType(PType.Poison) || pData.HasType(PType.Steel)))
+            // A Poison or Steel type Pokémon cannot be Poisoned or Badly Poisoned
+            if ((status == PStatus1.BadlyPoisoned || status == PStatus1.Poisoned) && (target.HasType(PType.Poison) || target.HasType(PType.Steel)))
             {
                 if (tryingToForce)
                     BroadcastEffectiveness(target, PEffectiveness.Ineffective);
@@ -732,8 +735,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // "tryingToForce" being true will broadcast failing
         bool ApplyStatus2IfPossible(PPokemon user, PPokemon target, PStatus2 status, bool tryingToForce)
         {
-            PPokemonData pData = PPokemonData.Data[target.Species];
-
             switch (status)
             {
                 case PStatus2.Confused:
@@ -765,7 +766,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PStatus2.LeechSeed:
                     if (!target.Status2.HasFlag(PStatus2.LeechSeed)
                         && !target.Status2.HasFlag(PStatus2.Substitute)
-                        && !pData.HasType(PType.Grass))
+                        && !target.HasType(PType.Grass))
                     {
                         target.Status2 |= PStatus2.LeechSeed;
                         target.SeededPosition = user.FieldPosition;
@@ -1340,14 +1341,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
-            user.Transform(target, target.Attack, target.Defense, target.SpAttack, target.SpDefense, target.Speed, target.Ability, target.Moves);
+            user.Transform(target, target.Attack, target.Defense, target.SpAttack, target.SpDefense, target.Speed, target.Ability, target.Type1, target.Type2, target.Moves);
             BroadcastTransform(user, target);
         }
         void Ef_Curse(PPokemon user)
         {
             BroadcastMoveUsed(user, PMove.Curse);
             PPReduce(user, PMove.Curse);
-            if (PPokemonData.Data[user.Species].HasType(PType.Ghost))
+            if (user.HasType(PType.Ghost))
             {
                 PFieldPosition prioritizedPos = GetPositionAcross(BattleStyle, user.FieldPosition);
                 PTarget t;
