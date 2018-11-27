@@ -25,7 +25,8 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Spectators
 * AI
 * Specific place for event Pokémon shells
-* Better validation for Pokémon (include enums for egg/tm/tutor/dreamworld and programmatically deduce how the Pokémon was obtained)
+* Better validation for Pokémon (programmatically deduce how the Pokémon was obtained, make MinLevel relevant)
+* HP Bars
 
 ----
 # PokemonBattleEngine Uses:

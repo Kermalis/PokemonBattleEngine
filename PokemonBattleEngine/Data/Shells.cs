@@ -93,7 +93,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(IVs));
 
             // Validate Moves
-            IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Where(t => t.Item1 <= Level).Select(t => t.Item2).Union(pData.OtherMoves);
+            // TODO: legal moves
+            IEnumerable<PMove> legalMoves = pData.LevelUpMoves.Where(t => t.Item2 <= Level).Select(t => t.Item1).Union(pData.OtherMoves.Select(t => t.Item1));
             if (Moves == null || Moves.Length != PSettings.NumMoves // Illegal array
                 || Moves.Any(m => m != PMove.None && !legalMoves.Contains(m)) // Has a move not in the legal list
                 || Moves.Any(m => Moves.Count(m2 => m != PMove.None && m == m2) > 1) // Has a duplicate move

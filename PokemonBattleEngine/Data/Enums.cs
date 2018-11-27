@@ -42,19 +42,19 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         Raining,
-        Sunny,
+        Sunny
     }
     public enum PFieldPosition : byte
     {
         // Not on the field.
         None,
-        // In a double, triple, or rotation battle, the pokemon to __your__ left.
+        // In a double, triple, or rotation battle, the Pokémon to __your__ left.
         Left,
-        // In a single battle, pokemon are in the center.
-        // In a double battle, no pokemon are in the center.
+        // In a single battle, Pokémon are in the center.
+        // In a double battle, no Pokémon are in the center.
         // In a triple or rotation battle, it is obvious.
         Center,
-        // In a double, triple, or rotation battle, the pokemon to __your__ right.
+        // In a double, triple, or rotation battle, the Pokémon to __your__ right.
         Right
     }
     [Flags]
@@ -78,6 +78,40 @@ namespace Kermalis.PokemonBattleEngine.Data
         Status,
         Physical,
         Special
+    }
+    [Flags]
+    public enum PMoveObtainMethod : uint
+    {
+        None,
+        LevelUp_RSE = 1 << 0,
+        LevelUp_FRLG = 1 << 1,
+        LevelUp_DP = 1 << 2,
+        LevelUp_Pt = 1 << 3,
+        LevelUp_HGSS = 1 << 4,
+        LevelUp_BW = 1 << 5,
+        LevelUp_B2W2 = 1 << 6,
+        TM_RSFRLGE = 1 << 7,
+        TM_DPPtHGSS = 1 << 8,
+        TM_BWB2W2 = 1 << 9,
+        HM_RSFRLGE = 1 << 10,
+        HM_DPPt = 1 << 11,
+        HM_HGSS = 1 << 12,
+        HM_BWB2W2 = 1 << 13,
+        MoveTutor_FRLG = 1 << 14,
+        MoveTutor_E = 1 << 15,
+        MoveTutor_XD = 1 << 16,
+        MoveTutor_DP = 1 << 17,
+        MoveTutor_Pt = 1 << 18,
+        MoveTutor_HGSS = 1 << 19,
+        MoveTutor_BW = 1 << 20,
+        MoveTutor_B2W2 = 1 << 21,
+        EggMove_RSFRLG = 1 << 22,
+        EggMove_E = 1 << 23,
+        EggMove_DPPt = 1 << 24,
+        EggMove_HGSS = 1 << 25,
+        EggMove_BWB2W2 = 1 << 26,
+        DreamWorld = 1 << 27,
+        Forme = 1 << 28 // Learned when changing formes
     }
     public enum PStatus1 : byte
     {
@@ -105,7 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tormented = 1 << 9, // TODO
         Transformed = 1 << 10,
         Underground = 1 << 11, // TODO
-        Underwater = 1 << 12,
+        Underwater = 1 << 12
     }
     [Flags]
     public enum PTeamStatus : byte
@@ -136,7 +170,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         Default, // "But it failed!"
         HPFull, // Trying to use a healing move with max HP
-        NoTarget, // All opponents fainted already
+        NoTarget // All opponents fainted already
     }
     public enum PWeatherAction : byte
     {
@@ -286,13 +320,13 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PSpecies : uint
     {
         None,
-        Pikachu = 25, // TODO
-        Cubone = 104, // TODO
-        Marowak, // TODO
+        Pikachu = 25,
+        Cubone = 104,
+        Marowak = 105,
         Ditto = 132,
-        Crobat = 169, // TODO
-        Pichu = 172, // TODO
-        Azumarill = 184, // TODO
+        Crobat = 169,
+        Pichu = 172,
+        Azumarill = 184,
         Unown_A = 201 | (0 << 0x10),
         Unown_B = 201 | (1 << 0x10),
         Unown_C = 201 | (2 << 0x10),
@@ -322,23 +356,23 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Exclamation = 201 | (26 << 0x10),
         Unown_Question = 201 | (27 << 0x10),
         Absol = 359,
-        Clamperl = 366, // TODO
-        Latias = 380, // TODO
-        Latios, // TODO
-        Rotom = 479 | (0 << 0x10), // TODO
+        Clamperl = 366,
+        Latias = 380,
+        Latios = 381,
+        Rotom = 479 | (0 << 0x10),
         Rotom_Fan = 479 | (1 << 0x10),
         Rotom_Frost = 479 | (2 << 0x10), // TODO
         Rotom_Heat = 479 | (3 << 0x10),
         Rotom_Mow = 479 | (4 << 0x10), // TODO
         Rotom_Wash = 479 | (5 << 0x10),
-        Cresselia = 488, // TODO
-        Darkrai = 491, // TODO
-        Cofagrigus = 563, // TODO
-        Genesect = 649 | (0 << 0x10), // TODO
+        Cresselia = 488,
+        Darkrai = 491,
+        Cofagrigus = 563,
+        Genesect = 649 | (0 << 0x10),
         Genesect_Burn = 649 | (1 << 0x10),
         Genesect_Chill = 649 | (2 << 0x10),
         Genesect_Douse = 649 | (3 << 0x10),
-        Genesect_Shock = 649 | (4 << 0x10),
+        Genesect_Shock = 649 | (4 << 0x10)
     }
     public enum PMoveTarget : byte // Used in MoveData
     {
@@ -353,7 +387,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SingleAllySurrounding, // Adjacent ally (Ex. Helping Hand)
         SingleNotSelf,         // Single battler except itself (Ex. Dark Pulse)
         SingleFoeSurrounding,  // Single foe surrounding (Ex. Me First)
-        SingleSurrounding,     // Single battler surrounding (Ex. Tackle)
+        SingleSurrounding      // Single battler surrounding (Ex. Tackle)
     }
     [Flags]
     public enum PMoveFlag : ushort
@@ -370,7 +404,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HitsUnderground = 1 << 8,
         HitsUnderwater = 1 << 9,
         AlwaysCrit = 1 << 10,
-        HighCritChance = 1 << 11,
+        HighCritChance = 1 << 11
     }
     public enum PMoveEffect : byte
     {
@@ -445,7 +479,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SunnyDay,
         Toxic,
         ToxicSpikes,
-        Transform,
+        Transform
     }
     public enum PMove : ushort
     {

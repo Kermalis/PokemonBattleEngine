@@ -13,8 +13,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte MinLevel;
         public bool ShinyLocked;
         public double Weight; // Kilograms
-        public Tuple<int, PMove>[] LevelUpMoves;
-        public PMove[] OtherMoves;
+        public Tuple<PMove, int, PMoveObtainMethod>[] LevelUpMoves;
+        public Tuple<PMove, PMoveObtainMethod>[] OtherMoves;
 
         public bool HasAbility(PAbility ability) => Abilities.Contains(ability);
         public bool HasType(PType type) => Type1 == type || Type2 == type;
@@ -108,106 +108,109 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
                     Weight = 6.0,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.Growl),
-                        Tuple.Create(1, PMove.ThunderShock),
-                        Tuple.Create(1, PMove.Charm), // As Pichu
-                        Tuple.Create(5, PMove.TailWhip),
-                        // follow me 5 // gen 3 pichu event
-                        Tuple.Create(5, PMove.TeeterDance), // Gen 3 Pichu Event
-                        // thunder wave 8 // 8 As Pichu, 10
-                        Tuple.Create(11, PMove.SweetKiss), // As Pichu
-                        Tuple.Create(13, PMove.QuickAttack),
-                        // electro ball 18
-                        Tuple.Create(18, PMove.NastyPlot), // As Pichu
-                        Tuple.Create(21, PMove.DoubleTeam),
-                        Tuple.Create(26, PMove.Slam),
-                        Tuple.Create(29, PMove.Thunderbolt),
-                        Tuple.Create(30, PMove.Sing), // Gen 5 Event (Singing Pikachu)
-                        // last resort 30 // gen 4 event (Kyoto Cross Media Experience 2009 Pikachu)
-                        // endeavor 30 // gen 4 pichu event
-                        // feint 34
-                        Tuple.Create(37, PMove.Agility),
-                        Tuple.Create(42, PMove.Discharge),
-                        Tuple.Create(45, PMove.LightScreen),
-                        Tuple.Create(50, PMove.ExtremeSpeed), // Gen 5 event (ExtremeSpeed Pikachu)
-                        // yawn 50 // gen 4 event (Sleeping Pikachu)
-                        // rest 50 // gen 4 event (Sleeping Pikachu)
-                        Tuple.Create(50, PMove.Thunder),
+                        Tuple.Create(PMove.Agility, 33, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Agility, 34, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.Agility, 37, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Discharge, 37, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.Discharge, 42, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.DoubleTeam, 15, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.DoubleTeam, 18, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.DoubleTeam, 21, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // electro ball (18 gen 5)
+                        // feint (29 gen 4, 34 gen 5)
+                        Tuple.Create(PMove.Growl, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.LightScreen, 42, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.LightScreen, 45, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.LightScreen, 50, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.QuickAttack, 11, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.QuickAttack, 13, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Slam, 20, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Slam, 21, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.Slam, 26, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 5, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 6, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Thunder, 41, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Thunder, 45, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.Thunder, 50, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Thunderbolt, 26, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.Thunderbolt, 29, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ThunderShock, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ThunderWave, 8, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.ThunderWave, 10, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
+
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // dig
-                        // brick break
-                        // facade
-                        // reset
-                        // attract
-                        // round
-                        // echoed voice
-                        // fling
-                        // volt switch
-                        // thunder wave
-                        // swagger
-                        // wild charge
-                        // bestow // egg
-                        // bide
-                        // charge
-                        // double slap
-                        // encore
-                        // endure
-                        // fake out
-                        // flail
-                        // lucky chant
-                        // present
-                        // reversal
-                        // wish
-                        // covet // tutor
-                        // helping hand
-                        // knock off
-                        // magnet rise
-                        // sleep talk
-                        // snore
-                        // captivate // gen 4 tm
-                        // counter // gen 3 tutor
-                        // defense curl // gen 3 tutor
-                        // double edge // gen 3 tutor
-                        // dynamic punch // gen 3 tutor
-                        // focus punch // gen 4 tm
-                        // mega kick // gen 3 tutor
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // rollout // gen 4 tutor
-                        // secret power // gen 4 tm
-                        // seismic toss // gen 3 tutor
-                        // uproar // tutor as Pichu
-                        // volt tackle // egg as pichu
-                        PMove.BodySlam, // Gen 3 Move Tutor
-                        PMove.ChargeBeam, // TM
-                        PMove.DoubleTeam, // TM
-                        PMove.Flash, // TM
-                        PMove.Frustration, // TM
-                        PMove.GrassKnot, // TM
-                        PMove.Headbutt, // Gen 4 Move Tutor
-                        PMove.HiddenPower, // TM
-                        PMove.IronTail, // Move Tutor
-                        PMove.LightScreen, // TM
-                        PMove.MegaPunch, // Gen 3 Move Tutor
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.RainDance, // TM
-                        PMove.Return, // TM
-                        PMove.RockSmash, // TM
-                        PMove.ShockWave, // Gen 4 TM
-                        PMove.SignalBeam, // Move Tutor
-                        PMove.Strength, // HM
-                        PMove.Substitute, // TM
-                        PMove.Swift, // Gen 4 Move Tutor
-                        PMove.Tickle, // Egg Move
-                        PMove.Thunder, // TM
-                        PMove.Thunderbolt, // TM
-                        PMove.ThunderPunch, // Egg Move, Move Tutor
-                        PMove.Toxic, // TM
+                        // attract (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // bestow (gen 5 egg)
+                        // bide (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD),
+                        Tuple.Create(PMove.BrickBreak, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // captivate (gen 4 tm)
+                        // charge (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // counter (frlg/e tutor)
+                        // covet (b2w2 tutor)
+                        // defense curl (emerald tutor)
+                        // dig (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // double edge (frlg/e/xd tutor)
+                        // doubleslap (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // dynamic punch (emerald tutor)
+                        // echoed voice (gen 5 tm)
+                        // encore (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // endure (emerald tutor, gen 4 tm, gen 5 egg)
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // fake out (gen 4 egg, gen 5 egg)
+                        // flail (hgss egg, gen 5 egg)
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fling (gen 4 tm, gen 5 tm)
+                        // focus punch (gen 3 tm, gen 4 tm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.GrassKnot, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Headbutt, PMoveObtainMethod.MoveTutor_HGSS),
+                        // helping hand (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IronTail, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // knock off (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // lucky chant (gen 5 egg)
+                        // magnet rise (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.MegaKick, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        Tuple.Create(PMove.MegaPunch, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        // present (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // reversal (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.RockSmash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rollout (emerald tutor, pt/hgss tutor)
+                        // round (gen 5 tm)
+                        // secret power (gen 3 tm, gen 4 tm)
+                        // seismic toss (frlg/e/xd tutor)
+                        Tuple.Create(PMove.ShockWave, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.SignalBeam, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Strength, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // swagger (emerald tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ThunderPunch, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2 | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Tickle, PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // volt switch (gen 5 tm)
+                        // wild charge (gen 5 tm)
+                        // wish (gen 3 egg, gen 4 egg, gen 5 egg)
                     }
                 }
             },
@@ -222,99 +225,105 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
                     Weight = 6.5,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.Growl),
-                        Tuple.Create(3, PMove.TailWhip),
-                        Tuple.Create(7, PMove.BoneClub),
-                        // 10 perish song (dream world)
-                        Tuple.Create(10, PMove.LowKick), // Dream World
-                        Tuple.Create(11, PMove.Headbutt),
-                        Tuple.Create(13, PMove.Leer),
-                        Tuple.Create(17, PMove.FocusEnergy),
-                        // bonemerang 21
-                        // rage 23
-                        // false swipe 27
-                        // thrash 31
-                        // fling 33
-                        // bone rush 37
-                        // endeavor 41
-                        // double edge 43
-                        Tuple.Create(47, PMove.Retaliate),
+                        Tuple.Create(PMove.BoneClub, 7, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.BoneClub, 9, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        // bonemerang (25 gen 3, 21 gen 4 & 5)
+                        // bone rush (41 gen 3, 37 gen 4 & 5)
+                        // double edge (45 gen 3, 43 gen 4 & 5)
+                        // endeavor (41 gen 4 & 5)
+                        // false swipe (33 gen 3, 27 gen 4 & 5)
+                        // fling (33 gen 4 & 5)
+                        Tuple.Create(PMove.FocusEnergy, 17, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.FocusEnergy, 21, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Growl, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Headbutt, 11, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Headbutt, 13, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Leer, 13, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Leer, 17, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        // rage (29 gen 3, 23 gen 4 & 5)
+                        Tuple.Create(PMove.Retaliate, 47, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 3, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 5, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        // thrash (37 gen 3, 31 gen 4 & 5)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // blizzard
-                        // smack down
-                        // earthquake
-                        // dig
-                        // brick break
-                        // sandstorm
-                        // facade
-                        // rest
-                        // attract
-                        // thief
-                        // round
-                        // echoed voice
-                        // false swipe
-                        // fling
-                        // incinerate
-                        // swagger
-                        // belly drum // egg
-                        // chip away
-                        // double kick
-                        // endure
-                        // perish song
-                        // skull bash
-                        // endeavor // tutor
-                        // knock off
-                        // sleep talk
-                        // snore
-                        // uproar
-                        // captivate // gen 4 tm
-                        // counter // gen 3 tutor
-                        // dynamic punch // gen 3 tutor
-                        // focus punch // gen 4 tm
-                        // fury cutter // gen 4 tutor
-                        // mega kick // gen 3 tutor
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        // seismic toss // gen 3 tutor
-                        PMove.AerialAce, // TM
-                        PMove.AncientPower, // Egg Move
-                        PMove.BodySlam, // Gen 3 Move Tutor
-                        PMove.Bulldoze, // TM
-                        PMove.Detect, // Egg Move
-                        PMove.DoubleTeam, // TM
-                        PMove.EarthPower, // Move Tutor
-                        PMove.FireBlast, // TM
-                        PMove.FirePunch, // Move Tutor
-                        PMove.Flamethrower, // TM
-                        PMove.Frustration, // TM
-                        PMove.HiddenPower, // TM
-                        PMove.IceBeam, // TM
-                        PMove.IcyWind, // Move Tutor
-                        PMove.IronDefense, // Move Tutor
-                        PMove.IronHead, // Egg Move / Move Tutor
-                        PMove.IronTail, // Move Tutor
-                        PMove.LowKick, // Move Tutor
-                        PMove.MegaPunch, // Gen 3 Move Tutor
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.Retaliate, // TM
-                        PMove.Return, // TM
-                        PMove.RockSlide, // TM
-                        PMove.RockSmash, // TM
-                        PMove.RockTomb, // TM
-                        PMove.Screech, // Egg Move
-                        PMove.StealthRock, // Move Tutor
-                        PMove.Strength, // HM
-                        PMove.Substitute, // TM
-                        PMove.SunnyDay, // TM
-                        PMove.SwordsDance, // TM
-                        PMove.ThunderPunch, // Move Tutor
-                        PMove.Toxic, // TM
+                        Tuple.Create(PMove.AerialAce, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.AncientPower, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // attract (gen 4 tm, gen 5 tm)
+                        // belly drum (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // blizzard (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD),
+                        Tuple.Create(PMove.BrickBreak, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Bulldoze, PMoveObtainMethod.TM_BWB2W2),
+                        // captivate (gen 4 tm)
+                        // chip away (gen 5 egg)
+                        // counter (frlg/e tutor)
+                        Tuple.Create(PMove.Detect, PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // dig (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // double edge (frlg/e/xd tutor)
+                        // double kick (gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // dynamicpunch (emerald tutor)
+                        Tuple.Create(PMove.EarthPower, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // earthquake (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // echoed voice (gen 5 tm)
+                        // endeavor (pt/hgss tutor, b2w2 tutor)
+                        // endure (emerald tutor, gen 4 tm, gen 5 egg)
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // false swipe (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.FireBlast, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.FirePunch, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Flamethrower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fling (gen 4 tm, gen 5 tm)
+                        // focus punch (gen 3 tm, gen 4 tm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fury cutter (pt/hgss tutor)
+                        Tuple.Create(PMove.Headbutt, PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // incinerate (gen 5 tm)
+                        Tuple.Create(PMove.IronDefense, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IronHead, PMoveObtainMethod.MoveTutor_B2W2 | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.IronTail, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // knock off (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.LowKick, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.MegaKick, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        Tuple.Create(PMove.MegaPunch, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        // perish song (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Retaliate, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockClimb, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS),
+                        Tuple.Create(PMove.RockSlide, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2 | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS),
+                        Tuple.Create(PMove.RockSmash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockTomb, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // round (gen 5 tm)
+                        // sandstorm (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Screech, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // secret power (gen 3 tm, gen 4 tm)
+                        // seismic toss (frlg/e/xd tutor)
+                        // skull bash (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        // smack down (gen 5 tm)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.StealthRock, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Strength, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // swagger (e/xd tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.SwordsDance, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2 | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS),
+                        // thief (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.ThunderPunch, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // uproar (pt/hgss tutor, b2w2 tutor)
                     }
                 }
             },
@@ -329,103 +338,113 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 14, // HGSS (Rock Tunnel)
                     ShinyLocked = false,
                     Weight = 45.0,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.Growl),
-                        Tuple.Create(1, PMove.BoneClub),
-                        Tuple.Create(1, PMove.Headbutt),
-                        Tuple.Create(1, PMove.TailWhip),
-                        Tuple.Create(13, PMove.Leer),
-                        Tuple.Create(17, PMove.FocusEnergy),
-                        // bonemerang 21
-                        // rage 23
-                        // false swipe 27
-                        // thrash 31 // 31 as Cubone, 33
-                        // fling 33 // 33 as Cubone, 37
-                        // bone rush 37 // 37 as Cubone, 43
-                        // endeavor 41 // 41 as Cubone, 49
-                        // double edge 43 // 43 as Cubone, 53
-                        Tuple.Create(47, PMove.Retaliate), // As Cubone
-                        Tuple.Create(59, PMove.Retaliate),
+                        Tuple.Create(PMove.BoneClub, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.BoneClub, 7, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.BoneClub, 9, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        // bonemerang (25 gen 3, 21 gen 4 & 5)
+                        // bone rush (53 gen 3, 43 gen 4 & 5)
+                        // double edge (61 gen 3, 53 gen 4 & 5)
+                        // endeavor (49 gen 4 & 5)
+                        // false swipe (39 gen 3, 27 gen 4 & 5)
+                        // fling (37 gen 4 & 5)
+                        Tuple.Create(PMove.FocusEnergy, 17, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.FocusEnergy, 21, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Growl, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Headbutt, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Headbutt, 11, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Headbutt, 13, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Leer, 13, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Leer, 17, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        // rage (32 gen 3, 23 gen 4 & 5)
+                        Tuple.Create(PMove.Retaliate, 59, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 3, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 5, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        // thrash (46 gen 3, 33 gen 4 & 5)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // blizzard
-                        // hyper beam
-                        // smack down
-                        // earthquake
-                        // dig
-                        // brick break
-                        // sandstorm
-                        // facade
-                        // rest
-                        // attract
-                        // thief
-                        // round
-                        // echoed voice
-                        // false swipe
-                        // fling
-                        // incinerate
-                        // giga impact
-                        // swagger
-                        // belly drum // egg
-                        // chip away
-                        // double kick
-                        // endure
-                        // perish song
-                        // skull bash
-                        // endeavor // tutor
-                        // knock off
-                        // outrage
-                        // sleep talk
-                        // snore
-                        // uproar
-                        // captivate // gen 4 tm
-                        // counter // gen 3 tutor
-                        // dynamic punch // gen 3 tutor
-                        // focus punch // gen 4 tm
-                        // fury cutter // gen 4 tutor
-                        // mega kick // gen 3 tutor
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        // seismic toss // gen 3 tutor
-                        PMove.AerialAce, // TM
-                        PMove.AncientPower, // Egg Move
-                        PMove.BodySlam, // Gen 3 Move Tutor
-                        PMove.Bulldoze, // TM
-                        PMove.Detect, // Egg Move
-                        PMove.DoubleTeam, // TM
-                        PMove.EarthPower, // TM
-                        PMove.FireBlast, // TM
-                        PMove.FirePunch, // Move Tutor
-                        PMove.Flamethrower, // TM
-                        PMove.FocusBlast, // TM
-                        PMove.Frustration, // TM
-                        PMove.HiddenPower, // TM
-                        PMove.IceBeam, // TM
-                        PMove.IcyWind, // Move Tutor
-                        PMove.IronDefense, // Move Tutor
-                        PMove.IronHead, // Egg Move / Move Tutor
-                        PMove.IronTail, // Move Tutor
-                        PMove.LowKick, // Move Tutor
-                        PMove.MegaPunch, // Gen 3 Move Tutor
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.Retaliate, // TM
-                        PMove.Return, // TM
-                        PMove.RockSlide, // TM
-                        PMove.RockSmash, // TM
-                        PMove.RockTomb, // TM
-                        PMove.Screech, // Egg Move
-                        PMove.StealthRock, // Move Tutor
-                        PMove.StoneEdge, // TM
-                        PMove.Strength, // HM
-                        PMove.Substitute, // TM
-                        PMove.SunnyDay, // TM
-                        PMove.SwordsDance, // TM
-                        PMove.ThunderPunch, // Move Tutor
-                        PMove.Toxic, // TM
+                        Tuple.Create(PMove.AerialAce, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.AncientPower, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // attract (gen 4 tm, gen 5 tm)
+                        // belly drum (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // blizzard (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD),
+                        Tuple.Create(PMove.BrickBreak, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Bulldoze, PMoveObtainMethod.TM_BWB2W2),
+                        // captivate (gen 4 tm)
+                        // chip away (gen 5 egg)
+                        // counter (frlg/e tutor)
+                        Tuple.Create(PMove.Detect, PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // dig (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // double edge (frlg/e/xd tutor)
+                        // double kick (gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // dynamicpunch (emerald tutor)
+                        Tuple.Create(PMove.EarthPower, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // earthquake (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // echoed voice (gen 5 tm)
+                        // endeavor (pt/hgss tutor, b2w2 tutor)
+                        // endure (emerald tutor, gen 4 tm, gen 5 egg)
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // false swipe (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.FireBlast, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.FirePunch, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Flamethrower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fling (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.FocusBlast, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // focus punch (gen 3 tm, gen 4 tm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fury cutter (pt/hgss tutor)
+                        // giga impact (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Headbutt, PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // incinerate (gen 5 tm)
+                        Tuple.Create(PMove.IronDefense, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IronHead, PMoveObtainMethod.MoveTutor_B2W2 | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.IronTail, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // knock off (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.LowKick, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.MegaKick, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        Tuple.Create(PMove.MegaPunch, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        // outrage (pt/hgss tutor, b2w2 tutor)
+                        // perish song (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Retaliate, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockClimb, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS),
+                        Tuple.Create(PMove.RockSlide, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2 | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS),
+                        Tuple.Create(PMove.RockSmash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockTomb, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // round (gen 5 tm)
+                        // sandstorm (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Screech, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // secret power (gen 3 tm, gen 4 tm)
+                        // seismic toss (frlg/e/xd tutor)
+                        // skull bash (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        // smack down (gen 5 tm)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.StealthRock, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.StoneEdge, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Strength, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // swagger (e/xd tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.SwordsDance, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2 | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS),
+                        // thief (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.ThunderPunch, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // uproar (pt/hgss tutor, b2w2 tutor)
                     }
                 }
             },
@@ -440,11 +459,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 10, // HGSS (Route 34, Route 35)
                     ShinyLocked = false,
                     Weight = 4.0,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.Transform),
+                        Tuple.Create(PMove.Transform, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
 
                     }
@@ -458,91 +477,113 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGender.M1F1,
                     Type1 = PType.Poison, Type2 = PType.Flying,
                     Abilities = new PAbility[] { PAbility.InnerFocus, PAbility.Infiltrator },
-                    MinLevel = 11, // Catch Golbat in DPPt (Oreburgh Gate level 10) and evolve it
+                    MinLevel = 11, // Evolve MinLevel Golbat (DPPt Oreburgh Gate level 10)
                     ShinyLocked = false,
                     Weight = 75.0,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.CrossPoison),
-                        Tuple.Create(1, PMove.Screech),
-                        // 1 leech life
-                        Tuple.Create(1, PMove.Supersonic),
-                        Tuple.Create(1, PMove.Astonish),
-                        Tuple.Create(12, PMove.Bite), // 13 bw
-                        Tuple.Create(15, PMove.WingAttack),  // 17 bw
-                        Tuple.Create(19, PMove.ConfuseRay), // 21 bw
-                        Tuple.Create(24, PMove.Swift),
-                        Tuple.Create(27, PMove.AirCutter), // BW
-                        Tuple.Create(28, PMove.AirCutter), // B2W2
-                        // acrobatics (33 b2, 39 bw)
-                        // mean look (33 bw, 38 b2)
-                        Tuple.Create(42, PMove.PoisonFang), // 45 bw
-                        // haze (47 b2, 51 bw)
-                        Tuple.Create(52, PMove.AirSlash), // 57 bw
+                        // acrobatics (bw 39, b2w2 33)
+                        Tuple.Create(PMove.AirCutter, 27, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.AirCutter, 28, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.AirCutter, 35, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.AirSlash, 51, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.AirSlash, 52, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.AirSlash, 57, PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.Astonish, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Astonish, 6, PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Astonish, 8, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Astonish, 9, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.Astonish, 11, PMoveObtainMethod.LevelUp_RSE),
+                        Tuple.Create(PMove.Bite, 12, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Bite, 13, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.Bite, 16, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.ConfuseRay, 19, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ConfuseRay, 21, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.ConfuseRay, 28, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.CrossPoison, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // haze (56 gen 3, 45 gen 4, 51 bw, 47 b2w2)
+                        // leech life (1 gen 3 & 4 & 5)
+                        // mean look (42 gen 3, 33 gen 4, 33 bw, 38 b2w2)
+                        Tuple.Create(PMove.PoisonFang, 39, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.PoisonFang, 42, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.PoisonFang, 45, PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.PoisonFang, 49, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Screech, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Supersonic, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Supersonic, 4, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Supersonic, 5, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.Supersonic, 6, PMoveObtainMethod.LevelUp_RSE),
+                        Tuple.Create(PMove.Supersonic, 11, PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Swift, 24, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.WingAttack, 15, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.WingAttack, 17, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.WingAttack, 21, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // fly // hm
-                        // venoshock // tm
-                        // taunt
-                        // hyper beam
-                        // torment
-                        // facade
-                        // rest
-                        // attract
-                        // thief
-                        // round
-                        // acrobatics
-                        // payback
-                        // giga impact
-                        // swagger
-                        // pluck
-                        // u-turn
-                        // brave bird // egg
-                        // defog
-                        // giga drain
-                        // gust
-                        // pursuit
-                        // whirlwind
-                        // giga drain // tutor
-                        // roost
-                        // sky attack
-                        // sleep talk
-                        // snatch
-                        // snore
-                        // super fang
-                        // tailwind
-                        // uproar
-                        // captivate // gen 4 tm
-                        // double edge // gen 3 tutor
-                        // endure // gen 4 tm
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        // twister // gen 4 tutor
-                        PMove.AerialAce, // TM
-                        PMove.Curse, // Egg Move
-                        PMove.DarkPulse, // Move Tutor
-                        PMove.DoubleTeam, // TM
-                        PMove.FaintAttack, // Egg Move
-                        PMove.Frustration, // TM
-                        PMove.HeatWave, // Move Tutor
-                        PMove.HiddenPower, // TM
-                        PMove.Hypnosis, // Egg Move
-                        PMove.NastyPlot, // Egg Move
-                        PMove.OminousWind, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.QuickAttack, // Egg Move
-                        PMove.RainDance, // TM
-                        PMove.Return, // TM
-                        PMove.ShadowBall, // TM
-                        PMove.SludgeBomb, // TM
-                        PMove.SteelWing, // Egg Move
-                        PMove.Substitute, // TM
-                        PMove.SunnyDay, // TM
-                        PMove.Toxic, // TM
-                        PMove.XScissor, // TM
-                        PMove.ZenHeadbutt, // Egg Move / Move Tutor
+                        // acrobatics (gen 5 tm)
+                        Tuple.Create(PMove.AerialAce, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.AirCutter, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // attract (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // brave bird (gen 4 egg, gen 5 egg)
+                        // captivate (gen 4 tm)
+                        Tuple.Create(PMove.Curse, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.DarkPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // defog (dppt hm, gen 5 egg)
+                        // double edge (frlg/e/xd tutor)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // endure (emerald tutor, gen 4 tm)
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.FaintAttack, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // fly (gen 3 hm, gen 4 hm, gen 5 hm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // giga drain (gen 3 tm, gen 4 tm, gen 5 egg, b2w2 tutor)
+                        // giga impact (gen 4 tm, gen 5 tm)
+                        // gust (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.HeatWave, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Hypnosis, PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.NastyPlot, PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // natural gift (gen 4 tm)
+                        Tuple.Create(PMove.OminousWind, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // payback (gen 4 tm, gen 5 tm)
+                        // pluck (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // pursuit (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.QuickAttack, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // roost (gen 4 tm, gen 4 egg, b2w2 tutor)
+                        // round (gen 5 tm)
+                        // safeguard (gen 3 tm)
+                        // secret power (gen 3 tm, gen 4 tm)
+                        Tuple.Create(PMove.ShadowBall, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // sky attack (hgss tutor, b2w2 tutor)
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        Tuple.Create(PMove.SludgeBomb, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // snatch (gen 3 tm, gen 4 tm, b2w2 tutor)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.SteelWing, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // super fang (hgss tutor, b2w2 tutor)
+                        // swagger (e/xd tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // tailwind (hgss tutor, b2w2 tutor)
+                        // taunt (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // thief (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // torment (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // twister (pt/hgss tutor)
+                        // uproar (pt/hgss tutor, b2w2 tutor)
+                        // u-turn (gen 4 tm, gen 5 tm)
+                        // venoshock (gen 5 tm)
+                        // whirlwind (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.XScissor, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2 | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2)
                     }
                 }
             },
@@ -557,76 +598,83 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
                     Weight = 2.0,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.ThunderShock),
-                        Tuple.Create(1, PMove.Charm),
-                        Tuple.Create(5, PMove.TailWhip),
-                        // follow me 5 // Gen 3 event (PokéPark Egg Pichu)
-                        Tuple.Create(5, PMove.TeeterDance), // Gen 3 Event (Teeter Dance Pichu, Pokémon Stamp Ruby and Sapphire Contest Pichu)
-                        // thunder wave 8 // Gen 3 8, Gen 4 / Gen 5 10
-                        Tuple.Create(11, PMove.SweetKiss), // Gen 3
-                        Tuple.Create(13, PMove.SweetKiss), // Gen 4 / 5
-                        // nasty plot 18                        
-                        // endeavor 30 // gen 4 event (Shokotan Pikachu-colored Pichu, Mikena Pichu, GameStop Pichu)
+                        Tuple.Create(PMove.Charm, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.NastyPlot, 18, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.SweetKiss, 11, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.SweetKiss, 13, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 5, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 6, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.ThunderShock, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ThunderWave, 8, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.ThunderWave, 10, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // facade
-                        // rest
-                        // attract
-                        // round
-                        // echoed voice
-                        // fling
-                        // volt switch
-                        // thunder wave
-                        // swagger
-                        // wild charge
-                        // volt tackle // egg
-                        // bestow
-                        // bide
-                        // charge
-                        // double slap
-                        // encore
-                        // endure
-                        // fake out
-                        // flail
-                        // lucky chant
-                        // present
-                        // reversal
-                        // wish
-                        // captivate // gen 4 tm
-                        // counter // gen 3 tutor
-                        // defense curl // gen 3 tutor
-                        // double edge // gen 3 tutor
-                        // mega kick // gen 3 tutor
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // rollout // gen 4 tutor
-                        // secret power // gen 4 tm
-                        // seismic toss // gen 3 tutor
-                        PMove.BodySlam, // Gen 3 Move Tutor
-                        PMove.ChargeBeam, // TM
-                        PMove.DoubleTeam, // TM
-                        PMove.Flash, // TM
-                        PMove.Frustration, // TM
-                        PMove.GrassKnot, // TM
-                        PMove.Headbutt, // Gen 4 Move Tutor
-                        PMove.HiddenPower, // TM
-                        PMove.LightScreen, // TM
-                        PMove.MegaPunch, // Gen 3 Move Tutor
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.RainDance, // TM
-                        PMove.Return, // TM
-                        PMove.ShockWave, // Gen 4 TM
-                        PMove.Substitute, // TM
-                        PMove.Swift, // Gen 4 Move Tutor
-                        PMove.Tickle, // Egg Move
-                        PMove.Thunder, //TM
-                        PMove.Thunderbolt, // TM
-                        PMove.ThunderPunch, // Egg Move
-                        PMove.Toxic, // TM
+                        // attract (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // bestow (gen 5 egg)
+                        // bide (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD),
+                        // captivate (gen 4 tm)
+                        // charge (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // counter (frlg/e tutor)
+                        // covet (b2w2 tutor)
+                        // defense curl (emerald tutor)
+                        // double edge (frlg/e/xd tutor)
+                        // double slap (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // echoed voice (gen 5 tm)
+                        // encore (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // endure (emerald tutor, gen 4 tm, gen 5 egg)
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // fake out (gen 4 egg, gen 5 egg)
+                        // flail (hgss egg, gen 5 egg)
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fling (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.GrassKnot, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Headbutt, PMoveObtainMethod.MoveTutor_HGSS),
+                        // helping hand (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IronTail, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // lucky chant (gen 5 egg)
+                        // magnet rise (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.MegaKick, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        Tuple.Create(PMove.MegaPunch, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        // present (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // reversal (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // rollout (emerald tutor, pt/hgss tutor)
+                        // round (gen 5 tm)
+                        // secret power (gen 3 tm, gen 4 tm)
+                        // seismic toss (frlg/e/xd tutor)
+                        Tuple.Create(PMove.ShockWave, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.SignalBeam, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // swagger (e/xd tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ThunderPunch, PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Tickle, PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // uproar (pt/hgss tutor, b2w2 tutor)
+                        // volt switch (gen 5 tm)
+                        // volt tackle (emerald egg, gen 4 egg, gen 5 egg)
+                        // wild charge (gen 5 tm)
+                        // wish (gen 3 egg, gen 4 egg, gen 5 egg)
                     }
                 }
             },
@@ -641,110 +689,117 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 5, // B2W2 (Route 20, Flocessy Ranch, Relic Passage)
                     ShinyLocked = false,
                     Weight = 28.5,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        // tackle 1
-                        Tuple.Create(1, PMove.Bubble),
-                        Tuple.Create(1, PMove.TailWhip),
-                        Tuple.Create(1, PMove.WaterGun),
-                        // water sport 1 // B2W2 Level 1 & 5
-                        // defense curl 1 // Gen 3 1 & 3, Gen 4 / BW 1 & 2, B2W2 10
-                        Tuple.Create(2, PMove.Charm), // Gen 4 / BW as Azurill
-                        Tuple.Create(10, PMove.Charm), // B2W2 as Azurill
-                        // rollout 10 // Gen 3 / Gen 4 / BW 15, B2W2 10
-                        Tuple.Create(13, PMove.BubbleBeam),
-                        // helping hand 16 // B2W2 16
-                        Tuple.Create(21, PMove.AquaTail),
-                        // double edge 25 // Gen 3 34, Gen 4 / BW 33, B2W2 25
-                        // aqua ring 23 // Gen 3 / Gen 4 23 as Marill, B2W2 31
-                        // superpower 42 // B2W2 42
-                        Tuple.Create(32, PMove.RainDance), // Gen 3 / Gen 4 as Marill
-                        Tuple.Create(35, PMove.RainDance), // B2W2
-                        Tuple.Create(42, PMove.HydroPump), // Gen 4 as Marill
-                        Tuple.Create(46, PMove.HydroPump), // B2W2
-                        // splash 1 // As Azurill
+                        // aqua ring (27 gen 4 & bw, 31 b2w2)
+                        Tuple.Create(PMove.AquaTail, 21, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.AquaTail, 47, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.Bubble, 1, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.BubbleBeam, 13, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.BubbleBeam, 20, PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.BubbleBeam, 24, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        // defense curl (1 & 3 gen 3, 1 & 2 gen 4, 1 & 2 bw, 10 b2w2)
+                        // double edge (34 gen 3, 33 gen 4 & bw, 25 b2w2)
+                        // helping hand (16 b2w2)
+                        Tuple.Create(PMove.HydroPump, 46, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.HydroPump, 54, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.HydroPump, 57, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.RainDance, 35, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.RainDance, 40, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.RainDance, 45, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        // rollout (15 gen 3 & gen 4 & bw, 10 b2w2)
+                        // superpower (42 b2w2)
+                        Tuple.Create(PMove.Tackle, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 2, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TailWhip, 6, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.TailWhip, 7, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.WaterGun, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.WaterGun, 7, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.WaterGun, 10, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        // water sport (1 & 5 b2w2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // hail
-                        // blizzard
-                        // hyper beam
-                        // dig
-                        // brick break
-                        // facade
-                        // reset
-                        // attract
-                        // round
-                        // fling
-                        // giga impact
-                        // swagger
-                        // belly drum // egg move
-                        // encore
-                        // future sight
-                        // perish song
-                        // present
-                        // refresh
-                        // soak
-                        // superpower
-                        // water sport
-                        // bounce // tutor
-                        // covet
-                        // helping hand
-                        // knock off
-                        // sleep talk
-                        // snore
-                        // superpower
-                        // captivate // gen 4 tm
-                        // dynamic punch // gen 3 tutor
-                        // endure // gen 4 tm
-                        // focus punch // gen 4 tm
-                        // mega kick // gen 3 tutor
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        // seismic toss // gen 3 tutor
-                        // whirlpool // gen 4 HM
-                        // bounce // move tutor as azurill / marill
-                        // uproar // move tutor as azurill
-                        PMove.Amnesia, // Egg Move
-                        PMove.AquaJet, // Egg Move
-                        PMove.AquaTail, // Move Tutor
-                        PMove.BodySlam, // Egg Move
-                        PMove.Bulldoze, // TM
-                        PMove.Dive, // HM
-                        PMove.DoubleTeam, // TM
-                        PMove.FakeTears, // Move Tutor
-                        PMove.FocusBlast, // TM
-                        PMove.Frustration, // TM
-                        PMove.GrassKnot, // TM
-                        PMove.Headbutt, // Gen 4 Move Tutor
-                        PMove.HiddenPower, // TM
-                        PMove.HyperVoice, // Move Tutor
-                        PMove.IceBeam, // TM
-                        PMove.IcePunch, // Move Tutor
-                        PMove.IcyWind, // Move Tutor
-                        PMove.IronTail, // Move Tutor
-                        PMove.LightScreen, // TM
-                        PMove.MegaPunch, // Gen 3 Move Tutor
-                        PMove.MuddyWater, // Egg Move
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.RainDance, // TM
-                        PMove.Return, // TM
-                        PMove.RockSmash, // TM
-                        PMove.Scald, // TM
-                        PMove.Sing, // Egg Move
-                        PMove.Slam, // Egg Move
-                        PMove.Strength, // HM
-                        PMove.Substitute, // TM
-                        PMove.Supersonic, // Egg Move
-                        PMove.Surf, // HM
-                        PMove.Swift, // Gen 4 Move Tutor
-                        PMove.Tickle, // Egg Move
-                        PMove.Toxic, // TM
-                        PMove.Waterfall, // HM
-                        PMove.WaterPulse, // Gen 4 TM
-                        PMove.Workup, // TM
+                        Tuple.Create(PMove.Amnesia, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.AquaJet, PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.AquaTail, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // attract (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // belly drum (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // blizzard (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // bounce (b2w2 tutor)
+                        Tuple.Create(PMove.BrickBreak, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Bulldoze, PMoveObtainMethod.TM_BWB2W2),
+                        // captivate (gen 4 tm)
+                        // covet (b2w2 tutor)
+                        // defense curl (emerald tutor)
+                        // dig (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Dive, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // double edge (frlg/e/xd tutor)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // dynamicpunch (emerald tutor)
+                        // encore (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // endure (emerald tutor, gen 4 tm)
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.FakeTears, PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // fling (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.FocusBlast, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // focus punch (gen 3 tm, gen 4 tm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // future sight (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // giga impact (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.GrassKnot, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // hail (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Headbutt, PMoveObtainMethod.MoveTutor_HGSS),
+                        // helping hand (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.HyperVoice, PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcePunch, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IronTail, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // knock off (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_BWB2W2 | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS),
+                        Tuple.Create(PMove.MegaKick, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        Tuple.Create(PMove.MegaPunch, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E),
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.MuddyWater, PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        // perish song (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // present (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // refresh (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockSmash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rollout (emerald tutor, pt/hgss tutor)
+                        // round (gen 5 tm)
+                        Tuple.Create(PMove.Scald, PMoveObtainMethod.TM_BWB2W2),
+                        // secret power (gen 3 tm, gen 4 tm)
+                        // seismic toss (frlg/e tutor)
+                        Tuple.Create(PMove.Sing, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Slam, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        // soak (gen 5 egg)
+                        Tuple.Create(PMove.Strength, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2 | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS),
+                        // superpower (gen 4 egg, pt/hgss tutor, gen 5 egg, b2w2 tutor)
+                        Tuple.Create(PMove.Supersonic, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Surf, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // swagger (e/xd tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.Tickle, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Waterfall, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.WaterPulse, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        // water sport (gen 5 egg)
+                        // whirlpool (hgss hm)
+                        Tuple.Create(PMove.Workup, PMoveObtainMethod.TM_BWB2W2)
                     }
                 }
             },
@@ -759,11 +814,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 5, // HGSS (Ruins of Alph)
                     ShinyLocked = false,
                     Weight = 5.0,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.HiddenPower),
+                        Tuple.Create(PMove.HiddenPower, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
 
                     }
@@ -780,125 +835,134 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
                     Weight = 47.0,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.Scratch),
-                        // 1 feint
-                        Tuple.Create(4, PMove.Leer),
-                        // 5 wish (gen 3 event [Wish Absol])
-                        Tuple.Create(9, PMove.QuickAttack),
-                        // 10 superpower (dream world)
-                        Tuple.Create(10, PMove.Megahorn), // Dream World
-                        // pursuit (12 b2w2)
-                        // taunt (9 bw, 17 b2w2)
-                        Tuple.Create(20, PMove.Bite),
-                        Tuple.Create(25, PMove.DoubleTeam),
-                        Tuple.Create(28, PMove.Slash),
-                        Tuple.Create(25, PMove.SwordsDance), // BW
-                        Tuple.Create(33, PMove.SwordsDance), // B2W2
-                        // 36 future sight
-                        Tuple.Create(41, PMove.NightSlash),
-                        Tuple.Create(44, PMove.Detect),
-                        Tuple.Create(49, PMove.PsychoCut),
-                        // sucker punch (44 bw, 52 bw2)
-                        // razor wind (17 bw, 57 bw2)
-                        // me first (57 bw, 60 bw2)
-                        // perish song (46 gen 3, 65 gen 4/5)
+                        Tuple.Create(PMove.Bite, 20, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Bite, 21, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Bite, 28, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.Detect, 44, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Detect, 49, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.DoubleTeam, 25, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.DoubleTeam, 31, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.DoubleTeam, 33, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        // feint (1 dppt/hgss/gen5)
+                        // future sight (41 gen 3 & 4, 41 bw, 36 b2w2)
+                        Tuple.Create(PMove.Leer, 4, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Leer, 5, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        // me first (52 gen 4, 57 bw, 60 b2w2)
+                        Tuple.Create(PMove.NightSlash, 41, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.NightSlash, 52, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        // perish song (46 gen 3, 65 gen 4 & 5)
+                        Tuple.Create(PMove.PsychoCut, 49, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.PsychoCut, 60, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        // pursuit (20 gen 4, 20 bw, 12 b2w2)
+                        Tuple.Create(PMove.QuickAttack, 9, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.QuickAttack, 12, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.QuickAttack, 13, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        // razor wind (17 gen 3 & 4, 17 bw, 57 b2w2)
+                        Tuple.Create(PMove.Scratch, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Slash, 28, PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Slash, 36, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        // sucker punch (44 gen 4, 44 bw, 52 b2w2)
+                        Tuple.Create(PMove.SwordsDance, 25, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PMove.SwordsDance, 26, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.SwordsDance, 33, PMoveObtainMethod.LevelUp_B2W2),
+                        // taunt (9 gen 3 & 4, 9 bw, 17 b2w2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // hail // tm
-                        // taunt
-                        // blizzard
-                        // hyper beam
-                        // sandstorm
-                        // torment
-                        // facade
-                        // rest
-                        // attract
-                        // thief
-                        // round
-                        // echoed voice
-                        // false swipe
-                        // incinerate
-                        // payback
-                        // giga impact
-                        // psych up
-                        // dream eater
-                        // swagger
-                        // assurance // egg move
-                        // baton pass
-                        // curse
-                        // double edge
-                        // hex
-                        // magic coat
-                        // me first
-                        // mean look
-                        // perish song
-                        // punishment
-                        // sucker punch
-                        // bounce // move tutor
-                        // foul play
-                        // knock off
-                        // magic coat
-                        // role play
-                        // sleep talk
-                        // snatch
-                        // snore
-                        // spite
-                        // superpower
-                        // captivate // gen 4 tm
-                        // counter // gen 3 tutor
-                        // endure // gen 4 tm
-                        // fury cutter // gen 4 tutor
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        PMove.AerialAce, // TM
-                        PMove.BodySlam, // Gen 3 Move Tutor
-                        PMove.CalmMind, // TM
-                        PMove.ChargeBeam, // TM
-                        PMove.Cut, // HM
-                        PMove.DarkPulse, // Move Tutor
-                        PMove.DoubleTeam, // TM
-                        PMove.FaintAttack, // Egg Move
-                        PMove.FireBlast, // TM
-                        PMove.Flamethrower, // TM
-                        PMove.Flash, // TM
-                        PMove.Frustration, // TM
-                        PMove.Headbutt, // Gen 4 Move Tutor
-                        PMove.HiddenPower, // TM
-                        PMove.HoneClaws, // TM
-                        PMove.IceBeam, // TM
-                        PMove.IcyWind, // Move Tutor
-                        PMove.IronTail, // Move Tutor
-                        PMove.Megahorn, // Egg Move
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.RainDance, // TM
-                        PMove.Retaliate, // TM
-                        PMove.Return, // TM
-                        PMove.RockSlide, // TM
-                        PMove.RockSmash, // TM
-                        PMove.RockTomb, // TM
-                        PMove.ShadowBall, // TM
-                        PMove.ShadowClaw, // TM
-                        PMove.ShockWave, // Gen 4 TM
-                        PMove.Snarl, // TM
-                        PMove.StoneEdge, // TM
-                        PMove.Strength, // HM
-                        PMove.Substitute, // TM
-                        PMove.SunnyDay, // TM
-                        PMove.Swift, // Gen 4 Move Tutor
-                        PMove.SwordsDance, // TM
-                        PMove.Thunder, // TM
-                        PMove.Thunderbolt, // TM
-                        PMove.ThunderWave, // TM
-                        PMove.Toxic, // TM
-                        PMove.WaterPulse, // Gen 4 TM
-                        PMove.WillOWisp, // TM
-                        PMove.XScissor, // TM
-                        PMove.ZenHeadbutt, // Egg Move / Move Tutor
+                        Tuple.Create(PMove.AerialAce, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // assurance (gen 4 egg, gen 5 egg)
+                        // attract (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // baton pass (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // blizzard (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD),
+                        // bounce (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.CalmMind, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // captivate (gen 4 tm)
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // counter (frlg/e tutor)
+                        Tuple.Create(PMove.Curse, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Cut, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.DarkPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // double edge (gen 3 egg, frlg/e/xd tutor, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // dream eater (frlg/e/xd tutor, gen 4 tm, gen 5 tm)
+                        // echoed voice (gen 5 tm)
+                        // endure (emerald tutor, gen 4 tm)
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.FaintAttack, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // false swipe (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.FireBlast, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Flamethrower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // foul play (b2w2 tutor)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fury cutter (emerald tutor, pt/hgss tutor)
+                        // giga impact (gen 4 tm, gen 5 tm)
+                        // hail (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Headbutt, PMoveObtainMethod.MoveTutor_HGSS),
+                        // hex (gen 5 egg)
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.HoneClaws, PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // incinerate (gen 5 tm)
+                        Tuple.Create(PMove.IronTail, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // knock off (pt/hgss tutor, b2w2 tutor)
+                        // magic coat (gen 3 egg, gen 4 egg, hgss tutor, gen 5 egg, b2w2 tutor)
+                        // mean look (gen 4 egg, gen 5 egg)
+                        // me first (gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.Megahorn, PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        // nightmare (xd tutor)
+                        // payback (gen 4 tm, gen 5 tm)
+                        // perish song (gen 5 egg)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // psych up (emerald tutor, gen 4 tm, gen 5 tm)
+                        // punishment (gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Retaliate, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockSlide, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockSmash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockTomb, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // role play (hgss tutor, b2w2 tutor)
+                        // round (gen 5 tm)
+                        // sandstorm (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // secret power (gen 3 tm, gen 4 tm)
+                        Tuple.Create(PMove.ShadowBall, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShadowClaw, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShockWave, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        Tuple.Create(PMove.Snarl, PMoveObtainMethod.TM_BWB2W2),
+                        // snatch (gen 3 tm, gen 4 tm, b2w2 tutor)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        // spite (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.StoneEdge, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Strength, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2 | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS),
+                        // sucker punch (gen 4 egg, pt/hgss tutor, gen 5 egg)
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // superpower (pt/hgss tutor, b2w2 tutor)
+                        // swagger (emerald/xd tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.SwordsDance, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // taunt (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // thief (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // torment (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.WaterPulse, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.WillOWisp, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.XScissor, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2 | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2)
                     }
                 }
             },
@@ -913,58 +977,56 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
                     Weight = 52.5,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        // clamp 1
-                        Tuple.Create(1, PMove.IronDefense),
-                        Tuple.Create(1, PMove.WaterGun),
-                        // whirlpool 1
-                        // 10 captivate (dream world)
-                        // 10 aqua ring (dream world)
-                        Tuple.Create(51, PMove.ShellSmash),
+                        // clamp (1 gen 3 & 4 & 5)
+                        Tuple.Create(PMove.IronDefense, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ShellSmash, 51, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.WaterGun, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // whirlpool (1 gen 3 & 4 & 5)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // hail
-                        // blizzard
-                        // facade
-                        // rest
-                        // attract
-                        // round
-                        // swagger
-                        // aqua ring // egg move
-                        // brine
-                        // endure
-                        // mud sport
-                        // refresh
-                        // sleep talk // tutor
-                        // snore
-                        // captivate // gen 4 tm
-                        // double edge // gen 3 tutor
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        PMove.Barrier, // Egg Move
-                        PMove.BodySlam, // Egg Move
-                        PMove.ConfuseRay, // Egg Move
-                        PMove.Dive, // HM
-                        PMove.DoubleTeam, // TM
-                        PMove.Frustration, // TM
-                        PMove.HiddenPower, // TM
-                        PMove.IceBeam, // TM
-                        PMove.IcyWind, // Move Tutor
-                        PMove.IronDefense, // Move Tutor
-                        PMove.MuddyWater, // Egg Move
-                        PMove.Protect, // TM
-                        PMove.RainDance, // TM
-                        PMove.Return, // TM
-                        PMove.Scald, // TM
-                        PMove.Substitute, // TM
-                        PMove.Supersonic, // Egg Move
-                        PMove.Surf, // HM
-                        PMove.Toxic, // TM
-                        PMove.Waterfall, // HM
-                        PMove.WaterPulse, // Egg Move
+                        // aqua ring (gen 4 egg, gen 5 egg)
+                        // attract (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Barrier, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // blizzard (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // brine (gen 4 tm, gen 5 egg)
+                        // captivate (gen 4 tm)
+                        Tuple.Create(PMove.ConfuseRay, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Dive, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // double edge (frlg/e/xd tutor)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // endure (emerald tutor, gen 4 tm, gen 5 egg)
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // hail (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IronDefense, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.MuddyWater, PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // mud sport (gen 3 egg, gen 4 egg, gen 5 egg)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // refresh (gen 3 egg, gen 4 egg, gen 5 egg)
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // round (gen 5 tm)
+                        Tuple.Create(PMove.Scald, PMoveObtainMethod.TM_BWB2W2),
+                        // secret power (gen 3 tm, gen 4 tm)
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Supersonic, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Surf, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // swagger (e/xd tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Waterfall, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.WaterPulse, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.EggMove_BWB2W2),
+                        // whirlpool (hgss hm)
                     }
                 }
             },
@@ -979,114 +1041,115 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 35, // HG (Roaming)
                     ShinyLocked = false,
                     Weight = 40.0,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        // psywave 1
-                        // wish 5
-                        // helping hand 10
-                        // safeguard 15
-                        Tuple.Create(20, PMove.DragonBreath),
-                        // water sport 25
-                        // refresh 30
-                        // mist ball 35
-                        Tuple.Create(40, PMove.Psychic), // Gen 3
-                        Tuple.Create(40, PMove.ZenHeadbutt),
-                        // recover 45
-                        // psycho shift 50
-                        Tuple.Create(50, PMove.Charm), // Gen 3
-                        Tuple.Create(55, PMove.Charm), // Gen 4-5
-                        Tuple.Create(60, PMove.Psychic), // Gen 5
-                        // healing wish 60 // Gen 4 60, Gen 5 85
-                        // heal pulse 65
-                        Tuple.Create(70, PMove.DragonPulse), // Gen 4
-                        // reflect type 70
-                        // guard split 75
-                        Tuple.Create(80, PMove.DragonPulse), // Gen 5
+                        Tuple.Create(PMove.Charm, 50, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Charm, 55, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.DragonBreath, 20, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.DragonPulse, 70, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.DragonPulse, 80, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // guard split (75 gen 5)
+                        // healing wish (60 gen 4, 85 gen 5)
+                        // heal pulse (65 gen 5)
+                        // helping hand (10 gen 3 & 4 & 5)
+                        Tuple.Create(PMove.MistBall, 35, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Psychic, 40, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Psychic, 60, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Psychic, 65, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        // psycho shift (50 gen 4 & 5)
+                        // psywave (1 gen 3 & 4 & 5)
+                        // recover (45 gen 3 & 4 & 5)
+                        // reflect type (70 gen 5)
+                        // refresh (30 gen 3 & 4 & 5)
+                        // safeguard (15 gen 3 & 4 & 5)
+                        // water sport (25 gen 3 & 4 & 5)
+                        // wish (5 gen 3 & 4 & 5)
+                        Tuple.Create(PMove.ZenHeadbutt, 40, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // fly
-                        // psyshock
-                        // roar
-                        // hyper beam
-                        // telekinesis
-                        // safeguard
-                        // solar beam
-                        // earthquake
-                        // sandstorm
-                        // facade
-                        // rest
-                        // attract
-                        // round
-                        // giga impact
-                        // thunder wave
-                        // psych up
-                        // dream eater
-                        // swagger
-                        // covet // tutor
-                        // helping hand // tutor
-                        // last resort // tutor
-                        // magic coat // tutor
-                        // magic room
-                        // outrage
-                        // role play
-                        // roost
-                        // sleep talk
-                        // snore
-                        // tailwind
-                        // trick
-                        // captivate // gen 4 tm
-                        // defog // gen 4 hm
-                        // double edge // gen 3 tutor
-                        // endure // gen 4 tm
-                        // fury cutter // gen 4 tutor
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        // sucker punch // gen 4 tutor
-                        // twister // gen 4 tutor
-                        // whirlpool // gen 4 hm
-                        PMove.AerialAce, // TM
-                        PMove.BodySlam, // Gen 3 Move Tutor
-                        PMove.Bulldoze, // TM
-                        PMove.CalmMind, // TM
-                        PMove.ChargeBeam, // TM
-                        PMove.Cut, // HM
-                        PMove.Dive, // HM
-                        PMove.DracoMeteor, // Move Tutor
-                        PMove.DragonClaw, // TM
-                        PMove.DragonPulse, // Move Tutor
-                        PMove.DoubleTeam, // TM
-                        PMove.EnergyBall, // TM
-                        PMove.Flash, // TM
-                        PMove.Frustration, // TM
-                        PMove.GrassKnot, // TM
-                        PMove.HiddenPower, // TM
-                        PMove.HoneClaws, // TM
-                        PMove.IceBeam, // TM
-                        PMove.IcyWind, // Move Tutor
-                        PMove.LightScreen, // TM
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.Psychic, // TM
-                        PMove.RainDance, // TM
-                        PMove.Reflect, // TM
-                        PMove.Retaliate, // TM
-                        PMove.Return, // TM
-                        PMove.ShadowBall, // TM
-                        PMove.ShadowClaw, // TM
-                        PMove.ShockWave, // Gen 4 TM
-                        PMove.SteelWing, // TM
-                        PMove.Substitute, // TM
-                        PMove.SunnyDay, // TM
-                        PMove.Surf, // HM
-                        PMove.Swift, // Gen 4 Move Tutor
-                        PMove.Thunder, // TM
-                        PMove.Thunderbolt, // TM
-                        PMove.Toxic, // TM
-                        PMove.Waterfall, // HM
-                        PMove.WaterPulse, // Gen 4 TM
-                        PMove.ZenHeadbutt, // Move Tutor
+                        Tuple.Create(PMove.AerialAce, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // attract (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD),
+                        Tuple.Create(PMove.Bulldoze, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.CalmMind, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // captivate (gen 4 tm)
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // covet (b2w2 tutor)
+                        Tuple.Create(PMove.Cut, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // defog (dppt hm)
+                        Tuple.Create(PMove.Dive, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // double edge (frlg/e/xd tutor)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DracoMeteor, PMoveObtainMethod.MoveTutor_DP | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_BW | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.DragonClaw, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DragonPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // dream eater (frlg/e/xd tutor, gen 4 tm, gen 5 tm)
+                        // earthquake (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // endure (emerald tutor, gen 4 tm)
+                        Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fly (gen 3 hm, gen 4 hm, gen 5 hm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fury cutter (emerald tutor, pt/hgss tutor)
+                        // giga impact (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.GrassKnot, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // helping hand (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.HoneClaws, PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // last resort (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // magic coat (hgss tutor, b2w2 tutor)
+                        // magic room (b2w2 tutor)
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        // outrage (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // psych up (emerald tutor, gen 4 tm, gen 5 tm)
+                        // psyshock (gen 5 tm)
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Reflect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Retaliate, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // roar (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // role play (hgss tutor, b2w2 tutor)
+                        // roost (gen 4 tm, b2w2 tutor)
+                        // round (gen 5 tm)
+                        // safeguard (gen 4 tm, gen 5 tm)
+                        // sandstorm (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // secret power (gen 3 tm, gen 4 tm)
+                        Tuple.Create(PMove.ShadowBall, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShadowClaw, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShockWave, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        // solarbeam (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.SteelWing, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // sucker punch (pt/hgss tutor)
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Surf, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // swagger (e/xd tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // tailwind (hgss tutor, b2w2 tutor)
+                        // telekinesis (gen 5 tm)
+                        Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // trick (pt/hgss tutor, b2w2 tutor)
+                        // twister (pt/hgss tutor)
+                        Tuple.Create(PMove.Waterfall, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.WaterPulse, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        // whirlpool (hgss hm)
+                        Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2)
                     }
                 }
             },
@@ -1101,111 +1164,112 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 35, // SS (Roaming)
                     ShinyLocked = false,
                     Weight = 60.0,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        // psywave 1
-                        // heal block 5
-                        // helping hand 10
-                        // safeguard 15
-                        Tuple.Create(20, PMove.DragonBreath),
-                        Tuple.Create(25, PMove.Protect),
-                        // refresh 30
-                        Tuple.Create(35, PMove.LusterPurge),
-                        // telekinesis 70
-                        // power split 75
-                        // memento 5 // Gen 3 5, Gen 4 60, Gen 5 85
-                        Tuple.Create(40, PMove.Psychic), // Gen 3
-                        Tuple.Create(40, PMove.ZenHeadbutt),
-                        // recover 45
-                        // psycho shift 50
-                        Tuple.Create(50, PMove.DragonDance), // Gen 3
-                        Tuple.Create(55, PMove.DragonDance), // Gen 4 / Gen 5
-                        Tuple.Create(60, PMove.Psychic), // Gen 5
-                        // heal pulse 65
-                        Tuple.Create(70, PMove.DragonPulse), // Gen 4
-                        Tuple.Create(80, PMove.DragonPulse), // Gen 5
+                        Tuple.Create(PMove.DragonBreath, 20, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.DragonDance, 50, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.DragonDance, 55, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.DragonPulse, 70, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.DragonPulse, 80, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // heal block (5 gen 4 & 5)
+                        // heal pulse (65 gen 5)
+                        // helping hand (10 gen 3 & 4 & 5)
+                        Tuple.Create(PMove.LusterPurge, 35, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // memento (5 gen 3, 60 gen 4, 85 gen 3)
+                        // power split (75 gen 5)
+                        Tuple.Create(PMove.Protect, 25, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Psychic, 40, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
+                        Tuple.Create(PMove.Psychic, 60, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Psychic, 65, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        // psycho shift (50 gen 4 & 5)
+                        // psywave (1 gen 3 & 4 & 5)
+                        // recover (45 gen 3 & 4 & 5)
+                        // refresh (30 gen 3 & 4 & 5)
+                        // safeguard (15 gen 3 & 4 & 5)
+                        // telekinesis (70 gen 5)
+                        Tuple.Create(PMove.ZenHeadbutt, 40, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // fly
-                        // psyshock
-                        // roar
-                        // hyper beam
-                        // telekinesis
-                        // safeguard
-                        // solar beam
-                        // earthquake
-                        // sandstorm
-                        // facade
-                        // rest
-                        // attract
-                        // round
-                        // giga impact
-                        // thunder wave
-                        // psych up
-                        // dream eater
-                        // swagger
-                        // helping hand // tutor
-                        // last resort // tutor
-                        // magic coat // tutor
-                        // outrage // tutor
-                        // roost // tutor
-                        // sleep talk // tutor
-                        // snore // tutor
-                        // tailwind // tutor
-                        // trick // tutor
-                        // wonder room // tutor
-                        // captivate // gen 4 tm
-                        // defog // gen 4 hm
-                        // double edge // gen 3 tutor
-                        // endure // gen 4 tm
-                        // fury cutter // gen 4 tutor
-                        // mimic // gen 3 tutor
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        // twister // gen 4 tutor
-                        // whirlpool // gen 4 hm
-                        PMove.AerialAce, // TM
-                        PMove.BodySlam, // Gen 3 Move Tutor
-                        PMove.Bulldoze, // TM
-                        PMove.CalmMind, // TM
-                        PMove.ChargeBeam, // TM
-                        PMove.Cut, // HM
-                        PMove.Dive, // HM
-                        PMove.DracoMeteor, // Move Tutor
-                        PMove.DragonClaw, // TM
-                        PMove.DragonPulse, // Move Tutor
-                        PMove.DoubleTeam, // TM
-                        PMove.EnergyBall, // TM
-                        PMove.Flash, // TM
-                        PMove.Frustration, // TM
-                        PMove.GrassKnot, // TM
-                        PMove.HiddenPower, // TM
-                        PMove.HoneClaws, // TM
-                        PMove.IceBeam, // TM
-                        PMove.IcyWind, // Move Tutor
-                        PMove.LightScreen, // TM
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.Psychic, // TM
-                        PMove.RainDance, // TM
-                        PMove.Reflect, // TM
-                        PMove.Retaliate, // TM
-                        PMove.Return, // TM
-                        PMove.ShadowBall, // TM
-                        PMove.ShadowClaw, // TM
-                        PMove.ShockWave, // Gen 4 TM
-                        PMove.SteelWing, // TM
-                        PMove.Substitute, // TM
-                        PMove.SunnyDay, // TM
-                        PMove.Surf, // HM
-                        PMove.Swift, // Gen 4 Move Tutor
-                        PMove.Thunder, // TM
-                        PMove.Thunderbolt, // TM
-                        PMove.Toxic, // TM
-                        PMove.Waterfall, // HM
-                        PMove.WaterPulse, // Gen 4 TM
-                        PMove.ZenHeadbutt, // Move Tutor
+                        Tuple.Create(PMove.AerialAce, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // attract (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD),
+                        Tuple.Create(PMove.Bulldoze, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.CalmMind, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // captivate (gen 4 tm)
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Cut, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // defog (dppt hm)
+                        Tuple.Create(PMove.Dive, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // double edge (frlg/e/xd tutor)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DracoMeteor, PMoveObtainMethod.MoveTutor_DP | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_BW | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.DragonClaw, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DragonPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // dream eater (frlg/e/xd tutor, gen 4 tm, gen 5 tm)
+                        // earthquake (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // endure (emerald tutor, gen 4 tm)
+                        Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fly (gen 3 hm, gen 4 hm, gen 5 hm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fury cutter (emerald tutor, pt/hgss tutor)
+                        // giga impact (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.GrassKnot, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // helping hand (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.HoneClaws, PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // last resort (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // magic coat (hgss tutor, b2w2 tutor)
+                        // mimic (frlg/e/xd tutor)
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        // outrage (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // psych up (emerald tutor, gen 4 tm, gen 5 tm)
+                        // psyshock (gen 5 tm)
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Reflect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Retaliate, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // roar (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // roost (gen 4 tm, b2w2 tutor)
+                        // round (gen 5 tm)
+                        // safeguard (gen 4 tm, gen 5 tm)
+                        // sandstorm (gen 3 tm, gen 4 tm, gen 5 tm)
+                        // secret power (gen 3 tm, gen 4 tm)
+                        Tuple.Create(PMove.ShadowBall, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShadowClaw, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShockWave, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        // sleep talk (emerald tutor, gen 4 tm, b2w2 tutor)
+                        // snore (emerald tutor, pt/hgss tutor, b2w2 tutor)
+                        // solarbeam (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.SteelWing, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Surf, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        // swagger (e/xd tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // tailwind (hgss tutor, b2w2 tutor)
+                        // telekinesis (gen 5 tm)
+                        Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // trick (pt/hgss tutor, b2w2 tutor)
+                        // twister (pt/hgss tutor)
+                        Tuple.Create(PMove.Waterfall, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.WaterPulse, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
+                        // whirlpool (hgss hm)
+                        // wonder room (b2w2 tutor)
+                        Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2)
                     }
                 }
             },
@@ -1220,71 +1284,71 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 1, // Egg
                     ShinyLocked = false,
                     Weight = 0.3,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.ThunderShock),
-                        // 1 trick
-                        Tuple.Create(1, PMove.Astonish),
-                        Tuple.Create(1, PMove.ThunderWave),
-                        Tuple.Create(1, PMove.ConfuseRay),
-                        // 8 uproar
-                        Tuple.Create(10, PMove.SignalBeam), // Dream World
-                        Tuple.Create(10, PMove.ShockWave), // Dream World
-                        Tuple.Create(15, PMove.DoubleTeam),
-                        Tuple.Create(22, PMove.ShockWave),
-                        Tuple.Create(29, PMove.OminousWind),
-                        Tuple.Create(36, PMove.Substitute),
-                        // 43 electro ball
-                        // 50 hex
-                        // 57 charge (43 gen 4)
-                        Tuple.Create(50, PMove.Discharge), // Gen 4
-                        Tuple.Create(64, PMove.Discharge),
+                        Tuple.Create(PMove.Astonish, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // charge (43 gen 4, 57 gen 5)
+                        Tuple.Create(PMove.ConfuseRay, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Discharge, 50, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
+                        Tuple.Create(PMove.Discharge, 64, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.DoubleTeam, 15, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // electro ball (43 gen 5)
+                        // hex (50 gen 5)
+                        Tuple.Create(PMove.OminousWind, 29, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ShockWave, 22, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Substitute, 36, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ThunderShock, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ThunderWave, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // trick (1 gen 4 & 5)
+                        // uproar (8 gen 4 & 5)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // telekinesis // tm
-                        // facade
-                        // rest
-                        // thief
-                        // round
-                        // volt switch
-                        // psych up
-                        // dream eater
-                        // swagger
-                        // pain split // tutor
-                        // sleep talk
-                        // snatch
-                        // snore
-                        // spite
-                        // trick
-                        // uproar
-                        // endure // gen 4 tm
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        // sucker punch // gen 4 tutor
-                        PMove.ChargeBeam, // TM
-                        PMove.DarkPulse, // Move Tutor
-                        PMove.DoubleTeam, // TM
-                        PMove.Electroweb, // Move Tutor
-                        PMove.Flash, // TM
-                        PMove.Frustration, // TM
-                        PMove.HiddenPower, // TM
-                        PMove.LightScreen, // TM
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.RainDance, // TM
-                        PMove.Reflect, // TM
-                        PMove.Return, // TM
-                        PMove.ShadowBall, // TM
-                        PMove.SignalBeam, // Move Tutor
-                        PMove.Substitute, // TM
-                        PMove.SunnyDay, // TM
-                        PMove.Swift, // Gen 4 Move Tutor
-                        PMove.Thunder, // TM
-                        PMove.Thunderbolt, // TM
-                        PMove.ThunderWave, // TM
-                        PMove.Toxic, // TM
-                        PMove.WillOWisp, // TM
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DarkPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // dream eater (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Electroweb, PMoveObtainMethod.MoveTutor_B2W2),
+                        // endure (gen 4 tm)
+                        // facade (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        Tuple.Create(PMove.OminousWind, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // pain split (hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // psych up (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Reflect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // round (gen 5 tm)
+                        // secret power (gen 4 tm)
+                        Tuple.Create(PMove.ShadowBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShockWave, PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.SignalBeam, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // sleep talk (gen 4 tm, b2w2 tutor)
+                        // snatch (gen 4 tm, b2w2 tutor)
+                        // snore (pt/hgss tutor, b2w2 tutor)
+                        // spite (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // sucker punch (pt/hgss tutor)
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // swagger (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // telekinesis (gen 5 tm)
+                        // thief (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // trick (pt/hgss tutor, b2w2 tutor)
+                        // uproar (pt/hgss tutor, b2w2 tutor)
+                        // volt switch (gen 5 tm)
+                        Tuple.Create(PMove.WillOWisp, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2)
                     }
                 }
             },
@@ -1299,76 +1363,76 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 50, // DPPt (Roaming)
                     ShinyLocked = false,
                     Weight = 85.6,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.Confusion),
-                        Tuple.Create(1, PMove.DoubleTeam),
-                        // safeguard 11
-                        // mist 20
-                        Tuple.Create(29, PMove.AuroraBeam),
-                        // future sight 38
-                        Tuple.Create(47, PMove.Slash),
-                        Tuple.Create(57, PMove.Moonlight),
-                        Tuple.Create(66, PMove.PsychoCut),
-                        // psycho shift 75
-                        // lunar dance 84
-                        Tuple.Create(93, PMove.Psychic),
+                        Tuple.Create(PMove.AuroraBeam, 29, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Confusion, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.DoubleTeam, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // future sight (38 gen 4 & 5)
+                        // lunar dance (84 gen 4 & 5)
+                        // mist (20 gen 4 & 5)
+                        Tuple.Create(PMove.Moonlight, 57, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Psychic, 93, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.PsychoCut, 66, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // psycho shift (75 gen 4 & 5)
+                        // safeguard (11 gen 4 & 5)
+                        Tuple.Create(PMove.Slash, 47, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // psyshock
-                        // hyper beam
-                        // telekinesis
-                        // safeguard
-                        // solar beam
-                        // facade
-                        // rest
-                        // attract
-                        // round
-                        // giga impact
-                        // thunder wave
-                        // psych up
-                        // dream eater
-                        // swagger
-                        // trick room
-                        // gravity // move tutor
-                        // helping hand // tutor
-                        // magic coat // tutor
-                        // magic room // tutor
-                        // recycle // tutor
-                        // skill swap // tutor
-                        // sleep talk // tutor
-                        // snore // tutor
-                        // trick // tutor
-                        // captivate // gen 4 tm
-                        // endure // gen 4 tm
-                        // fury cutter // gen 4 tutor
-                        // natural gift // gen 4 tm
-                        // secret power // gen 4 tm
-                        PMove.CalmMind, // TM
-                        PMove.ChargeBeam, // TM
-                        PMove.DoubleTeam, // TM
-                        PMove.EnergyBall, // TM
-                        PMove.Flash, // TM
-                        PMove.Frustration, // TM
-                        PMove.GrassKnot, // TM
-                        PMove.HiddenPower, // TM
-                        PMove.IceBeam, // TM
-                        PMove.IcyWind, // Move Tutor
-                        PMove.LightScreen, // TM
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.Protect, // TM
-                        PMove.Psychic, // TM
-                        PMove.RainDance, // TM
-                        PMove.Reflect, // TM
-                        PMove.Return, // TM
-                        PMove.ShadowBall, // TM
-                        PMove.SignalBeam, // Move Tutor
-                        PMove.Substitute, // TM
-                        PMove.SunnyDay, // TM
-                        PMove.Swift, // Gen 4 Move Tutor
-                        PMove.Toxic, // TM
-                        PMove.ZenHeadbutt, // Move Tutor
+                        // attract (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.CalmMind, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // captivate (gen 4 tm)
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // dream eater (gen 4 tm, gen 5 tm)
+                        // endure (gen 4 tm)
+                        Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // facade (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fury cutter (pt/hgss tutor)
+                        // giga impact (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.GrassKnot, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // gravity (hgss tutor, b2w2 tutor)
+                        // helping hand (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // magic coat (hgss tutor, b2w2 tutor)
+                        // magic room (b2w2 tutor)
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // psych up (gen 4 tm, gen 5 tm)
+                        // psyshock (gen 5 tm)
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // recycle (gen 4 tm, b2w2 tutor)
+                        Tuple.Create(PMove.Reflect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // round (gen 5 tm)
+                        // safeguard (gen 4 tm, gen 5 tm)
+                        // secret power (gen 4 tm)
+                        Tuple.Create(PMove.ShadowBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.SignalBeam, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // skill swap (gen 4 tm, b2w2 tutor)
+                        // sleep talk (gen 4 tm, b2w2 tutor)
+                        // snore (pt/hgss tutor, b2w2 tutor)
+                        // solarbeam (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // swagger (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // telekinesis (gen 5 tm)
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // trick (pt/hgss tutor, b2w2 tutor)
+                        // trick room (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2)
                     }
                 }
             },
@@ -1383,100 +1447,99 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 40, // DP (Newmoon Island)
                     ShinyLocked = false,
                     Weight = 50.5,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        // disable 1
-                        // night shade 1 // DP
-                        Tuple.Create(1, PMove.OminousWind),
-                        Tuple.Create(11, PMove.QuickAttack),
-                        Tuple.Create(20, PMove.Hypnosis),
-                        // pursuit 29 // DP
-                        Tuple.Create(29, PMove.FaintAttack),
-                        // nightmare 38
-                        Tuple.Create(47, PMove.DoubleTeam),
-                        // haze 57
-                        Tuple.Create(50, PMove.DarkVoid), // Events
-                        Tuple.Create(66, PMove.DarkVoid),
-                        // roar of time 50 // gen 4 event (Alamos Darkrai, Nintendo of Korea Darkrai, Cinema Darkrai)
-                        // spacial rend 50 // gen 4 event (Alamos Darkrai, Nintendo of Korea Darkrai, Cinema Darkrai)
-                        // embargo 75 // DP
-                        Tuple.Create(75, PMove.NastyPlot),
-                        // dream eater 84
-                        Tuple.Create(93, PMove.DarkPulse),
+                        Tuple.Create(PMove.DarkPulse, 93, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.DarkVoid, 66, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // disable (1 gen 4 & 5)
+                        Tuple.Create(PMove.DoubleTeam, 47, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // dream eater (84 gen 4 & 5)
+                        // embargo (75 dp)
+                        Tuple.Create(PMove.FaintAttack, 29, PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // haze (57 gen 4 & 5)
+                        Tuple.Create(PMove.Hypnosis, 20, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.NastyPlot, 75, PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // nightmare (38 gen 4 & 5)
+                        // night shade (1 dp)
+                        Tuple.Create(PMove.OminousWind, 1, PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // pursuit (29 dp)
+                        Tuple.Create(PMove.QuickAttack, 11, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // taunt
-                        // blizzard
-                        // hyper beam
-                        // brick break
-                        // torment
-                        // facade
-                        // rest
-                        // thief
-                        // round
-                        // fling
-                        // incinerate
-                        // embargo
-                        // payback
-                        // giga impact
-                        // thunder wave
-                        // psych up
-                        // dream eater
-                        // swagger
-                        // drain punch // move tutor
-                        // foul play // move tutor
-                        // knock off // move tutor
-                        // last resort // move tutor
-                        // sleep talk // move tutor
-                        // snatch // move tutor
-                        // snore // move tutor
-                        // spite // move tutor
-                        // trick // move tutor
-                        // wonder room // move tutor
-                        // endure // gen 4 TM
-                        // focus punch // gen 4 TM
-                        // natural gift // gen 4 TM
-                        // secret power // gen 4 TM
-                        // sucker punch // gen 4 move tutor
-                        PMove.AerialAce, // TM
-                        PMove.CalmMind, // TM
-                        PMove.ChargeBeam, // TM
-                        PMove.Cut, // HM
-                        PMove.DarkPulse, // Move tutor
-                        PMove.DoubleTeam, // TM
-                        PMove.Flash, // TM
-                        PMove.FocusBlast, // TM
-                        PMove.Frustration, // TM
-                        PMove.Headbutt, // Gen 4 Move Tutor
-                        PMove.HiddenPower, // TM
-                        PMove.IceBeam, // TM
-                        PMove.IcyWind, // Move Tutor
-                        PMove.MudSlap, // Gen 4 Move Tutor
-                        PMove.PoisonJab, // TM
-                        PMove.Protect, // TM
-                        PMove.Psychic, // TM
-                        PMove.RainDance, // TM
-                        PMove.Retaliate, // TM
-                        PMove.Return, // TM
-                        PMove.RockSlide, // TM
-                        PMove.RockSmash, // TM
-                        PMove.RockTomb, // TM
-                        PMove.ShadowBall, // TM
-                        PMove.ShadowClaw, // TM
-                        PMove.ShockWave, // Gen 4 TM
-                        PMove.SludgeBomb, // TM
-                        PMove.Snarl, // TM
-                        PMove.Strength, // HM
-                        PMove.Substitute, // TM
-                        PMove.SunnyDay, // TM
-                        PMove.Swift, // Gen 4 Move Tutor
-                        PMove.SwordsDance, // TM
-                        PMove.Thunder, // TM
-                        PMove.Thunderbolt, // TM
-                        PMove.Toxic, // TM
-                        PMove.WillOWisp, // TM
-                        PMove.XScissor, // TM
+                        Tuple.Create(PMove.AerialAce, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // blizzard (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.BrickBreak, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.CalmMind, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Cut, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.DarkPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // drain punch (gen 4 tm, b2w2 tutor)
+                        // dream eater (gen 4 tm, gen 5 tm)
+                        // embargo (gen 4 tm, gen 5 tm)
+                        // endure (gen 4 tm)
+                        // facade (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // fling (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.FocusBlast, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // focus punch (gen 4 tm)
+                        // foul play (b2w2 tutor)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // giga impact (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Headbutt, PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        // incinerate (gen 5 tm)
+                        // knock off (pt/hgss tutor, b2w2 tutor)
+                        // last resort (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // natural gift (gen 4 tm)
+                        Tuple.Create(PMove.OminousWind, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        // payback (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.PoisonJab, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // psych up (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Retaliate, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockClimb, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS),
+                        Tuple.Create(PMove.RockSlide, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockSmash, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockTomb, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // round (gen 5 tm)
+                        // secret power (gen 4 tm)
+                        Tuple.Create(PMove.ShadowBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShadowClaw, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShockWave, PMoveObtainMethod.TM_DPPtHGSS),
+                        // sleep talk (gen 4 tm, b2w2 tutor)
+                        Tuple.Create(PMove.SludgeBomb, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Snarl, PMoveObtainMethod.TM_BWB2W2),
+                        // snatch (gen 4 tm, b2w2 tutor)
+                        // snore (pt/hgss tutor, b2w2 tutor)
+                        // spite (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Strength, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // sucker punch (pt/hgss tutor)
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // swagger (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.SwordsDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // taunt (gen 4 tm, gen 5 tm)
+                        // thief (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // torment (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // trick (b2w2 tutor)
+                        Tuple.Create(PMove.WillOWisp, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        // wonder room (b2w2 tutor)
+                        Tuple.Create(PMove.XScissor, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2)
                     }
                 }
             },
@@ -1491,86 +1554,80 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 34, // Evolve Yamask
                     ShinyLocked = false,
                     Weight = 76.5,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.Astonish),
-                        Tuple.Create(1, PMove.Protect),
-                        // 1 disable
-                        // 1 haze
-                        // 5 disable
-                        // 9 haze
-                        // 13 night shade
-                        // 17 hex                        
-                        Tuple.Create(21, PMove.WillOWisp),
-                        Tuple.Create(25, PMove.OminousWind),
-                        // 29 curse
-                        // 33 power split
-                        // 33 guard split
-                        Tuple.Create(34, PMove.ScaryFace),
-                        Tuple.Create(37, PMove.ShadowBall), // As Yamask
-                        Tuple.Create(39, PMove.ShadowBall),
-                        // 41 grudge as yamask
-                        // 45 grudge
-                        // 45 mean look as yamask
-                        // 51 mean look
-                        // 49 destiny bond as yamask
-                        // 57 destiny bond
+                        Tuple.Create(PMove.Astonish, 1, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Curse, 29, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // destiny bond (57 gen 5)
+                        // disable (1 & 5 gen 5)
+                        // grudge (45 gen 5)
+                        // guard split (33 gen 5)
+                        // haze (1 & 9 gen 5)
+                        // hex (17 gen 5)
+                        // mean look (51 gen 5)
+                        // night shade (13 gen 5)
+                        Tuple.Create(PMove.OminousWind, 25, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // power split (33 gen 5)
+                        Tuple.Create(PMove.Protect, 1, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ScaryFace, 34, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ShadowBall, 39, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.WillOWisp, 21, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // hyper beam // tm
-                        // telekinesis
-                        // safeguard
-                        // facade
-                        // rest
-                        // attract
-                        // thief
-                        // round
-                        // embargo
-                        // payback
-                        // giga impact
-                        // psych up
-                        // dream eater
-                        // swagger
-                        // trick room
-                        // disable // egg move
-                        // endure
-                        // heal block
-                        // imprison
-                        // memento
-                        // nightmare
-                        // after you // move tutor
-                        // block
-                        // knock off
-                        // magic coat
-                        // pain split
-                        // role play
-                        // skill swap
-                        // sleep talk
-                        // snatch
-                        // snore
-                        // spite
-                        // trick
-                        // wonder room
-                        PMove.CalmMind, // TM
-                        PMove.DarkPulse, // Move Tutor
-                        PMove.DoubleTeam, // TM
-                        PMove.EnergyBall, // TM
-                        PMove.FakeTears, // Egg Move
-                        PMove.Flash, // TM
-                        PMove.Frustration, // TM
-                        PMove.GrassKnot, // TM
-                        PMove.HiddenPower, // TM
-                        PMove.IronDefense, // Move Tutor
-                        PMove.NastyPlot, // Egg Move
-                        PMove.Protect, // TM
-                        PMove.Psychic, // TM
-                        PMove.RainDance, // TM
-                        PMove.Return, // TM
-                        PMove.ShadowBall, // TM
-                        PMove.Substitute, // TM
-                        PMove.Toxic, // TM
-                        PMove.WillOWisp, // TM
+                        // after you (b2w2 tutor)
+                        // attract (gen 5 tm)
+                        // block (b2w2 tutor)
+                        Tuple.Create(PMove.CalmMind, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DarkPulse, PMoveObtainMethod.MoveTutor_B2W2),
+                        // disable (gen 5 egg)
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_BWB2W2),
+                        // dream eater (gen 5 tm)
+                        // embargo (gen 5 tm)
+                        // endure (gen 5 egg)
+                        Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_BWB2W2),
+                        // facade (gen 5 tm)
+                        Tuple.Create(PMove.FakeTears, PMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_BWB2W2),
+                        // giga impact (gen 5 tm)
+                        Tuple.Create(PMove.GrassKnot, PMoveObtainMethod.TM_BWB2W2),
+                        // heal block (gen 5 egg)
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 5 tm)
+                        // imprison (gen 5 egg)
+                        Tuple.Create(PMove.IronDefense, PMoveObtainMethod.MoveTutor_B2W2),
+                        // knock off (b2w2 tutor)
+                        // magic coat (b2w2 tutor)
+                        // memento (gen 5 egg)
+                        Tuple.Create(PMove.NastyPlot, PMoveObtainMethod.EggMove_BWB2W2),
+                        // nightmare (gen 5 egg)
+                        // pain split (b2w2 tutor)
+                        // payback (gen 5 tm)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_BWB2W2),
+                        // psych up (gen 5 tm)
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 5 tm)
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_BWB2W2),
+                        // role play (b2w2 tutor)
+                        // round (gen 5 tm)
+                        // safeguard (gen 5 tm)
+                        Tuple.Create(PMove.ShadowBall, PMoveObtainMethod.TM_BWB2W2),
+                        // skill swap (b2w2 tutor)
+                        // sleep talk (b2w2 tutor)
+                        // snatch (b2w2 tutor)
+                        // snore (b2w2 tutor)
+                        // spite (b2w2 tutor)
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.TM_BWB2W2),
+                        // swagger (gen 5 tm)
+                        // telekinesis (gen 5 tm)
+                        // thief (gen 5 tm)
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_BWB2W2),
+                        // trick (b2w2 tutor)
+                        // trick room (gen 5 tm)
+                        Tuple.Create(PMove.WillOWisp, PMoveObtainMethod.TM_BWB2W2),
+                        // wonder room (b2w2 tutor)
                     }
                 }
             },
@@ -1585,91 +1642,86 @@ namespace Kermalis.PokemonBattleEngine.Data
                     MinLevel = 15, // Event (Plasma Genesect)
                     ShinyLocked = false,
                     Weight = 82.5,
-                    LevelUpMoves = new Tuple<int, PMove>[]
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
-                        Tuple.Create(1, PMove.MetalClaw),
-                        Tuple.Create(1, PMove.QuickAttack),
-                        Tuple.Create(1, PMove.Screech),
-                        // 1 magnet rise
-                        // 1 techno blast
-                        // 7 fury cutter
-                        // 11 lock-on
-                        Tuple.Create(15, PMove.MagnetBomb), // Event (Plasma Genesect)
-                        Tuple.Create(15, PMove.SignalBeam), // Event (Plasma Genesect)
-                        Tuple.Create(18, PMove.FlameCharge),
-                        Tuple.Create(22, PMove.MagnetBomb),
-                        Tuple.Create(29, PMove.Slash),
-                        Tuple.Create(33, PMove.MetalSound),
-                        Tuple.Create(40, PMove.SignalBeam),
-                        // 44 tri attack
-                        Tuple.Create(51, PMove.XScissor),
-                        Tuple.Create(55, PMove.BugBuzz),
-                        // 62 simple beam
-                        Tuple.Create(66, PMove.ZapCannon),
-                        // 73 hyper beam
-                        // 77 self-destruct
-                        Tuple.Create(100, PMove.ExtremeSpeed), // Event (Cinema Genesect)
-                        Tuple.Create(100, PMove.BlazeKick), // Event (Cinema Genesect)
-                        Tuple.Create(100, PMove.ShiftGear), // Event (Cinema Genesect)
+                        Tuple.Create(PMove.BugBuzz, 55, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.FlameCharge, 18, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // fury cutter (7 gen 5)
+                        // hyper beam (73 gen 5)
+                        // lock on (11 gen 5)
+                        Tuple.Create(PMove.MagnetBomb, 22, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // magnet rise (1 gen 5)
+                        Tuple.Create(PMove.MetalClaw, 1, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.MetalSound, 33, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.QuickAttack, 1, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Screech, 1, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // selfdestruct (77 gen 5)
+                        Tuple.Create(PMove.SignalBeam, 40, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // simple beam (62 gen 5)
+                        Tuple.Create(PMove.Slash, 29, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.TechnoBlast, 1, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        // tri attack (44 gen 5)
+                        Tuple.Create(PMove.XScissor, 51, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ZapCannon, 66, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new PMove[]
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
                     {
-                        // fly // hm
-                        // blizzard // tm
-                        // hyper beam
-                        // solar beam
-                        // facade
-                        // rest
-                        // round
-                        // explosion
-                        // giga impact
-                        // swagger
-                        // u-turn
-                        // bug bite // tutor
-                        // giga drain
-                        // gravity
-                        // last resort
-                        // magic coat
-                        // magnet rise
-                        // recycle
-                        // sleep talk
-                        // snore
-                        PMove.AerialAce, // TM
-                        PMove.ChargeBeam, // TM
-                        PMove.DarkPulse, // Move Tutor
-                        PMove.DoubleTeam, // TM
-                        PMove.Electroweb, // Move Tutor
-                        PMove.EnergyBall, // TM
-                        PMove.FlameCharge, // TM
-                        PMove.Flamethrower, // TM
-                        PMove.Flash, // TM
-                        PMove.FlashCannon, // TM
-                        PMove.Frustration, // TM
-                        PMove.GunkShot, // Move Tutor
-                        PMove.HiddenPower, // TM
-                        PMove.HoneClaws, // TM
-                        PMove.IceBeam, // TM
-                        PMove.IronDefense, // Move Tutor
-                        PMove.IronHead, // Move Tutor
-                        PMove.LightScreen, // TM
-                        PMove.Protect, // TM
-                        PMove.Psychic, // TM
-                        PMove.Reflect, // TM
-                        PMove.Return, // TM
-                        PMove.RockPolish, // TM
-                        PMove.ShadowClaw, // TM
-                        PMove.SignalBeam, // Move Tutor
-                        PMove.StruggleBug, // TM
-                        PMove.Substitute, // TM
-                        PMove.Thunder, // TM
-                        PMove.Thunderbolt, // TM
-                        PMove.ThunderWave, // TM
-                        PMove.Toxic, // TM
-                        PMove.XScissor, // TM
-                        PMove.ZenHeadbutt, // Move Tutor
+                        Tuple.Create(PMove.AerialAce, PMoveObtainMethod.TM_BWB2W2),
+                        // blizzard (gen 5 tm)
+                        // bug bite (b2w2 tutor)
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DarkPulse, PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Electroweb, PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_BWB2W2),
+                        // explosion (gen 5 tm)
+                        // facade (gen 5 tm)
+                        Tuple.Create(PMove.FlameCharge, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Flamethrower, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.FlashCannon, PMoveObtainMethod.TM_BWB2W2),
+                        // fly (gen 5 hm)
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_BWB2W2),
+                        // giga drain (b2w2 tutor)
+                        // giga impact (gen 5 tm)
+                        // gravity (b2w2 tutor)
+                        Tuple.Create(PMove.GunkShot, PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.HoneClaws, PMoveObtainMethod.TM_BWB2W2),
+                        // hyper beam (gen 5 tm)
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IronDefense, PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IronHead, PMoveObtainMethod.MoveTutor_B2W2),
+                        // last resort (b2w2 tutor)
+                        Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_BWB2W2),
+                        // magic coat (b2w2 tutor)
+                        // magnet rise (b2w2 tutor)
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_BWB2W2),
+                        // recycle (b2w2 tutor)
+                        Tuple.Create(PMove.Reflect, PMoveObtainMethod.TM_BWB2W2),
+                        // rest (gen 5 tm)
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockPolish, PMoveObtainMethod.TM_BWB2W2),
+                        // round (gen 5 tm)
+                        Tuple.Create(PMove.ShadowClaw, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.SignalBeam, PMoveObtainMethod.MoveTutor_B2W2),
+                        // sleep talk (b2w2 tutor)
+                        // snore (b2w2 tutor)
+                        // solarbeam (gen 5 tm)
+                        Tuple.Create(PMove.StruggleBug, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.TM_BWB2W2),
+                        // swagger (gen 5 tm)
+                        Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_BWB2W2),
+                        // u-turn (gen 5 tm)
+                        Tuple.Create(PMove.XScissor, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_B2W2)
                     }
                 }
-            },
+            }
         };
 
         // Formes
@@ -1703,7 +1755,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Data.Add(PSpecies.Unown_Exclamation, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
             Data.Add(PSpecies.Unown_Question, (PPokemonData)Data[PSpecies.Unown_A].MemberwiseClone());
 
-            IEnumerable<PMove> otherMoves = Data[PSpecies.Rotom].OtherMoves;
+            IEnumerable<Tuple<PMove, PMoveObtainMethod>> otherMoves = Data[PSpecies.Rotom].OtherMoves;
             Data.Add(PSpecies.Rotom_Fan, (PPokemonData)Data[PSpecies.Rotom].MemberwiseClone());
             Data[PSpecies.Rotom_Fan].HP = 50;
             Data[PSpecies.Rotom_Fan].HP = 65;
@@ -1712,7 +1764,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Data[PSpecies.Rotom_Fan].HP = 107;
             Data[PSpecies.Rotom_Fan].HP = 86;
             Data[PSpecies.Rotom_Fan].Type2 = PType.Flying;
-            Data[PSpecies.Rotom_Fan].OtherMoves = otherMoves.Concat(new PMove[] { PMove.AirSlash }).ToArray();
+            Data[PSpecies.Rotom_Fan].OtherMoves = otherMoves.Concat(new Tuple<PMove, PMoveObtainMethod>[] { Tuple.Create(PMove.AirSlash, PMoveObtainMethod.Forme) }).ToArray();
             Data.Add(PSpecies.Rotom_Frost, (PPokemonData)Data[PSpecies.Rotom].MemberwiseClone());
             Data[PSpecies.Rotom_Frost].HP = 50;
             Data[PSpecies.Rotom_Frost].HP = 65;
@@ -1730,7 +1782,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Data[PSpecies.Rotom_Heat].HP = 107;
             Data[PSpecies.Rotom_Heat].HP = 86;
             Data[PSpecies.Rotom_Heat].Type2 = PType.Fire;
-            Data[PSpecies.Rotom_Heat].OtherMoves = otherMoves.Concat(new PMove[] { PMove.Overheat }).ToArray();
+            Data[PSpecies.Rotom_Heat].OtherMoves = otherMoves.Concat(new Tuple<PMove, PMoveObtainMethod>[] { Tuple.Create(PMove.Overheat, PMoveObtainMethod.Forme) }).ToArray();
             Data.Add(PSpecies.Rotom_Mow, (PPokemonData)Data[PSpecies.Rotom].MemberwiseClone());
             Data[PSpecies.Rotom_Mow].HP = 50;
             Data[PSpecies.Rotom_Mow].HP = 65;
@@ -1748,7 +1800,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Data[PSpecies.Rotom_Wash].HP = 107;
             Data[PSpecies.Rotom_Wash].HP = 86;
             Data[PSpecies.Rotom_Wash].Type2 = PType.Water;
-            Data[PSpecies.Rotom_Wash].OtherMoves = otherMoves.Concat(new PMove[] { PMove.HydroPump }).ToArray();
+            Data[PSpecies.Rotom_Wash].OtherMoves = otherMoves.Concat(new Tuple<PMove, PMoveObtainMethod>[] { Tuple.Create(PMove.HydroPump, PMoveObtainMethod.Forme) }).ToArray();
 
             Data.Add(PSpecies.Genesect_Burn, (PPokemonData)Data[PSpecies.Genesect].MemberwiseClone());
             Data.Add(PSpecies.Genesect_Chill, (PPokemonData)Data[PSpecies.Genesect].MemberwiseClone());
