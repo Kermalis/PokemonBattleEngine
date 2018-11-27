@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             Pokemon = pkmn;
             Label = pkmn.NameWithGender;
 
-            bool enabled = pkmn != parent.Pokemon && pkmn.FieldPosition == PFieldPosition.None && !standBy.Contains(pkmn) && pkmn.HP > 0;
+            bool enabled = parent.Pokemon.LockedAction.Decision != PDecision.Fight && pkmn.FieldPosition == PFieldPosition.None && !standBy.Contains(pkmn) && pkmn.HP > 0;
 
             var sub = new Subject<bool>();
             SelectPokemonCommand = ReactiveCommand.Create(() => parent.SelectPokemon(this), sub);

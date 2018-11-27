@@ -70,9 +70,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             return false;
 
                         // If the mon has a locked move, it must be used
-                        if (pkmn.LockedAction.Decision == PDecision.Fight
-                            && (pkmn.LockedAction.FightMove != action.FightMove || pkmn.LockedAction.FightTargets != action.FightTargets))
-                            return false;
+                        if (pkmn.LockedAction.Decision == PDecision.Fight)
+                        {
+                            if ((pkmn.LockedAction.FightMove != PMove.None && pkmn.LockedAction.FightMove != action.FightMove)
+                                || (pkmn.LockedAction.FightTargets != PTarget.None && pkmn.LockedAction.FightTargets != action.FightTargets))
+                                return false;
+                        }
 
                         // Verify targets
                         PMoveData mData = PMoveData.Data[action.FightMove];
@@ -342,7 +345,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (switchPkmn.Local != pkmn.Local)
                             return false;
                         // Cannot switch while underground or underwater
-                        if (switchPkmn.Status2.HasFlag(PStatus2.Underground) || switchPkmn.Status2.HasFlag(PStatus2.Underwater))
+                        if (pkmn.Status2.HasFlag(PStatus2.Underground) || pkmn.Status2.HasFlag(PStatus2.Underwater))
                             return false;
                         // Cannot switch into a Pokémon already on the field
                         if (switchPkmn.FieldPosition != PFieldPosition.None)

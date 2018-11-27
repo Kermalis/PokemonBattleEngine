@@ -747,6 +747,22 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                 }
 
+                if (Pokemon.LockedAction.Decision == PDecision.Fight && Pokemon.LockedAction.FightTargets != PTarget.None)
+                {
+                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PTarget.AllyLeft))
+                        TargetAllyLeftEnabled = false;
+                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PTarget.AllyCenter))
+                        TargetAllyCenterEnabled = false;
+                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PTarget.AllyRight))
+                        TargetAllyRightEnabled = false;
+                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PTarget.FoeLeft))
+                        TargetFoeLeftEnabled = false;
+                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PTarget.FoeCenter))
+                        TargetFoeCenterEnabled = false;
+                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PTarget.FoeRight))
+                        TargetFoeRightEnabled = false;
+                }
+
                 TargetsVisible = true;
             }
         }

@@ -67,6 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     [Flags]
     public enum PTarget : byte
     {
+        None,
         AllyLeft = 1 << 0,
         AllyCenter = 1 << 1,
         AllyRight = 1 << 2,
