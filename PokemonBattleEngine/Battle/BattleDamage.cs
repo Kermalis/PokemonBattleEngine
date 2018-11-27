@@ -94,6 +94,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (bTarget.Status2.HasFlag(PStatus2.Minimized))
                             basePower *= 2.0;
                         break;
+                    case PMove.Surf:
+                        basePower = PMoveData.Data[bMove].Power;
+                        // Surf gets a 100% power boost if the target is underwater
+                        if (bTarget.Status2.HasFlag(PStatus2.Underwater))
+                            basePower *= 2.0;
+                        break;
                     default:
                         basePower = PMoveData.Data[bMove].Power;
                         break;

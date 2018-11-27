@@ -501,13 +501,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
 
             // Hitting underwater opponents
-            if (bTarget.Status2.HasFlag(PStatus2.Underwater))
-            {
-                if (mData.Flags.HasFlag(PMoveFlag.HitsUnderwater))
-                    bDamageMultiplier *= 2;
-                else
-                    goto miss;
-            }
+            if (bTarget.Status2.HasFlag(PStatus2.Underwater) && !mData.Flags.HasFlag(PMoveFlag.HitsUnderwater))
+                goto miss;
 
             // Moves that always hit
             if (mData.Accuracy == 0)
