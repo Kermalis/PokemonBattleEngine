@@ -10,11 +10,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PSpecies Species;
         public string Nickname;
         public byte Level = PSettings.MaxLevel,
-            Friendship = byte.MaxValue;
+            Friendship = 255;
         public bool Shiny;
         public PAbility Ability;
         public PNature Nature = (PNature)PUtils.RNG.Next(0, (int)PNature.MAX);
-        public PGender Gender = PGender.Genderless;
+        public PGender Gender;
         public PItem Item;
         public byte[] EVs = new byte[6],
             IVs = new byte[6];
@@ -65,10 +65,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(Nature));
 
             // Validate Gender
-            if ((Gender != PGender.Male && Gender != PGender.Female && Gender != PGender.Genderless)
-                || (Gender == PGender.Male && (pData.GenderRatio == PGender.Female || pData.GenderRatio == PGender.Genderless))
-                || (Gender == PGender.Female && (pData.GenderRatio == PGender.Male || pData.GenderRatio == PGender.Genderless))
-                || (Gender == PGender.Genderless && pData.GenderRatio != PGender.Genderless)
+            if (Gender >= PGender.MAX
+                || (Gender == PGender.Male && (pData.GenderRatio == PGenderRatio.M0_F1 || pData.GenderRatio == PGenderRatio.M0_F0))
+                || (Gender == PGender.Female && (pData.GenderRatio == PGenderRatio.M1_F0 || pData.GenderRatio == PGenderRatio.M0_F0))
+                || (Gender == PGender.Genderless && pData.GenderRatio != PGenderRatio.M0_F0)
                 )
                 throw new ArgumentOutOfRangeException(nameof(Gender));
 

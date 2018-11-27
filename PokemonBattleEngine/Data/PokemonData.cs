@@ -7,7 +7,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public sealed class PPokemonData
     {
         public byte HP, Attack, Defense, SpAttack, SpDefense, Speed;
-        public PGender GenderRatio;
+        public PGenderRatio GenderRatio;
         public PType Type1, Type2;
         public PAbility[] Abilities;
         public byte MinLevel;
@@ -102,7 +102,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 35, Attack = 55, Defense = 30, SpAttack = 50, SpDefense = 40, Speed = 90,
-                    GenderRatio = PGender.M1F1,
+                    GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Electric, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
                     MinLevel = 1, // Egg
@@ -219,7 +219,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 50, Attack = 50, Defense = 95, SpAttack = 40, SpDefense = 50, Speed = 35,
-                    GenderRatio = PGender.M1F1,
+                    GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Ground, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     MinLevel = 1, // Egg
@@ -332,7 +332,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 60, Attack = 80, Defense = 110, SpAttack = 50, SpDefense = 80, Speed = 45,
-                    GenderRatio = PGender.M1F1,
+                    GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Ground, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
                     MinLevel = 14, // HGSS (Rock Tunnel)
@@ -453,7 +453,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 48, Attack = 48, Defense = 48, SpAttack = 48, SpDefense = 48, Speed = 48,
-                    GenderRatio = PGender.Genderless,
+                    GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Normal, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Limber, PAbility.Imposter },
                     MinLevel = 10, // HGSS (Route 34, Route 35)
@@ -474,7 +474,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 85, Attack = 90, Defense = 80, SpAttack = 70, SpDefense = 80, Speed = 130,
-                    GenderRatio = PGender.M1F1,
+                    GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Poison, Type2 = PType.Flying,
                     Abilities = new PAbility[] { PAbility.InnerFocus, PAbility.Infiltrator },
                     MinLevel = 11, // Evolve MinLevel Golbat (DPPt Oreburgh Gate level 10)
@@ -592,7 +592,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 20, Attack = 40, Defense = 15, SpAttack = 35, SpDefense = 35, Speed = 60,
-                    GenderRatio = PGender.M1F1,
+                    GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Electric, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
                     MinLevel = 1, // Egg
@@ -683,7 +683,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 100, Attack = 50, Defense = 80, SpAttack = 50, SpDefense = 80, Speed = 50,
-                    GenderRatio = PGender.M1F1,
+                    GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Water, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.ThickFat, PAbility.HugePower, PAbility.SapSipper },
                     MinLevel = 5, // B2W2 (Route 20, Flocessy Ranch, Relic Passage)
@@ -808,7 +808,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PGender.Genderless,
+                    GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Psychic, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 5, // HGSS (Ruins of Alph)
@@ -829,7 +829,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 65, Attack = 130, Defense = 60, SpAttack = 75, SpDefense = 60, Speed = 75,
-                    GenderRatio = PGender.M1F1,
+                    GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Dark, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Pressure, PAbility.SuperLuck, PAbility.Justified },
                     MinLevel = 1, // Egg
@@ -971,7 +971,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 35, Attack = 64, Defense = 85, SpAttack = 74, SpDefense = 55, Speed = 32,
-                    GenderRatio = PGender.M1F1,
+                    GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Water, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.ShellArmor, PAbility.Rattled },
                     MinLevel = 1, // Egg
@@ -1035,7 +1035,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 80, Attack = 80, Defense = 90, SpAttack = 110, SpDefense = 130, Speed = 110,
-                    GenderRatio = PGender.Female,
+                    GenderRatio = PGenderRatio.M0_F1,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 35, // HG (Roaming)
@@ -1158,7 +1158,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 80, Attack = 90, Defense = 80, SpAttack = 130, SpDefense = 110, Speed = 110,
-                    GenderRatio = PGender.Male,
+                    GenderRatio = PGenderRatio.M1_F0,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 35, // SS (Roaming)
@@ -1278,7 +1278,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 50, Attack = 50, Defense = 77, SpAttack = 95, SpDefense = 77, Speed = 91,
-                    GenderRatio = PGender.Genderless,
+                    GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Electric, Type2 = PType.Ghost,
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 1, // Egg
@@ -1357,7 +1357,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 120, Attack = 70, Defense = 120, SpAttack = 75, SpDefense = 130, Speed = 85,
-                    GenderRatio = PGender.Female,
+                    GenderRatio = PGenderRatio.M0_F1,
                     Type1 = PType.Psychic, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Levitate },
                     MinLevel = 50, // DPPt (Roaming)
@@ -1441,7 +1441,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 70, Attack = 90, Defense = 90, SpAttack = 135, SpDefense = 90, Speed = 125,
-                    GenderRatio = PGender.Genderless,
+                    GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Dark, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.BadDreams },
                     MinLevel = 40, // DP (Newmoon Island)
@@ -1548,7 +1548,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 58, Attack = 50, Defense = 145, SpAttack = 95, SpDefense = 105, Speed = 30,
-                    GenderRatio = PGender.M1F1,
+                    GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Ghost, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Mummy },
                     MinLevel = 34, // Evolve Yamask
@@ -1636,7 +1636,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PPokemonData
                 {
                     HP = 71, Attack = 120, Defense = 95, SpAttack = 120, SpDefense = 95, Speed = 99,
-                    GenderRatio = PGender.Genderless,
+                    GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Bug, Type2 = PType.Steel,
                     Abilities = new PAbility[] { PAbility.Download },
                     MinLevel = 15, // Event (Plasma Genesect)

@@ -4,14 +4,21 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public enum PGender : byte
     {
-        Male = 0x00,
-        M7F1 = 0x1F, // Male 7:1 Female
-        M3F1 = 0x3F, // Male 3:1 Female
-        M1F1 = 0x7F, // Male 1:1 Female
-        M1F3 = 0xBF, // Male 1:3 Female
-        M1F7 = 0xE1, // Male 1:7 Female // Does not exist before gen 6
-        Female = 0xFE,
-        Genderless = 0xFF
+        Female,
+        Genderless,
+        Male,
+        MAX
+    }
+    public enum PGenderRatio : byte
+    {
+        M7_F1, // Male 7:1 Female
+        M3_F1, // Male 3:1 Female
+        M1_F1, // Male 1:1 Female
+        M1_F3, // Male 1:3 Female
+        M1_F7, // Male 1:7 Female (Does not occur before generation 6)
+        M0_F1, // Female species
+        M0_F0, // Genderless species
+        M1_F0  // Male species
     }
     public enum PStat : byte
     {
