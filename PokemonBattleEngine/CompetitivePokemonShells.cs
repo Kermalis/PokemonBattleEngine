@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Brave,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
                 EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
-                Moves = new PMove[] { PMove.EarthPower, PMove.RockSlide, PMove.FirePunch, PMove.SwordsDance }, // Earthquake, Rock Slide, Fire Punch, Swords Dance
+                Moves = new PMove[] { PMove.Dig, PMove.RockSlide, PMove.FirePunch, PMove.SwordsDance }, // Earthquake, Rock Slide, Fire Punch, Swords Dance
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Ditto_UU = new PPokemonShell

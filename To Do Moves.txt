@@ -36,7 +36,6 @@ Fire Spin
 Thunder
 Earthquake
 Fissure
-Dig
 Rage
 Night Shade
 Mimic

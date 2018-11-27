@@ -27,6 +27,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Specific place for event Pokémon shells
 * Better validation for Pokémon (programmatically deduce how the Pokémon was obtained, make MinLevel relevant)
 * HP Bars
+* Implement a better way to lock actions besides "PPokemon.LockedAction" (Consider "Follow Me" as well)
 
 ----
 # PokemonBattleEngine Uses:

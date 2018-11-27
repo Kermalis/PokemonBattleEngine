@@ -154,7 +154,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // counter (frlg/e tutor)
                         // covet (b2w2 tutor)
                         // defense curl (emerald tutor)
-                        // dig (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Dig, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // double edge (frlg/e/xd tutor)
                         // doubleslap (gen 3 egg, gen 4 egg, gen 5 egg)
                         Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -262,7 +262,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // chip away (gen 5 egg)
                         // counter (frlg/e tutor)
                         Tuple.Create(PMove.Detect, PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
-                        // dig (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Dig, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // double edge (frlg/e/xd tutor)
                         // double kick (gen 4 egg, gen 5 egg)
                         Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -378,7 +378,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // chip away (gen 5 egg)
                         // counter (frlg/e tutor)
                         Tuple.Create(PMove.Detect, PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
-                        // dig (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Dig, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // double edge (frlg/e/xd tutor)
                         // double kick (gen 4 egg, gen 5 egg)
                         Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -734,7 +734,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // captivate (gen 4 tm)
                         // covet (b2w2 tutor)
                         // defense curl (emerald tutor)
-                        // dig (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Dig, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Dive, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.HM_BWB2W2),
                         // double edge (frlg/e/xd tutor)
                         Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),

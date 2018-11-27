@@ -277,6 +277,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
                             }
                             break;
+                        case PStatus2.Underground:
+                            switch (s2p.Action)
+                            {
+                                case PStatusAction.Added: message = "{0} burrowed its way under the ground!"; break;
+                                case PStatusAction.Ended: return;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                            }
+                            break;
                         case PStatus2.Underwater:
                             switch (s2p.Action)
                             {

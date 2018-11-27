@@ -224,6 +224,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Curse:
                     Ef_Curse();
                     break;
+                case PMoveEffect.Dig:
+                    Ef_Dig();
+                    break;
                 case PMoveEffect.Dive:
                     Ef_Dive();
                     break;
@@ -500,6 +503,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (bUser.Ability == PAbility.NoGuard || bTarget.Ability == PAbility.NoGuard)
                 return false;
 
+            // Hitting underground opponents
+            if (bTarget.Status2.HasFlag(PStatus2.Underground) && !mData.Flags.HasFlag(PMoveFlag.HitsUnderground))
+                goto miss;
             // Hitting underwater opponents
             if (bTarget.Status2.HasFlag(PStatus2.Underwater) && !mData.Flags.HasFlag(PMoveFlag.HitsUnderwater))
                 goto miss;
@@ -1085,6 +1091,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (bLandedCrit)
                     BroadcastCrit();
                 FaintCheck(bTarget);
+            }
+        }
+        void Ef_Dig()
+        {
+            top:
+            if (bUser.Status2.HasFlag(PStatus2.Underground))
+            {
+                if (!bUsedMove)
+                {
+                    bUsedMove = true;
+                    BroadcastMoveUsed();
+                }
+                bUser.LockedAction.Decision = PDecision.None;
+                bUser.Status2 &= ~PStatus2.Underground;
+                BroadcastStatus2(bUser, bUser, PStatus2.Underground, PStatusAction.Ended);
+                Ef_Hit();
+            }
+            else
+            {
+                bUsedMove = true;
+                BroadcastMoveUsed();
+                PPReduce(bUser, bMove);
+                bUser.LockedAction = bUser.SelectedAction;
+                bUser.Status2 |= PStatus2.Underground;
+                BroadcastStatus2(bUser, bUser, PStatus2.Underground, PStatusAction.Added);
+                if (bUser.Item == PItem.PowerHerb)
+                {
+                    bUser.Item = PItem.None;
+                    BroadcastItemUsed(bUser, PItem.PowerHerb);
+                    goto top;
+                }
             }
         }
         void Ef_Dive()
