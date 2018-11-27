@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PMovePPChangedPacket.Code: packet = new PMovePPChangedPacket(buffer); break;
                 case PTransformPacket.Code: packet = new PTransformPacket(buffer); break;
                 case PLimberPacket.Code: packet = new PLimberPacket(buffer); break;
-                //case PStatus2AddedPacket.Code: packet = new PStatus2AddedPacket(buffer); break;
+                case PMagnitudePacket.Code: packet = new PMagnitudePacket(buffer); break;
                 //case PStatus2ActivatedPacket.Code: packet = new PStatus2ActivatedPacket(buffer); break;
                 //case PStatus2CausedDamagePacket.Code: packet = new PStatus2CausedDamagePacket(buffer); break;
                 default: throw new ArgumentException($"Invalid packet code: {code}");

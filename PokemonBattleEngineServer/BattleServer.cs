@@ -155,7 +155,7 @@ namespace Kermalis.PokemonBattleEngineServer
 
                 if (battle.SelectActionsIfValid(actions))
                 {
-                    Console.WriteLine("Actions are valid.");
+                    Console.WriteLine("Actions are valid");
                     if (battle.IsReadyToRunTurn())
                     {
                         Console.WriteLine("Players selected actions!");

@@ -125,6 +125,9 @@ namespace Kermalis.PokemonBattleEngineClient
                     message = "{0}'s Limber"; // TODO: Ability stuff
                     messageView.Add(battleView.Message = string.Format(message, victim.Shell.Nickname));
                     break;
+                case PMagnitudePacket mp:
+                    messageView.Add(battleView.Message = string.Format("Magnitude {0}!", mp.Magnitude));
+                    break;
                 case PMoveCritPacket _:
                     messageView.Add(battleView.Message = "A critical hit!");
                     break;
@@ -190,7 +193,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PPkmnStatChangedPacket pscp:
                     victim = Battle.GetPokemon(pscp.VictimId);
-                    PBattle.ApplyStatChange(victim, pscp.Stat, pscp.Change, true, null);
+                    PBattle.ApplyStatChange(victim, pscp.Stat, pscp.Change, ignoreSimple: true);
                     switch (pscp.Change)
                     {
                         case -2: message = "harshly fell"; break;

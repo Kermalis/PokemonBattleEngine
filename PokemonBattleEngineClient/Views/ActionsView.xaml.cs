@@ -331,7 +331,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public void DisplayActions(IEnumerable<PPokemon> party, PPokemon pkmn, List<PPokemon> standBy)
         {
             Pokemon = pkmn;
-            
+
             Party = party.Select(p => new PokemonInfo(p, this, standBy)).ToArray();
 
             var mInfo = new MoveInfo[PSettings.NumMoves];

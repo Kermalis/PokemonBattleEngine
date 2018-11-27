@@ -14,10 +14,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PPkmnSwitchInPacket(pkmn));
         void BroadcastSwitchOut(PPokemon pkmn)
             => OnNewEvent?.Invoke(this, new PPkmnSwitchOutPacket(pkmn));
-        void BroadcastMoveUsed()
-            => OnNewEvent?.Invoke(this, new PMoveUsedPacket(bUser, bMove));
-        void BroadcastMiss()
-            => OnNewEvent?.Invoke(this, new PMoveMissedPacket(bUser));
+        void BroadcastMoveUsed(PPokemon culprit, PMove move)
+            => OnNewEvent?.Invoke(this, new PMoveUsedPacket(culprit, move));
+        void BroadcastMiss(PPokemon culprit)
+            => OnNewEvent?.Invoke(this, new PMoveMissedPacket(culprit));
         void BroadcastHPChanged(PPokemon victim, int change)
             => OnNewEvent?.Invoke(this, new PPkmnHPChangedPacket(victim, change));
         void BroadcastEffectiveness(PPokemon victim, PEffectiveness effectiveness)
@@ -26,8 +26,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PPkmnFaintedPacket(victim));
         void BroadcastCrit()
             => OnNewEvent?.Invoke(this, new PMoveCritPacket());
-        void BroadcastFail(PFailReason reason)
-            => OnNewEvent?.Invoke(this, new PMoveFailedPacket(bUser, reason));
+        void BroadcastFail(PPokemon culprit, PFailReason reason)
+            => OnNewEvent?.Invoke(this, new PMoveFailedPacket(culprit, reason));
         void BroadcastStatChange(PPokemon victim, PStat stat, sbyte change, bool isTooMuch)
             => OnNewEvent?.Invoke(this, new PPkmnStatChangedPacket(victim, stat, change, isTooMuch));
         void BroadcastStatus1(PPokemon culprit, PPokemon victim, PStatus1 status, PStatusAction statusAction)
@@ -44,8 +44,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PMovePPChangedPacket(victim, move, change));
         void BroadcastLimber(PPokemon pkmn, bool prevented) // Prevented or cured
             => OnNewEvent?.Invoke(this, new PLimberPacket(pkmn, prevented));
-        void BroadcastTransform()
-            => OnNewEvent?.Invoke(this, new PTransformPacket(bUser, bTarget));
+        void BroadcastTransform(PPokemon culprit, PPokemon victim)
+            => OnNewEvent?.Invoke(this, new PTransformPacket(culprit, victim));
+        void BroadcastMagnitude(byte magnitude)
+            => OnNewEvent?.Invoke(this, new PMagnitudePacket(magnitude));
 
 
 
@@ -71,6 +73,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PLimberPacket lp:
                     victim = battle.GetPokemon(lp.PokemonId);
                     Console.Write("{0}'s Limber: ", victim.Shell.Nickname);
+                    break;
+                case PMagnitudePacket mp:
+                    Console.WriteLine("Magnitude {0}!", mp.Magnitude);
                     break;
                 case PMoveCritPacket _:
                     Console.WriteLine("A critical hit!");

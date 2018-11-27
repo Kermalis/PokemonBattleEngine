@@ -80,9 +80,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             case PBattleStyle.Single:
                             case PBattleStyle.Rotation:
-                                // Only center in single battles & rotation battles
                                 switch (mData.Targets)
                                 {
+                                    case PMoveTarget.All:
+                                        if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeCenter))
+                                            return false;
+                                        break;
+                                    case PMoveTarget.AllFoes:
                                     case PMoveTarget.AllFoesSurrounding:
                                     case PMoveTarget.AllSurrounding:
                                     case PMoveTarget.SingleFoeSurrounding:
@@ -91,6 +95,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         if (action.FightTargets != PTarget.FoeCenter)
                                             return false;
                                         break;
+                                    case PMoveTarget.AllTeam:
                                     case PMoveTarget.Self:
                                     case PMoveTarget.SelfOrAllySurrounding:
                                         if (action.FightTargets != PTarget.AllyCenter)
@@ -99,11 +104,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 }
                                 break;
                             case PBattleStyle.Double:
-                                // No center in double battles
                                 switch (mData.Targets)
                                 {
+                                    case PMoveTarget.All:
+                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
+                                            return false;
+                                        break;
+                                    case PMoveTarget.AllFoes:
                                     case PMoveTarget.AllFoesSurrounding:
                                         if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeRight))
+                                            return false;
+                                        break;
+                                    case PMoveTarget.AllTeam:
+                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyRight))
                                             return false;
                                         break;
                                     case PMoveTarget.AllSurrounding:
@@ -168,6 +181,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             case PBattleStyle.Triple:
                                 switch (mData.Targets)
                                 {
+                                    case PMoveTarget.All:
+                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                            return false;
+                                        break;
+                                    case PMoveTarget.AllFoes:
+                                        if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                            return false;
+                                        break;
                                     case PMoveTarget.AllFoesSurrounding:
                                         if (pkmn.FieldPosition == PFieldPosition.Left)
                                         {
@@ -201,6 +222,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                             if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeLeft | PTarget.FoeCenter))
                                                 return false;
                                         }
+                                        break;
+                                    case PMoveTarget.AllTeam:
+                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight))
+                                            return false;
                                         break;
                                     case PMoveTarget.Self:
                                         if (pkmn.FieldPosition == PFieldPosition.Left)
@@ -350,17 +375,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PDecision.Fight:
                     switch (PMoveData.Data[action.FightMove].Targets)
                     {
-                        // These three are not supposed to activate multiple times because they do not hit
-                        case PMoveTarget.All:
-                        case PMoveTarget.AllFoes:
-                        case PMoveTarget.AllTeam:
-                            if (pkmn.FieldPosition == PFieldPosition.Left)
-                                action.FightTargets = PTarget.AllyLeft;
-                            else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                action.FightTargets = PTarget.AllyCenter;
-                            else
-                                action.FightTargets = PTarget.AllyRight;
-                            break;
                         case PMoveTarget.RandomFoeSurrounding:
                             switch (BattleStyle)
                             {
@@ -456,7 +470,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Gets Pokémon that can be hit at the moment
         // For example, if "FoeCenter" is passed in, logic will be used to fall-back to another opponent that can be hit if FoeCenter fainted
         // For each flag passed in, zero or one opponent will be returned for it
-        PPokemon[] GetRuntimeTargets(PTarget requestedTargets, PPokemon user, bool canHitFarCorners)
+        PPokemon[] GetRuntimeTargets(PPokemon user, PTarget requestedTargets, bool canHitFarCorners)
         {
             PTeam attackerTeam = Teams[user.Local ? 0 : 1]; // Attacker's team
             PTeam opposingTeam = Teams[user.Local ? 1 : 0]; // Other team
@@ -571,7 +585,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 targets.Add(b);
             }
-            return targets.Distinct().ToArray(); // Remove duplicate targets
+            return targets.Where(p => p != null).Distinct().ToArray(); // Remove duplicate targets
         }
     }
 }

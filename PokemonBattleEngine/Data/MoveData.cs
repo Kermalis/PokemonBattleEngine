@@ -1506,6 +1506,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Magnitude,
+                new PMoveData
+                {
+                    Type = PType.Ground, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Magnitude, EffectParam = 0,
+                    PPTier = 6, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.HitsUnderground,
+                    Targets = PMoveTarget.AllSurrounding
+                }
+            },
+            {
                 PMove.Meditate,
                 new PMoveData
                 {

@@ -99,7 +99,6 @@ Heal Bell
 Present
 Safeguard
 Pain Split
-Magnitude
 Dynamic Punch
 Baton Pass
 Encore

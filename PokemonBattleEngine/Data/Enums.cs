@@ -84,7 +84,8 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         Status,
         Physical,
-        Special
+        Special,
+        MAX
     }
     [Flags]
     public enum PMoveObtainMethod : uint
@@ -407,9 +408,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         AffectedByMirrorMove = 1 << 4,
         SoundBased = 1 << 5,
         DefrostsUser = 1 << 6,
-        HitsAirborne = 1 << 7,
-        HitsUnderground = 1 << 8,
-        HitsUnderwater = 1 << 9,
+        HitsAirborne = 1 << 7, // Power is doubled for airborne targets as well
+        HitsUnderground = 1 << 8, // Power is doubled for underground targets as well
+        HitsUnderwater = 1 << 9, // Power is doubled for underwater targets as well
         AlwaysCrit = 1 << 10,
         HighCritChance = 1 << 11
     }
@@ -464,6 +465,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LightScreen,
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
+        Magnitude,
         Minimize,
         Moonlight,
         Paralyze,
@@ -624,6 +626,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MachPunch,
         MagicalLeaf,
         MagnetBomb,
+        Magnitude,
         Meditate,
         Megahorn,
         MegaKick,

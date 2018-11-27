@@ -14,55 +14,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        PEffectiveness TypeCheck(PPokemon user, PPokemon target)
+        void TypeCheck(PPokemon user, PPokemon target, PMove move, out PType moveType, out PEffectiveness effectiveness)
         {
-            PPokemonData userPData = PPokemonData.Data[user.Species];
             PPokemonData targetPData = PPokemonData.Data[target.Species];
-            double effectiveness = 1;
 
-            bMoveType = PMoveData.GetMoveTypeForPokemon(user, bMove);
+            moveType = PMoveData.GetMoveTypeForPokemon(user, move);
 
-            // If a pokemon uses a move that shares a type with it, it gains a 50% power boost (100% if it has Adaptability)
-            if (userPData.HasType(bMoveType))
-            {
-                if (user.Ability == PAbility.Adaptability)
-                    bDamageMultiplier *= 2.0;
-                else
-                    bDamageMultiplier *= 1.5;
-            }
-            // Pokémon with Heatproof take half as much damage from fire attacks
-            if (bMoveType == PType.Fire && target.Ability == PAbility.Heatproof)
-                bDamageMultiplier *= 0.5;
+            double mult = PPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type1];
+            mult *= PPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type2];
 
-            effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)targetPData.Type1];
-            effectiveness *= PPokemonData.TypeEffectiveness[(int)bMoveType, (int)targetPData.Type2];
-
-            if (effectiveness == 0)
-                return PEffectiveness.Ineffective;
-            else if (effectiveness == 0.5)
-                return PEffectiveness.NotVeryEffective;
-            else if (effectiveness == 1.0)
-                return PEffectiveness.Normal;
+            if (mult == 0)
+                effectiveness = PEffectiveness.Ineffective;
+            else if (mult == 0.5)
+                effectiveness = PEffectiveness.NotVeryEffective;
+            else if (mult == 1.0)
+                effectiveness = PEffectiveness.Normal;
             else
-                return PEffectiveness.SuperEffective;
+                effectiveness = PEffectiveness.SuperEffective;
         }
 
-        // If power is 0, power is determined by bMove
-        ushort CalculateBasePower(PPokemon user, PPokemon target, byte power, PMoveCategory category, bool ignoreReflectLightScreen, bool ignoreLifeOrb)
+        ushort CalculateBasePower(PPokemon user, PPokemon target, PMove move, PType moveType, byte power, PMoveCategory moveCategory, bool ignoreReflectLightScreen, bool ignoreLifeOrb, bool criticalHit)
         {
+            PPokemonData userPData = PPokemonData.Data[user.Species];
             PPokemonData targetPData = PPokemonData.Data[target.Species];
             double basePower = power;
 
             if (power == 0)
             {
-                switch (bMove)
+                switch (move)
                 {
-                    case PMove.Earthquake:
-                        basePower = PMoveData.Data[bMove].Power;
-                        // Earthquake gets a 100% power boost if the target is underground
-                        if (bTarget.Status2.HasFlag(PStatus2.Underground))
-                            basePower *= 2.0;
-                        break;
                     case PMove.Frustration:
                         basePower = Math.Max(1, (byte.MaxValue - user.Shell.Friendship) / 2.5);
                         break;
@@ -85,7 +65,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower = user.GetHiddenPowerBasePower();
                         break;
                     case PMove.Retaliate:
-                        basePower = PMoveData.Data[bMove].Power;
+                        basePower = PMoveData.Data[move].Power;
                         // Retaliate gets a 100% power boost if the user's team has a Pokémon that fainted during the previous turn
                         if (Teams[user.Local ? 0 : 1].MonFaintedLastTurn)
                             basePower *= 2.0;
@@ -95,19 +75,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     case PMove.Steamroller:
                     case PMove.Stomp:
-                        basePower = PMoveData.Data[bMove].Power;
+                        basePower = PMoveData.Data[move].Power;
                         // Stomp and Steamroller get a 100% power boost if the target is minimized
-                        if (bTarget.Status2.HasFlag(PStatus2.Minimized))
-                            basePower *= 2.0;
-                        break;
-                    case PMove.Surf:
-                        basePower = PMoveData.Data[bMove].Power;
-                        // Surf gets a 100% power boost if the target is underwater
-                        if (bTarget.Status2.HasFlag(PStatus2.Underwater))
+                        if (target.Status2.HasFlag(PStatus2.Minimized))
                             basePower *= 2.0;
                         break;
                     default:
-                        basePower = PMoveData.Data[bMove].Power;
+                        basePower = PMoveData.Data[move].Power;
                         break;
                 }
             }
@@ -115,25 +89,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (Weather)
             {
                 case PWeather.Raining:
-                    if (bMoveType == PType.Water)
+                    if (moveType == PType.Water)
                         basePower *= 1.5;
-                    else if (bMoveType == PType.Fire)
+                    else if (moveType == PType.Fire)
                         basePower *= 0.5;
                     break;
                 case PWeather.Sunny:
-                    if (bMoveType == PType.Fire)
+                    if (moveType == PType.Fire)
                         basePower *= 1.5;
-                    else if (bMoveType == PType.Water)
+                    else if (moveType == PType.Water)
                         basePower *= 0.5;
                     break;
             }
 
             // Reflect & Light Screen reduce damage by 50% if there is one active battler or by 33% if there is more than one
-            if (!ignoreReflectLightScreen && !bLandedCrit)
+            if (!ignoreReflectLightScreen && !criticalHit)
             {
                 PTeam defenderTeam = Teams[target.Local ? 0 : 1];
-                if ((defenderTeam.Status.HasFlag(PTeamStatus.Reflect) && category == PMoveCategory.Physical)
-                    || (defenderTeam.Status.HasFlag(PTeamStatus.LightScreen) && category == PMoveCategory.Special))
+                if ((defenderTeam.Status.HasFlag(PTeamStatus.Reflect) && moveCategory == PMoveCategory.Physical)
+                    || (defenderTeam.Status.HasFlag(PTeamStatus.LightScreen) && moveCategory == PMoveCategory.Special))
                 {
                     if (defenderTeam.NumPkmnOnField == 1)
                         basePower *= 0.5;
@@ -142,7 +116,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            switch (bMoveType)
+            // If a Pokémon uses a move that shares a type with it, it gains a 50% power boost (100% if it has Adaptability)
+            if (userPData.HasType(moveType))
+            {
+                if (user.Ability == PAbility.Adaptability)
+                    basePower *= 2.0;
+                else
+                    basePower *= 1.5;
+            }
+            switch (moveType)
             {
                 case PType.Bug:
                     if (user.Item == PItem.InsectPlate)
@@ -173,6 +155,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // Blaze gives a 50% power boost to Fire attacks if the user is below 1/3 max HP
                     if (user.Ability == PAbility.Blaze && user.HP <= user.MaxHP / 3)
                         basePower *= 1.5;
+                    // Pokémon with Heatproof take half as much damage from fire attacks
+                    if (target.Ability == PAbility.Heatproof)
+                        basePower *= 0.5;
                     break;
                 case PType.Flying:
                     if (user.Item == PItem.SkyPlate)
@@ -224,6 +209,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
             }
 
+            // If a Pokémon is underground and gets hit by a move that can hit underground targets, power is boosted by 100%
+            if (target.Status2.HasFlag(PStatus2.Underground) && PMoveData.Data[move].Flags.HasFlag(PMoveFlag.HitsUnderground))
+                basePower *= 2.0;
+            // If a Pokémon is underwater and gets hit by a move that can hit underwater targets, power is boosted by 100%
+            if (target.Status2.HasFlag(PStatus2.Underwater) && PMoveData.Data[move].Flags.HasFlag(PMoveFlag.HitsUnderwater))
+                basePower *= 2.0;
+
             // Life Orb boosts power but deals damage to the user
             if (!ignoreLifeOrb && user.Item == PItem.LifeOrb)
                 basePower = basePower * 5324 / 4096;
@@ -231,18 +223,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Item == PItem.LightBall && user.Shell.Species == PSpecies.Pikachu)
                 basePower *= 2.0;
             // Damage is halved from a Burned Pokémon unless it has Guts
-            if (category == PMoveCategory.Physical && user.Status1 == PStatus1.Burned && user.Ability != PAbility.Guts)
+            if (moveCategory == PMoveCategory.Physical && user.Status1 == PStatus1.Burned && user.Ability != PAbility.Guts)
                 basePower *= 0.5;
             // Damage is halved when using Fire or Ice moves against a Pokémon with Thick Fat
-            if (target.Ability == PAbility.ThickFat && (bMoveType == PType.Fire || bMoveType == PType.Ice))
+            if (target.Ability == PAbility.ThickFat && (moveType == PType.Fire || moveType == PType.Ice))
                 basePower *= 0.5;
 
             return (ushort)basePower;
         }
-        ushort CalculateAttack(PPokemon user, PPokemon target)
+        ushort CalculateAttack(PPokemon user, PPokemon target, bool criticalHit)
         {
             // Negative Attack changes are ignored for critical hits
-            double attack = user.Attack * GetStatMultiplier(bLandedCrit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange);
+            double attack = user.Attack * GetStatMultiplier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange);
 
             // Pokemon with Huge Power or Pure Power get a 100% Attack boost
             if (user.Ability == PAbility.HugePower || user.Ability == PAbility.PurePower)
@@ -262,10 +254,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)attack;
         }
-        ushort CalculateDefense(PPokemon user, PPokemon target)
+        ushort CalculateDefense(PPokemon user, PPokemon target, bool criticalHit)
         {
             // Positive Defense changes are ignored for critical hits
-            double defense = user.Defense * GetStatMultiplier(bLandedCrit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange);
+            double defense = user.Defense * GetStatMultiplier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange);
 
             // A Ditto holding a Metal Powder gets a 100% Defense boost
             if (target.Item == PItem.MetalPowder && target.Species == PSpecies.Ditto)
@@ -276,10 +268,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)defense;
         }
-        ushort CalculateSpAttack(PPokemon user, PPokemon target)
+        ushort CalculateSpAttack(PPokemon user, PPokemon target, bool criticalHit)
         {
             // Negative SpAttack changes are ignored for critical hits
-            double spAttack = user.SpAttack * GetStatMultiplier(bLandedCrit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange);
+            double spAttack = user.SpAttack * GetStatMultiplier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange);
 
             // A Clamperl holding a Deep Sea Tooth gets a 100% SpAttack boost
             if (user.Item == PItem.DeepSeaTooth && user.Shell.Species == PSpecies.Clamperl)
@@ -293,10 +285,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)spAttack;
         }
-        ushort CalculateSpDefense(PPokemon user, PPokemon target)
+        ushort CalculateSpDefense(PPokemon user, PPokemon target, bool criticalHit)
         {
             // Positive SpDefense changes are ignored for critical hits
-            double spDefense = user.SpDefense * GetStatMultiplier(bLandedCrit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange);
+            double spDefense = user.SpDefense * GetStatMultiplier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange);
 
             // A Clamperl holding a Deep Sea Scale gets a 100% SpDefense boost
             if (target.Item == PItem.DeepSeaScale && target.Shell.Species == PSpecies.Clamperl)
@@ -308,26 +300,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return (ushort)spDefense;
         }
 
-        ushort CalculateDamage()
-            => CalculateDamage(bUser, bTarget, 0, PMoveData.Data[bMove].Category, false, false);
-        // If power is 0, power is determined by bMove
-        ushort CalculateDamage(PPokemon user, PPokemon target, byte power, PMoveCategory category, bool ignoreReflectLightScreen, bool ignoreLifeOrb)
+        // If moveCategory is PMoveCategory.MAX, category is determined by the move
+        // If power is 0, power is determined by the move
+        ushort CalculateDamage(PPokemon user, PPokemon target, PMove move, PType moveType, byte power = 0, PMoveCategory moveCategory = PMoveCategory.MAX, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
         {
+            if (moveCategory == PMoveCategory.MAX)
+                moveCategory = PMoveData.Data[move].Category;
             ushort damage;
             ushort a = 0, d = 0,
-                p = CalculateBasePower(user, target, power, category, ignoreReflectLightScreen, ignoreLifeOrb);
+                p = CalculateBasePower(user, target, move, moveType, power, moveCategory, ignoreReflectLightScreen, ignoreLifeOrb, criticalHit);
 
-            // TODO: Determine a and d for moves like Foul Play and Psyshock
-
-            if (category == PMoveCategory.Physical)
+            if (moveCategory == PMoveCategory.Physical)
             {
-                a = CalculateAttack(user, target);
-                d = CalculateDefense(user, target);
+                a = CalculateAttack(user, target, criticalHit);
+                d = CalculateDefense(user, target, criticalHit);
             }
-            else if (category == PMoveCategory.Special)
+            else if (moveCategory == PMoveCategory.Special)
             {
-                a = CalculateSpAttack(user, target);
-                d = CalculateSpDefense(user, target);
+                a = CalculateSpAttack(user, target, criticalHit);
+                d = CalculateSpDefense(user, target, criticalHit);
             }
 
             damage = (ushort)(2 * user.Shell.Level / 5 + 2);
