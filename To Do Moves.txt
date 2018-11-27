@@ -98,7 +98,6 @@ Sleep Talk
 Heal Bell
 Present
 Safeguard
-Pain Split
 Dynamic Punch
 Baton Pass
 Encore

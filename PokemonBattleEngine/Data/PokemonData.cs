@@ -1318,7 +1318,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
                         // natural gift (gen 4 tm)
                         Tuple.Create(PMove.OminousWind, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
-                        // pain split (hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.PainSplit, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // psych up (gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -1602,7 +1602,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // memento (gen 5 egg)
                         Tuple.Create(PMove.NastyPlot, PMoveObtainMethod.EggMove_BWB2W2),
                         // nightmare (gen 5 egg)
-                        // pain split (b2w2 tutor)
+                        Tuple.Create(PMove.PainSplit, PMoveObtainMethod.MoveTutor_B2W2),
                         // payback (gen 5 tm)
                         Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_BWB2W2),

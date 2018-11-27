@@ -176,6 +176,9 @@ namespace Kermalis.PokemonBattleEngineClient
                     message = "{0} used {1}!";
                     messageView.Add(battleView.Message = string.Format(message, culprit.NameForTrainer(true), mup.Move));
                     break;
+                case PPainSplitPacket psp:
+                    messageView.Add(battleView.Message = "The battlers shared their pain!");
+                    break;
                 case PPkmnFaintedPacket pfap:
                     victim = Battle.GetPokemon(pfap.VictimId);
                     pos = victim.FieldPosition;

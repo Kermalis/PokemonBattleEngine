@@ -307,6 +307,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Moonlight:
                     Ef_Moonlight(user);
                     break;
+                case PMoveEffect.PainSplit:
+                    Ef_PainSplit(user, targets[0]);
+                    break;
                 case PMoveEffect.Paralyze:
                     TryForceStatus1(user, targets, move, PStatus1.Paralyzed);
                     break;
@@ -1443,6 +1446,34 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 FaintCheck(target);
             }
+        }
+        void Ef_PainSplit(PPokemon user, PPokemon target)
+        {
+            BroadcastMoveUsed(user, PMove.PainSplit);
+            PPReduce(user, PMove.PainSplit);
+            if (target.Status2.HasFlag(PStatus2.Substitute))
+            {
+                BroadcastFail(user, PFailReason.Default);
+                return;
+            }
+            if (MissCheck(user, target, PMove.PainSplit))
+            {
+                return;
+            }
+            ushort total = (ushort)(user.HP + target.HP);
+            ushort hp = (ushort)(total / 2);
+            foreach (PPokemon pkmn in new PPokemon[] { user, target })
+            {
+                if (hp >= pkmn.HP)
+                {
+                    HealDamage(user, (ushort)(hp - pkmn.HP));
+                }
+                else
+                {
+                    DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), PEffectiveness.Normal, true);
+                }
+            }
+            BroadcastPainSplit();
         }
     }
 }

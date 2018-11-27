@@ -146,7 +146,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Modest,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
                 EVs = new byte[] { 232, 0, 0, 56, 0, 220 },
-                Moves = new PMove[] { PMove.HydroPump, PMove.WillOWisp, PMove.Discharge, PMove.Substitute }, // Volt Switch, Hydro Pump, Will-O-Wisp, Pain Split
+                Moves = new PMove[] { PMove.HydroPump, PMove.WillOWisp, PMove.Discharge, PMove.PainSplit }, // Volt Switch, Hydro Pump, Will-O-Wisp, Pain Split
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Cresselia_UU = new PPokemonShell

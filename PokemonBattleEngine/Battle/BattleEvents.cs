@@ -48,6 +48,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PTransformPacket(culprit, victim));
         void BroadcastMagnitude(byte magnitude)
             => OnNewEvent?.Invoke(this, new PMagnitudePacket(magnitude));
+        void BroadcastPainSplit()
+            => OnNewEvent?.Invoke(this, new PPainSplitPacket());
 
 
 
@@ -110,6 +112,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveUsedPacket mup:
                     culprit = battle.GetPokemon(mup.CulpritId);
                     Console.WriteLine("{0} used {1}!", culprit.NameForTrainer(true), mup.Move);
+                    break;
+                case PPainSplitPacket psp:
+                    Console.WriteLine("The battlers shared their pain!");
                     break;
                 case PPkmnFaintedPacket pfap:
                     victim = battle.GetPokemon(pfap.VictimId);

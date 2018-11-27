@@ -469,6 +469,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Magnitude,
         Minimize,
         Moonlight,
+        PainSplit,
         Paralyze,
         Poison,
         Protect, // TODO: If the user goes last, fail
@@ -649,6 +650,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Octazooka,
         OminousWind,
         Overheat,
+        PainSplit,
         Peck,
         PoisonFang,
         PoisonGas,
