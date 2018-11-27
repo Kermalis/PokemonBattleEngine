@@ -34,7 +34,6 @@ Petal Dance
 Dragon Rage
 Fire Spin
 Thunder
-Earthquake
 Fissure
 Rage
 Night Shade

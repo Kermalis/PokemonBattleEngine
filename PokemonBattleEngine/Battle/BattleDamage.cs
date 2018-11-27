@@ -57,6 +57,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 switch (bMove)
                 {
+                    case PMove.Earthquake:
+                        basePower = PMoveData.Data[bMove].Power;
+                        // Earthquake gets a 100% power boost if the target is underground
+                        if (bTarget.Status2.HasFlag(PStatus2.Underground))
+                            basePower *= 2.0;
+                        break;
                     case PMove.Frustration:
                         basePower = Math.Max(1, (byte.MaxValue - user.Shell.Friendship) / 2.5);
                         break;

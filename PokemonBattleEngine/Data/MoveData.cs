@@ -758,6 +758,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Earthquake,
+                new PMoveData
+                {
+                    Type = PType.Ground, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 2, Power = 100, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.HitsUnderground,
+                    Targets = PMoveTarget.AllSurrounding
+                }
+            },
+            {
                 PMove.EggBomb,
                 new PMoveData
                 {

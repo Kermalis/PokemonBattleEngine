@@ -268,7 +268,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // dynamicpunch (emerald tutor)
                         Tuple.Create(PMove.EarthPower, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
-                        // earthquake (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Earthquake, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // echoed voice (gen 5 tm)
                         // endeavor (pt/hgss tutor, b2w2 tutor)
                         // endure (emerald tutor, gen 4 tm, gen 5 egg)
@@ -384,7 +384,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // dynamicpunch (emerald tutor)
                         Tuple.Create(PMove.EarthPower, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
-                        // earthquake (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Earthquake, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // echoed voice (gen 5 tm)
                         // endeavor (pt/hgss tutor, b2w2 tutor)
                         // endure (emerald tutor, gen 4 tm, gen 5 egg)
@@ -1085,7 +1085,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.DragonClaw, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.DragonPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         // dream eater (frlg/e/xd tutor, gen 4 tm, gen 5 tm)
-                        // earthquake (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Earthquake, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // endure (emerald tutor, gen 4 tm)
                         Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // facade (gen 3 tm, gen 4 tm, gen 5 tm)
@@ -1207,7 +1207,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.DragonClaw, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.DragonPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         // dream eater (frlg/e/xd tutor, gen 4 tm, gen 5 tm)
-                        // earthquake (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Earthquake, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // endure (emerald tutor, gen 4 tm)
                         Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // facade (gen 3 tm, gen 4 tm, gen 5 tm)
