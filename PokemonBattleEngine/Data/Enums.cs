@@ -402,19 +402,19 @@ namespace Kermalis.PokemonBattleEngine.Data
     [Flags]
     public enum PMoveFlag : ushort
     {
-        None = 0,
-        MakesContact = 1 << 0,
-        AffectedByProtect = 1 << 1,
-        AffectedByMagicCoat = 1 << 2,
-        AffectedBySnatch = 1 << 3,
-        AffectedByMirrorMove = 1 << 4,
-        SoundBased = 1 << 5,
-        DefrostsUser = 1 << 6,
-        HitsAirborne = 1 << 7, // Power is doubled for airborne targets as well
-        HitsUnderground = 1 << 8, // Power is doubled for underground targets as well
-        HitsUnderwater = 1 << 9, // Power is doubled for underwater targets as well
-        AlwaysCrit = 1 << 10,
-        HighCritChance = 1 << 11
+        None,
+        AlwaysCrit = 1 << 0,           // Always lands a critical hit
+        AffectedByMagicCoat = 1 << 1,  // Magic Coat blocks the move
+        AffectedByMirrorMove = 1 << 2, // Mirror Move can copy the move
+        AffectedByProtect = 1 << 3,    // Protect blocks the move
+        AffectedBySnatch = 1 << 4,     // Snatch can steal the move
+        DefrostsUser = 1 << 5,         // User unfreezes when using this move
+        HighCritChance = 1 << 6,       // +1 critical hit stage
+        HitsAirborne = 1 << 7,         // Can hit airborne targets
+        HitsUnderground = 1 << 8,      // Can hit underground targets
+        HitsUnderwater = 1 << 9,       // Can hit underwater targets
+        MakesContact = 1 << 10,        // Rough Skin, Iron Barbs and Rocky Helmet hurt the user
+        SoundBased = 1 << 11           // Soundproof blocks the move
     }
     public enum PMoveEffect : byte
     {
@@ -704,6 +704,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SilverWind,
         Sing,
         ShockWave,
+        SkyUppercut,
         Slam,
         Slash,
         SleepPowder,
