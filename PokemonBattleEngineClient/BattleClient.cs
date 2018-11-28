@@ -234,6 +234,18 @@ namespace Kermalis.PokemonBattleEngineClient
                     battleView.PokemonPositionChanged(culprit, pos);
                     messageView.Add(battleView.Message = string.Format("{1} withdrew {0}!", culprit.Shell.Nickname, Battle.Teams[culprit.Local ? 0 : 1].TrainerName));
                     break;
+                case PPsychUpPacket pup:
+                    culprit = Battle.GetPokemon(pup.CulpritId);
+                    victim = Battle.GetPokemon(pup.VictimId);
+                    culprit.AttackChange = victim.AttackChange = pup.AttackChange;
+                    culprit.DefenseChange = victim.DefenseChange = pup.DefenseChange;
+                    culprit.SpAttackChange = victim.SpAttackChange = pup.SpAttackChange;
+                    culprit.SpDefenseChange = victim.SpDefenseChange = pup.SpDefenseChange;
+                    culprit.SpeedChange = victim.SpeedChange = pup.SpeedChange;
+                    culprit.AccuracyChange = victim.AccuracyChange = pup.AccuracyChange;
+                    culprit.EvasionChange = victim.EvasionChange = pup.EvasionChange;
+                    messageView.Add(battleView.Message = string.Format("{0} copied {1}'s stat changes!", culprit.Shell.Nickname, victim.Shell.Nickname));
+                    break;
                 case PStatus1Packet s1p:
                     culprit = Battle.GetPokemon(s1p.CulpritId);
                     victim = Battle.GetPokemon(s1p.VictimId);

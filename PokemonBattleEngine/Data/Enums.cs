@@ -476,6 +476,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Paralyze,
         Poison,
         Protect, // TODO: If the user goes last, fail
+        PsychUp,
         RainDance,
         RaiseUser_ATK_ACC_By1,
         RaiseUser_ATK_DEF_By1,
@@ -674,6 +675,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Psychic,
         PsychoBoost,
         PsychoCut,
+        PsychUp,
         QuickAttack,
         QuiverDance,
         RainDance,

@@ -1979,6 +1979,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.PsychUp,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.PsychUp, EffectParam = 0,
+                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.None,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.QuickAttack,
                 new PMoveData
                 {

@@ -330,6 +330,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Protect:
                     TryForceStatus2(user, targets, move, PStatus2.Protected);
                     break;
+                case PMoveEffect.PsychUp:
+                    Ef_PsychUp(user, targets[0]);
+                    break;
                 case PMoveEffect.RainDance:
                     Ef_RainDance(user);
                     break;
@@ -1530,6 +1533,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
             BroadcastPainSplit();
+        }
+        void Ef_PsychUp(PPokemon user, PPokemon target)
+        {
+            BroadcastMoveUsed(user, PMove.PsychUp);
+            PPReduce(user, PMove.PsychUp);
+            if (MissCheck(user, target, PMove.PsychUp))
+            {
+                return;
+            }
+            user.AttackChange = target.AttackChange;
+            user.DefenseChange = target.DefenseChange;
+            user.SpAttackChange = target.SpAttackChange;
+            user.SpDefenseChange = target.SpDefenseChange;
+            user.SpeedChange = target.SpeedChange;
+            user.AccuracyChange = target.AccuracyChange;
+            user.EvasionChange = target.EvasionChange;
+            BroadcastPsychUp(user, target);
         }
     }
 }

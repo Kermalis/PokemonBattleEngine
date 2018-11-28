@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PLimberPacket.Code: packet = new PLimberPacket(buffer); break;
                 case PMagnitudePacket.Code: packet = new PMagnitudePacket(buffer); break;
                 case PPainSplitPacket.Code: packet = new PPainSplitPacket(buffer); break;
-                //case PStatus2CausedDamagePacket.Code: packet = new PStatus2CausedDamagePacket(buffer); break;
+                case PPsychUpPacket.Code: packet = new PPsychUpPacket(buffer); break;
                 default: throw new ArgumentException($"Invalid packet code: {code}");
             }
 

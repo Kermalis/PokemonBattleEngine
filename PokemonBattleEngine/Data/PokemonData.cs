@@ -922,7 +922,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // payback (gen 4 tm, gen 5 tm)
                         // perish song (gen 5 egg)
                         Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // psych up (emerald tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.PsychUp, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // punishment (gen 4 egg, gen 5 egg)
                         Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // rest (gen 3 tm, gen 4 tm, gen 5 tm)
@@ -1111,7 +1111,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // outrage (pt/hgss tutor, b2w2 tutor)
                         Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // psych up (emerald tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.PsychUp, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // psyshock (gen 5 tm)
                         Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Reflect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -1232,7 +1232,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // outrage (pt/hgss tutor, b2w2 tutor)
                         Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // psych up (emerald tutor, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.PsychUp, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // psyshock (gen 5 tm)
                         Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Reflect, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -1320,7 +1320,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.OminousWind, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PMove.PainSplit, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // psych up (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.PsychUp, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Reflect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // rest (gen 4 tm, gen 5 tm)
@@ -1407,7 +1407,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // natural gift (gen 4 tm)
                         Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // psych up (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.PsychUp, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // psyshock (gen 5 tm)
                         Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // recycle (gen 4 tm, b2w2 tutor)
@@ -1502,7 +1502,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.PoisonJab, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // psych up (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.PsychUp, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // rest (gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.Retaliate, PMoveObtainMethod.TM_BWB2W2),
@@ -1606,7 +1606,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // payback (gen 5 tm)
                         Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_BWB2W2),
-                        // psych up (gen 5 tm)
+                        Tuple.Create(PMove.PsychUp, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_BWB2W2),
                         // rest (gen 5 tm)
                         Tuple.Create(PMove.Return, PMoveObtainMethod.TM_BWB2W2),

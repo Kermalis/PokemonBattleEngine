@@ -114,7 +114,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
                 EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-                Moves = new PMove[] { PMove.DracoMeteor, PMove.Fly, PMove.Surf, PMove.MistBall }, // Draco Meteor, Surf, Psyshock, Roost
+                Moves = new PMove[] { PMove.DracoMeteor, PMove.Fly, PMove.Surf, PMove.PsychUp }, // Draco Meteor, Surf, Psyshock, Roost
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Latios_OU = new PPokemonShell

@@ -50,6 +50,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PMagnitudePacket(magnitude));
         void BroadcastPainSplit()
             => OnNewEvent?.Invoke(this, new PPainSplitPacket());
+        void BroadcastPsychUp(PPokemon culprit, PPokemon victim)
+            => OnNewEvent?.Invoke(this, new PPsychUpPacket(culprit, victim));
 
 
 
@@ -156,6 +158,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PPkmnSwitchOutPacket psop:
                     culprit = battle.GetPokemon(psop.PokemonId);
                     Console.WriteLine("{1} withdrew {0}!", culprit.Shell.Nickname, battle.Teams[culprit.Local ? 0 : 1].TrainerName);
+                    break;
+                case PPsychUpPacket pup:
+                    culprit = battle.GetPokemon(pup.CulpritId);
+                    victim = battle.GetPokemon(pup.VictimId);
+                    Console.WriteLine("{0} copied {1}'s stat changes!", culprit.Shell.Nickname, victim.Shell.Nickname);
                     break;
                 case PStatus1Packet s1p:
                     culprit = battle.GetPokemon(s1p.CulpritId);
