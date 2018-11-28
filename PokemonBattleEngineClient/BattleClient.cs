@@ -320,6 +320,20 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     switch (s2p.Status)
                     {
+                        case PStatus2.Airborne:
+                            battleView.PokemonPositionChanged(victim, PFieldPosition.None);
+                            switch (s2p.Action)
+                            {
+                                case PStatusAction.Added:
+                                    message = "{0} flew up high!";
+                                    victim.LockedAction = victim.SelectedAction;
+                                    break;
+                                case PStatusAction.Ended:
+                                    victim.LockedAction.Decision = PDecision.None;
+                                    return true;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                            }
+                            break;
                         case PStatus2.Confused:
                             switch (s2p.Action)
                             {

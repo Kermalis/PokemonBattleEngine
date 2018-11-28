@@ -5,7 +5,6 @@ Guillotine
 Razor Wind
 Gust
 Whirlwind
-Fly
 Bind
 Double Kick
 Jump Kick

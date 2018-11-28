@@ -344,8 +344,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         // Cannot switch into a foe's Pokémon
                         if (switchPkmn.Local != pkmn.Local)
                             return false;
-                        // Cannot switch while underground or underwater
-                        if (pkmn.Status2.HasFlag(PStatus2.Underground) || pkmn.Status2.HasFlag(PStatus2.Underwater))
+                        // Cannot switch while airborne, underground or underwater
+                        if (pkmn.Status2.HasFlag(PStatus2.Airborne) || pkmn.Status2.HasFlag(PStatus2.Underground) || pkmn.Status2.HasFlag(PStatus2.Underwater))
                             return false;
                         // Cannot switch into a Pokémon already on the field
                         if (switchPkmn.FieldPosition != PFieldPosition.None)

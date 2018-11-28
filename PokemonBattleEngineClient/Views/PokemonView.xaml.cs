@@ -94,7 +94,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 Scale = pokemon.Local ? 2 : 1;
 
                 // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
-                SpriteOpacity = !pokemon.Status2.HasFlag(PStatus2.Substitute) && (pokemon.Status2.HasFlag(PStatus2.Underground) || pokemon.Status2.HasFlag(PStatus2.Underwater)) ? 0.4 : 1.0;
+                SpriteOpacity = !pokemon.Status2.HasFlag(PStatus2.Substitute) && (pokemon.Status2.HasFlag(PStatus2.Airborne) || pokemon.Status2.HasFlag(PStatus2.Underground) || pokemon.Status2.HasFlag(PStatus2.Underwater)) ? 0.4 : 1.0;
 
                 string orientation = pokemon.Local ? "-B" : "-F";
                 if (pokemon.Status2.HasFlag(PStatus2.Substitute))

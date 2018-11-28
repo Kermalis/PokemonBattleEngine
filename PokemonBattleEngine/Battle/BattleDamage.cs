@@ -35,7 +35,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         ushort CalculateBasePower(PPokemon user, PPokemon target, PMove move, PType moveType, byte power, PMoveCategory moveCategory, bool ignoreReflectLightScreen, bool ignoreLifeOrb, bool criticalHit)
         {
-            PMoveData mData = PMoveData.Data[move];
             PPokemonData targetPData = PPokemonData.Data[target.Species];
             double basePower = power;
 
@@ -84,6 +83,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower = PMoveData.Data[move].Power;
                         break;
                 }
+            }
+            switch (move)
+            {
+                case PMove.Earthquake:
+                case PMove.Magnitude:
+                    // Earthquake and Magnitude get a 100% power boost if the target is underground
+                    if (target.Status2.HasFlag(PStatus2.Underground))
+                        basePower *= 2.0;
+                    break;
+                case PMove.Surf:
+                    // Surf gets a 100% power boost if the target is underwater
+                    if (target.Status2.HasFlag(PStatus2.Underwater))
+                        basePower *= 2.0;
+                    break;
             }
 
             switch (Weather)
@@ -208,13 +221,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 1.5;
                     break;
             }
-
-            // If a Pokémon is underground and gets hit by a move that can hit underground targets, power is boosted by 100%
-            if (target.Status2.HasFlag(PStatus2.Underground) && mData.Flags.HasFlag(PMoveFlag.HitsUnderground))
-                basePower *= 2.0;
-            // If a Pokémon is underwater and gets hit by a move that can hit underwater targets, power is boosted by 100%
-            if (target.Status2.HasFlag(PStatus2.Underwater) && mData.Flags.HasFlag(PMoveFlag.HitsUnderwater))
-                basePower *= 2.0;
 
             // Life Orb boosts power but deals damage to the user
             if (!ignoreLifeOrb && user.Item == PItem.LifeOrb)

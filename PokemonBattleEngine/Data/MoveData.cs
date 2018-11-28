@@ -956,6 +956,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Fly,
+                new PMoveData
+                {
+                    Type = PType.Flying, Category = PMoveCategory.Physical,
+                    Effect = PMoveEffect.Fly, EffectParam = 0,
+                    PPTier = 3, Power = 90, Accuracy = 95, Priority = 0,
+                    Flags = PMoveFlag.MakesContact | PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleNotSelf
+                }
+            },
+            {
                 PMove.FocusBlast,
                 new PMoveData
                 {
@@ -2733,7 +2744,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PType.Electric, Category = PMoveCategory.Special,
                     Effect = PMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
                     PPTier = 2, Power = 120, Accuracy = 70, Priority = 0,
-                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove | PMoveFlag.HitsAirborne,
                     Targets = PMoveTarget.SingleSurrounding
                 }
             },

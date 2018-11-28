@@ -213,6 +213,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Fail:
                     Ef_Fail(user, move);
                     break;
+                case PMoveEffect.Fly:
+                    Ef_Fly(user, targets[0]);
+                    break;
                 case PMoveEffect.FocusEnergy:
                     TryForceStatus2(user, targets, move, PStatus2.Pumped);
                     break;
@@ -490,6 +493,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Ability == PAbility.NoGuard || target.Ability == PAbility.NoGuard)
                 return false;
 
+            // Hitting airborne opponents
+            if (target.Status2.HasFlag(PStatus2.Airborne) && !mData.Flags.HasFlag(PMoveFlag.HitsAirborne))
+                goto miss;
             // Hitting underground opponents
             if (target.Status2.HasFlag(PStatus2.Underground) && !mData.Flags.HasFlag(PMoveFlag.HitsUnderground))
                 goto miss;
@@ -1266,6 +1272,44 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.LockedAction = user.SelectedAction;
                 user.Status2 |= PStatus2.Underwater;
                 BroadcastStatus2(user, user, PStatus2.Underwater, PStatusAction.Added);
+                if (user.Item == PItem.PowerHerb)
+                {
+                    user.Item = PItem.None;
+                    BroadcastItemUsed(user, PItem.PowerHerb);
+                    goto top;
+                }
+            }
+        }
+        void Ef_Fly(PPokemon user, PPokemon target)
+        {
+            BroadcastMoveUsed(user, PMove.Fly);
+            PPReduce(user, PMove.Fly);
+            top:
+            if (user.Status2.HasFlag(PStatus2.Airborne))
+            {
+                user.LockedAction.Decision = PDecision.None;
+                user.Status2 &= ~PStatus2.Airborne;
+                BroadcastStatus2(user, user, PStatus2.Airborne, PStatusAction.Ended);
+                if (MissCheck(user, target, PMove.Fly))
+                {
+                    return;
+                }
+                double damageMultiplier = 1.0;
+                bool crit = CritCheck(user, target, PMove.Fly, ref damageMultiplier);
+                TypeCheck(user, target, PMove.Fly, out PType moveType, out PEffectiveness effectiveness);
+                ushort damage = CalculateDamage(user, target, PMove.Fly, moveType, criticalHit: crit);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                if (crit)
+                {
+                    BroadcastCrit();
+                }
+                FaintCheck(target);
+            }
+            else
+            {
+                user.LockedAction = user.SelectedAction;
+                user.Status2 |= PStatus2.Airborne;
+                BroadcastStatus2(user, user, PStatus2.Airborne, PStatusAction.Added);
                 if (user.Item == PItem.PowerHerb)
                 {
                     user.Item = PItem.None;

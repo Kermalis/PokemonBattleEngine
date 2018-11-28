@@ -224,6 +224,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     victim = battle.GetPokemon(s2p.VictimId);
                     switch (s2p.Status)
                     {
+                        case PStatus2.Airborne:
+                            switch (s2p.Action)
+                            {
+                                case PStatusAction.Added: message = "{0} flew up high!"; break;
+                                case PStatusAction.Ended: return;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                            }
+                            break;
                         case PStatus2.Confused:
                             switch (s2p.Action)
                             {

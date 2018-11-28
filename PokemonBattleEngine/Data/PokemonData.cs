@@ -535,7 +535,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // endure (emerald tutor, gen 4 tm)
                         // facade (gen 3 tm, gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.FaintAttack, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
-                        // fly (gen 3 hm, gen 4 hm, gen 5 hm)
+                        Tuple.Create(PMove.Fly, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // giga drain (gen 3 tm, gen 4 tm, gen 5 egg, b2w2 tutor)
                         // giga impact (gen 4 tm, gen 5 tm)
@@ -1090,7 +1090,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // facade (gen 3 tm, gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // fly (gen 3 hm, gen 4 hm, gen 5 hm)
+                        Tuple.Create(PMove.Fly, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // fury cutter (emerald tutor, pt/hgss tutor)
                         // giga impact (gen 4 tm, gen 5 tm)
@@ -1212,7 +1212,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // facade (gen 3 tm, gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // fly (gen 3 hm, gen 4 hm, gen 5 hm)
+                        Tuple.Create(PMove.Fly, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // fury cutter (emerald tutor, pt/hgss tutor)
                         // giga impact (gen 4 tm, gen 5 tm)
@@ -1680,7 +1680,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.Flamethrower, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.FlashCannon, PMoveObtainMethod.TM_BWB2W2),
-                        // fly (gen 5 hm)
+                        Tuple.Create(PMove.Fly, PMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_BWB2W2),
                         // giga drain (b2w2 tutor)
                         // giga impact (gen 5 tm)

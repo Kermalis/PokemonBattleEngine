@@ -136,19 +136,20 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PStatus2 : uint
     {
         None,
-        Confused = 1 << 0,
-        Cursed = 1 << 1,
-        Flinching = 1 << 2,
-        Infatuated = 1 << 3, // TODO
-        LeechSeed = 1 << 4,
-        Minimized = 1 << 5,
-        Protected = 1 << 6,
-        Pumped = 1 << 7, // Focus Energy / Lansat Berry
-        Substitute = 1 << 8,
-        Tormented = 1 << 9, // TODO
-        Transformed = 1 << 10,
-        Underground = 1 << 11, // TODO
-        Underwater = 1 << 12
+        Airborne = 1 << 0,
+        Confused = 1 << 1,
+        Cursed = 1 << 2,
+        Flinching = 1 << 3,
+        Infatuated = 1 << 4, // TODO
+        LeechSeed = 1 << 5,
+        Minimized = 1 << 6,
+        Protected = 1 << 7,
+        Pumped = 1 << 8, // Focus Energy / Lansat Berry
+        Substitute = 1 << 9,
+        Tormented = 1 << 10, // TODO
+        Transformed = 1 << 11,
+        Underground = 1 << 12,
+        Underwater = 1 << 13
     }
     [Flags]
     public enum PTeamStatus : byte
@@ -436,6 +437,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Dig,
         Dive,
         Fail,
+        Fly,
         FocusEnergy,
         Growth,
         Hit,
@@ -578,6 +580,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FlameWheel,
         Flash,
         FlashCannon,
+        Fly,
         FocusBlast,
         FocusEnergy,
         ForcePalm,
@@ -739,7 +742,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         TeeterDance,
         Teleport,
         Tickle,
-        Thunder, // TODO: Bypass accuracy checks in rain, reduce accuracy in harsh sunlight, hit flying/bouncing/skydropping
+        Thunder, // TODO: Bypass accuracy checks in rain, reduce accuracy in harsh sunlight
         Thunderbolt,
         ThunderPunch,
         ThunderShock,
