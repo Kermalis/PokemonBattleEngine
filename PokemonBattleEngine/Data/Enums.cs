@@ -571,6 +571,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Eruption,
         Extrasensory,
         ExtremeSpeed,
+        Facade,
         FaintAttack,
         FakeTears,
         FeatherDance,

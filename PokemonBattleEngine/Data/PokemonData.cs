@@ -162,7 +162,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // echoed voice (gen 5 tm)
                         // encore (gen 3 egg, gen 4 egg, gen 5 egg)
                         // endure (emerald tutor, gen 4 tm, gen 5 egg)
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // fake out (gen 4 egg, gen 5 egg)
                         // flail (hgss egg, gen 5 egg)
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -272,7 +272,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // echoed voice (gen 5 tm)
                         // endeavor (pt/hgss tutor, b2w2 tutor)
                         // endure (emerald tutor, gen 4 tm, gen 5 egg)
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // false swipe (gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.FireBlast, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.FirePunch, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
@@ -388,7 +388,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // echoed voice (gen 5 tm)
                         // endeavor (pt/hgss tutor, b2w2 tutor)
                         // endure (emerald tutor, gen 4 tm, gen 5 egg)
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // false swipe (gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.FireBlast, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.FirePunch, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
@@ -533,7 +533,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double edge (frlg/e/xd tutor)
                         Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // endure (emerald tutor, gen 4 tm)
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.FaintAttack, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PMove.Fly, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -628,7 +628,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // echoed voice (gen 5 tm)
                         // encore (gen 3 egg, gen 4 egg, gen 5 egg)
                         // endure (emerald tutor, gen 4 tm, gen 5 egg)
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // fake out (gen 4 egg, gen 5 egg)
                         // flail (hgss egg, gen 5 egg)
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -741,7 +741,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dynamicpunch (emerald tutor)
                         // encore (gen 3 egg, gen 4 egg, gen 5 egg)
                         // endure (emerald tutor, gen 4 tm)
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.FakeTears, PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         // fling (gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.FocusBlast, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -890,7 +890,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dream eater (frlg/e/xd tutor, gen 4 tm, gen 5 tm)
                         // echoed voice (gen 5 tm)
                         // endure (emerald tutor, gen 4 tm)
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.FaintAttack, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         // false swipe (gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.FireBlast, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -999,7 +999,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // double edge (frlg/e/xd tutor)
                         Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // endure (emerald tutor, gen 4 tm, gen 5 egg)
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // hail (gen 3 tm, gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -1088,7 +1088,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.Earthquake, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // endure (emerald tutor, gen 4 tm)
                         Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Fly, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -1210,7 +1210,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.Earthquake, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // endure (emerald tutor, gen 4 tm)
                         Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // facade (gen 3 tm, gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Fly, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -1310,7 +1310,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dream eater (gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.Electroweb, PMoveObtainMethod.MoveTutor_B2W2),
                         // endure (gen 4 tm)
-                        // facade (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -1388,7 +1388,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dream eater (gen 4 tm, gen 5 tm)
                         // endure (gen 4 tm)
                         Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        // facade (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // fury cutter (pt/hgss tutor)
@@ -1479,7 +1479,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // dream eater (gen 4 tm, gen 5 tm)
                         // embargo (gen 4 tm, gen 5 tm)
                         // endure (gen 4 tm)
-                        // facade (gen 4 tm, gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // fling (gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.FocusBlast, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
@@ -1586,7 +1586,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // embargo (gen 5 tm)
                         // endure (gen 5 egg)
                         Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_BWB2W2),
-                        // facade (gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.FakeTears, PMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_BWB2W2),
@@ -1675,7 +1675,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.Electroweb, PMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_BWB2W2),
                         // explosion (gen 5 tm)
-                        // facade (gen 5 tm)
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.FlameCharge, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Flamethrower, PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_BWB2W2),

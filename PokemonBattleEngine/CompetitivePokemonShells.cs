@@ -66,7 +66,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Jolly,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
                 EVs = new byte[] { 252, 0, 4, 0, 0, 252, },
-                Moves = new PMove[] { PMove.XScissor, PMove.NastyPlot, PMove.AirSlash, PMove.Toxic }, // Taunt, Roost, Brave Bird, Toxic
+                Moves = new PMove[] { PMove.Facade, PMove.NastyPlot, PMove.AirSlash, PMove.Toxic }, // Taunt, Roost, Brave Bird, Toxic
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Azumarill_UU = new PPokemonShell

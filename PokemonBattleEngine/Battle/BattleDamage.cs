@@ -46,6 +46,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PMove.WaterSpout:
                         basePower = Math.Min(1, 150 * user.HP / user.MaxHP);
                         break;
+                    case PMove.Facade:
+                        basePower = PMoveData.Data[move].Power;
+                        // Facade get a 100% power boost if the user is Burned, Paralyzed, Poisoned, or Badly Poisoned
+                        if (user.Status1 == PStatus1.Burned || user.Status1 == PStatus1.Paralyzed || user.Status1 == PStatus1.Poisoned || user.Status1 == PStatus1.BadlyPoisoned)
+                            basePower *= 2.0;
+                        break;
                     case PMove.Frustration:
                         basePower = Math.Max(1, (byte.MaxValue - user.Shell.Friendship) / 2.5);
                         break;
@@ -79,7 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PMove.Steamroller:
                     case PMove.Stomp:
                         basePower = PMoveData.Data[move].Power;
-                        // Stomp and Steamroller get a 100% power boost if the target is minimized
+                        // Stomp and Steamroller get a 100% power boost if the target is Minimized
                         if (target.Status2.HasFlag(PStatus2.Minimized))
                             basePower *= 2.0;
                         break;
