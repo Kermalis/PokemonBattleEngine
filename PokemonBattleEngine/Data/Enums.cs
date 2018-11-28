@@ -291,6 +291,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BattleArmor,
         Blaze,
         Compoundeyes,
+        CuteCharm, // TODO
         Download, // TODO
         Guts,
         Heatproof,
@@ -309,6 +310,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Minus, // TODO
         Mummy, // TODO
         NoGuard,
+        Normalize, // TODO
         Overgrow,
         Plus, // TODO
         Pressure, // TODO
@@ -325,6 +327,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Swarm,
         ThickFat,
         Torrent,
+        WonderSkin, // TODO
         MAX,
     }
     public enum PSpecies : uint
@@ -365,6 +368,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Z = 201 | (25 << 0x10),
         Unown_Exclamation = 201 | (26 << 0x10),
         Unown_Question = 201 | (27 << 0x10),
+        Skitty = 300,
         Absol = 359,
         Clamperl = 366,
         Latias = 380,
@@ -770,7 +774,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WillOWisp,
         WingAttack,
         Withdraw,
-        Workup,
+        WorkUp,
         XScissor,
         ZapCannon,
         ZenHeadbutt,

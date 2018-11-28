@@ -3024,7 +3024,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
-                PMove.Workup,
+                PMove.WorkUp,
                 new PMoveData
                 {
                     Type = PType.Normal, Category = PMoveCategory.Status,
