@@ -105,7 +105,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M7_F1,
                     Type1 = PType.Grass, Type2 = PType.Poison,
                     Abilities = new PAbility[] { PAbility.Overgrow, PAbility.Chlorophyll },
-                    MinLevel = 1, // IDK ABOUT THESE
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 6.9,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -207,7 +207,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M7_F1,
                     Type1 = PType.Grass, Type2 = PType.Poison,
                     Abilities = new PAbility[] { PAbility.Overgrow, PAbility.Chlorophyll },
-                    MinLevel = 1, // IDK ABOUT THESE
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 13.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -311,7 +311,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M7_F1,
                     Type1 = PType.Grass, Type2 = PType.Poison,
                     Abilities = new PAbility[] { PAbility.Overgrow, PAbility.Chlorophyll },
-                    MinLevel = 1, // IDK ABOUT THESE
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 100.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -426,7 +426,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Electric, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
-                    MinLevel = 1, // Egg
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 6.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -543,7 +543,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Ground, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
-                    MinLevel = 1, // Egg
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 6.5,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -656,7 +656,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Ground, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.RockHead, PAbility.LightningRod, PAbility.BattleArmor },
-                    MinLevel = 14, // HGSS (Rock Tunnel)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 45.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -777,7 +777,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Normal, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Limber, PAbility.Imposter },
-                    MinLevel = 10, // HGSS (Route 34, Route 35)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 4.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -798,7 +798,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Poison, Type2 = PType.Flying,
                     Abilities = new PAbility[] { PAbility.InnerFocus, PAbility.Infiltrator },
-                    MinLevel = 11, // Evolve MinLevel Golbat (DPPt Oreburgh Gate level 10)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 75.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -916,7 +916,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Electric, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Static, PAbility.LightningRod },
-                    MinLevel = 1, // Egg
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 2.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1007,7 +1007,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Water, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.ThickFat, PAbility.HugePower, PAbility.SapSipper },
-                    MinLevel = 5, // B2W2 (Route 20, Flocessy Ranch, Relic Passage)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 28.5,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1132,7 +1132,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Psychic, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Levitate },
-                    MinLevel = 5, // HGSS (Ruins of Alph)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 5.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1153,7 +1153,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F3,
                     Type1 = PType.Normal, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.CuteCharm, PAbility.Normalize, PAbility.WonderSkin },
-                    MinLevel = 1, // Egg
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 11.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1170,7 +1170,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.Charm, 25, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PMove.Copycat, 11, PMoveObtainMethod.LevelUp_DP),
                         //Tuple.Create(PMove.Copycat, 18, PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PMove.Covet, 31, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG ),
+                        //Tuple.Create(PMove.Covet, 31, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG),
                         //Tuple.Create(PMove.Covet, 32, PMoveObtainMethod.LevelUp_DP),
                         //Tuple.Create(PMove.Covet, 36, PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PMove.DoubleEdge, 39, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP),
@@ -1252,17 +1252,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PMove.Swagger, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Swift, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
-                        Tuple.Create(PMove.Tickle, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Tickle, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PMove.Uproar, PMoveObtainMethod.MoveTutor_B2W2 | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PMove.WaterPulse, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS),
                         //Tuple.Create(PMove.WildCharge, PMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PMove.Wish, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PMove.WorkUp, PMoveObtainMethod.TM_BWB2W2),
-                        Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2 | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2)                
+                        Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2 | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2)
                     }
                 }
             },
@@ -1274,7 +1274,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Dark, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Pressure, PAbility.SuperLuck, PAbility.Justified },
-                    MinLevel = 1, // Egg
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 47.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1416,7 +1416,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Water, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.ShellArmor, PAbility.Rattled },
-                    MinLevel = 1, // Egg
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 52.5,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1480,7 +1480,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M0_F1,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
                     Abilities = new PAbility[] { PAbility.Levitate },
-                    MinLevel = 35, // HG (Roaming)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 40.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1603,7 +1603,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F0,
                     Type1 = PType.Dragon, Type2 = PType.Psychic,
                     Abilities = new PAbility[] { PAbility.Levitate },
-                    MinLevel = 35, // SS (Roaming)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 60.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1723,7 +1723,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Electric, Type2 = PType.Ghost,
                     Abilities = new PAbility[] { PAbility.Levitate },
-                    MinLevel = 1, // Egg
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 0.3,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1802,7 +1802,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M0_F1,
                     Type1 = PType.Psychic, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Levitate },
-                    MinLevel = 50, // DPPt (Roaming)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 85.6,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1886,7 +1886,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Dark, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.BadDreams },
-                    MinLevel = 40, // DP (Newmoon Island)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 50.5,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -1993,7 +1993,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M1_F1,
                     Type1 = PType.Ghost, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Mummy },
-                    MinLevel = 34, // Evolve Yamask
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 76.5,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
@@ -2081,7 +2081,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     GenderRatio = PGenderRatio.M0_F0,
                     Type1 = PType.Bug, Type2 = PType.Steel,
                     Abilities = new PAbility[] { PAbility.Download },
-                    MinLevel = 15, // Event (Plasma Genesect)
+                    MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 82.5,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
