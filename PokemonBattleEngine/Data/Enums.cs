@@ -759,6 +759,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Waterfall,
         WaterGun,
         WaterPulse,
+        WaterSpout,
         WillOWisp,
         WingAttack,
         Withdraw,

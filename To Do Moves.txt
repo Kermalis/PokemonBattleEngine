@@ -157,7 +157,6 @@ Hydro Cannon
 Weather Ball
 Aromatherapy
 Odor Sleuth
-Water Spout
 Sand Tomb
 Sheer Cold
 Bullet Seed

@@ -42,6 +42,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 switch (move)
                 {
+                    case PMove.WaterSpout:
+                        basePower = Math.Min(1, 150 * user.HP / user.MaxHP);
+                        break;
                     case PMove.Frustration:
                         basePower = Math.Max(1, (byte.MaxValue - user.Shell.Friendship) / 2.5);
                         break;
