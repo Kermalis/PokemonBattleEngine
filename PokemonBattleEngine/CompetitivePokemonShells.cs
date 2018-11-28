@@ -5,6 +5,22 @@ namespace Kermalis.PokemonBattleEngine
     public static class PCompetitivePokemonShells
     {
         public static readonly PPokemonShell
+            Venusaur_VGC = new PPokemonShell
+            {
+                Species = PSpecies.Venusaur,
+                Nickname = "Viola",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.LifeOrb,
+                Ability = PAbility.Chlorophyll,
+                Gender = PGender.Female,
+                Nature = PNature.Modest,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+                Moves = new PMove[] { PMove.SleepPowder, PMove.EnergyBall, PMove.HiddenPower, PMove.Protect },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Pikachu_NU = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
