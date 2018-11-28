@@ -813,6 +813,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Eruption,
+                new PMoveData
+                {
+                    Type = PType.Fire, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 1, Power = 150, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
                 PMove.Extrasensory,
                 new PMoveData
                 {
@@ -2930,7 +2941,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     Type = PType.Water, Category = PMoveCategory.Special,
                     Effect = PMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 0, Accuracy = 100, Priority = 0,
+                    PPTier = 1, Power = 150, Accuracy = 100, Priority = 0,
                     Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
                     Targets = PMoveTarget.AllFoesSurrounding
                 }

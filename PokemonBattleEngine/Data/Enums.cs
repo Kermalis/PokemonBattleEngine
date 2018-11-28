@@ -567,6 +567,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Electroweb,
         Ember,
         EnergyBall,
+        Eruption,
         Extrasensory,
         ExtremeSpeed,
         FaintAttack,

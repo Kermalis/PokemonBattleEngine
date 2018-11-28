@@ -139,7 +139,6 @@ Revenge
 Yawn
 Knock Off
 Endeavor
-Eruption
 Skill Swap
 Imprison
 Refresh
