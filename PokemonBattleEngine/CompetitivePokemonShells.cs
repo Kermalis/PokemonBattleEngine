@@ -98,7 +98,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Adamant,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
                 EVs = new byte[] { 0, 252, 4, 0, 0, 252 },
-                Moves = new PMove[] { PMove.SwordsDance, PMove.RockSlide, PMove.NightSlash, PMove.FireBlast }, // Sucker Punch, Superpower, Night Slash, Pursuit
+                Moves = new PMove[] { PMove.SwordsDance, PMove.RockSlide, PMove.NightSlash, PMove.Superpower }, // Sucker Punch, Superpower, Night Slash, Pursuit
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Latias_OU = new PPokemonShell

@@ -264,6 +264,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Hit__MaybePoison:
                     HitAndMaybeInflictStatus1(user, targets, move, PStatus1.Poisoned, mData.EffectParam);
                     break;
+                case PMoveEffect.Hit__MaybeLowerUser_ATK_DEF_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Attack, PStat.Defense }, new sbyte[] { -1, -1 }, mData.EffectParam);
+                    break;
                 case PMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1:
                     HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Defense, PStat.SpDefense }, new sbyte[] { -1, -1 }, mData.EffectParam);
                     break;
@@ -1131,6 +1134,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+            byte hit = 0;
             foreach (PPokemon target in targets)
             {
                 if (target.HP < 1)
@@ -1151,6 +1155,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastCrit();
                 }
                 FaintCheck(target);
+                if (effectiveness != PEffectiveness.Ineffective)
+                {
+                    hit++;
+                }
+            }
+            if (hit > 0)
+            {
                 if (PUtils.ApplyChance(chanceToChangeStats, 100))
                 {
                     for (int i = 0; i < stats.Length; i++)
