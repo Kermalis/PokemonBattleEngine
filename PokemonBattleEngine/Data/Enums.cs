@@ -335,6 +335,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         Bulbasaur = 1,
+        Ivysaur = 2,
         Pikachu = 25,
         Cubone = 104,
         Marowak = 105,
