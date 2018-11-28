@@ -650,6 +650,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MudSlap,
         MudShot,
         NastyPlot,
+        NeedleArm,
         NightDaze,
         NightSlash,
         Octazooka,

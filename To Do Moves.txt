@@ -148,7 +148,6 @@ Arm Thrust
 Camouflage
 Mud Sport
 Ice Ball
-Needle Arm
 Slack Off
 Blast Burn
 Hydro Cannon
