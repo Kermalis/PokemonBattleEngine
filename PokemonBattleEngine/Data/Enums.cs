@@ -654,6 +654,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MetalClaw,
         MetalSound,
         MeteorMash,
+        MilkDrink,
         Minimize,
         MirrorShot,
         MistBall,
