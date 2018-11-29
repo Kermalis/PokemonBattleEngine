@@ -59,11 +59,12 @@ namespace Kermalis.PokemonBattleEngineClient
                     var team = new PTeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Vicki" }.Sample(), };
                     var possiblePokemon = new List<PPokemonShell>
                     {
-                        PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Azumarill_VGC, PCompetitivePokemonShells.Charizard_VGC,
-                        PCompetitivePokemonShells.Cofagrigus_VGC, PCompetitivePokemonShells.Cresselia_VGC, PCompetitivePokemonShells.Crobat_VGC,
-                        PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Ditto_Uber, PCompetitivePokemonShells.Genesect_Uber,
-                        PCompetitivePokemonShells.Latias_VGC, PCompetitivePokemonShells.Latios_VGC, PCompetitivePokemonShells.Marowak_VGC,
-                        PCompetitivePokemonShells.Pikachu_VGC, PCompetitivePokemonShells.Rotom_Wash_VGC, PCompetitivePokemonShells.Venusaur_VGC
+                        PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Azumarill_VGC, PCompetitivePokemonShells.Blastoise_UU,
+                        PCompetitivePokemonShells.Charizard_VGC, PCompetitivePokemonShells.Cofagrigus_VGC, PCompetitivePokemonShells.Cresselia_VGC,
+                        PCompetitivePokemonShells.Crobat_VGC, PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Ditto_Uber,
+                        PCompetitivePokemonShells.Genesect_Uber, PCompetitivePokemonShells.Latias_VGC, PCompetitivePokemonShells.Latios_VGC,
+                        PCompetitivePokemonShells.Marowak_VGC, PCompetitivePokemonShells.Pikachu_VGC, PCompetitivePokemonShells.Rotom_Wash_VGC,
+                        PCompetitivePokemonShells.Venusaur_VGC
                     };
                     possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));

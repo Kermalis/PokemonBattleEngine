@@ -37,6 +37,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.FireBlast, PMove.AirSlash, PMove.FocusBlast, PMove.HiddenPower },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Blastoise_UU = new PPokemonShell
+            {
+                Species = PSpecies.Blastoise,
+                Nickname = "Boost",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.Leftovers,
+                Ability = PAbility.RainDish,
+                Gender = PGender.Male,
+                Nature = PNature.Relaxed,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 252, 0, 252, 0, 4, 0 },
+                Moves = new PMove[] { PMove.Substitute, PMove.Scald, PMove.Protect, PMove.RainDance }, // Rapid Spin, Scald, Roar, Foresight
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Pikachu_VGC = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
