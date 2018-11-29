@@ -181,6 +181,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.DracoMeteor, PMove.Psychic, PMove.Protect, PMove.HiddenPower },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Jirachi_Uber = new PPokemonShell
+            {
+                Species = PSpecies.Jirachi,
+                Nickname = "Gina",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.Leftovers,
+                Ability = PAbility.SereneGrace,
+                Gender = PGender.Genderless,
+                Nature = PNature.Careful,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
+                Moves = new PMove[] { PMove.Protect, PMove.StealthRock, PMove.IronHead, PMove.Thunder }, // Wish, Stealth Rock, Iron Head, Thunder
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Rotom_Wash_VGC = new PPokemonShell
             {
                 Species = PSpecies.Rotom_Wash,
