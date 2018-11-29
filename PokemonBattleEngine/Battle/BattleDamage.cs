@@ -35,6 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         ushort CalculateBasePower(PPokemon user, PPokemon target, PMove move, PType moveType, byte power, PMoveCategory moveCategory, bool ignoreReflectLightScreen, bool ignoreLifeOrb, bool criticalHit)
         {
+            PPokemonData userPData = PPokemonData.Data[target.Species]; // These are only used for weight, but weight can be changed (Autotomize)
             PPokemonData targetPData = PPokemonData.Data[target.Species];
             double basePower = power;
 
@@ -64,6 +65,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             basePower = 40;
                         else
                             basePower = 20;
+                        break;
+                    case PMove.HeatCrash:
+                        double relative = targetPData.Weight / userPData.Weight;
+                        if (relative <= 1 / 5D)
+                            basePower = 120;
+                        else if (relative <= 1 / 4D)
+                            basePower = 100;
+                        else if (relative <= 1 / 3D)
+                            basePower = 80;
+                        else if (relative <= 1 / 2D)
+                            basePower = 60;
+                        else
+                            basePower = 40;
                         break;
                     case PMove.HiddenPower:
                         basePower = user.GetHiddenPowerBasePower();
