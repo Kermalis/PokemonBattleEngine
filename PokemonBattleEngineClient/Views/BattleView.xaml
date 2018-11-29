@@ -6,12 +6,18 @@
     <Canvas.Background>
       <ImageBrush Source="{Binding BGSource}"/>
     </Canvas.Background>
+    <view:HPBarView Name="Bar0_Left" ZIndex="2" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
     <view:PokemonView Name="Battler0_Left" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar0_Center" ZIndex="2" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
     <view:PokemonView Name="Battler0_Center" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar0_Right" ZIndex="2" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
     <view:PokemonView Name="Battler0_Right" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
 
+    <view:HPBarView Name="Bar1_Right" ZIndex="2" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
     <view:PokemonView Name="Battler1_Right" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar1_Center" ZIndex="2" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
     <view:PokemonView Name="Battler1_Center" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar1_Left" ZIndex="2" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
     <view:PokemonView Name="Battler1_Left" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
 
     <Line StartPoint="0,335" EndPoint="512,335" Stroke="#C3000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>

@@ -21,7 +21,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             set
             {
                 pokemon = value;
-                PokemonChanged();
                 OnPropertyChanged(nameof(Pokemon));
             }
         }
@@ -82,7 +81,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             DataContext = this;
         }
 
-        public void PokemonChanged()
+        public void Update()
         {
             if (pokemon == null || pokemon.FieldPosition == PFieldPosition.None)
             {
@@ -90,7 +89,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             else
             {
-                Visible = true;
                 Scale = pokemon.Local ? 2 : 1;
 
                 // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
@@ -117,6 +115,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     // Set the result
                     Source = new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}{gender}.gif?assembly=PokemonBattleEngineClient");
                 }
+                Visible = true;
             }
         }
     }

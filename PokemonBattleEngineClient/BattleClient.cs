@@ -183,13 +183,14 @@ namespace Kermalis.PokemonBattleEngineClient
                     victim = Battle.GetPokemon(pfap.VictimId);
                     pos = victim.FieldPosition;
                     victim.FieldPosition = PFieldPosition.None;
-                    battleView.PokemonPositionChanged(victim, pos);
+                    battleView.UpdatePokemon(victim, pos);
                     message = "{0} fainted!";
                     messageView.Add(battleView.Message = string.Format(message, victim.NameForTrainer(true)));
                     break;
                 case PPkmnHPChangedPacket phcp:
                     victim = Battle.GetPokemon(phcp.VictimId);
                     victim.HP = (ushort)(victim.HP + phcp.Change);
+                    battleView.UpdatePokemon(victim);
                     var hp = Math.Abs(phcp.Change);
                     d = (double)hp / victim.MaxHP;
                     messageView.Add(battleView.Message = string.Format("{0} {3} {1} ({2:P2}) HP!", victim.NameForTrainer(true), hp, d, phcp.Change <= 0 ? "lost" : "gained"));
@@ -224,14 +225,14 @@ namespace Kermalis.PokemonBattleEngineClient
                     culprit = Battle.GetPokemon(psip.PokemonId);
                     pos = culprit.FieldPosition;
                     culprit.FieldPosition = psip.FieldPosition;
-                    battleView.PokemonPositionChanged(culprit, pos);
+                    battleView.UpdatePokemon(culprit, pos);
                     messageView.Add(battleView.Message = string.Format("{1} sent out {0}!", culprit.Shell.Nickname, Battle.Teams[culprit.Local ? 0 : 1].TrainerName));
                     break;
                 case PPkmnSwitchOutPacket psop:
                     culprit = Battle.GetPokemon(psop.PokemonId);
                     pos = culprit.FieldPosition;
                     culprit.ClearForSwitch();
-                    battleView.PokemonPositionChanged(culprit, pos);
+                    battleView.UpdatePokemon(culprit, pos);
                     messageView.Add(battleView.Message = string.Format("{1} withdrew {0}!", culprit.Shell.Nickname, Battle.Teams[culprit.Local ? 0 : 1].TrainerName));
                     break;
                 case PPsychUpPacket pup:
@@ -259,6 +260,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             victim.Status1 = PStatus1.None;
                             break;
                     }
+                    battleView.UpdatePokemon(victim);
                     switch (s1p.Status)
                     {
                         case PStatus1.Asleep:
@@ -333,7 +335,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     switch (s2p.Status)
                     {
                         case PStatus2.Airborne:
-                            battleView.PokemonPositionChanged(victim, PFieldPosition.None);
+                            battleView.UpdatePokemon(victim);
                             switch (s2p.Action)
                             {
                                 case PStatusAction.Added:
@@ -401,7 +403,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         case PStatus2.Substitute:
-                            battleView.PokemonPositionChanged(victim, PFieldPosition.None);
+                            battleView.UpdatePokemon(victim);
                             switch (s2p.Action)
                             {
                                 case PStatusAction.Added: message = "{0} put in a substitute!"; break;
@@ -411,7 +413,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         case PStatus2.Underground:
-                            battleView.PokemonPositionChanged(victim, PFieldPosition.None);
+                            battleView.UpdatePokemon(victim);
                             switch (s2p.Action)
                             {
                                 case PStatusAction.Added:
@@ -425,7 +427,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         case PStatus2.Underwater:
-                            battleView.PokemonPositionChanged(victim, PFieldPosition.None);
+                            battleView.UpdatePokemon(victim);
                             switch (s2p.Action)
                             {
                                 case PStatusAction.Added:
@@ -528,7 +530,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     culprit = Battle.GetPokemon(tp.CulpritId);
                     victim = Battle.GetPokemon(tp.VictimId);
                     culprit.Transform(victim, tp.TargetAttack, tp.TargetDefense, tp.TargetSpAttack, tp.TargetSpDefense, tp.TargetSpeed, tp.TargetAbility, tp.TargetType1, tp.TargetType2, tp.TargetMoves);
-                    battleView.PokemonPositionChanged(culprit, PFieldPosition.None);
+                    battleView.UpdatePokemon(culprit);
                     messageView.Add(battleView.Message = string.Format("{0} transformed into {1}!", culprit.NameForTrainer(true), victim.NameForTrainer(false)));
                     break;
                 case PWeatherPacket wp:
