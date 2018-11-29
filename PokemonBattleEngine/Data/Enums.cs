@@ -340,6 +340,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Venusaur = 3,
         Charmander = 4,
         Charmeleon = 5,
+        Charizard = 6,
         Pikachu = 25,
         Cubone = 104,
         Marowak = 105,
