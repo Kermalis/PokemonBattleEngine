@@ -782,6 +782,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Transform,
         VacuumWave,
         VCreate,
+        Venoshock,
         ViceGrip,
         VineWhip,
         VitalThrow,

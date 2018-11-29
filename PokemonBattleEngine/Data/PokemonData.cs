@@ -194,7 +194,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.SwordsDance, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Synthesis, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        //Tuple.Create(PMove.Venoshock, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Venoshock, PMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PMove.WorrySeed, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2)
                     }
                 }
@@ -298,7 +298,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.SwordsDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Synthesis, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        //Tuple.Create(PMove.Venoshock, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Venoshock, PMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PMove.WorrySeed, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2)
                     }
                 }
@@ -413,7 +413,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.SwordsDance, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.Synthesis, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        //Tuple.Create(PMove.Venoshock, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Venoshock, PMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PMove.WorrySeed, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2)
                     }
                 }
@@ -901,7 +901,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // twister (pt/hgss tutor)
                         // uproar (pt/hgss tutor, b2w2 tutor)
                         // u-turn (gen 4 tm, gen 5 tm)
-                        // venoshock (gen 5 tm)
+                        Tuple.Create(PMove.Venoshock, PMoveObtainMethod.TM_BWB2W2),
                         // whirlwind (gen 3 egg, gen 4 egg, gen 5 egg)
                         Tuple.Create(PMove.XScissor, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2 | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2)

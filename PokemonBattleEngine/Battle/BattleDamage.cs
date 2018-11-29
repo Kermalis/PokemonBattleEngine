@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        void TypeCheck(PPokemon user, PPokemon target, PMove move, out PType moveType, out PEffectiveness effectiveness)
+        public void TypeCheck(PPokemon user, PPokemon target, PMove move, out PType moveType, out PEffectiveness effectiveness)
         {
             PPokemonData targetPData = PPokemonData.Data[target.Species];
 
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 effectiveness = PEffectiveness.SuperEffective;
         }
 
-        ushort CalculateBasePower(PPokemon user, PPokemon target, PMove move, PType moveType, byte power, PMoveCategory moveCategory, bool ignoreReflectLightScreen, bool ignoreLifeOrb, bool criticalHit)
+        public ushort CalculateBasePower(PPokemon user, PPokemon target, PMove move, PType moveType, PMoveCategory moveCategory, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
         {
             PPokemonData userPData = PPokemonData.Data[target.Species]; // These are only used for weight, but weight can be changed (Autotomize)
             PPokemonData targetPData = PPokemonData.Data[target.Species];
@@ -96,7 +96,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PMove.Earthquake:
                 case PMove.Magnitude:
-                    // Earthquake and Magnitude get a 100% power boost if the target is underground
+                    // Earthquake and Magnitude get a 100% power boost if the target is Underground
                     if (target.Status2.HasFlag(PStatus2.Underground))
                         basePower *= 2.0;
                     break;
@@ -122,8 +122,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 2.0;
                     break;
                 case PMove.Surf:
-                    // Surf gets a 100% power boost if the target is underwater
+                    // Surf gets a 100% power boost if the target is Underwater
                     if (target.Status2.HasFlag(PStatus2.Underwater))
+                        basePower *= 2.0;
+                    break;
+                case PMove.Venoshock:
+                    // Venoshock gets a 100% power boost if the target is Poisoned
+                    if (target.Status1 == PStatus1.Poisoned || target.Status1 == PStatus1.BadlyPoisoned)
                         basePower *= 2.0;
                     break;
             }
@@ -266,7 +271,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)basePower;
         }
-        ushort CalculateAttack(PPokemon user, PPokemon target, bool criticalHit)
+        public ushort CalculateAttack(PPokemon user, PPokemon target, bool criticalHit = false)
         {
             // Negative Attack changes are ignored for critical hits
             double attack = user.Attack * GetStatMultiplier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange);
@@ -289,7 +294,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)attack;
         }
-        ushort CalculateDefense(PPokemon user, PPokemon target, bool criticalHit)
+        public ushort CalculateDefense(PPokemon user, PPokemon target, bool criticalHit = false)
         {
             // Positive Defense changes are ignored for critical hits
             double defense = user.Defense * GetStatMultiplier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange);
@@ -303,7 +308,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)defense;
         }
-        ushort CalculateSpAttack(PPokemon user, PPokemon target, bool criticalHit)
+        public ushort CalculateSpAttack(PPokemon user, PPokemon target, bool criticalHit = false)
         {
             // Negative SpAttack changes are ignored for critical hits
             double spAttack = user.SpAttack * GetStatMultiplier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange);
@@ -320,7 +325,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)spAttack;
         }
-        ushort CalculateSpDefense(PPokemon user, PPokemon target, bool criticalHit)
+        public ushort CalculateSpDefense(PPokemon user, PPokemon target, bool criticalHit = false)
         {
             // Positive SpDefense changes are ignored for critical hits
             double spDefense = user.SpDefense * GetStatMultiplier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange);
@@ -337,13 +342,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // If moveCategory is PMoveCategory.MAX, category is determined by the move
         // If power is 0, power is determined by the move
-        ushort CalculateDamage(PPokemon user, PPokemon target, PMove move, PType moveType, byte power = 0, PMoveCategory moveCategory = PMoveCategory.MAX, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
+        public ushort CalculateDamage(PPokemon user, PPokemon target, PMove move, PType moveType, PMoveCategory moveCategory = PMoveCategory.MAX, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
         {
             if (moveCategory == PMoveCategory.MAX)
                 moveCategory = PMoveData.Data[move].Category;
             ushort damage;
             ushort a = 0, d = 0,
-                p = CalculateBasePower(user, target, move, moveType, power, moveCategory, ignoreReflectLightScreen, ignoreLifeOrb, criticalHit);
+                p = CalculateBasePower(user, target, move, moveType, moveCategory, power, ignoreReflectLightScreen, ignoreLifeOrb, criticalHit);
 
             if (moveCategory == PMoveCategory.Physical)
             {

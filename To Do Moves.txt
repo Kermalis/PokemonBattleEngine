@@ -222,7 +222,6 @@ Guard Split
 Power Split
 Wonder Room
 Psyshock
-Venoshock
 Autotomize
 Rage Powder
 Telekinesis
