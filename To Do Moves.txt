@@ -47,7 +47,6 @@ Clamp
 Skull Bash
 Spike Cannon
 Constrict
-Soft-Boiled
 High Jump Kick
 Dream Eater
 Barrage

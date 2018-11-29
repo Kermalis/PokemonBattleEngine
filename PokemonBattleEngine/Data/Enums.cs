@@ -734,6 +734,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Smog,
         SmokeScreen,
         Snarl,
+        Softboiled,
         SpacialRend,
         Spark,
         Spikes,
