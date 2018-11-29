@@ -211,7 +211,6 @@ Judgment
 Bug Bite
 Wood Hammer
 Defend Order
-Heal Order
 Head Smash
 Double Hit
 Roar of Time

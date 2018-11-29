@@ -611,6 +611,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HammerArm,
         Harden,
         Headbutt,
+        HealOrder,
         HeartStamp,
         HeatWave,
         HiddenPower,
