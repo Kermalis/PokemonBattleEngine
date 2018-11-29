@@ -38,6 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPokemonData targetPData = PPokemonData.Data[target.Species];
             double basePower = power;
 
+            // If no overriding power is given, determine the move's basePower
             if (power == 0)
             {
                 switch (move)
@@ -45,12 +46,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PMove.Eruption:
                     case PMove.WaterSpout:
                         basePower = Math.Min(1, 150 * user.HP / user.MaxHP);
-                        break;
-                    case PMove.Facade:
-                        basePower = PMoveData.Data[move].Power;
-                        // Facade get a 100% power boost if the user is Burned, Paralyzed, Poisoned, or Badly Poisoned
-                        if (user.Status1 == PStatus1.Burned || user.Status1 == PStatus1.Paralyzed || user.Status1 == PStatus1.Poisoned || user.Status1 == PStatus1.BadlyPoisoned)
-                            basePower *= 2.0;
                         break;
                     case PMove.Frustration:
                         basePower = Math.Max(1, (byte.MaxValue - user.Shell.Friendship) / 2.5);
@@ -73,33 +68,42 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PMove.HiddenPower:
                         basePower = user.GetHiddenPowerBasePower();
                         break;
-                    case PMove.Retaliate:
-                        basePower = PMoveData.Data[move].Power;
-                        // Retaliate gets a 100% power boost if the user's team has a Pokémon that fainted during the previous turn
-                        if (Teams[user.Local ? 0 : 1].MonFaintedLastTurn)
-                            basePower *= 2.0;
-                        break;
                     case PMove.Return:
                         basePower = Math.Max(1, user.Shell.Friendship / 2.5);
-                        break;
-                    case PMove.Steamroller:
-                    case PMove.Stomp:
-                        basePower = PMoveData.Data[move].Power;
-                        // Stomp and Steamroller get a 100% power boost if the target is Minimized
-                        if (target.Status2.HasFlag(PStatus2.Minimized))
-                            basePower *= 2.0;
                         break;
                     default:
                         basePower = PMoveData.Data[move].Power;
                         break;
                 }
             }
+            // Move-specific power boosts
             switch (move)
             {
                 case PMove.Earthquake:
                 case PMove.Magnitude:
                     // Earthquake and Magnitude get a 100% power boost if the target is underground
                     if (target.Status2.HasFlag(PStatus2.Underground))
+                        basePower *= 2.0;
+                    break;
+                case PMove.Facade:
+                    // Facade gets a 100% power boost if the user is Burned, Paralyzed, Poisoned, or Badly Poisoned
+                    if (user.Status1 == PStatus1.Burned || user.Status1 == PStatus1.Paralyzed || user.Status1 == PStatus1.Poisoned || user.Status1 == PStatus1.BadlyPoisoned)
+                        basePower *= 2.0;
+                    break;
+                case PMove.Hex:
+                    // Hex gets a 100% power boost if the target is afflicted with a status
+                    if (target.Status1 != PStatus1.None)
+                        basePower *= 2.0;
+                    break;
+                case PMove.Retaliate:
+                    // Retaliate gets a 100% power boost if the user's team has a Pokémon that fainted during the previous turn
+                    if (Teams[user.Local ? 0 : 1].MonFaintedLastTurn)
+                        basePower *= 2.0;
+                    break;
+                case PMove.Steamroller:
+                case PMove.Stomp:
+                    // Stomp and Steamroller get a 100% power boost if the target is Minimized
+                    if (target.Status2.HasFlag(PStatus2.Minimized))
                         basePower *= 2.0;
                     break;
                 case PMove.Surf:

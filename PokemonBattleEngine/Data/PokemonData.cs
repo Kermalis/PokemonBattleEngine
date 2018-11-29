@@ -1344,7 +1344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // giga impact (gen 4 tm, gen 5 tm)
                         // hail (gen 3 tm, gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.Headbutt, PMoveObtainMethod.MoveTutor_HGSS),
-                        // hex (gen 5 egg)
+                        Tuple.Create(PMove.Hex, PMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PMove.HoneClaws, PMoveObtainMethod.TM_BWB2W2),
                         // hyper beam (gen 3 tm, gen 4 tm, gen 5 tm)
@@ -1735,7 +1735,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.Discharge, 64, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PMove.DoubleTeam, 15, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         // electro ball (43 gen 5)
-                        // hex (50 gen 5)
+                        Tuple.Create(PMove.Hex, 50, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PMove.OminousWind, 29, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PMove.ShockWave, 22, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PMove.Substitute, 36, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
@@ -2005,7 +2005,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // grudge (45 gen 5)
                         // guard split (33 gen 5)
                         // haze (1 & 9 gen 5)
-                        // hex (17 gen 5)
+                        Tuple.Create(PMove.Hex, 17, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         // mean look (51 gen 5)
                         // night shade (13 gen 5)
                         Tuple.Create(PMove.OminousWind, 25, PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),

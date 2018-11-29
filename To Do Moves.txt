@@ -245,7 +245,6 @@ Stored Power
 Quick Guard
 Ally Switch
 Heal Pulse
-Hex
 Sky Drop
 Circle Throw
 Incinerate

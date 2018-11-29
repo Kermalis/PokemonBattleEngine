@@ -615,6 +615,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HealOrder,
         HeartStamp,
         HeatWave,
+        Hex,
         HiddenPower,
         HoneClaws,
         HornAttack,

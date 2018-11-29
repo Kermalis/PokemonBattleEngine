@@ -1209,6 +1209,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Hex,
+                new PMoveData
+                {
+                    Type = PType.Ghost, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 2, Power = 50, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.HiddenPower,
                 new PMoveData
                 {
