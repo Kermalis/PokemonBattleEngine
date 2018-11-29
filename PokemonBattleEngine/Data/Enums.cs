@@ -655,6 +655,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MirrorShot,
         MistBall,
         Moonlight,
+        MorningSun,
         MudBomb,
         MuddyWater,
         MudSlap,
