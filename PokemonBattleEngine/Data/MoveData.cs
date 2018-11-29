@@ -593,6 +593,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.DefendOrder,
+                new PMoveData
+                {
+                    Type = PType.Bug, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.RaiseUser_DEF_SPDEF_By1, EffectParam = 0,
+                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PMoveFlag.AffectedBySnatch,
+                    Targets = PMoveTarget.Self
+                }
+            },
+            {
                 PMove.Detect,
                 new PMoveData
                 {

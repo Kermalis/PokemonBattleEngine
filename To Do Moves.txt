@@ -210,7 +210,6 @@ Captivate
 Judgment
 Bug Bite
 Wood Hammer
-Defend Order
 Head Smash
 Double Hit
 Roar of Time

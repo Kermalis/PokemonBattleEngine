@@ -559,6 +559,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Cut,
         DarkPulse,
         DarkVoid,
+        DefendOrder,
         Detect,
         Dig,
         Discharge,
