@@ -553,7 +553,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // bonemerang (25 gen 3, 21 gen 4 & 5)
                         // bone rush (41 gen 3, 37 gen 4 & 5)
                         // double edge (45 gen 3, 43 gen 4 & 5)
-                        // endeavor (41 gen 4 & 5)
+                        Tuple.Create(PMove.Endeavor, 41, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         // false swipe (33 gen 3, 27 gen 4 & 5)
                         // fling (33 gen 4 & 5)
                         Tuple.Create(PMove.FocusEnergy, 17, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
@@ -591,7 +591,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.EarthPower, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PMove.Earthquake, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // echoed voice (gen 5 tm)
-                        // endeavor (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Endeavor, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         // endure (emerald tutor, gen 4 tm, gen 5 egg)
                         Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // false swipe (gen 4 tm, gen 5 tm)
@@ -667,7 +667,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // bonemerang (25 gen 3, 21 gen 4 & 5)
                         // bone rush (53 gen 3, 43 gen 4 & 5)
                         // double edge (61 gen 3, 53 gen 4 & 5)
-                        // endeavor (49 gen 4 & 5)
+                        Tuple.Create(PMove.Endeavor, 49, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         // false swipe (39 gen 3, 27 gen 4 & 5)
                         // fling (37 gen 4 & 5)
                         Tuple.Create(PMove.FocusEnergy, 17, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
@@ -707,7 +707,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.EarthPower, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PMove.Earthquake, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // echoed voice (gen 5 tm)
-                        // endeavor (pt/hgss tutor, b2w2 tutor)
+                        Tuple.Create(PMove.Endeavor, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         // endure (emerald tutor, gen 4 tm, gen 5 egg)
                         Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
                         // false swipe (gen 4 tm, gen 5 tm)

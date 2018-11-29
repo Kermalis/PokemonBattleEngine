@@ -210,6 +210,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Dive:
                     Ef_Dive(user, targets[0]);
                     break;
+                case PMoveEffect.Endeavor:
+                    Ef_Endeavor(user, targets[0]);
+                    break;
                 case PMoveEffect.Fail:
                     Ef_Fail(user, move);
                     break;
@@ -1505,6 +1508,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 FaintCheck(target);
             }
+        }
+        void Ef_Endeavor(PPokemon user, PPokemon target)
+        {
+            BroadcastMoveUsed(user, PMove.Endeavor);
+            PPReduce(user, PMove.Endeavor);
+            if (MissCheck(user, target, PMove.Endeavor))
+            {
+                return;
+            }
+            if (target.HP <= user.HP)
+            {
+                BroadcastFail(user, PFailReason.Default);
+                return;
+            }
+            DealDamage(user, target, (ushort)(target.HP - user.HP), PEffectiveness.Normal, false);
         }
         void Ef_PainSplit(PPokemon user, PPokemon target)
         {

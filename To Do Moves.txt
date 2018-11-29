@@ -133,7 +133,6 @@ Recycle
 Revenge
 Yawn
 Knock Off
-Endeavor
 Skill Swap
 Imprison
 Refresh
