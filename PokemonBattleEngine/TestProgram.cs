@@ -14,12 +14,12 @@ namespace Kermalis.PokemonBattleEngine
             PTeamShell team0 = new PTeamShell
             {
                 PlayerName = "Sasha",
-                Party = { PCompetitivePokemonShells.Ditto_UU, PCompetitivePokemonShells.Azumarill_UU }
+                Party = { PCompetitivePokemonShells.Ditto_Uber, PCompetitivePokemonShells.Azumarill_VGC }
             };
             PTeamShell team1 = new PTeamShell
             {
                 PlayerName = "Jess",
-                Party = { PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Latios_OU }
+                Party = { PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Latios_VGC }
             };
 
             PBattle battle = new PBattle(PBattleStyle.Single, team0, team1);
