@@ -693,6 +693,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RainDance,
         RazorLeaf,
         RazorShell,
+        Recover,
         Reflect,
         Retaliate, // TODO
         Return,

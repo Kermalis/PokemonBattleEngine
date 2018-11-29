@@ -37,7 +37,6 @@ Fissure
 Rage
 Night Shade
 Mimic
-Recover
 Defense Curl
 Haze
 Bide

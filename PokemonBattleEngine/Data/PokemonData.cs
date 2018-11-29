@@ -1500,7 +1500,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.Psychic, 65, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
                         // psycho shift (50 gen 4 & 5)
                         // psywave (1 gen 3 & 4 & 5)
-                        // recover (45 gen 3 & 4 & 5)
+                        Tuple.Create(PMove.Recover, 45, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         // reflect type (70 gen 5)
                         // refresh (30 gen 3 & 4 & 5)
                         // safeguard (15 gen 3 & 4 & 5)
@@ -1625,7 +1625,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.Psychic, 65, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS),
                         // psycho shift (50 gen 4 & 5)
                         // psywave (1 gen 3 & 4 & 5)
-                        // recover (45 gen 3 & 4 & 5)
+                        Tuple.Create(PMove.Recover, 45, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
                         // refresh (30 gen 3 & 4 & 5)
                         // safeguard (15 gen 3 & 4 & 5)
                         // telekinesis (70 gen 5)
