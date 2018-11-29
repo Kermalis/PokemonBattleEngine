@@ -229,7 +229,6 @@ Telekinesis
 Magic Room
 Smack Down
 Flame Burst
-Heavy Slam
 Synchronoise
 Electro Ball
 Soak

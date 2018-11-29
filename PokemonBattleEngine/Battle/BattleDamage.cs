@@ -67,6 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             basePower = 20;
                         break;
                     case PMove.HeatCrash:
+                    case PMove.HeavySlam:
                         double relative = targetPData.Weight / userPData.Weight;
                         if (relative <= 1 / 5D)
                             basePower = 120;
