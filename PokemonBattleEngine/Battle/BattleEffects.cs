@@ -369,6 +369,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Reflect:
                     TryForceTeamStatus(user, move, PTeamStatus.Reflect);
                     break;
+                case PMoveEffect.RestoreUserHealth:
+                    Ef_RestoreUserHealth(user, move, mData.EffectParam);
+                    break;
                 case PMoveEffect.Sleep:
                     TryForceStatus1(user, targets, move, PStatus1.Asleep);
                     break;
@@ -1369,6 +1372,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             sbyte change = (sbyte)(Weather == PWeather.Sunny ? +2 : +1);
             ChangeUserStats(user, PMove.Growth, new PStat[] { PStat.Attack, PStat.SpAttack }, new sbyte[] { change, change });
+        }
+        void Ef_RestoreUserHealth(PPokemon user, PMove move, int percent)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (HealDamage(user, (ushort)(user.MaxHP * (percent / 100D))) == 0)
+            {
+                BroadcastFail(user, PFailReason.HPFull);
+            }
         }
         void Ef_Moonlight(PPokemon user)
         {

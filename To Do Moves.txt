@@ -143,7 +143,6 @@ Arm Thrust
 Camouflage
 Mud Sport
 Ice Ball
-Slack Off
 Blast Burn
 Hydro Cannon
 Weather Ball
