@@ -856,7 +856,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
@@ -883,7 +883,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 bool behindSubstitute = target.Status2.HasFlag(PStatus2.Substitute);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
@@ -917,7 +917,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 bool behindSubstitute = target.Status2.HasFlag(PStatus2.Substitute);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
@@ -950,7 +950,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     continue;
                 }
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness);
+                double d = 1.0;
+                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref d);
                 if (effectiveness == PEffectiveness.Ineffective) // Paralysis, Normalize
                 {
                     BroadcastEffectiveness(target, effectiveness);
@@ -1049,7 +1050,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 bool behindSubstitute = target.Status2.HasFlag(PStatus2.Substitute);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
@@ -1118,7 +1119,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 bool behindSubstitute = target.Status2.HasFlag(PStatus2.Substitute);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
@@ -1156,7 +1157,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
@@ -1197,7 +1198,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             double damageMultiplier = 1.0;
             bool crit = CritCheck(user, target, PMove.BrickBreak, ref damageMultiplier);
-            TypeCheck(user, target, PMove.BrickBreak, out PType moveType, out PEffectiveness effectiveness);
+            TypeCheck(user, target, PMove.BrickBreak, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
             if (effectiveness == PEffectiveness.Ineffective)
             {
                 BroadcastEffectiveness(target, effectiveness);
@@ -1240,7 +1241,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return;
                 double damageMultiplier = 1.0;
                 bool crit = CritCheck(user, target, PMove.Dig, ref damageMultiplier);
-                TypeCheck(user, target, PMove.Dig, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, PMove.Dig, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, PMove.Dig, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
@@ -1278,7 +1279,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = 1.0;
                 bool crit = CritCheck(user, target, PMove.Dive, ref damageMultiplier);
-                TypeCheck(user, target, PMove.Dive, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, PMove.Dive, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, PMove.Dive, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
@@ -1316,7 +1317,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = 1.0;
                 bool crit = CritCheck(user, target, PMove.Fly, ref damageMultiplier);
-                TypeCheck(user, target, PMove.Fly, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, PMove.Fly, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, PMove.Fly, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
@@ -1511,7 +1512,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, PMove.Magnitude, ref damageMultiplier);
-                TypeCheck(user, target, PMove.Magnitude, out PType moveType, out PEffectiveness effectiveness);
+                TypeCheck(user, target, PMove.Magnitude, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, PMove.Magnitude, moveType, criticalHit: crit, power: basePower);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)

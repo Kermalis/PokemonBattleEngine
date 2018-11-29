@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        public void TypeCheck(PPokemon user, PPokemon target, PMove move, out PType moveType, out PEffectiveness effectiveness)
+        public void TypeCheck(PPokemon user, PPokemon target, PMove move, out PType moveType, out PEffectiveness effectiveness, ref double damageMultiplier)
         {
             PPokemonData targetPData = PPokemonData.Data[target.Species];
 
@@ -23,14 +23,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double mult = PPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type1];
             mult *= PPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type2];
 
-            if (mult == 0)
+            if (mult <= 0)
                 effectiveness = PEffectiveness.Ineffective;
-            else if (mult == 0.5)
+            else if (mult < 1)
                 effectiveness = PEffectiveness.NotVeryEffective;
             else if (mult == 1.0)
                 effectiveness = PEffectiveness.Normal;
-            else
+            else // > 1
                 effectiveness = PEffectiveness.SuperEffective;
+            damageMultiplier *= mult;
         }
 
         public ushort CalculateBasePower(PPokemon user, PPokemon target, PMove move, PType moveType, PMoveCategory moveCategory, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
