@@ -751,6 +751,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SweetScent,
         Swift,
         SwordsDance,
+        Synthesis
         Tackle,
         TailGlow,
         TailWhip,
