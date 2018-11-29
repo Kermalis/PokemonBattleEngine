@@ -323,6 +323,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShellArmor,
         Simple,
         Sniper,
+        SolarPower, // TODO
         Static, // TODO
         SuperLuck,
         Swarm,
@@ -337,6 +338,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Bulbasaur = 1,
         Ivysaur = 2,
         Venusaur = 3,
+        Charmander = 4,
         Pikachu = 25,
         Cubone = 104,
         Marowak = 105,
