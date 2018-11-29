@@ -316,10 +316,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         Plus, // TODO
         Pressure, // TODO
         PurePower,
+        RainDish, // TODO
         Rattled, // TODO
         RockHead, // TODO
         RunAway,
         SapSipper, // TODO
+        SereneGrace, // TODO
         ShellArmor,
         Simple,
         Sniper,
@@ -341,6 +343,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         Charmander = 4,
         Charmeleon = 5,
         Charizard = 6,
+        Squirtle = 7,
+        Wartortle = 8,
+        Blastoise = 9,
         Pikachu = 25,
         Cubone = 104,
         Marowak = 105,
@@ -381,6 +386,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Clamperl = 366,
         Latias = 380,
         Latios = 381,
+        Jirachi = 385,
         Rotom = 479 | (0 << 0x10),
         Rotom_Fan = 479 | (1 << 0x10),
         Rotom_Frost = 479 | (2 << 0x10), // TODO
