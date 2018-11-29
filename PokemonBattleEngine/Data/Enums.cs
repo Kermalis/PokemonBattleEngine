@@ -316,6 +316,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Plus, // TODO
         Pressure, // TODO
         PurePower,
+        RainDish, // TODO
         Rattled, // TODO
         RockHead, // TODO
         RunAway,
@@ -341,6 +342,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Charmander = 4,
         Charmeleon = 5,
         Charizard = 6,
+        Squirtle = 7,
         Pikachu = 25,
         Cubone = 104,
         Marowak = 105,
