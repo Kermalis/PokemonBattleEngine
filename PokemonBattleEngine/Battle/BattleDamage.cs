@@ -94,6 +94,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Move-specific power boosts
             switch (move)
             {
+                case PMove.Brine:
+                    // Brine gets a 100% power boost if the target is at or below 50% health
+                    if (target.HP <= target.HP / 2)
+                        basePower *= 2.0;
+                    break;
                 case PMove.Earthquake:
                 case PMove.Magnitude:
                     // Earthquake and Magnitude get a 100% power boost if the target is Underground

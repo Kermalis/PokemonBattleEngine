@@ -1434,7 +1434,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.Barrier, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         // blizzard (gen 3 tm, gen 4 tm, gen 5 tm)
                         Tuple.Create(PMove.BodySlam, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD | PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
-                        // brine (gen 4 tm, gen 5 egg)
+                        Tuple.Create(PMove.Brine, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         // captivate (gen 4 tm)
                         Tuple.Create(PMove.ConfuseRay, PMoveObtainMethod.EggMove_RSFRLG | PMoveObtainMethod.EggMove_E | PMoveObtainMethod.EggMove_DPPt | PMoveObtainMethod.EggMove_HGSS | PMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PMove.Dive, PMoveObtainMethod.HM_RSFRLGE | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.HM_BWB2W2),

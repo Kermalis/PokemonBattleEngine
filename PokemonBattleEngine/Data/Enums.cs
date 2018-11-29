@@ -531,6 +531,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BlazeKick,
         BlueFlare,
         BrickBreak,
+        Brine,
         BodySlam,
         BoltStrike,
         BoneClub,
