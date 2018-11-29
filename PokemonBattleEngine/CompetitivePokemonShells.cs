@@ -21,6 +21,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.SleepPowder, PMove.EnergyBall, PMove.HiddenPower, PMove.Protect },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Charizard_VGC = new PPokemonShell
+            {
+                Species = PSpecies.Charizard,
+                Nickname = "Chomp",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.ChoiceScarf,
+                Ability = PAbility.SolarPower,
+                Gender = PGender.Male,
+                Nature = PNature.Modest,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
+                Moves = new PMove[] { PMove.FireBlast, PMove.AirSlash, PMove.FocusBlast, PMove.HiddenPower },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Pikachu_VGC = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
