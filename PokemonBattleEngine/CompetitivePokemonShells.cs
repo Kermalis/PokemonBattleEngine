@@ -130,7 +130,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Bold,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
                 EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
-                Moves = new PMove[] { PMove.DragonPulse, PMove.IcyWind, PMove.NastyPlot, PMove.PsychUp }, // Dragon Pulse, Icy Wind, Helping Hand, Recover
+                Moves = new PMove[] { PMove.DragonPulse, PMove.IcyWind, PMove.DoubleTeam, PMove.PsychUp }, // Dragon Pulse, Icy Wind, Helping Hand, Recover
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Latios_VGC = new PPokemonShell
