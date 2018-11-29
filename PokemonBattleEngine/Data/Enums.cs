@@ -344,6 +344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Charizard = 6,
         Squirtle = 7,
         Wartortle = 8,
+        Blastoise = 9,
         Pikachu = 25,
         Cubone = 104,
         Marowak = 105,
