@@ -223,6 +223,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Fighting:
                     switch (user.Item)
                     {
+                        case PItem.BlackBelt:
                         case PItem.FistPlate:
                             basePower *= 1.2;
                             break;

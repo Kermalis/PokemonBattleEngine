@@ -240,6 +240,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PItem : ushort
     {
         None,
+        BlackBelt,
         BlackSludge, // TODO
         BrightPowder,
         BurnDrive,
