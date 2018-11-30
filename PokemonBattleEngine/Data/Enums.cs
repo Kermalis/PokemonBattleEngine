@@ -355,7 +355,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Metapod = 11,
         Butterfree = 12,
         Weedle = 13,
-        Kakuna = 14
+        Kakuna = 14,
         Beedrill = 15,
         Pikachu = 25,
         Cubone = 104,

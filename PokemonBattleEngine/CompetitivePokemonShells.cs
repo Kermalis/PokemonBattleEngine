@@ -69,6 +69,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.SleepPowder, PMove.QuiverDance, PMove.BugBuzz, PMove.Substitute },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Beedrill_NU = new PPokemonShell
+            {
+                Species = PSpecies.Beedrill,
+                Nickname = "Citizen",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.ChoiceScarf, // Focus Sash
+                Ability = PAbility.Swarm,
+                Gender = PGender.Male,
+                Nature = PNature.Jolly,
+                IVs = new byte[] { 0, 31, 0, 31, 0, 31 }, // Hidden Power: Ghost/46
+                EVs = new byte[] { 0, 252, 0, 0, 0, 252 },
+                Moves = new PMove[] { PMove.ToxicSpikes, PMove.Endeavor, PMove.XScissor, PMove.Agility }, // Toxic Spikes, Endeavor, U-Turn, Tailwind
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Pikachu_VGC = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
