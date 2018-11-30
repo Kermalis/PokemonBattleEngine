@@ -334,6 +334,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PItem.HardStone:
+                        case PItem.RockIncense:
                         case PItem.StonePlate:
                             basePower *= 1.2;
                             break;

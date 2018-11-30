@@ -183,7 +183,6 @@ Shed Shell
 Big Root
 Choice Specs
 Odd Incense
-Rock Incense
 Full Incense
 Wave Incense
 Rose Incense
