@@ -1312,6 +1312,31 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Kakuna,
+                new PPokemonData
+                {
+                    HP = 45, Attack = 25, Defense = 50, SpAttack = 25, SpDefense = 25, Speed = 35,
+                    GenderRatio = PGenderRatio.M1_F1,
+                    Type1 = PType.Bug, Type2 = PType.Poison,
+                    Abilities = new PAbility[] { PAbility.ShedSkin },
+                    MinLevel = 1,
+                    ShinyLocked = false,
+                    Weight = 10.0,
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PMove.Harden, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Harden, 7, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PMove.BugBite, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Electroweb, PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IronDefense, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.StringShot, PMoveObtainMethod.MoveTutor_HGSS)
+                    }
+                }
+            },
+            {
                 PSpecies.Pikachu,
                 new PPokemonData
                 {
@@ -2676,7 +2701,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PMove.IronHead, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PMove.LastResort, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_RSFRLGE | PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
-                        //Tuple.Create(PMove.MagicalCoat, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.MagicCoat, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PMove.MagicRoom, PMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PMove.Mimic, PMoveObtainMethod.MoveTutor_FRLG | PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_XD),
                         Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_E | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
