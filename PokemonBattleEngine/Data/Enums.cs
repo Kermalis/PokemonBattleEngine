@@ -283,6 +283,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PowerHerb,
         RazorClaw,
         ScopeLens,
+        SeaIncense,
         SharpBeak,
         ShockDrive,
         SilkScarf,
