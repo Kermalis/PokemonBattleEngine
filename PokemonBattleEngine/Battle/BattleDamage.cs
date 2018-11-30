@@ -191,6 +191,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 1.2;
                     break;
                 case PType.Dragon:
+                    if (user.Shell.Species == PSpecies.Giratina_Origin && user.Item == PItem.GriseousOrb)
+                        basePower *= 1.2;
                     if (user.Item == PItem.DracoPlate)
                         basePower *= 1.2;
                     break;
@@ -217,6 +219,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 1.2;
                     break;
                 case PType.Ghost:
+                    if (user.Shell.Species == PSpecies.Giratina_Origin && user.Item == PItem.GriseousOrb)
+                        basePower *= 1.2;
                     if (user.Item == PItem.SpookyPlate)
                         basePower *= 1.2;
                     break;

@@ -109,6 +109,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             // Validate Forme-Specific Requirements
             switch (Species)
             {
+                case PSpecies.Giratina_Altered:
+                    if (Item == PItem.GriseousOrb)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Giratina_Origin:
+                    if (Item != PItem.GriseousOrb)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
                 case PSpecies.Genesect:
                     if (Item == PItem.BurnDrive
                         || Item == PItem.ChillDrive

@@ -256,6 +256,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         EarthPlate,
         FistPlate,
         FlamePlate,
+        GriseousOrb,
         HeatRock,
         IciclePlate,
         InsectPlate,
@@ -329,6 +330,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Static, // TODO
         SuperLuck,
         Swarm,
+        Telepathy, // TODO
         ThickFat,
         Torrent,
         WonderSkin, // TODO
@@ -393,6 +395,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rotom_Heat = 479 | (3 << 0x10),
         Rotom_Mow = 479 | (4 << 0x10), // TODO
         Rotom_Wash = 479 | (5 << 0x10),
+        Giratina_Altered = 487 | (0 << 0x10),
+        Giratina_Origin = 487 | (1 << 0x10),
         Cresselia = 488,
         Darkrai = 491,
         Cofagrigus = 563,

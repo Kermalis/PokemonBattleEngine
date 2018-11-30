@@ -213,6 +213,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.HydroPump, PMove.HiddenPower, PMove.Discharge, PMove.Protect },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Giratina_Origin_Uber = new PPokemonShell
+            {
+                Species = PSpecies.Giratina_Origin,
+                Nickname = "Gary",
+                Level = 100,
+                Friendship = 255,
+                Item = PItem.GriseousOrb,
+                Shiny = false,
+                Ability = PAbility.Levitate,
+                Gender = PGender.Genderless,
+                Nature = PNature.Adamant,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 164, 252, 8, 0, 0, 84 },
+                Moves = new PMove[] { PMove.DragonClaw, PMove.ShadowSneak, PMove.Earthquake, PMove.Substitute }, // Dragon Tail, Shadow Sneak, Earthquake, Magic Coat
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Cresselia_VGC = new PPokemonShell
             {
                 Species = PSpecies.Cresselia,
