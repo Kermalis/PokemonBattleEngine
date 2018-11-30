@@ -1137,6 +1137,32 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Caterpie,
+                new PPokemonData
+                {
+                    HP = 45, Attack = 30, Defense = 35, SpAttack = 20, SpDefense = 20, Speed = 45,
+                    GenderRatio = PGenderRatio.M1_F1,
+                    Type1 = PType.Bug, Type2 = PType.None,
+                    Abilities = new PAbility[] { PAbility.ShieldDust, PAbility.RunAway },
+                    MinLevel = 1,
+                    ShinyLocked = false,
+                    Weight = 2.9,
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PMove.Bite, 15, PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.StringShot, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Tackle, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PMove.BugBite, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Electroweb, PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.Snore, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.StringShot, PMoveObtainMethod.MoveTutor_HGSS)
+                    }
+                }
+            },
+            {
                 PSpecies.Pikachu,
                 new PPokemonData
                 {
