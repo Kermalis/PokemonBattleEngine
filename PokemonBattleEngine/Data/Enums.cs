@@ -303,6 +303,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ToxicPlate,
         TwistedSpoon,
         UpGrade,
+        WaveIncense,
         WideLens,
         ZapPlate,
         MAX

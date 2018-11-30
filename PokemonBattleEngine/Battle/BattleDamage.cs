@@ -359,6 +359,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PItem.MysticWater:
                         case PItem.SeaIncense:
                         case PItem.SplashPlate:
+                        case PItem.WaveIncense:
                             basePower *= 1.2;
                             break;
                     }

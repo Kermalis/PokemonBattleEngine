@@ -71,6 +71,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.ToxicPlate, new PItemData { FlingPower = 90 } },
             { PItem.TwistedSpoon, new PItemData { FlingPower = 30 } },
             { PItem.UpGrade, new PItemData { FlingPower = 30 } },
+            { PItem.WaveIncense, new PItemData { FlingPower = 10 } },
             { PItem.WideLens, new PItemData { FlingPower = 10 } },
             { PItem.ZapPlate, new PItemData { FlingPower = 90 } },
         };
