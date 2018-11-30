@@ -117,12 +117,94 @@ namespace Kermalis.PokemonBattleEngine.Data
                     if (Item != PItem.GriseousOrb)
                         throw new ArgumentOutOfRangeException(nameof(Item));
                     break;
+                case PSpecies.Arceus_Normal:
+                    if (Item == PItem.DracoPlate
+                        || Item == PItem.DreadPlate
+                        || Item == PItem.EarthPlate
+                        || Item == PItem.FistPlate
+                        || Item == PItem.FlamePlate
+                        || Item == PItem.IciclePlate
+                        || Item == PItem.InsectPlate
+                        || Item == PItem.IronPlate
+                        || Item == PItem.MeadowPlate
+                        || Item == PItem.MindPlate
+                        || Item == PItem.SkyPlate
+                        || Item == PItem.SplashPlate
+                        || Item == PItem.SpookyPlate
+                        || Item == PItem.StonePlate
+                        || Item == PItem.ToxicPlate
+                        || Item == PItem.ZapPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Bug:
+                    if (Item != PItem.InsectPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Dark:
+                    if (Item != PItem.DreadPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Dragon:
+                    if (Item != PItem.DracoPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Electric:
+                    if (Item != PItem.ZapPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Fighting:
+                    if (Item != PItem.FistPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Fire:
+                    if (Item != PItem.FlamePlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Flying:
+                    if (Item != PItem.SkyPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Ghost:
+                    if (Item != PItem.SpookyPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Grass:
+                    if (Item != PItem.MeadowPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Ground:
+                    if (Item != PItem.EarthPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Ice:
+                    if (Item != PItem.IciclePlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Poison:
+                    if (Item != PItem.ToxicPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Psychic:
+                    if (Item != PItem.MindPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Rock:
+                    if (Item != PItem.StonePlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Steel:
+                    if (Item != PItem.IronPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
+                case PSpecies.Arceus_Water:
+                    if (Item != PItem.SplashPlate)
+                        throw new ArgumentOutOfRangeException(nameof(Item));
+                    break;
                 case PSpecies.Genesect:
                     if (Item == PItem.BurnDrive
                         || Item == PItem.ChillDrive
                         || Item == PItem.DouseDrive
-                        || Item == PItem.ShockDrive
-                        )
+                        || Item == PItem.ShockDrive)
                         throw new ArgumentOutOfRangeException(nameof(Item));
                     break;
                 case PSpecies.Genesect_Burn:

@@ -293,6 +293,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.DarkVoid, PMove.DarkPulse, PMove.NastyPlot, PMove.Substitute },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Arceus_Normal_Uber = new PPokemonShell
+            {
+                Species = PSpecies.Arceus_Normal,
+                Nickname = "Exon",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.LifeOrb, // Silk Scarf
+                Ability = PAbility.Multitype,
+                Gender = PGender.Genderless,
+                Nature = PNature.Adamant,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 200, 252, 0, 0, 0, 56 },
+                Moves = new PMove[] { PMove.SwordsDance, PMove.ExtremeSpeed, PMove.ShadowClaw, PMove.BrickBreak },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Cofagrigus_VGC = new PPokemonShell
             {
                 Species = PSpecies.Cofagrigus,

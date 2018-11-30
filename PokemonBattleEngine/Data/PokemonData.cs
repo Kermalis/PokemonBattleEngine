@@ -3225,6 +3225,153 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Arceus_Normal,
+                new PPokemonData
+                {
+                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
+                    GenderRatio = PGenderRatio.M0_F0,
+                    Type1 = PType.Normal, Type2 = PType.None,
+                    Abilities = new PAbility[] { PAbility.Multitype },
+                    MinLevel = 1,
+                    ShinyLocked = false,
+                    Weight = 320.0,
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PMove.CosmicPower, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.EarthPower, 20, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.ExtremeSpeed, 40, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PMove.FutureSight, 60, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PMove.Gravity, 10, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PMove.HyperBeam, 80, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.HyperVoice, 30, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PMove.Judgment, 100, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PMove.NaturalGift, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PMove.PerishSong, 90, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PMove.Punishment, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Recover, 70, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PMove.Refresh, 50, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PMove.SeismicToss, 1, PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                    },
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PMove.AerialAce, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.AncientPower, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.AquaTail, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.Avalanche, PMoveObtainMethod.TM_DPPtHGSS),
+                        //Tuple.Create(PMove.Blizzard, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.BrickBreak, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Brine, PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.Bulldoze, PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.BulletSeed, PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.CalmMind, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ChargeBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Cut, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.DarkPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.Defog, PMoveObtainMethod.HM_DPPt),
+                        Tuple.Create(PMove.Dive, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.DoubleTeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DragonClaw, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.DragonPulse, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.DreamEater, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.EarthPower, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Earthquake, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.EchoedVoice, PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Endure, PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.EnergyBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Facade, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.FireBlast, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Flamethrower, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Flash, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.FlashCannon, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Fly, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.FocusBlast, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Frustration, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.FuryCutter, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        //Tuple.Create(PMove.GigaDrain, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.GigaImpact, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.GrassKnot, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Gravity, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.Hail, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Headbutt, PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.HeatWave, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.HiddenPower, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.HoneClaws, PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.HyperBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.HyperVoice, PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IceBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IcyWind, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.Incinerate, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.IronDefense, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IronHead, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IronTail, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.LastResort, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.LightScreen, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.MagicCoat, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.MudSlap, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        //Tuple.Create(PMove.NaturalGift, PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.OminousWind, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        //Tuple.Create(PMove.Outrage, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Overheat, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Payback, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.PoisonJab, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Protect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Psychic, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.PsychUp, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Psyshock, PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Quash, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RainDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Recycle, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Reflect, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Rest, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Retaliate, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Return, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Roar, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockClimb, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS),
+                        Tuple.Create(PMove.RockSlide, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockSmash, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.RockTomb, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Round, PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Safeguard, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Sandstorm, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.SecretPower, PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.ShadowBall, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShadowClaw, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ShockWave, PMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PMove.SignalBeam, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.SilverWind, PMoveObtainMethod.TM_DPPtHGSS),
+                        //Tuple.Create(PMove.SleepTalk, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.SludgeBomb, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Snarl, PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Snore, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.SolarBeam, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.StealthRock, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.StoneEdge, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Strength, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.Substitute, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.SunnyDay, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Surf, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        //Tuple.Create(PMove.Swagger, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.SwordsDance, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Tailwind, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.Telekinesis, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunder, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Thunderbolt, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ThunderWave, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.Toxic, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Trick, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PMove.TrickRoom, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PMove.Twister, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PMove.Waterfall, PMoveObtainMethod.HM_DPPt | PMoveObtainMethod.HM_HGSS | PMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PMove.WaterPulse, PMoveObtainMethod.TM_DPPtHGSS),
+                        //Tuple.Create(PMove.Whirlpool, PMoveObtainMethod.HM_HGSS),
+                        Tuple.Create(PMove.WillOWisp, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.WorkUp, PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.XScissor, PMoveObtainMethod.TM_DPPtHGSS | PMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PMove.ZenHeadbutt, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2)
+                    }
+                }
+            },
+            {
                 PSpecies.Cofagrigus,
                 new PPokemonData
                 {
@@ -3522,6 +3669,40 @@ namespace Kermalis.PokemonBattleEngine.Data
                                                                                                                                                                                        //Tuple.Create(PMove.MagicCoat, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2)
                                                                                                                                                                                        //Tuple.Create(PMove.Tailwind, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2)
                 );
+
+            Data.Add(PSpecies.Arceus_Bug, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Bug].Type1 = PType.Bug;
+            Data.Add(PSpecies.Arceus_Dark, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Dark].Type1 = PType.Dark;
+            Data.Add(PSpecies.Arceus_Dragon, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Dragon].Type1 = PType.Dragon;
+            AddOtherMoves(PSpecies.Arceus_Dragon, Tuple.Create(PMove.DracoMeteor, PMoveObtainMethod.MoveTutor_DP | PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_BW | PMoveObtainMethod.MoveTutor_B2W2));
+            Data.Add(PSpecies.Arceus_Electric, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Electric].Type1 = PType.Electric;
+            Data.Add(PSpecies.Arceus_Fighting, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Fighting].Type1 = PType.Fighting;
+            Data.Add(PSpecies.Arceus_Fire, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Fire].Type1 = PType.Fire;
+            Data.Add(PSpecies.Arceus_Flying, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Flying].Type1 = PType.Flying;
+            Data.Add(PSpecies.Arceus_Ghost, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Ghost].Type1 = PType.Ghost;
+            Data.Add(PSpecies.Arceus_Grass, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Grass].Type1 = PType.Grass;
+            Data.Add(PSpecies.Arceus_Ground, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Ground].Type1 = PType.Ground;
+            Data.Add(PSpecies.Arceus_Ice, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Ice].Type1 = PType.Ice;
+            Data.Add(PSpecies.Arceus_Poison, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Poison].Type1 = PType.Poison;
+            Data.Add(PSpecies.Arceus_Psychic, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Psychic].Type1 = PType.Psychic;
+            Data.Add(PSpecies.Arceus_Rock, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Rock].Type1 = PType.Rock;
+            Data.Add(PSpecies.Arceus_Steel, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Steel].Type1 = PType.Steel;
+            Data.Add(PSpecies.Arceus_Water, DeepClone(PSpecies.Arceus_Normal));
+            Data[PSpecies.Arceus_Water].Type1 = PType.Water;
 
             Data.Add(PSpecies.Genesect_Burn, DeepClone(PSpecies.Genesect));
             Data.Add(PSpecies.Genesect_Chill, DeepClone(PSpecies.Genesect));
