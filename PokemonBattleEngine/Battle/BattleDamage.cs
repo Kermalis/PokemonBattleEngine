@@ -252,6 +252,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Psychic:
                     if (user.Item == PItem.MindPlate)
                         basePower *= 1.2;
+                    if (user.Item == PItem.TwistedSpoon)
+                        basePower *= 1.2;
                     break;
                 case PType.Rock:
                     if (user.Item == PItem.StonePlate)

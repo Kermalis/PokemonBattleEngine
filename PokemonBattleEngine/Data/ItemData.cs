@@ -50,6 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.StonePlate, new PItemData { FlingPower = 90 } },
             { PItem.ThickClub, new PItemData { FlingPower = 90 } },
             { PItem.ToxicPlate, new PItemData { FlingPower = 90 } },
+            { PItem.TwistedSpoon, new PItemData { FlingPower = 30 } },
             { PItem.WideLens, new PItemData { FlingPower = 10 } },
             { PItem.ZapPlate, new PItemData { FlingPower = 90 } },
         };

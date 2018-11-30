@@ -282,6 +282,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StonePlate,
         ThickClub,
         ToxicPlate,
+        TwistedSpoon,
         WideLens,
         ZapPlate,
         MAX
