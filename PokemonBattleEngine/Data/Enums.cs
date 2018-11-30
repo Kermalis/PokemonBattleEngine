@@ -300,6 +300,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ThickClub,
         ToxicPlate,
         TwistedSpoon,
+        UpGrade,
         WideLens,
         ZapPlate,
         MAX

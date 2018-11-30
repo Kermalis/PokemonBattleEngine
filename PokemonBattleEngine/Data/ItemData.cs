@@ -57,6 +57,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.SharpBeak, new PItemData { FlingPower = 50 } },
             { PItem.ShockDrive, new PItemData { FlingPower = 70 } },
             { PItem.SilkScarf, new PItemData { FlingPower = 10 } },
+            { PItem.SilverPowder, new PItemData { FlingPower = 10 } },
             { PItem.SkyPlate, new PItemData { FlingPower = 90 } },
             { PItem.SoftSand, new PItemData { FlingPower = 10 } },
             { PItem.SoulDew, new PItemData { FlingPower = 30 } },
@@ -67,6 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.ThickClub, new PItemData { FlingPower = 90 } },
             { PItem.ToxicPlate, new PItemData { FlingPower = 90 } },
             { PItem.TwistedSpoon, new PItemData { FlingPower = 30 } },
+            { PItem.UpGrade, new PItemData { FlingPower = 30 } },
             { PItem.WideLens, new PItemData { FlingPower = 10 } },
             { PItem.ZapPlate, new PItemData { FlingPower = 90 } },
         };
