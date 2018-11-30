@@ -286,6 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PItem.IciclePlate:
+                        case PItem.NeverMeltIce:
                             basePower *= 1.2;
                             break;
                     }
