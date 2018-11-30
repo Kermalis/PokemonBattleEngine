@@ -278,6 +278,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MetalPowder,
         MindPlate,
         MiracleSeed,
+        MuscleBand,
         MysticWater,
         NeverMeltIce,
         OddIncense,

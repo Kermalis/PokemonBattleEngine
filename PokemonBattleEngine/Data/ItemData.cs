@@ -46,6 +46,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.MetalPowder, new PItemData { FlingPower = 10 } },
             { PItem.MindPlate, new PItemData { FlingPower = 90 } },
             { PItem.MiracleSeed, new PItemData { FlingPower = 30 } },
+            { PItem.MuscleBand, new PItemData { FlingPower = 10 } },
             { PItem.MysticWater, new PItemData { FlingPower = 30 } },
             { PItem.NeverMeltIce, new PItemData { FlingPower = 30 } },
             { PItem.OddIncense, new PItemData { FlingPower = 10 } },
