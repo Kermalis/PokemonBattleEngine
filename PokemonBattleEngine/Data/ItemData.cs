@@ -41,6 +41,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.RazorClaw, new PItemData { FlingPower = 80 } },
             { PItem.ScopeLens, new PItemData { FlingPower = 30 } },
             { PItem.ShockDrive, new PItemData { FlingPower = 70 } },
+            { PItem.SilkScarf, new PItemData { FlingPower = 10 } },
             { PItem.SkyPlate, new PItemData { FlingPower = 90 } },
             { PItem.SoulDew, new PItemData { FlingPower = 30 } },
             { PItem.SplashPlate, new PItemData { FlingPower = 90 } },

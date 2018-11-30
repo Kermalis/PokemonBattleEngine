@@ -300,7 +300,7 @@ namespace Kermalis.PokemonBattleEngine
                 Level = 100,
                 Friendship = 255,
                 Shiny = false,
-                Item = PItem.LifeOrb, // Silk Scarf
+                Item = PItem.SilkScarf,
                 Ability = PAbility.Multitype,
                 Gender = PGender.Genderless,
                 Nature = PNature.Adamant,

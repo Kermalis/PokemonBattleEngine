@@ -240,6 +240,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 1.2;
                     break;
                 case PType.Normal:
+                    if (user.Item == PItem.SilkScarf)
+                        basePower *= 1.2;
                     break;
                 case PType.Poison:
                     if (user.Item == PItem.ToxicPlate)

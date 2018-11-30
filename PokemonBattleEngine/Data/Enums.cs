@@ -273,6 +273,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RazorClaw,
         ScopeLens,
         ShockDrive,
+        SilkScarf,
         SkyPlate,
         SoulDew,
         SplashPlate,
