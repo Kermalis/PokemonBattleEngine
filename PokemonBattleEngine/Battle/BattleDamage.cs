@@ -214,6 +214,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Electric:
                     switch (user.Item)
                     {
+                        case PItem.Magnet:
                         case PItem.ZapPlate:
                             basePower *= 1.2;
                             break;
