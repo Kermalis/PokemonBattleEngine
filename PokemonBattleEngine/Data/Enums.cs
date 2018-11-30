@@ -364,6 +364,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ThickFat,
         TintedLens, // TODO
         Torrent,
+        VictoryStar, // TODO
         WonderSkin, // TODO
         MAX,
     }
@@ -455,6 +456,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Arceus_Rock = 493 | (14 << 0x10),
         Arceus_Steel = 493 | (15 << 0x10),
         Arceus_Water = 493 | (16 << 0x10),
+        Victini = 494,
         Cofagrigus = 563,
         Genesect = 649 | (0 << 0x10),
         Genesect_Burn = 649 | (1 << 0x10),
