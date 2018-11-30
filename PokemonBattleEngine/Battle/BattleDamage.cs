@@ -234,6 +234,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // Pokémon with Heatproof take half as much damage from fire attacks
                     if (target.Ability == PAbility.Heatproof)
                         basePower *= 0.5;
+                    // Damage is halved when using Fire or Ice moves against a Pokémon with Thick Fat
+                    if (target.Ability == PAbility.ThickFat)
+                        basePower *= 0.5;
                     switch (user.Item)
                     {
                         case PItem.Charcoal:
@@ -245,6 +248,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Flying:
                     switch (user.Item)
                     {
+                        case PItem.SharpBeak:
                         case PItem.SkyPlate:
                             basePower *= 1.2;
                             break;
@@ -253,13 +257,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Ghost:
                     switch (user.Item)
                     {
-                        case PItem.SpellTag:
-                        case PItem.SpookyPlate:
-                            basePower *= 1.2;
-                            break;
                         case PItem.GriseousOrb:
                             if (user.Shell.Species == PSpecies.Giratina_Origin)
                                 basePower *= 1.2;
+                            break;
+                        case PItem.SpellTag:
+                        case PItem.SpookyPlate:
+                            basePower *= 1.2;
                             break;
                     }
                     break;
@@ -283,6 +287,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PType.Ice:
+                    // Damage is halved when using Fire or Ice moves against a Pokémon with Thick Fat
+                    if (target.Ability == PAbility.ThickFat)
+                        basePower *= 0.5;
                     switch (user.Item)
                     {
                         case PItem.IciclePlate:
@@ -354,9 +361,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 basePower *= 2.0;
             // Damage is halved from a Burned Pokémon unless it has Guts
             if (moveCategory == PMoveCategory.Physical && user.Status1 == PStatus1.Burned && user.Ability != PAbility.Guts)
-                basePower *= 0.5;
-            // Damage is halved when using Fire or Ice moves against a Pokémon with Thick Fat
-            if (target.Ability == PAbility.ThickFat && (moveType == PType.Fire || moveType == PType.Ice))
                 basePower *= 0.5;
 
             return (ushort)basePower;

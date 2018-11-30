@@ -44,6 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.PowerHerb, new PItemData { FlingPower = 10 } },
             { PItem.RazorClaw, new PItemData { FlingPower = 80 } },
             { PItem.ScopeLens, new PItemData { FlingPower = 30 } },
+            { PItem.SharpBeak, new PItemData { FlingPower = 50 } },
             { PItem.ShockDrive, new PItemData { FlingPower = 70 } },
             { PItem.SilkScarf, new PItemData { FlingPower = 10 } },
             { PItem.SkyPlate, new PItemData { FlingPower = 90 } },
