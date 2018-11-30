@@ -322,7 +322,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         RunAway,
         SapSipper, // TODO
         SereneGrace, // TODO
+        ShedSkin, // TODO
         ShellArmor,
+        ShieldDust, // TODO
         Simple,
         Sniper,
         SolarPower, // TODO
@@ -330,6 +332,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SuperLuck,
         Swarm,
         ThickFat,
+        TintedLens, // TODO
         Torrent,
         WonderSkin, // TODO
         MAX,
@@ -346,6 +349,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         Squirtle = 7,
         Wartortle = 8,
         Blastoise = 9,
+        Caterpie = 10,
+        Metapod = 11,
+        Butterfree = 12,
         Pikachu = 25,
         Cubone = 104,
         Marowak = 105,
