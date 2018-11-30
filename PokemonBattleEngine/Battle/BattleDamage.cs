@@ -279,6 +279,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PItem.MeadowPlate:
                         case PItem.MiracleSeed:
+                        case PItem.RoseIncense:
                             basePower *= 1.2;
                             break;
                     }

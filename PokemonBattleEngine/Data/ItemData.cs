@@ -54,6 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.QuickPowder, new PItemData { FlingPower = 10 } },
             { PItem.RazorClaw, new PItemData { FlingPower = 80 } },
             { PItem.RockIncense, new PItemData { FlingPower = 10 } },
+            { PItem.RoseIncense, new PItemData { FlingPower = 10 } },
             { PItem.ScopeLens, new PItemData { FlingPower = 30 } },
             { PItem.SeaIncense, new PItemData { FlingPower = 10 } },
             { PItem.SharpBeak, new PItemData { FlingPower = 50 } },

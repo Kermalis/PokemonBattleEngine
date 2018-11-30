@@ -286,6 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         QuickPowder,
         RazorClaw,
         RockIncense,
+        RoseIncense,
         ScopeLens,
         SeaIncense,
         SharpBeak,
