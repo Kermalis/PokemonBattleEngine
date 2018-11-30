@@ -277,6 +277,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SilkScarf,
         SkyPlate,
         SoulDew,
+        SpellTag,
         SplashPlate,
         SpookyPlate,
         StonePlate,

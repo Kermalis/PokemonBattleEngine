@@ -180,95 +180,166 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (moveType)
             {
                 case PType.Bug:
-                    if (user.Item == PItem.InsectPlate)
-                        basePower *= 1.2;
                     // Swarm gives a 50% power boost to Bug attacks if the user is below 1/3 max HP
                     if (user.Ability == PAbility.Swarm && user.HP <= user.MaxHP / 3)
                         basePower *= 1.5;
+                    switch (user.Item)
+                    {
+                        case PItem.InsectPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Dark:
-                    if (user.Item == PItem.DreadPlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.DreadPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Dragon:
-                    if (user.Shell.Species == PSpecies.Giratina_Origin && user.Item == PItem.GriseousOrb)
-                        basePower *= 1.2;
-                    if (user.Item == PItem.DracoPlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.DracoPlate:
+                            basePower *= 1.2;
+                            break;
+                        case PItem.GriseousOrb:
+                            if (user.Shell.Species == PSpecies.Giratina_Origin)
+                                basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Electric:
-                    if (user.Item == PItem.ZapPlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.ZapPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Fighting:
-                    if (user.Item == PItem.FistPlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.FistPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Fire:
-                    if (user.Item == PItem.Charcoal)
-                        basePower *= 1.2;
-                    if (user.Item == PItem.FlamePlate)
-                        basePower *= 1.2;
                     // Blaze gives a 50% power boost to Fire attacks if the user is below 1/3 max HP
                     if (user.Ability == PAbility.Blaze && user.HP <= user.MaxHP / 3)
                         basePower *= 1.5;
                     // Pokémon with Heatproof take half as much damage from fire attacks
                     if (target.Ability == PAbility.Heatproof)
                         basePower *= 0.5;
+                    switch (user.Item)
+                    {
+                        case PItem.Charcoal:
+                        case PItem.FlamePlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Flying:
-                    if (user.Item == PItem.SkyPlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.SkyPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Ghost:
-                    if (user.Shell.Species == PSpecies.Giratina_Origin && user.Item == PItem.GriseousOrb)
-                        basePower *= 1.2;
-                    if (user.Item == PItem.SpookyPlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.SpellTag:
+                        case PItem.SpookyPlate:
+                            basePower *= 1.2;
+                            break;
+                        case PItem.GriseousOrb:
+                            if (user.Shell.Species == PSpecies.Giratina_Origin)
+                                basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Grass:
-                    if (user.Item == PItem.MeadowPlate)
-                        basePower *= 1.2;
                     // Overgrow gives a 50% power boost to Grass attacks if the user is below 1/3 max HP
                     if (user.Ability == PAbility.Overgrow && user.HP <= user.MaxHP / 3)
                         basePower *= 1.5;
+                    switch (user.Item)
+                    {
+                        case PItem.MeadowPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Ground:
-                    if (user.Item == PItem.EarthPlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.EarthPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Ice:
-                    if (user.Item == PItem.IciclePlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.IciclePlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Normal:
-                    if (user.Item == PItem.SilkScarf)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.SilkScarf:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Poison:
-                    if (user.Item == PItem.ToxicPlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.ToxicPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Psychic:
-                    if (user.Item == PItem.MindPlate)
-                        basePower *= 1.2;
-                    if (user.Item == PItem.TwistedSpoon)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.MindPlate:
+                        case PItem.TwistedSpoon:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Rock:
-                    if (user.Item == PItem.StonePlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.StonePlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Steel:
-                    if (user.Item == PItem.IronPlate)
-                        basePower *= 1.2;
+                    switch (user.Item)
+                    {
+                        case PItem.IronPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
                 case PType.Water:
-                    if (user.Item == PItem.SplashPlate)
-                        basePower *= 1.2;
                     // Torrent gives a 50% power boost to Water attacks if the user is below 1/3 max HP
                     if (user.Ability == PAbility.Torrent && user.HP <= user.MaxHP / 3)
                         basePower *= 1.5;
+                    switch (user.Item)
+                    {
+                        case PItem.SplashPlate:
+                            basePower *= 1.2;
+                            break;
+                    }
                     break;
             }
 
