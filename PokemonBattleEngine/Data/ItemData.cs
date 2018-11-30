@@ -74,6 +74,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.UpGrade, new PItemData { FlingPower = 30 } },
             { PItem.WaveIncense, new PItemData { FlingPower = 10 } },
             { PItem.WideLens, new PItemData { FlingPower = 10 } },
+            { PItem.WiseGlasses, new PItemData { FlingPower = 10 } },
             { PItem.ZapPlate, new PItemData { FlingPower = 90 } },
         };
     }

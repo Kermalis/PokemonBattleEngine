@@ -373,9 +373,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // A Pikachu holding a Light Ball gets a 100% power boost
             if (user.Item == PItem.LightBall && user.Shell.Species == PSpecies.Pikachu)
                 basePower *= 2.0;
-            // Damage is halved from a Burned Pokémon unless it has Guts
+            // Physical moves' power is halved from a Burned Pokémon unless it has Guts
             if (moveCategory == PMoveCategory.Physical && user.Status1 == PStatus1.Burned && user.Ability != PAbility.Guts)
                 basePower *= 0.5;
+            // Special moves' power gets a 10% boost if the user is holding a Wise Glasses
+            if (moveCategory == PMoveCategory.Special && user.Item == PItem.WiseGlasses)
+                basePower *= 1.1;
 
             return (ushort)basePower;
         }

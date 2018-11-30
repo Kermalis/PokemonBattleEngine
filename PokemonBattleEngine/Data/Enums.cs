@@ -306,6 +306,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         UpGrade,
         WaveIncense,
         WideLens,
+        WiseGlasses,
         ZapPlate,
         MAX
     }
