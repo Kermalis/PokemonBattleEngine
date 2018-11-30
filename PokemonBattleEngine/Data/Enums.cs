@@ -332,6 +332,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SuperLuck,
         Swarm,
         ThickFat,
+        TintedLens, // TODO
         Torrent,
         WonderSkin, // TODO
         MAX,
@@ -350,6 +351,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Blastoise = 9,
         Caterpie = 10,
         Metapod = 11,
+        Butterfree = 12,
         Pikachu = 25,
         Cubone = 104,
         Marowak = 105,
