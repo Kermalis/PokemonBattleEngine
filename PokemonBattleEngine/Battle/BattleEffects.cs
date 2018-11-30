@@ -144,7 +144,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (PreMoveStatusCheck(user, move))
                 return;
 
-            PPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, PMoveData.Data[move].Targets == PMoveTarget.SingleNotSelf);
+            PPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, PMoveData.GetMoveTargetsForPokemon(user, move) == PMoveTarget.SingleNotSelf);
             if (targets.Length == 0)
             {
                 BroadcastMoveUsed(user, move);
@@ -202,7 +202,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     TryForceStatus2(user, targets, move, PStatus2.Confused);
                     break;
                 case PMoveEffect.Curse:
-                    Ef_Curse(user);
+                    Ef_Curse(user, targets[0]);
                     break;
                 case PMoveEffect.Dig:
                     Ef_Dig(user, targets[0]);
@@ -1418,28 +1418,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
             user.Transform(target, target.Attack, target.Defense, target.SpAttack, target.SpDefense, target.Speed, target.Ability, target.Type1, target.Type2, target.Moves);
             BroadcastTransform(user, target);
         }
-        void Ef_Curse(PPokemon user)
+        void Ef_Curse(PPokemon user, PPokemon target)
         {
             BroadcastMoveUsed(user, PMove.Curse);
             PPReduce(user, PMove.Curse);
             if (user.HasType(PType.Ghost))
             {
-                PFieldPosition prioritizedPos = GetPositionAcross(BattleStyle, user.FieldPosition);
-                PTarget t;
-                if (prioritizedPos == PFieldPosition.Left)
-                    t = PTarget.FoeLeft;
-                else if (prioritizedPos == PFieldPosition.Center)
-                    t = PTarget.FoeCenter;
-                else
-                    t = PTarget.FoeRight;
-                PPokemon[] targets = GetRuntimeTargets(user, t, false);
-                if (targets.Length == 0)
+                if (target == user) // Just gained the Ghost type after selecting the move, so get a target
                 {
-                    BroadcastFail(user, PFailReason.NoTarget);
+                    PFieldPosition prioritizedPos = GetPositionAcross(BattleStyle, user.FieldPosition);
+                    PTarget t;
+                    if (prioritizedPos == PFieldPosition.Left)
+                        t = PTarget.FoeLeft;
+                    else if (prioritizedPos == PFieldPosition.Center)
+                        t = PTarget.FoeCenter;
+                    else
+                        t = PTarget.FoeRight;
+                    PPokemon[] targets = GetRuntimeTargets(user, t, false);
+                    if (targets.Length == 0)
+                    {
+                        BroadcastFail(user, PFailReason.NoTarget);
+                        return;
+                    }
+                    target = targets[0];
                 }
-                else if (!MissCheck(user, targets[0], PMove.Curse))
+                if (!MissCheck(user, target, PMove.Curse))
                 {
-                    ApplyStatus2IfPossible(user, targets[0], PStatus2.Cursed, true);
+                    ApplyStatus2IfPossible(user, target, PStatus2.Cursed, true);
                 }
             }
             else

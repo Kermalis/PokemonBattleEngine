@@ -358,11 +358,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         void DisplayTargets(MoveInfo moveInfo)
         {
-            PMoveData mData = PMoveData.Data[moveInfo.Move];
+            PMoveTarget possibleTargets = PMoveData.GetMoveTargetsForPokemon(Pokemon, moveInfo.Move);
 
             if (Client.Battle.BattleStyle == PBattleStyle.Single || Client.Battle.BattleStyle == PBattleStyle.Rotation)
             {
-                switch (mData.Targets)
+                switch (possibleTargets)
                 {
                     case PMoveTarget.All:
                         Pokemon.SelectedAction.FightTargets = PTarget.AllyCenter | PTarget.FoeCenter;
@@ -408,7 +408,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     LeftX = baseX + 0; RightX = baseX + 128; LeftLineX = baseX + 44; CenterLineX = baseX + 98; RightLineX = baseX + 172;
                     CenterTargetsVisible = false;
                     TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineAllyRightAllyCenterEnabled = false;
-                    switch (mData.Targets)
+                    switch (possibleTargets)
                     {
                         case PMoveTarget.All:
                             TargetAllyLeftEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = TargetFoeRightEnabled = true;
@@ -524,7 +524,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     const double baseX = 78;
                     LeftX = baseX + 0; RightX = baseX + 256; LeftLineX = baseX + 44; CenterLineX = baseX + 98; RightLineX = baseX + 300;
                     CenterTargetsVisible = true;
-                    switch (mData.Targets)
+                    switch (possibleTargets)
                     {
                         case PMoveTarget.All:
                             TargetAllyLeftEnabled = TargetAllyCenterEnabled = TargetAllyRightEnabled = TargetFoeLeftEnabled = TargetFoeCenterEnabled = TargetFoeRightEnabled = true;

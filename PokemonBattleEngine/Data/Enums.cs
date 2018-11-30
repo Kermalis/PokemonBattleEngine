@@ -415,7 +415,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         SingleAllySurrounding, // Adjacent ally (Ex. Helping Hand)
         SingleNotSelf,         // Single battler except itself (Ex. Dark Pulse)
         SingleFoeSurrounding,  // Single foe surrounding (Ex. Me First)
-        SingleSurrounding      // Single battler surrounding (Ex. Tackle)
+        SingleSurrounding,     // Single battler surrounding (Ex. Tackle)
+        Varies                 // Possible targets vary (Ex. Curse)
     }
     [Flags]
     public enum PMoveFlag : ushort

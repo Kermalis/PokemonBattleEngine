@@ -78,12 +78,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
 
                         // Verify targets
-                        PMoveData mData = PMoveData.Data[action.FightMove];
+                        PMoveTarget possibleTargets = PMoveData.GetMoveTargetsForPokemon(pkmn, action.FightMove);
                         switch (BattleStyle)
                         {
                             case PBattleStyle.Single:
                             case PBattleStyle.Rotation:
-                                switch (mData.Targets)
+                                switch (possibleTargets)
                                 {
                                     case PMoveTarget.All:
                                         if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeCenter))
@@ -107,7 +107,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 }
                                 break;
                             case PBattleStyle.Double:
-                                switch (mData.Targets)
+                                switch (possibleTargets)
                                 {
                                     case PMoveTarget.All:
                                         if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
@@ -182,7 +182,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 }
                                 break;
                             case PBattleStyle.Triple:
-                                switch (mData.Targets)
+                                switch (possibleTargets)
                                 {
                                     case PMoveTarget.All:
                                         if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
@@ -376,7 +376,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (action.Decision)
             {
                 case PDecision.Fight:
-                    switch (PMoveData.Data[action.FightMove].Targets)
+                    switch (PMoveData.GetMoveTargetsForPokemon(pkmn, action.FightMove))
                     {
                         case PMoveTarget.RandomFoeSurrounding:
                             switch (BattleStyle)
