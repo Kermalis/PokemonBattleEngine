@@ -281,6 +281,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         NeverMeltIce,
         PoisonBarb,
         PowerHerb,
+        QuickPowder,
         RazorClaw,
         ScopeLens,
         SeaIncense,

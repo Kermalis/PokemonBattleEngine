@@ -164,7 +164,6 @@ Expert Belt
 Life Orb
 Toxic Orb
 Flame Orb
-Quick Powder
 Focus Sash
 Zoom Lens
 Metronome
