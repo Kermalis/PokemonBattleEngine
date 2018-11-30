@@ -325,6 +325,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PItem.MindPlate:
+                        case PItem.OddIncense:
                         case PItem.TwistedSpoon:
                             basePower *= 1.2;
                             break;

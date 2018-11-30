@@ -280,6 +280,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MiracleSeed,
         MysticWater,
         NeverMeltIce,
+        OddIncense,
         PoisonBarb,
         PowerHerb,
         QuickPowder,
