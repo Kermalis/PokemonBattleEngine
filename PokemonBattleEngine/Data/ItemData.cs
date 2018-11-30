@@ -54,6 +54,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.ShockDrive, new PItemData { FlingPower = 70 } },
             { PItem.SilkScarf, new PItemData { FlingPower = 10 } },
             { PItem.SkyPlate, new PItemData { FlingPower = 90 } },
+            { PItem.SoftSand, new PItemData { FlingPower = 10 } },
             { PItem.SoulDew, new PItemData { FlingPower = 30 } },
             { PItem.SpellTag, new PItemData { FlingPower = 30 } },
             { PItem.SplashPlate, new PItemData { FlingPower = 90 } },

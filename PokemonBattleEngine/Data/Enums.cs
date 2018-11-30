@@ -286,6 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShockDrive,
         SilkScarf,
         SkyPlate,
+        SoftSand,
         SoulDew,
         SpellTag,
         SplashPlate,

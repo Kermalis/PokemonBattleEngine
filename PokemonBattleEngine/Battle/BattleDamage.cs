@@ -286,6 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PItem.EarthPlate:
+                        case PItem.SoftSand:
                             basePower *= 1.2;
                             break;
                     }
