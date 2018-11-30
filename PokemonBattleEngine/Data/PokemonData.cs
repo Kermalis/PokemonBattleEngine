@@ -1287,6 +1287,31 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Weedle,
+                new PPokemonData
+                {
+                    HP = 40, Attack = 35, Defense = 30, SpAttack = 20, SpDefense = 20, Speed = 50,
+                    GenderRatio = PGenderRatio.M1_F1,
+                    Type1 = PType.Bug, Type2 = PType.Poison,
+                    Abilities = new PAbility[] { PAbility.ShieldDust, PAbility.RunAway },
+                    MinLevel = 1,
+                    ShinyLocked = false,
+                    Weight = 3.2,
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PMove.BugBite, 15, PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.PoisonSting, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.StringShot, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                    },
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PMove.BugBite, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Electroweb, PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.StringShot, PMoveObtainMethod.MoveTutor_HGSS)
+                    }
+                }
+            },
+            {
                 PSpecies.Pikachu,
                 new PPokemonData
                 {
