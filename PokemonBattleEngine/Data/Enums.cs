@@ -730,6 +730,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Scratch,
         Screech,
         SearingShot,
+        SecretSword,
         SeedBomb,
         SeedFlare,
         ShadowBall,
