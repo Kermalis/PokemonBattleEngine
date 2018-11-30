@@ -346,6 +346,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 1.5;
                     switch (user.Item)
                     {
+                        case PItem.MysticWater:
                         case PItem.SplashPlate:
                             basePower *= 1.2;
                             break;
