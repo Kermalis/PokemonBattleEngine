@@ -1163,6 +1163,31 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PSpecies.Metapod,
+                new PPokemonData
+                {
+                    HP = 50, Attack = 20, Defense = 55, SpAttack = 25, SpDefense = 25, Speed = 30,
+                    GenderRatio = PGenderRatio.M1_F1,
+                    Type1 = PType.Bug, Type2 = PType.None,
+                    Abilities = new PAbility[] { PAbility.ShedSkin },
+                    MinLevel = 1,
+                    ShinyLocked = false,
+                    Weight = 9.9,
+                    LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PMove.Harden, 1, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PMove.Harden, 7, PMoveObtainMethod.LevelUp_RSE | PMoveObtainMethod.LevelUp_FRLG | PMoveObtainMethod.LevelUp_DP | PMoveObtainMethod.LevelUp_Pt | PMoveObtainMethod.LevelUp_HGSS | PMoveObtainMethod.LevelUp_BW | PMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    OtherMoves = new Tuple<PMove, PMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PMove.BugBite, PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.Electroweb, PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.IronDefense, PMoveObtainMethod.MoveTutor_Pt | PMoveObtainMethod.MoveTutor_HGSS | PMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PMove.StringShot, PMoveObtainMethod.MoveTutor_HGSS)
+                    }
+                }
+            },
+            {
                 PSpecies.Pikachu,
                 new PPokemonData
                 {

@@ -322,6 +322,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RunAway,
         SapSipper, // TODO
         SereneGrace, // TODO
+        ShedSkin, // TODO
         ShellArmor,
         ShieldDust, // TODO
         Simple,
@@ -348,6 +349,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Wartortle = 8,
         Blastoise = 9,
         Caterpie = 10,
+        Metapod = 11,
         Pikachu = 25,
         Cubone = 104,
         Marowak = 105,
