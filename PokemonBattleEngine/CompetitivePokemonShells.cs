@@ -53,6 +53,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Substitute, PMove.Scald, PMove.Protect, PMove.RainDance }, // Rapid Spin, Scald, Roar, Foresight
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Butterfree_RU = new PPokemonShell
+            {
+                Species = PSpecies.Butterfree,
+                Nickname = "Fluff",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.Leftovers,
+                Ability = PAbility.Compoundeyes,
+                Gender = PGender.Female,
+                Nature = PNature.Timid,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
+                Moves = new PMove[] { PMove.SleepPowder, PMove.QuiverDance, PMove.BugBuzz, PMove.Substitute },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Pikachu_VGC = new PPokemonShell
             {
                 Species = PSpecies.Pikachu,
