@@ -186,6 +186,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PItem.InsectPlate:
+                        case PItem.SilverPowder:
                             basePower *= 1.2;
                             break;
                     }

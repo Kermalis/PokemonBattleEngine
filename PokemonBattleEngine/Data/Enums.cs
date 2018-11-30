@@ -289,6 +289,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SharpBeak,
         ShockDrive,
         SilkScarf,
+        SilverPowder,
         SkyPlate,
         SoftSand,
         SoulDew,
