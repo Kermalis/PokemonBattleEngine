@@ -243,6 +243,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BlackSludge, // TODO
         BrightPowder,
         BurnDrive,
+        Charcoal,
         ChillDrive,
         ChoiceBand, // TODO: Lock move
         ChoiceScarf, // TODO: Lock move

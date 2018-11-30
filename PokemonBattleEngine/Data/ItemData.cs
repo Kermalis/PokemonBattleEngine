@@ -11,6 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.BlackSludge, new PItemData { FlingPower = 30 } },
             { PItem.BrightPowder, new PItemData { FlingPower = 10 } },
             { PItem.BurnDrive, new PItemData { FlingPower = 70 } },
+            { PItem.Charcoal, new PItemData { FlingPower = 30 } },
             { PItem.ChillDrive, new PItemData { FlingPower = 70 } },
             { PItem.ChoiceBand, new PItemData { FlingPower = 10 } },
             { PItem.ChoiceScarf, new PItemData { FlingPower = 10 } },

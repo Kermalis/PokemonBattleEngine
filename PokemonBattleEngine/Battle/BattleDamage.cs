@@ -205,6 +205,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 1.2;
                     break;
                 case PType.Fire:
+                    if (user.Item == PItem.Charcoal)
+                        basePower *= 1.2;
                     if (user.Item == PItem.FlamePlate)
                         basePower *= 1.2;
                     // Blaze gives a 50% power boost to Fire attacks if the user is below 1/3 max HP
