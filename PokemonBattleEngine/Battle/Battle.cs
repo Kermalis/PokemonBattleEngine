@@ -217,12 +217,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     double speed = pkmn.Speed * GetStatMultiplier(pkmn.SpeedChange);
 
-                    // A Ditto holding a Choice Scarf get a 50% speed increase
-                    if (pkmn.Item == PItem.QuickPowder && pkmn.Species == PSpecies.Ditto)
-                        speed *= 2.0;
-                    // Pokémon holding a Choice Scarf get a 50% speed increase
-                    if (pkmn.Item == PItem.ChoiceScarf)
-                        speed *= 1.5;
+                    switch (pkmn.Item)
+                    {
+                        case PItem.ChoiceScarf:
+                            if (pkmn.Item == PItem.ChoiceScarf)
+                                speed *= 1.5;
+                            break;
+                        case PItem.MachoBrace:
+                            if (pkmn.Item == PItem.MachoBrace)
+                                speed *= 0.5;
+                            break;
+                        case PItem.QuickPowder:
+                            if (pkmn.Species == PSpecies.Ditto)
+                                speed *= 2.0;
+                            break;
+                    }
                     // Paralyzed Pokémon get a 75% speed decrease
                     if (pkmn.Status1 == PStatus1.Paralyzed)
                         speed *= 0.25;
