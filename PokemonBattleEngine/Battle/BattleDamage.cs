@@ -342,6 +342,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PItem.IronPlate:
+                        case PItem.MetalCoat:
                             basePower *= 1.2;
                             break;
                     }

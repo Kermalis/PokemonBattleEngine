@@ -273,6 +273,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LightClay,
         Magnet,
         MeadowPlate,
+        MetalCoat,
         MetalPowder,
         MindPlate,
         MiracleSeed,
