@@ -707,6 +707,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PsychoCut,
         PsychUp,
         Psyshock,
+        Psystrike,
         QuickAttack,
         QuiverDance,
         RainDance,

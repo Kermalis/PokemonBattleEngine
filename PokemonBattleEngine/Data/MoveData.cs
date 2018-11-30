@@ -2118,6 +2118,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Psystrike,
+                new PMoveData
+                {
+                    Type = PType.Psychic, Category = PMoveCategory.Special,
+                    Effect = PMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 2, Power = 100, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.QuickAttack,
                 new PMoveData
                 {

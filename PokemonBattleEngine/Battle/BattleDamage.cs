@@ -359,6 +359,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (move)
             {
                 case PMove.Psyshock:
+                case PMove.Psystrike:
                     a = CalculateSpAttack(user, target, criticalHit);
                     d = CalculateDefense(user, target, criticalHit);
                     break;
