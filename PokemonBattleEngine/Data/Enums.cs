@@ -271,6 +271,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MeadowPlate,
         MetalPowder,
         MindPlate,
+        PoisonBarb,
         PowerHerb,
         RazorClaw,
         ScopeLens,

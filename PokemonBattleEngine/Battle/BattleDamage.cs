@@ -301,6 +301,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Poison:
                     switch (user.Item)
                     {
+                        case PItem.PoisonBarb:
                         case PItem.ToxicPlate:
                             basePower *= 1.2;
                             break;
