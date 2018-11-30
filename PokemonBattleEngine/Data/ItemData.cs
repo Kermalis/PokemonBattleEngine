@@ -29,6 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.FistPlate, new PItemData { FlingPower = 90 } },
             { PItem.FlamePlate, new PItemData { FlingPower = 90 } },
             { PItem.GriseousOrb, new PItemData { FlingPower = 60 } },
+            { PItem.HardStone, new PItemData { FlingPower = 100 } },
             { PItem.HeatRock, new PItemData { FlingPower = 60 } },
             { PItem.IciclePlate, new PItemData { FlingPower = 90 } },
             { PItem.InsectPlate, new PItemData { FlingPower = 90 } },

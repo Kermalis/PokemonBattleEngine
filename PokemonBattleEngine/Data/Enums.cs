@@ -261,6 +261,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FistPlate,
         FlamePlate,
         GriseousOrb,
+        HardStone,
         HeatRock,
         IciclePlate,
         InsectPlate,
