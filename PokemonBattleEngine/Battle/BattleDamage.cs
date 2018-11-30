@@ -193,6 +193,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Dark:
                     switch (user.Item)
                     {
+                        case PItem.BlackGlasses:
                         case PItem.DreadPlate:
                             basePower *= 1.2;
                             break;

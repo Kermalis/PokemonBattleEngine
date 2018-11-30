@@ -241,6 +241,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         BlackBelt,
+        BlackGlasses,
         BlackSludge, // TODO
         BrightPowder,
         BurnDrive,
