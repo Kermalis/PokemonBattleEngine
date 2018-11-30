@@ -356,15 +356,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort a = 0, d = 0,
                 p = CalculateBasePower(user, target, move, moveType, moveCategory, power, ignoreReflectLightScreen, ignoreLifeOrb, criticalHit);
 
-            if (moveCategory == PMoveCategory.Physical)
+            switch (move)
             {
-                a = CalculateAttack(user, target, criticalHit);
-                d = CalculateDefense(user, target, criticalHit);
-            }
-            else if (moveCategory == PMoveCategory.Special)
-            {
-                a = CalculateSpAttack(user, target, criticalHit);
-                d = CalculateSpDefense(user, target, criticalHit);
+                case PMove.Psyshock:
+                    a = CalculateSpAttack(user, target, criticalHit);
+                    d = CalculateDefense(user, target, criticalHit);
+                    break;
+                default:
+                    if (moveCategory == PMoveCategory.Physical)
+                    {
+                        a = CalculateAttack(user, target, criticalHit);
+                        d = CalculateDefense(user, target, criticalHit);
+                    }
+                    else if (moveCategory == PMoveCategory.Special)
+                    {
+                        a = CalculateSpAttack(user, target, criticalHit);
+                        d = CalculateSpDefense(user, target, criticalHit);
+                    }
+                    break;
             }
 
             damage = (ushort)(2 * user.Shell.Level / 5 + 2);

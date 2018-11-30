@@ -220,7 +220,6 @@ Wide Guard
 Guard Split
 Power Split
 Wonder Room
-Psyshock
 Autotomize
 Rage Powder
 Telekinesis
