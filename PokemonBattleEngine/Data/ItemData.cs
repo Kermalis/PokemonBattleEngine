@@ -21,6 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.DeepSeaTooth, new PItemData { FlingPower = 90 } },
             { PItem.DouseDrive, new PItemData { FlingPower = 70 } },
             { PItem.DracoPlate, new PItemData { FlingPower = 90 } },
+            { PItem.DragonFang, new PItemData { FlingPower = 70 } },
             { PItem.DreadPlate, new PItemData { FlingPower = 90 } },
             { PItem.EarthPlate, new PItemData { FlingPower = 90 } },
             { PItem.FistPlate, new PItemData { FlingPower = 90 } },

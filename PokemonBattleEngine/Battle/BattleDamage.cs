@@ -202,6 +202,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PItem.DracoPlate:
+                        case PItem.DragonFang:
                             basePower *= 1.2;
                             break;
                         case PItem.GriseousOrb:

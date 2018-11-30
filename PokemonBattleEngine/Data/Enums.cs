@@ -253,6 +253,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DeepSeaTooth,
         DouseDrive,
         DracoPlate,
+        DragonFang,
         DreadPlate,
         EarthPlate,
         FistPlate,
