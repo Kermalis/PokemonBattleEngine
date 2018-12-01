@@ -717,6 +717,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Kinesis,
         LavaPlume,
         LeafBlade,
+        LeafStorm,
         LeafTornado,
         LeechSeed,
         Leer,

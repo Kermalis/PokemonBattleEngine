@@ -203,7 +203,6 @@ Ice Fang
 Fire Fang
 Defog
 Trick Room
-Leaf Storm
 Rock Wrecker
 Captivate
 Judgment
