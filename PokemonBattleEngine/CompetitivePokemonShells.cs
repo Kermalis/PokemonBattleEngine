@@ -261,6 +261,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.StealthRock, PMove.DragonPulse, PMove.FireBlast, PMove.Thunder },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Palkia_Uber = new PPokemonShell
+            {
+                Species = PSpecies.Palkia,
+                Nickname = "Pokey",
+                Level = 100,
+                Friendship = 255,
+                Item = PItem.DragonFang, // Lustrous Orb
+                Shiny = false,
+                Ability = PAbility.Pressure,
+                Gender = PGender.Genderless,
+                Nature = PNature.Timid,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+                Moves = new PMove[] { PMove.SpacialRend, PMove.Surf, PMove.FireBlast, PMove.Thunder },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Giratina_Origin_Uber = new PPokemonShell
             {
                 Species = PSpecies.Giratina_Origin,
