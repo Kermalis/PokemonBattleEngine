@@ -211,6 +211,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (user.Shell.Species == PSpecies.Giratina_Origin)
                                 basePower *= 1.2;
                             break;
+                        case PItem.LustrousOrb:
+                            if (user.Shell.Species == PSpecies.Palkia)
+                                basePower *= 1.2;
+                            break;
                     }
                     break;
                 case PType.Electric:
@@ -357,6 +361,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 1.5;
                     switch (user.Item)
                     {
+                        case PItem.LustrousOrb:
+                            if (user.Shell.Species == PSpecies.Palkia)
+                                basePower *= 1.2;
+                            break;
                         case PItem.MysticWater:
                         case PItem.SeaIncense:
                         case PItem.SplashPlate:

@@ -39,6 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.LifeOrb, new PItemData { FlingPower = 30 } },
             { PItem.LightBall, new PItemData { FlingPower = 30 } },
             { PItem.LightClay, new PItemData { FlingPower = 30 } },
+            { PItem.LustrousOrb, new PItemData { FlingPower = 60 } },
             { PItem.MachoBrace, new PItemData { FlingPower = 60 } },
             { PItem.Magnet, new PItemData { FlingPower = 30 } },
             { PItem.MeadowPlate, new PItemData { FlingPower = 90 } },

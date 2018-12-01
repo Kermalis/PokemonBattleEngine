@@ -275,6 +275,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LifeOrb, // TODO: Damage user
         LightBall,
         LightClay,
+        LustrousOrb,
         MachoBrace,
         Magnet,
         MeadowPlate,
