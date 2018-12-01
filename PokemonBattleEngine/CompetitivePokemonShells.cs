@@ -309,6 +309,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.SwordsDance, PMove.ExtremeSpeed, PMove.ShadowClaw, PMove.BrickBreak },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Victini_Uber = new PPokemonShell
+            {
+                Species = PSpecies.Victini,
+                Nickname = "Vicki", // ビクティニ (this is an event Victini)
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.ChoiceScarf,
+                Ability = PAbility.VictoryStar,
+                Gender = PGender.Genderless,
+                Nature = PNature.Naive,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                EVs = new byte[] { 0, 252, 4, 0, 0, 252 },
+                Moves = new PMove[] { PMove.VCreate, PMove.BoltStrike, PMove.GrassKnot, PMove.HiddenPower }, // V-create, Bolt Strike, U-turn, Hidden Power Ice
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Cofagrigus_VGC = new PPokemonShell
             {
                 Species = PSpecies.Cofagrigus,

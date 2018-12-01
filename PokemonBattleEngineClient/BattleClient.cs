@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PRequestPartyPacket _: // Temporary
                     messageView.Add(battleView.Message = "Sending team info...");
-                    var team = new PTeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Vicki" }.Sample(), };
+                    var team = new PTeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample(), };
                     var possiblePokemon = new List<PPokemonShell>
                     {
                         PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Arceus_Normal_Uber, PCompetitivePokemonShells.Azumarill_VGC,
@@ -65,7 +65,8 @@ namespace Kermalis.PokemonBattleEngineClient
                         PCompetitivePokemonShells.Crobat_VGC, PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Ditto_Uber,
                         PCompetitivePokemonShells.Genesect_Uber, PCompetitivePokemonShells.Giratina_Origin_Uber, PCompetitivePokemonShells.Jirachi_Uber,
                         PCompetitivePokemonShells.Latias_VGC, PCompetitivePokemonShells.Latios_VGC, PCompetitivePokemonShells.Marowak_VGC,
-                        PCompetitivePokemonShells.Pikachu_VGC, PCompetitivePokemonShells.Rotom_Wash_VGC, PCompetitivePokemonShells.Venusaur_VGC
+                        PCompetitivePokemonShells.Pikachu_VGC, PCompetitivePokemonShells.Rotom_Wash_VGC, PCompetitivePokemonShells.Venusaur_VGC,
+                        PCompetitivePokemonShells.Victini_Uber,
                     };
                     possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
