@@ -8,6 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public static Dictionary<PItem, PItemData> Data = new Dictionary<PItem, PItemData>()
         {
+            { PItem.AdamantOrb, new PItemData { FlingPower = 60 } },
             { PItem.BlackBelt, new PItemData { FlingPower = 30 } },
             { PItem.BlackGlasses, new PItemData { FlingPower = 30 } },
             { PItem.BlackSludge, new PItemData { FlingPower = 30 } },
@@ -77,7 +78,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.WaveIncense, new PItemData { FlingPower = 10 } },
             { PItem.WideLens, new PItemData { FlingPower = 10 } },
             { PItem.WiseGlasses, new PItemData { FlingPower = 10 } },
-            { PItem.ZapPlate, new PItemData { FlingPower = 90 } },
+            { PItem.ZapPlate, new PItemData { FlingPower = 90 } }
         };
     }
 }
