@@ -62,11 +62,11 @@ namespace Kermalis.PokemonBattleEngineClient
                         PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Arceus_Normal_Uber, PCompetitivePokemonShells.Azumarill_VGC,
                         PCompetitivePokemonShells.Beedrill_NU, PCompetitivePokemonShells.Blastoise_UU, PCompetitivePokemonShells.Butterfree_RU,
                         PCompetitivePokemonShells.Charizard_VGC, PCompetitivePokemonShells.Cofagrigus_VGC, PCompetitivePokemonShells.Cresselia_VGC,
-                        PCompetitivePokemonShells.Crobat_VGC, PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Ditto_Uber,
-                        PCompetitivePokemonShells.Genesect_Uber, PCompetitivePokemonShells.Giratina_Origin_Uber, PCompetitivePokemonShells.Jirachi_Uber,
-                        PCompetitivePokemonShells.Latias_VGC, PCompetitivePokemonShells.Latios_VGC, PCompetitivePokemonShells.Marowak_VGC,
-                        PCompetitivePokemonShells.Pikachu_VGC, PCompetitivePokemonShells.Rotom_Wash_VGC, PCompetitivePokemonShells.Venusaur_VGC,
-                        PCompetitivePokemonShells.Victini_Uber,
+                        PCompetitivePokemonShells.Crobat_VGC, PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Dialga_Uber,
+                        PCompetitivePokemonShells.Ditto_Uber, PCompetitivePokemonShells.Genesect_Uber, PCompetitivePokemonShells.Giratina_Origin_Uber,
+                        PCompetitivePokemonShells.Jirachi_Uber, PCompetitivePokemonShells.Latias_VGC, PCompetitivePokemonShells.Latios_VGC,
+                        PCompetitivePokemonShells.Marowak_VGC, PCompetitivePokemonShells.Pikachu_VGC, PCompetitivePokemonShells.Rotom_Wash_VGC,
+                        PCompetitivePokemonShells.Venusaur_VGC, PCompetitivePokemonShells.Victini_Uber,
                     };
                     possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));

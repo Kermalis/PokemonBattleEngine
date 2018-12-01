@@ -226,7 +226,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nature = PNature.Careful,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
                 EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
-                Moves = new PMove[] { PMove.Protect, PMove.StealthRock, PMove.IronHead, PMove.Thunder }, // Wish, Stealth Rock, Iron Head, Thunder
+                Moves = new PMove[] { PMove.Protect, PMove.StealthRock, PMove.IronHead, PMove.Thunder }, // Wish, Stealth Rock, Iron Head, Roar
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Rotom_Wash_VGC = new PPokemonShell
@@ -243,6 +243,22 @@ namespace Kermalis.PokemonBattleEngine
                 IVs = new byte[] { 31, 30, 31, 30, 31, 30 }, // Hidden Power: Fire/70
                 EVs = new byte[] { 232, 0, 0, 56, 0, 220 },
                 Moves = new PMove[] { PMove.HydroPump, PMove.HiddenPower, PMove.Discharge, PMove.Protect },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
+            Dialga_Uber = new PPokemonShell
+            {
+                Species = PSpecies.Dialga,
+                Nickname = "Seaweed",
+                Level = 100,
+                Friendship = 255,
+                Item = PItem.Leftovers,
+                Shiny = false,
+                Ability = PAbility.Pressure,
+                Gender = PGender.Genderless,
+                Nature = PNature.Modest,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 252, 0, 0, 56, 200, 0 },
+                Moves = new PMove[] { PMove.StealthRock, PMove.DragonPulse, PMove.FireBlast, PMove.Thunder },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
             Giratina_Origin_Uber = new PPokemonShell
