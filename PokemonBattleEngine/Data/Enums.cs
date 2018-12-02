@@ -244,6 +244,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PItem : ushort
     {
         None,
+        AdamantOrb,
         BlackBelt,
         BlackGlasses,
         BlackSludge, // TODO
@@ -275,6 +276,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LifeOrb, // TODO: Damage user
         LightBall,
         LightClay,
+        LustrousOrb,
         MachoBrace,
         Magnet,
         MeadowPlate,

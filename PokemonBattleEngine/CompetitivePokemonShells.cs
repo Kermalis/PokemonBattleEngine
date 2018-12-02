@@ -267,7 +267,7 @@ namespace Kermalis.PokemonBattleEngine
                 Nickname = "Pokey",
                 Level = 100,
                 Friendship = 255,
-                Item = PItem.DragonFang, // Lustrous Orb
+                Item = PItem.LustrousOrb,
                 Shiny = false,
                 Ability = PAbility.Pressure,
                 Gender = PGender.Genderless,

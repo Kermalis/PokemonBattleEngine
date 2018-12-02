@@ -203,12 +203,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Dragon:
                     switch (user.Item)
                     {
+                        case PItem.AdamantOrb:
+                            if (user.Shell.Species == PSpecies.Dialga)
+                                basePower *= 1.2;
+                            break;
                         case PItem.DracoPlate:
                         case PItem.DragonFang:
                             basePower *= 1.2;
                             break;
                         case PItem.GriseousOrb:
                             if (user.Shell.Species == PSpecies.Giratina_Origin)
+                                basePower *= 1.2;
+                            break;
+                        case PItem.LustrousOrb:
+                            if (user.Shell.Species == PSpecies.Palkia)
                                 basePower *= 1.2;
                             break;
                     }
@@ -345,6 +353,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PType.Steel:
                     switch (user.Item)
                     {
+                        case PItem.AdamantOrb:
+                            if (user.Shell.Species == PSpecies.Dialga)
+                                basePower *= 1.2;
+                            break;
                         case PItem.IronPlate:
                         case PItem.MetalCoat:
                             basePower *= 1.2;
@@ -357,6 +369,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 1.5;
                     switch (user.Item)
                     {
+                        case PItem.LustrousOrb:
+                            if (user.Shell.Species == PSpecies.Palkia)
+                                basePower *= 1.2;
+                            break;
                         case PItem.MysticWater:
                         case PItem.SeaIncense:
                         case PItem.SplashPlate:
