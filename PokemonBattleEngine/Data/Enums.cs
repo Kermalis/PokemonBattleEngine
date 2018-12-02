@@ -327,6 +327,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Chlorophyll, // TODO
         Compoundeyes,
         CuteCharm, // TODO
+        Defiant, // TODO
         Download, // TODO
         Guts,
         Heatproof,
@@ -338,6 +339,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         InnerFocus, // TODO
         Imposter, // TODO
         Justified, // TODO
+        KeenEye, //TODO
         Levitate, // TODO: Immunity to ground-type moves
         LightningRod, // TODO
         Limber,
@@ -393,6 +395,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Kakuna = 14,
         Beedrill = 15,
         Pikachu = 25,
+        Farfetchd = 83,
         Cubone = 104,
         Marowak = 105,
         Ditto = 132,
