@@ -66,7 +66,8 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Arceus_Normal_Uber, PCompetitivePokemonShells.Azumarill_VGC,
                         PCompetitivePokemonShells.Beedrill_NU, PCompetitivePokemonShells.Blastoise_UU, PCompetitivePokemonShells.Butterfree_RU,
-                        PCompetitivePokemonShells.Charizard_VGC, PCompetitivePokemonShells.Cofagrigus_VGC, PCompetitivePokemonShells.Cresselia_VGC,
+                        PCompetitivePokemonShells.Charizard_VGC, PCompetitivePokemonShells.Cofagrigus_VGC, PCompetitivePokemonShells.Cradily_OU,
+                        PCompetitivePokemonShells.Cresselia_VGC,
                         PCompetitivePokemonShells.Crobat_VGC, PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Dialga_Uber,
                         PCompetitivePokemonShells.Ditto_Uber, PCompetitivePokemonShells.Farfetchd_OU, PCompetitivePokemonShells.Genesect_Uber,
                         PCompetitivePokemonShells.Giratina_Origin_Uber,

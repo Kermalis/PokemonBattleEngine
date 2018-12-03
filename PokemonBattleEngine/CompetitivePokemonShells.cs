@@ -197,6 +197,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Waterfall, PMove.AquaJet, PMove.Superpower, PMove.IcePunch },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Cradily_OU = new PPokemonShell
+            {
+                Species = PSpecies.Cradily,
+                Nickname = "PLANT",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.Leftovers,
+                Ability = PAbility.SuctionCups,
+                Gender = PGender.Male,
+                Nature = PNature.Careful,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 252, 0, 80, 0, 176, 0 },
+                Moves = new PMove[] { PMove.Curse, PMove.RockSlide, PMove.StealthRock, PMove.SeedBomb }, // Curse, Rest, Sleep Talk, Rock Slide
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Absol_RU = new PPokemonShell
             {
                 Species = PSpecies.Absol,
