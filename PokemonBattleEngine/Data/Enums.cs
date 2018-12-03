@@ -446,6 +446,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Question = 201 | (27 << 0x10),
         Skitty = 300,
         Lileep = 345,
+        Cradily = 346,
         Absol = 359,
         Clamperl = 366,
         Latias = 380,
