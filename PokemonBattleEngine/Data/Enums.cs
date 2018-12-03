@@ -411,6 +411,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Beedrill = 15,
         Pikachu = 25,
         Vulpix = 37,
+        Ninetales = 38,
         Farfetchd = 83,
         Cubone = 104,
         Marowak = 105,
