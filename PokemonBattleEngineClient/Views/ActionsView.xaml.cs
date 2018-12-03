@@ -347,7 +347,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             Pokemon.SelectedAction.Decision = PDecision.Switch;
             Pokemon.SelectedAction.SwitchPokemonId = pkmnInfo.Pokemon.Id;
             MovesVisible = false;
-            Client.ActionSet();
+            Client.ActionsLoop(false);
         }
         public void SelectMove(MoveInfo moveInfo)
         {
@@ -383,7 +383,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         Pokemon.SelectedAction.FightTargets = PTarget.AllyCenter;
                         break;
                 }
-                Client.ActionSet();
+                Client.ActionsLoop(false);
             }
             else // Double / Triple
             {
@@ -778,7 +778,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 case "FoeRight": Pokemon.SelectedAction.FightTargets = targetFoeRightResult; break;
             }
             TargetsVisible = false;
-            Client.ActionSet();
+            Client.ActionsLoop(false);
         }
     }
 }

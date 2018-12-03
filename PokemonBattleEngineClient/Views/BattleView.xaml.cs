@@ -14,28 +14,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        IBitmap bgSource;
-        IBitmap BGSource
-        {
-            get => bgSource;
-            set
-            {
-                bgSource = value;
-                OnPropertyChanged(nameof(BGSource));
-            }
-        }
-        string message;
-        public string Message
-        {
-            get => message;
-            set
-            {
-                message = value;
-                OnPropertyChanged(nameof(Message));
-                IsMessageBoxVisible = !string.IsNullOrWhiteSpace(message);
-                OnPropertyChanged(nameof(IsMessageBoxVisible));
-            }
-        }
+        IBitmap BGSource { get; set; }
+        IBitmap Message { get; set; }
         bool IsMessageBoxVisible { get; set; }
 
         PBattle battle;
@@ -46,6 +26,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             DataContext = this;
         }
 
+        public void SetMessage(string str)
+        {
+            Message = Utils.RenderString(str);
+            OnPropertyChanged(nameof(Message));
+            IsMessageBoxVisible = !string.IsNullOrWhiteSpace(str);
+            OnPropertyChanged(nameof(IsMessageBoxVisible));
+        }
         public void SetBattle(PBattle battle)
         {
             this.battle = battle;
@@ -59,6 +46,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 default: throw new ArgumentOutOfRangeException(nameof(battle.BattleStyle));
             }
             BGSource = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Backgrounds.{s}.png?assembly=PokemonBattleEngineClient"));
+            OnPropertyChanged(nameof(BGSource));
         }
 
         // pkmn.FieldPosition must be updated before calling this

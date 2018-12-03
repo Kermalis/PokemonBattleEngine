@@ -4,8 +4,6 @@ using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
@@ -106,11 +104,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     uint forme = (uint)pokemon.Species >> 0x10;
                     string shiny = pokemon.Shiny ? "-S" : "";
                     string sss = string.Format("{0}{1}{2}{3}", species, forme > 0 ? $"-{forme}" : "", orientation, shiny);
-                    // Get available resources (including sprites)
-                    string[] resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
                     // Following will be false if the species sprites are sss-M.gif and sss-F.gif
-                    bool spriteIsGenderNeutral = resources.Any(r => r.EndsWith($".{sss}.gif"));
-                    // sss.gif if the sprite is gender neutral, else sss-F.gif if the pokemon is female, otherwise sss-M.gif
+                    bool spriteIsGenderNeutral = Utils.DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}.gif");
+                    // sss.gif if the sprite is gender neutral, else sss-F.gif if the Pokémon is female, otherwise sss-M.gif
                     string gender = spriteIsGenderNeutral ? "" : pokemon.Shell.Gender == PGender.Female ? "-F" : "-M";
                     // Set the result
                     Source = new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}{gender}.gif?assembly=PokemonBattleEngineClient");
