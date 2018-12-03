@@ -66,7 +66,8 @@ namespace Kermalis.PokemonBattleEngineClient
                         PCompetitivePokemonShells.Ditto_Uber, PCompetitivePokemonShells.Farfetchd_OU, PCompetitivePokemonShells.Genesect_Uber,
                         PCompetitivePokemonShells.Giratina_Origin_Uber,
                         PCompetitivePokemonShells.Jirachi_Uber, PCompetitivePokemonShells.Latias_VGC, PCompetitivePokemonShells.Latios_VGC,
-                        PCompetitivePokemonShells.Marowak_VGC, PCompetitivePokemonShells.Palkia_Uber, PCompetitivePokemonShells.Pikachu_VGC,
+                        PCompetitivePokemonShells.Marowak_VGC, PCompetitivePokemonShells.Mismagius_UU, PCompetitivePokemonShells.Palkia_Uber,
+                        PCompetitivePokemonShells.Pikachu_VGC,
                         PCompetitivePokemonShells.Rotom_Wash_VGC, PCompetitivePokemonShells.Venusaur_VGC, PCompetitivePokemonShells.Victini_Uber,
                     };
                     possiblePokemon.Shuffle();

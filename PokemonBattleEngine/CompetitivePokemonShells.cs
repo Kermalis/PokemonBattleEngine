@@ -245,6 +245,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Protect, PMove.StealthRock, PMove.IronHead, PMove.Thunder }, // Wish, Stealth Rock, Iron Head, Roar
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Mismagius_UU = new PPokemonShell
+            {
+                Species = PSpecies.Mismagius,
+                Nickname = "Kermie",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.LifeOrb,
+                Ability = PAbility.Levitate,
+                Gender = PGender.Female,
+                Nature = PNature.Timid,
+                IVs = new byte[] { 31, 31, 30, 30, 30, 30 }, // Hidden Power: Fighting/70
+                EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+                Moves = new PMove[] { PMove.NastyPlot, PMove.ShadowBall, PMove.HiddenPower, PMove.Thunderbolt },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Rotom_Wash_VGC = new PPokemonShell
             {
                 Species = PSpecies.Rotom_Wash,
