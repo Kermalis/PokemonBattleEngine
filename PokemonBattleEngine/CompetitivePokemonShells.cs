@@ -101,6 +101,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Substitute, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot }, // Fake Out, Thunderbolt, Hidden Power Ice, Grass Knot
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Ninetales_VGC = new PPokemonShell
+            {
+                Species = PSpecies.Ninetales,
+                Nickname = "Jasmine",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.FlamePlate, // Focus Sash
+                Ability = PAbility.Drought,
+                Gender = PGender.Female,
+                Nature = PNature.Modest,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+                Moves = new PMove[] { PMove.Flamethrower, PMove.HiddenPower, PMove.EnergyBall, PMove.Protect },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Farfetchd_OU = new PPokemonShell
             {
                 Species = PSpecies.Farfetchd,

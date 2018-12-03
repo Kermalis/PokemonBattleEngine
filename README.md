@@ -18,14 +18,13 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 ----
 # To Do:
 * Struggle
-* Rotation battles, triple battle shifting
+* Rotation battles, triple battle shifting, triple battle auto-center
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Spectators
 * AI
 * Specific place for event Pokémon shells
 * Better validation for Pokémon (programmatically deduce how the Pokémon was obtained, make MinLevel relevant)
-* HP Bars
 * Implement a better way to lock actions besides "PPokemon.LockedAction" (Consider "Follow Me" as well)
 * Damage, effectiveness and critical packets should include a list of hit Pokémon
 * Move substitute to "post damage effects" with items and abilities and remove effectiveness from DealDamage()
