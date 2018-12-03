@@ -771,6 +771,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         target.Status2 |= PStatus2.Cursed;
                         BroadcastStatus2(user, target, PStatus2.Cursed, PStatusAction.Added);
                         DealDamage(user, user, (ushort)(user.MaxHP / 2), PEffectiveness.Normal, true);
+                        FaintCheck(user);
                         return true;
                     }
                     break;
