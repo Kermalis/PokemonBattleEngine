@@ -86,7 +86,6 @@ Giga Drain
 Endure
 Rollout
 False Swipe
-Swagger
 Fury Cutter
 Mean Look
 Attract
@@ -111,7 +110,6 @@ Spit Up
 Swallow
 Hail
 Torment
-Flatter
 Memento
 Focus Punch
 Smelling Salts
