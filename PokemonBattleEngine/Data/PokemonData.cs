@@ -1673,7 +1673,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
-                PSpecies.Vulpix,
+                PSpecies.Ninetales,
                 new PPokemonData
                 {
                     HP = 73, Attack = 76, Defense = 75, SpAttack = 81, SpDefense = 100, Speed = 100,
