@@ -101,6 +101,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Substitute, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot }, // Fake Out, Thunderbolt, Hidden Power Ice, Grass Knot
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Farfetchd_OU = new PPokemonShell
+            {
+                Species = PSpecies.Farfetchd,
+                Nickname = "Farquaad",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.SkyPlate, // Stick
+                Ability = PAbility.Defiant,
+                Gender = PGender.Male,
+                Nature = PNature.Adamant,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+                Moves = new PMove[] { PMove.SwordsDance, PMove.Return, PMove.AirSlash, PMove.SteelWing }, // Swords Dance, Return, Brave Bird, Revenge
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Marowak_VGC = new PPokemonShell
             {
                 Species = PSpecies.Marowak,
