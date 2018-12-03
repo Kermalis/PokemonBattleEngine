@@ -316,6 +316,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SpellTag,
         SplashPlate,
         SpookyPlate,
+        Stick,
         StonePlate,
         ThickClub,
         ToxicPlate,

@@ -108,7 +108,7 @@ namespace Kermalis.PokemonBattleEngine
                 Level = 100,
                 Friendship = 255,
                 Shiny = false,
-                Item = PItem.SkyPlate, // Stick
+                Item = PItem.Stick,
                 Ability = PAbility.Defiant,
                 Gender = PGender.Male,
                 Nature = PNature.Adamant,

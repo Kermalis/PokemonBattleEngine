@@ -542,6 +542,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
 
+        // Returns true if a critical hit was determined
         bool CritCheck(PPokemon user, PPokemon target, PMove move, ref double damageMultiplier)
         {
             // If critical hits cannot be landed, return false
@@ -560,6 +561,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Item == PItem.RazorClaw || user.Item == PItem.ScopeLens)
                 stage += 1;
             if (user.Status2.HasFlag(PStatus2.Pumped))
+                stage += 2;
+            if (user.Shell.Species == PSpecies.Farfetchd && user.Item == PItem.Stick)
                 stage += 2;
 
             double chance;

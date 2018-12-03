@@ -70,6 +70,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PItem.SpellTag, new PItemData { FlingPower = 30 } },
             { PItem.SplashPlate, new PItemData { FlingPower = 90 } },
             { PItem.SpookyPlate, new PItemData { FlingPower = 90 } },
+            { PItem.Stick, new PItemData { FlingPower = 60 } },
             { PItem.StonePlate, new PItemData { FlingPower = 90 } },
             { PItem.ThickClub, new PItemData { FlingPower = 90 } },
             { PItem.ToxicPlate, new PItemData { FlingPower = 90 } },
