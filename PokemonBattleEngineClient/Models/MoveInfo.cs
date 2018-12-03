@@ -1,10 +1,10 @@
 ﻿using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Views;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
@@ -42,6 +42,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         ReactiveCommand SelectMoveCommand { get; }
 
         public PMove Move { get; }
+        IBitmap Label { get; }
         IBrush Brush { get; }
         IBrush BorderBrush { get; }
         string Description { get; }
@@ -61,6 +62,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 enabled = move != PMove.None && pkmn.PP[i] > 0;
             }
             Move = move;
+            Label = Utils.RenderString(move.ToString());
             Brush = ttb.Item1;
             BorderBrush = ttb.Item2;
             Description = move == PMove.None ? string.Empty : PMoveData.Data[move].ToString();

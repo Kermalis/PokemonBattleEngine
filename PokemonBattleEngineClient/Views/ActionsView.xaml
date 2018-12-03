@@ -12,29 +12,41 @@
       <Rectangle IsVisible="{Binding TargetLineAllyRightAllyCenterEnabled}" Width="32" Height="12" Canvas.Left="304" Canvas.Top="84" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
       <Rectangle IsVisible="{Binding TargetLineFoeLeftAllyRightEnabled}" Width="12" Height="26" Canvas.Left="{Binding RightLineX}" Canvas.Top="51" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
       <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="23" IsEnabled="{Binding TargetFoeRightEnabled}"
-              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Foreground="White"
-              Content="{Binding TargetFoeRight}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
-              Command="{Binding SelectTargetCommand}" CommandParameter="FoeRight"/>
+              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeRight">
+        <StackPanel>
+          <Image Source="{Binding TargetFoeRight}"/>
+        </StackPanel>
+      </Button>
       <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="23" IsEnabled="{Binding TargetFoeCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
-              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Foreground="White"
-              Content="{Binding TargetFoeCenter}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
-              Command="{Binding SelectTargetCommand}" CommandParameter="FoeCenter"/>
+              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeCenter">
+        <StackPanel>
+          <Image Source="{Binding TargetFoeCenter}"/>
+        </StackPanel>
+      </Button>
       <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="23" IsEnabled="{Binding TargetFoeLeftEnabled}"
-              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Foreground="White"
-              Content="{Binding TargetFoeLeft}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
-              Command="{Binding SelectTargetCommand}" CommandParameter="FoeLeft"/>
+              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeLeft">
+        <StackPanel>
+          <Image Source="{Binding TargetFoeLeft}"/>
+        </StackPanel>
+      </Button>
       <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="75" IsEnabled="{Binding TargetAllyLeftEnabled}"
-              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Foreground="White"
-              Content="{Binding TargetAllyLeft}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
-              Command="{Binding SelectTargetCommand}" CommandParameter="AllyLeft"/>
+              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyLeft">
+        <StackPanel>
+          <Image Source="{Binding TargetAllyLeft}"/>
+        </StackPanel>
+      </Button>
       <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="75"  IsEnabled="{Binding TargetAllyCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
-              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Foreground="White"
-              Content="{Binding TargetAllyCenter}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
-              Command="{Binding SelectTargetCommand}" CommandParameter="AllyCenter"/>
+              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyCenter">
+        <StackPanel>
+          <Image Source="{Binding TargetAllyCenter}"/>
+        </StackPanel>
+      </Button>
       <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="75" IsEnabled="{Binding TargetAllyRightEnabled}"
-              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Foreground="White"
-              Content="{Binding TargetAllyRight}" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"
-              Command="{Binding SelectTargetCommand}" CommandParameter="AllyRight"/>
+              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyRight">
+        <StackPanel>
+          <Image Source="{Binding TargetAllyRight}"/>
+        </StackPanel>
+      </Button>
     </Canvas>
     <StackPanel Width="512" Height="128" IsVisible="{Binding MovesVisible}">
       <ItemsControl Items="{Binding Moves}">
@@ -45,12 +57,12 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Button Width="103" Height="30" Content="{Binding Move}" Command="{Binding SelectMoveCommand}"
-                    Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4" Foreground="White"
-                    FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W">
+            <Button Width="103" Height="30" Command="{Binding SelectMoveCommand}" Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4">
+              <StackPanel>
+                <Image Source="{Binding Label}"/>
+              </StackPanel>
               <ToolTip.Tip>
-                <TextBlock Text="{Binding Description}" Foreground="Black"
-                           FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+                <TextBlock Text="{Binding Description}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
               </ToolTip.Tip>
             </Button>
           </DataTemplate>
@@ -64,12 +76,12 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Button Width="73" Height="30" Content="{Binding Label}" Command="{Binding SelectPokemonCommand}"
-                    Background="Black" BorderThickness="4" Foreground="White"
-                    FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W">
+            <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="Black" BorderBrush="#757575" BorderThickness="4">
+              <StackPanel>
+                <Image Source="{Binding Label}"/>
+              </StackPanel>
               <ToolTip.Tip>
-                <TextBlock Text="{Binding Pokemon}" Foreground="Black"
-                           FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+                <TextBlock Text="{Binding Pokemon}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
               </ToolTip.Tip>
             </Button>
           </DataTemplate>

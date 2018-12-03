@@ -64,6 +64,11 @@ namespace Kermalis.PokemonBattleEngineClient
                 return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{key}.png") ? key : SpecialCharKeys['?'];
             }
 
+            if (string.IsNullOrEmpty(str))
+            {
+                return null; // new RenderTargetBitmap(new PixelSize(1, 1));
+            }
+
             foreach (char c in str)
             {
                 string key = GetKey(c);

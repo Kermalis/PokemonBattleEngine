@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Models;
 using ReactiveUI;
@@ -15,8 +16,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        string targetAllyLeft;
-        string TargetAllyLeft
+        IBitmap targetAllyLeft;
+        IBitmap TargetAllyLeft
         {
             get => targetAllyLeft;
             set
@@ -35,8 +36,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetAllyLeftEnabled));
             }
         }
-        string targetAllyCenter;
-        string TargetAllyCenter
+        IBitmap targetAllyCenter;
+        IBitmap TargetAllyCenter
         {
             get => targetAllyCenter;
             set
@@ -55,8 +56,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetAllyCenterEnabled));
             }
         }
-        string targetAllyRight;
-        string TargetAllyRight
+        IBitmap targetAllyRight;
+        IBitmap TargetAllyRight
         {
             get => targetAllyRight;
             set
@@ -75,8 +76,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetAllyRightEnabled));
             }
         }
-        string targetFoeLeft;
-        string TargetFoeLeft
+        IBitmap targetFoeLeft;
+        IBitmap TargetFoeLeft
         {
             get => targetFoeLeft;
             set
@@ -95,8 +96,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetFoeLeftEnabled));
             }
         }
-        string targetFoeCenter;
-        string TargetFoeCenter
+        IBitmap targetFoeCenter;
+        IBitmap TargetFoeCenter
         {
             get => targetFoeCenter;
             set
@@ -115,8 +116,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetFoeCenterEnabled));
             }
         }
-        string targetFoeRight;
-        string TargetFoeRight
+        IBitmap targetFoeRight;
+        IBitmap TargetFoeRight
         {
             get => targetFoeRight;
             set
@@ -390,17 +391,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 PPokemon pkmn;
 
                 pkmn = Client.Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left);
-                TargetAllyLeft = pkmn?.NameWithGender;
+                TargetAllyLeft = Utils.RenderString(pkmn?.NameWithGender);
                 pkmn = Client.Battle.Teams[0].PokemonAtPosition(PFieldPosition.Center);
-                TargetAllyCenter = pkmn?.NameWithGender;
+                TargetAllyCenter = Utils.RenderString(pkmn?.NameWithGender);
                 pkmn = Client.Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right);
-                TargetAllyRight = pkmn?.NameWithGender;
+                TargetAllyRight = Utils.RenderString(pkmn?.NameWithGender);
                 pkmn = Client.Battle.Teams[1].PokemonAtPosition(PFieldPosition.Left);
-                TargetFoeLeft = pkmn?.NameWithGender;
+                TargetFoeLeft = Utils.RenderString(pkmn?.NameWithGender);
                 pkmn = Client.Battle.Teams[1].PokemonAtPosition(PFieldPosition.Center);
-                TargetFoeCenter = pkmn?.NameWithGender;
+                TargetFoeCenter = Utils.RenderString(pkmn?.NameWithGender);
                 pkmn = Client.Battle.Teams[1].PokemonAtPosition(PFieldPosition.Right);
-                TargetFoeRight = pkmn?.NameWithGender;
+                TargetFoeRight = Utils.RenderString(pkmn?.NameWithGender);
 
                 if (Client.Battle.BattleStyle == PBattleStyle.Double)
                 {
