@@ -1029,6 +1029,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PMove.Flatter,
+                new PMoveData
+                {
+                    Type = PType.Dark, Category = PMoveCategory.Status,
+                    Effect = PMoveEffect.Flatter, EffectParam = 0,
+                    PPTier = 3, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PMoveFlag.AffectedByProtect | PMoveFlag.AffectedByMagicCoat | PMoveFlag.AffectedByMirrorMove,
+                    Targets = PMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PMove.Fly,
                 new PMoveData
                 {

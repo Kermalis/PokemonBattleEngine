@@ -216,6 +216,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Fail:
                     Ef_Fail(user, move);
                     break;
+                case PMoveEffect.Flatter:
+                    Ef_Flatter(user, targets[0]);
+                    break;
                 case PMoveEffect.Fly:
                     Ef_Fly(user, targets[0]);
                     break;
@@ -1376,7 +1379,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastWeather(Weather, PWeatherAction.Added);
             }
         }
-      
+        void Ef_Flatter(PPokemon user, PPokemon target)
+        {
+            BroadcastMoveUsed(user, PMove.Flatter);
+            PPReduce(user, PMove.Flatter);
+            if (MissCheck(user, target, PMove.Flatter))
+            {
+                return;
+            }
+            ApplyStatChange(target, PStat.SpAttack, 1, battle: this);
+            ApplyStatus2IfPossible(user, target, PStatus2.Confused, false);
+        }
         void Ef_Swagger(PPokemon user, PPokemon target)
         {
             BroadcastMoveUsed(user, PMove.Swagger);
