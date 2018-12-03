@@ -216,6 +216,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.Fail:
                     Ef_Fail(user, move);
                     break;
+                case PMoveEffect.Flatter:
+                    Ef_Flatter(user, targets[0]);
+                    break;
                 case PMoveEffect.Fly:
                     Ef_Fly(user, targets[0]);
                     break;
@@ -386,6 +389,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveEffect.SunnyDay:
                     Ef_SunnyDay(user);
+                    break;
+                case PMoveEffect.Swagger:
+                    Ef_Swagger(user, targets[0]);
                     break;
                 case PMoveEffect.Toxic:
                     TryForceStatus1(user, targets, move, PStatus1.BadlyPoisoned);
@@ -1372,6 +1378,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 WeatherCounter = (byte)(PSettings.SunTurns + (user.Item == PItem.HeatRock ? PSettings.HeatRockTurnExtension : 0));
                 BroadcastWeather(Weather, PWeatherAction.Added);
             }
+        }
+        void Ef_Flatter(PPokemon user, PPokemon target)
+        {
+            BroadcastMoveUsed(user, PMove.Flatter);
+            PPReduce(user, PMove.Flatter);
+            if (MissCheck(user, target, PMove.Flatter))
+            {
+                return;
+            }
+            ApplyStatChange(target, PStat.SpAttack, 1, battle: this);
+            ApplyStatus2IfPossible(user, target, PStatus2.Confused, false);
+        }
+        void Ef_Swagger(PPokemon user, PPokemon target)
+        {
+            BroadcastMoveUsed(user, PMove.Swagger);
+            PPReduce(user, PMove.Swagger);
+            if (MissCheck(user, target, PMove.Swagger))
+            {
+                return;
+            }
+            ApplyStatChange(target, PStat.Attack, 2, battle:this);
+            ApplyStatus2IfPossible(user, target, PStatus2.Confused, false);
         }
         void Ef_Growth(PPokemon user)
         {
