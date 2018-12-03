@@ -42,7 +42,9 @@ namespace Kermalis.PokemonBattleEngineClient
             { '*', "Asterisk" },
             { '^', "Caret" },
             { ':', "Colon" },
+            { '♀', "Female" },
             { '#', "Hashtag" },
+            { '♂', "Male" },
             { '%', "Percent" },
             { '.', "Period" },
             { '?', "QuestionMark" },
@@ -62,6 +64,11 @@ namespace Kermalis.PokemonBattleEngineClient
                 return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{key}.png") ? key : SpecialCharKeys['?'];
             }
 
+            if (string.IsNullOrEmpty(str))
+            {
+                return null; // new RenderTargetBitmap(new PixelSize(1, 1));
+            }
+
             foreach (char c in str)
             {
                 string key = GetKey(c);
@@ -74,7 +81,7 @@ namespace Kermalis.PokemonBattleEngineClient
             int stringWidth = str.Select(c => LoadedBitmaps[GetKey(c)].PixelSize.Width).Sum();
             const byte height = 14;
 
-            var rtb = new RenderTargetBitmap(new PixelSize(stringWidth, height), new Vector(96, 96));
+            var rtb = new RenderTargetBitmap(new PixelSize(stringWidth, height));
             using (var ctx = rtb.CreateDrawingContext(null))
             {
                 double x = 0;

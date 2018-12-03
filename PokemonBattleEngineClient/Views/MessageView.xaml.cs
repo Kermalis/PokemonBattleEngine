@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 {
     class MessageView : UserControl, INotifyPropertyChanged
     {
-        ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
+        ObservableCollection<Bitmap> Messages { get; } = new ObservableCollection<Bitmap>();
 
         ListBox listBox;
         public MessageView()
@@ -21,10 +22,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void Add(string value)
         {
+            Bitmap bmp = Utils.RenderString(value);
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                Messages.Add(value);
-                listBox.ScrollIntoView(value);
+                Messages.Add(bmp);
+                listBox.ScrollIntoView(bmp);
             });
         }
     }
