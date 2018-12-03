@@ -377,6 +377,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Sniper,
         SolarPower, // TODO
         Static, // TODO
+        StormDrain, // TODO
+        SuctionCups, // TODO
         SuperLuck,
         Swarm,
         Telepathy, // TODO
@@ -443,6 +445,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Exclamation = 201 | (26 << 0x10),
         Unown_Question = 201 | (27 << 0x10),
         Skitty = 300,
+        Lileep = 345,
         Absol = 359,
         Clamperl = 366,
         Latias = 380,
