@@ -571,7 +571,11 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     messageView.Add(battleView.Message = message);
                     break;
-                case PActionsRequestPacket _:
+                case PActionsRequestPacket arp:
+                    if (!arp.Local)
+                    {
+                        return true;
+                    }
                     ActionsLoop(true);
                     break;
                 case PSwitchInRequestPacket sirp:
@@ -580,7 +584,6 @@ namespace Kermalis.PokemonBattleEngineClient
                         {
                             return true;
                         }
-
                         int amt = sirp.Amount;
                         var switches = new List<Tuple<byte, PFieldPosition>>(amt);
                         PPokemon[] available = Battle.Teams[0].Party.Where(p => p.FieldPosition == PFieldPosition.None && p.HP > 0).ToArray();
