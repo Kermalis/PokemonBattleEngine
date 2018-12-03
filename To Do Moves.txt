@@ -86,7 +86,6 @@ Giga Drain
 Endure
 Rollout
 False Swipe
-Swagger
 Fury Cutter
 Mean Look
 Attract

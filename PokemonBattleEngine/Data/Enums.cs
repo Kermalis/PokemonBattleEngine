@@ -712,6 +712,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StealthRock,
         Substitute,
         SunnyDay,
+        Swagger,
         Toxic,
         ToxicSpikes,
         Transform
@@ -974,6 +975,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Superpower,
         Supersonic,
         Surf,
+        Swagger,
         SweetKiss,
         SweetScent,
         Swift,

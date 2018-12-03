@@ -387,6 +387,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveEffect.SunnyDay:
                     Ef_SunnyDay(user);
                     break;
+                case PMoveEffect.Swagger:
+                    Ef_Swagger(user, targets[0]);
+                    break;
                 case PMoveEffect.Toxic:
                     TryForceStatus1(user, targets, move, PStatus1.BadlyPoisoned);
                     break;
@@ -1372,6 +1375,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 WeatherCounter = (byte)(PSettings.SunTurns + (user.Item == PItem.HeatRock ? PSettings.HeatRockTurnExtension : 0));
                 BroadcastWeather(Weather, PWeatherAction.Added);
             }
+        }
+      
+        void Ef_Swagger(PPokemon user, PPokemon target)
+        {
+            BroadcastMoveUsed(user, PMove.Swagger);
+            PPReduce(user, PMove.Swagger);
+            if (MissCheck(user, target, PMove.Swagger))
+            {
+                return;
+            }
+            ApplyStatChange(target, PStat.Attack, 2, battle:this);
+            ApplyStatus2IfPossible(user, target, PStatus2.Confused, false);
         }
         void Ef_Growth(PPokemon user)
         {
