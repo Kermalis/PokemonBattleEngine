@@ -662,7 +662,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.HP < 1)
             {
-                activeBattlers.Remove(pkmn);
+                ActiveBattlers.Remove(pkmn);
                 pkmn.FieldPosition = PFieldPosition.None;
                 BroadcastFaint(pkmn);
                 return true;

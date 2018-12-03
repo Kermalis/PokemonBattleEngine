@@ -44,25 +44,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
     public sealed partial class PBattle
     {
-        // TODO: Must send exactly the right amount
-        // TODO: #21
-        // TODO: Don't allow to select again if already selected
-        // TODO: Use IEnumerable
-        public bool AreActionsValid(PAction[] actions)
+        public bool AreActionsValid(bool local, IEnumerable<PAction> actions)
         {
             if (BattleState != PBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForActions)} to validate actions.");
             }
 
-            var standBy = new List<PPokemon>();
+            PTeam team = Teams[local ? 0 : 1];
+            if (actions.Count() == 0 || actions.Count() != team.ActionsRequired.Count)
+                return false;
 
+            var standBy = new List<PPokemon>();
             foreach (PAction action in actions)
             {
                 PPokemon pkmn = GetPokemon(action.PokemonId);
 
-                // Not on the field
-                if (pkmn == null || pkmn.FieldPosition == PFieldPosition.None)
+                // Validate Pokémon
+                if (!team.ActionsRequired.Contains(pkmn))
                     return false;
 
                 switch (action.Decision)
@@ -346,15 +345,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         break;
                     case PDecision.Switch:
-                        PPokemon switchPkmn = GetPokemon(action.SwitchPokemonId);
-                        // Validate the new battler's ID
-                        if (switchPkmn == null || switchPkmn.Id == pkmn.Id)
-                            return false;
-                        // Cannot switch into a foe's Pokémon
-                        if (switchPkmn.Local != pkmn.Local)
-                            return false;
                         // Cannot switch while airborne, underground or underwater
                         if (pkmn.Status2.HasFlag(PStatus2.Airborne) || pkmn.Status2.HasFlag(PStatus2.Underground) || pkmn.Status2.HasFlag(PStatus2.Underwater))
+                            return false;
+                        PPokemon switchPkmn = GetPokemon(action.SwitchPokemonId);
+                        // Validate the new battler's ID
+                        if (switchPkmn == null || switchPkmn.Local != local || switchPkmn.Id == pkmn.Id)
+                            return false;
+                        // Cannot switch into a fainted Pokémon
+                        if (switchPkmn.HP < 1)
                             return false;
                         // Cannot switch into a Pokémon already on the field
                         if (switchPkmn.FieldPosition != PFieldPosition.None)
@@ -369,18 +368,90 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
         // Returns true if the actions were valid (and selected)
-        public bool SelectActionsIfValid(PAction[] actions)
+        public bool SelectActionsIfValid(bool local, IEnumerable<PAction> actions)
         {
             if (BattleState != PBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForActions)} to select actions.");
             }
 
-            if (AreActionsValid(actions))
+            if (AreActionsValid(local, actions))
             {
+                Teams[local ? 0 : 1].ActionsRequired.Clear();
                 foreach (PAction action in actions)
-                    SelectAction(action);
-                if (activeBattlers.All(p => p.SelectedAction.Decision != PDecision.None))
+                {
+                    PPokemon pkmn = GetPokemon(action.PokemonId);
+                    pkmn.SelectedAction = action;
+                    switch (pkmn.SelectedAction.Decision)
+                    {
+                        case PDecision.Fight:
+                            switch (PMoveData.GetMoveTargetsForPokemon(pkmn, pkmn.SelectedAction.FightMove))
+                            {
+                                case PMoveTarget.RandomFoeSurrounding:
+                                    switch (BattleStyle)
+                                    {
+                                        case PBattleStyle.Single:
+                                        case PBattleStyle.Rotation:
+                                            pkmn.SelectedAction.FightTargets = PTarget.FoeCenter;
+                                            break;
+                                        case PBattleStyle.Double:
+                                            pkmn.SelectedAction.FightTargets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeRight;
+                                            break;
+                                        case PBattleStyle.Triple:
+                                            if (pkmn.FieldPosition == PFieldPosition.Left)
+                                            {
+                                                // If one is fainted, BattleEffects.cs->UseMove() will change the target
+                                                pkmn.SelectedAction.FightTargets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeCenter : PTarget.FoeRight;
+                                            }
+                                            else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                            {
+                                                PTeam opposingTeam = Teams[pkmn.Local ? 1 : 0]; // Other team
+                                                                                                // Keep randomly picking until a non-fainted foe is selected
+                                                int r;
+                                                roll:
+                                                r = PUtils.RNG.Next(3);
+                                                // Prioritize left
+                                                if (r == 0)
+                                                {
+                                                    if (opposingTeam.PokemonAtPosition(PFieldPosition.Left) != null)
+                                                        pkmn.SelectedAction.FightTargets = PTarget.FoeLeft;
+                                                    else
+                                                        goto roll;
+                                                }
+                                                // Prioritize center
+                                                else if (r == 1)
+                                                {
+                                                    if (opposingTeam.PokemonAtPosition(PFieldPosition.Center) != null)
+                                                        pkmn.SelectedAction.FightTargets = PTarget.FoeCenter;
+                                                    else
+                                                        goto roll;
+                                                }
+                                                // Prioritize right
+                                                else
+                                                {
+                                                    if (opposingTeam.PokemonAtPosition(PFieldPosition.Right) != null)
+                                                        pkmn.SelectedAction.FightTargets = PTarget.FoeRight;
+                                                    else
+                                                        goto roll;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                // If one is fainted, BattleEffects.cs->UseMove() will change the target
+                                                pkmn.SelectedAction.FightTargets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeCenter;
+                                            }
+                                            break;
+                                    }
+                                    break;
+                                case PMoveTarget.SingleAllySurrounding:
+                                    if (BattleStyle == PBattleStyle.Single || BattleStyle == PBattleStyle.Rotation)
+                                        pkmn.SelectedAction.FightTargets = PTarget.AllyCenter;
+                                    break;
+                            }
+                            break;
+                    }
+                }
+                if (Teams[0].ActionsRequired.Count == 0 && Teams[1].ActionsRequired.Count == 0)
                 {
                     BattleState = PBattleState.ReadyToRunTurn;
                     OnStateChanged?.Invoke(this);
@@ -388,79 +459,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return true;
             }
             return false;
-        }
-        void SelectAction(PAction action)
-        {
-            PPokemon pkmn = GetPokemon(action.PokemonId);
-            switch (action.Decision)
-            {
-                case PDecision.Fight:
-                    switch (PMoveData.GetMoveTargetsForPokemon(pkmn, action.FightMove))
-                    {
-                        case PMoveTarget.RandomFoeSurrounding:
-                            switch (BattleStyle)
-                            {
-                                case PBattleStyle.Single:
-                                case PBattleStyle.Rotation:
-                                    action.FightTargets = PTarget.FoeCenter;
-                                    break;
-                                case PBattleStyle.Double:
-                                    action.FightTargets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeRight;
-                                    break;
-                                case PBattleStyle.Triple:
-                                    if (pkmn.FieldPosition == PFieldPosition.Left)
-                                    {
-                                        // If one is fainted, BattleEffects.cs->UseMove() will change the target
-                                        action.FightTargets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeCenter : PTarget.FoeRight;
-                                    }
-                                    else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                    {
-                                        PTeam opposingTeam = Teams[pkmn.Local ? 1 : 0]; // Other team
-                                                                                        // Keep randomly picking until a non-fainted foe is selected
-                                        int r;
-                                        roll:
-                                        r = PUtils.RNG.Next(3);
-                                        // Prioritize left
-                                        if (r == 0)
-                                        {
-                                            if (opposingTeam.PokemonAtPosition(PFieldPosition.Left) != null)
-                                                action.FightTargets = PTarget.FoeLeft;
-                                            else
-                                                goto roll;
-                                        }
-                                        // Prioritize center
-                                        else if (r == 1)
-                                        {
-                                            if (opposingTeam.PokemonAtPosition(PFieldPosition.Center) != null)
-                                                action.FightTargets = PTarget.FoeCenter;
-                                            else
-                                                goto roll;
-                                        }
-                                        // Prioritize right
-                                        else
-                                        {
-                                            if (opposingTeam.PokemonAtPosition(PFieldPosition.Right) != null)
-                                                action.FightTargets = PTarget.FoeRight;
-                                            else
-                                                goto roll;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // If one is fainted, BattleEffects.cs->UseMove() will change the target
-                                        action.FightTargets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeCenter;
-                                    }
-                                    break;
-                            }
-                            break;
-                        case PMoveTarget.SingleAllySurrounding:
-                            if (BattleStyle == PBattleStyle.Single || BattleStyle == PBattleStyle.Rotation)
-                                action.FightTargets = PTarget.AllyCenter;
-                            break;
-                    }
-                    break;
-            }
-            pkmn.SelectedAction = action;
         }
 
         public bool AreSwitchesValid(bool local, IEnumerable<Tuple<byte, PFieldPosition>> switches)
@@ -470,7 +468,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForSwitchIns)} to validate switches.");
             }
 
-            if (switches.Count() != Teams[local ? 0 : 1].SwitchInsRequired)
+            if (switches.Count() == 0 || switches.Count() != Teams[local ? 0 : 1].SwitchInsRequired)
                 return false;
             foreach (Tuple<byte, PFieldPosition> s in switches)
             {
@@ -502,8 +500,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (Teams[0].SwitchInsRequired == 0 && Teams[1].SwitchInsRequired == 0)
                 {
                     SwitchInQueuedPokemon();
-                    BattleState = PBattleState.WaitingForActions;
-                    OnStateChanged?.Invoke(this);
+                    RequestActions();
                 }
                 return true;
             }

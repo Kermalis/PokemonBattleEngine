@@ -9,13 +9,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed class PTeam
     {
+        public readonly PBattle Battle;
         public string TrainerName;
         public readonly bool Local;
         public List<PPokemon> Party { get; private set; } // TODO: Do not allow outsiders to add
 
+        public PPokemon[] ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Local == Local).ToArray();
         public int NumPkmnAlive => Party.Count(p => p.HP > 0);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PFieldPosition.None);
 
+        public List<PPokemon> ActionsRequired { get; } = new List<PPokemon>(); // PBattleState.WaitingForActions // TODO: Do not allow outsiders to add
         public byte SwitchInsRequired { get; internal set; } // PBattleState.WaitingForSwitchIns
         public List<PPokemon> SwitchInQueue { get; } = new List<PPokemon>(); // PBattleState.WaitingForSwitchIns // TODO: Do not allow outsiders to add
 
@@ -25,8 +28,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool MonFaintedLastTurn; // Retaliate
 
         // Host constructor
-        internal PTeam(PTeamShell shell, bool local, ref byte idCount)
+        internal PTeam(PBattle battle, PTeamShell shell, bool local, ref byte idCount)
         {
+            Battle = battle;
             TrainerName = shell.PlayerName;
             Local = local;
             Party = new List<PPokemon>(PSettings.MaxPartySize);
@@ -34,8 +38,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 Party.Add(new PPokemon(idCount++, shell.Party[i]) { Local = local });
         }
         // Client constructor
-        internal PTeam(bool local)
+        internal PTeam(PBattle battle, bool local)
         {
+            Battle = battle;
             Local = local;
             Party = new List<PPokemon>(PSettings.MaxPartySize);
         }
@@ -58,7 +63,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public readonly PBattleStyle BattleStyle;
         public readonly PTeam[] Teams = new PTeam[2];
-        List<PPokemon> activeBattlers = new List<PPokemon>();
+        public readonly List<PPokemon> ActiveBattlers = new List<PPokemon>(); // TODO: Do not allow outsiders to add
         List<PPokemon> turnOrder = new List<PPokemon>();
 
         public PWeather Weather;
@@ -73,8 +78,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BattleStyle = style;
 
             byte idCount = 0;
-            Teams[0] = new PTeam(t0, true, ref idCount);
-            Teams[1] = new PTeam(t1, false, ref idCount);
+            Teams[0] = new PTeam(this, t0, true, ref idCount);
+            Teams[1] = new PTeam(this, t1, false, ref idCount);
 
             // Set pokemon field positions
             switch (BattleStyle)
@@ -163,8 +168,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BattleStyle = style;
 
-            Teams[0] = new PTeam(true);
-            Teams[1] = new PTeam(false);
+            Teams[0] = new PTeam(this, true);
+            Teams[1] = new PTeam(this, false);
 
             BattleState = PBattleState.WaitingForPlayers;
             OnStateChanged?.Invoke(this);
@@ -211,8 +216,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             SwitchInQueuedPokemon();
-            BattleState = PBattleState.WaitingForActions;
-            OnStateChanged?.Invoke(this);
+            RequestActions();
         }
         // Runs a turn
         // Sets BattleState to PBattleState.Processing, then PBattleState.WaitingForActions/PBattleState.WaitingForSwitches/PBattleState.Ended
@@ -240,7 +244,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             IEnumerable<PPokemon> all = Teams[0].SwitchInQueue.Concat(Teams[1].SwitchInQueue);
             foreach (PPokemon pkmn in all)
             {
-                activeBattlers.Add(pkmn);
+                ActiveBattlers.Add(pkmn);
                 BroadcastSwitchIn(pkmn);
             }
             foreach (PPokemon pkmn in all)
@@ -248,11 +252,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 DoSwitchInEffects(pkmn); // BattleEffects.cs
             }
         }
+        // Sets BattleState to PBattleState.WaitingForActions
+        void RequestActions()
+        {
+            foreach (PTeam team in Teams)
+            {
+                team.ActionsRequired.Clear();
+                team.ActionsRequired.AddRange(team.ActiveBattlers);
+                BroadcastActionsRequest(team.Local, team.ActionsRequired);
+            }
+            BattleState = PBattleState.WaitingForActions;
+            OnStateChanged?.Invoke(this);
+        }
         void DetermineTurnOrder()
         {
             turnOrder.Clear();
-            IEnumerable<PPokemon> pkmnSwitchingOut = activeBattlers.Where(p => p.SelectedAction.Decision == PDecision.Switch);
-            IEnumerable<PPokemon> pkmnFighting = activeBattlers.Where(p => p.SelectedAction.Decision == PDecision.Fight);
+            IEnumerable<PPokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.SelectedAction.Decision == PDecision.Switch);
+            IEnumerable<PPokemon> pkmnFighting = ActiveBattlers.Where(p => p.SelectedAction.Decision == PDecision.Fight);
             // Switching happens first:
             turnOrder.AddRange(pkmnSwitchingOut);
             // Moves:
@@ -340,11 +356,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PDecision.Switch:
                         PFieldPosition pos = pkmn.FieldPosition;
                         pkmn.ClearForSwitch();
-                        activeBattlers.Remove(pkmn);
+                        ActiveBattlers.Remove(pkmn);
                         BroadcastSwitchOut(pkmn);
                         PPokemon switchPkmn = GetPokemon(pkmn.SelectedAction.SwitchPokemonId);
                         switchPkmn.FieldPosition = pos;
-                        activeBattlers.Add(switchPkmn);
+                        ActiveBattlers.Add(switchPkmn);
                         BroadcastSwitchIn(switchPkmn);
                         DoSwitchInEffects(switchPkmn);
                         break;
@@ -357,7 +373,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void TurnEnded()
         {
             // Pokémon
-            foreach (PPokemon pkmn in activeBattlers.ToArray()) // Copy the list so a faint does not cause a collection modified exception
+            foreach (PPokemon pkmn in ActiveBattlers.ToArray()) // Copy the list so a faint does not cause a collection modified exception
             {
                 pkmn.SelectedAction.Decision = PDecision.None;
                 pkmn.Status2 &= ~PStatus2.Flinching;
@@ -467,8 +483,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            BattleState = nextState;
-            OnStateChanged?.Invoke(this);
+            if (nextState == PBattleState.WaitingForActions)
+            {
+                RequestActions();
+            }
+            else // PBattleState.WaitingForSwitchIns
+            {
+                BattleState = nextState;
+                OnStateChanged?.Invoke(this);
+            }
         }
     }
 }

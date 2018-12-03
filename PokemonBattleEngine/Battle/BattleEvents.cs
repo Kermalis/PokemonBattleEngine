@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
+using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -16,6 +17,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PPkmnSwitchOutPacket(pkmn));
         void BroadcastSwitchInRequest(bool local, byte amount)
             => OnNewEvent?.Invoke(this, new PSwitchInRequestPacket(local, amount));
+        void BroadcastActionsRequest(bool local, IEnumerable<PPokemon> pkmn)
+            => OnNewEvent?.Invoke(this, new PActionsRequestPacket(local, pkmn));
         void BroadcastMoveUsed(PPokemon culprit, PMove move)
             => OnNewEvent?.Invoke(this, new PMoveUsedPacket(culprit, move));
         void BroadcastMiss(PPokemon culprit)
@@ -415,6 +418,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
                     }
                     Console.WriteLine(message);
+                    break;
+                case PActionsRequestPacket arp:
+                    Console.WriteLine("{0} must submit actions for {1} Pokémon.", battle.Teams[arp.Local ? 0 : 1].TrainerName, arp.PokemonIDs.Length);
                     break;
                 case PSwitchInRequestPacket sirp:
                     Console.WriteLine("{0} must send in {1} Pokémon.", battle.Teams[sirp.Local ? 0 : 1].TrainerName, sirp.Amount);

@@ -27,6 +27,66 @@ namespace Kermalis.PokemonBattleEngineServer
         PBattle battle;
         Player[] battlers;
 
+        static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
+        public override IPacketProcessor PacketProcessor => packetProcessor;
+        public static void Main(string[] args)
+        {
+            using (var server = new BattleServer("127.0.0.1", 8888))
+                server.Start();
+        }
+        public BattleServer(string host, int port)
+        {
+            Configuration.Backlog = 50;
+            Configuration.Host = host;
+            Configuration.Port = port;
+            Configuration.MaximumNumberOfConnections = 2; // Spectators allowed but not yet
+            Configuration.BufferSize = 1024;
+            Configuration.Blocking = true;
+        }
+        protected override void Initialize()
+        {
+            Console.WriteLine("Server online.");
+            StopMatchAndReset();
+        }
+        protected override void OnClientConnected(Player client)
+        {
+            Console.WriteLine($"Client connected ({client.Id})");
+            // Temporarily ignore spectators (no joined packets)
+            if (battlers == null && Clients.Count() == 2)
+            {
+                Console.WriteLine("Two players connected!");
+                state = ServerState.WaitingForParties;
+                Console.WriteLine("Waiting for parties...");
+                battlers = new Player[] { Clients.ElementAt(0), Clients.ElementAt(1) };
+                battlers[0].IsSpectator = false;
+                battlers[1].IsSpectator = false;
+                SendTo(battlers, new PPartyRequestPacket());
+            }
+        }
+        protected override void OnClientDisconnected(Player client)
+        {
+            Console.WriteLine($"Client disconnected ({client.Id})");
+            // Temporarily ignore spectators
+            if (battlers == null || !battlers.Contains(client))
+            {
+                return;
+            }
+            switch (state)
+            {
+                case ServerState.Startup:
+                case ServerState.Resetting:
+                case ServerState.Cancelling:
+                    break;
+                default:
+                    CancelMatch();
+                    break;
+            }
+        }
+        protected override void OnError(Exception e)
+        {
+            Console.WriteLine($"Server error: {e}");
+        }
+
         void CancelMatch()
         {
             if (state == ServerState.Cancelling)
@@ -61,23 +121,6 @@ namespace Kermalis.PokemonBattleEngineServer
                 state = ServerState.WaitingForPlayers;
             }
         }
-        void PlayersFound()
-        {
-            if (state != ServerState.WaitingForPlayers)
-                return;
-            lock (this)
-            {
-                if (state != ServerState.WaitingForPlayers)
-                    return;
-
-                Console.WriteLine("Two players connected!");
-                state = ServerState.WaitingForParties;
-                Console.WriteLine("Waiting for parties...");
-                battlers = new Player[] { Clients.ElementAt(0), Clients.ElementAt(1) };
-                SendTo(battlers, new PPartyRequestPacket());
-            }
-        }
-        // TODO: Spectators are somewhat blocked, but waste server time
         public void PartySubmitted(Player player, PTeamShell team)
         {
             if (state != ServerState.WaitingForParties)
@@ -123,7 +166,6 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
             }
         }
-        // TODO: Block spectators
         public void ActionsSubmitted(Player player, PAction[] actions)
         {
             if (state != ServerState.WaitingForActions)
@@ -135,14 +177,14 @@ namespace Kermalis.PokemonBattleEngineServer
 
                 Console.WriteLine($"Received actions from {player.Shell.PlayerName}!");
 
-                if (!battle.SelectActionsIfValid(actions))
+                bool local = player == battlers[0];
+                if (!battle.SelectActionsIfValid(local, actions))
                 {
                     Console.WriteLine("Actions are invalid!");
-                    player.Send(new PActionsRequestPacket());
+                    player.Send(new PActionsRequestPacket(local, battle.Teams[local ? 0 : 1].ActionsRequired));
                 }
             }
         }
-        // TODO: Block spectators
         public void SwitchesSubmitted(Player player, Tuple<byte, PFieldPosition>[] switches)
         {
             if (state != ServerState.WaitingForSwitchIns)
@@ -184,12 +226,10 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBattleState.WaitingForActions:
                     state = ServerState.WaitingForActions;
                     Console.WriteLine("Waiting for actions...");
-                    SendTo(battlers, new PActionsRequestPacket()); // TODO
                     break;
                 case PBattleState.WaitingForSwitchIns:
                     state = ServerState.WaitingForSwitchIns;
                     Console.WriteLine("Waiting for switches...");
-                    //SendTo(battlers, new PSwitchInRequestPacket()); // Gets broadcasted in the battle, like requestactions should
                     break;
             }
         }
@@ -197,9 +237,10 @@ namespace Kermalis.PokemonBattleEngineServer
         {
             switch (packet)
             {
-                case PPkmnSwitchInPacket psip:
-                case PSwitchInRequestPacket sirp:
-                case PTeamStatusPacket tsp:
+                case PActionsRequestPacket _:
+                case PPkmnSwitchInPacket _:
+                case PSwitchInRequestPacket _:
+                case PTeamStatusPacket _:
                     dynamic pack = packet;
                     foreach (Player client in Clients)
                     {
@@ -216,49 +257,5 @@ namespace Kermalis.PokemonBattleEngineServer
             }
         }
 
-        static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
-        public override IPacketProcessor PacketProcessor => packetProcessor;
-        public BattleServer(string host)
-        {
-            Configuration.Backlog = 50;
-            Configuration.Host = host;
-            Configuration.Port = 8888;
-            Configuration.MaximumNumberOfConnections = 2; // Spectators allowed but not yet
-            Configuration.BufferSize = 1024;
-            Configuration.Blocking = true;
-        }
-        protected override void Initialize()
-        {
-            Console.WriteLine("Server online.");
-            StopMatchAndReset();
-        }
-        protected override void OnClientConnected(Player client)
-        {
-            Console.WriteLine($"Client connected ({client.Id})");
-            // Temporarily ignore spectators
-            if (Clients.Count() == 2)
-                PlayersFound();
-        }
-        protected override void OnClientDisconnected(Player client)
-        {
-            Console.WriteLine($"Client disconnected ({client.Id})");
-            // Temporarily ignore spectators
-            if (battlers == null || !battlers.Contains(client))
-                return;
-            switch (state)
-            {
-                case ServerState.Startup:
-                case ServerState.Resetting:
-                case ServerState.Cancelling:
-                    break;
-                default:
-                    CancelMatch();
-                    break;
-            }
-        }
-        protected override void OnError(Exception e)
-        {
-            Console.WriteLine($"Server error: {e}");
-        }
     }
 }

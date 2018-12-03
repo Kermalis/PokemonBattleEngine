@@ -11,6 +11,7 @@ namespace Kermalis.PokemonBattleEngineServer
     {
         public readonly ManualResetEvent ResetEvent = new ManualResetEvent(true);
 
+        public bool IsSpectator = true;
         public PTeamShell Shell;
 
         public override void Send(INetPacket packet)
@@ -22,18 +23,21 @@ namespace Kermalis.PokemonBattleEngineServer
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({Id})");
 
-            var ser = (BattleServer)Server;
-            switch (packet)
+            if (!IsSpectator)
             {
-                case PActionsResponsePacket arp:
-                    ser.ActionsSubmitted(this, arp.Actions);
-                    break;
-                case PPartyResponsePacket prp:
-                    ser.PartySubmitted(this, prp.Team);
-                    break;
-                case PSwitchInResponsePacket sirp:
-                    ser.SwitchesSubmitted(this, sirp.Switches);
-                    break;
+                var ser = (BattleServer)Server;
+                switch (packet)
+                {
+                    case PActionsResponsePacket arp:
+                        ser.ActionsSubmitted(this, arp.Actions);
+                        break;
+                    case PPartyResponsePacket prp:
+                        ser.PartySubmitted(this, prp.Team);
+                        break;
+                    case PSwitchInResponsePacket sirp:
+                        ser.SwitchesSubmitted(this, sirp.Switches);
+                        break;
+                }
             }
 
             ResetEvent.Set();

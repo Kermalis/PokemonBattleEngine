@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             AvaloniaXamlLoader.Load(this);
 
-            var client = new BattleClient("127.0.0.1", this.FindControl<BattleView>("Battle0"), this.Find<ActionsView>("Actions0"), this.Find<MessageView>("Messages0"));
+            var client = new BattleClient("127.0.0.1", 8888, this.FindControl<BattleView>("Battle0"), this.Find<ActionsView>("Actions0"), this.Find<MessageView>("Messages0"));
             client.Connect();
         }
 

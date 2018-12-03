@@ -24,10 +24,10 @@ namespace Kermalis.PokemonBattleEngineClient
         readonly ActionsView actionsView;
         readonly MessageView messageView;
 
-        public BattleClient(string host, BattleView battleView, ActionsView actionsView, MessageView messageView)
+        public BattleClient(string host, int port, BattleView battleView, ActionsView actionsView, MessageView messageView)
         {
             Configuration.Host = host;
-            Configuration.Port = 8888;
+            Configuration.Port = port;
             Configuration.BufferSize = 1024;
 
             Battle = new PBattle(PBattleStyle.Double);
