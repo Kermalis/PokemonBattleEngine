@@ -12,14 +12,15 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x15;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte CulpritId;
+        public readonly byte CulpritId, VictimId;
         public readonly PFailReason Reason;
 
-        public PMoveFailedPacket(PPokemon culprit, PFailReason reason)
+        public PMoveFailedPacket(PPokemon culprit, PPokemon victim, PFailReason reason)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add(CulpritId = culprit.Id);
+            bytes.Add(VictimId = victim.Id);
             bytes.Add((byte)(Reason = reason));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
@@ -30,6 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 CulpritId = r.ReadByte();
+                VictimId = r.ReadByte();
                 Reason = (PFailReason)r.ReadByte();
             }
         }

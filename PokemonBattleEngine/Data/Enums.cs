@@ -192,6 +192,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PFailReason : byte
     {
+        AlreadyConfused, // Swagger/Flatter
         Default, // "But it failed!"
         HPFull, // Trying to use a healing move with max HP
         NoTarget // All opponents fainted already

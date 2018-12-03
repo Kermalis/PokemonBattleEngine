@@ -164,14 +164,16 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PMoveFailedPacket mfp:
                     culprit = Battle.GetPokemon(mfp.CulpritId);
+                    victim = Battle.GetPokemon(mfp.VictimId);
                     switch (mfp.Reason)
                     {
+                        case PFailReason.AlreadyConfused: message = "{1} is already confused!"; break;
                         case PFailReason.Default: message = "But it failed!"; break;
                         case PFailReason.HPFull: message = "{0}'s HP is full!"; break;
                         case PFailReason.NoTarget: message = "There was no target..."; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mfp.Reason), $"Invalid fail reason: {mfp.Reason}");
                     }
-                    message = string.Format(message, culprit.NameForTrainer(true));
+                    message = string.Format(message, culprit.NameForTrainer(true), victim.NameForTrainer(true));
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
@@ -254,7 +256,9 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PPkmnSwitchInPacket psip:
                     if (!psip.Local)
+                    {
                         Battle.RemotePokemonSwitchedIn(psip);
+                    }
                     culprit = Battle.GetPokemon(psip.PokemonId);
                     pos = culprit.FieldPosition;
                     culprit.FieldPosition = psip.FieldPosition;

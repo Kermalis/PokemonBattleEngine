@@ -31,8 +31,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PPkmnFaintedPacket(victim));
         void BroadcastCrit()
             => OnNewEvent?.Invoke(this, new PMoveCritPacket());
-        void BroadcastFail(PPokemon culprit, PFailReason reason)
-            => OnNewEvent?.Invoke(this, new PMoveFailedPacket(culprit, reason));
+        void BroadcastFail(PPokemon culprit, PPokemon victim, PFailReason reason)
+            => OnNewEvent?.Invoke(this, new PMoveFailedPacket(culprit, victim, reason));
         void BroadcastStatChange(PPokemon victim, PStat stat, sbyte change, bool isTooMuch)
             => OnNewEvent?.Invoke(this, new PPkmnStatChangedPacket(victim, stat, change, isTooMuch));
         void BroadcastStatus1(PPokemon culprit, PPokemon victim, PStatus1 status, PStatusAction statusAction)
@@ -103,14 +103,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PMoveFailedPacket mfp:
                     culprit = battle.GetPokemon(mfp.CulpritId);
+                    victim = battle.GetPokemon(mfp.VictimId);
                     switch (mfp.Reason)
                     {
+                        case PFailReason.AlreadyConfused: message = "{1} is already confused!"; break;
                         case PFailReason.Default: message = "But it failed!"; break;
                         case PFailReason.HPFull: message = "{0}'s HP is full!"; break;
                         case PFailReason.NoTarget: message = "There was no target..."; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mfp.Reason), $"Invalid fail reason: {mfp.Reason}");
                     }
-                    Console.WriteLine(message, culprit.NameForTrainer(true));
+                    Console.WriteLine(message, culprit.NameForTrainer(true), victim.NameForTrainer(true));
                     break;
                 case PMoveMissedPacket mmp:
                     culprit = battle.GetPokemon(mmp.CulpritId);

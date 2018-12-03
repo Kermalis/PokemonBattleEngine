@@ -149,7 +149,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastMoveUsed(user, move);
                 PPReduce(user, move);
-                BroadcastFail(user, PFailReason.NoTarget);
+                BroadcastFail(user, user, PFailReason.NoTarget);
                 return;
             }
 
@@ -698,23 +698,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns true if the status was applied
         // Broadcasts the change if applied
-        // "tryingToForce" being true will broadcast events such as failing or ineffective types
-        bool ApplyStatus1IfPossible(PPokemon user, PPokemon target, PStatus1 status, bool tryingToForce)
+        bool ApplyStatus1IfPossible(PPokemon user, PPokemon target, PStatus1 status, bool broadcastFailOrEffectiveness)
         {
             // Cannot change status if already afflicted
             // Cannot change status of a target behind a substitute
             if (target.Status1 != PStatus1.None
                 || target.Status2.HasFlag(PStatus2.Substitute))
             {
-                if (tryingToForce)
-                    BroadcastFail(user, PFailReason.Default);
+                if (broadcastFailOrEffectiveness)
+                {
+                    BroadcastFail(user, target, PFailReason.Default);
+                }
                 return false;
             }
 
             // A Pokémon with Limber cannot be Paralyzed unless the attacker has Mold Breaker
             if (status == PStatus1.Paralyzed && target.Ability == PAbility.Limber)
             {
-                if (tryingToForce)
+                if (broadcastFailOrEffectiveness)
                 {
                     BroadcastLimber(target, true);
                     BroadcastEffectiveness(target, PEffectiveness.Ineffective);
@@ -725,22 +726,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // An Ice type Pokémon cannot be Frozen
             if (status == PStatus1.Frozen && target.HasType(PType.Ice))
             {
-                if (tryingToForce)
+                if (broadcastFailOrEffectiveness)
+                {
                     BroadcastEffectiveness(target, PEffectiveness.Ineffective);
+                }
                 return false;
             }
             // A Fire type Pokémon cannot be Burned
             if (status == PStatus1.Burned && target.HasType(PType.Fire))
             {
-                if (tryingToForce)
+                if (broadcastFailOrEffectiveness)
+                {
                     BroadcastEffectiveness(target, PEffectiveness.Ineffective);
+                }
                 return false;
             }
             // A Poison or Steel type Pokémon cannot be Poisoned or Badly Poisoned
             if ((status == PStatus1.BadlyPoisoned || status == PStatus1.Poisoned) && (target.HasType(PType.Poison) || target.HasType(PType.Steel)))
             {
-                if (tryingToForce)
+                if (broadcastFailOrEffectiveness)
+                {
                     BroadcastEffectiveness(target, PEffectiveness.Ineffective);
+                }
                 return false;
             }
 
@@ -748,10 +755,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             target.Status1 = status;
             // Start toxic counter
             if (status == PStatus1.BadlyPoisoned)
+            {
                 target.Status1Counter = 1;
+            }
             // Set sleep length
             if (status == PStatus1.Asleep)
+            {
                 target.SleepTurns = (byte)PUtils.RNG.Next(PSettings.SleepMinTurns, PSettings.SleepMaxTurns + 1);
+            }
 
             BroadcastStatus1(user, target, status, PStatusAction.Added);
 
@@ -759,8 +770,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         // Returns true if the status was applied
         // Broadcasts the change if applied and required
-        // "tryingToForce" being true will broadcast failing
-        bool ApplyStatus2IfPossible(PPokemon user, PPokemon target, PStatus2 status, bool tryingToForce)
+        bool ApplyStatus2IfPossible(PPokemon user, PPokemon target, PStatus2 status, bool broadcastFail, PFailReason failReason = PFailReason.Default)
         {
             switch (status)
             {
@@ -845,8 +855,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
             }
-            if (tryingToForce)
-                BroadcastFail(user, PFailReason.Default);
+            if (broadcastFail)
+            {
+                BroadcastFail(user, target, failReason);
+            }
             return false;
         }
 
@@ -1042,7 +1054,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
             }
-            BroadcastFail(user, PFailReason.Default);
+            BroadcastFail(user, user, PFailReason.Default);
         }
         void HitAndMaybeInflictStatus1(PPokemon user, PPokemon[] targets, PMove move, PStatus1 status, int chanceToInflict)
         {
@@ -1095,12 +1107,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (target.Status2.HasFlag(PStatus2.Substitute))
                 {
-                    BroadcastFail(user, PFailReason.Default);
+                    BroadcastFail(user, target, PFailReason.Default);
                 }
                 else
                 {
                     for (int i = 0; i < stats.Length; i++)
+                    {
                         ApplyStatChange(target, stats[i], changes[i], battle: this);
+                    }
                 }
             }
         }
@@ -1196,7 +1210,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            BroadcastFail(user, PFailReason.Default);
+            BroadcastFail(user, user, PFailReason.Default);
         }
         void Ef_BrickBreak(PPokemon user, PPokemon target)
         {
@@ -1355,7 +1369,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPReduce(user, PMove.RainDance);
             if (Weather == PWeather.Raining)
             {
-                BroadcastFail(user, PFailReason.Default);
+                BroadcastFail(user, user, PFailReason.Default);
             }
             else
             {
@@ -1370,7 +1384,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPReduce(user, PMove.SunnyDay);
             if (Weather == PWeather.Sunny)
             {
-                BroadcastFail(user, PFailReason.Default);
+                BroadcastFail(user, user, PFailReason.Default);
             }
             else
             {
@@ -1387,8 +1401,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
-            ApplyStatChange(target, PStat.SpAttack, 1, battle: this);
-            ApplyStatus2IfPossible(user, target, PStatus2.Confused, false);
+            ApplyStatChange(target, PStat.SpAttack, +1, battle: this);
+            ApplyStatus2IfPossible(user, target, PStatus2.Confused, true, PFailReason.AlreadyConfused);
         }
         void Ef_Swagger(PPokemon user, PPokemon target)
         {
@@ -1398,8 +1412,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
-            ApplyStatChange(target, PStat.Attack, 2, battle:this);
-            ApplyStatus2IfPossible(user, target, PStatus2.Confused, false);
+            ApplyStatChange(target, PStat.Attack, +2, battle: this);
+            ApplyStatus2IfPossible(user, target, PStatus2.Confused, true, PFailReason.AlreadyConfused);
         }
         void Ef_Growth(PPokemon user)
         {
@@ -1412,7 +1426,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPReduce(user, move);
             if (HealDamage(user, (ushort)(user.MaxHP * (percent / 100D))) == 0)
             {
-                BroadcastFail(user, PFailReason.HPFull);
+                BroadcastFail(user, user, PFailReason.HPFull);
             }
         }
         void Ef_Moonlight(PPokemon user)
@@ -1429,7 +1443,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort hp = (ushort)(user.MaxHP * percentage);
             if (HealDamage(user, hp) == 0)
             {
-                BroadcastFail(user, PFailReason.HPFull);
+                BroadcastFail(user, user, PFailReason.HPFull);
             }
         }
         void Ef_Transform(PPokemon user, PPokemon target)
@@ -1440,7 +1454,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 || target.Status2.HasFlag(PStatus2.Transformed)
                 || target.Status2.HasFlag(PStatus2.Substitute))
             {
-                BroadcastFail(user, PFailReason.Default);
+                BroadcastFail(user, target, PFailReason.Default);
                 return;
             }
             if (MissCheck(user, target, PMove.Transform))
@@ -1469,7 +1483,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     PPokemon[] targets = GetRuntimeTargets(user, t, false);
                     if (targets.Length == 0)
                     {
-                        BroadcastFail(user, PFailReason.NoTarget);
+                        BroadcastFail(user, user, PFailReason.NoTarget);
                         return;
                     }
                     target = targets[0];
@@ -1485,7 +1499,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     && user.AttackChange == PSettings.MaxStatChange
                     && user.DefenseChange == PSettings.MaxStatChange)
                 {
-                    BroadcastFail(user, PFailReason.Default);
+                    BroadcastFail(user, target, PFailReason.Default);
                 }
                 else
                 {
@@ -1569,7 +1583,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (target.HP <= user.HP)
             {
-                BroadcastFail(user, PFailReason.Default);
+                BroadcastFail(user, target, PFailReason.Default);
                 return;
             }
             DealDamage(user, target, (ushort)(target.HP - user.HP), PEffectiveness.Normal, false);
@@ -1580,7 +1594,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPReduce(user, PMove.PainSplit);
             if (target.Status2.HasFlag(PStatus2.Substitute))
             {
-                BroadcastFail(user, PFailReason.Default);
+                BroadcastFail(user, target, PFailReason.Default);
                 return;
             }
             if (MissCheck(user, target, PMove.PainSplit))

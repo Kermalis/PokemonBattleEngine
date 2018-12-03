@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         List<PPokemon> turnOrder = new List<PPokemon>();
 
         public PWeather Weather;
-        public byte WeatherCounter; // Not updated for client
+        public byte WeatherCounter;
 
         // Returns null if it doesn't exist
         public PPokemon GetPokemon(byte pkmnId) => Teams[0].Party.Concat(Teams[1].Party).SingleOrDefault(p => p.Id == pkmnId);
