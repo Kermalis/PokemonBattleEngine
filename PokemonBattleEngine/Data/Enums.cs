@@ -45,6 +45,16 @@ namespace Kermalis.PokemonBattleEngine.Data
         Triple,
         Rotation
     }
+    public enum PBattleState : byte
+    {
+        WaitingForPlayers,
+        ReadyToBegin,
+        WaitingForActions,
+        ReadyToRunTurn,
+        Processing,
+        WaitingForSwitchIns,
+        Ended
+    }
     public enum PWeather : byte
     {
         None,

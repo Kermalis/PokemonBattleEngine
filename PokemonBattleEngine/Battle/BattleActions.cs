@@ -44,8 +44,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
     public sealed partial class PBattle
     {
+        // TODO: Must send exactly the right amount
+        // TODO: #21
+        // TODO: Don't allow to select again if already selected
+        // TODO: Use IEnumerable
         public bool AreActionsValid(PAction[] actions)
         {
+            if (BattleState != PBattleState.WaitingForActions)
+            {
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForActions)} to validate actions.");
+            }
+
             var standBy = new List<PPokemon>();
 
             foreach (PAction action in actions)
@@ -53,7 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PPokemon pkmn = GetPokemon(action.PokemonId);
 
                 // Not on the field
-                if (pkmn.FieldPosition == PFieldPosition.None)
+                if (pkmn == null || pkmn.FieldPosition == PFieldPosition.None)
                     return false;
 
                 switch (action.Decision)
@@ -362,10 +371,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Returns true if the actions were valid (and selected)
         public bool SelectActionsIfValid(PAction[] actions)
         {
+            if (BattleState != PBattleState.WaitingForActions)
+            {
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForActions)} to select actions.");
+            }
+
             if (AreActionsValid(actions))
             {
                 foreach (PAction action in actions)
                     SelectAction(action);
+                if (activeBattlers.All(p => p.SelectedAction.Decision != PDecision.None))
+                {
+                    BattleState = PBattleState.ReadyToRunTurn;
+                    OnStateChanged?.Invoke(this);
+                }
                 return true;
             }
             return false;
@@ -442,6 +461,53 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
             }
             pkmn.SelectedAction = action;
+        }
+
+        public bool AreSwitchesValid(bool local, IEnumerable<Tuple<byte, PFieldPosition>> switches)
+        {
+            if (BattleState != PBattleState.WaitingForSwitchIns)
+            {
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForSwitchIns)} to validate switches.");
+            }
+
+            if (switches.Count() != Teams[local ? 0 : 1].SwitchInsRequired)
+                return false;
+            foreach (Tuple<byte, PFieldPosition> s in switches)
+            {
+                PPokemon pkmn = GetPokemon(s.Item1);
+                if (pkmn == null || pkmn.Local != local || pkmn.HP < 1 || pkmn.FieldPosition != PFieldPosition.None)
+                    return false;
+            }
+
+            return true;
+        }
+        // Returns true if the switches were valid (and selected)
+        public bool SelectSwitchesIfValid(bool local, IEnumerable<Tuple<byte, PFieldPosition>> switches)
+        {
+            if (BattleState != PBattleState.WaitingForSwitchIns)
+            {
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForSwitchIns)} to select switches.");
+            }
+
+            if (AreSwitchesValid(local, switches))
+            {
+                PTeam team = Teams[local ? 0 : 1];
+                team.SwitchInsRequired = 0;
+                foreach (Tuple<byte, PFieldPosition> s in switches)
+                {
+                    PPokemon pkmn = GetPokemon(s.Item1);
+                    pkmn.FieldPosition = s.Item2;
+                    team.SwitchInQueue.Add(pkmn);
+                }
+                if (Teams[0].SwitchInsRequired == 0 && Teams[1].SwitchInsRequired == 0)
+                {
+                    SwitchInQueuedPokemon();
+                    BattleState = PBattleState.WaitingForActions;
+                    OnStateChanged?.Invoke(this);
+                }
+                return true;
+            }
+            return false;
         }
 
         public static PFieldPosition GetPositionAcross(PBattleStyle style, PFieldPosition pos)

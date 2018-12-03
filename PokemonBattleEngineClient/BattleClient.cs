@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     Battle.Teams[1].TrainerName = pjp.DisplayName;
                     Send(new PResponsePacket());
                     break;
-                case PRequestPartyPacket _: // Temporary
+                case PPartyRequestPacket _: // Temporary
                     messageView.Add(battleView.Message = "Sending team info...");
                     var team = new PTeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample(), };
                     var possiblePokemon = new List<PPokemonShell>
@@ -71,10 +71,10 @@ namespace Kermalis.PokemonBattleEngineClient
                     possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
                     Battle.Teams[0].TrainerName = team.PlayerName;
-                    Send(new PSubmitPartyPacket(team));
+                    Send(new PPartyResponsePacket(team));
                     break;
                 case PSetPartyPacket spp:
-                    Battle.Teams[0].SetParty(spp.Party);
+                    Battle.SetTeamParty(true, spp.Party);
                     Send(new PResponsePacket());
                     break;
                 default:
@@ -164,8 +164,11 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PMovePPChangedPacket mpcp:
                     victim = Battle.GetPokemon(mpcp.VictimId);
-                    i = Array.IndexOf(victim.Moves, mpcp.Move);
-                    victim.PP[i] = (byte)(victim.PP[i] + mpcp.Change);
+                    if (victim.Local)
+                    {
+                        i = Array.IndexOf(victim.Moves, mpcp.Move);
+                        victim.PP[i] = (byte)(victim.PP[i] + mpcp.Change);
+                    }
                     return true;
                 case PMoveUsedPacket mup:
                     culprit = Battle.GetPokemon(mup.CulpritId);
@@ -568,8 +571,47 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     messageView.Add(battleView.Message = message);
                     break;
-                case PRequestActionsPacket _:
+                case PActionsRequestPacket _:
                     ActionsLoop(true);
+                    break;
+                case PSwitchInRequestPacket sirp:
+                    {
+                        if (!sirp.Local)
+                        {
+                            return true;
+                        }
+
+                        int amt = sirp.Amount;
+                        var switches = new List<Tuple<byte, PFieldPosition>>(amt);
+                        PPokemon[] available = Battle.Teams[0].Party.Where(p => p.FieldPosition == PFieldPosition.None && p.HP > 0).ToArray();
+                        var availablePositions = new List<PFieldPosition>();
+                        switch (Battle.BattleStyle)
+                        {
+                            case PBattleStyle.Single:
+                                availablePositions.Add(PFieldPosition.Center);
+                                break;
+                            case PBattleStyle.Double:
+                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left) == null)
+                                    availablePositions.Add(PFieldPosition.Left);
+                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right) == null)
+                                    availablePositions.Add(PFieldPosition.Right);
+                                break;
+                            case PBattleStyle.Triple:
+                            case PBattleStyle.Rotation:
+                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left) == null)
+                                    availablePositions.Add(PFieldPosition.Left);
+                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Center) == null)
+                                    availablePositions.Add(PFieldPosition.Center);
+                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right) == null)
+                                    availablePositions.Add(PFieldPosition.Right);
+                                break;
+                        }
+                        for (i = 0; i < amt; i++)
+                        {
+                            switches.Add(Tuple.Create(available[i].Id, availablePositions[i]));
+                        }
+                        Send(new PSwitchInResponsePacket(switches.ToArray()));
+                    }
                     break;
             }
             return false;
@@ -617,7 +659,7 @@ namespace Kermalis.PokemonBattleEngineClient
             if (i == -1)
             {
                 battleView.Message = $"Waiting for {Battle.Teams[1].TrainerName}...";
-                Send(new PSubmitActionsPacket(actions.Select(p => p.SelectedAction).ToArray()));
+                Send(new PActionsResponsePacket(actions.Select(p => p.SelectedAction).ToArray()));
             }
             else
             {

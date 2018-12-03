@@ -17,7 +17,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 
 ----
 # To Do:
-* Switching in after a faint
 * Struggle
 * Rotation battles, triple battle shifting
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
@@ -30,6 +29,8 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Implement a better way to lock actions besides "PPokemon.LockedAction" (Consider "Follow Me" as well)
 * Damage, effectiveness and critical packets should include a list of hit Pokémon
 * Move substitute to "post damage effects" with items and abilities and remove effectiveness from DealDamage()
+* Winning
+* Watchable replays
 
 ----
 # PokemonBattleEngine Uses:

@@ -19,12 +19,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PResponsePacket.Code: packet = new PResponsePacket(buffer); break;
                 case PPlayerJoinedPacket.Code: packet = new PPlayerJoinedPacket(buffer); break;
                 case PMatchCancelledPacket.Code: packet = new PMatchCancelledPacket(buffer); break;
-                case PRequestPartyPacket.Code: packet = new PRequestPartyPacket(buffer); break;
-                case PSubmitPartyPacket.Code: packet = new PSubmitPartyPacket(buffer); break;
+                case PPartyRequestPacket.Code: packet = new PPartyRequestPacket(buffer); break;
+                case PPartyResponsePacket.Code: packet = new PPartyResponsePacket(buffer); break;
                 case PSetPartyPacket.Code: packet = new PSetPartyPacket(buffer); break;
                 case PPkmnSwitchInPacket.Code: packet = new PPkmnSwitchInPacket(buffer); break;
-                case PRequestActionsPacket.Code: packet = new PRequestActionsPacket(buffer); break;
-                case PSubmitActionsPacket.Code: packet = new PSubmitActionsPacket(buffer); break;
+                case PActionsRequestPacket.Code: packet = new PActionsRequestPacket(buffer); break;
+                case PActionsResponsePacket.Code: packet = new PActionsResponsePacket(buffer); break;
                 case PMoveUsedPacket.Code: packet = new PMoveUsedPacket(buffer); break;
                 case PPkmnHPChangedPacket.Code: packet = new PPkmnHPChangedPacket(buffer); break;
                 case PMoveEffectivenessPacket.Code: packet = new PMoveEffectivenessPacket(buffer); break;
@@ -45,6 +45,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PMagnitudePacket.Code: packet = new PMagnitudePacket(buffer); break;
                 case PPainSplitPacket.Code: packet = new PPainSplitPacket(buffer); break;
                 case PPsychUpPacket.Code: packet = new PPsychUpPacket(buffer); break;
+                case PSwitchInRequestPacket.Code: packet = new PSwitchInRequestPacket(buffer); break;
+                case PSwitchInResponsePacket.Code: packet = new PSwitchInResponsePacket(buffer); break;
                 default: throw new ArgumentException($"Invalid packet code: {code}");
             }
 

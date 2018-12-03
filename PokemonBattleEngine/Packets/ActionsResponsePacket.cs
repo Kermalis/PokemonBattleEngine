@@ -7,23 +7,23 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PSubmitActionsPacket : INetPacket
+    public sealed class PActionsResponsePacket : INetPacket
     {
         public const short Code = 0x08;
         public IEnumerable<byte> Buffer { get; }
 
         public readonly PAction[] Actions;
 
-        public PSubmitActionsPacket(PAction[] actions)
+        public PActionsResponsePacket(IEnumerable<PAction> actions)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Actions = actions).Length);
+            bytes.Add((byte)(Actions = actions.ToArray()).Length);
             foreach (var a in Actions)
                 bytes.AddRange(a.ToBytes());
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PSubmitActionsPacket(byte[] buffer)
+        public PActionsResponsePacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))

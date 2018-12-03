@@ -10,8 +10,9 @@ namespace Kermalis.PokemonBattleEngine
         {
             Console.WriteLine("Pokémon Battle Engine Test");
             Console.WriteLine();
+            Console.WriteLine("The test is not updated at this time.");
 
-            PTeamShell team0 = new PTeamShell
+            /*PTeamShell team0 = new PTeamShell
             {
                 PlayerName = "Sasha",
                 Party = { PCompetitivePokemonShells.Ditto_Uber, PCompetitivePokemonShells.Azumarill_VGC }
@@ -24,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine
 
             PBattle battle = new PBattle(PBattleStyle.Single, team0, team1);
             battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
-            battle.Start();
+            battle.Begin();
 
             PPokemon lCenter = battle.Teams[0].PokemonAtPosition(PFieldPosition.Center);
             PPokemon rCenter = battle.Teams[1].PokemonAtPosition(PFieldPosition.Center);
@@ -79,7 +80,7 @@ namespace Kermalis.PokemonBattleEngine
                 Console.WriteLine();
                 Console.WriteLine(rCenter);
                 Console.WriteLine();
-            }
+            }*/
             Console.ReadKey();
         }
     }

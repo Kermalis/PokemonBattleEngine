@@ -14,6 +14,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PPkmnSwitchInPacket(pkmn));
         void BroadcastSwitchOut(PPokemon pkmn)
             => OnNewEvent?.Invoke(this, new PPkmnSwitchOutPacket(pkmn));
+        void BroadcastSwitchInRequest(bool local, byte amount)
+            => OnNewEvent?.Invoke(this, new PSwitchInRequestPacket(local, amount));
         void BroadcastMoveUsed(PPokemon culprit, PMove move)
             => OnNewEvent?.Invoke(this, new PMoveUsedPacket(culprit, move));
         void BroadcastMiss(PPokemon culprit)
@@ -110,6 +112,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PMoveMissedPacket mmp:
                     culprit = battle.GetPokemon(mmp.CulpritId);
                     Console.WriteLine("{0}'s attack missed!", culprit.NameForTrainer(true));
+                    break;
+                case PMovePPChangedPacket mpcp:
+                    victim = battle.GetPokemon(mpcp.VictimId);
+                    Console.WriteLine("{0}'s {1} {3} {2} PP!", victim.NameForTrainer(true), mpcp.Move, Math.Abs(mpcp.Change), mpcp.Change <= 0 ? "lost" : "gained");
                     break;
                 case PMoveUsedPacket mup:
                     culprit = battle.GetPokemon(mup.CulpritId);
@@ -409,6 +415,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
                     }
                     Console.WriteLine(message);
+                    break;
+                case PSwitchInRequestPacket sirp:
+                    Console.WriteLine("{0} must send in {1} Pokémon.", battle.Teams[sirp.Local ? 0 : 1].TrainerName, sirp.Amount);
                     break;
             }
         }

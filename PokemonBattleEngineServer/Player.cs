@@ -25,11 +25,14 @@ namespace Kermalis.PokemonBattleEngineServer
             var ser = (BattleServer)Server;
             switch (packet)
             {
-                case PSubmitPartyPacket spp:
-                    ser.PartySubmitted(this, spp.Team);
+                case PActionsResponsePacket arp:
+                    ser.ActionsSubmitted(this, arp.Actions);
                     break;
-                case PSubmitActionsPacket sap:
-                    ser.ActionsSubmitted(this, sap.Actions);
+                case PPartyResponsePacket prp:
+                    ser.PartySubmitted(this, prp.Team);
+                    break;
+                case PSwitchInResponsePacket sirp:
+                    ser.SwitchesSubmitted(this, sirp.Switches);
                     break;
             }
 

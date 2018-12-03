@@ -14,11 +14,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public readonly PPokemon[] Party;
 
-        public PSetPartyPacket(PPokemon[] party)
+        public PSetPartyPacket(IEnumerable<PPokemon> party)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            var numPkmn = Math.Min(PSettings.MaxPartySize, (Party = party).Length);
+            var numPkmn = Math.Min(PSettings.MaxPartySize, (Party = party.ToArray()).Length);
             bytes.Add((byte)numPkmn);
             for (int i = 0; i < numPkmn; i++)
                 bytes.AddRange(Party[i].ToBytes());
