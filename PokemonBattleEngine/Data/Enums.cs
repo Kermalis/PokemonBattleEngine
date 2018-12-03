@@ -340,6 +340,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         CuteCharm, // TODO
         Defiant, // TODO
         Download, // TODO
+        Drought, // TODO
+        FlashFire, // TODO
         Guts,
         Heatproof,
         HoneyGather,
@@ -408,6 +410,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Kakuna = 14,
         Beedrill = 15,
         Pikachu = 25,
+        Vulpix = 37,
         Farfetchd = 83,
         Cubone = 104,
         Marowak = 105,
