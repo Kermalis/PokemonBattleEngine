@@ -332,63 +332,169 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None, // Only used when an ability is removed
         Adaptability,
+        Aftermath, // TODO
+        AirLock, // TODO
+        Analytic, // TODO
+        AngerPoint, // TODO
+        Anticipation, // TODO
+        ArenaTrap, // TODO
         BadDreams, // TODO
         BattleArmor,
+        BigPecks, // TODO
         Blaze,
         Chlorophyll, // TODO
+        ClearBody, // TODO
+        CloudNine, // TODO
+        ColorChange, // TODO
         Compoundeyes,
+        Contrary, // TODO
+        CursedBody, // TODO
         CuteCharm, // TODO
+        Damp, // TODO
+        Defeatist, // TODO
         Defiant, // TODO
         Download, // TODO
+        Drizzle, // TODO
         Drought, // TODO
+        DrySkin, // TODO
+        EarlyBird, // TODO
+        EffectSpore, // TODO
+        Filter, // TODO
+        FlameBody, // TODO
+        FlareBoost, // TODO
         FlashFire, // TODO
+        FlowerGift, // TODO
+        Forecast, // TODO
+        Forewarn, // TODO
+        FriendGuard, // TODO
+        Frisk, // TODO
+        Gluttony, // TODO
         Guts,
+        Harvest, // TODO
+        Healer, // TODO
         Heatproof,
+        HeavyMetal, // TODO
         HoneyGather,
         HugePower,
         Hustle,
+        Hydration, // TODO
+        HyperCutter, // TODO
+        IceBody, // TODO
         Illuminate,
+        Illusion, // TODO
+        Immunity, // TODO
+        Imposter, // TODO
         Infiltrator, // TODO
         InnerFocus, // TODO
-        Imposter, // TODO
+        Insomnia, // TODO
+        Intimidate, // TODO
+        IronBarbs, // TODO
+        IronFist, // TODO
         Justified, // TODO
-        KeenEye, //TODO
+        KeenEye, // TODO
+        Klutz, // TODO
+        LeafGuard, // TODO
         Levitate, // TODO: Immunity to ground-type moves
+        LightMetal, // TODO
         LightningRod, // TODO
         Limber,
+        LiquidOoze, // TODO
+        MagicBounce, // TODO
+        MagicGuard, // TODO
+        MagmaArmor, // TODO
+        MagnetPull, // TODO
         MarvelScale,
         Minus, // TODO
+        MoldBreaker, // TODO
+        Moody, // TODO
+        MotorDrive, // TODO
+        Moxie, // TODO
+        Multiscale, // TODO
         Multitype,
         Mummy, // TODO
+        NaturalCure, // TODO
         NoGuard,
         Normalize, // TODO
+        Oblivious, // TODO
+        Overcoat, // TODO
         Overgrow,
+        OwnTempo, // TODO
+        Pickpocket, // TODO
+        Pickup, // TODO
         Plus, // TODO
+        PoisonHeal, // TODO
+        PoisonPoint, // TODO
+        PoisonTouch, // TODO
+        Prankster, // TODO
         Pressure, // TODO
         PurePower,
+        QuickFeet, // TODO
         RainDish, // TODO
         Rattled, // TODO
+        Reckless, // TODO
+        Regenerator, // TODO
+        Rivalry, // TODO
         RockHead, // TODO
+        RoughSkin, // TODO
         RunAway,
+        SandForce, // TODO
+        SandRush, // TODO
+        SandStream, // TODO
+        SandVeil, // TODO
         SapSipper, // TODO
+        Scrappy, // TODO
         SereneGrace, // TODO
+        ShadowTag, // TODO
         ShedSkin, // TODO
+        SheerForce, // TODO
         ShellArmor,
         ShieldDust, // TODO
         Simple,
+        SkillLink, // TODO
+        SlowStart, // TODO
         Sniper,
+        SnowCloak, // TODO
+        SnowWarning, // TODO
         SolarPower, // TODO
+        SolidRock, // TODO
+        Soundproof, // TODO
+        SpeedBoost, // TODO
+        Stall, // TODO
         Static, // TODO
+        Steadfast, // TODO
+        Stench, // TODO
+        StickyHold, // TODO
         StormDrain, // TODO
+        Sturdy, // TODO
         SuctionCups, // TODO
         SuperLuck,
         Swarm,
+        SwiftSwim, // TODO
+        Synchronize, // TODO
+        TangledFeet, // TODO
+        Technician, // TODO
         Telepathy, // TODO
+        Teravolt, // TODO
         ThickFat,
         TintedLens, // TODO
         Torrent,
+        ToxicBoost, // TODO
+        Trace, // TODO
+        Truant, // TODO
+        Turboblaze, // TODO
+        Unaware, // TODO
+        Unburden, // TODO
+        Unnerve, // TODO
         VictoryStar, // TODO
+        VitalSpirit, // TODO
+        VoltAbsorb, // TODO
+        WaterAbsorb, // TODO
+        WaterVeil, // TODO
+        WeakArmor, // TODO
+        WhiteSmoke, // TODO
+        WonderGuard, // TODO
         WonderSkin, // TODO
+        ZenMode, // TODO
         MAX,
     }
     public enum PSpecies : uint
