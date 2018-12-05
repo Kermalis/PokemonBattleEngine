@@ -523,6 +523,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Cubone = 104,
         Marowak = 105,
         Ditto = 132,
+        Eevee = 133,
         Crobat = 169,
         Pichu = 172,
         Azumarill = 184,
