@@ -570,6 +570,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Latios = 381,
         Jirachi = 385,
         Mismagius = 429,
+        Leafeon = 470,
         Rotom = 479 | (0 << 0x10),
         Rotom_Fan = 479 | (1 << 0x10),
         Rotom_Frost = 479 | (2 << 0x10),
