@@ -524,6 +524,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Marowak = 105,
         Ditto = 132,
         Eevee = 133,
+        Vaporeon = 134,
         Crobat = 169,
         Pichu = 172,
         Azumarill = 184,
