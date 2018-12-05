@@ -606,6 +606,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Arceus_Water = 493 | (16 << 0x10),
         Victini = 494,
         Cofagrigus = 563,
+        Gothita = 574,
         Gothorita = 575,
         Genesect = 649 | (0 << 0x10),
         Genesect_Burn = 649 | (1 << 0x10),
