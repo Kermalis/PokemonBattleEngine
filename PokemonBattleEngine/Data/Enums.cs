@@ -526,6 +526,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Eevee = 133,
         Vaporeon = 134,
         Jolteon = 135,
+        Flareon = 136,
         Crobat = 169,
         Pichu = 172,
         Azumarill = 184,
