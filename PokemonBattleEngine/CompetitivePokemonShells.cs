@@ -197,6 +197,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Thunderbolt, PMove.ThunderWave, PMove.HiddenPower, PMove.Protect },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Flareon_RU = new PPokemonShell
+            {
+                Species = PSpecies.Flareon,
+                Nickname = "Fugu",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.Leftovers,
+                Ability = PAbility.FlashFire,
+                Gender = PGender.Male,
+                Nature = PNature.Calm,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
+                Moves = new PMove[] { PMove.HyperVoice, PMove.Protect, PMove.LavaPlume, PMove.Toxic }, // Wish, Protect, Lava Plume, Toxic
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Crobat_VGC = new PPokemonShell
             {
                 Species = PSpecies.Crobat,
