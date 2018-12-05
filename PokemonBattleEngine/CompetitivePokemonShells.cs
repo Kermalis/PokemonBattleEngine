@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.Chlorophyll,
                 Gender = PGender.Female,
                 Nature = PNature.Modest,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
                 EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
                 Moves = new PMove[] { PMove.SleepPowder, PMove.EnergyBall, PMove.HiddenPower, PMove.Protect },
                 PPUps = new byte[] { 3, 3, 3, 3 }
@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.SolarPower,
                 Gender = PGender.Male,
                 Nature = PNature.Modest,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
                 EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
                 Moves = new PMove[] { PMove.FireBlast, PMove.AirSlash, PMove.FocusBlast, PMove.HiddenPower },
                 PPUps = new byte[] { 3, 3, 3, 3 }
@@ -96,7 +96,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.LightningRod,
                 Gender = PGender.Female,
                 Nature = PNature.Rash,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
                 EVs = new byte[] { 0, 4, 0, 252, 0, 252 },
                 Moves = new PMove[] { PMove.Substitute, PMove.Thunderbolt, PMove.HiddenPower, PMove.GrassKnot }, // Fake Out, Thunderbolt, Hidden Power Ice, Grass Knot
                 PPUps = new byte[] { 3, 3, 3, 3 }
@@ -112,7 +112,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.Drought,
                 Gender = PGender.Female,
                 Nature = PNature.Modest,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
                 EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
                 Moves = new PMove[] { PMove.Flamethrower, PMove.HiddenPower, PMove.EnergyBall, PMove.Protect },
                 PPUps = new byte[] { 3, 3, 3, 3 }
@@ -128,7 +128,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.Defiant,
                 Gender = PGender.Male,
                 Nature = PNature.Adamant,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
                 EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
                 Moves = new PMove[] { PMove.SwordsDance, PMove.Return, PMove.AirSlash, PMove.SteelWing }, // Swords Dance, Return, Brave Bird, Revenge
                 PPUps = new byte[] { 3, 3, 3, 3 }
@@ -480,7 +480,7 @@ namespace Kermalis.PokemonBattleEngine
                 Ability = PAbility.VictoryStar,
                 Gender = PGender.Genderless,
                 Nature = PNature.Naive,
-                IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+                IVs = new byte[] { 30, 31, 30, 31, 31, 31 }, // Hidden Power: Ice/70
                 EVs = new byte[] { 0, 252, 4, 0, 0, 252 },
                 Moves = new PMove[] { PMove.VCreate, PMove.BoltStrike, PMove.GrassKnot, PMove.HiddenPower }, // V-create, Bolt Strike, U-turn, Hidden Power Ice
                 PPUps = new byte[] { 3, 3, 3, 3 }
