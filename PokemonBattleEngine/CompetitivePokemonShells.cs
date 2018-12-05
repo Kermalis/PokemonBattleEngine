@@ -309,6 +309,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.HydroPump, PMove.HiddenPower, PMove.Discharge, PMove.Protect },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Uxie_VGC = new PPokemonShell
+            {
+                Species = PSpecies.Uxie,
+                Nickname = "Amy",
+                Level = 100,
+                Friendship = 255,
+                Item = PItem.Leftovers, // Sitrus Berry
+                Shiny = false,
+                Ability = PAbility.Levitate,
+                Gender = PGender.Genderless,
+                Nature = PNature.Calm,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 252, 0, 0, 4, 252, 0 },
+                Moves = new PMove[] { PMove.CalmMind, PMove.LightScreen, PMove.Psychic, PMove.Protect }, // Imprison, Trick Room, Psychic, Protect
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Dialga_Uber = new PPokemonShell
             {
                 Species = PSpecies.Dialga,
