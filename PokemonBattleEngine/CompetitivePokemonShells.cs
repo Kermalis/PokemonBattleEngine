@@ -181,6 +181,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.MuddyWater, PMove.IceBeam, PMove.HiddenPower, PMove.Detect },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Jolteon_VGC = new PPokemonShell
+            {
+                Species = PSpecies.Jolteon,
+                Nickname = "Jilly",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.ZapPlate, // Focus Sash
+                Ability = PAbility.VoltAbsorb,
+                Gender = PGender.Female,
+                Nature = PNature.Timid,
+                IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
+                EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+                Moves = new PMove[] { PMove.Thunderbolt, PMove.ThunderWave, PMove.HiddenPower, PMove.Protect },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Crobat_VGC = new PPokemonShell
             {
                 Species = PSpecies.Crobat,
