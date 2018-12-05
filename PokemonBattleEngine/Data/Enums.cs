@@ -572,6 +572,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rotom_Wash = 479 | (5 << 0x10),
         Uxie = 480,
         Mesprit = 481,
+        Azelf = 482,
         Dialga = 483,
         Palkia = 484,
         Giratina_Altered = 487 | (0 << 0x10),
