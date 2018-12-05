@@ -341,6 +341,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.CalmMind, PMove.Thunderbolt, PMove.Psychic, PMove.HiddenPower }, // Thunderbolt, Trick Room, Psychic, U-turn
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Azelf_VGC = new PPokemonShell
+            {
+                Species = PSpecies.Azelf,
+                Nickname = "Zinc",
+                Level = 100,
+                Friendship = 255,
+                Item = PItem.LifeOrb,
+                Shiny = false,
+                Ability = PAbility.Levitate,
+                Gender = PGender.Genderless,
+                Nature = PNature.Jolly,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+                Moves = new PMove[] { PMove.ZenHeadbutt, PMove.IcePunch, PMove.FirePunch, PMove.Detect }, // Zen Headbutt, Ice Punch, Explosion, Detect
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Dialga_Uber = new PPokemonShell
             {
                 Species = PSpecies.Dialga,

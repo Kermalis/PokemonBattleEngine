@@ -64,7 +64,8 @@ namespace Kermalis.PokemonBattleEngineClient
                     var team = new PTeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample() };
                     var possiblePokemon = new List<PPokemonShell>
                     {
-                        PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Arceus_Normal_Uber, PCompetitivePokemonShells.Azumarill_VGC,
+                        PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Arceus_Normal_Uber, PCompetitivePokemonShells.Azelf_VGC,
+                        PCompetitivePokemonShells.Azumarill_VGC,
                         PCompetitivePokemonShells.Beedrill_NU, PCompetitivePokemonShells.Blastoise_UU, PCompetitivePokemonShells.Butterfree_RU,
                         PCompetitivePokemonShells.Charizard_VGC, PCompetitivePokemonShells.Cofagrigus_VGC, PCompetitivePokemonShells.Cradily_OU,
                         PCompetitivePokemonShells.Cresselia_VGC,
