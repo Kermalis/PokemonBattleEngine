@@ -165,6 +165,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PMove[] { PMove.Transform, PMove.None, PMove.None, PMove.None },
                 PPUps = new byte[] { 3, 0, 0, 0 }
             },
+            Vaporeon_VGC = new PPokemonShell
+            {
+                Species = PSpecies.Vaporeon,
+                Nickname = "Pam",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PItem.SplashPlate, // Water Gem
+                Ability = PAbility.WaterAbsorb,
+                Gender = PGender.Female,
+                Nature = PNature.Quiet,
+                IVs = new byte[] { 31, 30, 31, 30, 31, 3 }, // Hidden Power: Grass/70
+                EVs = new byte[] { 140, 0, 116, 248, 4, 0 },
+                Moves = new PMove[] { PMove.MuddyWater, PMove.IceBeam, PMove.HiddenPower, PMove.Detect },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Crobat_VGC = new PPokemonShell
             {
                 Species = PSpecies.Crobat,
