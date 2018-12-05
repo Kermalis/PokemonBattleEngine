@@ -525,6 +525,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Ditto = 132,
         Eevee = 133,
         Vaporeon = 134,
+        Jolteon = 135,
         Crobat = 169,
         Pichu = 172,
         Azumarill = 184,
