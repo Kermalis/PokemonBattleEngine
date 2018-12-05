@@ -530,6 +530,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Crobat = 169,
         Pichu = 172,
         Azumarill = 184,
+        Espeon = 196,
         Misdreavus = 200,
         Unown_A = 201 | (0 << 0x10),
         Unown_B = 201 | (1 << 0x10),
