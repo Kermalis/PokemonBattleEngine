@@ -1,8 +1,10 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Packets;
 using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
@@ -75,7 +77,28 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         async Task Battle_OnNewEvent(PBattle battle, INetPacket packet)
         {
-            await Channel.SendMessageAsync($"Battle Event: \"{packet.GetType().Name}\"");
+            PPokemon culprit, victim;
+            EmbedBuilder embed;
+            string embedTitle = $"{Battlers[0].Username} vs {Battlers[1].Username}"; // TODO: Include turn number
+            string message;
+
+            switch (packet)
+            {
+                case PPkmnSwitchInPacket psip:
+                    culprit = battle.GetPokemon(psip.PokemonId);
+                    message = string.Format("{1} sent out {0}!", culprit.Shell.Nickname, battle.Teams[culprit.Local ? 0 : 1].TrainerName);
+                    embed = new EmbedBuilder()
+                        .WithColor(Utils.GetColor(culprit))
+                        .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
+                        .WithTitle(embedTitle)
+                        .WithDescription(message)
+                        .WithImageUrl("http://sprites.pokecheck.org/i/445.gif");
+                    await Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+                    break;
+                default:
+                    await Channel.SendMessageAsync($"Battle Event: \"{packet.GetType().Name}\"");
+                    break;
+            }
         }
     }
 }

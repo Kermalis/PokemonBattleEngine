@@ -1,9 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using Kermalis.PokemonBattleEngine;
-using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
@@ -13,8 +10,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
 {
     class DiscordBot
     {
-        BattleContext battleContext;
-
         DiscordSocketClient client;
         IServiceProvider services;
         CommandService commands;
@@ -32,17 +27,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
             client.Log += LogMessage;
             client.MessageReceived += CommandMessageReceived;
-            client.Ready += ClientReady;
 
             await client.LoginAsync(TokenType.Bot, args[0]); // Token is passed as args[0]
             await client.StartAsync();
 
             await Task.Delay(-1);
-        }
-
-        Task ClientReady()
-        {
-            return Task.CompletedTask;
         }
 
         async Task CommandMessageReceived(SocketMessage arg)
@@ -54,7 +43,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 return;
             }
-            var context = new BattleCommandContext(battleContext, client, message);
+            var context = new SocketCommandContext(client, message);
             IResult result = await commands.ExecuteAsync(context, argPos);
             if (!result.IsSuccess)
             {

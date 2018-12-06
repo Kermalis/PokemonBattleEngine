@@ -1,36 +1,17 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
+using Kermalis.PokemonBattleEngine;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
-    public class BotCommands : ModuleBase<BattleCommandContext>
+    public class BotCommands : ModuleBase<SocketCommandContext>
     {
-        static readonly Dictionary<PType, Color> typeToColor = new Dictionary<PType, Color>
-        {
-            { PType.Bug, new Color(173, 189, 31) },
-            { PType.Dark, new Color(115, 90, 74) },
-            { PType.Dragon, new Color(123, 99, 231) },
-            { PType.Electric, new Color(255, 198, 49) },
-            { PType.Fighting, new Color(165, 82, 57) },
-            { PType.Fire, new Color(247, 82, 49) },
-            { PType.Flying, new Color(156, 173, 247) },
-            { PType.Ghost, new Color(99, 99, 181) },
-            { PType.Grass, new Color(123, 206, 82) },
-            { PType.Ground, new Color(214, 181, 90) },
-            { PType.Ice, new Color(90, 206, 231) },
-            { PType.Normal, new Color(173, 165, 148) },
-            { PType.Poison, new Color(181, 90, 165) },
-            { PType.Psychic, new Color(255, 115, 165) },
-            { PType.Rock, new Color(189, 165, 90) },
-            { PType.Steel, new Color(173, 173, 198) },
-            { PType.Water, new Color(57, 156, 255) }
-        };
-
-        [Command("player")]
+        /*[Command("player")]
         public async Task Player(byte i)
         {
             if (i < 2)
@@ -47,10 +28,31 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 await Context.Channel.SendMessageAsync(Context.BattleContext.Battle.Teams[pIndex].Party[0].Moves[i].ToString());
             }
+        }*/
+
+        [Group("battle")]
+        public class BattleCommands : ModuleBase<SocketCommandContext>
+        {
+            [Command("challenge")]
+            public async Task Challenge(SocketUser battler1)
+            {
+                PTeamShell team0 = new PTeamShell
+                {
+                    PlayerName = Context.User.Username,
+                    Party = { PCompetitivePokemonShells.Palkia_Uber }
+                };
+                PTeamShell team1 = new PTeamShell
+                {
+                    PlayerName = battler1.Username,
+                    Party = { PCompetitivePokemonShells.Dialga_Uber }
+                };
+                PBattle battle = new PBattle(PBattleStyle.Single, team0, team1);
+                var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);
+            }
         }
 
         [Group("move")]
-        public class MoveCommands : ModuleBase<BattleCommandContext>
+        public class MoveCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
             public async Task Info(string moveName)
@@ -63,9 +65,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                     PMoveData mData = PMoveData.Data[move];
                     var embed = new EmbedBuilder()
-                        .WithColor(typeToColor[mData.Type])
+                        .WithColor(Utils.TypeToColor[mData.Type])
                         .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
-                        .WithCurrentTimestamp()
                         .WithTitle(move.ToString())
                         .WithAuthor(Context.User)
                         .AddField("Type", mData.Type, true)
@@ -87,7 +88,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
 
         [Group("pokemon")]
-        public class PokemonCommands : ModuleBase<BattleCommandContext>
+        public class PokemonCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
             public async Task Info(string speciesName)
@@ -95,12 +96,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 if (Enum.TryParse(speciesName, true, out PSpecies species))
                 {
                     PPokemonData pData = PPokemonData.Data[species];
-                    Color color = typeToColor[pData.Type1];
                     string types = pData.Type1.ToString();
                     if (pData.Type2 != PType.None)
                     {
                         types += ", " + pData.Type2.ToString();
-                        color = color.Blend(typeToColor[pData.Type2]);
                     }
                     string ratio;
                     switch (pData.GenderRatio)
@@ -117,9 +116,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
 
                     var embed = new EmbedBuilder()
-                        .WithColor(color)
+                        .WithColor(Utils.GetColor(species))
                         .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
-                        .WithCurrentTimestamp()
                         .WithTitle(species.ToString())
                         .WithAuthor(Context.User)
                         .AddField("Types", types, true)
