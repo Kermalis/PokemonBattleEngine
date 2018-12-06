@@ -500,7 +500,6 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PSpecies : uint
     {
-        None,
         Bulbasaur = 1,
         Ivysaur = 2,
         Venusaur = 3,

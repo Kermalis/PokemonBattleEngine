@@ -9000,7 +9000,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type1 = PType.Psychic, Type2 = PType.Fire,
                     Abilities = new PAbility[] { PAbility.VictoryStar },
                     MinLevel = 1,
-                    ShinyLocked = false,
+                    ShinyLocked = true,
                     Weight = 4.0,
                     LevelUpMoves = new Tuple<PMove, int, PMoveObtainMethod>[]
                     {
