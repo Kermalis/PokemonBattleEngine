@@ -2353,8 +2353,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     HP = 65, Attack = 65, Defense = 60, SpAttack = 110, SpDefense = 95, Speed = 130,
                     GenderRatio = PGenderRatio.M7_F1,
                     Type1 = PType.Electric, Type2 = PType.None,
-                    Abilities = new PAbility[] { PAbility.VoltAbsorb, PAbility.QuickFeet
-},
+                    Abilities = new PAbility[] { PAbility.VoltAbsorb, PAbility.QuickFeet },
                     MinLevel = 1,
                     ShinyLocked = false,
                     Weight = 24.5,
@@ -6644,7 +6643,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Bug, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -6791,7 +6790,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Dark, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -6938,7 +6937,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Dragon, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -7086,7 +7085,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Electric, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -7233,7 +7232,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Fighting, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -7380,7 +7379,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Fire, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -7527,7 +7526,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Flying, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -7674,7 +7673,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Ghost, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -7821,7 +7820,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Grass, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -7968,7 +7967,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Ground, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -8115,7 +8114,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Ice, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -8262,7 +8261,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Poison, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -8409,7 +8408,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Psychic, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -8556,7 +8555,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Rock, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -8703,7 +8702,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Steel, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
@@ -8850,7 +8849,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
                     GenderRatio = PGenderRatio.M0_F0,
-                    Type1 = PType.Normal, Type2 = PType.None,
+                    Type1 = PType.Water, Type2 = PType.None,
                     Abilities = new PAbility[] { PAbility.Multitype },
                     MinLevel = 1,
                     ShinyLocked = false,
