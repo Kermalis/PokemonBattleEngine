@@ -4,7 +4,7 @@ A C# library that can emulate Pokémon battles.
 
 ![Preview](Preview.gif)
 
-The library comes with a client and server, so it is possible to host a battle server and have clients matchmake into it and battle each other.
+The library comes with a desktop client, server and Discord bot.
 The engine only emulates as if it were Pokémon B2W2 versions, so there will not be features introduced after generation 5.
 
 The library does not send information a player should not know; information slowly gets revealed to each player over time.
@@ -39,3 +39,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)
 * [AvaloniaGif](https://github.com/jmacato/AvaloniaGif)
 * [pokecheck.org ripped sprites](http://sprites.pokecheck.org)
+
+# PokemonBattleEngineDiscord Uses:
+* [Discord.Net](https://github.com/RogueException/Discord.Net)
