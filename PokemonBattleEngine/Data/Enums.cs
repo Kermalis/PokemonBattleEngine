@@ -608,6 +608,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Gothita = 574,
         Gothorita = 575,
         Gothitelle = 576,
+        Cryogonal = 615,
         Genesect = 649 | (0 << 0x10),
         Genesect_Burn = 649 | (1 << 0x10),
         Genesect_Chill = 649 | (2 << 0x10),
