@@ -245,6 +245,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.AquaJet, PBEMove.Superpower, PBEMove.IcePunch },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Espeon_Uber = new PBEPokemonShell
+            {
+                Species = PBESpecies.Espeon,
+                Nickname = "Vaqui",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.MeadowPlate, // Focus Sash
+                Ability = PBEAbility.MagicBounce,
+                Gender = PBEGender.Female,
+                Nature = PBENature.Timid,
+                IVs = new byte[] { 31, 31, 30, 30, 31, 30 }, // Hidden Power: Fire/70
+                EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
+                Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Psyshock, PBEMove.GrassKnot, PBEMove.HiddenPower }, // Shadow Ball, Yawn, Grass Knot, Hidden Power Fire
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Cradily_OU = new PBEPokemonShell
             {
                 Species = PBESpecies.Cradily,
