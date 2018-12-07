@@ -3,77 +3,77 @@ using System;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    public sealed partial class PBattle
+    public sealed partial class PBEBattle
     {
-        void DoSwitchInEffects(PPokemon pkmn)
+        void DoSwitchInEffects(PBEPokemon pkmn)
         {
-            PTeam team = Teams[pkmn.Local ? 0 : 1];
+            PBETeam team = Teams[pkmn.LocalTeam ? 0 : 1];
 
             // Entry Hazards
-            if (team.Status.HasFlag(PTeamStatus.Spikes) && !pkmn.HasType(PType.Flying) && pkmn.Ability != PAbility.Levitate)
+            if (team.Status.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
             {
                 double denominator = 10.0 - (2 * team.SpikeCount);
                 ushort damage = (ushort)(pkmn.MaxHP / denominator);
-                DealDamage(pkmn, pkmn, damage, PEffectiveness.Normal, true);
-                BroadcastTeamStatus(team.Local, PTeamStatus.Spikes, PTeamStatusAction.Damage, pkmn.Id);
+                DealDamage(pkmn, pkmn, damage, PBEEffectiveness.Normal, true);
+                BroadcastTeamStatus(team.Local, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
                 {
                     return;
                 }
             }
-            if (team.Status.HasFlag(PTeamStatus.StealthRock))
+            if (team.Status.HasFlag(PBETeamStatus.StealthRock))
             {
                 double effectiveness = 0.125;
-                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pkmn.Type1];
-                effectiveness *= PPokemonData.TypeEffectiveness[(int)PType.Rock, (int)pkmn.Type2];
+                effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type1];
+                effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type2];
                 ushort damage = (ushort)(pkmn.MaxHP * effectiveness);
-                DealDamage(pkmn, pkmn, damage, PEffectiveness.Normal, true);
-                BroadcastTeamStatus(team.Local, PTeamStatus.StealthRock, PTeamStatusAction.Damage, pkmn.Id);
+                DealDamage(pkmn, pkmn, damage, PBEEffectiveness.Normal, true);
+                BroadcastTeamStatus(team.Local, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
                 {
                     return;
                 }
             }
-            if (team.Status.HasFlag(PTeamStatus.ToxicSpikes))
+            if (team.Status.HasFlag(PBETeamStatus.ToxicSpikes))
             {
                 // Grounded Poison types remove the Toxic Spikes
-                if (pkmn.HasType(PType.Poison) && pkmn.Ability != PAbility.Levitate && !pkmn.HasType(PType.Flying))
+                if (pkmn.HasType(PBEType.Poison) && pkmn.Ability != PBEAbility.Levitate && !pkmn.HasType(PBEType.Flying))
                 {
-                    BroadcastTeamStatus(team.Local, PTeamStatus.ToxicSpikes, PTeamStatusAction.Cleared);
+                    BroadcastTeamStatus(team.Local, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
                 }
                 // Steel types and floating Pokémon don't get Poisoned
-                else if (pkmn.Status1 == PStatus1.None && !pkmn.HasType(PType.Steel) && !pkmn.HasType(PType.Flying) && pkmn.Ability != PAbility.Levitate)
+                else if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Steel) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
                 {
-                    PStatus1 status = team.ToxicSpikeCount == 1 ? PStatus1.Poisoned : PStatus1.BadlyPoisoned;
+                    PBEStatus1 status = team.ToxicSpikeCount == 1 ? PBEStatus1.Poisoned : PBEStatus1.BadlyPoisoned;
                     pkmn.Status1 = status;
-                    if (status == PStatus1.BadlyPoisoned)
+                    if (status == PBEStatus1.BadlyPoisoned)
                     {
                         pkmn.Status1Counter = 1;
                     }
-                    BroadcastStatus1(pkmn, pkmn, status, PStatusAction.Added);
+                    BroadcastStatus1(pkmn, pkmn, status, PBEStatusAction.Added);
                 }
             }
 
             // Abilities
             Ab_LimberCure(pkmn);
         }
-        void DoPreMoveEffects(PPokemon pkmn)
+        void DoPreMoveEffects(PBEPokemon pkmn)
         {
             // Abilities
             Ab_LimberCure(pkmn);
         }
-        void DoTurnEndedEffects(PPokemon pkmn)
+        void DoTurnEndedEffects(PBEPokemon pkmn)
         {
-            PTeam userTeam = Teams[pkmn.Local ? 0 : 1];
-            PTeam opposingTeam = Teams[pkmn.Local ? 1 : 0];
+            PBETeam userTeam = Teams[pkmn.LocalTeam ? 0 : 1];
+            PBETeam opposingTeam = Teams[pkmn.LocalTeam ? 1 : 0];
 
             // Items
             switch (pkmn.Item)
             {
-                case PItem.Leftovers:
-                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PSettings.LeftoversDenominator)) > 0)
+                case PBEItem.Leftovers:
+                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PBESettings.LeftoversDenominator)) > 0)
                     {
-                        BroadcastItemUsed(pkmn, PItem.Leftovers);
+                        BroadcastItemUsed(pkmn, PBEItem.Leftovers);
                     }
                     break;
             }
@@ -81,24 +81,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Major statuses
             switch (pkmn.Status1)
             {
-                case PStatus1.Burned:
-                    int damage = pkmn.MaxHP / PSettings.BurnDamageDenominator;
+                case PBEStatus1.Burned:
+                    int damage = pkmn.MaxHP / PBESettings.BurnDamageDenominator;
                     // Pokémon with the Heatproof ability take half as much damage from burns
-                    if (pkmn.Ability == PAbility.Heatproof)
+                    if (pkmn.Ability == PBEAbility.Heatproof)
+                    {
                         damage /= 2;
-                    DealDamage(pkmn, pkmn, (ushort)damage, PEffectiveness.Normal, true);
-                    BroadcastStatus1(pkmn, pkmn, PStatus1.Burned, PStatusAction.Damage);
+                    }
+
+                    DealDamage(pkmn, pkmn, (ushort)damage, PBEEffectiveness.Normal, true);
+                    BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
+                    {
                         return;
+                    }
+
                     break;
-                case PStatus1.Poisoned:
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PSettings.PoisonDamageDenominator), PEffectiveness.Normal, true);
-                    BroadcastStatus1(pkmn, pkmn, PStatus1.Poisoned, PStatusAction.Damage);
+                case PBEStatus1.Poisoned:
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PBESettings.PoisonDamageDenominator), PBEEffectiveness.Normal, true);
+                    BroadcastStatus1(pkmn, pkmn, PBEStatus1.Poisoned, PBEStatusAction.Damage);
                     FaintCheck(pkmn);
                     break;
-                case PStatus1.BadlyPoisoned:
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PSettings.ToxicDamageDenominator), PEffectiveness.Normal, true);
-                    BroadcastStatus1(pkmn, pkmn, PStatus1.BadlyPoisoned, PStatusAction.Damage);
+                case PBEStatus1.BadlyPoisoned:
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PBESettings.ToxicDamageDenominator), PBEEffectiveness.Normal, true);
+                    BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
                     {
                         pkmn.Status1Counter = 0;
@@ -112,294 +118,300 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Minor statuses
-            if (pkmn.Status2.HasFlag(PStatus2.LeechSeed))
+            if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
             {
-                PPokemon seeder = opposingTeam.PokemonAtPosition(pkmn.SeededPosition);
+                PBEPokemon seeder = opposingTeam.PokemonAtPosition(pkmn.SeededPosition);
                 if (seeder != null)
                 {
-                    ushort hp = (ushort)(pkmn.MaxHP / PSettings.LeechSeedDenominator);
-                    ushort amtDealt = DealDamage(seeder, pkmn, hp, PEffectiveness.Normal, true);
+                    ushort hp = (ushort)(pkmn.MaxHP / PBESettings.LeechSeedDenominator);
+                    ushort amtDealt = DealDamage(seeder, pkmn, hp, PBEEffectiveness.Normal, true);
                     HealDamage(seeder, amtDealt);
-                    BroadcastStatus2(seeder, pkmn, PStatus2.LeechSeed, PStatusAction.Damage);
+                    BroadcastStatus2(seeder, pkmn, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
+                    {
                         return;
+                    }
                 }
             }
-            if (pkmn.Status2.HasFlag(PStatus2.Cursed))
+            if (pkmn.Status2.HasFlag(PBEStatus2.Cursed))
             {
-                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PSettings.CurseDenominator), PEffectiveness.Normal, true);
-                BroadcastStatus2(pkmn, pkmn, PStatus2.Cursed, PStatusAction.Damage);
+                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PBESettings.CurseDenominator), PBEEffectiveness.Normal, true);
+                BroadcastStatus2(pkmn, pkmn, PBEStatus2.Cursed, PBEStatusAction.Damage);
                 if (FaintCheck(pkmn))
+                {
                     return;
+                }
             }
 
             // Abilities
             Ab_LimberCure(pkmn);
         }
 
-        void UseMove(PPokemon user)
+        void UseMove(PBEPokemon user)
         {
-            PMove move = user.SelectedAction.FightMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            PBEMove move = user.SelectedAction.FightMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
 
             if (PreMoveStatusCheck(user, move))
+            {
                 return;
+            }
 
-            PPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, PMoveData.GetMoveTargetsForPokemon(user, move) == PMoveTarget.SingleNotSelf);
+            PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, PBEMoveData.GetMoveTargetsForPokemon(user, move) == PBEMoveTarget.SingleNotSelf);
             if (targets.Length == 0)
             {
                 BroadcastMoveUsed(user, move);
                 PPReduce(user, move);
-                BroadcastFail(user, user, PFailReason.NoTarget);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
                 return;
             }
 
-            PMoveData mData = PMoveData.Data[move];
+            PBEMoveData mData = PBEMoveData.Data[move];
             switch (mData.Effect)
             {
-                case PMoveEffect.BrickBreak:
+                case PBEMoveEffect.BrickBreak:
                     Ef_BrickBreak(user, targets[0]);
                     break;
-                case PMoveEffect.Burn:
-                    TryForceStatus1(user, targets, move, PStatus1.Burned);
+                case PBEMoveEffect.Burn:
+                    TryForceStatus1(user, targets, move, PBEStatus1.Burned);
                     break;
-                case PMoveEffect.ChangeTarget_ACC:
-                    ChangeTargetStats(user, targets, move, new PStat[] { PStat.Accuracy }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeTarget_ACC:
+                    ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Accuracy }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeTarget_ATK:
-                    ChangeTargetStats(user, targets, move, new PStat[] { PStat.Attack }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeTarget_ATK:
+                    ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeTarget_DEF:
-                    ChangeTargetStats(user, targets, move, new PStat[] { PStat.Defense }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeTarget_DEF:
+                    ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Defense }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeTarget_EVA:
-                    ChangeTargetStats(user, targets, move, new PStat[] { PStat.Evasion }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeTarget_EVA:
+                    ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Evasion }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeTarget_SPDEF:
-                    ChangeTargetStats(user, targets, move, new PStat[] { PStat.SpDefense }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeTarget_SPDEF:
+                    ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeTarget_SPE:
-                    ChangeTargetStats(user, targets, move, new PStat[] { PStat.Speed }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeTarget_SPE:
+                    ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeUser_ATK:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Attack }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeUser_ATK:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeUser_DEF:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Defense }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeUser_DEF:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeUser_EVA:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Evasion }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeUser_EVA:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Evasion }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeUser_SPATK:
-                    ChangeUserStats(user, move, new PStat[] { PStat.SpAttack }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeUser_SPATK:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeUser_SPDEF:
-                    ChangeUserStats(user, move, new PStat[] { PStat.SpDefense }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeUser_SPDEF:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.ChangeUser_SPE:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Speed }, new sbyte[] { (sbyte)mData.EffectParam });
+                case PBEMoveEffect.ChangeUser_SPE:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Speed }, new short[] { (short)mData.EffectParam });
                     break;
-                case PMoveEffect.Confuse:
-                    TryForceStatus2(user, targets, move, PStatus2.Confused);
+                case PBEMoveEffect.Confuse:
+                    TryForceStatus2(user, targets, move, PBEStatus2.Confused);
                     break;
-                case PMoveEffect.Curse:
+                case PBEMoveEffect.Curse:
                     Ef_Curse(user, targets[0]);
                     break;
-                case PMoveEffect.Dig:
+                case PBEMoveEffect.Dig:
                     Ef_Dig(user, targets[0]);
                     break;
-                case PMoveEffect.Dive:
+                case PBEMoveEffect.Dive:
                     Ef_Dive(user, targets[0]);
                     break;
-                case PMoveEffect.Endeavor:
+                case PBEMoveEffect.Endeavor:
                     Ef_Endeavor(user, targets[0]);
                     break;
-                case PMoveEffect.Fail:
+                case PBEMoveEffect.Fail:
                     Ef_Fail(user, move);
                     break;
-                case PMoveEffect.Flatter:
+                case PBEMoveEffect.Flatter:
                     Ef_Flatter(user, targets[0]);
                     break;
-                case PMoveEffect.Fly:
+                case PBEMoveEffect.Fly:
                     Ef_Fly(user, targets[0]);
                     break;
-                case PMoveEffect.FocusEnergy:
-                    TryForceStatus2(user, targets, move, PStatus2.Pumped);
+                case PBEMoveEffect.FocusEnergy:
+                    TryForceStatus2(user, targets, move, PBEStatus2.Pumped);
                     break;
-                case PMoveEffect.Growth:
+                case PBEMoveEffect.Growth:
                     Ef_Growth(user);
                     break;
-                case PMoveEffect.Hit:
+                case PBEMoveEffect.Hit:
                     Ef_Hit(user, targets, move);
                     break;
-                case PMoveEffect.Hit__MaybeBurn:
-                    HitAndMaybeInflictStatus1(user, targets, move, PStatus1.Burned, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeBurn:
+                    HitAndMaybeInflictStatus1(user, targets, move, PBEStatus1.Burned, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeConfuse:
+                case PBEMoveEffect.Hit__MaybeConfuse:
                     Ef_Hit__MaybeConfuse(user, targets, move, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeFlinch:
+                case PBEMoveEffect.Hit__MaybeFlinch:
                     Ef_Hit__MaybeFlinch(user, targets, move, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeFreeze:
-                    HitAndMaybeInflictStatus1(user, targets, move, PStatus1.Frozen, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeFreeze:
+                    HitAndMaybeInflictStatus1(user, targets, move, PBEStatus1.Frozen, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerTarget_ACC_By1:
-                    HitAndMaybeChangeTargetStats(user, targets, move, new PStat[] { PStat.Accuracy }, new sbyte[] { -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1:
+                    HitAndMaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Accuracy }, new short[] { -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerTarget_ATK_By1:
-                    HitAndMaybeChangeTargetStats(user, targets, move, new PStat[] { PStat.Attack }, new sbyte[] { -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerTarget_ATK_By1:
+                    HitAndMaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack }, new short[] { -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerTarget_DEF_By1:
-                    HitAndMaybeChangeTargetStats(user, targets, move, new PStat[] { PStat.Defense }, new sbyte[] { -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1:
+                    HitAndMaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Defense }, new short[] { -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerTarget_SPATK_By1:
-                    HitAndMaybeChangeTargetStats(user, targets, move, new PStat[] { PStat.SpAttack }, new sbyte[] { -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1:
+                    HitAndMaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1:
-                    HitAndMaybeChangeTargetStats(user, targets, move, new PStat[] { PStat.SpDefense }, new sbyte[] { -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1:
+                    HitAndMaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2:
-                    HitAndMaybeChangeTargetStats(user, targets, move, new PStat[] { PStat.SpDefense }, new sbyte[] { -2 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2:
+                    HitAndMaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { -2 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerTarget_SPE_By1:
-                    HitAndMaybeChangeTargetStats(user, targets, move, new PStat[] { PStat.Speed }, new sbyte[] { -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1:
+                    HitAndMaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeParalyze:
-                    HitAndMaybeInflictStatus1(user, targets, move, PStatus1.Paralyzed, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeParalyze:
+                    HitAndMaybeInflictStatus1(user, targets, move, PBEStatus1.Paralyzed, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybePoison:
-                    HitAndMaybeInflictStatus1(user, targets, move, PStatus1.Poisoned, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybePoison:
+                    HitAndMaybeInflictStatus1(user, targets, move, PBEStatus1.Poisoned, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerUser_ATK_DEF_By1:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Attack, PStat.Defense }, new sbyte[] { -1, -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerUser_ATK_DEF_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new short[] { -1, -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Defense, PStat.SpDefense }, new sbyte[] { -1, -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense }, new short[] { -1, -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerUser_SPATK_By2:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.SpAttack }, new sbyte[] { -2 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { -2 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerUser_SPE_By1:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Speed }, new sbyte[] { -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerUser_SPE_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Speed, PStat.Defense, PStat.SpDefense }, new sbyte[] { -1, -1, -1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Speed, PBEStat.Defense, PBEStat.SpDefense }, new short[] { -1, -1, -1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Attack }, new sbyte[] { +1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Attack }, new short[] { +1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Attack, PStat.Defense, PStat.SpAttack, PStat.SpDefense, PStat.Speed }, new sbyte[] { +1, +1, +1, +1, +1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed }, new short[] { +1, +1, +1, +1, +1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeRaiseUser_DEF_By1:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Defense }, new sbyte[] { +1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeRaiseUser_DEF_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Defense }, new short[] { +1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeRaiseUser_SPATK_By1:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.SpAttack }, new sbyte[] { +1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeRaiseUser_SPATK_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { +1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeRaiseUser_SPE_By1:
-                    HitAndMaybeChangeUserStats(user, targets, move, new PStat[] { PStat.Speed }, new sbyte[] { +1 }, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeRaiseUser_SPE_By1:
+                    HitAndMaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { +1 }, mData.EffectParam);
                     break;
-                case PMoveEffect.Hit__MaybeToxic:
-                    HitAndMaybeInflictStatus1(user, targets, move, PStatus1.BadlyPoisoned, mData.EffectParam);
+                case PBEMoveEffect.Hit__MaybeToxic:
+                    HitAndMaybeInflictStatus1(user, targets, move, PBEStatus1.BadlyPoisoned, mData.EffectParam);
                     break;
-                case PMoveEffect.LeechSeed:
-                    TryForceStatus2(user, targets, move, PStatus2.LeechSeed);
+                case PBEMoveEffect.LeechSeed:
+                    TryForceStatus2(user, targets, move, PBEStatus2.LeechSeed);
                     break;
-                case PMoveEffect.LightScreen:
-                    TryForceTeamStatus(user, move, PTeamStatus.LightScreen);
+                case PBEMoveEffect.LightScreen:
+                    TryForceTeamStatus(user, move, PBETeamStatus.LightScreen);
                     break;
-                case PMoveEffect.LowerTarget_ATK_DEF_By1:
-                    ChangeTargetStats(user, targets, move, new PStat[] { PStat.Attack, PStat.Defense }, new sbyte[] { -1, -1 });
+                case PBEMoveEffect.LowerTarget_ATK_DEF_By1:
+                    ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new short[] { -1, -1 });
                     break;
-                case PMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Defense, PStat.SpDefense, PStat.Attack, PStat.SpAttack, PStat.Speed }, new sbyte[] { -1, -1, +2, +2, +2 });
+                case PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense, PBEStat.Attack, PBEStat.SpAttack, PBEStat.Speed }, new short[] { -1, -1, +2, +2, +2 });
                     break;
-                case PMoveEffect.Magnitude:
+                case PBEMoveEffect.Magnitude:
                     Ef_Magnitude(user, targets);
                     break;
-                case PMoveEffect.Minimize:
-                    TryForceStatus2(user, targets, move, PStatus2.Minimized);
+                case PBEMoveEffect.Minimize:
+                    TryForceStatus2(user, targets, move, PBEStatus2.Minimized);
                     break;
-                case PMoveEffect.Moonlight:
+                case PBEMoveEffect.Moonlight:
                     Ef_Moonlight(user);
                     break;
-                case PMoveEffect.PainSplit:
+                case PBEMoveEffect.PainSplit:
                     Ef_PainSplit(user, targets[0]);
                     break;
-                case PMoveEffect.Paralyze:
-                    TryForceStatus1(user, targets, move, PStatus1.Paralyzed);
+                case PBEMoveEffect.Paralyze:
+                    TryForceStatus1(user, targets, move, PBEStatus1.Paralyzed);
                     break;
-                case PMoveEffect.Poison:
-                    TryForceStatus1(user, targets, move, PStatus1.Poisoned);
+                case PBEMoveEffect.Poison:
+                    TryForceStatus1(user, targets, move, PBEStatus1.Poisoned);
                     break;
-                case PMoveEffect.Protect:
-                    TryForceStatus2(user, targets, move, PStatus2.Protected);
+                case PBEMoveEffect.Protect:
+                    TryForceStatus2(user, targets, move, PBEStatus2.Protected);
                     break;
-                case PMoveEffect.PsychUp:
+                case PBEMoveEffect.PsychUp:
                     Ef_PsychUp(user, targets[0]);
                     break;
-                case PMoveEffect.RainDance:
+                case PBEMoveEffect.RainDance:
                     Ef_RainDance(user);
                     break;
-                case PMoveEffect.RaiseUser_ATK_ACC_By1:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Attack, PStat.Accuracy }, new sbyte[] { +1, +1 });
+                case PBEMoveEffect.RaiseUser_ATK_ACC_By1:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Accuracy }, new short[] { +1, +1 });
                     break;
-                case PMoveEffect.RaiseUser_ATK_DEF_By1:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Attack, PStat.Defense }, new sbyte[] { +1, +1 });
+                case PBEMoveEffect.RaiseUser_ATK_DEF_By1:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new short[] { +1, +1 });
                     break;
-                case PMoveEffect.RaiseUser_ATK_DEF_ACC_By1:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Attack, PStat.Defense, PStat.Accuracy }, new sbyte[] { +1, +1, +1 });
+                case PBEMoveEffect.RaiseUser_ATK_DEF_ACC_By1:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.Accuracy }, new short[] { +1, +1, +1 });
                     break;
-                case PMoveEffect.RaiseUser_ATK_SPATK_By1:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Attack, PStat.SpAttack }, new sbyte[] { +1, +1 });
+                case PBEMoveEffect.RaiseUser_ATK_SPATK_By1:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { +1, +1 });
                     break;
-                case PMoveEffect.RaiseUser_ATK_SPE_By1:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Attack, PStat.Speed }, new sbyte[] { +1, +1 });
+                case PBEMoveEffect.RaiseUser_ATK_SPE_By1:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Speed }, new short[] { +1, +1 });
                     break;
-                case PMoveEffect.RaiseUser_DEF_SPDEF_By1:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Defense, PStat.SpDefense }, new sbyte[] { +1, +1 });
+                case PBEMoveEffect.RaiseUser_DEF_SPDEF_By1:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense }, new short[] { +1, +1 });
                     break;
-                case PMoveEffect.RaiseUser_SPATK_SPDEF_By1:
-                    ChangeUserStats(user, move, new PStat[] { PStat.SpAttack, PStat.SpDefense }, new sbyte[] { +1, +1 });
+                case PBEMoveEffect.RaiseUser_SPATK_SPDEF_By1:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense }, new short[] { +1, +1 });
                     break;
-                case PMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1:
-                    ChangeUserStats(user, move, new PStat[] { PStat.SpAttack, PStat.SpDefense, PStat.Speed }, new sbyte[] { +1, +1, +1 });
+                case PBEMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed }, new short[] { +1, +1, +1 });
                     break;
-                case PMoveEffect.RaiseUser_SPE_By2_ATK_By1:
-                    ChangeUserStats(user, move, new PStat[] { PStat.Speed, PStat.Attack }, new sbyte[] { +2, +1 });
+                case PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1:
+                    ChangeUserStats(user, move, new PBEStat[] { PBEStat.Speed, PBEStat.Attack }, new short[] { +2, +1 });
                     break;
-                case PMoveEffect.Reflect:
-                    TryForceTeamStatus(user, move, PTeamStatus.Reflect);
+                case PBEMoveEffect.Reflect:
+                    TryForceTeamStatus(user, move, PBETeamStatus.Reflect);
                     break;
-                case PMoveEffect.RestoreUserHealth:
+                case PBEMoveEffect.RestoreUserHealth:
                     Ef_RestoreUserHealth(user, move, mData.EffectParam);
                     break;
-                case PMoveEffect.Sleep:
-                    TryForceStatus1(user, targets, move, PStatus1.Asleep);
+                case PBEMoveEffect.Sleep:
+                    TryForceStatus1(user, targets, move, PBEStatus1.Asleep);
                     break;
-                case PMoveEffect.Spikes:
-                    TryForceTeamStatus(user, move, PTeamStatus.Spikes);
+                case PBEMoveEffect.Spikes:
+                    TryForceTeamStatus(user, move, PBETeamStatus.Spikes);
                     break;
-                case PMoveEffect.StealthRock:
-                    TryForceTeamStatus(user, move, PTeamStatus.StealthRock);
+                case PBEMoveEffect.StealthRock:
+                    TryForceTeamStatus(user, move, PBETeamStatus.StealthRock);
                     break;
-                case PMoveEffect.Substitute:
-                    TryForceStatus2(user, targets, move, PStatus2.Substitute);
+                case PBEMoveEffect.Substitute:
+                    TryForceStatus2(user, targets, move, PBEStatus2.Substitute);
                     break;
-                case PMoveEffect.SunnyDay:
+                case PBEMoveEffect.SunnyDay:
                     Ef_SunnyDay(user);
                     break;
-                case PMoveEffect.Swagger:
+                case PBEMoveEffect.Swagger:
                     Ef_Swagger(user, targets[0]);
                     break;
-                case PMoveEffect.Toxic:
-                    TryForceStatus1(user, targets, move, PStatus1.BadlyPoisoned);
+                case PBEMoveEffect.Toxic:
+                    TryForceStatus1(user, targets, move, PBEStatus1.BadlyPoisoned);
                     break;
-                case PMoveEffect.ToxicSpikes:
-                    TryForceTeamStatus(user, move, PTeamStatus.ToxicSpikes);
+                case PBEMoveEffect.ToxicSpikes:
+                    TryForceTeamStatus(user, move, PBETeamStatus.ToxicSpikes);
                     break;
-                case PMoveEffect.Transform:
+                case PBEMoveEffect.Transform:
                     Ef_Transform(user, targets[0]);
                     break;
                 default:
@@ -409,82 +421,87 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns true if an attack gets cancelled from a status
         // Broadcasts status ending events & status causing immobility events
-        bool PreMoveStatusCheck(PPokemon user, PMove move)
+        bool PreMoveStatusCheck(PBEPokemon user, PBEMove move)
         {
-            PMoveData mData = PMoveData.Data[move];
+            PBEMoveData mData = PBEMoveData.Data[move];
 
             // Increment counters first
-            if (user.Status2.HasFlag(PStatus2.Confused))
+            if (user.Status2.HasFlag(PBEStatus2.Confused))
+            {
                 user.ConfusionCounter++;
-            if (user.Status1 == PStatus1.Asleep)
+            }
+
+            if (user.Status1 == PBEStatus1.Asleep)
+            {
                 user.Status1Counter++;
+            }
 
             // Flinch happens before statuses
             // TODO: Put it under sleep
-            if (user.Status2.HasFlag(PStatus2.Flinching))
+            if (user.Status2.HasFlag(PBEStatus2.Flinching))
             {
-                BroadcastStatus2(user, user, PStatus2.Flinching, PStatusAction.Activated);
+                BroadcastStatus2(user, user, PBEStatus2.Flinching, PBEStatusAction.Activated);
                 return true;
             }
 
             // Major statuses
             switch (user.Status1)
             {
-                case PStatus1.Asleep:
+                case PBEStatus1.Asleep:
                     // Check if we can wake up
                     if (user.Status1Counter > user.SleepTurns)
                     {
-                        user.Status1 = PStatus1.None;
+                        user.Status1 = PBEStatus1.None;
                         user.Status1Counter = user.SleepTurns = 0;
-                        BroadcastStatus1(user, user, PStatus1.Asleep, PStatusAction.Ended);
+                        BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Ended);
                     }
                     else
                     {
-                        BroadcastStatus1(user, user, PStatus1.Asleep, PStatusAction.Activated);
+                        BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Activated);
                         return true;
                     }
                     break;
-                case PStatus1.Frozen:
+                case PBEStatus1.Frozen:
                     // Some moves always defrost the user, but if they don't, there is a 20% chance to thaw out
-                    if (mData.Flags.HasFlag(PMoveFlag.DefrostsUser) || PUtils.ApplyChance(20, 100))
+                    if (mData.Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.ApplyChance(20, 100))
                     {
-                        user.Status1 = PStatus1.None;
-                        BroadcastStatus1(user, user, PStatus1.Frozen, PStatusAction.Ended);
+                        user.Status1 = PBEStatus1.None;
+                        BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Ended);
                     }
                     else
                     {
-                        BroadcastStatus1(user, user, PStatus1.Frozen, PStatusAction.Activated);
+                        BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Activated);
                         return true;
                     }
                     break;
-                case PStatus1.Paralyzed:
+                case PBEStatus1.Paralyzed:
                     // 25% chance to be unable to move
-                    if (PUtils.ApplyChance(25, 100))
+                    if (PBEUtils.ApplyChance(25, 100))
                     {
-                        BroadcastStatus1(user, user, PStatus1.Paralyzed, PStatusAction.Activated);
+                        BroadcastStatus1(user, user, PBEStatus1.Paralyzed, PBEStatusAction.Activated);
                         return true;
                     }
                     break;
             }
 
             // Minor statuses
-            if (user.Status2.HasFlag(PStatus2.Confused))
+            if (user.Status2.HasFlag(PBEStatus2.Confused))
             {
                 // Check if we snap out of confusion
                 if (user.ConfusionCounter > user.ConfusionTurns)
                 {
-                    user.Status2 &= ~PStatus2.Confused;
+                    user.Status2 &= ~PBEStatus2.Confused;
                     user.ConfusionCounter = user.ConfusionTurns = 0;
-                    BroadcastStatus2(user, user, PStatus2.Confused, PStatusAction.Ended);
+                    BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Ended);
                 }
                 else
                 {
-                    BroadcastStatus2(user, user, PStatus2.Confused, PStatusAction.Activated);
+                    BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Activated);
                     // 50% chance to hit itself
-                    if (PUtils.ApplyChance(50, 100))
+                    if (PBEUtils.ApplyChance(50, 100))
                     {
-                        DealDamage(user, user, CalculateDamage(user, user, PMove.None, PType.None, PMoveCategory.Physical, 40, true, true), PEffectiveness.Normal, true);
-                        BroadcastStatus2(user, user, PStatus2.Confused, PStatusAction.Damage);
+                        DealDamage(user, user, CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, true, true), PBEEffectiveness.Normal, true);
+                        BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         FaintCheck(user);
                         return true;
                     }
@@ -497,79 +514,115 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Returns true if an attack fails to hit
         // Broadcasts the event if it missed
         // Broadcasts protect if protect activated
-        bool MissCheck(PPokemon user, PPokemon target, PMove move)
+        bool MissCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
-            PMoveData mData = PMoveData.Data[move];
+            PBEMoveData mData = PBEMoveData.Data[move];
 
-            if (target.Status2.HasFlag(PStatus2.Protected) && mData.Flags.HasFlag(PMoveFlag.AffectedByProtect))
+            if (target.Status2.HasFlag(PBEStatus2.Protected) && mData.Flags.HasFlag(PBEMoveFlag.AffectedByProtect))
             {
-                BroadcastStatus2(user, target, PStatus2.Protected, PStatusAction.Activated);
+                BroadcastStatus2(user, target, PBEStatus2.Protected, PBEStatusAction.Activated);
                 return true;
             }
 
             // No Guard always hits
-            if (user.Ability == PAbility.NoGuard || target.Ability == PAbility.NoGuard)
+            if (user.Ability == PBEAbility.NoGuard || target.Ability == PBEAbility.NoGuard)
+            {
                 return false;
+            }
 
             // Hitting airborne opponents
-            if (target.Status2.HasFlag(PStatus2.Airborne) && !mData.Flags.HasFlag(PMoveFlag.HitsAirborne))
+            if (target.Status2.HasFlag(PBEStatus2.Airborne) && !mData.Flags.HasFlag(PBEMoveFlag.HitsAirborne))
+            {
                 goto miss;
+            }
             // Hitting underground opponents
-            if (target.Status2.HasFlag(PStatus2.Underground) && !mData.Flags.HasFlag(PMoveFlag.HitsUnderground))
+            if (target.Status2.HasFlag(PBEStatus2.Underground) && !mData.Flags.HasFlag(PBEMoveFlag.HitsUnderground))
+            {
                 goto miss;
+            }
             // Hitting underwater opponents
-            if (target.Status2.HasFlag(PStatus2.Underwater) && !mData.Flags.HasFlag(PMoveFlag.HitsUnderwater))
+            if (target.Status2.HasFlag(PBEStatus2.Underwater) && !mData.Flags.HasFlag(PBEMoveFlag.HitsUnderwater))
+            {
                 goto miss;
+            }
 
             // Moves that always hit
             if (mData.Accuracy == 0)
+            {
                 return false;
+            }
 
             double chance = mData.Accuracy;
             chance *= GetStatMultiplier(user.AccuracyChange, true) / GetStatMultiplier(target.EvasionChange, true); // Accuracy & Evasion changes
             // Pokémon with Compoundeyes get a 30% Accuracy boost
-            if (user.Ability == PAbility.Compoundeyes)
+            if (user.Ability == PBEAbility.Compoundeyes)
+            {
                 chance *= 1.3;
+            }
             // Pokémon with Hustle get a 20% Accuracy reduction for Physical moves
-            if (user.Ability == PAbility.Hustle && mData.Category == PMoveCategory.Physical)
+            if (user.Ability == PBEAbility.Hustle && mData.Category == PBEMoveCategory.Physical)
+            {
                 chance *= 0.8;
+            }
             // Pokémon holding a BrightPowder or Lax Incense get a 10% Evasion boost
-            if (target.Item == PItem.BrightPowder)
+            if (target.Item == PBEItem.BrightPowder)
+            {
                 chance *= 0.9;
+            }
             // Pokémon holding a Wide Lens get a 10% Accuracy boost
-            if (user.Item == PItem.WideLens)
+            if (user.Item == PBEItem.WideLens)
+            {
                 chance *= 1.1;
+            }
             // Try to hit
-            if (PUtils.ApplyChance((int)chance, 100))
+            if (PBEUtils.ApplyChance((int)chance, 100))
+            {
                 return false;
+            }
 
-            miss:
-            BroadcastMiss(user);
+        miss:
+            BroadcastMoveMissed(user);
             return true;
         }
 
         // Returns true if a critical hit was determined
-        bool CritCheck(PPokemon user, PPokemon target, PMove move, ref double damageMultiplier)
+        bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move, ref double damageMultiplier)
         {
             // If critical hits cannot be landed, return false
-            if (target.Ability == PAbility.BattleArmor
-                || target.Ability == PAbility.ShellArmor
+            if (target.Ability == PBEAbility.BattleArmor
+                || target.Ability == PBEAbility.ShellArmor
                 )
+            {
                 return false;
+            }
 
-            PMoveData mData = PMoveData.Data[move];
+            PBEMoveData mData = PBEMoveData.Data[move];
             byte stage = 0;
 
-            if (mData.Flags.HasFlag(PMoveFlag.HighCritChance))
+            if (mData.Flags.HasFlag(PBEMoveFlag.HighCritChance))
+            {
                 stage += 1;
-            if (user.Ability == PAbility.SuperLuck)
+            }
+
+            if (user.Ability == PBEAbility.SuperLuck)
+            {
                 stage += 1;
-            if (user.Item == PItem.RazorClaw || user.Item == PItem.ScopeLens)
+            }
+
+            if (user.Item == PBEItem.RazorClaw || user.Item == PBEItem.ScopeLens)
+            {
                 stage += 1;
-            if (user.Status2.HasFlag(PStatus2.Pumped))
+            }
+
+            if (user.Status2.HasFlag(PBEStatus2.Pumped))
+            {
                 stage += 2;
-            if (user.Shell.Species == PSpecies.Farfetchd && user.Item == PItem.Stick)
+            }
+
+            if (user.Shell.Species == PBESpecies.Farfetchd && user.Item == PBEItem.Stick)
+            {
                 stage += 2;
+            }
 
             double chance;
             switch (stage)
@@ -582,13 +635,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Try to score a critical hit
-            if (mData.Flags.HasFlag(PMoveFlag.AlwaysCrit)
-                || PUtils.ApplyChance((int)(chance * 100), 100 * 100)
+            if (mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit)
+                || PBEUtils.ApplyChance((int)(chance * 100), 100 * 100)
                 )
             {
-                damageMultiplier *= PSettings.CritMultiplier;
-                if (user.Ability == PAbility.Sniper)
+                damageMultiplier *= PBESettings.CritMultiplier;
+                if (user.Ability == PBEAbility.Sniper)
+                {
                     damageMultiplier *= 1.5;
+                }
+
                 return true;
             }
             return false;
@@ -596,25 +652,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns amount of damage done
         // Broadcasts the hp changing, effectiveness, substitute
-        ushort DealDamage(PPokemon culprit, PPokemon victim, ushort hp, PEffectiveness effectiveness, bool ignoreSubstitute)
+        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, PBEEffectiveness effectiveness, bool ignoreSubstitute)
         {
-            if (effectiveness == PEffectiveness.Ineffective)
+            if (effectiveness == PBEEffectiveness.Ineffective)
             {
                 BroadcastEffectiveness(victim, effectiveness);
                 return 0;
             }
 
-            if (!ignoreSubstitute && victim.Status2.HasFlag(PStatus2.Substitute))
+            if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
                 ushort oldHP = victim.SubstituteHP;
                 victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
                 ushort damageAmt = (ushort)(oldHP - victim.SubstituteHP);
-                BroadcastStatus2(culprit, victim, PStatus2.Substitute, PStatusAction.Damage);
+                BroadcastStatus2(culprit, victim, PBEStatus2.Substitute, PBEStatusAction.Damage);
                 BroadcastEffectiveness(victim, effectiveness);
                 if (victim.SubstituteHP == 0)
                 {
-                    victim.Status2 &= ~PStatus2.Substitute;
-                    BroadcastStatus2(culprit, victim, PStatus2.Substitute, PStatusAction.Ended);
+                    victim.Status2 &= ~PBEStatus2.Substitute;
+                    BroadcastStatus2(culprit, victim, PBEStatus2.Substitute, PBEStatusAction.Ended);
                 }
                 return damageAmt;
             }
@@ -623,7 +679,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ushort oldHP = victim.HP;
                 victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
                 ushort damageAmt = (ushort)(oldHP - victim.HP);
-                BroadcastHPChanged(victim, -damageAmt);
+                BroadcastPkmnHPChanged(victim, -damageAmt);
                 BroadcastEffectiveness(victim, effectiveness);
                 return damageAmt;
             }
@@ -631,122 +687,128 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns amount of hp healed
         // Broadcasts the event if it healed more than 0
-        ushort HealDamage(PPokemon pkmn, ushort hp)
+        ushort HealDamage(PBEPokemon pkmn, ushort hp)
         {
             ushort oldHP = pkmn.HP;
             pkmn.HP = (ushort)Math.Min(pkmn.MaxHP, pkmn.HP + Math.Max((ushort)1, hp)); // Always try to heal at least 1 HP
             ushort healAmt = (ushort)(pkmn.HP - oldHP);
             if (healAmt > 0)
             {
-                BroadcastHPChanged(pkmn, healAmt);
+                BroadcastPkmnHPChanged(pkmn, healAmt);
             }
             return healAmt;
         }
 
-        void Ab_LimberCure(PPokemon pkmn)
+        void Ab_LimberCure(PBEPokemon pkmn)
         {
-            if (pkmn.Ability == PAbility.Limber && pkmn.Status1 == PStatus1.Paralyzed)
+            if (pkmn.Ability == PBEAbility.Limber && pkmn.Status1 == PBEStatus1.Paralyzed)
             {
-                pkmn.Status1 = PStatus1.None;
+                pkmn.Status1 = PBEStatus1.None;
                 BroadcastLimber(pkmn, false);
-                BroadcastStatus1(pkmn, pkmn, PStatus1.Paralyzed, PStatusAction.Cured);
+                BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cured);
             }
         }
 
         // Broadcasts the event
-        void PPReduce(PPokemon pkmn, PMove move)
+        void PPReduce(PBEPokemon pkmn, PBEMove move)
         {
-            var moveIndex = Array.IndexOf(pkmn.Moves, move);
+            int moveIndex = Array.IndexOf(pkmn.Moves, move);
             int amtToReduce = 1;
             // TODO: If target is not self and has pressure
-            var oldPP = pkmn.PP[moveIndex];
+            byte oldPP = pkmn.PP[moveIndex];
             pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
-            var reduceAmt = oldPP - pkmn.PP[moveIndex];
-            BroadcastPPChanged(pkmn, move, -reduceAmt);
+            int change = oldPP - pkmn.PP[moveIndex];
+            BroadcastMovePPChanged(pkmn, move, (short)-change);
         }
 
         // Returns true if the Pokémon fainted & removes it from activeBattlers
         // Broadcasts the event if it fainted
-        bool FaintCheck(PPokemon pkmn)
+        bool FaintCheck(PBEPokemon pkmn)
         {
             if (pkmn.HP < 1)
             {
                 ActiveBattlers.Remove(pkmn);
-                pkmn.FieldPosition = PFieldPosition.None;
-                BroadcastFaint(pkmn);
+                pkmn.FieldPosition = PBEFieldPosition.None;
+                BroadcastPkmnFainted(pkmn);
                 return true;
             }
             return false;
         }
 
         // Pass in the battle to broadcast the event
-        public static unsafe void ApplyStatChange(PPokemon pkmn, PStat stat, sbyte change, bool ignoreSimple = false, PBattle battle = null)
+        public static unsafe void ApplyStatChange(PBEPokemon pkmn, PBEStat stat, short change, bool ignoreSimple = false, PBEBattle battle = null)
         {
-            if (!ignoreSimple && pkmn.Ability == PAbility.Simple)
+            if (!ignoreSimple && pkmn.Ability == PBEAbility.Simple)
+            {
                 change *= 2;
+            }
             bool isTooMuch = false;
             fixed (sbyte* ptr = &pkmn.AttackChange)
             {
-                sbyte* scPtr = ptr + (stat - PStat.Attack); // Points to the proper stat change sbyte
-                if (*scPtr <= -PSettings.MaxStatChange || *scPtr >= PSettings.MaxStatChange)
+                sbyte* scPtr = ptr + (stat - PBEStat.Attack); // Points to the proper stat change sbyte
+                if (*scPtr <= -PBESettings.MaxStatChange || *scPtr >= PBESettings.MaxStatChange)
+                {
                     isTooMuch = true;
+                }
                 else
-                    *scPtr = (sbyte)PUtils.Clamp(*scPtr + change, -PSettings.MaxStatChange, PSettings.MaxStatChange);
+                {
+                    *scPtr = (sbyte)PBEUtils.Clamp(*scPtr + change, -PBESettings.MaxStatChange, PBESettings.MaxStatChange);
+                }
             }
-            battle?.BroadcastStatChange(pkmn, stat, change, isTooMuch);
+            battle?.BroadcastPkmnStatChanged(pkmn, stat, change, isTooMuch);
         }
 
         // Returns true if the status was applied
         // Broadcasts the change if applied
-        bool ApplyStatus1IfPossible(PPokemon user, PPokemon target, PStatus1 status, bool broadcastFailOrEffectiveness)
+        bool ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastFailOrEffectiveness)
         {
             // Cannot change status if already afflicted
             // Cannot change status of a target behind a substitute
-            if (target.Status1 != PStatus1.None
-                || target.Status2.HasFlag(PStatus2.Substitute))
+            if (target.Status1 != PBEStatus1.None
+                || target.Status2.HasFlag(PBEStatus2.Substitute))
             {
                 if (broadcastFailOrEffectiveness)
                 {
-                    BroadcastFail(user, target, PFailReason.Default);
+                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
                 }
                 return false;
             }
 
             // A Pokémon with Limber cannot be Paralyzed unless the attacker has Mold Breaker
-            if (status == PStatus1.Paralyzed && target.Ability == PAbility.Limber)
+            if (status == PBEStatus1.Paralyzed && target.Ability == PBEAbility.Limber)
             {
                 if (broadcastFailOrEffectiveness)
                 {
                     BroadcastLimber(target, true);
-                    BroadcastEffectiveness(target, PEffectiveness.Ineffective);
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                 }
                 return false;
             }
 
             // An Ice type Pokémon cannot be Frozen
-            if (status == PStatus1.Frozen && target.HasType(PType.Ice))
+            if (status == PBEStatus1.Frozen && target.HasType(PBEType.Ice))
             {
                 if (broadcastFailOrEffectiveness)
                 {
-                    BroadcastEffectiveness(target, PEffectiveness.Ineffective);
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                 }
                 return false;
             }
             // A Fire type Pokémon cannot be Burned
-            if (status == PStatus1.Burned && target.HasType(PType.Fire))
+            if (status == PBEStatus1.Burned && target.HasType(PBEType.Fire))
             {
                 if (broadcastFailOrEffectiveness)
                 {
-                    BroadcastEffectiveness(target, PEffectiveness.Ineffective);
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                 }
                 return false;
             }
             // A Poison or Steel type Pokémon cannot be Poisoned or Badly Poisoned
-            if ((status == PStatus1.BadlyPoisoned || status == PStatus1.Poisoned) && (target.HasType(PType.Poison) || target.HasType(PType.Steel)))
+            if ((status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned) && (target.HasType(PBEType.Poison) || target.HasType(PBEType.Steel)))
             {
                 if (broadcastFailOrEffectiveness)
                 {
-                    BroadcastEffectiveness(target, PEffectiveness.Ineffective);
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                 }
                 return false;
             }
@@ -754,102 +816,105 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             target.Status1 = status;
             // Start toxic counter
-            if (status == PStatus1.BadlyPoisoned)
+            if (status == PBEStatus1.BadlyPoisoned)
             {
                 target.Status1Counter = 1;
             }
             // Set sleep length
-            if (status == PStatus1.Asleep)
+            if (status == PBEStatus1.Asleep)
             {
-                target.SleepTurns = (byte)PUtils.RNG.Next(PSettings.SleepMinTurns, PSettings.SleepMaxTurns + 1);
+                target.SleepTurns = (byte)PBEUtils.RNG.Next(PBESettings.SleepMinTurns, PBESettings.SleepMaxTurns + 1);
             }
 
-            BroadcastStatus1(user, target, status, PStatusAction.Added);
+            BroadcastStatus1(user, target, status, PBEStatusAction.Added);
 
             return true;
         }
         // Returns true if the status was applied
         // Broadcasts the change if applied and required
-        bool ApplyStatus2IfPossible(PPokemon user, PPokemon target, PStatus2 status, bool broadcastFail, PFailReason failReason = PFailReason.Default)
+        bool ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastFail, PBEFailReason failReason = PBEFailReason.Default)
         {
             switch (status)
             {
-                case PStatus2.Confused:
-                    if (!target.Status2.HasFlag(PStatus2.Confused)
-                        && !target.Status2.HasFlag(PStatus2.Substitute))
+                case PBEStatus2.Confused:
+                    if (!target.Status2.HasFlag(PBEStatus2.Confused)
+                        && !target.Status2.HasFlag(PBEStatus2.Substitute))
                     {
-                        target.Status2 |= PStatus2.Confused;
-                        target.ConfusionTurns = (byte)PUtils.RNG.Next(PSettings.ConfusionMinTurns, PSettings.ConfusionMaxTurns + 1);
-                        BroadcastStatus2(user, target, PStatus2.Confused, PStatusAction.Added);
+                        target.Status2 |= PBEStatus2.Confused;
+                        target.ConfusionTurns = (byte)PBEUtils.RNG.Next(PBESettings.ConfusionMinTurns, PBESettings.ConfusionMaxTurns + 1);
+                        BroadcastStatus2(user, target, PBEStatus2.Confused, PBEStatusAction.Added);
                         return true;
                     }
                     break;
-                case PStatus2.Cursed:
-                    if (!target.Status2.HasFlag(PStatus2.Cursed))
+                case PBEStatus2.Cursed:
+                    if (!target.Status2.HasFlag(PBEStatus2.Cursed))
                     {
-                        target.Status2 |= PStatus2.Cursed;
-                        BroadcastStatus2(user, target, PStatus2.Cursed, PStatusAction.Added);
-                        DealDamage(user, user, (ushort)(user.MaxHP / 2), PEffectiveness.Normal, true);
+                        target.Status2 |= PBEStatus2.Cursed;
+                        BroadcastStatus2(user, target, PBEStatus2.Cursed, PBEStatusAction.Added);
+                        DealDamage(user, user, (ushort)(user.MaxHP / 2), PBEEffectiveness.Normal, true);
                         FaintCheck(user);
                         return true;
                     }
                     break;
-                case PStatus2.Flinching:
-                    if (!target.Status2.HasFlag(PStatus2.Substitute))
+                case PBEStatus2.Flinching:
+                    if (!target.Status2.HasFlag(PBEStatus2.Substitute))
                     {
                         target.Status2 |= status;
                         return true;
                     }
                     break;
-                case PStatus2.LeechSeed:
-                    if (!target.Status2.HasFlag(PStatus2.LeechSeed)
-                        && !target.Status2.HasFlag(PStatus2.Substitute)
-                        && !target.HasType(PType.Grass))
+                case PBEStatus2.LeechSeed:
+                    if (!target.Status2.HasFlag(PBEStatus2.LeechSeed)
+                        && !target.Status2.HasFlag(PBEStatus2.Substitute)
+                        && !target.HasType(PBEType.Grass))
                     {
-                        target.Status2 |= PStatus2.LeechSeed;
+                        target.Status2 |= PBEStatus2.LeechSeed;
                         target.SeededPosition = user.FieldPosition;
-                        BroadcastStatus2(user, target, PStatus2.LeechSeed, PStatusAction.Added);
+                        BroadcastStatus2(user, target, PBEStatus2.LeechSeed, PBEStatusAction.Added);
                         return true;
                     }
                     break;
-                case PStatus2.Minimized:
-                    user.Status2 |= PStatus2.Minimized;
-                    BroadcastStatus2(user, user, PStatus2.Minimized, PStatusAction.Added);
-                    ApplyStatChange(user, PStat.Evasion, +2, battle: this);
+                case PBEStatus2.Minimized:
+                    user.Status2 |= PBEStatus2.Minimized;
+                    BroadcastStatus2(user, user, PBEStatus2.Minimized, PBEStatusAction.Added);
+                    ApplyStatChange(user, PBEStat.Evasion, +2, battle: this);
                     return true;
-                case PStatus2.Protected:
+                case PBEStatus2.Protected:
                     {
                         // TODO: If the user goes last, fail
                         ushort chance = ushort.MaxValue;
                         for (int i = 0; i < user.ProtectCounter; i++)
-                            chance /= 2;
-                        if (PUtils.ApplyChance(chance, ushort.MaxValue))
                         {
-                            user.Status2 |= PStatus2.Protected;
+                            chance /= 2;
+                        }
+
+                        if (PBEUtils.ApplyChance(chance, ushort.MaxValue))
+                        {
+                            user.Status2 |= PBEStatus2.Protected;
                             user.ProtectCounter++;
-                            BroadcastStatus2(user, user, PStatus2.Protected, PStatusAction.Added);
+                            BroadcastStatus2(user, user, PBEStatus2.Protected, PBEStatusAction.Added);
                             return true;
                         }
                         user.ProtectCounter = 0;
                     }
                     break;
-                case PStatus2.Pumped:
-                    if (!user.Status2.HasFlag(PStatus2.Pumped))
+                case PBEStatus2.Pumped:
+                    if (!user.Status2.HasFlag(PBEStatus2.Pumped))
                     {
                         user.Status2 |= status;
-                        BroadcastStatus2(user, user, PStatus2.Pumped, PStatusAction.Added);
+                        BroadcastStatus2(user, user, PBEStatus2.Pumped, PBEStatusAction.Added);
                         return true;
                     }
                     break;
-                case PStatus2.Substitute:
+                case PBEStatus2.Substitute:
                     {
                         ushort hpRequired = (ushort)(user.MaxHP / 4);
-                        if (!user.Status2.HasFlag(PStatus2.Substitute) && hpRequired > 0 && user.HP > hpRequired)
+                        if (!user.Status2.HasFlag(PBEStatus2.Substitute) && hpRequired > 0 && user.HP > hpRequired)
                         {
-                            DealDamage(user, user, hpRequired, PEffectiveness.Normal, true);
-                            user.Status2 |= PStatus2.Substitute;
+                            DealDamage(user, user, hpRequired, PBEEffectiveness.Normal, true);
+                            user.Status2 |= PBEStatus2.Substitute;
                             user.SubstituteHP = hpRequired;
-                            BroadcastStatus2(user, user, PStatus2.Substitute, PStatusAction.Added);
+                            BroadcastStatus2(user, user, PBEStatus2.Substitute, PBEStatusAction.Added);
                             return true;
                         }
                     }
@@ -857,16 +922,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (broadcastFail)
             {
-                BroadcastFail(user, target, failReason);
+                BroadcastMoveFailed(user, target, failReason);
             }
             return false;
         }
 
-        void Ef_Hit(PPokemon user, PPokemon[] targets, PMove move)
+        void Ef_Hit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
@@ -878,22 +943,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
+                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 FaintCheck(target);
             }
         }
         // TODO: Convert the following into HitAndMaybeInflictStatus2
-        void Ef_Hit__MaybeConfuse(PPokemon user, PPokemon[] targets, PMove move, int chanceToConfuse)
+        void Ef_Hit__MaybeConfuse(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int chanceToConfuse)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
@@ -905,29 +970,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
-                bool behindSubstitute = target.Status2.HasFlag(PStatus2.Substitute);
+                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                bool behindSubstitute = target.Status2.HasFlag(PBEStatus2.Substitute);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 if (FaintCheck(target))
                 {
                     continue;
                 }
-                if (effectiveness != PEffectiveness.Ineffective && !behindSubstitute && PUtils.ApplyChance(chanceToConfuse, 100))
+                if (effectiveness != PBEEffectiveness.Ineffective && !behindSubstitute && PBEUtils.ApplyChance(chanceToConfuse, 100))
                 {
-                    ApplyStatus2IfPossible(user, target, PStatus2.Confused, false);
+                    ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, false);
                 }
             }
         }
-        void Ef_Hit__MaybeFlinch(PPokemon user, PPokemon[] targets, PMove move, int chanceToFlinch)
+        void Ef_Hit__MaybeFlinch(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int chanceToFlinch)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
@@ -939,30 +1004,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
-                bool behindSubstitute = target.Status2.HasFlag(PStatus2.Substitute);
+                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                bool behindSubstitute = target.Status2.HasFlag(PBEStatus2.Substitute);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 if (FaintCheck(target))
                 {
                     continue;
                 }
-                if (effectiveness != PEffectiveness.Ineffective && !behindSubstitute && PUtils.ApplyChance(chanceToFlinch, 100))
+                if (effectiveness != PBEEffectiveness.Ineffective && !behindSubstitute && PBEUtils.ApplyChance(chanceToFlinch, 100))
                 {
-                    ApplyStatus2IfPossible(user, target, PStatus2.Flinching, false);
+                    ApplyStatus2IfPossible(user, target, PBEStatus2.Flinching, false);
                 }
             }
         }
 
-        void TryForceStatus1(PPokemon user, PPokemon[] targets, PMove move, PStatus1 status)
+        void TryForceStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
@@ -973,8 +1038,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     continue;
                 }
                 double d = 1.0;
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref d);
-                if (effectiveness == PEffectiveness.Ineffective) // Paralysis, Normalize
+                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref d);
+                if (effectiveness == PBEEffectiveness.Ineffective) // Paralysis, Normalize
                 {
                     BroadcastEffectiveness(target, effectiveness);
                 }
@@ -984,11 +1049,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        void TryForceStatus2(PPokemon user, PPokemon[] targets, PMove move, PStatus2 status)
+        void TryForceStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
@@ -1001,66 +1066,66 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ApplyStatus2IfPossible(user, target, status, true);
             }
         }
-        void TryForceTeamStatus(PPokemon user, PMove move, PTeamStatus status)
+        void TryForceTeamStatus(PBEPokemon user, PBEMove move, PBETeamStatus status)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            PTeam userTeam = Teams[user.Local ? 0 : 1];
-            PTeam opposingTeam = Teams[user.Local ? 1 : 0];
+            PBETeam userTeam = Teams[user.LocalTeam ? 0 : 1];
+            PBETeam opposingTeam = Teams[user.LocalTeam ? 1 : 0];
             switch (status)
             {
-                case PTeamStatus.LightScreen:
-                    if (!userTeam.Status.HasFlag(PTeamStatus.LightScreen))
+                case PBETeamStatus.LightScreen:
+                    if (!userTeam.Status.HasFlag(PBETeamStatus.LightScreen))
                     {
-                        userTeam.Status |= PTeamStatus.LightScreen;
-                        userTeam.LightScreenCount = (byte)(PSettings.ReflectLightScreenTurns + (user.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
-                        BroadcastTeamStatus(userTeam.Local, PTeamStatus.LightScreen, PTeamStatusAction.Added);
+                        userTeam.Status |= PBETeamStatus.LightScreen;
+                        userTeam.LightScreenCount = (byte)(PBESettings.ReflectLightScreenTurns + (user.Item == PBEItem.LightClay ? PBESettings.LightClayTurnExtension : 0));
+                        BroadcastTeamStatus(userTeam.Local, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
-                case PTeamStatus.Reflect:
-                    if (!userTeam.Status.HasFlag(PTeamStatus.Reflect))
+                case PBETeamStatus.Reflect:
+                    if (!userTeam.Status.HasFlag(PBETeamStatus.Reflect))
                     {
-                        userTeam.Status |= PTeamStatus.Reflect;
-                        userTeam.ReflectCount = (byte)(PSettings.ReflectLightScreenTurns + (user.Item == PItem.LightClay ? PSettings.LightClayTurnExtension : 0));
-                        BroadcastTeamStatus(userTeam.Local, PTeamStatus.Reflect, PTeamStatusAction.Added);
+                        userTeam.Status |= PBETeamStatus.Reflect;
+                        userTeam.ReflectCount = (byte)(PBESettings.ReflectLightScreenTurns + (user.Item == PBEItem.LightClay ? PBESettings.LightClayTurnExtension : 0));
+                        BroadcastTeamStatus(userTeam.Local, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
-                case PTeamStatus.Spikes:
+                case PBETeamStatus.Spikes:
                     if (opposingTeam.SpikeCount < 3)
                     {
-                        opposingTeam.Status |= PTeamStatus.Spikes;
+                        opposingTeam.Status |= PBETeamStatus.Spikes;
                         opposingTeam.SpikeCount++;
-                        BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.Spikes, PTeamStatusAction.Added);
+                        BroadcastTeamStatus(opposingTeam.Local, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
-                case PTeamStatus.StealthRock:
-                    if (!opposingTeam.Status.HasFlag(PTeamStatus.StealthRock))
+                case PBETeamStatus.StealthRock:
+                    if (!opposingTeam.Status.HasFlag(PBETeamStatus.StealthRock))
                     {
-                        opposingTeam.Status |= PTeamStatus.StealthRock;
-                        BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.StealthRock, PTeamStatusAction.Added);
+                        opposingTeam.Status |= PBETeamStatus.StealthRock;
+                        BroadcastTeamStatus(opposingTeam.Local, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
-                case PTeamStatus.ToxicSpikes:
+                case PBETeamStatus.ToxicSpikes:
                     if (opposingTeam.ToxicSpikeCount < 2)
                     {
-                        opposingTeam.Status |= PTeamStatus.ToxicSpikes;
+                        opposingTeam.Status |= PBETeamStatus.ToxicSpikes;
                         opposingTeam.ToxicSpikeCount++;
-                        BroadcastTeamStatus(opposingTeam.Local, PTeamStatus.ToxicSpikes, PTeamStatusAction.Added);
+                        BroadcastTeamStatus(opposingTeam.Local, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
             }
-            BroadcastFail(user, user, PFailReason.Default);
+            BroadcastMoveFailed(user, user, PBEFailReason.Default);
         }
-        void HitAndMaybeInflictStatus1(PPokemon user, PPokemon[] targets, PMove move, PStatus1 status, int chanceToInflict)
+        void HitAndMaybeInflictStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status, int chanceToInflict)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
@@ -1072,30 +1137,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
-                bool behindSubstitute = target.Status2.HasFlag(PStatus2.Substitute);
+                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                bool behindSubstitute = target.Status2.HasFlag(PBEStatus2.Substitute);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 if (FaintCheck(target))
                 {
                     continue;
                 }
-                if (effectiveness != PEffectiveness.Ineffective && !behindSubstitute && PUtils.ApplyChance(chanceToInflict, 100))
+                if (effectiveness != PBEEffectiveness.Ineffective && !behindSubstitute && PBEUtils.ApplyChance(chanceToInflict, 100))
                 {
                     ApplyStatus1IfPossible(user, target, status, false);
                 }
             }
         }
 
-        void ChangeTargetStats(PPokemon user, PPokemon[] targets, PMove move, PStat[] stats, sbyte[] changes)
+        void ChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
@@ -1105,9 +1170,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     continue;
                 }
-                if (target.Status2.HasFlag(PStatus2.Substitute))
+                if (target.Status2.HasFlag(PBEStatus2.Substitute))
                 {
-                    BroadcastFail(user, target, PFailReason.Default);
+                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
                 }
                 else
                 {
@@ -1118,7 +1183,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        void ChangeUserStats(PPokemon user, PMove move, PStat[] stats, sbyte[] changes)
+        void ChangeUserStats(PBEPokemon user, PBEMove move, PBEStat[] stats, short[] changes)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -1127,11 +1192,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ApplyStatChange(user, stats[i], changes[i], battle: this);
             }
         }
-        void HitAndMaybeChangeTargetStats(PPokemon user, PPokemon[] targets, PMove move, PStat[] stats, sbyte[] changes, int chanceToChangeStats)
+        void HitAndMaybeChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
@@ -1143,19 +1208,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
-                bool behindSubstitute = target.Status2.HasFlag(PStatus2.Substitute);
+                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                bool behindSubstitute = target.Status2.HasFlag(PBEStatus2.Substitute);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 if (FaintCheck(target))
                 {
                     continue;
                 }
-                if (effectiveness != PEffectiveness.Ineffective && !behindSubstitute && PUtils.ApplyChance(chanceToChangeStats, 100))
+                if (effectiveness != PBEEffectiveness.Ineffective && !behindSubstitute && PBEUtils.ApplyChance(chanceToChangeStats, 100))
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
@@ -1164,12 +1229,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        void HitAndMaybeChangeUserStats(PPokemon user, PPokemon[] targets, PMove move, PStat[] stats, sbyte[] changes, int chanceToChangeStats)
+        void HitAndMaybeChangeUserStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             byte hit = 0;
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
@@ -1181,22 +1246,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
                 bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                TypeCheck(user, target, move, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
+                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 FaintCheck(target);
-                if (effectiveness != PEffectiveness.Ineffective)
+                if (effectiveness != PBEEffectiveness.Ineffective)
                 {
                     hit++;
                 }
             }
             if (hit > 0)
             {
-                if (PUtils.ApplyChance(chanceToChangeStats, 100))
+                if (PBEUtils.ApplyChance(chanceToChangeStats, 100))
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
@@ -1206,314 +1271,324 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        void Ef_Fail(PPokemon user, PMove move)
+        void Ef_Fail(PBEPokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            BroadcastFail(user, user, PFailReason.Default);
+            BroadcastMoveFailed(user, user, PBEFailReason.Default);
         }
-        void Ef_BrickBreak(PPokemon user, PPokemon target)
+        void Ef_BrickBreak(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.BrickBreak);
-            PPReduce(user, PMove.BrickBreak);
-            if (MissCheck(user, target, PMove.BrickBreak))
+            BroadcastMoveUsed(user, PBEMove.BrickBreak);
+            PPReduce(user, PBEMove.BrickBreak);
+            if (MissCheck(user, target, PBEMove.BrickBreak))
             {
                 return;
             }
             double damageMultiplier = 1.0;
-            bool crit = CritCheck(user, target, PMove.BrickBreak, ref damageMultiplier);
-            TypeCheck(user, target, PMove.BrickBreak, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
-            if (effectiveness == PEffectiveness.Ineffective)
+            bool crit = CritCheck(user, target, PBEMove.BrickBreak, ref damageMultiplier);
+            TypeCheck(user, target, PBEMove.BrickBreak, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+            if (effectiveness == PBEEffectiveness.Ineffective)
             {
                 BroadcastEffectiveness(target, effectiveness);
             }
             else
             {
-                PTeam team = Teams[target.Local ? 0 : 1];
-                if (team.Status.HasFlag(PTeamStatus.Reflect))
+                PBETeam team = Teams[target.LocalTeam ? 0 : 1];
+                if (team.Status.HasFlag(PBETeamStatus.Reflect))
                 {
-                    team.Status &= ~PTeamStatus.Reflect;
+                    team.Status &= ~PBETeamStatus.Reflect;
                     team.ReflectCount = 0;
-                    BroadcastTeamStatus(team.Local, PTeamStatus.Reflect, PTeamStatusAction.Cleared);
+                    BroadcastTeamStatus(team.Local, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
                 }
-                if (team.Status.HasFlag(PTeamStatus.LightScreen))
+                if (team.Status.HasFlag(PBETeamStatus.LightScreen))
                 {
-                    team.Status &= ~PTeamStatus.LightScreen;
+                    team.Status &= ~PBETeamStatus.LightScreen;
                     team.LightScreenCount = 0;
-                    BroadcastTeamStatus(team.Local, PTeamStatus.LightScreen, PTeamStatusAction.Cleared);
+                    BroadcastTeamStatus(team.Local, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
                 }
-                ushort damage = CalculateDamage(user, target, PMove.BrickBreak, moveType, criticalHit: crit);
+                ushort damage = CalculateDamage(user, target, PBEMove.BrickBreak, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 FaintCheck(target);
             }
         }
-        void Ef_Dig(PPokemon user, PPokemon target)
+        void Ef_Dig(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.Dig);
-            PPReduce(user, PMove.Dig);
-            top:
-            if (user.Status2.HasFlag(PStatus2.Underground))
+            BroadcastMoveUsed(user, PBEMove.Dig);
+            PPReduce(user, PBEMove.Dig);
+        top:
+            if (user.Status2.HasFlag(PBEStatus2.Underground))
             {
-                user.LockedAction.Decision = PDecision.None;
-                user.Status2 &= ~PStatus2.Underground;
-                BroadcastStatus2(user, user, PStatus2.Underground, PStatusAction.Ended);
-                if (MissCheck(user, target, PMove.Dig))
+                user.LockedAction.Decision = PBEDecision.None;
+                user.Status2 &= ~PBEStatus2.Underground;
+                BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
+                if (MissCheck(user, target, PBEMove.Dig))
+                {
                     return;
+                }
+
                 double damageMultiplier = 1.0;
-                bool crit = CritCheck(user, target, PMove.Dig, ref damageMultiplier);
-                TypeCheck(user, target, PMove.Dig, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
-                ushort damage = CalculateDamage(user, target, PMove.Dig, moveType, criticalHit: crit);
+                bool crit = CritCheck(user, target, PBEMove.Dig, ref damageMultiplier);
+                TypeCheck(user, target, PBEMove.Dig, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                ushort damage = CalculateDamage(user, target, PBEMove.Dig, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 FaintCheck(target);
             }
             else
             {
                 user.LockedAction = user.SelectedAction;
-                user.Status2 |= PStatus2.Underground;
-                BroadcastStatus2(user, user, PStatus2.Underground, PStatusAction.Added);
-                if (user.Item == PItem.PowerHerb)
+                user.Status2 |= PBEStatus2.Underground;
+                BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
+                if (user.Item == PBEItem.PowerHerb)
                 {
-                    user.Item = PItem.None;
-                    BroadcastItemUsed(user, PItem.PowerHerb);
+                    user.Item = PBEItem.None;
+                    BroadcastItemUsed(user, PBEItem.PowerHerb);
                     goto top;
                 }
             }
         }
-        void Ef_Dive(PPokemon user, PPokemon target)
+        void Ef_Dive(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.Dive);
-            PPReduce(user, PMove.Dive);
-            top:
-            if (user.Status2.HasFlag(PStatus2.Underwater))
+            BroadcastMoveUsed(user, PBEMove.Dive);
+            PPReduce(user, PBEMove.Dive);
+        top:
+            if (user.Status2.HasFlag(PBEStatus2.Underwater))
             {
-                user.LockedAction.Decision = PDecision.None;
-                user.Status2 &= ~PStatus2.Underwater;
-                BroadcastStatus2(user, user, PStatus2.Underwater, PStatusAction.Ended);
-                if (MissCheck(user, target, PMove.Dive))
+                user.LockedAction.Decision = PBEDecision.None;
+                user.Status2 &= ~PBEStatus2.Underwater;
+                BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
+                if (MissCheck(user, target, PBEMove.Dive))
                 {
                     return;
                 }
                 double damageMultiplier = 1.0;
-                bool crit = CritCheck(user, target, PMove.Dive, ref damageMultiplier);
-                TypeCheck(user, target, PMove.Dive, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
-                ushort damage = CalculateDamage(user, target, PMove.Dive, moveType, criticalHit: crit);
+                bool crit = CritCheck(user, target, PBEMove.Dive, ref damageMultiplier);
+                TypeCheck(user, target, PBEMove.Dive, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                ushort damage = CalculateDamage(user, target, PBEMove.Dive, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 FaintCheck(target);
             }
             else
             {
                 user.LockedAction = user.SelectedAction;
-                user.Status2 |= PStatus2.Underwater;
-                BroadcastStatus2(user, user, PStatus2.Underwater, PStatusAction.Added);
-                if (user.Item == PItem.PowerHerb)
+                user.Status2 |= PBEStatus2.Underwater;
+                BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
+                if (user.Item == PBEItem.PowerHerb)
                 {
-                    user.Item = PItem.None;
-                    BroadcastItemUsed(user, PItem.PowerHerb);
+                    user.Item = PBEItem.None;
+                    BroadcastItemUsed(user, PBEItem.PowerHerb);
                     goto top;
                 }
             }
         }
-        void Ef_Fly(PPokemon user, PPokemon target)
+        void Ef_Fly(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.Fly);
-            PPReduce(user, PMove.Fly);
-            top:
-            if (user.Status2.HasFlag(PStatus2.Airborne))
+            BroadcastMoveUsed(user, PBEMove.Fly);
+            PPReduce(user, PBEMove.Fly);
+        top:
+            if (user.Status2.HasFlag(PBEStatus2.Airborne))
             {
-                user.LockedAction.Decision = PDecision.None;
-                user.Status2 &= ~PStatus2.Airborne;
-                BroadcastStatus2(user, user, PStatus2.Airborne, PStatusAction.Ended);
-                if (MissCheck(user, target, PMove.Fly))
+                user.LockedAction.Decision = PBEDecision.None;
+                user.Status2 &= ~PBEStatus2.Airborne;
+                BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
+                if (MissCheck(user, target, PBEMove.Fly))
                 {
                     return;
                 }
                 double damageMultiplier = 1.0;
-                bool crit = CritCheck(user, target, PMove.Fly, ref damageMultiplier);
-                TypeCheck(user, target, PMove.Fly, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
-                ushort damage = CalculateDamage(user, target, PMove.Fly, moveType, criticalHit: crit);
+                bool crit = CritCheck(user, target, PBEMove.Fly, ref damageMultiplier);
+                TypeCheck(user, target, PBEMove.Fly, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                ushort damage = CalculateDamage(user, target, PBEMove.Fly, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 FaintCheck(target);
             }
             else
             {
                 user.LockedAction = user.SelectedAction;
-                user.Status2 |= PStatus2.Airborne;
-                BroadcastStatus2(user, user, PStatus2.Airborne, PStatusAction.Added);
-                if (user.Item == PItem.PowerHerb)
+                user.Status2 |= PBEStatus2.Airborne;
+                BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
+                if (user.Item == PBEItem.PowerHerb)
                 {
-                    user.Item = PItem.None;
-                    BroadcastItemUsed(user, PItem.PowerHerb);
+                    user.Item = PBEItem.None;
+                    BroadcastItemUsed(user, PBEItem.PowerHerb);
                     goto top;
                 }
             }
         }
-        void Ef_RainDance(PPokemon user)
+        void Ef_RainDance(PBEPokemon user)
         {
-            BroadcastMoveUsed(user, PMove.RainDance);
-            PPReduce(user, PMove.RainDance);
-            if (Weather == PWeather.Raining)
+            BroadcastMoveUsed(user, PBEMove.RainDance);
+            PPReduce(user, PBEMove.RainDance);
+            if (Weather == PBEWeather.Raining)
             {
-                BroadcastFail(user, user, PFailReason.Default);
+                BroadcastMoveFailed(user, user, PBEFailReason.Default);
             }
             else
             {
-                Weather = PWeather.Raining;
-                WeatherCounter = (byte)(PSettings.RainTurns + (user.Item == PItem.DampRock ? PSettings.DampRockTurnExtension : 0));
-                BroadcastWeather(Weather, PWeatherAction.Added);
+                Weather = PBEWeather.Raining;
+                WeatherCounter = (byte)(PBESettings.RainTurns + (user.Item == PBEItem.DampRock ? PBESettings.DampRockTurnExtension : 0));
+                BroadcastWeather(Weather, PBEWeatherAction.Added);
             }
         }
-        void Ef_SunnyDay(PPokemon user)
+        void Ef_SunnyDay(PBEPokemon user)
         {
-            BroadcastMoveUsed(user, PMove.SunnyDay);
-            PPReduce(user, PMove.SunnyDay);
-            if (Weather == PWeather.Sunny)
+            BroadcastMoveUsed(user, PBEMove.SunnyDay);
+            PPReduce(user, PBEMove.SunnyDay);
+            if (Weather == PBEWeather.Sunny)
             {
-                BroadcastFail(user, user, PFailReason.Default);
+                BroadcastMoveFailed(user, user, PBEFailReason.Default);
             }
             else
             {
-                Weather = PWeather.Sunny;
-                WeatherCounter = (byte)(PSettings.SunTurns + (user.Item == PItem.HeatRock ? PSettings.HeatRockTurnExtension : 0));
-                BroadcastWeather(Weather, PWeatherAction.Added);
+                Weather = PBEWeather.Sunny;
+                WeatherCounter = (byte)(PBESettings.SunTurns + (user.Item == PBEItem.HeatRock ? PBESettings.HeatRockTurnExtension : 0));
+                BroadcastWeather(Weather, PBEWeatherAction.Added);
             }
         }
-        void Ef_Flatter(PPokemon user, PPokemon target)
+        void Ef_Flatter(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.Flatter);
-            PPReduce(user, PMove.Flatter);
-            if (MissCheck(user, target, PMove.Flatter))
+            BroadcastMoveUsed(user, PBEMove.Flatter);
+            PPReduce(user, PBEMove.Flatter);
+            if (MissCheck(user, target, PBEMove.Flatter))
             {
                 return;
             }
-            ApplyStatChange(target, PStat.SpAttack, +1, battle: this);
-            ApplyStatus2IfPossible(user, target, PStatus2.Confused, true, PFailReason.AlreadyConfused);
+            ApplyStatChange(target, PBEStat.SpAttack, +1, battle: this);
+            ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
         }
-        void Ef_Swagger(PPokemon user, PPokemon target)
+        void Ef_Swagger(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.Swagger);
-            PPReduce(user, PMove.Swagger);
-            if (MissCheck(user, target, PMove.Swagger))
+            BroadcastMoveUsed(user, PBEMove.Swagger);
+            PPReduce(user, PBEMove.Swagger);
+            if (MissCheck(user, target, PBEMove.Swagger))
             {
                 return;
             }
-            ApplyStatChange(target, PStat.Attack, +2, battle: this);
-            ApplyStatus2IfPossible(user, target, PStatus2.Confused, true, PFailReason.AlreadyConfused);
+            ApplyStatChange(target, PBEStat.Attack, +2, battle: this);
+            ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
         }
-        void Ef_Growth(PPokemon user)
+        void Ef_Growth(PBEPokemon user)
         {
-            sbyte change = (sbyte)(Weather == PWeather.Sunny ? +2 : +1);
-            ChangeUserStats(user, PMove.Growth, new PStat[] { PStat.Attack, PStat.SpAttack }, new sbyte[] { change, change });
+            short change = (short)(Weather == PBEWeather.Sunny ? +2 : +1);
+            ChangeUserStats(user, PBEMove.Growth, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { change, change });
         }
-        void Ef_RestoreUserHealth(PPokemon user, PMove move, int percent)
+        void Ef_RestoreUserHealth(PBEPokemon user, PBEMove move, int percent)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (HealDamage(user, (ushort)(user.MaxHP * (percent / 100D))) == 0)
             {
-                BroadcastFail(user, user, PFailReason.HPFull);
+                BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
             }
         }
-        void Ef_Moonlight(PPokemon user)
+        void Ef_Moonlight(PBEPokemon user)
         {
-            BroadcastMoveUsed(user, PMove.Moonlight);
-            PPReduce(user, PMove.Moonlight);
+            BroadcastMoveUsed(user, PBEMove.Moonlight);
+            PPReduce(user, PBEMove.Moonlight);
             double percentage;
             switch (Weather)
             {
-                case PWeather.None: percentage = 0.5; break;
-                case PWeather.Sunny: percentage = 0.66; break;
+                case PBEWeather.None: percentage = 0.5; break;
+                case PBEWeather.Sunny: percentage = 0.66; break;
                 default: percentage = 0.25; break;
             }
             ushort hp = (ushort)(user.MaxHP * percentage);
             if (HealDamage(user, hp) == 0)
             {
-                BroadcastFail(user, user, PFailReason.HPFull);
+                BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
             }
         }
-        void Ef_Transform(PPokemon user, PPokemon target)
+        void Ef_Transform(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.Transform);
-            PPReduce(user, PMove.Transform);
-            if (user.Status2.HasFlag(PStatus2.Transformed)
-                || target.Status2.HasFlag(PStatus2.Transformed)
-                || target.Status2.HasFlag(PStatus2.Substitute))
+            BroadcastMoveUsed(user, PBEMove.Transform);
+            PPReduce(user, PBEMove.Transform);
+            if (user.Status2.HasFlag(PBEStatus2.Transformed)
+                || target.Status2.HasFlag(PBEStatus2.Transformed)
+                || target.Status2.HasFlag(PBEStatus2.Substitute))
             {
-                BroadcastFail(user, target, PFailReason.Default);
+                BroadcastMoveFailed(user, target, PBEFailReason.Default);
                 return;
             }
-            if (MissCheck(user, target, PMove.Transform))
+            if (MissCheck(user, target, PBEMove.Transform))
             {
                 return;
             }
             user.Transform(target, target.Attack, target.Defense, target.SpAttack, target.SpDefense, target.Speed, target.Ability, target.Type1, target.Type2, target.Moves);
             BroadcastTransform(user, target);
         }
-        void Ef_Curse(PPokemon user, PPokemon target)
+        void Ef_Curse(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.Curse);
-            PPReduce(user, PMove.Curse);
-            if (user.HasType(PType.Ghost))
+            BroadcastMoveUsed(user, PBEMove.Curse);
+            PPReduce(user, PBEMove.Curse);
+            if (user.HasType(PBEType.Ghost))
             {
                 if (target == user) // Just gained the Ghost type after selecting the move, so get a target
                 {
-                    PFieldPosition prioritizedPos = GetPositionAcross(BattleStyle, user.FieldPosition);
-                    PTarget t;
-                    if (prioritizedPos == PFieldPosition.Left)
-                        t = PTarget.FoeLeft;
-                    else if (prioritizedPos == PFieldPosition.Center)
-                        t = PTarget.FoeCenter;
+                    PBEFieldPosition prioritizedPos = GetPositionAcross(BattleStyle, user.FieldPosition);
+                    PBETarget t;
+                    if (prioritizedPos == PBEFieldPosition.Left)
+                    {
+                        t = PBETarget.FoeLeft;
+                    }
+                    else if (prioritizedPos == PBEFieldPosition.Center)
+                    {
+                        t = PBETarget.FoeCenter;
+                    }
                     else
-                        t = PTarget.FoeRight;
-                    PPokemon[] targets = GetRuntimeTargets(user, t, false);
+                    {
+                        t = PBETarget.FoeRight;
+                    }
+
+                    PBEPokemon[] targets = GetRuntimeTargets(user, t, false);
                     if (targets.Length == 0)
                     {
-                        BroadcastFail(user, user, PFailReason.NoTarget);
+                        BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
                         return;
                     }
                     target = targets[0];
                 }
-                if (!MissCheck(user, target, PMove.Curse))
+                if (!MissCheck(user, target, PBEMove.Curse))
                 {
-                    ApplyStatus2IfPossible(user, target, PStatus2.Cursed, true);
+                    ApplyStatus2IfPossible(user, target, PBEStatus2.Cursed, true);
                 }
             }
             else
             {
-                if (user.SpeedChange == -PSettings.MaxStatChange
-                    && user.AttackChange == PSettings.MaxStatChange
-                    && user.DefenseChange == PSettings.MaxStatChange)
+                if (user.SpeedChange == -PBESettings.MaxStatChange
+                    && user.AttackChange == PBESettings.MaxStatChange
+                    && user.DefenseChange == PBESettings.MaxStatChange)
                 {
-                    BroadcastFail(user, target, PFailReason.Default);
+                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
                 }
                 else
                 {
-                    ApplyStatChange(user, PStat.Speed, -1, battle: this);
-                    ApplyStatChange(user, PStat.Attack, +1, battle: this);
-                    ApplyStatChange(user, PStat.Defense, +1, battle: this);
+                    ApplyStatChange(user, PBEStat.Speed, -1, battle: this);
+                    ApplyStatChange(user, PBEStat.Attack, +1, battle: this);
+                    ApplyStatChange(user, PBEStat.Defense, +1, battle: this);
                 }
             }
         }
-        void Ef_Magnitude(PPokemon user, PPokemon[] targets)
+        void Ef_Magnitude(PBEPokemon user, PBEPokemon[] targets)
         {
-            BroadcastMoveUsed(user, PMove.Magnitude);
-            PPReduce(user, PMove.Magnitude);
-            int val = PUtils.RNG.Next(0, 100);
+            BroadcastMoveUsed(user, PBEMove.Magnitude);
+            PPReduce(user, PBEMove.Magnitude);
+            int val = PBEUtils.RNG.Next(0, 100);
             byte magnitude, basePower;
             if (val < 5) // Magnitude 4 - 5%
             {
@@ -1551,59 +1626,59 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 basePower = 150;
             }
             BroadcastMagnitude(magnitude);
-            foreach (PPokemon target in targets)
+            foreach (PBEPokemon target in targets)
             {
                 if (target.HP < 1)
                 {
                     continue;
                 }
-                if (MissCheck(user, target, PMove.Magnitude))
+                if (MissCheck(user, target, PBEMove.Magnitude))
                 {
                     continue;
                 }
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                bool crit = CritCheck(user, target, PMove.Magnitude, ref damageMultiplier);
-                TypeCheck(user, target, PMove.Magnitude, out PType moveType, out PEffectiveness effectiveness, ref damageMultiplier);
-                ushort damage = CalculateDamage(user, target, PMove.Magnitude, moveType, criticalHit: crit, power: basePower);
+                bool crit = CritCheck(user, target, PBEMove.Magnitude, ref damageMultiplier);
+                TypeCheck(user, target, PBEMove.Magnitude, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                ushort damage = CalculateDamage(user, target, PBEMove.Magnitude, moveType, criticalHit: crit, power: basePower);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
                 if (crit)
                 {
-                    BroadcastCrit();
+                    BroadcastMoveCrit();
                 }
                 FaintCheck(target);
             }
         }
-        void Ef_Endeavor(PPokemon user, PPokemon target)
+        void Ef_Endeavor(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.Endeavor);
-            PPReduce(user, PMove.Endeavor);
-            if (MissCheck(user, target, PMove.Endeavor))
+            BroadcastMoveUsed(user, PBEMove.Endeavor);
+            PPReduce(user, PBEMove.Endeavor);
+            if (MissCheck(user, target, PBEMove.Endeavor))
             {
                 return;
             }
             if (target.HP <= user.HP)
             {
-                BroadcastFail(user, target, PFailReason.Default);
+                BroadcastMoveFailed(user, target, PBEFailReason.Default);
                 return;
             }
-            DealDamage(user, target, (ushort)(target.HP - user.HP), PEffectiveness.Normal, false);
+            DealDamage(user, target, (ushort)(target.HP - user.HP), PBEEffectiveness.Normal, false);
         }
-        void Ef_PainSplit(PPokemon user, PPokemon target)
+        void Ef_PainSplit(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.PainSplit);
-            PPReduce(user, PMove.PainSplit);
-            if (target.Status2.HasFlag(PStatus2.Substitute))
+            BroadcastMoveUsed(user, PBEMove.PainSplit);
+            PPReduce(user, PBEMove.PainSplit);
+            if (target.Status2.HasFlag(PBEStatus2.Substitute))
             {
-                BroadcastFail(user, target, PFailReason.Default);
+                BroadcastMoveFailed(user, target, PBEFailReason.Default);
                 return;
             }
-            if (MissCheck(user, target, PMove.PainSplit))
+            if (MissCheck(user, target, PBEMove.PainSplit))
             {
                 return;
             }
             ushort total = (ushort)(user.HP + target.HP);
             ushort hp = (ushort)(total / 2);
-            foreach (PPokemon pkmn in new PPokemon[] { user, target })
+            foreach (PBEPokemon pkmn in new PBEPokemon[] { user, target })
             {
                 if (hp >= pkmn.HP)
                 {
@@ -1611,16 +1686,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), PEffectiveness.Normal, true);
+                    DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), PBEEffectiveness.Normal, true);
                 }
             }
             BroadcastPainSplit();
         }
-        void Ef_PsychUp(PPokemon user, PPokemon target)
+        void Ef_PsychUp(PBEPokemon user, PBEPokemon target)
         {
-            BroadcastMoveUsed(user, PMove.PsychUp);
-            PPReduce(user, PMove.PsychUp);
-            if (MissCheck(user, target, PMove.PsychUp))
+            BroadcastMoveUsed(user, PBEMove.PsychUp);
+            PPReduce(user, PBEMove.PsychUp);
+            if (MissCheck(user, target, PBEMove.PsychUp))
             {
                 return;
             }

@@ -7,31 +7,31 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PTeamStatusPacket : INetPacket
+    public sealed class PBETeamStatusPacket : INetPacket
     {
         public const short Code = 0x13;
         public IEnumerable<byte> Buffer => BuildBuffer();
 
-        public bool Local;
-        public readonly PTeamStatus Status;
-        public readonly PTeamStatusAction Action;
-        public readonly byte VictimId; // Victim of PTeamStatusAction.CausedDamage
+        public bool LocalTeam { get; set; }
+        public PBETeamStatus TeamStatus { get; }
+        public PBETeamStatusAction TeamStatusAction { get; }
+        public byte VictimId { get; } // Victim of PBETeamStatusAction.CausedDamage
 
-        public PTeamStatusPacket(bool local, PTeamStatus status, PTeamStatusAction action, byte victimId) // TODO: Change victimId to a PPokemon and have null checks
+        public PBETeamStatusPacket(bool localTeam, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, byte victimId) // TODO: Change victimId to a PPokemon and have null checks (byte? VictimId)
         {
-            Local = local;
-            Status = status;
-            Action = action;
+            LocalTeam = localTeam;
+            TeamStatus = teamStatus;
+            TeamStatusAction = teamStatusAction;
             VictimId = victimId;
         }
-        public PTeamStatusPacket(byte[] buffer)
+        public PBETeamStatusPacket(byte[] buffer)
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                Local = r.ReadBoolean();
-                Status = (PTeamStatus)r.ReadByte();
-                Action = (PTeamStatusAction)r.ReadByte();
+                LocalTeam = r.ReadBoolean();
+                TeamStatus = (PBETeamStatus)r.ReadByte();
+                TeamStatusAction = (PBETeamStatusAction)r.ReadByte();
                 VictimId = r.ReadByte();
             }
         }
@@ -39,9 +39,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Local ? 1 : 0));
-            bytes.Add((byte)Status);
-            bytes.Add((byte)Action);
+            bytes.Add((byte)(LocalTeam ? 1 : 0));
+            bytes.Add((byte)TeamStatus);
+            bytes.Add((byte)TeamStatusAction);
             bytes.Add(VictimId);
             return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }

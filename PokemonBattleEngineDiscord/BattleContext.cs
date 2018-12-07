@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
     public class BattleContext
     {
-        public PBattle Battle { get; }
+        public PBEBattle Battle { get; }
         public SocketUser[] Battlers { get; }
         public ISocketMessageChannel Channel { get; }
 
@@ -47,7 +47,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
         }
 
-        public BattleContext(PBattle battle, SocketUser battler0, SocketUser battler1, ISocketMessageChannel channel)
+        public BattleContext(PBEBattle battle, SocketUser battler0, SocketUser battler1, ISocketMessageChannel channel)
         {
             Battle = battle;
             Battlers = new SocketUser[] { battler0, battler1 };
@@ -58,35 +58,35 @@ namespace Kermalis.PokemonBattleEngineDiscord
             Battle.Begin();
         }
 
-        async Task Battle_OnStateChanged(PBattle battle)
+        async Task Battle_OnStateChanged(PBEBattle battle)
         {
             await Channel.SendMessageAsync($"Battle State Change: \"{battle.BattleState}\"");
 
             switch (battle.BattleState)
             {
-                case PBattleState.ReadyToRunTurn:
+                case PBEBattleState.ReadyToRunTurn:
                     battle.RunTurn();
                     break;
-                case PBattleState.WaitingForActions:
+                case PBEBattleState.WaitingForActions:
                     await Channel.SendMessageAsync($"Send actions {Battlers[0].Mention} {Battlers[1].Mention}");
                     break;
-                case PBattleState.WaitingForSwitchIns:
+                case PBEBattleState.WaitingForSwitchIns:
                     await Channel.SendMessageAsync($"Send switches {Battlers[0].Mention} {Battlers[1].Mention}");
                     break;
             }
         }
-        async Task Battle_OnNewEvent(PBattle battle, INetPacket packet)
+        async Task Battle_OnNewEvent(PBEBattle battle, INetPacket packet)
         {
-            PPokemon culprit, victim;
+            PBEPokemon culprit, victim;
             EmbedBuilder embed;
             string embedTitle = $"{Battlers[0].Username} vs {Battlers[1].Username}"; // TODO: Include turn number
             string message;
 
             switch (packet)
             {
-                case PPkmnSwitchInPacket psip:
+                case PBEPkmnSwitchInPacket psip:
                     culprit = battle.GetPokemon(psip.PokemonId);
-                    message = string.Format("{1} sent out {0}!", culprit.Shell.Nickname, battle.Teams[culprit.Local ? 0 : 1].TrainerName);
+                    message = string.Format("{1} sent out {0}!", culprit.Shell.Nickname, battle.Teams[culprit.LocalTeam ? 0 : 1].TrainerName);
                     embed = new EmbedBuilder()
                         .WithColor(Utils.GetColor(culprit))
                         .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")

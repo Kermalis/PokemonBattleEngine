@@ -23,16 +23,18 @@ namespace Kermalis.PokemonBattleEngineServer
             WaitingForSwitchIns, // Server is waiting for players to switch in new Pokémon
         }
         ServerState state = ServerState.Startup;
-        readonly PBattleStyle intendedBattleStyle = PBattleStyle.Double; // TODO: Let the client know what kind of style this server is running (matchmaking)
-        PBattle battle;
+        readonly PBEBattleStyle intendedBattleStyle = PBEBattleStyle.Double; // TODO: Let the client know what kind of style this server is running (matchmaking)
+        PBEBattle battle;
         Player[] battlers;
 
-        static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
+        static readonly IPacketProcessor packetProcessor = new PBEPacketProcessor();
         public override IPacketProcessor PacketProcessor => packetProcessor;
         public static void Main(string[] args)
         {
             using (var server = new BattleServer("127.0.0.1", 8888))
+            {
                 server.Start();
+            }
         }
         public BattleServer(string host, int port)
         {
@@ -60,7 +62,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 battlers = new Player[] { Clients.ElementAt(0), Clients.ElementAt(1) };
                 battlers[0].IsSpectator = false;
                 battlers[1].IsSpectator = false;
-                SendTo(battlers, new PPartyRequestPacket());
+                SendTo(battlers, new PBEPartyRequestPacket());
             }
         }
         protected override void OnClientDisconnected(Player client)
@@ -90,27 +92,33 @@ namespace Kermalis.PokemonBattleEngineServer
         void CancelMatch()
         {
             if (state == ServerState.Cancelling)
+            {
                 return;
+            }
             lock (this)
             {
                 if (state == ServerState.Cancelling)
+                {
                     return;
-
+                }
                 state = ServerState.Cancelling;
                 Console.WriteLine("Cancelling match...");
-                SendToAll(new PMatchCancelledPacket());
+                SendToAll(new PBEMatchCancelledPacket());
                 StopMatchAndReset();
             }
         }
         void StopMatchAndReset()
         {
             if (state == ServerState.Resetting)
+            {
                 return;
+            }
             lock (this)
             {
                 if (state == ServerState.Resetting)
+                {
                     return;
-
+                }
                 state = ServerState.Resetting;
                 foreach (Player c in Clients)
                 {
@@ -121,22 +129,24 @@ namespace Kermalis.PokemonBattleEngineServer
                 state = ServerState.WaitingForPlayers;
             }
         }
-        public void PartySubmitted(Player player, PTeamShell team)
+        public void PartySubmitted(Player player, PBETeamShell team)
         {
             if (state != ServerState.WaitingForParties)
+            {
                 return;
+            }
             lock (this)
             {
                 if (state != ServerState.WaitingForParties)
+                {
                     return;
-
+                }
                 player.Shell = team;
-
                 if (battlers[0].Shell != null && battlers[1].Shell != null)
                 {
                     try
                     {
-                        PTeamShell.ValidateMany(battlers.Select(b => b.Shell));
+                        PBETeamShell.ValidateMany(battlers.Select(b => b.Shell));
                     }
                     catch
                     {
@@ -148,59 +158,63 @@ namespace Kermalis.PokemonBattleEngineServer
                     state = ServerState.StartingMatch;
                     Console.WriteLine("Battle starting!");
 
-                    battle = new PBattle(intendedBattleStyle, battlers[0].Shell, battlers[1].Shell);
-                    battle.OnNewEvent += PBattle.ConsoleBattleEventHandler;
+                    battle = new PBEBattle(intendedBattleStyle, battlers[0].Shell, battlers[1].Shell);
+                    battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
                     battle.OnNewEvent += BattleEventHandler;
                     battle.OnStateChanged += BattleStateHandler;
 
                     // Send opponent names
-                    battlers[0].Send(new PPlayerJoinedPacket(battlers[1].Id, battlers[1].Shell.PlayerName));
-                    battlers[1].Send(new PPlayerJoinedPacket(battlers[0].Id, battlers[0].Shell.PlayerName));
+                    battlers[0].Send(new PBEPlayerJoinedPacket(battlers[1].Id, battlers[1].Shell.PlayerName));
+                    battlers[1].Send(new PBEPlayerJoinedPacket(battlers[0].Id, battlers[0].Shell.PlayerName));
                     WaitForBattlersResponses();
                     // Send players their parties
-                    battlers[0].Send(new PSetPartyPacket(battle.Teams[0].Party.ToArray()));
-                    battlers[1].Send(new PSetPartyPacket(battle.Teams[1].Party.ToArray()));
+                    battlers[0].Send(new PBESetPartyPacket(battle.Teams[0].Party.ToArray()));
+                    battlers[1].Send(new PBESetPartyPacket(battle.Teams[1].Party.ToArray()));
                     WaitForBattlersResponses();
 
                     battle.Begin();
                 }
             }
         }
-        public void ActionsSubmitted(Player player, PAction[] actions)
+        public void ActionsSubmitted(Player player, PBEAction[] actions)
         {
             if (state != ServerState.WaitingForActions)
+            {
                 return;
+            }
             lock (this)
             {
                 if (state != ServerState.WaitingForActions)
+                {
                     return;
-
+                }
                 Console.WriteLine($"Received actions from {player.Shell.PlayerName}!");
-
                 bool local = player == battlers[0];
                 if (!battle.SelectActionsIfValid(local, actions))
                 {
                     Console.WriteLine("Actions are invalid!");
-                    player.Send(new PActionsRequestPacket(local, battle.Teams[local ? 0 : 1].ActionsRequired));
+                    player.Send(new PBEActionsRequestPacket(local, battle.Teams[local ? 0 : 1].ActionsRequired));
                 }
             }
         }
-        public void SwitchesSubmitted(Player player, Tuple<byte, PFieldPosition>[] switches)
+        public void SwitchesSubmitted(Player player, Tuple<byte, PBEFieldPosition>[] switches)
         {
             if (state != ServerState.WaitingForSwitchIns)
+            {
                 return;
+            }
             lock (this)
             {
                 if (state != ServerState.WaitingForSwitchIns)
+                {
                     return;
-
+                }
                 Console.WriteLine($"Received switches from {player.Shell.PlayerName}!");
-
                 bool local = player == battlers[0];
                 if (!battle.SelectSwitchesIfValid(local, switches))
                 {
                     Console.WriteLine("Switches are invalid!");
-                    player.Send(new PSwitchInRequestPacket(local, battle.Teams[local ? 0 : 1].SwitchInsRequired));
+                    player.Send(new PBESwitchInRequestPacket(local, battle.Teams[local ? 0 : 1].SwitchInsRequired));
                 }
             }
         }
@@ -210,42 +224,42 @@ namespace Kermalis.PokemonBattleEngineServer
             battlers[0].ResetEvent.WaitOne();
             battlers[1].ResetEvent.WaitOne();
         }
-        void BattleStateHandler(PBattle battle)
+        void BattleStateHandler(PBEBattle battle)
         {
             Console.WriteLine("Battle state changed: {0}", battle.BattleState);
-
             switch (battle.BattleState)
             {
-                case PBattleState.Processing:
+                case PBEBattleState.Processing:
                     state = ServerState.BattleProcessing;
                     break;
-                case PBattleState.ReadyToRunTurn:
-                    Console.WriteLine("Turn is ready to run!");
+                case PBEBattleState.ReadyToRunTurn:
                     battle.RunTurn();
                     break;
-                case PBattleState.WaitingForActions:
+                case PBEBattleState.WaitingForActions:
                     state = ServerState.WaitingForActions;
                     Console.WriteLine("Waiting for actions...");
                     break;
-                case PBattleState.WaitingForSwitchIns:
+                case PBEBattleState.WaitingForSwitchIns:
                     state = ServerState.WaitingForSwitchIns;
                     Console.WriteLine("Waiting for switches...");
                     break;
             }
         }
-        void BattleEventHandler(PBattle battle, INetPacket packet)
+        void BattleEventHandler(PBEBattle battle, INetPacket packet)
         {
             switch (packet)
             {
-                case PActionsRequestPacket _:
-                case PPkmnSwitchInPacket _:
-                case PSwitchInRequestPacket _:
-                case PTeamStatusPacket _:
+                case PBEActionsRequestPacket _:
+                case PBEPkmnSwitchInPacket _:
+                case PBESwitchInRequestPacket _:
+                case PBETeamStatusPacket _:
                     dynamic pack = packet;
                     foreach (Player client in Clients)
                     {
                         if (client == battlers[1])
-                            pack.Local = !pack.Local; // Correctly set locally owned for this team
+                        {
+                            pack.LocalTeam = !pack.LocalTeam; // Correctly set for this team
+                        }
                         client.Send(packet);
                     }
                     WaitForBattlersResponses();

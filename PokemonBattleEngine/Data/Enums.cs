@@ -2,14 +2,14 @@
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public enum PGender : byte
+    public enum PBEGender : byte
     {
         Female,
         Genderless,
         Male,
         MAX
     }
-    public enum PGenderRatio : byte
+    public enum PBEGenderRatio : byte
     {
         M7_F1, // Male 7:1 Female
         M3_F1, // Male 3:1 Female
@@ -20,32 +20,32 @@ namespace Kermalis.PokemonBattleEngine.Data
         M0_F0, // Genderless species
         M1_F0  // Male species
     }
-    public enum PStat : byte
+    public enum PBEStat : byte
     {
-        HP,
-        Attack,
-        Defense,
-        SpAttack,
-        SpDefense,
-        Speed, // TODO
-        Accuracy, // TODO
-        Evasion // TODO
+        HP = 0,
+        Attack = 1,
+        Defense = 2,
+        SpAttack = 3,
+        SpDefense = 4,
+        Speed = 5,
+        Accuracy = 6,
+        Evasion = 7
     }
-    public enum PEffectiveness : byte
+    public enum PBEEffectiveness : byte
     {
         Ineffective,
         NotVeryEffective,
         Normal,
         SuperEffective
     }
-    public enum PBattleStyle : byte
+    public enum PBEBattleStyle : byte
     {
         Single,
         Double,
         Triple,
         Rotation
     }
-    public enum PBattleState : byte
+    public enum PBEBattleState : byte
     {
         WaitingForPlayers,
         ReadyToBegin,
@@ -55,13 +55,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         WaitingForSwitchIns,
         Ended
     }
-    public enum PWeather : byte
+    public enum PBEWeather : byte
     {
         None,
         Raining,
         Sunny
     }
-    public enum PFieldPosition : byte
+    public enum PBEFieldPosition : byte
     {
         // Not on the field.
         None,
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Right
     }
     [Flags]
-    public enum PTarget : byte
+    public enum PBETarget : byte
     {
         None,
         AllyLeft = 1 << 0,
@@ -85,13 +85,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         FoeCenter = 1 << 4,
         FoeRight = 1 << 5
     }
-    public enum PDecision : byte
+    public enum PBEDecision : byte
     {
         None,
         Fight,
         Switch
     }
-    public enum PMoveCategory : byte
+    public enum PBEMoveCategory : byte
     {
         Status,
         Physical,
@@ -99,7 +99,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MAX
     }
     [Flags]
-    public enum PMoveObtainMethod : ulong
+    public enum PBEMoveObtainMethod : ulong
     {
         None,
         LevelUp_RS = 1u << 0,
@@ -136,7 +136,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DreamWorld = 1u << 31,
         Forme = 1u << 32 // Learned when changing formes
     }
-    public enum PStatus1 : byte
+    public enum PBEStatus1 : byte
     {
         None,
         Asleep,
@@ -147,7 +147,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Poisoned
     }
     [Flags]
-    public enum PStatus2 : uint
+    public enum PBEStatus2 : uint
     {
         None,
         Airborne = 1 << 0,
@@ -166,7 +166,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Underwater = 1 << 13
     }
     [Flags]
-    public enum PTeamStatus : byte
+    public enum PBETeamStatus : byte
     {
         None,
         LightScreen = 1 << 0,
@@ -175,7 +175,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StealthRock = 1 << 3, // TODO: magic guard, castform transforms after taking damage
         ToxicSpikes = 1 << 4 // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
     }
-    public enum PStatusAction : byte
+    public enum PBEStatusAction : byte
     {
         Activated, // flinch prevented movement, protect activated, etc
         Added, // protected itself, became paralyzed, etc
@@ -183,26 +183,26 @@ namespace Kermalis.PokemonBattleEngine.Data
         Damage, // hurt from confusion, substitute took damage, etc
         Ended // woke up, no longer confused, etc
     }
-    public enum PTeamStatusAction : byte
+    public enum PBETeamStatusAction : byte
     {
         Added, // set up
         Cleared, // brick break destroying reflect, defog clearing spikes, etc
         Damage, // hazard causing damage
         Ended // reflect & light screen wearing off
     }
-    public enum PFailReason : byte
+    public enum PBEFailReason : byte
     {
         AlreadyConfused, // Swagger/Flatter
         Default, // "But it failed!"
         HPFull, // Trying to use a healing move with max HP
         NoTarget // All opponents fainted already
     }
-    public enum PWeatherAction : byte
+    public enum PBEWeatherAction : byte
     {
         Added,
         Ended
     }
-    public enum PType : byte
+    public enum PBEType : byte
     {
         None,
         Bug,
@@ -223,7 +223,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Steel,
         Water
     }
-    public enum PNature : byte
+    public enum PBENature : byte
     {
         Adamant,
         Bashful,
@@ -252,7 +252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Timid,
         MAX
     }
-    public enum PItem : ushort
+    public enum PBEItem : ushort
     {
         None,
         AdamantOrb,
@@ -329,7 +329,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ZapPlate,
         MAX
     }
-    public enum PAbility : byte
+    public enum PBEAbility : byte
     {
         None, // Only used when an ability is removed
         Adaptability,
@@ -498,7 +498,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ZenMode, // TODO
         MAX,
     }
-    public enum PSpecies : uint
+    public enum PBESpecies : uint
     {
         Bulbasaur = 1,
         Ivysaur = 2,
@@ -615,7 +615,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Genesect_Douse = 649 | (3 << 0x10),
         Genesect_Shock = 649 | (4 << 0x10)
     }
-    public enum PMoveTarget : byte // Used in MoveData
+    public enum PBEMoveTarget : byte // Used in MoveData
     {
         All,                   // Every battler (Ex. Perish Song)
         AllFoes,               // Every foe (Ex. Stealth Rock)
@@ -632,7 +632,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Varies                 // Possible targets vary (Ex. Curse)
     }
     [Flags]
-    public enum PMoveFlag : ushort
+    public enum PBEMoveFlag : ushort
     {
         None,
         AlwaysCrit = 1 << 0,           // Always lands a critical hit
@@ -648,7 +648,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MakesContact = 1 << 10,        // Rough Skin, Iron Barbs and Rocky Helmet hurt the user
         SoundBased = 1 << 11           // Soundproof blocks the move
     }
-    public enum PMoveEffect : byte
+    public enum PBEMoveEffect : byte
     {
         BrickBreak,
         Burn,
@@ -733,7 +733,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ToxicSpikes,
         Transform
     }
-    public enum PMove : ushort
+    public enum PBEMove : ushort
     {
         None,
         Acid,

@@ -7,40 +7,44 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PActionsRequestPacket : INetPacket
+    public sealed class PBEActionsRequestPacket : INetPacket
     {
         public const short Code = 0x07;
         public IEnumerable<byte> Buffer => BuildBuffer();
 
-        public bool Local;
-        public readonly byte[] PokemonIDs;
+        public bool LocalTeam { get; set; }
+        public byte[] PokemonIDs { get; }
 
-        public PActionsRequestPacket(bool local, IEnumerable<PPokemon> pkmn)
+        public PBEActionsRequestPacket(bool localTeam, IEnumerable<PBEPokemon> pkmn)
         {
-            Local = local;
+            LocalTeam = localTeam;
             PokemonIDs = pkmn.Select(p => p.Id).ToArray();
         }
-        public PActionsRequestPacket(byte[] buffer)
+        public PBEActionsRequestPacket(byte[] buffer)
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                Local = r.ReadBoolean();
+                LocalTeam = r.ReadBoolean();
                 var numPkmn = Math.Min((byte)3, r.ReadByte());
                 PokemonIDs = new byte[numPkmn];
                 for (int i = 0; i < numPkmn; i++)
+                {
                     PokemonIDs[i] = r.ReadByte();
+                }
             }
         }
         IEnumerable<byte> BuildBuffer()
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Local ? 1 : 0));
+            bytes.Add((byte)(LocalTeam ? 1 : 0));
             var numPkmn = Math.Min(3, PokemonIDs.Length);
             bytes.Add((byte)numPkmn);
             for (int i = 0; i < numPkmn; i++)
+            {
                 bytes.Add(PokemonIDs[i]);
+            }
             return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
 

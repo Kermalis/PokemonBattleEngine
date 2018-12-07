@@ -7,33 +7,37 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PSetPartyPacket : INetPacket
+    public sealed class PBESetPartyPacket : INetPacket
     {
         public const short Code = 0x05;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly PPokemon[] Party;
+        public PBEPokemon[] Party { get; }
 
-        public PSetPartyPacket(IEnumerable<PPokemon> party)
+        public PBESetPartyPacket(IEnumerable<PBEPokemon> party)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            var numPkmn = Math.Min(PSettings.MaxPartySize, (Party = party.ToArray()).Length);
+            var numPkmn = Math.Min(PBESettings.MaxPartySize, (Party = party.ToArray()).Length);
             bytes.Add((byte)numPkmn);
             for (int i = 0; i < numPkmn; i++)
+            {
                 bytes.AddRange(Party[i].ToBytes());
+            }
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PSetPartyPacket(byte[] buffer)
+        public PBESetPartyPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                var numPkmn = Math.Min(PSettings.MaxPartySize, r.ReadByte());
-                Party = new PPokemon[numPkmn];
+                var numPkmn = Math.Min(PBESettings.MaxPartySize, r.ReadByte());
+                Party = new PBEPokemon[numPkmn];
                 for (int i = 0; i < numPkmn; i++)
-                    Party[i] = PPokemon.FromBytes(r);
+                {
+                    Party[i] = PBEPokemon.FromBytes(r);
+                }
             }
         }
 

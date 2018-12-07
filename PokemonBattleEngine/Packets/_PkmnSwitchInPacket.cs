@@ -7,25 +7,26 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PPkmnSwitchInPacket : INetPacket
+    public sealed class PBEPkmnSwitchInPacket : INetPacket
     {
         public const short Code = 0x06;
         public IEnumerable<byte> Buffer => BuildBuffer();
 
-        public readonly byte PokemonId;
-        public bool Local;
-        public readonly PSpecies Species;
-        public readonly string Nickname;
-        public readonly byte Level;
-        public readonly bool Shiny;
-        public readonly ushort HP, MaxHP;
-        public readonly PGender Gender;
-        public readonly PFieldPosition FieldPosition;
+        public byte PokemonId { get; }
+        public bool LocalTeam { get; set; }
+        public PBESpecies Species { get; }
+        public string Nickname { get; }
+        public byte Level { get; }
+        public bool Shiny { get; }
+        public ushort HP { get; }
+        public ushort MaxHP { get; }
+        public PBEGender Gender { get; }
+        public PBEFieldPosition FieldPosition { get; }
 
-        public PPkmnSwitchInPacket(PPokemon pkmn)
+        public PBEPkmnSwitchInPacket(PBEPokemon pkmn)
         {
             PokemonId = pkmn.Id;
-            Local = pkmn.Local;
+            LocalTeam = pkmn.LocalTeam;
             Species = pkmn.Shell.Species;
             Nickname = pkmn.Shell.Nickname;
             Level = pkmn.Shell.Level;
@@ -35,21 +36,21 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Gender = pkmn.Shell.Gender;
             FieldPosition = pkmn.FieldPosition;
         }
-        public PPkmnSwitchInPacket(byte[] buffer)
+        public PBEPkmnSwitchInPacket(byte[] buffer)
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
                 PokemonId = r.ReadByte();
-                Local = r.ReadBoolean();
-                Species = (PSpecies)r.ReadUInt32();
-                Nickname = PUtils.StringFromBytes(r);
+                LocalTeam = r.ReadBoolean();
+                Species = (PBESpecies)r.ReadUInt32();
+                Nickname = PBEUtils.StringFromBytes(r);
                 Level = r.ReadByte();
                 Shiny = r.ReadBoolean();
                 HP = r.ReadUInt16();
                 MaxHP = r.ReadUInt16();
-                Gender = (PGender)r.ReadByte();
-                FieldPosition = (PFieldPosition)r.ReadByte();
+                Gender = (PBEGender)r.ReadByte();
+                FieldPosition = (PBEFieldPosition)r.ReadByte();
             }
         }
         IEnumerable<byte> BuildBuffer()
@@ -57,9 +58,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add(PokemonId);
-            bytes.Add((byte)(Local ? 1 : 0));
+            bytes.Add((byte)(LocalTeam ? 1 : 0));
             bytes.AddRange(BitConverter.GetBytes((uint)Species));
-            bytes.AddRange(PUtils.StringToBytes(Nickname));
+            bytes.AddRange(PBEUtils.StringToBytes(Nickname));
             bytes.Add(Level);
             bytes.Add((byte)(Shiny ? 1 : 0));
             bytes.AddRange(BitConverter.GetBytes(HP));

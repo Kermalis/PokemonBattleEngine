@@ -1,6 +1,6 @@
 ﻿namespace Kermalis.PokemonBattleEngine.Data
 {
-    public static class PSettings
+    public static class PBESettings
     {
         public const byte MaxLevel = 100; // [Default: 100]
 

@@ -7,27 +7,27 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PPartyResponsePacket : INetPacket
+    public sealed class PBEPartyResponsePacket : INetPacket
     {
         public const short Code = 0x04;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly PTeamShell Team;
+        public PBETeamShell TeamShell { get; }
 
-        public PPartyResponsePacket(PTeamShell team)
+        public PBEPartyResponsePacket(PBETeamShell teamShell)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange((Team = team).ToBytes());
+            bytes.AddRange((TeamShell = teamShell).ToBytes());
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PPartyResponsePacket(byte[] buffer)
+        public PBEPartyResponsePacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                Team = PTeamShell.FromBytes(r);
+                TeamShell = PBETeamShell.FromBytes(r);
             }
         }
 

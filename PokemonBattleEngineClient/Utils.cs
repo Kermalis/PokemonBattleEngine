@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
@@ -52,33 +51,32 @@ namespace Kermalis.PokemonBattleEngineClient
             { ' ', "Space" }
         };
         static readonly Dictionary<string, Bitmap> LoadedBitmaps = new Dictionary<string, Bitmap>();
+        static string GetCharKey(char c)
+        {
+            if (SpecialCharKeys.ContainsKey(c))
+            {
+                return SpecialCharKeys[c];
+            }
+            string key = $"{(char.IsUpper(c) ? "U" : "")}{c}";
+            return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{key}.png") ? key : SpecialCharKeys['?'];
+        }
         public static Bitmap RenderString(string str)
         {
-            string GetKey(char c)
-            {
-                if (SpecialCharKeys.ContainsKey(c))
-                {
-                    return SpecialCharKeys[c];
-                }
-                string key = $"{(char.IsUpper(c) ? "U" : "")}{c}";
-                return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{key}.png") ? key : SpecialCharKeys['?'];
-            }
-
             if (string.IsNullOrEmpty(str))
             {
-                return null; // new RenderTargetBitmap(new PixelSize(1, 1));
+                return null;
             }
 
             foreach (char c in str)
             {
-                string key = GetKey(c);
+                string key = GetCharKey(c);
                 if (!LoadedBitmaps.ContainsKey(key))
                 {
                     LoadedBitmaps.Add(key, UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts.{key}.png?assembly=PokemonBattleEngineClient")));
                 }
             }
 
-            int stringWidth = str.Select(c => LoadedBitmaps[GetKey(c)].PixelSize.Width).Sum();
+            int stringWidth = str.Select(c => LoadedBitmaps[GetCharKey(c)].PixelSize.Width).Sum();
             const byte height = 14;
 
             var rtb = new RenderTargetBitmap(new PixelSize(stringWidth, height));
@@ -87,7 +85,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 double x = 0;
                 foreach (char c in str)
                 {
-                    Bitmap bmp = LoadedBitmaps[GetKey(c)];
+                    Bitmap bmp = LoadedBitmaps[GetCharKey(c)];
                     int width = bmp.PixelSize.Width;
                     ctx.DrawImage(bmp.PlatformImpl, 1, new Rect(0, 0, width, height), new Rect(x, 0, width, height));
                     x += width;

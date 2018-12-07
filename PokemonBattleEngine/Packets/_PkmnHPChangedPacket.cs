@@ -7,15 +7,15 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PPkmnHPChangedPacket : INetPacket
+    public sealed class PBEPkmnHPChangedPacket : INetPacket
     {
         public const short Code = 0x0A;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte VictimId;
-        public readonly int Change;
+        public byte VictimId { get; }
+        public int Change { get; }
 
-        public PPkmnHPChangedPacket(PPokemon victim, int change)
+        public PBEPkmnHPChangedPacket(PBEPokemon victim, int change)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes(Change = change));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PPkmnHPChangedPacket(byte[] buffer)
+        public PBEPkmnHPChangedPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))

@@ -6,25 +6,25 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PSwitchInRequestPacket : INetPacket
+    public sealed class PBESwitchInRequestPacket : INetPacket
     {
         public const short Code = 0x23;
         public IEnumerable<byte> Buffer => BuildBuffer();
 
-        public bool Local;
-        public readonly byte Amount;
+        public bool LocalTeam { get; set; }
+        public byte Amount { get; }
 
-        public PSwitchInRequestPacket(bool local, byte amount)
+        public PBESwitchInRequestPacket(bool localTeam, byte amount)
         {
-            Local = local;
+            LocalTeam = localTeam;
             Amount = amount;
         }
-        public PSwitchInRequestPacket(byte[] buffer)
+        public PBESwitchInRequestPacket(byte[] buffer)
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                Local = r.ReadBoolean();
+                LocalTeam = r.ReadBoolean();
                 Amount = r.ReadByte();
             }
         }
@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Local ? 1 : 0));
+            bytes.Add((byte)(LocalTeam ? 1 : 0));
             bytes.Add(Amount);
             return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }

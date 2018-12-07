@@ -6,48 +6,56 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PPokemon
+    public sealed class PBEPokemon
     {
         public readonly byte Id;
         // Not included in ToBytes() or FromBytes(). Set manually by the host
         // True indicates this Pokémon is owned by the client or team 0 in the eyes of the host/spectators
-        public bool Local;
-        public readonly PPokemonShell Shell;
+        public bool LocalTeam;
+        public readonly PBEPokemonShell Shell;
 
         public string NameForTrainer(bool firstLetterCapitalized)
         {
             string prefix;
             if (firstLetterCapitalized)
             {
-                if (Local)
+                if (LocalTeam)
+                {
                     prefix = "";
+                }
                 else
+                {
                     prefix = "The foe's ";
+                }
             }
             else
             {
-                if (Local)
+                if (LocalTeam)
+                {
                     prefix = "";
+                }
                 else
+                {
                     prefix = "the foe's ";
+                }
             }
             return prefix + Shell.Nickname;
         }
         public string NameWithGender => Shell.Nickname + GenderSymbol;
-        public string GenderSymbol => Shell.Gender == PGender.Female ? "♀" : Shell.Gender == PGender.Male ? "♂" : string.Empty;
+        public string GenderSymbol => Shell.Gender == PBEGender.Female ? "♀" : Shell.Gender == PBEGender.Male ? "♂" : string.Empty;
 
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
-        public PMove[] Moves = new PMove[PSettings.NumMoves];
-        public byte[] PP = new byte[PSettings.NumMoves], MaxPP = new byte[PSettings.NumMoves];
+        public PBEMove[] Moves = new PBEMove[PBESettings.NumMoves];
+        public byte[] PP = new byte[PBESettings.NumMoves], MaxPP = new byte[PBESettings.NumMoves];
 
-        public PSpecies Species;
+        public PBESpecies Species;
         public bool Shiny;
-        public PAbility Ability;
-        public PType Type1, Type2;
-        public PItem Item;
-        public PFieldPosition FieldPosition;
-        public PStatus1 Status1;
-        public PStatus2 Status2;
+        public PBEAbility Ability;
+        public PBEType Type1, Type2;
+        public PBEItem Item;
+        public PBEFieldPosition FieldPosition;
+        public PBEStatus1 Status1;
+        public PBEStatus2 Status2;
         // These are in a set order; see BattleEffects->ApplyStatChange()
         public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
 
@@ -60,12 +68,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte ProtectCounter; // Protect
         public ushort SubstituteHP; // Substitute
 
-        public PFieldPosition SeededPosition; // The position to return Leech Seed HP to on the opposing team
+        public PBEFieldPosition SeededPosition; // The position to return Leech Seed HP to on the opposing team
 
-        public PAction PreviousAction, LockedAction, SelectedAction;
+        public PBEAction PreviousAction, LockedAction, SelectedAction;
 
-        // Stats & PP are set from the shell info, but Local will need to be manually set by the host
-        public PPokemon(byte id, PPokemonShell shell)
+        // Stats & PP are set from the shell info, but LocalTeam will need to be manually set by the host
+        public PBEPokemon(byte id, PBEPokemonShell shell)
         {
             Shell = shell;
             Species = Shell.Species;
@@ -77,59 +85,62 @@ namespace Kermalis.PokemonBattleEngine.Data
             CalculateStats();
             HP = MaxHP;
             Moves = Shell.Moves;
-            for (int i = 0; i < PSettings.NumMoves; i++)
+            for (int i = 0; i < PBESettings.NumMoves; i++)
             {
-                PMove move = Shell.Moves[i];
-                if (move != PMove.None)
+                PBEMove move = Shell.Moves[i];
+                if (move != PBEMove.None)
                 {
-                    byte tier = PMoveData.Data[move].PPTier;
-                    int movePP = (tier * PSettings.PPMultiplier) + (tier * Shell.PPUps[i]);
+                    byte tier = PBEMoveData.Data[move].PPTier;
+                    int movePP = (tier * PBESettings.PPMultiplier) + (tier * Shell.PPUps[i]);
                     PP[i] = MaxPP[i] = (byte)movePP;
                 }
             }
-            Type1 = PPokemonData.Data[Species].Type1;
-            Type2 = PPokemonData.Data[Species].Type2;
+            Type1 = PBEPokemonData.Data[Species].Type1;
+            Type2 = PBEPokemonData.Data[Species].Type2;
         }
         // This constructor is to define an unknown remote Pokémon
-        // Local is set to false here
-        public PPokemon(PPkmnSwitchInPacket psip)
+        // LocalTeam is set to false here
+        public PBEPokemon(PBEPkmnSwitchInPacket psip)
         {
             Id = psip.PokemonId;
-            Local = false;
-            Shell = new PPokemonShell
+            LocalTeam = false;
+            Shell = new PBEPokemonShell
             {
                 Species = psip.Species,
                 Shiny = psip.Shiny,
                 Nickname = psip.Nickname,
                 Level = psip.Level,
                 Gender = psip.Gender,
-                Ability = PAbility.MAX,
-                Item = PItem.MAX,
-                Nature = PNature.MAX
+                Ability = PBEAbility.MAX,
+                Item = PBEItem.MAX,
+                Nature = PBENature.MAX
             };
             Species = psip.Species;
             Shiny = psip.Shiny;
-            Ability = PAbility.MAX;
-            Item = PItem.MAX;
-            for (int i = 0; i < PSettings.NumMoves; i++)
-                Moves[i] = PMove.MAX;
-            Type1 = PPokemonData.Data[Species].Type1;
-            Type2 = PPokemonData.Data[Species].Type2;
+            Ability = PBEAbility.MAX;
+            Item = PBEItem.MAX;
+            for (int i = 0; i < PBESettings.NumMoves; i++)
+            {
+                Moves[i] = PBEMove.MAX;
+            }
+
+            Type1 = PBEPokemonData.Data[Species].Type1;
+            Type2 = PBEPokemonData.Data[Species].Type2;
         }
 
-        public bool HasType(PType type) => Type1 == type || Type2 == type;
+        public bool HasType(PBEType type) => Type1 == type || Type2 == type;
 
         void CalculateStats()
         {
-            PPokemonData pData = PPokemonData.Data[Species];
+            PBEPokemonData pData = PBEPokemonData.Data[Species];
 
-            MaxHP = (ushort)(((2 * pData.HP + Shell.IVs[0] + (Shell.EVs[0] / 4)) * Shell.Level / PSettings.MaxLevel) + Shell.Level + 10);
+            MaxHP = (ushort)(((2 * pData.HP + Shell.IVs[0] + (Shell.EVs[0] / 4)) * Shell.Level / PBESettings.MaxLevel) + Shell.Level + 10);
 
             int i = 0;
             ushort OtherStat(byte baseVal)
             {
-                double natureMultiplier = 1 + (PPokemonData.NatureBoosts[Shell.Nature][i] * PSettings.NatureStatBoost);
-                ushort val = (ushort)((((2 * baseVal + Shell.IVs[i + 1] + (Shell.EVs[i + 1] / 4)) * Shell.Level / PSettings.MaxLevel) + 5) * natureMultiplier);
+                double natureMultiplier = 1 + (PBEPokemonData.NatureBoosts[Shell.Nature][i] * PBESettings.NatureStatBoost);
+                ushort val = (ushort)((((2 * baseVal + Shell.IVs[i + 1] + (Shell.EVs[i + 1] / 4)) * Shell.Level / PBESettings.MaxLevel) + 5) * natureMultiplier);
                 i++;
                 return val;
             }
@@ -142,34 +153,40 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public void ClearForSwitch()
         {
-            FieldPosition = PFieldPosition.None;
+            FieldPosition = PBEFieldPosition.None;
             Species = Shell.Species;
             Ability = Shell.Ability;
             Shiny = Shell.Shiny;
 
             AttackChange = DefenseChange = SpAttackChange = SpDefenseChange = SpeedChange = AccuracyChange = EvasionChange = 0;
 
-            if (Status1 == PStatus1.Asleep)
+            if (Status1 == PBEStatus1.Asleep)
+            {
                 Status1Counter = SleepTurns;
-            else if (Status1 == PStatus1.BadlyPoisoned)
+            }
+            else if (Status1 == PBEStatus1.BadlyPoisoned)
+            {
                 Status1Counter = 1;
+            }
 
-            Status2 &= ~PStatus2.Confused;
+            Status2 &= ~PBEStatus2.Confused;
             ConfusionCounter = ConfusionTurns = 0;
-            Status2 &= ~PStatus2.LeechSeed;
-            SeededPosition = PFieldPosition.None;
-            Status2 &= ~PStatus2.Pumped;
-            Status2 &= ~PStatus2.Substitute;
+            Status2 &= ~PBEStatus2.LeechSeed;
+            SeededPosition = PBEFieldPosition.None;
+            Status2 &= ~PBEStatus2.Pumped;
+            Status2 &= ~PBEStatus2.Substitute;
             SubstituteHP = 0;
-            Status2 &= ~PStatus2.Transformed;
+            Status2 &= ~PBEStatus2.Transformed;
 
-            if (Shell.Nature != PNature.MAX) // If the nature is unset, the program is not the host and does not own the Pokémon
+            if (Shell.Nature != PBENature.MAX) // If the nature is unset, the program is not the host and does not own the Pokémon
+            {
                 CalculateStats();
+            }
         }
 
         // Transforms into "target" and sets both Pokémons' information to the parameters
         // Also sets the Status2 transformed bit
-        public void Transform(PPokemon target, ushort targetAttack, ushort targetDefense, ushort targetSpAttack, ushort targetSpDefense, ushort targetSpeed, PAbility targetAbility, PType targetType1, PType targetType2, PMove[] targetMoves)
+        public void Transform(PBEPokemon target, ushort targetAttack, ushort targetDefense, ushort targetSpAttack, ushort targetSpDefense, ushort targetSpeed, PBEAbility targetAbility, PBEType targetType1, PBEType targetType2, PBEMove[] targetMoves)
         {
             Species = target.Species;
             Shiny = target.Shiny;
@@ -189,12 +206,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             AccuracyChange = target.AccuracyChange;
             EvasionChange = target.EvasionChange;
             Moves = target.Moves = targetMoves;
-            for (int i = 0; i < PSettings.NumMoves; i++)
-                PP[i] = MaxPP[i] = PSettings.PPMultiplier;
-            Status2 |= PStatus2.Transformed;
+            for (int i = 0; i < PBESettings.NumMoves; i++)
+            {
+                PP[i] = MaxPP[i] = PBESettings.PPMultiplier;
+            }
+
+            Status2 |= PBEStatus2.Transformed;
         }
 
-        public PType GetHiddenPowerType()
+        public PBEType GetHiddenPowerType()
         {
             int a = Shell.IVs[0] & 1,
                 b = Shell.IVs[1] & 1,
@@ -202,7 +222,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 d = Shell.IVs[5] & 1,
                 e = Shell.IVs[3] & 1,
                 f = Shell.IVs[4] & 1;
-            return PPokemonData.HiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (PPokemonData.HiddenPowerTypes.Length - 1) / ((1 << 6) - 1)];
+            return PBEPokemonData.HiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (PBEPokemonData.HiddenPowerTypes.Length - 1) / ((1 << 6) - 1)];
         }
         public int GetHiddenPowerBasePower()
         {
@@ -224,31 +244,37 @@ namespace Kermalis.PokemonBattleEngine.Data
             bytes.AddRange(Shell.ToBytes());
             return bytes.ToArray();
         }
-        internal static PPokemon FromBytes(BinaryReader r)
+        internal static PBEPokemon FromBytes(BinaryReader r)
         {
-            return new PPokemon(r.ReadByte(), PPokemonShell.FromBytes(r));
+            return new PBEPokemon(r.ReadByte(), PBEPokemonShell.FromBytes(r));
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is PPokemon other)
+            if (obj is PBEPokemon other)
+            {
                 return other.Id.Equals(Id);
+            }
+
             return base.Equals(obj);
         }
         public override int GetHashCode() => Id.GetHashCode();
         public override string ToString()
         {
-            bool remotePokemon = Shell.Nature == PNature.MAX; // If the nature is unset, the program is not the host and does not own the Pokémon
+            bool remotePokemon = Shell.Nature == PBENature.MAX; // If the nature is unset, the program is not the host and does not own the Pokémon
 
             string item = Item.ToString().Replace("MAX", "???");
             string nature = Shell.Nature.ToString().Replace("MAX", "???");
             string ability = Ability.ToString().Replace("MAX", "???");
-            string[] moveStrs = new string[PSettings.NumMoves];
-            for (int i = 0; i < PSettings.NumMoves; i++)
+            string[] moveStrs = new string[PBESettings.NumMoves];
+            for (int i = 0; i < PBESettings.NumMoves; i++)
             {
                 string mStr = Moves[i].ToString().Replace("MAX", "???");
                 if (!remotePokemon)
+                {
                     mStr += $" {PP[i]}/{MaxPP[i]}";
+                }
+
                 moveStrs[i] = mStr;
             }
             string moves = moveStrs.Print(false);
@@ -259,14 +285,23 @@ namespace Kermalis.PokemonBattleEngine.Data
             sb.AppendLine($"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})");
             sb.AppendLine($"Status1: {Status1}");
             sb.AppendLine($"Status2: {Status2}");
-            if (!remotePokemon && Status2.HasFlag(PStatus2.Substitute))
+            if (!remotePokemon && Status2.HasFlag(PBEStatus2.Substitute))
+            {
                 sb.AppendLine($"Substitute HP: {SubstituteHP}");
+            }
+
             sb.AppendLine($"Item: {item}");
             sb.AppendLine($"Ability: {ability}");
             if (!remotePokemon)
+            {
                 sb.AppendLine($"Nature: {nature}");
+            }
+
             if (!remotePokemon)
+            {
                 sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
+            }
+
             sb.Append($"Moves: {moves}");
 
             return sb.ToString();

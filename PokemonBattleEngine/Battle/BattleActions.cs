@@ -8,16 +8,16 @@ using System.Runtime.InteropServices;
 namespace Kermalis.PokemonBattleEngine.Battle
 {
     [StructLayout(LayoutKind.Explicit)]
-    public struct PAction
+    public struct PBEAction
     {
         [FieldOffset(0)]
         public byte PokemonId;
         [FieldOffset(1)]
-        public PDecision Decision;
+        public PBEDecision Decision;
         [FieldOffset(2)]
-        public PMove FightMove;
+        public PBEMove FightMove;
         [FieldOffset(4)]
-        public PTarget FightTargets;
+        public PBETarget FightTargets;
         [FieldOffset(4)]
         public byte SwitchPokemonId;
 
@@ -30,337 +30,437 @@ namespace Kermalis.PokemonBattleEngine.Battle
             bytes.Add(SwitchPokemonId);
             return bytes.ToArray();
         }
-        internal static PAction FromBytes(BinaryReader r)
+        internal static PBEAction FromBytes(BinaryReader r)
         {
-            return new PAction
+            return new PBEAction
             {
                 PokemonId = r.ReadByte(),
-                Decision = (PDecision)r.ReadByte(),
-                FightMove = (PMove)r.ReadUInt16(),
+                Decision = (PBEDecision)r.ReadByte(),
+                FightMove = (PBEMove)r.ReadUInt16(),
                 SwitchPokemonId = r.ReadByte()
             };
         }
     }
-
-    public sealed partial class PBattle
+    public sealed partial class PBEBattle
     {
-        public bool AreActionsValid(bool local, IEnumerable<PAction> actions)
+        public bool AreActionsValid(bool local, IEnumerable<PBEAction> actions)
         {
-            if (BattleState != PBattleState.WaitingForActions)
+            if (BattleState != PBEBattleState.WaitingForActions)
             {
-                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForActions)} to validate actions.");
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForActions)} to validate actions.");
             }
 
-            PTeam team = Teams[local ? 0 : 1];
+            PBETeam team = Teams[local ? 0 : 1];
             if (actions.Count() == 0 || actions.Count() != team.ActionsRequired.Count)
-                return false;
-
-            var standBy = new List<PPokemon>();
-            foreach (PAction action in actions)
             {
-                PPokemon pkmn = GetPokemon(action.PokemonId);
+                return false;
+            }
 
+            var standBy = new List<PBEPokemon>();
+            foreach (PBEAction action in actions)
+            {
+                PBEPokemon pkmn = GetPokemon(action.PokemonId);
                 // Validate Pokémon
                 if (!team.ActionsRequired.Contains(pkmn))
+                {
                     return false;
-
+                }
                 switch (action.Decision)
                 {
-                    case PDecision.Fight:
+                    case PBEDecision.Fight:
                         // Invalid move
-                        if (!pkmn.Moves.Contains(action.FightMove) || action.FightMove == PMove.None)
+                        if (!pkmn.Moves.Contains(action.FightMove) || action.FightMove == PBEMove.None)
+                        {
                             return false;
-
+                        }
                         // TODO: Struggle
-
                         // Out of PP
                         if (pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] < 1)
-                            return false;
-
-                        // If the mon has a locked move, it must be used
-                        if (pkmn.LockedAction.Decision == PDecision.Fight)
                         {
-                            if ((pkmn.LockedAction.FightMove != PMove.None && pkmn.LockedAction.FightMove != action.FightMove)
-                                || (pkmn.LockedAction.FightTargets != PTarget.None && pkmn.LockedAction.FightTargets != action.FightTargets))
+                            return false;
+                        }
+                        // If the mon has a locked move, it must be used
+                        if (pkmn.LockedAction.Decision == PBEDecision.Fight)
+                        {
+                            if ((pkmn.LockedAction.FightMove != PBEMove.None && pkmn.LockedAction.FightMove != action.FightMove)
+                                || (pkmn.LockedAction.FightTargets != PBETarget.None && pkmn.LockedAction.FightTargets != action.FightTargets))
+                            {
                                 return false;
+                            }
                         }
 
                         // Verify targets
-                        PMoveTarget possibleTargets = PMoveData.GetMoveTargetsForPokemon(pkmn, action.FightMove);
+                        PBEMoveTarget possibleTargets = PBEMoveData.GetMoveTargetsForPokemon(pkmn, action.FightMove);
                         switch (BattleStyle)
                         {
-                            case PBattleStyle.Single:
-                            case PBattleStyle.Rotation:
+                            case PBEBattleStyle.Single:
+                            case PBEBattleStyle.Rotation:
                                 switch (possibleTargets)
                                 {
-                                    case PMoveTarget.All:
-                                        if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeCenter))
-                                            return false;
-                                        break;
-                                    case PMoveTarget.AllFoes:
-                                    case PMoveTarget.AllFoesSurrounding:
-                                    case PMoveTarget.AllSurrounding:
-                                    case PMoveTarget.SingleFoeSurrounding:
-                                    case PMoveTarget.SingleNotSelf:
-                                    case PMoveTarget.SingleSurrounding:
-                                        if (action.FightTargets != PTarget.FoeCenter)
-                                            return false;
-                                        break;
-                                    case PMoveTarget.AllTeam:
-                                    case PMoveTarget.Self:
-                                    case PMoveTarget.SelfOrAllySurrounding:
-                                        if (action.FightTargets != PTarget.AllyCenter)
-                                            return false;
-                                        break;
-                                }
-                                break;
-                            case PBattleStyle.Double:
-                                switch (possibleTargets)
-                                {
-                                    case PMoveTarget.All:
-                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
-                                            return false;
-                                        break;
-                                    case PMoveTarget.AllFoes:
-                                    case PMoveTarget.AllFoesSurrounding:
-                                        if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeRight))
-                                            return false;
-                                        break;
-                                    case PMoveTarget.AllTeam:
-                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyRight))
-                                            return false;
-                                        break;
-                                    case PMoveTarget.AllSurrounding:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                    case PBEMoveTarget.All:
+                                        if (action.FightTargets != (PBETarget.AllyCenter | PBETarget.FoeCenter))
                                         {
-                                            if (action.FightTargets != (PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeRight))
-                                                return false;
-                                        }
-                                        else
-                                        {
-                                            if (action.FightTargets != (PTarget.AllyLeft | PTarget.FoeLeft | PTarget.FoeRight))
-                                                return false;
+                                            return false;
                                         }
                                         break;
-                                    case PMoveTarget.Self:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                    case PBEMoveTarget.AllFoes:
+                                    case PBEMoveTarget.AllFoesSurrounding:
+                                    case PBEMoveTarget.AllSurrounding:
+                                    case PBEMoveTarget.SingleFoeSurrounding:
+                                    case PBEMoveTarget.SingleNotSelf:
+                                    case PBEMoveTarget.SingleSurrounding:
+                                        if (action.FightTargets != PBETarget.FoeCenter)
                                         {
-                                            if (action.FightTargets != PTarget.AllyLeft)
-                                                return false;
-                                        }
-                                        else
-                                        {
-                                            if (action.FightTargets != PTarget.AllyRight)
-                                                return false;
-                                        }
-                                        break;
-                                    case PMoveTarget.SelfOrAllySurrounding:
-                                        if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight)
                                             return false;
-                                        break;
-                                    case PMoveTarget.SingleAllySurrounding:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
-                                        {
-                                            if (action.FightTargets != PTarget.AllyRight)
-                                                return false;
-                                        }
-                                        else
-                                        {
-                                            if (action.FightTargets != PTarget.AllyLeft)
-                                                return false;
                                         }
                                         break;
-                                    case PMoveTarget.SingleFoeSurrounding:
-                                        if (action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeRight)
+                                    case PBEMoveTarget.AllTeam:
+                                    case PBEMoveTarget.Self:
+                                    case PBEMoveTarget.SelfOrAllySurrounding:
+                                        if (action.FightTargets != PBETarget.AllyCenter)
+                                        {
                                             return false;
-                                        break;
-                                    case PMoveTarget.SingleNotSelf:
-                                    case PMoveTarget.SingleSurrounding:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
-                                        {
-                                            if (action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeRight)
-                                                return false;
-                                        }
-                                        else
-                                        {
-                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeRight)
-                                                return false;
                                         }
                                         break;
                                 }
                                 break;
-                            case PBattleStyle.Triple:
+                            case PBEBattleStyle.Double:
                                 switch (possibleTargets)
                                 {
-                                    case PMoveTarget.All:
-                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                    case PBEMoveTarget.All:
+                                        if (action.FightTargets != (PBETarget.AllyLeft | PBETarget.AllyRight | PBETarget.FoeLeft | PBETarget.FoeRight))
+                                        {
                                             return false;
+                                        }
                                         break;
-                                    case PMoveTarget.AllFoes:
-                                        if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
+                                    case PBEMoveTarget.AllFoes:
+                                    case PBEMoveTarget.AllFoesSurrounding:
+                                        if (action.FightTargets != (PBETarget.FoeLeft | PBETarget.FoeRight))
+                                        {
                                             return false;
-                                        break;
-                                    case PMoveTarget.AllFoesSurrounding:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
-                                        {
-                                            if (action.FightTargets != (PTarget.FoeCenter | PTarget.FoeRight))
-                                                return false;
-                                        }
-                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                        {
-                                            if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
-                                                return false;
-                                        }
-                                        else
-                                        {
-                                            if (action.FightTargets != (PTarget.FoeLeft | PTarget.FoeCenter))
-                                                return false;
                                         }
                                         break;
-                                    case PMoveTarget.AllSurrounding:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                    case PBEMoveTarget.AllTeam:
+                                        if (action.FightTargets != (PBETarget.AllyLeft | PBETarget.AllyRight))
                                         {
-                                            if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeCenter | PTarget.FoeRight))
-                                                return false;
-                                        }
-                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                        {
-                                            if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyRight | PTarget.FoeLeft | PTarget.FoeCenter | PTarget.FoeRight))
-                                                return false;
-                                        }
-                                        else
-                                        {
-                                            if (action.FightTargets != (PTarget.AllyCenter | PTarget.FoeLeft | PTarget.FoeCenter))
-                                                return false;
-                                        }
-                                        break;
-                                    case PMoveTarget.AllTeam:
-                                        if (action.FightTargets != (PTarget.AllyLeft | PTarget.AllyCenter | PTarget.AllyRight))
                                             return false;
-                                        break;
-                                    case PMoveTarget.Self:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
-                                        {
-                                            if (action.FightTargets != PTarget.AllyLeft)
-                                                return false;
                                         }
-                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        break;
+                                    case PBEMoveTarget.AllSurrounding:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                         {
-                                            if (action.FightTargets != PTarget.AllyCenter)
+                                            if (action.FightTargets != (PBETarget.AllyRight | PBETarget.FoeLeft | PBETarget.FoeRight))
+                                            {
                                                 return false;
+                                            }
                                         }
                                         else
                                         {
-                                            if (action.FightTargets != PTarget.AllyRight)
+                                            if (action.FightTargets != (PBETarget.AllyLeft | PBETarget.FoeLeft | PBETarget.FoeRight))
+                                            {
                                                 return false;
+                                            }
                                         }
                                         break;
-                                    case PMoveTarget.SelfOrAllySurrounding:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                    case PBEMoveTarget.Self:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                         {
-                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyCenter)
+                                            if (action.FightTargets != PBETarget.AllyLeft)
+                                            {
                                                 return false;
-                                        }
-                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
-                                        {
-                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.AllyRight)
-                                                return false;
+                                            }
                                         }
                                         else
                                         {
-                                            if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.AllyRight)
+                                            if (action.FightTargets != PBETarget.AllyRight)
+                                            {
                                                 return false;
+                                            }
                                         }
                                         break;
-                                    case PMoveTarget.SingleAllySurrounding:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                    case PBEMoveTarget.SelfOrAllySurrounding:
+                                        if (action.FightTargets != PBETarget.AllyLeft && action.FightTargets != PBETarget.AllyRight)
                                         {
-                                            if (action.FightTargets != PTarget.AllyCenter)
-                                                return false;
+                                            return false;
                                         }
-                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        break;
+                                    case PBEMoveTarget.SingleAllySurrounding:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                         {
-                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight)
+                                            if (action.FightTargets != PBETarget.AllyRight)
+                                            {
                                                 return false;
+                                            }
                                         }
                                         else
                                         {
-                                            if (action.FightTargets != PTarget.AllyCenter)
+                                            if (action.FightTargets != PBETarget.AllyLeft)
+                                            {
                                                 return false;
+                                            }
                                         }
                                         break;
-                                    case PMoveTarget.SingleFoeSurrounding:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                    case PBEMoveTarget.SingleFoeSurrounding:
+                                        if (action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeRight)
                                         {
-                                            if (action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
-                                                return false;
+                                            return false;
                                         }
-                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        break;
+                                    case PBEMoveTarget.SingleNotSelf:
+                                    case PBEMoveTarget.SingleSurrounding:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                         {
-                                            if (action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                            if (action.FightTargets != PBETarget.AllyRight && action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeRight)
+                                            {
                                                 return false;
+                                            }
                                         }
                                         else
                                         {
-                                            if (action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter)
+                                            if (action.FightTargets != PBETarget.AllyLeft && action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeRight)
+                                            {
                                                 return false;
+                                            }
                                         }
                                         break;
-                                    case PMoveTarget.SingleNotSelf:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                }
+                                break;
+                            case PBEBattleStyle.Triple:
+                                switch (possibleTargets)
+                                {
+                                    case PBEMoveTarget.All:
+                                        if (action.FightTargets != (PBETarget.AllyLeft | PBETarget.AllyCenter | PBETarget.AllyRight | PBETarget.FoeLeft | PBETarget.FoeCenter | PBETarget.FoeRight))
                                         {
-                                            if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
-                                                return false;
+                                            return false;
                                         }
-                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        break;
+                                    case PBEMoveTarget.AllFoes:
+                                        if (action.FightTargets != (PBETarget.FoeLeft | PBETarget.FoeCenter | PBETarget.FoeRight))
                                         {
-                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                            return false;
+                                        }
+                                        break;
+                                    case PBEMoveTarget.AllFoesSurrounding:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != (PBETarget.FoeCenter | PBETarget.FoeRight))
+                                            {
                                                 return false;
+                                            }
+                                        }
+                                        else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != (PBETarget.FoeLeft | PBETarget.FoeCenter | PBETarget.FoeRight))
+                                            {
+                                                return false;
+                                            }
                                         }
                                         else
                                         {
-                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                            if (action.FightTargets != (PBETarget.FoeLeft | PBETarget.FoeCenter))
+                                            {
                                                 return false;
+                                            }
                                         }
                                         break;
-                                    case PMoveTarget.SingleSurrounding:
-                                        if (pkmn.FieldPosition == PFieldPosition.Left)
+                                    case PBEMoveTarget.AllSurrounding:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                         {
-                                            if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                            if (action.FightTargets != (PBETarget.AllyCenter | PBETarget.FoeCenter | PBETarget.FoeRight))
+                                            {
                                                 return false;
+                                            }
                                         }
-                                        else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                        else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                         {
-                                            if (action.FightTargets != PTarget.AllyLeft && action.FightTargets != PTarget.AllyRight && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter && action.FightTargets != PTarget.FoeRight)
+                                            if (action.FightTargets != (PBETarget.AllyLeft | PBETarget.AllyRight | PBETarget.FoeLeft | PBETarget.FoeCenter | PBETarget.FoeRight))
+                                            {
                                                 return false;
+                                            }
                                         }
                                         else
                                         {
-                                            if (action.FightTargets != PTarget.AllyCenter && action.FightTargets != PTarget.FoeLeft && action.FightTargets != PTarget.FoeCenter)
+                                            if (action.FightTargets != (PBETarget.AllyCenter | PBETarget.FoeLeft | PBETarget.FoeCenter))
+                                            {
                                                 return false;
+                                            }
+                                        }
+                                        break;
+                                    case PBEMoveTarget.AllTeam:
+                                        if (action.FightTargets != (PBETarget.AllyLeft | PBETarget.AllyCenter | PBETarget.AllyRight))
+                                        {
+                                            return false;
+                                        }
+                                        break;
+                                    case PBEMoveTarget.Self:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyLeft)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyCenter)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        break;
+                                    case PBEMoveTarget.SelfOrAllySurrounding:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyLeft && action.FightTargets != PBETarget.AllyCenter)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyLeft && action.FightTargets != PBETarget.AllyCenter && action.FightTargets != PBETarget.AllyRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyCenter && action.FightTargets != PBETarget.AllyRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        break;
+                                    case PBEMoveTarget.SingleAllySurrounding:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyCenter)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyLeft && action.FightTargets != PBETarget.AllyRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyCenter)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        break;
+                                    case PBEMoveTarget.SingleFoeSurrounding:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PBETarget.FoeCenter && action.FightTargets != PBETarget.FoeRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeCenter && action.FightTargets != PBETarget.FoeRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeCenter)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        break;
+                                    case PBEMoveTarget.SingleNotSelf:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyCenter && action.FightTargets != PBETarget.AllyRight && action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeCenter && action.FightTargets != PBETarget.FoeRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyLeft && action.FightTargets != PBETarget.AllyRight && action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeCenter && action.FightTargets != PBETarget.FoeRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyLeft && action.FightTargets != PBETarget.AllyCenter && action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeCenter && action.FightTargets != PBETarget.FoeRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        break;
+                                    case PBEMoveTarget.SingleSurrounding:
+                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyCenter && action.FightTargets != PBETarget.FoeCenter && action.FightTargets != PBETarget.FoeRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyLeft && action.FightTargets != PBETarget.AllyRight && action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeCenter && action.FightTargets != PBETarget.FoeRight)
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (action.FightTargets != PBETarget.AllyCenter && action.FightTargets != PBETarget.FoeLeft && action.FightTargets != PBETarget.FoeCenter)
+                                            {
+                                                return false;
+                                            }
                                         }
                                         break;
                                 }
                                 break;
                         }
                         break;
-                    case PDecision.Switch:
+                    case PBEDecision.Switch:
                         // Cannot switch while airborne, underground or underwater
-                        if (pkmn.Status2.HasFlag(PStatus2.Airborne) || pkmn.Status2.HasFlag(PStatus2.Underground) || pkmn.Status2.HasFlag(PStatus2.Underwater))
+                        if (pkmn.Status2.HasFlag(PBEStatus2.Airborne) || pkmn.Status2.HasFlag(PBEStatus2.Underground) || pkmn.Status2.HasFlag(PBEStatus2.Underwater))
+                        {
                             return false;
-                        PPokemon switchPkmn = GetPokemon(action.SwitchPokemonId);
+                        }
+                        PBEPokemon switchPkmn = GetPokemon(action.SwitchPokemonId);
                         // Validate the new battler's ID
-                        if (switchPkmn == null || switchPkmn.Local != local || switchPkmn.Id == pkmn.Id)
+                        if (switchPkmn == null || switchPkmn.LocalTeam != local || switchPkmn.Id == pkmn.Id)
+                        {
                             return false;
+                        }
                         // Cannot switch into a fainted Pokémon
                         if (switchPkmn.HP < 1)
+                        {
                             return false;
+                        }
                         // Cannot switch into a Pokémon already on the field
-                        if (switchPkmn.FieldPosition != PFieldPosition.None)
+                        if (switchPkmn.FieldPosition != PBEFieldPosition.None)
+                        {
                             return false;
+                        }
                         // Cannot switch into a Pokémon already selected to switch in this turn
                         if (standBy.Contains(switchPkmn))
+                        {
                             return false;
+                        }
                         standBy.Add(switchPkmn);
                         break;
                 }
@@ -368,84 +468,91 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return true;
         }
         // Returns true if the actions were valid (and selected)
-        public bool SelectActionsIfValid(bool local, IEnumerable<PAction> actions)
+        public bool SelectActionsIfValid(bool local, IEnumerable<PBEAction> actions)
         {
-            if (BattleState != PBattleState.WaitingForActions)
+            if (BattleState != PBEBattleState.WaitingForActions)
             {
-                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForActions)} to select actions.");
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForActions)} to select actions.");
             }
-
             if (AreActionsValid(local, actions))
             {
                 Teams[local ? 0 : 1].ActionsRequired.Clear();
-                foreach (PAction action in actions)
+                foreach (PBEAction action in actions)
                 {
-                    PPokemon pkmn = GetPokemon(action.PokemonId);
+                    PBEPokemon pkmn = GetPokemon(action.PokemonId);
                     pkmn.SelectedAction = action;
                     switch (pkmn.SelectedAction.Decision)
                     {
-                        case PDecision.Fight:
-                            switch (PMoveData.GetMoveTargetsForPokemon(pkmn, pkmn.SelectedAction.FightMove))
+                        case PBEDecision.Fight:
+                            switch (PBEMoveData.GetMoveTargetsForPokemon(pkmn, pkmn.SelectedAction.FightMove))
                             {
-                                case PMoveTarget.RandomFoeSurrounding:
+                                case PBEMoveTarget.RandomFoeSurrounding:
                                     switch (BattleStyle)
                                     {
-                                        case PBattleStyle.Single:
-                                        case PBattleStyle.Rotation:
-                                            pkmn.SelectedAction.FightTargets = PTarget.FoeCenter;
+                                        case PBEBattleStyle.Single:
+                                        case PBEBattleStyle.Rotation:
+                                            pkmn.SelectedAction.FightTargets = PBETarget.FoeCenter;
                                             break;
-                                        case PBattleStyle.Double:
-                                            pkmn.SelectedAction.FightTargets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeRight;
+                                        case PBEBattleStyle.Double:
+                                            pkmn.SelectedAction.FightTargets = PBEUtils.RNG.Next(2) == 0 ? PBETarget.FoeLeft : PBETarget.FoeRight;
                                             break;
-                                        case PBattleStyle.Triple:
-                                            if (pkmn.FieldPosition == PFieldPosition.Left)
+                                        case PBEBattleStyle.Triple:
+                                            if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                             {
-                                                // If one is fainted, BattleEffects.cs->UseMove() will change the target
-                                                pkmn.SelectedAction.FightTargets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeCenter : PTarget.FoeRight;
+                                                pkmn.SelectedAction.FightTargets = PBEUtils.RNG.Next(2) == 0 ? PBETarget.FoeCenter : PBETarget.FoeRight;
                                             }
-                                            else if (pkmn.FieldPosition == PFieldPosition.Center)
+                                            else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                             {
-                                                PTeam opposingTeam = Teams[pkmn.Local ? 1 : 0]; // Other team
-                                                                                                // Keep randomly picking until a non-fainted foe is selected
-                                                int r;
-                                                roll:
-                                                r = PUtils.RNG.Next(3);
-                                                // Prioritize left
+                                                PBETeam opposingTeam = Teams[pkmn.LocalTeam ? 1 : 0]; // Other team                                                                                                  
+                                                int r; // Keep randomly picking until a non-fainted foe is selected
+                                            roll:
+                                                r = PBEUtils.RNG.Next(3);
                                                 if (r == 0)
                                                 {
-                                                    if (opposingTeam.PokemonAtPosition(PFieldPosition.Left) != null)
-                                                        pkmn.SelectedAction.FightTargets = PTarget.FoeLeft;
+                                                    if (opposingTeam.PokemonAtPosition(PBEFieldPosition.Left) != null)
+                                                    {
+                                                        pkmn.SelectedAction.FightTargets = PBETarget.FoeLeft;
+                                                    }
                                                     else
+                                                    {
                                                         goto roll;
+                                                    }
                                                 }
-                                                // Prioritize center
                                                 else if (r == 1)
                                                 {
-                                                    if (opposingTeam.PokemonAtPosition(PFieldPosition.Center) != null)
-                                                        pkmn.SelectedAction.FightTargets = PTarget.FoeCenter;
+                                                    if (opposingTeam.PokemonAtPosition(PBEFieldPosition.Center) != null)
+                                                    {
+                                                        pkmn.SelectedAction.FightTargets = PBETarget.FoeCenter;
+                                                    }
                                                     else
+                                                    {
                                                         goto roll;
+                                                    }
                                                 }
-                                                // Prioritize right
                                                 else
                                                 {
-                                                    if (opposingTeam.PokemonAtPosition(PFieldPosition.Right) != null)
-                                                        pkmn.SelectedAction.FightTargets = PTarget.FoeRight;
+                                                    if (opposingTeam.PokemonAtPosition(PBEFieldPosition.Right) != null)
+                                                    {
+                                                        pkmn.SelectedAction.FightTargets = PBETarget.FoeRight;
+                                                    }
                                                     else
+                                                    {
                                                         goto roll;
+                                                    }
                                                 }
                                             }
                                             else
                                             {
-                                                // If one is fainted, BattleEffects.cs->UseMove() will change the target
-                                                pkmn.SelectedAction.FightTargets = PUtils.RNG.Next(2) == 0 ? PTarget.FoeLeft : PTarget.FoeCenter;
+                                                pkmn.SelectedAction.FightTargets = PBEUtils.RNG.Next(2) == 0 ? PBETarget.FoeLeft : PBETarget.FoeCenter;
                                             }
                                             break;
                                     }
                                     break;
-                                case PMoveTarget.SingleAllySurrounding:
-                                    if (BattleStyle == PBattleStyle.Single || BattleStyle == PBattleStyle.Rotation)
-                                        pkmn.SelectedAction.FightTargets = PTarget.AllyCenter;
+                                case PBEMoveTarget.SingleAllySurrounding:
+                                    if (BattleStyle == PBEBattleStyle.Single || BattleStyle == PBEBattleStyle.Rotation)
+                                    {
+                                        pkmn.SelectedAction.FightTargets = PBETarget.AllyCenter;
+                                    }
                                     break;
                             }
                             break;
@@ -453,7 +560,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (Teams[0].ActionsRequired.Count == 0 && Teams[1].ActionsRequired.Count == 0)
                 {
-                    BattleState = PBattleState.ReadyToRunTurn;
+                    BattleState = PBEBattleState.ReadyToRunTurn;
                     OnStateChanged?.Invoke(this);
                 }
                 return true;
@@ -461,39 +568,40 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
-        public bool AreSwitchesValid(bool local, IEnumerable<Tuple<byte, PFieldPosition>> switches)
+        public bool AreSwitchesValid(bool local, IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
         {
-            if (BattleState != PBattleState.WaitingForSwitchIns)
+            if (BattleState != PBEBattleState.WaitingForSwitchIns)
             {
-                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForSwitchIns)} to validate switches.");
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForSwitchIns)} to validate switches.");
             }
-
             if (switches.Count() == 0 || switches.Count() != Teams[local ? 0 : 1].SwitchInsRequired)
-                return false;
-            foreach (Tuple<byte, PFieldPosition> s in switches)
             {
-                PPokemon pkmn = GetPokemon(s.Item1);
-                if (pkmn == null || pkmn.Local != local || pkmn.HP < 1 || pkmn.FieldPosition != PFieldPosition.None)
-                    return false;
+                return false;
             }
-
+            foreach (Tuple<byte, PBEFieldPosition> s in switches)
+            {
+                PBEPokemon pkmn = GetPokemon(s.Item1);
+                if (pkmn == null || pkmn.LocalTeam != local || pkmn.HP < 1 || pkmn.FieldPosition != PBEFieldPosition.None)
+                {
+                    return false;
+                }
+            }
             return true;
         }
         // Returns true if the switches were valid (and selected)
-        public bool SelectSwitchesIfValid(bool local, IEnumerable<Tuple<byte, PFieldPosition>> switches)
+        public bool SelectSwitchesIfValid(bool local, IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
         {
-            if (BattleState != PBattleState.WaitingForSwitchIns)
+            if (BattleState != PBEBattleState.WaitingForSwitchIns)
             {
-                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBattleState.WaitingForSwitchIns)} to select switches.");
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForSwitchIns)} to select switches.");
             }
-
             if (AreSwitchesValid(local, switches))
             {
-                PTeam team = Teams[local ? 0 : 1];
+                PBETeam team = Teams[local ? 0 : 1];
                 team.SwitchInsRequired = 0;
-                foreach (Tuple<byte, PFieldPosition> s in switches)
+                foreach (Tuple<byte, PBEFieldPosition> s in switches)
                 {
-                    PPokemon pkmn = GetPokemon(s.Item1);
+                    PBEPokemon pkmn = GetPokemon(s.Item1);
                     pkmn.FieldPosition = s.Item2;
                     team.SwitchInQueue.Add(pkmn);
                 }
@@ -507,108 +615,120 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
-        public static PFieldPosition GetPositionAcross(PBattleStyle style, PFieldPosition pos)
+        public static PBEFieldPosition GetPositionAcross(PBEBattleStyle style, PBEFieldPosition pos)
         {
             switch (style)
             {
-                case PBattleStyle.Single:
-                case PBattleStyle.Rotation:
-                    if (pos == PFieldPosition.Center)
-                        return PFieldPosition.Center;
+                case PBEBattleStyle.Single:
+                case PBEBattleStyle.Rotation:
+                    if (pos == PBEFieldPosition.Center)
+                    {
+                        return PBEFieldPosition.Center;
+                    }
                     break;
-                case PBattleStyle.Double:
-                    if (pos == PFieldPosition.Left)
-                        return PFieldPosition.Right;
-                    else if (pos == PFieldPosition.Right)
-                        return PFieldPosition.Left;
+                case PBEBattleStyle.Double:
+                    if (pos == PBEFieldPosition.Left)
+                    {
+                        return PBEFieldPosition.Right;
+                    }
+                    else if (pos == PBEFieldPosition.Right)
+                    {
+                        return PBEFieldPosition.Left;
+                    }
                     break;
-                case PBattleStyle.Triple:
-                    if (pos == PFieldPosition.Left)
-                        return PFieldPosition.Right;
-                    else if (pos == PFieldPosition.Center)
-                        return PFieldPosition.Center;
-                    else if (pos == PFieldPosition.Right)
-                        return PFieldPosition.Left;
+                case PBEBattleStyle.Triple:
+                    if (pos == PBEFieldPosition.Left)
+                    {
+                        return PBEFieldPosition.Right;
+                    }
+                    else if (pos == PBEFieldPosition.Center)
+                    {
+                        return PBEFieldPosition.Center;
+                    }
+                    else if (pos == PBEFieldPosition.Right)
+                    {
+                        return PBEFieldPosition.Left;
+                    }
                     break;
             }
-            return PFieldPosition.None;
+            return PBEFieldPosition.None;
         }
         // Gets Pokémon that can be hit at the moment
         // For example, if "FoeCenter" is passed in, logic will be used to fall-back to another opponent that can be hit if FoeCenter fainted
         // For each flag passed in, zero or one opponent will be returned for it
-        PPokemon[] GetRuntimeTargets(PPokemon user, PTarget requestedTargets, bool canHitFarCorners)
+        PBEPokemon[] GetRuntimeTargets(PBEPokemon user, PBETarget requestedTargets, bool canHitFarCorners)
         {
-            PTeam attackerTeam = Teams[user.Local ? 0 : 1]; // Attacker's team
-            PTeam opposingTeam = Teams[user.Local ? 1 : 0]; // Other team
+            PBETeam attackerTeam = Teams[user.LocalTeam ? 0 : 1]; // Attacker's team
+            PBETeam opposingTeam = Teams[user.LocalTeam ? 1 : 0]; // Other team
 
-            var targets = new List<PPokemon>();
-            if (requestedTargets.HasFlag(PTarget.AllyLeft))
+            var targets = new List<PBEPokemon>();
+            if (requestedTargets.HasFlag(PBETarget.AllyLeft))
             {
-                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Left);
+                PBEPokemon b = attackerTeam.PokemonAtPosition(PBEFieldPosition.Left);
                 targets.Add(b);
             }
-            if (requestedTargets.HasFlag(PTarget.AllyCenter))
+            if (requestedTargets.HasFlag(PBETarget.AllyCenter))
             {
-                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Center);
+                PBEPokemon b = attackerTeam.PokemonAtPosition(PBEFieldPosition.Center);
                 targets.Add(b);
             }
-            if (requestedTargets.HasFlag(PTarget.AllyRight))
+            if (requestedTargets.HasFlag(PBETarget.AllyRight))
             {
-                PPokemon b = attackerTeam.PokemonAtPosition(PFieldPosition.Right);
+                PBEPokemon b = attackerTeam.PokemonAtPosition(PBEFieldPosition.Right);
                 targets.Add(b);
             }
-            if (requestedTargets.HasFlag(PTarget.FoeLeft))
+            if (requestedTargets.HasFlag(PBETarget.FoeLeft))
             {
-                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                PBEPokemon b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
-                    if (BattleStyle == PBattleStyle.Double)
+                    if (BattleStyle == PBEBattleStyle.Double)
                     {
-                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                        b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
                     }
-                    else if (BattleStyle == PBattleStyle.Triple)
+                    else if (BattleStyle == PBEBattleStyle.Triple)
                     {
-                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
+                        b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far right
-                        if (b == null && (user.FieldPosition != PFieldPosition.Right || canHitFarCorners))
+                        if (b == null && (user.FieldPosition != PBEFieldPosition.Right || canHitFarCorners))
                         {
-                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                            b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
                         }
                     }
                 }
                 targets.Add(b);
             }
-            if (requestedTargets.HasFlag(PTarget.FoeCenter))
+            if (requestedTargets.HasFlag(PBETarget.FoeCenter))
             {
-                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
+                PBEPokemon b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Center);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
-                    if (BattleStyle == PBattleStyle.Triple)
+                    if (BattleStyle == PBEBattleStyle.Triple)
                     {
-                        if (user.FieldPosition == PFieldPosition.Left)
+                        if (user.FieldPosition == PBEFieldPosition.Left)
                         {
-                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                            b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
                             // Right fainted as well and user can reach far left
-                            if (b == null && (user.FieldPosition != PFieldPosition.Left || canHitFarCorners))
+                            if (b == null && (user.FieldPosition != PBEFieldPosition.Left || canHitFarCorners))
                             {
-                                b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                                b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
                             }
                         }
-                        else if (user.FieldPosition == PFieldPosition.Right)
+                        else if (user.FieldPosition == PBEFieldPosition.Right)
                         {
-                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                            b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
                             // Left fainted as well and user can reach far right
-                            if (b == null && (user.FieldPosition != PFieldPosition.Right || canHitFarCorners))
+                            if (b == null && (user.FieldPosition != PBEFieldPosition.Right || canHitFarCorners))
                             {
-                                b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                                b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
                             }
                         }
                         else // Center
                         {
-                            PPokemon oppLeft = opposingTeam.PokemonAtPosition(PFieldPosition.Left),
-                                oppRight = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                            PBEPokemon oppLeft = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left),
+                                oppRight = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
                             // Left is dead but not right
                             if (oppLeft == null && oppRight != null)
                             {
@@ -622,30 +742,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             // Randomly select left or right
                             else
                             {
-                                b = PUtils.RNG.NextBoolean() ? oppLeft : oppRight;
+                                b = PBEUtils.RNG.NextBoolean() ? oppLeft : oppRight;
                             }
                         }
                     }
                 }
                 targets.Add(b);
             }
-            if (requestedTargets.HasFlag(PTarget.FoeRight))
+            if (requestedTargets.HasFlag(PBETarget.FoeRight))
             {
-                PPokemon b = opposingTeam.PokemonAtPosition(PFieldPosition.Right);
+                PBEPokemon b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
-                    if (BattleStyle == PBattleStyle.Double)
+                    if (BattleStyle == PBEBattleStyle.Double)
                     {
-                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                        b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
                     }
-                    else if (BattleStyle == PBattleStyle.Triple)
+                    else if (BattleStyle == PBEBattleStyle.Triple)
                     {
-                        b = opposingTeam.PokemonAtPosition(PFieldPosition.Center);
+                        b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far left
-                        if (b == null && (user.FieldPosition != PFieldPosition.Left || canHitFarCorners))
+                        if (b == null && (user.FieldPosition != PBEFieldPosition.Left || canHitFarCorners))
                         {
-                            b = opposingTeam.PokemonAtPosition(PFieldPosition.Left);
+                            b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
                         }
                     }
                 }

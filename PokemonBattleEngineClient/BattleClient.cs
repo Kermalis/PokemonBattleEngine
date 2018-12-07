@@ -1,25 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Sockets;
-using System.Timers;
-using Ether.Network.Client;
+﻿using Ether.Network.Client;
 using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Sockets;
+using System.Timers;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
     class BattleClient : NetClient
     {
-        static readonly IPacketProcessor packetProcessor = new PPacketProcessor();
+        static readonly IPacketProcessor packetProcessor = new PBEPacketProcessor();
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
-        public PBattle Battle;
+        public PBEBattle Battle;
         readonly BattleView battleView;
         readonly ActionsView actionsView;
         readonly MessageView messageView;
@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineClient
             Configuration.Port = port;
             Configuration.BufferSize = 1024;
 
-            Battle = new PBattle(PBattleStyle.Double);
+            Battle = new PBEBattle(PBEBattleStyle.Double);
             this.battleView = battleView;
             this.battleView.SetBattle(Battle);
             this.actionsView = actionsView;
@@ -49,85 +49,90 @@ namespace Kermalis.PokemonBattleEngineClient
             string message;
             switch (packet)
             {
-                case PPlayerJoinedPacket pjp:
+                case PBEPlayerJoinedPacket pjp:
                     // TODO: What if it's a spectator?
-                    message = string.Format("{0} joined the game.", pjp.DisplayName);
+                    message = string.Format("{0} joined the game.", pjp.TrainerName);
                     battleView.SetMessage(message);
                     messageView.Add(message);
-                    Battle.Teams[1].TrainerName = pjp.DisplayName;
-                    Send(new PResponsePacket());
+                    Battle.Teams[1].TrainerName = pjp.TrainerName;
+                    Send(new PBEResponsePacket());
                     break;
-                case PPartyRequestPacket _: // Temporary
+                case PBEPartyRequestPacket _: // Temporary
                     message = "Sending team info...";
                     battleView.SetMessage(message);
                     messageView.Add(message);
-                    var team = new PTeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample() };
-                    var possiblePokemon = new List<PPokemonShell>
+                    var team = new PBETeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample() };
+                    var possiblePokemon = new List<PBEPokemonShell>
                     {
-                        PCompetitivePokemonShells.Absol_RU, PCompetitivePokemonShells.Arceus_Normal_Uber, PCompetitivePokemonShells.Azelf_VGC,
-                        PCompetitivePokemonShells.Azumarill_VGC,
-                        PCompetitivePokemonShells.Beedrill_NU, PCompetitivePokemonShells.Blastoise_UU, PCompetitivePokemonShells.Butterfree_RU,
-                        PCompetitivePokemonShells.Charizard_VGC, PCompetitivePokemonShells.Cofagrigus_VGC, PCompetitivePokemonShells.Cradily_OU,
-                        PCompetitivePokemonShells.Cresselia_VGC,
-                        PCompetitivePokemonShells.Crobat_VGC, PCompetitivePokemonShells.Darkrai_Uber, PCompetitivePokemonShells.Dialga_Uber,
-                        PCompetitivePokemonShells.Ditto_Uber, PCompetitivePokemonShells.Farfetchd_OU, PCompetitivePokemonShells.Flareon_RU,
-                        PCompetitivePokemonShells.Genesect_Uber, PCompetitivePokemonShells.Giratina_Origin_Uber,
-                        PCompetitivePokemonShells.Jirachi_Uber, PCompetitivePokemonShells.Jolteon_VGC, PCompetitivePokemonShells.Latias_VGC,
-                        PCompetitivePokemonShells.Latios_VGC,
-                        PCompetitivePokemonShells.Marowak_VGC, PCompetitivePokemonShells.Mesprit_UU, PCompetitivePokemonShells.Mismagius_UU,
-                        PCompetitivePokemonShells.Ninetales_VGC, PCompetitivePokemonShells.Palkia_Uber, PCompetitivePokemonShells.Pikachu_VGC,
-                        PCompetitivePokemonShells.Rotom_Wash_VGC, PCompetitivePokemonShells.Uxie_VGC, PCompetitivePokemonShells.Vaporeon_VGC,
-                        PCompetitivePokemonShells.Venusaur_VGC, PCompetitivePokemonShells.Victini_Uber,
+                        PBECompetitivePokemonShells.Absol_RU, PBECompetitivePokemonShells.Arceus_Normal_Uber, PBECompetitivePokemonShells.Azelf_VGC,
+                        PBECompetitivePokemonShells.Azumarill_VGC,
+                        PBECompetitivePokemonShells.Beedrill_NU, PBECompetitivePokemonShells.Blastoise_UU, PBECompetitivePokemonShells.Butterfree_RU,
+                        PBECompetitivePokemonShells.Charizard_VGC, PBECompetitivePokemonShells.Cofagrigus_VGC, PBECompetitivePokemonShells.Cradily_OU,
+                        PBECompetitivePokemonShells.Cresselia_VGC,
+                        PBECompetitivePokemonShells.Crobat_VGC, PBECompetitivePokemonShells.Darkrai_Uber, PBECompetitivePokemonShells.Dialga_Uber,
+                        PBECompetitivePokemonShells.Ditto_Uber, PBECompetitivePokemonShells.Farfetchd_OU, PBECompetitivePokemonShells.Flareon_RU,
+                        PBECompetitivePokemonShells.Genesect_Uber, PBECompetitivePokemonShells.Giratina_Origin_Uber,
+                        PBECompetitivePokemonShells.Jirachi_Uber, PBECompetitivePokemonShells.Jolteon_VGC, PBECompetitivePokemonShells.Latias_VGC,
+                        PBECompetitivePokemonShells.Latios_VGC,
+                        PBECompetitivePokemonShells.Marowak_VGC, PBECompetitivePokemonShells.Mesprit_UU, PBECompetitivePokemonShells.Mismagius_UU,
+                        PBECompetitivePokemonShells.Ninetales_VGC, PBECompetitivePokemonShells.Palkia_Uber, PBECompetitivePokemonShells.Pikachu_VGC,
+                        PBECompetitivePokemonShells.Rotom_Wash_VGC, PBECompetitivePokemonShells.Uxie_VGC, PBECompetitivePokemonShells.Vaporeon_VGC,
+                        PBECompetitivePokemonShells.Venusaur_VGC, PBECompetitivePokemonShells.Victini_Uber,
                     };
                     possiblePokemon.Shuffle();
-                    team.Party.AddRange(possiblePokemon.Take(PSettings.MaxPartySize));
+                    team.Party.AddRange(possiblePokemon.Take(PBESettings.MaxPartySize));
                     Battle.Teams[0].TrainerName = team.PlayerName;
-                    Send(new PPartyResponsePacket(team));
+                    Send(new PBEPartyResponsePacket(team));
                     break;
-                case PSetPartyPacket spp:
+                case PBESetPartyPacket spp:
                     Battle.SetTeamParty(true, spp.Party);
-                    Send(new PResponsePacket());
+                    Send(new PBEResponsePacket());
                     break;
                 default:
                     packetQueue.Add(packet);
-                    Send(new PResponsePacket());
+                    Send(new PBEResponsePacket());
                     break;
             }
         }
         void PacketTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            again:
+        again:
             INetPacket packet = packetQueue.FirstOrDefault();
             if (packet == null)
+            {
                 return;
+            }
+
             bool a = ProcessPacket(packet);
             packetQueue.RemoveAt(0);
             if (a)
+            {
                 goto again;
+            }
         }
         // Returns true if the next packet should be run right away
         bool ProcessPacket(INetPacket packet)
         {
-            PPokemon culprit, victim;
+            PBEPokemon culprit, victim;
             int i;
             double d;
             bool b1, b2;
-            PFieldPosition pos;
+            PBEFieldPosition pos;
             string message;
-            PTeam team;
+            PBETeam team;
 
             switch (packet)
             {
-                case PItemUsedPacket iup:
+                case PBEItemUsedPacket iup:
                     culprit = Battle.GetPokemon(iup.CulpritId);
                     switch (iup.Item)
                     {
-                        case PItem.Leftovers:
+                        case PBEItem.Leftovers:
                             culprit.Item = iup.Item;
                             message = "{0} restored a little HP using its Leftovers!";
                             break;
-                        case PItem.PowerHerb:
-                            culprit.Item = PItem.None;
+                        case PBEItem.PowerHerb:
+                            culprit.Item = PBEItem.None;
                             message = "{0} became fully charged due to its Power Herb!";
                             break;
                         default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
@@ -136,93 +141,93 @@ namespace Kermalis.PokemonBattleEngineClient
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PLimberPacket lp:
+                case PBELimberPacket lp:
                     victim = Battle.GetPokemon(lp.PokemonId);
                     message = string.Format("{0}'s Limber", victim.Shell.Nickname); // TODO: Ability stuff
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PMagnitudePacket mp:
+                case PBEMagnitudePacket mp:
                     message = string.Format("Magnitude {0}!", mp.Magnitude);
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PMoveCritPacket _:
+                case PBEMoveCritPacket _:
                     message = "A critical hit!";
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PMoveEffectivenessPacket mep:
+                case PBEMoveEffectivenessPacket mep:
                     victim = Battle.GetPokemon(mep.VictimId);
                     switch (mep.Effectiveness)
                     {
-                        case PEffectiveness.Ineffective: message = "It doesn't affect {0}..."; break;
-                        case PEffectiveness.NotVeryEffective: message = "It's not very effective..."; break;
-                        case PEffectiveness.Normal: return true;
-                        case PEffectiveness.SuperEffective: message = "It's super effective!"; break;
+                        case PBEEffectiveness.Ineffective: message = "It doesn't affect {0}..."; break;
+                        case PBEEffectiveness.NotVeryEffective: message = "It's not very effective..."; break;
+                        case PBEEffectiveness.Normal: return true;
+                        case PBEEffectiveness.SuperEffective: message = "It's super effective!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness), $"Invalid effectiveness: {mep.Effectiveness}");
                     }
                     message = string.Format(message, victim.NameForTrainer(false));
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PMoveFailedPacket mfp:
+                case PBEMoveFailedPacket mfp:
                     culprit = Battle.GetPokemon(mfp.CulpritId);
                     victim = Battle.GetPokemon(mfp.VictimId);
-                    switch (mfp.Reason)
+                    switch (mfp.FailReason)
                     {
-                        case PFailReason.AlreadyConfused: message = "{1} is already confused!"; break;
-                        case PFailReason.Default: message = "But it failed!"; break;
-                        case PFailReason.HPFull: message = "{0}'s HP is full!"; break;
-                        case PFailReason.NoTarget: message = "There was no target..."; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(mfp.Reason), $"Invalid fail reason: {mfp.Reason}");
+                        case PBEFailReason.AlreadyConfused: message = "{1} is already confused!"; break;
+                        case PBEFailReason.Default: message = "But it failed!"; break;
+                        case PBEFailReason.HPFull: message = "{0}'s HP is full!"; break;
+                        case PBEFailReason.NoTarget: message = "There was no target..."; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(mfp.FailReason), $"Invalid fail reason: {mfp.FailReason}");
                     }
                     message = string.Format(message, culprit.NameForTrainer(true), victim.NameForTrainer(true));
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PMoveMissedPacket mmp:
+                case PBEMoveMissedPacket mmp:
                     culprit = Battle.GetPokemon(mmp.CulpritId);
                     message = string.Format("{0}'s attack missed!", culprit.NameForTrainer(true));
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PMovePPChangedPacket mpcp:
+                case PBEMovePPChangedPacket mpcp:
                     victim = Battle.GetPokemon(mpcp.VictimId);
-                    if (victim.Local)
+                    if (victim.LocalTeam)
                     {
                         i = Array.IndexOf(victim.Moves, mpcp.Move);
                         victim.PP[i] = (byte)(victim.PP[i] + mpcp.Change);
                     }
                     return true;
-                case PMoveUsedPacket mup:
+                case PBEMoveUsedPacket mup:
                     culprit = Battle.GetPokemon(mup.CulpritId);
                     // Reveal move if the Pokémon owns it and it's not already revealed
                     if (mup.OwnsMove && !culprit.Moves.Contains(mup.Move))
                     {
                         // Set the first unknown move to the used move
-                        i = Array.IndexOf(culprit.Moves, PMove.MAX);
+                        i = Array.IndexOf(culprit.Moves, PBEMove.MAX);
                         culprit.Moves[i] = mup.Move;
                     }
                     message = string.Format("{0} used {1}!", culprit.NameForTrainer(true), mup.Move);
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PPainSplitPacket psp:
+                case PBEPainSplitPacket psp:
                     message = "The battlers shared their pain!";
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PPkmnFaintedPacket pfap:
+                case PBEPkmnFaintedPacket pfap:
                     victim = Battle.GetPokemon(pfap.VictimId);
                     pos = victim.FieldPosition;
-                    victim.FieldPosition = PFieldPosition.None;
+                    victim.FieldPosition = PBEFieldPosition.None;
                     battleView.UpdatePokemon(victim, pos);
                     message = string.Format("{0} fainted!", victim.NameForTrainer(true));
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PPkmnHPChangedPacket phcp:
+                case PBEPkmnHPChangedPacket phcp:
                     victim = Battle.GetPokemon(phcp.VictimId);
                     victim.HP = (ushort)(victim.HP + phcp.Change);
                     battleView.UpdatePokemon(victim);
@@ -232,9 +237,9 @@ namespace Kermalis.PokemonBattleEngineClient
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PPkmnStatChangedPacket pscp:
+                case PBEPkmnStatChangedPacket pscp:
                     victim = Battle.GetPokemon(pscp.VictimId);
-                    PBattle.ApplyStatChange(victim, pscp.Stat, pscp.Change, ignoreSimple: true);
+                    PBEBattle.ApplyStatChange(victim, pscp.Stat, pscp.Change, ignoreSimple: true);
                     switch (pscp.Change)
                     {
                         case -2: message = "harshly fell"; break;
@@ -243,23 +248,33 @@ namespace Kermalis.PokemonBattleEngineClient
                         case +2: message = "rose sharply"; break;
                         default:
                             if (pscp.IsTooMuch && pscp.Change < 0)
+                            {
                                 message = "won't go lower";
+                            }
                             else if (pscp.IsTooMuch && pscp.Change > 0)
+                            {
                                 message = "won't go higher";
+                            }
                             else if (pscp.Change <= -3)
+                            {
                                 message = "severely fell";
+                            }
                             else if (pscp.Change >= 3)
+                            {
                                 message = "rose drastically";
+                            }
                             else
+                            {
                                 throw new ArgumentOutOfRangeException(nameof(pscp.Change), $"Invalid stat change: {pscp.Change}"); // +0
+                            }
                             break;
                     }
                     message = string.Format("{0}'s {1} {2}!", victim.NameForTrainer(true), pscp.Stat, message);
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PPkmnSwitchInPacket psip:
-                    if (!psip.Local)
+                case PBEPkmnSwitchInPacket psip:
+                    if (!psip.LocalTeam)
                     {
                         Battle.RemotePokemonSwitchedIn(psip);
                     }
@@ -267,20 +282,20 @@ namespace Kermalis.PokemonBattleEngineClient
                     pos = culprit.FieldPosition;
                     culprit.FieldPosition = psip.FieldPosition;
                     battleView.UpdatePokemon(culprit, pos);
-                    message = string.Format("{1} sent out {0}!", culprit.Shell.Nickname, Battle.Teams[culprit.Local ? 0 : 1].TrainerName);
+                    message = string.Format("{1} sent out {0}!", culprit.Shell.Nickname, Battle.Teams[culprit.LocalTeam ? 0 : 1].TrainerName);
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PPkmnSwitchOutPacket psop:
+                case PBEPkmnSwitchOutPacket psop:
                     culprit = Battle.GetPokemon(psop.PokemonId);
                     pos = culprit.FieldPosition;
                     culprit.ClearForSwitch();
                     battleView.UpdatePokemon(culprit, pos);
-                    message = string.Format("{1} withdrew {0}!", culprit.Shell.Nickname, Battle.Teams[culprit.Local ? 0 : 1].TrainerName);
+                    message = string.Format("{1} withdrew {0}!", culprit.Shell.Nickname, Battle.Teams[culprit.LocalTeam ? 0 : 1].TrainerName);
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PPsychUpPacket pup:
+                case PBEPsychUpPacket pup:
                     culprit = Battle.GetPokemon(pup.CulpritId);
                     victim = Battle.GetPokemon(pup.VictimId);
                     culprit.AttackChange = victim.AttackChange = pup.AttackChange;
@@ -294,292 +309,292 @@ namespace Kermalis.PokemonBattleEngineClient
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PStatus1Packet s1p:
+                case PBEStatus1Packet s1p:
                     culprit = Battle.GetPokemon(s1p.CulpritId);
                     victim = Battle.GetPokemon(s1p.VictimId);
-                    switch (s1p.Action)
+                    switch (s1p.StatusAction)
                     {
-                        case PStatusAction.Added:
-                            victim.Status1 = s1p.Status;
+                        case PBEStatusAction.Added:
+                            victim.Status1 = s1p.Status1;
                             break;
-                        case PStatusAction.Cured:
-                        case PStatusAction.Ended:
-                            victim.Status1 = PStatus1.None;
+                        case PBEStatusAction.Cured:
+                        case PBEStatusAction.Ended:
+                            victim.Status1 = PBEStatus1.None;
                             break;
                     }
                     battleView.UpdatePokemon(victim);
-                    switch (s1p.Status)
+                    switch (s1p.Status1)
                     {
-                        case PStatus1.Asleep:
-                            switch (s1p.Action)
+                        case PBEStatus1.Asleep:
+                            switch (s1p.StatusAction)
                             {
-                                case PStatusAction.Activated: message = "{0} is fast asleep."; break;
-                                case PStatusAction.Added: message = "{0} fell asleep!"; break;
-                                case PStatusAction.Ended: message = "{0} woke up!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s1p.Action), $"Invalid {s1p.Status} action: {s1p.Action}");
+                                case PBEStatusAction.Activated: message = "{0} is fast asleep."; break;
+                                case PBEStatusAction.Added: message = "{0} fell asleep!"; break;
+                                case PBEStatusAction.Ended: message = "{0} woke up!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                             }
                             break;
-                        case PStatus1.BadlyPoisoned:
-                            switch (s1p.Action)
+                        case PBEStatus1.BadlyPoisoned:
+                            switch (s1p.StatusAction)
                             {
-                                case PStatusAction.Added: message = "{0} was badly poisoned!"; break;
-                                case PStatusAction.Damage: message = "{0} was hurt by poison!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s1p.Action), $"Invalid {s1p.Status} action: {s1p.Action}");
+                                case PBEStatusAction.Added: message = "{0} was badly poisoned!"; break;
+                                case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                             }
                             break;
-                        case PStatus1.Poisoned:
-                            switch (s1p.Action)
+                        case PBEStatus1.Poisoned:
+                            switch (s1p.StatusAction)
                             {
-                                case PStatusAction.Added: message = "{0} was poisoned!"; break;
-                                case PStatusAction.Damage: message = "{0} was hurt by poison!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s1p.Action), $"Invalid {s1p.Status} action: {s1p.Action}");
+                                case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
+                                case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                             }
                             break;
-                        case PStatus1.Burned:
-                            switch (s1p.Action)
+                        case PBEStatus1.Burned:
+                            switch (s1p.StatusAction)
                             {
-                                case PStatusAction.Added: message = "{0} was burned!"; break;
-                                case PStatusAction.Damage: message = "{0} was hurt by its burn!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s1p.Action), $"Invalid {s1p.Status} action: {s1p.Action}");
+                                case PBEStatusAction.Added: message = "{0} was burned!"; break;
+                                case PBEStatusAction.Damage: message = "{0} was hurt by its burn!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                             }
                             break;
-                        case PStatus1.Frozen:
-                            switch (s1p.Action)
+                        case PBEStatus1.Frozen:
+                            switch (s1p.StatusAction)
                             {
-                                case PStatusAction.Activated: message = "{0} is frozen solid!"; break;
-                                case PStatusAction.Added: message = "{0} was frozen solid!"; break;
-                                case PStatusAction.Ended: message = "{0} thawed out!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s1p.Action), $"Invalid {s1p.Status} action: {s1p.Action}");
+                                case PBEStatusAction.Activated: message = "{0} is frozen solid!"; break;
+                                case PBEStatusAction.Added: message = "{0} was frozen solid!"; break;
+                                case PBEStatusAction.Ended: message = "{0} thawed out!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                             }
                             break;
-                        case PStatus1.Paralyzed:
-                            switch (s1p.Action)
+                        case PBEStatus1.Paralyzed:
+                            switch (s1p.StatusAction)
                             {
-                                case PStatusAction.Activated: message = "{0} is paralyzed! It can't move!"; break;
-                                case PStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
-                                case PStatusAction.Cured: message = "{0} was cured of paralysis."; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s1p.Action), $"Invalid {s1p.Status} action: {s1p.Action}");
+                                case PBEStatusAction.Activated: message = "{0} is paralyzed! It can't move!"; break;
+                                case PBEStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
+                                case PBEStatusAction.Cured: message = "{0} was cured of paralysis."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                             }
                             break;
-                        default: throw new ArgumentOutOfRangeException(nameof(s1p.Status), $"Invalid status1: {s1p.Status}");
+                        default: throw new ArgumentOutOfRangeException(nameof(s1p.Status1), $"Invalid status1: {s1p.Status1}");
                     }
                     message = string.Format(message, victim.NameForTrainer(true));
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PStatus2Packet s2p:
+                case PBEStatus2Packet s2p:
                     b1 = true; // victim caps
                     b2 = false; // culprit caps
                     culprit = Battle.GetPokemon(s2p.CulpritId);
                     victim = Battle.GetPokemon(s2p.VictimId);
-                    switch (s2p.Action)
+                    switch (s2p.StatusAction)
                     {
-                        case PStatusAction.Added:
-                            victim.Status2 |= s2p.Status;
+                        case PBEStatusAction.Added:
+                            victim.Status2 |= s2p.Status2;
                             break;
-                        case PStatusAction.Ended:
-                            victim.Status2 &= ~s2p.Status;
+                        case PBEStatusAction.Ended:
+                            victim.Status2 &= ~s2p.Status2;
                             break;
                     }
-                    switch (s2p.Status)
+                    switch (s2p.Status2)
                     {
-                        case PStatus2.Airborne:
+                        case PBEStatus2.Airborne:
                             battleView.UpdatePokemon(victim);
-                            switch (s2p.Action)
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Added:
+                                case PBEStatusAction.Added:
                                     message = "{0} flew up high!";
                                     victim.LockedAction = victim.SelectedAction;
                                     break;
-                                case PStatusAction.Ended:
-                                    victim.LockedAction.Decision = PDecision.None;
+                                case PBEStatusAction.Ended:
+                                    victim.LockedAction.Decision = PBEDecision.None;
                                     return true;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
                             break;
-                        case PStatus2.Confused:
-                            switch (s2p.Action)
+                        case PBEStatus2.Confused:
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Activated: message = "{0} is confused!"; break;
-                                case PStatusAction.Added: message = "{0} became confused!"; break;
-                                case PStatusAction.Damage: message = "It hurt itself in its confusion!"; break;
-                                case PStatusAction.Ended: message = "{0} snapped out of its confusion."; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                case PBEStatusAction.Activated: message = "{0} is confused!"; break;
+                                case PBEStatusAction.Added: message = "{0} became confused!"; break;
+                                case PBEStatusAction.Damage: message = "It hurt itself in its confusion!"; break;
+                                case PBEStatusAction.Ended: message = "{0} snapped out of its confusion."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
                             break;
-                        case PStatus2.Cursed:
-                            switch (s2p.Action)
+                        case PBEStatus2.Cursed:
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Added: message = "{1} cut its own HP and laid a curse on {0}!"; b2 = true; b1 = false; break;
-                                case PStatusAction.Damage: message = "{0} is afflicted by the curse!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                case PBEStatusAction.Added: message = "{1} cut its own HP and laid a curse on {0}!"; b2 = true; b1 = false; break;
+                                case PBEStatusAction.Damage: message = "{0} is afflicted by the curse!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
                             break;
-                        case PStatus2.Flinching:
-                            switch (s2p.Action)
+                        case PBEStatus2.Flinching:
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                case PBEStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
                             break;
-                        case PStatus2.LeechSeed:
-                            switch (s2p.Action)
+                        case PBEStatus2.LeechSeed:
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Added: message = "{0} was seeded!"; break;
-                                case PStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                case PBEStatusAction.Added: message = "{0} was seeded!"; break;
+                                case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
                             break;
-                        case PStatus2.Minimized:
-                            switch (s2p.Action)
+                        case PBEStatus2.Minimized:
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Added: return true;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                case PBEStatusAction.Added: return true;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
-                        case PStatus2.Protected:
-                            switch (s2p.Action)
+                        case PBEStatus2.Protected:
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Activated:
-                                case PStatusAction.Added: message = "{0} protected itself!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
-                            }
-                            break;
-                        case PStatus2.Pumped:
-                            switch (s2p.Action)
-                            {
-                                case PStatusAction.Added: message = "{0} is getting pumped!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                case PBEStatusAction.Activated:
+                                case PBEStatusAction.Added: message = "{0} protected itself!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
                             break;
-                        case PStatus2.Substitute:
+                        case PBEStatus2.Pumped:
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} is getting pumped!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                            }
+                            break;
+                        case PBEStatus2.Substitute:
                             battleView.UpdatePokemon(victim);
-                            switch (s2p.Action)
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Added: message = "{0} put in a substitute!"; break;
-                                case PStatusAction.Damage: message = "The substitute took damage for {0}!"; b1 = false; break;
-                                case PStatusAction.Ended: message = "{0}'s substitute faded!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                case PBEStatusAction.Added: message = "{0} put in a substitute!"; break;
+                                case PBEStatusAction.Damage: message = "The substitute took damage for {0}!"; b1 = false; break;
+                                case PBEStatusAction.Ended: message = "{0}'s substitute faded!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
                             break;
-                        case PStatus2.Underground:
+                        case PBEStatus2.Underground:
                             battleView.UpdatePokemon(victim);
-                            switch (s2p.Action)
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Added:
+                                case PBEStatusAction.Added:
                                     message = "{0} burrowed its way under the ground!";
                                     victim.LockedAction = victim.SelectedAction;
                                     break;
-                                case PStatusAction.Ended:
-                                    victim.LockedAction.Decision = PDecision.None;
+                                case PBEStatusAction.Ended:
+                                    victim.LockedAction.Decision = PBEDecision.None;
                                     return true;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
                             break;
-                        case PStatus2.Underwater:
+                        case PBEStatus2.Underwater:
                             battleView.UpdatePokemon(victim);
-                            switch (s2p.Action)
+                            switch (s2p.StatusAction)
                             {
-                                case PStatusAction.Added:
+                                case PBEStatusAction.Added:
                                     message = "{0} hid underwater!";
                                     victim.LockedAction = victim.SelectedAction;
                                     break;
-                                case PStatusAction.Ended:
-                                    victim.LockedAction.Decision = PDecision.None;
+                                case PBEStatusAction.Ended:
+                                    victim.LockedAction.Decision = PBEDecision.None;
                                     return true;
-                                default: throw new ArgumentOutOfRangeException(nameof(s2p.Action), $"Invalid {s2p.Status} action: {s2p.Action}");
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                             }
                             break;
-                        default: throw new ArgumentOutOfRangeException(nameof(s2p.Status), $"Invalid status2: {s2p.Status}");
+                        default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
                     }
                     message = string.Format(message, victim.NameForTrainer(b1), culprit.NameForTrainer(b2));
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PTeamStatusPacket tsp:
+                case PBETeamStatusPacket tsp:
                     b1 = false;
-                    team = Battle.Teams[tsp.Local ? 0 : 1];
+                    team = Battle.Teams[tsp.LocalTeam ? 0 : 1];
                     victim = Battle.GetPokemon(tsp.VictimId);
-                    switch (tsp.Action)
+                    switch (tsp.TeamStatusAction)
                     {
-                        case PTeamStatusAction.Added:
-                            team.Status |= tsp.Status;
+                        case PBETeamStatusAction.Added:
+                            team.Status |= tsp.TeamStatus;
                             break;
-                        case PTeamStatusAction.Cleared:
-                        case PTeamStatusAction.Ended:
-                            team.Status &= ~tsp.Status;
+                        case PBETeamStatusAction.Cleared:
+                        case PBETeamStatusAction.Ended:
+                            team.Status &= ~tsp.TeamStatus;
                             break;
                     }
-                    switch (tsp.Status)
+                    switch (tsp.TeamStatus)
                     {
-                        case PTeamStatus.LightScreen:
-                            switch (tsp.Action)
+                        case PBETeamStatus.LightScreen:
+                            switch (tsp.TeamStatusAction)
                             {
-                                case PTeamStatusAction.Added: message = "Light Screen raised {0} team's Special Defense!"; break;
-                                case PTeamStatusAction.Cleared:
-                                case PTeamStatusAction.Ended: message = "{1} team's Light Screen wore off!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid {tsp.Status} action: {tsp.Action}");
+                                case PBETeamStatusAction.Added: message = "Light Screen raised {0} team's Special Defense!"; break;
+                                case PBETeamStatusAction.Cleared:
+                                case PBETeamStatusAction.Ended: message = "{1} team's Light Screen wore off!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
                             }
                             break;
-                        case PTeamStatus.Reflect:
-                            switch (tsp.Action)
+                        case PBETeamStatus.Reflect:
+                            switch (tsp.TeamStatusAction)
                             {
-                                case PTeamStatusAction.Added: message = "Reflect raised {0} team's Defense!"; break;
-                                case PTeamStatusAction.Cleared:
-                                case PTeamStatusAction.Ended: message = "{1} team's Reflect wore off!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid {tsp.Status} action: {tsp.Action}");
+                                case PBETeamStatusAction.Added: message = "Reflect raised {0} team's Defense!"; break;
+                                case PBETeamStatusAction.Cleared:
+                                case PBETeamStatusAction.Ended: message = "{1} team's Reflect wore off!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
                             }
                             break;
-                        case PTeamStatus.Spikes:
-                            switch (tsp.Action)
+                        case PBETeamStatus.Spikes:
+                            switch (tsp.TeamStatusAction)
                             {
-                                case PTeamStatusAction.Added:
+                                case PBETeamStatusAction.Added:
                                     team.SpikeCount++;
                                     message = "Spikes were scattered all around the feet of {2} team!";
                                     break;
-                                case PTeamStatusAction.Cleared:
+                                case PBETeamStatusAction.Cleared:
                                     team.SpikeCount = 0;
                                     message = "The spikes disappeared from around {2} team's feet!";
                                     break;
-                                case PTeamStatusAction.Damage: message = "{4} is hurt by the spikes!"; b1 = true; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid {tsp.Status} action: {tsp.Action}");
+                                case PBETeamStatusAction.Damage: message = "{4} is hurt by the spikes!"; b1 = true; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
                             }
                             break;
-                        case PTeamStatus.StealthRock:
-                            switch (tsp.Action)
+                        case PBETeamStatus.StealthRock:
+                            switch (tsp.TeamStatusAction)
                             {
-                                case PTeamStatusAction.Added: message = "Pointed stones float in the air around {3} team!"; break;
-                                case PTeamStatusAction.Cleared: message = "The pointed stones disappeared from around {2} team!"; break;
-                                case PTeamStatusAction.Damage: message = "Pointed stones dug into {4}!"; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid {tsp.Status} action: {tsp.Action}");
+                                case PBETeamStatusAction.Added: message = "Pointed stones float in the air around {3} team!"; break;
+                                case PBETeamStatusAction.Cleared: message = "The pointed stones disappeared from around {2} team!"; break;
+                                case PBETeamStatusAction.Damage: message = "Pointed stones dug into {4}!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
                             }
                             break;
-                        case PTeamStatus.ToxicSpikes:
-                            switch (tsp.Action)
+                        case PBETeamStatus.ToxicSpikes:
+                            switch (tsp.TeamStatusAction)
                             {
-                                case PTeamStatusAction.Added:
+                                case PBETeamStatusAction.Added:
                                     team.ToxicSpikeCount++;
                                     message = "Poison spikes were scattered all around {2} team's feet!";
                                     break;
-                                case PTeamStatusAction.Cleared:
+                                case PBETeamStatusAction.Cleared:
                                     team.ToxicSpikeCount = 0;
                                     message = "The poison spikes disappeared from around {2} team's feet!";
                                     break;
-                                default: throw new ArgumentOutOfRangeException(nameof(tsp.Action), $"Invalid {tsp.Status} action: {tsp.Action}");
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
                             }
                             break;
-                        default: throw new ArgumentOutOfRangeException(nameof(tsp.Status), $"Invalid team status: {tsp.Status}");
+                        default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatus), $"Invalid team status: {tsp.TeamStatus}");
                     }
                     message = string.Format(message,
-                        tsp.Local ? "your" : "the opposing",
-                        tsp.Local ? "Your" : "The opposing",
-                        tsp.Local ? "your" : "the foe's",
-                        tsp.Local ? "your" : "your foe's",
+                        tsp.LocalTeam ? "your" : "the opposing",
+                        tsp.LocalTeam ? "Your" : "The opposing",
+                        tsp.LocalTeam ? "your" : "the foe's",
+                        tsp.LocalTeam ? "your" : "your foe's",
                         victim.NameForTrainer(b1)
                         );
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PTransformPacket tp:
+                case PBETransformPacket tp:
                     culprit = Battle.GetPokemon(tp.CulpritId);
                     victim = Battle.GetPokemon(tp.VictimId);
                     culprit.Transform(victim, tp.TargetAttack, tp.TargetDefense, tp.TargetSpAttack, tp.TargetSpDefense, tp.TargetSpeed, tp.TargetAbility, tp.TargetType1, tp.TargetType2, tp.TargetMoves);
@@ -588,32 +603,32 @@ namespace Kermalis.PokemonBattleEngineClient
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PWeatherPacket wp:
-                    switch (wp.Action)
+                case PBEWeatherPacket wp:
+                    switch (wp.WeatherAction)
                     {
-                        case PWeatherAction.Added:
+                        case PBEWeatherAction.Added:
                             Battle.Weather = wp.Weather;
                             break;
-                        case PWeatherAction.Ended:
-                            Battle.Weather = PWeather.None;
+                        case PBEWeatherAction.Ended:
+                            Battle.Weather = PBEWeather.None;
                             break;
                     }
                     switch (wp.Weather)
                     {
-                        case PWeather.Raining:
-                            switch (wp.Action)
+                        case PBEWeather.Raining:
+                            switch (wp.WeatherAction)
                             {
-                                case PWeatherAction.Added: message = "It started to rain!"; break;
-                                case PWeatherAction.Ended: message = "The rain stopped."; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(wp.Action), $"Invalid {wp.Weather} action: {wp.Action}");
+                                case PBEWeatherAction.Added: message = "It started to rain!"; break;
+                                case PBEWeatherAction.Ended: message = "The rain stopped."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
                             }
                             break;
-                        case PWeather.Sunny:
-                            switch (wp.Action)
+                        case PBEWeather.Sunny:
+                            switch (wp.WeatherAction)
                             {
-                                case PWeatherAction.Added: message = "The sunlight turned harsh!"; break;
-                                case PWeatherAction.Ended: message = "The sunlight faded."; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(wp.Action), $"Invalid {wp.Weather} action: {wp.Action}");
+                                case PBEWeatherAction.Added: message = "The sunlight turned harsh!"; break;
+                                case PBEWeatherAction.Ended: message = "The sunlight faded."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
                             }
                             break;
                         default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
@@ -621,106 +636,136 @@ namespace Kermalis.PokemonBattleEngineClient
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
-                case PActionsRequestPacket arp:
-                    if (!arp.Local)
+                case PBEActionsRequestPacket arp:
+                    if (!arp.LocalTeam)
                     {
                         return true;
                     }
                     ActionsLoop(true);
                     break;
-                case PSwitchInRequestPacket sirp:
+                case PBESwitchInRequestPacket sirp:
                     {
-                        if (!sirp.Local)
+                        if (!sirp.LocalTeam)
                         {
                             return true;
                         }
                         int amt = sirp.Amount;
-                        var switches = new List<Tuple<byte, PFieldPosition>>(amt);
-                        PPokemon[] available = Battle.Teams[0].Party.Where(p => p.FieldPosition == PFieldPosition.None && p.HP > 0).ToArray();
-                        var availablePositions = new List<PFieldPosition>();
+                        var switches = new List<Tuple<byte, PBEFieldPosition>>(amt);
+                        PBEPokemon[] available = Battle.Teams[0].Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+                        var availablePositions = new List<PBEFieldPosition>();
                         switch (Battle.BattleStyle)
                         {
-                            case PBattleStyle.Single:
-                                availablePositions.Add(PFieldPosition.Center);
+                            case PBEBattleStyle.Single:
+                                availablePositions.Add(PBEFieldPosition.Center);
                                 break;
-                            case PBattleStyle.Double:
-                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left) == null)
-                                    availablePositions.Add(PFieldPosition.Left);
-                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right) == null)
-                                    availablePositions.Add(PFieldPosition.Right);
+                            case PBEBattleStyle.Double:
+                                if (Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left) == null)
+                                {
+                                    availablePositions.Add(PBEFieldPosition.Left);
+                                }
+                                if (Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Right) == null)
+                                {
+                                    availablePositions.Add(PBEFieldPosition.Right);
+                                }
                                 break;
-                            case PBattleStyle.Triple:
-                            case PBattleStyle.Rotation:
-                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left) == null)
-                                    availablePositions.Add(PFieldPosition.Left);
-                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Center) == null)
-                                    availablePositions.Add(PFieldPosition.Center);
-                                if (Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right) == null)
-                                    availablePositions.Add(PFieldPosition.Right);
+                            case PBEBattleStyle.Triple:
+                            case PBEBattleStyle.Rotation:
+                                if (Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left) == null)
+                                {
+                                    availablePositions.Add(PBEFieldPosition.Left);
+                                }
+                                if (Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Center) == null)
+                                {
+                                    availablePositions.Add(PBEFieldPosition.Center);
+                                }
+                                if (Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Right) == null)
+                                {
+                                    availablePositions.Add(PBEFieldPosition.Right);
+                                }
                                 break;
                         }
                         for (i = 0; i < amt; i++)
                         {
                             switches.Add(Tuple.Create(available[i].Id, availablePositions[i]));
                         }
-                        Send(new PSwitchInResponsePacket(switches.ToArray()));
+                        Send(new PBESwitchInResponsePacket(switches.ToArray()));
                     }
                     break;
             }
             return false;
         }
 
-        List<PPokemon> actions = new List<PPokemon>(3);
-        List<PPokemon> standBy = new List<PPokemon>(3);
+        List<PBEPokemon> actions = new List<PBEPokemon>(3);
+        List<PBEPokemon> standBy = new List<PBEPokemon>(3);
         public void ActionsLoop(bool begin)
         {
-            PPokemon pkmn;
+            PBEPokemon pkmn;
             if (begin)
             {
-                foreach (PPokemon p in Battle.Teams[0].Party)
-                    p.SelectedAction.Decision = PDecision.None;
+                foreach (PBEPokemon p in Battle.Teams[0].Party)
+                {
+                    p.SelectedAction.Decision = PBEDecision.None;
+                }
+
                 actions.Clear();
                 standBy.Clear();
                 switch (Battle.BattleStyle)
                 {
-                    case PBattleStyle.Single:
-                    case PBattleStyle.Rotation:
-                        actions.Add(Battle.Teams[0].PokemonAtPosition(PFieldPosition.Center));
+                    case PBEBattleStyle.Single:
+                    case PBEBattleStyle.Rotation:
+                        actions.Add(Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Center));
                         break;
-                    case PBattleStyle.Double:
-                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left);
+                    case PBEBattleStyle.Double:
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left);
                         if (pkmn != null)
+                        {
                             actions.Add(pkmn);
-                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right);
+                        }
+
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Right);
                         if (pkmn != null)
+                        {
                             actions.Add(pkmn);
+                        }
+
                         break;
-                    case PBattleStyle.Triple:
-                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Left);
+                    case PBEBattleStyle.Triple:
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left);
                         if (pkmn != null)
+                        {
                             actions.Add(pkmn);
-                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Center);
+                        }
+
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Center);
                         if (pkmn != null)
+                        {
                             actions.Add(pkmn);
-                        pkmn = Battle.Teams[0].PokemonAtPosition(PFieldPosition.Right);
+                        }
+
+                        pkmn = Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Right);
                         if (pkmn != null)
+                        {
                             actions.Add(pkmn);
+                        }
+
                         break;
                 }
             }
-            int i = actions.FindIndex(p => p.SelectedAction.Decision == PDecision.None);
+            int i = actions.FindIndex(p => p.SelectedAction.Decision == PBEDecision.None);
             if (i == -1)
             {
                 battleView.SetMessage($"Waiting for {Battle.Teams[1].TrainerName}...");
-                Send(new PActionsResponsePacket(actions.Select(p => p.SelectedAction).ToArray()));
+                Send(new PBEActionsResponsePacket(actions.Select(p => p.SelectedAction).ToArray()));
             }
             else
             {
                 if (i != 0)
                 {
-                    PAction prevAction = actions[i - 1].SelectedAction;
-                    if (prevAction.Decision == PDecision.Switch)
+                    PBEAction prevAction = actions[i - 1].SelectedAction;
+                    if (prevAction.Decision == PBEDecision.Switch)
+                    {
                         standBy.Add(Battle.GetPokemon(prevAction.SwitchPokemonId));
+                    }
                 }
                 battleView.SetMessage($"What will {actions[i].Shell.Nickname} do?");
                 actionsView.DisplayActions(Battle.Teams[0].Party, actions[i], standBy);

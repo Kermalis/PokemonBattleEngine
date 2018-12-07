@@ -12,8 +12,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        PPokemon pokemon;
-        public PPokemon Pokemon
+        PBEPokemon pokemon;
+        public PBEPokemon Pokemon
         {
             get => pokemon;
             set
@@ -106,7 +106,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void Update()
         {
-            if (pokemon == null || pokemon.FieldPosition == PFieldPosition.None)
+            if (pokemon == null || pokemon.FieldPosition == PBEFieldPosition.None)
             {
                 Visible = false;
             }
@@ -116,12 +116,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 Level = $"{pokemon.GenderSymbol} Lv.{pokemon.Shell.Level}";
                 switch (pokemon.Status1)
                 {
-                    case PStatus1.Asleep: Status = "SLP"; break;
-                    case PStatus1.BadlyPoisoned:
-                    case PStatus1.Poisoned: Status = "PSN"; break;
-                    case PStatus1.Burned: Status = "BRN"; break;
-                    case PStatus1.Frozen: Status = "FRZ"; break;
-                    case PStatus1.Paralyzed: Status = "PAR"; break;
+                    case PBEStatus1.Asleep: Status = "SLP"; break;
+                    case PBEStatus1.BadlyPoisoned:
+                    case PBEStatus1.Poisoned: Status = "PSN"; break;
+                    case PBEStatus1.Burned: Status = "BRN"; break;
+                    case PBEStatus1.Frozen: Status = "FRZ"; break;
+                    case PBEStatus1.Paralyzed: Status = "PAR"; break;
                     default: Status = string.Empty; break;
                 }
 

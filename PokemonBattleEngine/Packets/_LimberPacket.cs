@@ -8,15 +8,15 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     // TODO: Transform this into an ability action packet
-    public sealed class PLimberPacket : INetPacket
+    public sealed class PBELimberPacket : INetPacket
     {
         public const short Code = 0x19;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte PokemonId;
-        public readonly bool Prevented; // TODO: Remember why I put this
+        public byte PokemonId { get; }
+        public bool Prevented { get; } // TODO: Remember why I put this
 
-        public PLimberPacket(PPokemon pkmn, bool prevented)
+        public PBELimberPacket(PBEPokemon pkmn, bool prevented)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)((Prevented = prevented) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PLimberPacket(byte[] buffer)
+        public PBELimberPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))

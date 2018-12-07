@@ -8,21 +8,21 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     // TODO: Include victimID for "victim evaded the attack!"
-    public sealed class PMoveMissedPacket : INetPacket
+    public sealed class PBEMoveMissedPacket : INetPacket
     {
         public const short Code = 0x0D;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte CulpritId;
+        public byte CulpritId { get; }
 
-        public PMoveMissedPacket(PPokemon culprit)
+        public PBEMoveMissedPacket(PBEPokemon culprit)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add(CulpritId = culprit.Id);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PMoveMissedPacket(byte[] buffer)
+        public PBEMoveMissedPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))

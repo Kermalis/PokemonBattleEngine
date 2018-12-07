@@ -7,24 +7,25 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PMoveFailedPacket : INetPacket
+    public sealed class PBEMoveFailedPacket : INetPacket
     {
         public const short Code = 0x15;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte CulpritId, VictimId;
-        public readonly PFailReason Reason;
+        public byte CulpritId { get; }
+        public byte VictimId { get; }
+        public PBEFailReason FailReason { get; }
 
-        public PMoveFailedPacket(PPokemon culprit, PPokemon victim, PFailReason reason)
+        public PBEMoveFailedPacket(PBEPokemon culprit, PBEPokemon victim, PBEFailReason failReason)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add(CulpritId = culprit.Id);
             bytes.Add(VictimId = victim.Id);
-            bytes.Add((byte)(Reason = reason));
+            bytes.Add((byte)(FailReason = failReason));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PMoveFailedPacket(byte[] buffer)
+        public PBEMoveFailedPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
@@ -32,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 CulpritId = r.ReadByte();
                 VictimId = r.ReadByte();
-                Reason = (PFailReason)r.ReadByte();
+                FailReason = (PBEFailReason)r.ReadByte();
             }
         }
 

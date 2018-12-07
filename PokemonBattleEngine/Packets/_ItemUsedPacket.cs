@@ -7,15 +7,15 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PItemUsedPacket : INetPacket
+    public sealed class PBEItemUsedPacket : INetPacket
     {
         public const short Code = 0x16;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte CulpritId;
-        public readonly PItem Item;
+        public byte CulpritId { get; }
+        public PBEItem Item { get; }
 
-        public PItemUsedPacket(PPokemon culprit, PItem item)
+        public PBEItemUsedPacket(PBEPokemon culprit, PBEItem item)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -23,14 +23,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes((ushort)(Item = item)));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PItemUsedPacket(byte[] buffer)
+        public PBEItemUsedPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
                 CulpritId = r.ReadByte();
-                Item = (PItem)r.ReadUInt16();
+                Item = (PBEItem)r.ReadUInt16();
             }
         }
 

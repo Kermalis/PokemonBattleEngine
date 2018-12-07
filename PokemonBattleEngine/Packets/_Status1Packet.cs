@@ -7,26 +7,27 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PStatus1Packet : INetPacket
+    public sealed class PBEStatus1Packet : INetPacket
     {
         public const short Code = 0x11;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte CulpritId, VictimId;
-        public readonly PStatus1 Status;
-        public readonly PStatusAction Action;
+        public byte CulpritId { get; }
+        public byte VictimId { get; }
+        public PBEStatus1 Status1 { get; }
+        public PBEStatusAction StatusAction { get; }
 
-        public PStatus1Packet(PPokemon culprit, PPokemon victim, PStatus1 status, PStatusAction action)
+        public PBEStatus1Packet(PBEPokemon culprit, PBEPokemon victim, PBEStatus1 status1, PBEStatusAction statusAction)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add(CulpritId = culprit.Id);
             bytes.Add(VictimId = victim.Id);
-            bytes.Add((byte)(Status = status));
-            bytes.Add((byte)(Action = action));
+            bytes.Add((byte)(Status1 = status1));
+            bytes.Add((byte)(StatusAction = statusAction));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PStatus1Packet(byte[] buffer)
+        public PBEStatus1Packet(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
@@ -34,8 +35,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 CulpritId = r.ReadByte();
                 VictimId = r.ReadByte();
-                Status = (PStatus1)r.ReadByte();
-                Action = (PStatusAction)r.ReadByte();
+                Status1 = (PBEStatus1)r.ReadByte();
+                StatusAction = (PBEStatusAction)r.ReadByte();
             }
         }
 

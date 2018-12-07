@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineServer
         public readonly ManualResetEvent ResetEvent = new ManualResetEvent(true);
 
         public bool IsSpectator = true;
-        public PTeamShell Shell;
+        public PBETeamShell Shell;
 
         public override void Send(INetPacket packet)
         {
@@ -28,13 +28,13 @@ namespace Kermalis.PokemonBattleEngineServer
                 var ser = (BattleServer)Server;
                 switch (packet)
                 {
-                    case PActionsResponsePacket arp:
+                    case PBEActionsResponsePacket arp:
                         ser.ActionsSubmitted(this, arp.Actions);
                         break;
-                    case PPartyResponsePacket prp:
-                        ser.PartySubmitted(this, prp.Team);
+                    case PBEPartyResponsePacket prp:
+                        ser.PartySubmitted(this, prp.TeamShell);
                         break;
-                    case PSwitchInResponsePacket sirp:
+                    case PBESwitchInResponsePacket sirp:
                         ser.SwitchesSubmitted(this, sirp.Switches);
                         break;
                 }

@@ -11,15 +11,15 @@ namespace Kermalis.PokemonBattleEngineClient.Models
     {
         ReactiveCommand SelectPokemonCommand { get; }
 
-        public PPokemon Pokemon { get; }
+        public PBEPokemon Pokemon { get; }
         IBitmap Label { get; }
 
-        public PokemonInfo(PPokemon pkmn, ActionsView parent, List<PPokemon> standBy)
+        public PokemonInfo(PBEPokemon pkmn, ActionsView parent, List<PBEPokemon> standBy)
         {
             Pokemon = pkmn;
             Label = Utils.RenderString(pkmn.NameWithGender);
 
-            bool enabled = parent.Pokemon.LockedAction.Decision != PDecision.Fight && pkmn.FieldPosition == PFieldPosition.None && !standBy.Contains(pkmn) && pkmn.HP > 0;
+            bool enabled = parent.Pokemon.LockedAction.Decision != PBEDecision.Fight && pkmn.FieldPosition == PBEFieldPosition.None && !standBy.Contains(pkmn) && pkmn.HP > 0;
 
             var sub = new Subject<bool>();
             SelectPokemonCommand = ReactiveCommand.Create(() => parent.SelectPokemon(this), sub);

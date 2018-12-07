@@ -7,15 +7,15 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PMoveEffectivenessPacket : INetPacket
+    public sealed class PBEMoveEffectivenessPacket : INetPacket
     {
         public const short Code = 0x0B;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte VictimId;
-        public readonly PEffectiveness Effectiveness;
+        public byte VictimId { get; }
+        public PBEEffectiveness Effectiveness { get; }
 
-        public PMoveEffectivenessPacket(PPokemon victim, PEffectiveness effectiveness)
+        public PBEMoveEffectivenessPacket(PBEPokemon victim, PBEEffectiveness effectiveness)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -23,14 +23,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)(Effectiveness = effectiveness));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PMoveEffectivenessPacket(byte[] buffer)
+        public PBEMoveEffectivenessPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
                 VictimId = r.ReadByte();
-                Effectiveness = (PEffectiveness)r.ReadByte();
+                Effectiveness = (PBEEffectiveness)r.ReadByte();
             }
         }
 

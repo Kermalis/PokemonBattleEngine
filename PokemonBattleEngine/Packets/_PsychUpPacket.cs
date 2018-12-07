@@ -7,15 +7,22 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PPsychUpPacket : INetPacket
+    public sealed class PBEPsychUpPacket : INetPacket
     {
         public const short Code = 0x22;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte CulpritId, VictimId;
-        public readonly sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
+        public byte CulpritId { get; }
+        public byte VictimId { get; }
+        public sbyte AttackChange { get; }
+        public sbyte DefenseChange { get; }
+        public sbyte SpAttackChange { get; }
+        public sbyte SpDefenseChange { get; }
+        public sbyte SpeedChange { get; }
+        public sbyte AccuracyChange { get; }
+        public sbyte EvasionChange { get; }
 
-        public PPsychUpPacket(PPokemon culprit, PPokemon victim)
+        public PBEPsychUpPacket(PBEPokemon culprit, PBEPokemon victim)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -30,7 +37,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)(EvasionChange = victim.EvasionChange));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PPsychUpPacket(byte[] buffer)
+        public PBEPsychUpPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))

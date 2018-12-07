@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public async Task What(byte i)
         {
             int pIndex = Context.BattleContext.GetBattlerIndex(Context.User.Id);
-            if (pIndex != -1 && i < PSettings.NumMoves)
+            if (pIndex != -1 && i < PBESettings.NumMoves)
             {
                 await Context.Channel.SendMessageAsync(Context.BattleContext.Battle.Teams[pIndex].Party[0].Moves[i].ToString());
             }
@@ -36,17 +36,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Command("challenge")]
             public async Task Challenge(SocketUser battler1)
             {
-                PTeamShell team0 = new PTeamShell
+                PBETeamShell team0 = new PBETeamShell
                 {
                     PlayerName = Context.User.Username,
-                    Party = { PCompetitivePokemonShells.Palkia_Uber }
+                    Party = { PBECompetitivePokemonShells.Palkia_Uber }
                 };
-                PTeamShell team1 = new PTeamShell
+                PBETeamShell team1 = new PBETeamShell
                 {
                     PlayerName = battler1.Username,
-                    Party = { PCompetitivePokemonShells.Dialga_Uber }
+                    Party = { PBECompetitivePokemonShells.Dialga_Uber }
                 };
-                PBattle battle = new PBattle(PBattleStyle.Single, team0, team1);
+                PBEBattle battle = new PBEBattle(PBEBattleStyle.Single, team0, team1);
                 var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);
             }
         }
@@ -57,13 +57,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Command("info")]
             public async Task Info(string moveName)
             {
-                if (Enum.TryParse(moveName, true, out PMove move))
+                if (Enum.TryParse(moveName, true, out PBEMove move))
                 {
-                    if (move == PMove.None)
+                    if (move == PBEMove.None)
                     {
                         goto invalid;
                     }
-                    PMoveData mData = PMoveData.Data[move];
+                    PBEMoveData mData = PBEMoveData.Data[move];
                     var embed = new EmbedBuilder()
                         .WithColor(Utils.TypeToColor[mData.Type])
                         .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
@@ -72,7 +72,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type", mData.Type, true)
                         .AddField("Category", mData.Category, true)
                         .AddField("Priority", mData.Priority, true)
-                        .AddField("PP", mData.PPTier * PSettings.PPMultiplier, true)
+                        .AddField("PP", mData.PPTier * PBESettings.PPMultiplier, true)
                         .AddField("Power", mData.Power == 0 ? "--" : mData.Power.ToString(), true)
                         .AddField("Accuracy", mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString(), true)
                         .AddField("Effect", mData.Effect, true)
@@ -93,25 +93,25 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Command("info")]
             public async Task Info(string speciesName)
             {
-                if (Enum.TryParse(speciesName, true, out PSpecies species))
+                if (Enum.TryParse(speciesName, true, out PBESpecies species))
                 {
-                    PPokemonData pData = PPokemonData.Data[species];
+                    PBEPokemonData pData = PBEPokemonData.Data[species];
                     string types = pData.Type1.ToString();
-                    if (pData.Type2 != PType.None)
+                    if (pData.Type2 != PBEType.None)
                     {
                         types += ", " + pData.Type2.ToString();
                     }
                     string ratio;
                     switch (pData.GenderRatio)
                     {
-                        case PGenderRatio.M7_F1: ratio = "87.5% Male, 12.5% Female"; break;
-                        case PGenderRatio.M3_F1: ratio = "75% Male, 25% Female"; break;
-                        case PGenderRatio.M1_F1: ratio = "50% Male, 50% Female"; break;
-                        case PGenderRatio.M1_F3: ratio = "25% Male, 75% Female"; break;
-                        case PGenderRatio.M1_F7: ratio = "12.5% Male, 87.5% Female"; break;
-                        case PGenderRatio.M0_F1: ratio = "0% Male, 100% Female"; break;
-                        case PGenderRatio.M1_F0: ratio = "100% Male, 0% Female"; break;
-                        case PGenderRatio.M0_F0: ratio = "Genderless Species"; break;
+                        case PBEGenderRatio.M7_F1: ratio = "87.5% Male, 12.5% Female"; break;
+                        case PBEGenderRatio.M3_F1: ratio = "75% Male, 25% Female"; break;
+                        case PBEGenderRatio.M1_F1: ratio = "50% Male, 50% Female"; break;
+                        case PBEGenderRatio.M1_F3: ratio = "25% Male, 75% Female"; break;
+                        case PBEGenderRatio.M1_F7: ratio = "12.5% Male, 87.5% Female"; break;
+                        case PBEGenderRatio.M0_F1: ratio = "0% Male, 100% Female"; break;
+                        case PBEGenderRatio.M1_F0: ratio = "100% Male, 0% Female"; break;
+                        case PBEGenderRatio.M0_F0: ratio = "Genderless Species"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio), $"Invalid gender ratio: {pData.GenderRatio}");
                     }
 

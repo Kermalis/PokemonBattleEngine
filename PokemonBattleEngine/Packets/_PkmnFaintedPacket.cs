@@ -7,21 +7,21 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PPkmnFaintedPacket : INetPacket
+    public sealed class PBEPkmnFaintedPacket : INetPacket
     {
         public const short Code = 0x0E;
         public IEnumerable<byte> Buffer { get; }
 
-        public readonly byte VictimId;
+        public byte VictimId { get; }
 
-        public PPkmnFaintedPacket(PPokemon victim)
+        public PBEPkmnFaintedPacket(PBEPokemon victim)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add(VictimId = victim.Id);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PPkmnFaintedPacket(byte[] buffer)
+        public PBEPkmnFaintedPacket(byte[] buffer)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
