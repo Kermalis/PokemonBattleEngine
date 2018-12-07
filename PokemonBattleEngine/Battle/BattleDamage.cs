@@ -17,12 +17,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public void TypeCheck(PBEPokemon user, PBEPokemon target, PBEMove move, out PBEType moveType, out PBEEffectiveness effectiveness, ref double damageMultiplier)
         {
             PBEPokemonData targetPData = PBEPokemonData.Data[target.Species];
-
             moveType = PBEMoveData.GetMoveTypeForPokemon(user, move);
-
             double mult = PBEPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type1];
             mult *= PBEPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type2];
-
             if (mult <= 0)
             {
                 effectiveness = PBEEffectiveness.Ineffective;
@@ -39,7 +36,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 effectiveness = PBEEffectiveness.SuperEffective;
             }
-
             damageMultiplier *= mult;
         }
 
@@ -87,7 +83,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             basePower = 20;
                         }
-
                         break;
                     case PBEMove.HeatCrash:
                     case PBEMove.HeavySlam:
@@ -112,7 +107,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             basePower = 40;
                         }
-
                         break;
                     case PBEMove.HiddenPower:
                         basePower = user.GetHiddenPowerBasePower();
@@ -134,7 +128,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 2.0;
                     }
-
                     break;
                 case PBEMove.Earthquake:
                 case PBEMove.Magnitude:
@@ -143,7 +136,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 2.0;
                     }
-
                     break;
                 case PBEMove.Facade:
                     // Facade gets a 100% power boost if the user is Burned, Paralyzed, Poisoned, or Badly Poisoned
@@ -151,7 +143,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 2.0;
                     }
-
                     break;
                 case PBEMove.Hex:
                     // Hex gets a 100% power boost if the target is afflicted with a status
@@ -159,7 +150,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 2.0;
                     }
-
                     break;
                 case PBEMove.Retaliate:
                     // Retaliate gets a 100% power boost if the user's team has a Pokémon that fainted during the previous turn
@@ -167,7 +157,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 2.0;
                     }
-
                     break;
                 case PBEMove.Steamroller:
                 case PBEMove.Stomp:
@@ -176,7 +165,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 2.0;
                     }
-
                     break;
                 case PBEMove.Surf:
                     // Surf gets a 100% power boost if the target is Underwater
@@ -184,7 +172,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 2.0;
                     }
-
                     break;
                 case PBEMove.Venoshock:
                     // Venoshock gets a 100% power boost if the target is Poisoned
@@ -192,7 +179,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 2.0;
                     }
-
                     break;
             }
 
@@ -207,7 +193,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 0.5;
                     }
-
                     break;
                 case PBEWeather.Sunny:
                     if (moveType == PBEType.Fire)
@@ -218,7 +203,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 0.5;
                     }
-
                     break;
             }
 
@@ -260,7 +244,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 1.5;
                     }
-
                     switch (user.Item)
                     {
                         case PBEItem.InsectPlate:
@@ -286,7 +269,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 basePower *= 1.2;
                             }
-
                             break;
                         case PBEItem.DracoPlate:
                         case PBEItem.DragonFang:
@@ -297,14 +279,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 basePower *= 1.2;
                             }
-
                             break;
                         case PBEItem.LustrousOrb:
                             if (user.Shell.Species == PBESpecies.Palkia)
                             {
                                 basePower *= 1.2;
                             }
-
                             break;
                     }
                     break;
@@ -342,7 +322,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 0.5;
                     }
-
                     switch (user.Item)
                     {
                         case PBEItem.Charcoal:
@@ -368,7 +347,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 basePower *= 1.2;
                             }
-
                             break;
                         case PBEItem.SpellTag:
                         case PBEItem.SpookyPlate:
@@ -382,7 +360,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 1.5;
                     }
-
                     switch (user.Item)
                     {
                         case PBEItem.MeadowPlate:
@@ -407,7 +384,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 0.5;
                     }
-
                     switch (user.Item)
                     {
                         case PBEItem.IciclePlate:
@@ -461,7 +437,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 basePower *= 1.2;
                             }
-
                             break;
                         case PBEItem.IronPlate:
                         case PBEItem.MetalCoat:
@@ -475,7 +450,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower *= 1.5;
                     }
-
                     switch (user.Item)
                     {
                         case PBEItem.LustrousOrb:
@@ -483,7 +457,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 basePower *= 1.2;
                             }
-
                             break;
                         case PBEItem.MysticWater:
                         case PBEItem.SeaIncense:
@@ -624,7 +597,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 moveCategory = PBEMoveData.Data[move].Category;
             }
-
             ushort damage;
             ushort a = 0, d = 0,
                 p = CalculateBasePower(user, target, move, moveType, moveCategory, power, ignoreReflectLightScreen, ignoreLifeOrb, criticalHit);

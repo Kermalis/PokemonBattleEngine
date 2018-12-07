@@ -49,13 +49,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForActions)} to validate actions.");
             }
-
             PBETeam team = Teams[local ? 0 : 1];
             if (actions.Count() == 0 || actions.Count() != team.ActionsRequired.Count)
             {
                 return false;
             }
-
             var standBy = new List<PBEPokemon>();
             foreach (PBEAction action in actions)
             {

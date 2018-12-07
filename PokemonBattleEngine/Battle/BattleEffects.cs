@@ -88,14 +88,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         damage /= 2;
                     }
-
                     DealDamage(pkmn, pkmn, (ushort)damage, PBEEffectiveness.Normal, true);
                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
                     {
                         return;
                     }
-
                     break;
                 case PBEStatus1.Poisoned:
                     DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PBESettings.PoisonDamageDenominator), PBEEffectiveness.Normal, true);
@@ -150,12 +148,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void UseMove(PBEPokemon user)
         {
             PBEMove move = user.SelectedAction.FightMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
-
             if (PreMoveStatusCheck(user, move))
             {
                 return;
             }
-
             PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, PBEMoveData.GetMoveTargetsForPokemon(user, move) == PBEMoveTarget.SingleNotSelf);
             if (targets.Length == 0)
             {
@@ -164,7 +160,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
                 return;
             }
-
             PBEMoveData mData = PBEMoveData.Data[move];
             switch (mData.Effect)
             {
@@ -430,7 +425,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 user.ConfusionCounter++;
             }
-
             if (user.Status1 == PBEStatus1.Asleep)
             {
                 user.Status1Counter++;
@@ -523,13 +517,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus2(user, target, PBEStatus2.Protected, PBEStatusAction.Activated);
                 return true;
             }
-
             // No Guard always hits
             if (user.Ability == PBEAbility.NoGuard || target.Ability == PBEAbility.NoGuard)
             {
                 return false;
             }
-
             // Hitting airborne opponents
             if (target.Status2.HasFlag(PBEStatus2.Airborne) && !mData.Flags.HasFlag(PBEMoveFlag.HitsAirborne))
             {
@@ -545,13 +537,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 goto miss;
             }
-
             // Moves that always hit
             if (mData.Accuracy == 0)
             {
                 return false;
             }
-
             double chance = mData.Accuracy;
             chance *= GetStatMultiplier(user.AccuracyChange, true) / GetStatMultiplier(target.EvasionChange, true); // Accuracy & Evasion changes
             // Pokémon with Compoundeyes get a 30% Accuracy boost
@@ -579,7 +569,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return false;
             }
-
         miss:
             BroadcastMoveMissed(user);
             return true;
@@ -590,8 +579,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             // If critical hits cannot be landed, return false
             if (target.Ability == PBEAbility.BattleArmor
-                || target.Ability == PBEAbility.ShellArmor
-                )
+                || target.Ability == PBEAbility.ShellArmor)
             {
                 return false;
             }
@@ -603,22 +591,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 stage += 1;
             }
-
             if (user.Ability == PBEAbility.SuperLuck)
             {
                 stage += 1;
             }
-
             if (user.Item == PBEItem.RazorClaw || user.Item == PBEItem.ScopeLens)
             {
                 stage += 1;
             }
-
             if (user.Status2.HasFlag(PBEStatus2.Pumped))
             {
                 stage += 2;
             }
-
             if (user.Shell.Species == PBESpecies.Farfetchd && user.Item == PBEItem.Stick)
             {
                 stage += 2;
@@ -636,15 +620,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             // Try to score a critical hit
             if (mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit)
-                || PBEUtils.ApplyChance((int)(chance * 100), 100 * 100)
-                )
+                || PBEUtils.ApplyChance((int)(chance * 100), 100 * 100))
             {
                 damageMultiplier *= PBESettings.CritMultiplier;
                 if (user.Ability == PBEAbility.Sniper)
                 {
                     damageMultiplier *= 1.5;
                 }
-
                 return true;
             }
             return false;
@@ -659,7 +641,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastEffectiveness(victim, effectiveness);
                 return 0;
             }
-
             if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
                 ushort oldHP = victim.SubstituteHP;
@@ -773,7 +754,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 return false;
             }
-
             // A Pokémon with Limber cannot be Paralyzed unless the attacker has Mold Breaker
             if (status == PBEStatus1.Paralyzed && target.Ability == PBEAbility.Limber)
             {
@@ -784,7 +764,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 return false;
             }
-
             // An Ice type Pokémon cannot be Frozen
             if (status == PBEStatus1.Frozen && target.HasType(PBEType.Ice))
             {
@@ -813,7 +792,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
 
-
             target.Status1 = status;
             // Start toxic counter
             if (status == PBEStatus1.BadlyPoisoned)
@@ -825,9 +803,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 target.SleepTurns = (byte)PBEUtils.RNG.Next(PBESettings.SleepMinTurns, PBESettings.SleepMaxTurns + 1);
             }
-
             BroadcastStatus1(user, target, status, PBEStatusAction.Added);
-
             return true;
         }
         // Returns true if the status was applied
