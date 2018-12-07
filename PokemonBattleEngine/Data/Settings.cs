@@ -37,7 +37,9 @@
         public const byte LeechSeedDenominator = 8; // [Default: 8 (1/8 restoration each turn)]
         public const byte CurseDenominator = 4; // [Default: 4 (1/4 damage each turn)]
 
-        public const byte LeftoversDenominator = 16; // [Default: 16 (1/16 restoration each turn)]
+        public const byte LeftoversHealDenominator = 16; // [Default: 16 (1/16 restoration each turn)]
+        public const byte BlackSludgeDamageDenominator = 8; // [Default: 8 (1/8 damage each turn)]
+        public const byte BlackSludgeHealDenominator = 16; // [Default: 16 (1/16 restoration each turn)]
 
         public const byte ReflectLightScreenTurns = 5; // [Default: 5]
         public const byte LightClayTurnExtension = 3; // [Default: 3 (5+3 = 8 turns)]

@@ -123,21 +123,51 @@ namespace Kermalis.PokemonBattleEngineClient
 
             switch (packet)
             {
-                case PBEItemUsedPacket iup:
-                    culprit = Battle.GetPokemon(iup.CulpritId);
-                    switch (iup.Item)
+                case PBEItemPacket ip:
+                    b1 = true; // culprit caps
+                    b2 = false; // victim caps
+                    culprit = Battle.GetPokemon(ip.CulpritId);
+                    victim = Battle.GetPokemon(ip.VictimId);
+                    switch (ip.ItemAction)
                     {
+                        case PBEItemAction.CausedDamage:
+                        case PBEItemAction.RestoredHP:
+                            culprit.Item = ip.Item;
+                            break;
+                        case PBEItemAction.Consumed:
+                            culprit.Item = PBEItem.None;
+                            break;
+                    }
+                    switch (ip.Item)
+                    {
+                        case PBEItem.BlackSludge:
+                            switch (ip.ItemAction)
+                            {
+                                case PBEItemAction.CausedDamage: message = "{0} is hurt by its Black Sludge!"; break;
+                                case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its Black Sludge!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                            }
+                            break;
                         case PBEItem.Leftovers:
-                            culprit.Item = iup.Item;
-                            message = "{0} restored a little HP using its Leftovers!";
+                            switch (ip.ItemAction)
+                            {
+                                case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its Leftovers!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                            }
                             break;
                         case PBEItem.PowerHerb:
-                            culprit.Item = PBEItem.None;
-                            message = "{0} became fully charged due to its Power Herb!";
+                            switch (ip.ItemAction)
+                            {
+                                case PBEItemAction.Consumed: message = "{0} became fully charged due to its Power Herb!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                            }
                             break;
-                        default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
+                        default: throw new ArgumentOutOfRangeException(nameof(ip.Item), $"Invalid item: {ip.Item}");
                     }
-                    message = string.Format(message, culprit.NameForTrainer(true));
+                    message = string.Format(message,
+                        culprit.NameForTrainer(b1),
+                        victim.NameForTrainer(b2)
+                        );
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;

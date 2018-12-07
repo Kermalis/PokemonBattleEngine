@@ -11,8 +11,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public delegate void BattleEvent(PBEBattle battle, INetPacket packet);
         public event BattleEvent OnNewEvent;
 
-        void BroadcastItemUsed(PBEPokemon culprit, PBEItem item)
-            => OnNewEvent?.Invoke(this, new PBEItemUsedPacket(culprit, item));
+        void BroadcastItem(PBEPokemon culprit, PBEPokemon victim, PBEItem item, PBEItemAction itemAction)
+            => OnNewEvent?.Invoke(this, new PBEItemPacket(culprit, victim, item, itemAction));
         void BroadcastLimber(PBEPokemon pkmn, bool prevented) // Prevented or cured
             => OnNewEvent?.Invoke(this, new PBELimberPacket(pkmn, prevented));
         void BroadcastMagnitude(byte magnitude)
@@ -69,15 +69,41 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             switch (packet)
             {
-                case PBEItemUsedPacket iup:
-                    culprit = battle.GetPokemon(iup.CulpritId);
-                    switch (iup.Item)
+                case PBEItemPacket ip:
+                    b1 = true; // culprit caps
+                    b2 = false; // victim caps
+                    culprit = battle.GetPokemon(ip.CulpritId);
+                    victim = battle.GetPokemon(ip.VictimId);
+                    switch (ip.Item)
                     {
-                        case PBEItem.Leftovers: message = "restored a little HP using its Leftovers"; break;
-                        case PBEItem.PowerHerb: message = "became fully charged due to its Power Herb"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(iup.Item), $"Invalid item used: {iup.Item}");
+                        case PBEItem.BlackSludge:
+                            switch (ip.ItemAction)
+                            {
+                                case PBEItemAction.CausedDamage: message = "{0} is hurt by its Black Sludge!"; break;
+                                case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its Black Sludge!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                            }
+                            break;
+                        case PBEItem.Leftovers:
+                            switch (ip.ItemAction)
+                            {
+                                case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its Leftovers!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                            }
+                            break;
+                        case PBEItem.PowerHerb:
+                            switch (ip.ItemAction)
+                            {
+                                case PBEItemAction.Consumed: message = "{0} became fully charged due to its Power Herb!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                            }
+                            break;
+                        default: throw new ArgumentOutOfRangeException(nameof(ip.Item), $"Invalid item: {ip.Item}");
                     }
-                    Console.WriteLine("{0} {1}!", culprit.NameForTrainer(true), message);
+                    Console.WriteLine(message,
+                        culprit.NameForTrainer(b1),
+                        victim.NameForTrainer(b2)
+                        );
                     break;
                 case PBELimberPacket lp:
                     victim = battle.GetPokemon(lp.PokemonId);

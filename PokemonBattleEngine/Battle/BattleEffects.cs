@@ -55,12 +55,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Abilities
-            Ab_LimberCure(pkmn);
+            LimberCheck(pkmn);
         }
         void DoPreMoveEffects(PBEPokemon pkmn)
         {
             // Abilities
-            Ab_LimberCure(pkmn);
+            LimberCheck(pkmn);
         }
         void DoTurnEndedEffects(PBEPokemon pkmn)
         {
@@ -70,10 +70,28 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Items
             switch (pkmn.Item)
             {
-                case PBEItem.Leftovers:
-                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PBESettings.LeftoversDenominator)) > 0)
+                case PBEItem.BlackSludge:
+                    if (pkmn.HasType(PBEType.Poison))
                     {
-                        BroadcastItemUsed(pkmn, PBEItem.Leftovers);
+                        if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PBESettings.BlackSludgeHealDenominator)) > 0)
+                        {
+                            BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.RestoredHP);
+                        }
+                    }
+                    else
+                    {
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PBESettings.BlackSludgeDamageDenominator), PBEEffectiveness.Normal, true);
+                        BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.CausedDamage);
+                        if (FaintCheck(pkmn))
+                        {
+                            return;
+                        }
+                    }
+                    break;
+                case PBEItem.Leftovers:
+                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PBESettings.LeftoversHealDenominator)) > 0)
+                    {
+                        BroadcastItem(pkmn, pkmn, PBEItem.Leftovers, PBEItemAction.RestoredHP);
                     }
                     break;
             }
@@ -142,7 +160,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Abilities
-            Ab_LimberCure(pkmn);
+            LimberCheck(pkmn);
         }
 
         void UseMove(PBEPokemon user)
@@ -680,7 +698,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return healAmt;
         }
 
-        void Ab_LimberCure(PBEPokemon pkmn)
+        // Will cure Paralysis if the Pokémon has Limber
+        void LimberCheck(PBEPokemon pkmn)
         {
             if (pkmn.Ability == PBEAbility.Limber && pkmn.Status1 == PBEStatus1.Paralyzed)
             {
@@ -688,6 +707,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastLimber(pkmn, false);
                 BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cured);
             }
+        }
+        // Will consume a held Power Herb
+        bool PowerHerbCheck(PBEPokemon pkmn)
+        {
+            if (pkmn.Item == PBEItem.PowerHerb)
+            {
+                pkmn.Item = PBEItem.None;
+                BroadcastItem(pkmn, pkmn, PBEItem.PowerHerb, PBEItemAction.Consumed);
+                return true;
+            }
+            return false;
         }
 
         // Broadcasts the event
@@ -1323,10 +1353,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.LockedAction = user.SelectedAction;
                 user.Status2 |= PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
-                if (user.Item == PBEItem.PowerHerb)
+                if (PowerHerbCheck(user))
                 {
-                    user.Item = PBEItem.None;
-                    BroadcastItemUsed(user, PBEItem.PowerHerb);
                     goto top;
                 }
             }
@@ -1361,10 +1389,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.LockedAction = user.SelectedAction;
                 user.Status2 |= PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
-                if (user.Item == PBEItem.PowerHerb)
+                if (PowerHerbCheck(user))
                 {
-                    user.Item = PBEItem.None;
-                    BroadcastItemUsed(user, PBEItem.PowerHerb);
                     goto top;
                 }
             }
@@ -1399,10 +1425,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.LockedAction = user.SelectedAction;
                 user.Status2 |= PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
-                if (user.Item == PBEItem.PowerHerb)
+                if (PowerHerbCheck(user))
                 {
-                    user.Item = PBEItem.None;
-                    BroadcastItemUsed(user, PBEItem.PowerHerb);
                     goto top;
                 }
             }

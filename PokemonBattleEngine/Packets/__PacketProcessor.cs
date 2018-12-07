@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PBETeamStatusPacket.Code: packet = new PBETeamStatusPacket(buffer); break;
                 case PBEWeatherPacket.Code: packet = new PBEWeatherPacket(buffer); break;
                 case PBEMoveFailedPacket.Code: packet = new PBEMoveFailedPacket(buffer); break;
-                case PBEItemUsedPacket.Code: packet = new PBEItemUsedPacket(buffer); break;
+                case PBEItemPacket.Code: packet = new PBEItemPacket(buffer); break;
                 case PBEMovePPChangedPacket.Code: packet = new PBEMovePPChangedPacket(buffer); break;
                 case PBETransformPacket.Code: packet = new PBETransformPacket(buffer); break;
                 case PBELimberPacket.Code: packet = new PBELimberPacket(buffer); break;

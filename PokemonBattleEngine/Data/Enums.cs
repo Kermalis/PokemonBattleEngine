@@ -175,6 +175,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         StealthRock = 1 << 3, // TODO: magic guard, castform transforms after taking damage
         ToxicSpikes = 1 << 4 // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
     }
+    public enum PBEItemAction : byte
+    {
+        CausedDamage,
+        Consumed,
+        RestoredHP
+    }
     public enum PBEStatusAction : byte
     {
         Activated, // flinch prevented movement, protect activated, etc
@@ -258,7 +264,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         AdamantOrb,
         BlackBelt,
         BlackGlasses,
-        BlackSludge, // TODO
+        BlackSludge,
         BrightPowder,
         BurnDrive,
         Charcoal,
