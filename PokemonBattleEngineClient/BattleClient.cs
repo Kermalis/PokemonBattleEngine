@@ -794,7 +794,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 if (i != 0)
                 {
                     PBEAction prevAction = actions[i - 1].SelectedAction;
-                    if (prevAction.Decision == PBEDecision.Switch)
+                    if (prevAction.Decision == PBEDecision.SwitchOut)
                     {
                         standBy.Add(Battle.GetPokemon(prevAction.SwitchPokemonId));
                     }

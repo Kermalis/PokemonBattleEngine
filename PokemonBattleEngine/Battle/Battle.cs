@@ -266,7 +266,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void DetermineTurnOrder()
         {
             turnOrder.Clear();
-            IEnumerable<PBEPokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.SelectedAction.Decision == PBEDecision.Switch);
+            IEnumerable<PBEPokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.SelectedAction.Decision == PBEDecision.SwitchOut);
             IEnumerable<PBEPokemon> pkmnFighting = ActiveBattlers.Where(p => p.SelectedAction.Decision == PBEDecision.Fight);
             // Switching happens first:
             turnOrder.AddRange(pkmnSwitchingOut);
@@ -370,7 +370,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         DoPreMoveEffects(pkmn); // BattleEffects.cs
                         UseMove(pkmn); // BattleEffects.cs
                         break;
-                    case PBEDecision.Switch:
+                    case PBEDecision.SwitchOut:
                         PBEFieldPosition pos = pkmn.FieldPosition;
                         pkmn.ClearForSwitch();
                         ActiveBattlers.Remove(pkmn);

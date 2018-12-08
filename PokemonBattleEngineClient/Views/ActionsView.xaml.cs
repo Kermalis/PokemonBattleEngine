@@ -345,7 +345,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void SelectPokemon(PokemonInfo pkmnInfo)
         {
-            Pokemon.SelectedAction.Decision = PBEDecision.Switch;
+            Pokemon.SelectedAction.Decision = PBEDecision.SwitchOut;
             Pokemon.SelectedAction.SwitchPokemonId = pkmnInfo.Pokemon.Id;
             MovesVisible = false;
             Client.ActionsLoop(false);

@@ -89,7 +89,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         None,
         Fight,
-        Switch
+        SwitchOut
     }
     public enum PBEMoveCategory : byte
     {

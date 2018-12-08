@@ -432,7 +432,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 break;
                         }
                         break;
-                    case PBEDecision.Switch:
+                    case PBEDecision.SwitchOut:
                         // Cannot switch while airborne, underground or underwater
                         if (pkmn.Status2.HasFlag(PBEStatus2.Airborne) || pkmn.Status2.HasFlag(PBEStatus2.Underground) || pkmn.Status2.HasFlag(PBEStatus2.Underwater))
                         {
