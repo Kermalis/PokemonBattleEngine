@@ -613,6 +613,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.Flatter, PBEMove.Psychic, PBEMove.ShadowBall, PBEMove.Protect }, // Trick Room, Psychic, Shadow Ball, Protect
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Cryogonal_VGC = new PBEPokemonShell
+            {
+                Species = PBESpecies.Cryogonal,
+                Nickname = "Fug",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.Leftovers, // Focus Sash
+                Ability = PBEAbility.Levitate,
+                Gender = PBEGender.Genderless,
+                Nature = PBENature.Hasty,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 0, 28, 0, 252, 0, 228 },
+                Moves = new PBEMove[] { PBEMove.IceBeam, PBEMove.HiddenPower, PBEMove.Reflect, PBEMove.Protect },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Genesect_Uber = new PBEPokemonShell
             {
                 Species = PBESpecies.Genesect,
