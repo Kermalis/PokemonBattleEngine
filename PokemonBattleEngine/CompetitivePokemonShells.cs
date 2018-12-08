@@ -261,6 +261,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Psyshock, PBEMove.GrassKnot, PBEMove.HiddenPower }, // Shadow Ball, Yawn, Grass Knot, Hidden Power Fire
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Umbreon_UU = new PBEPokemonShell
+            {
+                Species = PBESpecies.Umbreon,
+                Nickname = "Poppy",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.Leftovers,
+                Ability = PBEAbility.Synchronize,
+                Gender = PBEGender.Female,
+                Nature = PBENature.Calm,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
+                Moves = new PBEMove[] { PBEMove.Snarl, PBEMove.DarkPulse, PBEMove.Moonlight, PBEMove.Protect }, // Wish, Foul Play, Heal Bell, Protect
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Cradily_OU = new PBEPokemonShell
             {
                 Species = PBESpecies.Cradily,

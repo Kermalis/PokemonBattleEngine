@@ -77,8 +77,8 @@ namespace Kermalis.PokemonBattleEngineClient
                         PBECompetitivePokemonShells.Latios_VGC,
                         PBECompetitivePokemonShells.Marowak_VGC, PBECompetitivePokemonShells.Mesprit_UU, PBECompetitivePokemonShells.Mismagius_UU,
                         PBECompetitivePokemonShells.Ninetales_VGC, PBECompetitivePokemonShells.Palkia_Uber, PBECompetitivePokemonShells.Pikachu_VGC,
-                        PBECompetitivePokemonShells.Rotom_Wash_VGC, PBECompetitivePokemonShells.Uxie_VGC, PBECompetitivePokemonShells.Vaporeon_VGC,
-                        PBECompetitivePokemonShells.Venusaur_VGC, PBECompetitivePokemonShells.Victini_Uber,
+                        PBECompetitivePokemonShells.Rotom_Wash_VGC, PBECompetitivePokemonShells.Umbreon_UU, PBECompetitivePokemonShells.Uxie_VGC,
+                        PBECompetitivePokemonShells.Vaporeon_VGC, PBECompetitivePokemonShells.Venusaur_VGC, PBECompetitivePokemonShells.Victini_Uber,
                     };
                     possiblePokemon.Shuffle();
                     team.Party.AddRange(possiblePokemon.Take(PBESettings.MaxPartySize));
