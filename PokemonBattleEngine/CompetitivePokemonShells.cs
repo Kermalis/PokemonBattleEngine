@@ -597,6 +597,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Protect, PBEMove.WillOWisp, PBEMove.Curse }, // Shadow Ball, Will-O-Wisp, Protect, Trick Room
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Gothitelle_VGC = new PBEPokemonShell
+            {
+                Species = PBESpecies.Gothitelle,
+                Nickname = "Jazzy",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.Leftovers, // Mental Herb
+                Ability = PBEAbility.Frisk,
+                Gender = PBEGender.Female,
+                Nature = PBENature.Quiet,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+                EVs = new byte[] { 252, 0, 92, 164, 0, 0 },
+                Moves = new PBEMove[] { PBEMove.Flatter, PBEMove.Psychic, PBEMove.ShadowBall, PBEMove.Protect }, // Trick Room, Psychic, Shadow Ball, Protect
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Genesect_Uber = new PBEPokemonShell
             {
                 Species = PBESpecies.Genesect,
