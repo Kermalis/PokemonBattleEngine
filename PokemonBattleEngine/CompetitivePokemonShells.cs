@@ -389,6 +389,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.XScissor, PBEMove.LeafBlade, PBEMove.Synthesis }, // Swords Dance, Baton Pass, Leaf Blade, Synthesis
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Glaceon_VGC = new PBEPokemonShell
+            {
+                Species = PBESpecies.Glaceon,
+                Nickname = "Gizzard",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.EarthPlate, // Iron Ball
+                Ability = PBEAbility.SnowCloak,
+                Gender = PBEGender.Male,
+                Nature = PBENature.Quiet,
+                IVs = new byte[] { 31, 31, 31, 30, 30, 3 }, // Hidden Power: Ground/70
+                EVs = new byte[] { 252, 0, 0, 248, 8, 0 },
+                Moves = new PBEMove[] { PBEMove.IceBeam, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Protect }, // Blizzard, Shadow Ball, Hidden Power Ground, Protect
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Rotom_Wash_VGC = new PBEPokemonShell
             {
                 Species = PBESpecies.Rotom_Wash,
