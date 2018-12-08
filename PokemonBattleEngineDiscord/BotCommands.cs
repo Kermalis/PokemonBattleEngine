@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PlayerName = battler1.Username,
                     Party = { PBECompetitivePokemonShells.Dialga_Uber }
                 };
-                PBEBattle battle = new PBEBattle(PBEBattleStyle.Single, team0, team1);
+                PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, team0, team1);
                 var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);
             }
         }

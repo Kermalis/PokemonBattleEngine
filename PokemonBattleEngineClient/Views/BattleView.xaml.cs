@@ -37,13 +37,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             this.battle = battle;
             string s;
-            switch (battle.BattleStyle)
+            switch (battle.BattleFormat)
             {
-                case PBEBattleStyle.Single: s = new string[] { "1-s", "2-s", "3-s", "4-s", "5-s", "6-s", "8-s" }.Sample(); break;
-                case PBEBattleStyle.Double: s = new string[] { "1-d", "7-d" }.Sample(); break;
-                case PBEBattleStyle.Triple: s = new string[] { "1-t", "4-t", "5-t", "8-t" }.Sample(); break;
-                case PBEBattleStyle.Rotation: s = new string[] { "1-r", "2-r" }.Sample(); break;
-                default: throw new ArgumentOutOfRangeException(nameof(battle.BattleStyle));
+                case PBEBattleFormat.Single: s = new string[] { "1-s", "2-s", "3-s", "4-s", "5-s", "6-s", "8-s" }.Sample(); break;
+                case PBEBattleFormat.Double: s = new string[] { "1-d", "7-d" }.Sample(); break;
+                case PBEBattleFormat.Triple: s = new string[] { "1-t", "4-t", "5-t", "8-t" }.Sample(); break;
+                case PBEBattleFormat.Rotation: s = new string[] { "1-r", "2-r" }.Sample(); break;
+                default: throw new ArgumentOutOfRangeException(nameof(battle.BattleFormat));
             }
             BGSource = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Backgrounds.{s}.png?assembly=PokemonBattleEngineClient"));
             OnPropertyChanged(nameof(BGSource));
@@ -52,9 +52,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         // pkmn.FieldPosition must be updated before calling this
         public void UpdatePokemon(PBEPokemon pkmn, PBEFieldPosition oldPosition = PBEFieldPosition.None)
         {
-            switch (battle.BattleStyle)
+            switch (battle.BattleFormat)
             {
-                case PBEBattleStyle.Single:
+                case PBEBattleFormat.Single:
                     this.FindControl<HPBarView>("Bar0_Center").Location = new Point(206, 35);
 
                     this.FindControl<HPBarView>("Bar1_Center").Location = new Point(206, 6);
@@ -63,7 +63,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
                     this.FindControl<PokemonView>("Battler1_Center").Location = new Point(284, 8);
                     break;
-                case PBEBattleStyle.Double:
+                case PBEBattleFormat.Double:
                     this.FindControl<HPBarView>("Bar0_Left").Location = new Point(104, 35);
                     this.FindControl<HPBarView>("Bar0_Right").Location = new Point(308, 35);
 
@@ -76,7 +76,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     this.FindControl<PokemonView>("Battler1_Right").Location = new Point(242, 9);
                     this.FindControl<PokemonView>("Battler1_Left").Location = new Point(332, 15);
                     break;
-                case PBEBattleStyle.Triple:
+                case PBEBattleFormat.Triple:
                     this.FindControl<HPBarView>("Bar0_Left").Location = new Point(53, 35);
                     this.FindControl<HPBarView>("Bar0_Center").Location = new Point(206, 35);
                     this.FindControl<HPBarView>("Bar0_Right").Location = new Point(359, 35);
@@ -93,7 +93,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
                     this.FindControl<PokemonView>("Battler1_Left").Location = new Point(362, 8);
                     break;
-                case PBEBattleStyle.Rotation:
+                case PBEBattleFormat.Rotation:
                     this.FindControl<HPBarView>("Bar0_Left").Location = new Point(53, 35);
                     this.FindControl<HPBarView>("Bar0_Center").Location = new Point(206, 35);
                     this.FindControl<HPBarView>("Bar0_Right").Location = new Point(359, 35);
@@ -110,7 +110,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
                     this.FindControl<PokemonView>("Battler1_Left").Location = new Point(421, -24);
                     break;
-                default: throw new ArgumentOutOfRangeException(nameof(battle.BattleStyle));
+                default: throw new ArgumentOutOfRangeException(nameof(battle.BattleFormat));
             }
 
             HPBarView hpView;

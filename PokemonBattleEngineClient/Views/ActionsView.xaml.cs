@@ -361,7 +361,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             PBEMoveTarget possibleTargets = PBEMoveData.GetMoveTargetsForPokemon(Pokemon, moveInfo.Move);
 
-            if (Client.Battle.BattleStyle == PBEBattleStyle.Single || Client.Battle.BattleStyle == PBEBattleStyle.Rotation)
+            if (Client.Battle.BattleFormat == PBEBattleFormat.Single || Client.Battle.BattleFormat == PBEBattleFormat.Rotation)
             {
                 switch (possibleTargets)
                 {
@@ -403,7 +403,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 pkmn = Client.Battle.Teams[1].PokemonAtPosition(PBEFieldPosition.Right);
                 TargetFoeRight = Utils.RenderString(pkmn?.NameWithGender);
 
-                if (Client.Battle.BattleStyle == PBEBattleStyle.Double)
+                if (Client.Battle.BattleFormat == PBEBattleFormat.Double)
                 {
                     const double baseX = 142;
                     LeftX = baseX + 0; RightX = baseX + 128; LeftLineX = baseX + 44; CenterLineX = baseX + 98; RightLineX = baseX + 172;

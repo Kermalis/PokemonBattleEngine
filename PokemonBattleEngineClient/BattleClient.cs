@@ -30,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineClient
             Configuration.Port = port;
             Configuration.BufferSize = 1024;
 
-            Battle = new PBEBattle(PBEBattleStyle.Double);
+            Battle = new PBEBattle(PBEBattleFormat.Double);
             this.battleView = battleView;
             this.battleView.SetBattle(Battle);
             this.actionsView = actionsView;
@@ -685,12 +685,12 @@ namespace Kermalis.PokemonBattleEngineClient
                         var switches = new List<Tuple<byte, PBEFieldPosition>>(amt);
                         PBEPokemon[] available = Battle.Teams[0].Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
                         var availablePositions = new List<PBEFieldPosition>();
-                        switch (Battle.BattleStyle)
+                        switch (Battle.BattleFormat)
                         {
-                            case PBEBattleStyle.Single:
+                            case PBEBattleFormat.Single:
                                 availablePositions.Add(PBEFieldPosition.Center);
                                 break;
-                            case PBEBattleStyle.Double:
+                            case PBEBattleFormat.Double:
                                 if (Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left) == null)
                                 {
                                     availablePositions.Add(PBEFieldPosition.Left);
@@ -700,8 +700,8 @@ namespace Kermalis.PokemonBattleEngineClient
                                     availablePositions.Add(PBEFieldPosition.Right);
                                 }
                                 break;
-                            case PBEBattleStyle.Triple:
-                            case PBEBattleStyle.Rotation:
+                            case PBEBattleFormat.Triple:
+                            case PBEBattleFormat.Rotation:
                                 if (Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left) == null)
                                 {
                                     availablePositions.Add(PBEFieldPosition.Left);
@@ -741,13 +741,13 @@ namespace Kermalis.PokemonBattleEngineClient
 
                 actions.Clear();
                 standBy.Clear();
-                switch (Battle.BattleStyle)
+                switch (Battle.BattleFormat)
                 {
-                    case PBEBattleStyle.Single:
-                    case PBEBattleStyle.Rotation:
+                    case PBEBattleFormat.Single:
+                    case PBEBattleFormat.Rotation:
                         actions.Add(Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Center));
                         break;
-                    case PBEBattleStyle.Double:
+                    case PBEBattleFormat.Double:
                         pkmn = Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left);
                         if (pkmn != null)
                         {
@@ -761,7 +761,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
 
                         break;
-                    case PBEBattleStyle.Triple:
+                    case PBEBattleFormat.Triple:
                         pkmn = Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left);
                         if (pkmn != null)
                         {

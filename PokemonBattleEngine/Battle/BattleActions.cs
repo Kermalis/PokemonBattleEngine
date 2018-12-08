@@ -89,10 +89,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                         // Verify targets
                         PBEMoveTarget possibleTargets = PBEMoveData.GetMoveTargetsForPokemon(pkmn, action.FightMove);
-                        switch (BattleStyle)
+                        switch (BattleFormat)
                         {
-                            case PBEBattleStyle.Single:
-                            case PBEBattleStyle.Rotation:
+                            case PBEBattleFormat.Single:
+                            case PBEBattleFormat.Rotation:
                                 switch (possibleTargets)
                                 {
                                     case PBEMoveTarget.All:
@@ -122,7 +122,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         break;
                                 }
                                 break;
-                            case PBEBattleStyle.Double:
+                            case PBEBattleFormat.Double:
                                 switch (possibleTargets)
                                 {
                                     case PBEMoveTarget.All:
@@ -223,7 +223,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         break;
                                 }
                                 break;
-                            case PBEBattleStyle.Triple:
+                            case PBEBattleFormat.Triple:
                                 switch (possibleTargets)
                                 {
                                     case PBEMoveTarget.All:
@@ -485,16 +485,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (PBEMoveData.GetMoveTargetsForPokemon(pkmn, pkmn.SelectedAction.FightMove))
                             {
                                 case PBEMoveTarget.RandomFoeSurrounding:
-                                    switch (BattleStyle)
+                                    switch (BattleFormat)
                                     {
-                                        case PBEBattleStyle.Single:
-                                        case PBEBattleStyle.Rotation:
+                                        case PBEBattleFormat.Single:
+                                        case PBEBattleFormat.Rotation:
                                             pkmn.SelectedAction.FightTargets = PBETarget.FoeCenter;
                                             break;
-                                        case PBEBattleStyle.Double:
+                                        case PBEBattleFormat.Double:
                                             pkmn.SelectedAction.FightTargets = PBEUtils.RNG.Next(2) == 0 ? PBETarget.FoeLeft : PBETarget.FoeRight;
                                             break;
-                                        case PBEBattleStyle.Triple:
+                                        case PBEBattleFormat.Triple:
                                             if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                             {
                                                 pkmn.SelectedAction.FightTargets = PBEUtils.RNG.Next(2) == 0 ? PBETarget.FoeCenter : PBETarget.FoeRight;
@@ -547,7 +547,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                     break;
                                 case PBEMoveTarget.SingleAllySurrounding:
-                                    if (BattleStyle == PBEBattleStyle.Single || BattleStyle == PBEBattleStyle.Rotation)
+                                    if (BattleFormat == PBEBattleFormat.Single || BattleFormat == PBEBattleFormat.Rotation)
                                     {
                                         pkmn.SelectedAction.FightTargets = PBETarget.AllyCenter;
                                     }
@@ -613,37 +613,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
-        public static PBEFieldPosition GetPositionAcross(PBEBattleStyle style, PBEFieldPosition pos)
+        public static PBEFieldPosition GetPositionAcross(PBEBattleFormat battleFormat, PBEFieldPosition position)
         {
-            switch (style)
+            switch (battleFormat)
             {
-                case PBEBattleStyle.Single:
-                case PBEBattleStyle.Rotation:
-                    if (pos == PBEFieldPosition.Center)
+                case PBEBattleFormat.Single:
+                case PBEBattleFormat.Rotation:
+                    if (position == PBEFieldPosition.Center)
                     {
                         return PBEFieldPosition.Center;
                     }
                     break;
-                case PBEBattleStyle.Double:
-                    if (pos == PBEFieldPosition.Left)
+                case PBEBattleFormat.Double:
+                    if (position == PBEFieldPosition.Left)
                     {
                         return PBEFieldPosition.Right;
                     }
-                    else if (pos == PBEFieldPosition.Right)
+                    else if (position == PBEFieldPosition.Right)
                     {
                         return PBEFieldPosition.Left;
                     }
                     break;
-                case PBEBattleStyle.Triple:
-                    if (pos == PBEFieldPosition.Left)
+                case PBEBattleFormat.Triple:
+                    if (position == PBEFieldPosition.Left)
                     {
                         return PBEFieldPosition.Right;
                     }
-                    else if (pos == PBEFieldPosition.Center)
+                    else if (position == PBEFieldPosition.Center)
                     {
                         return PBEFieldPosition.Center;
                     }
-                    else if (pos == PBEFieldPosition.Right)
+                    else if (position == PBEFieldPosition.Right)
                     {
                         return PBEFieldPosition.Left;
                     }
@@ -681,11 +681,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
-                    if (BattleStyle == PBEBattleStyle.Double)
+                    if (BattleFormat == PBEBattleFormat.Double)
                     {
                         b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
                     }
-                    else if (BattleStyle == PBEBattleStyle.Triple)
+                    else if (BattleFormat == PBEBattleFormat.Triple)
                     {
                         b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far right
@@ -703,7 +703,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
-                    if (BattleStyle == PBEBattleStyle.Triple)
+                    if (BattleFormat == PBEBattleFormat.Triple)
                     {
                         if (user.FieldPosition == PBEFieldPosition.Left)
                         {
@@ -753,11 +753,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
-                    if (BattleStyle == PBEBattleStyle.Double)
+                    if (BattleFormat == PBEBattleFormat.Double)
                     {
                         b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
                     }
-                    else if (BattleStyle == PBEBattleStyle.Triple)
+                    else if (BattleFormat == PBEBattleFormat.Triple)
                     {
                         b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far left

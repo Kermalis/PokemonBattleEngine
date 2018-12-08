@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Normal,
         SuperEffective
     }
-    public enum PBEBattleStyle : byte
+    public enum PBEBattleFormat : byte
     {
         Single,
         Double,

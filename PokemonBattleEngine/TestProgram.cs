@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine
                 Party = { PBECompetitivePokemonShells.Darkrai_Uber, PBECompetitivePokemonShells.Latios_VGC }
             };
 
-            PBEBattle battle = new PBEBattle(PBEBattleStyle.Single, team0, team1);
+            PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, team0, team1);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.Begin();
 

@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 double denominator = 10.0 - (2 * team.SpikeCount);
                 ushort damage = (ushort)(pkmn.MaxHP / denominator);
                 DealDamage(pkmn, pkmn, damage, PBEEffectiveness.Normal, true);
-                BroadcastTeamStatus(team.Local, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn.Id);
+                BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
                 {
                     return;
@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type2];
                 ushort damage = (ushort)(pkmn.MaxHP * effectiveness);
                 DealDamage(pkmn, pkmn, damage, PBEEffectiveness.Normal, true);
-                BroadcastTeamStatus(team.Local, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn.Id);
+                BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
                 {
                     return;
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Grounded Poison types remove the Toxic Spikes
                 if (pkmn.HasType(PBEType.Poison) && pkmn.Ability != PBEAbility.Levitate && !pkmn.HasType(PBEType.Flying))
                 {
-                    BroadcastTeamStatus(team.Local, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
+                    BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
                 }
                 // Steel types and floating Pokémon don't get Poisoned
                 else if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Steel) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
@@ -1085,7 +1085,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         userTeam.Status |= PBETeamStatus.LightScreen;
                         userTeam.LightScreenCount = (byte)(PBESettings.ReflectLightScreenTurns + (user.Item == PBEItem.LightClay ? PBESettings.LightClayTurnExtension : 0));
-                        BroadcastTeamStatus(userTeam.Local, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
+                        BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
@@ -1094,7 +1094,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         userTeam.Status |= PBETeamStatus.Reflect;
                         userTeam.ReflectCount = (byte)(PBESettings.ReflectLightScreenTurns + (user.Item == PBEItem.LightClay ? PBESettings.LightClayTurnExtension : 0));
-                        BroadcastTeamStatus(userTeam.Local, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
+                        BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
@@ -1103,7 +1103,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         opposingTeam.Status |= PBETeamStatus.Spikes;
                         opposingTeam.SpikeCount++;
-                        BroadcastTeamStatus(opposingTeam.Local, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
+                        BroadcastTeamStatus(opposingTeam.LocalTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
@@ -1111,7 +1111,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!opposingTeam.Status.HasFlag(PBETeamStatus.StealthRock))
                     {
                         opposingTeam.Status |= PBETeamStatus.StealthRock;
-                        BroadcastTeamStatus(opposingTeam.Local, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
+                        BroadcastTeamStatus(opposingTeam.LocalTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
@@ -1120,7 +1120,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         opposingTeam.Status |= PBETeamStatus.ToxicSpikes;
                         opposingTeam.ToxicSpikeCount++;
-                        BroadcastTeamStatus(opposingTeam.Local, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
+                        BroadcastTeamStatus(opposingTeam.LocalTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
@@ -1305,13 +1305,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     team.Status &= ~PBETeamStatus.Reflect;
                     team.ReflectCount = 0;
-                    BroadcastTeamStatus(team.Local, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
+                    BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
                 }
                 if (team.Status.HasFlag(PBETeamStatus.LightScreen))
                 {
                     team.Status &= ~PBETeamStatus.LightScreen;
                     team.LightScreenCount = 0;
-                    BroadcastTeamStatus(team.Local, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
+                    BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
                 }
                 ushort damage = CalculateDamage(user, target, PBEMove.BrickBreak, moveType, criticalHit: crit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
@@ -1540,7 +1540,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (target == user) // Just gained the Ghost type after selecting the move, so get a target
                 {
-                    PBEFieldPosition prioritizedPos = GetPositionAcross(BattleStyle, user.FieldPosition);
+                    PBEFieldPosition prioritizedPos = GetPositionAcross(BattleFormat, user.FieldPosition);
                     PBETarget t;
                     if (prioritizedPos == PBEFieldPosition.Left)
                     {
