@@ -74,7 +74,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         PBECompetitivePokemonShells.Flareon_RU,
                         PBECompetitivePokemonShells.Genesect_Uber, PBECompetitivePokemonShells.Giratina_Origin_Uber,
                         PBECompetitivePokemonShells.Jirachi_Uber, PBECompetitivePokemonShells.Jolteon_VGC, PBECompetitivePokemonShells.Latias_VGC,
-                        PBECompetitivePokemonShells.Latios_VGC,
+                        PBECompetitivePokemonShells.Latios_VGC, PBECompetitivePokemonShells.Leafeon_RU,
                         PBECompetitivePokemonShells.Marowak_VGC, PBECompetitivePokemonShells.Mesprit_UU, PBECompetitivePokemonShells.Mismagius_UU,
                         PBECompetitivePokemonShells.Ninetales_VGC, PBECompetitivePokemonShells.Palkia_Uber, PBECompetitivePokemonShells.Pikachu_VGC,
                         PBECompetitivePokemonShells.Rotom_Wash_VGC, PBECompetitivePokemonShells.Umbreon_UU, PBECompetitivePokemonShells.Uxie_VGC,

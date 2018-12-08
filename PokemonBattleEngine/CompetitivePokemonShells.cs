@@ -373,6 +373,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Thunderbolt },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Leafeon_RU = new PBEPokemonShell
+            {
+                Species = PBESpecies.Leafeon,
+                Nickname = "Gift",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.Leftovers,
+                Ability = PBEAbility.Chlorophyll,
+                Gender = PBEGender.Male,
+                Nature = PBENature.Jolly,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 252, 0, 4, 0, 0, 252 },
+                Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.XScissor, PBEMove.LeafBlade, PBEMove.Synthesis }, // Swords Dance, Baton Pass, Leaf Blade, Synthesis
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Rotom_Wash_VGC = new PBEPokemonShell
             {
                 Species = PBESpecies.Rotom_Wash,
