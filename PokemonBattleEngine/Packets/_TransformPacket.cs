@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEType TargetType2 { get; }
         public PBEMove[] TargetMoves { get; }
 
-        public PBETransformPacket(PBEPokemon culprit, PBEPokemon victim)
+        public PBETransformPacket(PBEPokemon culprit, PBEPokemon victim, PBESettings settings)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -38,13 +38,13 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)(TargetAbility = victim.Ability));
             bytes.Add((byte)(TargetType1 = victim.Type1));
             bytes.Add((byte)(TargetType2 = victim.Type2));
-            for (int i = 0; i < PBESettings.NumMoves; i++)
+            for (int i = 0; i < settings.NumMoves; i++)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)victim.Moves[i]));
             }
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBETransformPacket(byte[] buffer)
+        public PBETransformPacket(byte[] buffer, PBESettings settings)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
@@ -60,8 +60,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 TargetAbility = (PBEAbility)r.ReadByte();
                 TargetType1 = (PBEType)r.ReadByte();
                 TargetType2 = (PBEType)r.ReadByte();
-                TargetMoves = new PBEMove[PBESettings.NumMoves];
-                for (int i = 0; i < PBESettings.NumMoves; i++)
+                TargetMoves = new PBEMove[settings.NumMoves];
+                for (int i = 0; i < TargetMoves.Length; i++)
                 {
                     TargetMoves[i] = (PBEMove)r.ReadUInt16();
                 }

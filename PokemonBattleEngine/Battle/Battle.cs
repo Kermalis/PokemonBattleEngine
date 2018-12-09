@@ -33,10 +33,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Battle = battle;
             TrainerName = shell.PlayerName;
             LocalTeam = localTeam;
-            Party = new List<PBEPokemon>(PBESettings.MaxPartySize);
+            Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
             for (int i = 0; i < shell.Party.Count; i++)
             {
-                Party.Add(new PBEPokemon(idCount++, shell.Party[i]) { LocalTeam = localTeam });
+                Party.Add(new PBEPokemon(idCount++, shell.Party[i], battle.Settings) { LocalTeam = localTeam });
             }
         }
         // Client constructor
@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Battle = battle;
             LocalTeam = localTeam;
-            Party = new List<PBEPokemon>(PBESettings.MaxPartySize);
+            Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
         }
 
         // Returns null if there is no Pokémon at that position
@@ -66,6 +66,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEBattleState BattleState { get; private set; }
 
         public readonly PBEBattleFormat BattleFormat;
+        public readonly PBESettings Settings;
         public readonly PBETeam[] Teams = new PBETeam[2];
         public readonly List<PBEPokemon> ActiveBattlers = new List<PBEPokemon>(); // TODO: Do not allow outsiders to add
         List<PBEPokemon> turnOrder = new List<PBEPokemon>();
@@ -77,9 +78,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEPokemon GetPokemon(byte pkmnId) => Teams[0].Party.Concat(Teams[1].Party).SingleOrDefault(p => p.Id == pkmnId);
 
         // Host constructor
-        public PBEBattle(PBEBattleFormat battleFormat, PBETeamShell localTeamShell, PBETeamShell remoteTeamShell)
+        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETeamShell localTeamShell, PBETeamShell remoteTeamShell)
         {
             BattleFormat = battleFormat;
+            Settings = settings;
 
             byte idCount = 0;
             Teams[0] = new PBETeam(this, localTeamShell, true, ref idCount);
@@ -168,9 +170,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             OnStateChanged?.Invoke(this);
         }
         // Client constructor
-        public PBEBattle(PBEBattleFormat battleFormat)
+        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings)
         {
             BattleFormat = battleFormat;
+            Settings = settings;
 
             Teams[0] = new PBETeam(this, true);
             Teams[1] = new PBETeam(this, false);
@@ -202,7 +205,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (pkmn == null)
             {
                 // Use remote Pokémon constructor which sets LocalTeam to false and moves to PBEMove.MAX
-                pkmn = new PBEPokemon(psip);
+                pkmn = new PBEPokemon(psip, Settings);
                 Teams[1].Party.Add(pkmn);
             }
             // If this Pokémon was already added, the client already knows info other than hp (could have Regenerator or could have been healed by an ally)
@@ -372,7 +375,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     case PBEDecision.SwitchOut:
                         PBEFieldPosition pos = pkmn.FieldPosition;
-                        pkmn.ClearForSwitch();
+                        pkmn.ClearForSwitch(Settings);
                         ActiveBattlers.Remove(pkmn);
                         BroadcastPkmnSwitchOut(pkmn);
                         PBEPokemon switchPkmn = GetPokemon(pkmn.SelectedAction.SwitchPokemonId);

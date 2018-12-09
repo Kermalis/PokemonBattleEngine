@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BroadcastTeamStatus(bool local, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, byte victimId = 0)
             => OnNewEvent?.Invoke(this, new PBETeamStatusPacket(local, teamStatus, teamStatusAction, victimId));
         void BroadcastTransform(PBEPokemon culprit, PBEPokemon victim)
-            => OnNewEvent?.Invoke(this, new PBETransformPacket(culprit, victim));
+            => OnNewEvent?.Invoke(this, new PBETransformPacket(culprit, victim, Settings));
         void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction)
             => OnNewEvent?.Invoke(this, new PBEWeatherPacket(weather, weatherAction));
         void BroadcastActionsRequest(bool localTeam, IEnumerable<PBEPokemon> pkmn)

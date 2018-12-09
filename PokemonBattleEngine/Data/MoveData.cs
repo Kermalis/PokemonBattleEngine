@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             sb.AppendLine($"Category: {Category}");
             sb.AppendLine($"Effect: {Effect}");
             sb.AppendLine($"Effect Parameter: {EffectParam}");
-            sb.AppendLine($"PP: {PPTier * PBESettings.PPMultiplier}");
+            sb.AppendLine($"PP: {PPTier * PBESettings.DefaultSettings.PPMultiplier}");
             sb.AppendLine($"Power: {(Power == 0 ? "--" : Power.ToString())}");
             sb.AppendLine($"Accuracy: {(Accuracy == 0 ? "--" : Accuracy.ToString())}");
             sb.AppendLine($"Priority: {Priority}");

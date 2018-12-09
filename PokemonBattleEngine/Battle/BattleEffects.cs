@@ -73,14 +73,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEItem.BlackSludge:
                     if (pkmn.HasType(PBEType.Poison))
                     {
-                        if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PBESettings.BlackSludgeHealDenominator)) > 0)
+                        if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator)) > 0)
                         {
                             BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.RestoredHP);
                         }
                     }
                     else
                     {
-                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PBESettings.BlackSludgeDamageDenominator), PBEEffectiveness.Normal, true);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), PBEEffectiveness.Normal, true);
                         BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.CausedDamage);
                         if (FaintCheck(pkmn))
                         {
@@ -89,7 +89,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEItem.Leftovers:
-                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / PBESettings.LeftoversHealDenominator)) > 0)
+                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator)) > 0)
                     {
                         BroadcastItem(pkmn, pkmn, PBEItem.Leftovers, PBEItemAction.RestoredHP);
                     }
@@ -100,7 +100,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (pkmn.Status1)
             {
                 case PBEStatus1.Burned:
-                    int damage = pkmn.MaxHP / PBESettings.BurnDamageDenominator;
+                    int damage = pkmn.MaxHP / Settings.BurnDamageDenominator;
                     // Pokémon with the Heatproof ability take half as much damage from burns
                     if (pkmn.Ability == PBEAbility.Heatproof)
                     {
@@ -114,12 +114,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEStatus1.Poisoned:
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PBESettings.PoisonDamageDenominator), PBEEffectiveness.Normal, true);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.PoisonDamageDenominator), PBEEffectiveness.Normal, true);
                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.Poisoned, PBEStatusAction.Damage);
                     FaintCheck(pkmn);
                     break;
                 case PBEStatus1.BadlyPoisoned:
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / PBESettings.ToxicDamageDenominator), PBEEffectiveness.Normal, true);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator), PBEEffectiveness.Normal, true);
                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
                     {
@@ -139,7 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PBEPokemon seeder = opposingTeam.PokemonAtPosition(pkmn.SeededPosition);
                 if (seeder != null)
                 {
-                    ushort hp = (ushort)(pkmn.MaxHP / PBESettings.LeechSeedDenominator);
+                    ushort hp = (ushort)(pkmn.MaxHP / Settings.LeechSeedDenominator);
                     ushort amtDealt = DealDamage(seeder, pkmn, hp, PBEEffectiveness.Normal, true);
                     HealDamage(seeder, amtDealt);
                     BroadcastStatus2(seeder, pkmn, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
@@ -151,7 +151,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (pkmn.Status2.HasFlag(PBEStatus2.Cursed))
             {
-                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / PBESettings.CurseDenominator), PBEEffectiveness.Normal, true);
+                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.CurseDenominator), PBEEffectiveness.Normal, true);
                 BroadcastStatus2(pkmn, pkmn, PBEStatus2.Cursed, PBEStatusAction.Damage);
                 if (FaintCheck(pkmn))
                 {
@@ -640,7 +640,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit)
                 || PBEUtils.ApplyChance((int)(chance * 100), 100 * 100))
             {
-                damageMultiplier *= PBESettings.CritMultiplier;
+                damageMultiplier *= Settings.CritMultiplier;
                 if (user.Ability == PBEAbility.Sniper)
                 {
                     damageMultiplier *= 1.5;
@@ -745,9 +745,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-
-        // Pass in the battle to broadcast the event
-        public static unsafe void ApplyStatChange(PBEPokemon pkmn, PBEStat stat, short change, bool ignoreSimple = false, PBEBattle battle = null)
+        
+        public static unsafe void ApplyStatChange(PBEBattle battle, PBEPokemon pkmn, PBEStat stat, short change, bool broadcast = true, bool ignoreSimple = false)
         {
             if (!ignoreSimple && pkmn.Ability == PBEAbility.Simple)
             {
@@ -757,16 +756,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             fixed (sbyte* ptr = &pkmn.AttackChange)
             {
                 sbyte* scPtr = ptr + (stat - PBEStat.Attack); // Points to the proper stat change sbyte
-                if (*scPtr <= -PBESettings.MaxStatChange || *scPtr >= PBESettings.MaxStatChange)
+                if (*scPtr <= -battle.Settings.MaxStatChange || *scPtr >= battle.Settings.MaxStatChange)
                 {
                     isTooMuch = true;
                 }
                 else
                 {
-                    *scPtr = (sbyte)PBEUtils.Clamp(*scPtr + change, -PBESettings.MaxStatChange, PBESettings.MaxStatChange);
+                    *scPtr = (sbyte)PBEUtils.Clamp(*scPtr + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
                 }
             }
-            battle?.BroadcastPkmnStatChanged(pkmn, stat, change, isTooMuch);
+            if (broadcast)
+            {
+                battle.BroadcastPkmnStatChanged(pkmn, stat, change, isTooMuch);
+            }
         }
 
         // Returns true if the status was applied
@@ -831,7 +833,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Set sleep length
             if (status == PBEStatus1.Asleep)
             {
-                target.SleepTurns = (byte)PBEUtils.RNG.Next(PBESettings.SleepMinTurns, PBESettings.SleepMaxTurns + 1);
+                target.SleepTurns = (byte)PBEUtils.RNG.Next(Settings.SleepMinTurns, Settings.SleepMaxTurns + 1);
             }
             BroadcastStatus1(user, target, status, PBEStatusAction.Added);
             return true;
@@ -847,7 +849,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         && !target.Status2.HasFlag(PBEStatus2.Substitute))
                     {
                         target.Status2 |= PBEStatus2.Confused;
-                        target.ConfusionTurns = (byte)PBEUtils.RNG.Next(PBESettings.ConfusionMinTurns, PBESettings.ConfusionMaxTurns + 1);
+                        target.ConfusionTurns = (byte)PBEUtils.RNG.Next(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns + 1);
                         BroadcastStatus2(user, target, PBEStatus2.Confused, PBEStatusAction.Added);
                         return true;
                     }
@@ -883,7 +885,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEStatus2.Minimized:
                     user.Status2 |= PBEStatus2.Minimized;
                     BroadcastStatus2(user, user, PBEStatus2.Minimized, PBEStatusAction.Added);
-                    ApplyStatChange(user, PBEStat.Evasion, +2, battle: this);
+                    ApplyStatChange(this, user, PBEStat.Evasion, +2);
                     return true;
                 case PBEStatus2.Protected:
                     {
@@ -1084,7 +1086,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!userTeam.Status.HasFlag(PBETeamStatus.LightScreen))
                     {
                         userTeam.Status |= PBETeamStatus.LightScreen;
-                        userTeam.LightScreenCount = (byte)(PBESettings.ReflectLightScreenTurns + (user.Item == PBEItem.LightClay ? PBESettings.LightClayTurnExtension : 0));
+                        userTeam.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
                         BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
                         return;
                     }
@@ -1093,7 +1095,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!userTeam.Status.HasFlag(PBETeamStatus.Reflect))
                     {
                         userTeam.Status |= PBETeamStatus.Reflect;
-                        userTeam.ReflectCount = (byte)(PBESettings.ReflectLightScreenTurns + (user.Item == PBEItem.LightClay ? PBESettings.LightClayTurnExtension : 0));
+                        userTeam.ReflectCount = (byte)(Settings.ReflectTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
                         BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
                         return;
                     }
@@ -1184,7 +1186,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
-                        ApplyStatChange(target, stats[i], changes[i], battle: this);
+                        ApplyStatChange(this, target, stats[i], changes[i]);
                     }
                 }
             }
@@ -1195,7 +1197,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPReduce(user, move);
             for (int i = 0; i < stats.Length; i++)
             {
-                ApplyStatChange(user, stats[i], changes[i], battle: this);
+                ApplyStatChange(this, user, stats[i], changes[i]);
             }
         }
         void HitAndMaybeChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
@@ -1230,7 +1232,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
-                        ApplyStatChange(target, stats[i], changes[i], battle: this);
+                        ApplyStatChange(this, target, stats[i], changes[i]);
                     }
                 }
             }
@@ -1271,7 +1273,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
-                        ApplyStatChange(user, stats[i], changes[i], battle: this);
+                        ApplyStatChange(this, user, stats[i], changes[i]);
                     }
                 }
             }
@@ -1442,7 +1444,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 Weather = PBEWeather.Raining;
-                WeatherCounter = (byte)(PBESettings.RainTurns + (user.Item == PBEItem.DampRock ? PBESettings.DampRockTurnExtension : 0));
+                WeatherCounter = (byte)(Settings.RainTurns + (user.Item == PBEItem.DampRock ? Settings.DampRockTurnExtension : 0));
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
             }
         }
@@ -1457,7 +1459,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 Weather = PBEWeather.Sunny;
-                WeatherCounter = (byte)(PBESettings.SunTurns + (user.Item == PBEItem.HeatRock ? PBESettings.HeatRockTurnExtension : 0));
+                WeatherCounter = (byte)(Settings.SunTurns + (user.Item == PBEItem.HeatRock ? Settings.HeatRockTurnExtension : 0));
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
             }
         }
@@ -1469,7 +1471,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
-            ApplyStatChange(target, PBEStat.SpAttack, +1, battle: this);
+            ApplyStatChange(this, target, PBEStat.SpAttack, +1);
             ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
         }
         void Ef_Swagger(PBEPokemon user, PBEPokemon target)
@@ -1480,7 +1482,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
-            ApplyStatChange(target, PBEStat.Attack, +2, battle: this);
+            ApplyStatChange(this, target, PBEStat.Attack, +2);
             ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
         }
         void Ef_Growth(PBEPokemon user)
@@ -1529,7 +1531,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
-            user.Transform(target, target.Attack, target.Defense, target.SpAttack, target.SpDefense, target.Speed, target.Ability, target.Type1, target.Type2, target.Moves);
+            user.Transform(target, Settings, target.Attack, target.Defense, target.SpAttack, target.SpDefense, target.Speed, target.Ability, target.Type1, target.Type2, target.Moves);
             BroadcastTransform(user, target);
         }
         void Ef_Curse(PBEPokemon user, PBEPokemon target)
@@ -1570,17 +1572,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                if (user.SpeedChange == -PBESettings.MaxStatChange
-                    && user.AttackChange == PBESettings.MaxStatChange
-                    && user.DefenseChange == PBESettings.MaxStatChange)
+                if (user.SpeedChange == -Settings.MaxStatChange
+                    && user.AttackChange == Settings.MaxStatChange
+                    && user.DefenseChange == Settings.MaxStatChange)
                 {
                     BroadcastMoveFailed(user, target, PBEFailReason.Default);
                 }
                 else
                 {
-                    ApplyStatChange(user, PBEStat.Speed, -1, battle: this);
-                    ApplyStatChange(user, PBEStat.Attack, +1, battle: this);
-                    ApplyStatChange(user, PBEStat.Defense, +1, battle: this);
+                    ApplyStatChange(this, user, PBEStat.Speed, -1);
+                    ApplyStatChange(this, user, PBEStat.Attack, +1);
+                    ApplyStatChange(this, user, PBEStat.Defense, +1);
                 }
             }
         }

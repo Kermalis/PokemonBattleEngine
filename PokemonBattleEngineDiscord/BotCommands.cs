@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PlayerName = battler1.Username,
                     Party = { PBECompetitivePokemonShells.Dialga_Uber }
                 };
-                PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, team0, team1);
+                PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0, team1);
                 var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);
             }
         }
@@ -72,7 +72,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type", mData.Type, true)
                         .AddField("Category", mData.Category, true)
                         .AddField("Priority", mData.Priority, true)
-                        .AddField("PP", mData.PPTier * PBESettings.PPMultiplier, true)
+                        .AddField("PP", mData.PPTier * PBESettings.DefaultSettings.PPMultiplier, true)
                         .AddField("Power", mData.Power == 0 ? "--" : mData.Power.ToString(), true)
                         .AddField("Accuracy", mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString(), true)
                         .AddField("Effect", mData.Effect, true)

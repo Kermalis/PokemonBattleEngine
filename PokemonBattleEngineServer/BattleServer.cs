@@ -25,9 +25,10 @@ namespace Kermalis.PokemonBattleEngineServer
         ServerState state = ServerState.Startup;
         readonly PBEBattleFormat intendedBattleFormat = PBEBattleFormat.Double; // TODO: Let the client know what kind of format this server is running (matchmaking)
         PBEBattle battle;
+        static readonly PBESettings settings = PBESettings.DefaultSettings;
         Player[] battlers;
 
-        static readonly IPacketProcessor packetProcessor = new PBEPacketProcessor();
+        static readonly PBEPacketProcessor packetProcessor = new PBEPacketProcessor(settings);
         public override IPacketProcessor PacketProcessor => packetProcessor;
         public static void Main(string[] args)
         {
@@ -146,7 +147,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     try
                     {
-                        PBETeamShell.ValidateMany(battlers.Select(b => b.Shell));
+                        PBETeamShell.ValidateMany(battlers.Select(b => b.Shell), settings);
                     }
                     catch
                     {
@@ -158,7 +159,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     state = ServerState.StartingMatch;
                     Console.WriteLine("Battle starting!");
 
-                    battle = new PBEBattle(intendedBattleFormat, battlers[0].Shell, battlers[1].Shell);
+                    battle = new PBEBattle(intendedBattleFormat, settings, battlers[0].Shell, battlers[1].Shell);
                     battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
                     battle.OnNewEvent += BattleEventHandler;
                     battle.OnStateChanged += BattleStateHandler;
@@ -168,8 +169,8 @@ namespace Kermalis.PokemonBattleEngineServer
                     battlers[1].Send(new PBEPlayerJoinedPacket(battlers[0].Id, battlers[0].Shell.PlayerName));
                     WaitForBattlersResponses();
                     // Send players their parties
-                    battlers[0].Send(new PBESetPartyPacket(battle.Teams[0].Party.ToArray()));
-                    battlers[1].Send(new PBESetPartyPacket(battle.Teams[1].Party.ToArray()));
+                    battlers[0].Send(new PBESetPartyPacket(battle.Teams[0].Party.ToArray(), settings));
+                    battlers[1].Send(new PBESetPartyPacket(battle.Teams[1].Party.ToArray(), settings));
                     WaitForBattlersResponses();
 
                     battle.Begin();

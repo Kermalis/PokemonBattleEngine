@@ -14,20 +14,20 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBETeamShell TeamShell { get; }
 
-        public PBEPartyResponsePacket(PBETeamShell teamShell)
+        public PBEPartyResponsePacket(PBETeamShell teamShell, PBESettings settings)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange((TeamShell = teamShell).ToBytes());
+            bytes.AddRange((TeamShell = teamShell).ToBytes(settings));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBEPartyResponsePacket(byte[] buffer)
+        public PBEPartyResponsePacket(byte[] buffer, PBESettings settings)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                TeamShell = PBETeamShell.FromBytes(r);
+                TeamShell = PBETeamShell.FromBytes(r, settings);
             }
         }
 

@@ -335,9 +335,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
             Party = party.Select(p => new PokemonInfo(p, this, standBy)).ToArray();
 
-            var mInfo = new MoveInfo[PBESettings.NumMoves];
-            for (int i = 0; i < PBESettings.NumMoves; i++)
+            var mInfo = new MoveInfo[pkmn.Moves.Length];
+            for (int i = 0; i < mInfo.Length; i++)
+            {
                 mInfo[i] = new MoveInfo(i, Pokemon, this);
+            }
             Moves = mInfo;
 
             MovesVisible = true;
@@ -751,17 +753,29 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 if (Pokemon.LockedAction.Decision == PBEDecision.Fight && Pokemon.LockedAction.FightTargets != PBETarget.None)
                 {
                     if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.AllyLeft))
+                    {
                         TargetAllyLeftEnabled = false;
+                    }
                     if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.AllyCenter))
+                    {
                         TargetAllyCenterEnabled = false;
+                    }
                     if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.AllyRight))
+                    {
                         TargetAllyRightEnabled = false;
+                    }
                     if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.FoeLeft))
+                    {
                         TargetFoeLeftEnabled = false;
+                    }
                     if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.FoeCenter))
+                    {
                         TargetFoeCenterEnabled = false;
+                    }
                     if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.FoeRight))
+                    {
                         TargetFoeRightEnabled = false;
+                    }
                 }
 
                 TargetsVisible = true;

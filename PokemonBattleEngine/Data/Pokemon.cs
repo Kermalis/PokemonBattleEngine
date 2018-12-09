@@ -45,8 +45,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         public string GenderSymbol => Shell.Gender == PBEGender.Female ? "♀" : Shell.Gender == PBEGender.Male ? "♂" : string.Empty;
 
         public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
-        public PBEMove[] Moves = new PBEMove[PBESettings.NumMoves];
-        public byte[] PP = new byte[PBESettings.NumMoves], MaxPP = new byte[PBESettings.NumMoves];
+        public PBEMove[] Moves;
+        public byte[] PP;
+        public byte[] MaxPP;
 
         public PBESpecies Species;
         public bool Shiny;
@@ -73,7 +74,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEAction PreviousAction, LockedAction, SelectedAction;
 
         // Stats & PP are set from the shell info, but LocalTeam will need to be manually set by the host
-        public PBEPokemon(byte id, PBEPokemonShell shell)
+        public PBEPokemon(byte id, PBEPokemonShell shell, PBESettings settings)
         {
             Shell = shell;
             Species = Shell.Species;
@@ -82,16 +83,18 @@ namespace Kermalis.PokemonBattleEngine.Data
             Item = Shell.Item;
             Id = id;
             SelectedAction.PokemonId = id;
-            CalculateStats();
+            CalculateStats(settings);
             HP = MaxHP;
             Moves = Shell.Moves;
-            for (int i = 0; i < PBESettings.NumMoves; i++)
+            PP = new byte[Moves.Length];
+            MaxPP = new byte[Moves.Length];
+            for (int i = 0; i < Moves.Length; i++)
             {
                 PBEMove move = Shell.Moves[i];
                 if (move != PBEMove.None)
                 {
                     byte tier = PBEMoveData.Data[move].PPTier;
-                    int movePP = (tier * PBESettings.PPMultiplier) + (tier * Shell.PPUps[i]);
+                    int movePP = (tier * settings.PPMultiplier) + (tier * Shell.PPUps[i]);
                     PP[i] = MaxPP[i] = (byte)movePP;
                 }
             }
@@ -100,7 +103,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         // This constructor is to define an unknown remote Pokémon
         // LocalTeam is set to false here
-        public PBEPokemon(PBEPkmnSwitchInPacket psip)
+        public PBEPokemon(PBEPkmnSwitchInPacket psip, PBESettings settings)
         {
             Id = psip.PokemonId;
             LocalTeam = false;
@@ -113,34 +116,40 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Gender = psip.Gender,
                 Ability = PBEAbility.MAX,
                 Item = PBEItem.MAX,
-                Nature = PBENature.MAX
+                Nature = PBENature.MAX,
+                Moves = new PBEMove[settings.NumMoves],
+                PPUps = new byte[settings.NumMoves],
+                EVs = new byte[6],
+                IVs = new byte[6]
             };
             Species = psip.Species;
             Shiny = psip.Shiny;
             Ability = PBEAbility.MAX;
             Item = PBEItem.MAX;
-            for (int i = 0; i < PBESettings.NumMoves; i++)
+            Moves = new PBEMove[settings.NumMoves];
+            PP = new byte[Moves.Length];
+            MaxPP = new byte[Moves.Length];
+            for (int i = 0; i < Moves.Length; i++)
             {
                 Moves[i] = PBEMove.MAX;
             }
-
             Type1 = PBEPokemonData.Data[Species].Type1;
             Type2 = PBEPokemonData.Data[Species].Type2;
         }
 
         public bool HasType(PBEType type) => Type1 == type || Type2 == type;
 
-        void CalculateStats()
+        void CalculateStats(PBESettings settings)
         {
             PBEPokemonData pData = PBEPokemonData.Data[Species];
 
-            MaxHP = (ushort)(((2 * pData.HP + Shell.IVs[0] + (Shell.EVs[0] / 4)) * Shell.Level / PBESettings.MaxLevel) + Shell.Level + 10);
+            MaxHP = (ushort)(((2 * pData.HP + Shell.IVs[0] + (Shell.EVs[0] / 4)) * Shell.Level / settings.MaxLevel) + Shell.Level + 10);
 
             int i = 0;
             ushort OtherStat(byte baseVal)
             {
-                double natureMultiplier = 1 + (PBEPokemonData.NatureBoosts[Shell.Nature][i] * PBESettings.NatureStatBoost);
-                ushort val = (ushort)((((2 * baseVal + Shell.IVs[i + 1] + (Shell.EVs[i + 1] / 4)) * Shell.Level / PBESettings.MaxLevel) + 5) * natureMultiplier);
+                double natureMultiplier = 1 + (PBEPokemonData.NatureBoosts[Shell.Nature][i] * settings.NatureStatBoost);
+                ushort val = (ushort)((((2 * baseVal + Shell.IVs[i + 1] + (Shell.EVs[i + 1] / 4)) * Shell.Level / settings.MaxLevel) + 5) * natureMultiplier);
                 i++;
                 return val;
             }
@@ -151,7 +160,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Speed = OtherStat(pData.Speed);
         }
 
-        public void ClearForSwitch()
+        public void ClearForSwitch(PBESettings settings)
         {
             FieldPosition = PBEFieldPosition.None;
             Species = Shell.Species;
@@ -168,7 +177,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 Status1Counter = 1;
             }
-
             Status2 &= ~PBEStatus2.Confused;
             ConfusionCounter = ConfusionTurns = 0;
             Status2 &= ~PBEStatus2.LeechSeed;
@@ -180,13 +188,13 @@ namespace Kermalis.PokemonBattleEngine.Data
 
             if (Shell.Nature != PBENature.MAX) // If the nature is unset, the program is not the host and does not own the Pokémon
             {
-                CalculateStats();
+                CalculateStats(settings);
             }
         }
 
         // Transforms into "target" and sets both Pokémons' information to the parameters
         // Also sets the Status2 transformed bit
-        public void Transform(PBEPokemon target, ushort targetAttack, ushort targetDefense, ushort targetSpAttack, ushort targetSpDefense, ushort targetSpeed, PBEAbility targetAbility, PBEType targetType1, PBEType targetType2, PBEMove[] targetMoves)
+        public void Transform(PBEPokemon target, PBESettings settings, ushort targetAttack, ushort targetDefense, ushort targetSpAttack, ushort targetSpDefense, ushort targetSpeed, PBEAbility targetAbility, PBEType targetType1, PBEType targetType2, PBEMove[] targetMoves)
         {
             Species = target.Species;
             Shiny = target.Shiny;
@@ -206,11 +214,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             AccuracyChange = target.AccuracyChange;
             EvasionChange = target.EvasionChange;
             Moves = target.Moves = targetMoves;
-            for (int i = 0; i < PBESettings.NumMoves; i++)
+            for (int i = 0; i < Moves.Length; i++)
             {
-                PP[i] = MaxPP[i] = PBESettings.PPMultiplier;
+                PP[i] = MaxPP[i] = settings.PPMultiplier;
             }
-
             Status2 |= PBEStatus2.Transformed;
         }
 
@@ -237,16 +244,16 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
 
         // ToBytes() and FromBytes() will only be used when the server sends you your team Ids, so they do not need to contain all info
-        internal byte[] ToBytes()
+        internal byte[] ToBytes(PBESettings settings)
         {
             var bytes = new List<byte>();
             bytes.Add(Id);
-            bytes.AddRange(Shell.ToBytes());
+            bytes.AddRange(Shell.ToBytes(settings));
             return bytes.ToArray();
         }
-        internal static PBEPokemon FromBytes(BinaryReader r)
+        internal static PBEPokemon FromBytes(BinaryReader r, PBESettings settings)
         {
-            return new PBEPokemon(r.ReadByte(), PBEPokemonShell.FromBytes(r));
+            return new PBEPokemon(r.ReadByte(), PBEPokemonShell.FromBytes(r, settings), settings);
         }
 
         public override bool Equals(object obj)
@@ -255,7 +262,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 return other.Id.Equals(Id);
             }
-
             return base.Equals(obj);
         }
         public override int GetHashCode() => Id.GetHashCode();
@@ -266,21 +272,19 @@ namespace Kermalis.PokemonBattleEngine.Data
             string item = Item.ToString().Replace("MAX", "???");
             string nature = Shell.Nature.ToString().Replace("MAX", "???");
             string ability = Ability.ToString().Replace("MAX", "???");
-            string[] moveStrs = new string[PBESettings.NumMoves];
-            for (int i = 0; i < PBESettings.NumMoves; i++)
+            string[] moveStrs = new string[Moves.Length];
+            for (int i = 0; i < moveStrs.Length; i++)
             {
                 string mStr = Moves[i].ToString().Replace("MAX", "???");
                 if (!remotePokemon)
                 {
                     mStr += $" {PP[i]}/{MaxPP[i]}";
                 }
-
                 moveStrs[i] = mStr;
             }
             string moves = moveStrs.Print(false);
 
             var sb = new StringBuilder();
-
             sb.AppendLine($"{Shell.Nickname}/{Species} {GenderSymbol} Lv.{Shell.Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})");
             sb.AppendLine($"Status1: {Status1}");
@@ -289,21 +293,17 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 sb.AppendLine($"Substitute HP: {SubstituteHP}");
             }
-
             sb.AppendLine($"Item: {item}");
             sb.AppendLine($"Ability: {ability}");
             if (!remotePokemon)
             {
                 sb.AppendLine($"Nature: {nature}");
             }
-
             if (!remotePokemon)
             {
                 sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
             }
-
             sb.Append($"Moves: {moves}");
-
             return sb.ToString();
         }
     }

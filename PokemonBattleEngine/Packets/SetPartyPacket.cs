@@ -14,29 +14,29 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEPokemon[] Party { get; }
 
-        public PBESetPartyPacket(IEnumerable<PBEPokemon> party)
+        public PBESetPartyPacket(IEnumerable<PBEPokemon> party, PBESettings settings)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            var numPkmn = Math.Min(PBESettings.MaxPartySize, (Party = party.ToArray()).Length);
+            var numPkmn = Math.Min(settings.MaxPartySize, (Party = party.ToArray()).Length);
             bytes.Add((byte)numPkmn);
             for (int i = 0; i < numPkmn; i++)
             {
-                bytes.AddRange(Party[i].ToBytes());
+                bytes.AddRange(Party[i].ToBytes(settings));
             }
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBESetPartyPacket(byte[] buffer)
+        public PBESetPartyPacket(byte[] buffer, PBESettings settings)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                var numPkmn = Math.Min(PBESettings.MaxPartySize, r.ReadByte());
+                var numPkmn = Math.Min(settings.MaxPartySize, r.ReadByte());
                 Party = new PBEPokemon[numPkmn];
                 for (int i = 0; i < numPkmn; i++)
                 {
-                    Party[i] = PBEPokemon.FromBytes(r);
+                    Party[i] = PBEPokemon.FromBytes(r, settings);
                 }
             }
         }

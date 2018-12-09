@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngineClient
 {
     class BattleClient : NetClient
     {
-        static readonly IPacketProcessor packetProcessor = new PBEPacketProcessor();
+        readonly PBEPacketProcessor packetProcessor;
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
         public PBEBattle Battle;
@@ -30,7 +30,9 @@ namespace Kermalis.PokemonBattleEngineClient
             Configuration.Port = port;
             Configuration.BufferSize = 1024;
 
-            Battle = new PBEBattle(PBEBattleFormat.Double);
+            PBESettings settings = PBESettings.DefaultSettings;
+            Battle = new PBEBattle(PBEBattleFormat.Double, settings);
+            packetProcessor = new PBEPacketProcessor(settings);
             this.battleView = battleView;
             this.battleView.SetBattle(Battle);
             this.actionsView = actionsView;
@@ -82,9 +84,9 @@ namespace Kermalis.PokemonBattleEngineClient
                         PBECompetitivePokemonShells.Vaporeon_VGC, PBECompetitivePokemonShells.Venusaur_VGC, PBECompetitivePokemonShells.Victini_Uber,
                     };
                     possiblePokemon.Shuffle();
-                    team.Party.AddRange(possiblePokemon.Take(PBESettings.MaxPartySize));
+                    team.Party.AddRange(possiblePokemon.Take(Battle.Settings.MaxPartySize));
                     Battle.Teams[0].TrainerName = team.PlayerName;
-                    Send(new PBEPartyResponsePacket(team));
+                    Send(new PBEPartyResponsePacket(team, Battle.Settings));
                     break;
                 case PBESetPartyPacket spp:
                     Battle.SetTeamParty(true, spp.Party);
@@ -271,7 +273,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     break;
                 case PBEPkmnStatChangedPacket pscp:
                     victim = Battle.GetPokemon(pscp.VictimId);
-                    PBEBattle.ApplyStatChange(victim, pscp.Stat, pscp.Change, ignoreSimple: true);
+                    PBEBattle.ApplyStatChange(Battle, victim, pscp.Stat, pscp.Change, false, true);
                     switch (pscp.Change)
                     {
                         case -2: message = "harshly fell"; break;
@@ -321,7 +323,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PBEPkmnSwitchOutPacket psop:
                     culprit = Battle.GetPokemon(psop.PokemonId);
                     pos = culprit.FieldPosition;
-                    culprit.ClearForSwitch();
+                    culprit.ClearForSwitch(Battle.Settings);
                     battleView.UpdatePokemon(culprit, pos);
                     message = string.Format("{1} withdrew {0}!", culprit.Shell.Nickname, Battle.Teams[culprit.LocalTeam ? 0 : 1].TrainerName);
                     battleView.SetMessage(message);
@@ -629,7 +631,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PBETransformPacket tp:
                     culprit = Battle.GetPokemon(tp.CulpritId);
                     victim = Battle.GetPokemon(tp.VictimId);
-                    culprit.Transform(victim, tp.TargetAttack, tp.TargetDefense, tp.TargetSpAttack, tp.TargetSpDefense, tp.TargetSpeed, tp.TargetAbility, tp.TargetType1, tp.TargetType2, tp.TargetMoves);
+                    culprit.Transform(victim, Battle.Settings, tp.TargetAttack, tp.TargetDefense, tp.TargetSpAttack, tp.TargetSpDefense, tp.TargetSpeed, tp.TargetAbility, tp.TargetType1, tp.TargetType2, tp.TargetMoves);
                     battleView.UpdatePokemon(culprit);
                     message = string.Format("{0} transformed into {1}!", culprit.NameForTrainer(true), victim.NameForTrainer(false));
                     battleView.SetMessage(message);
