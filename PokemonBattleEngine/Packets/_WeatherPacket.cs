@@ -14,13 +14,15 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEWeather Weather { get; }
         public PBEWeatherAction WeatherAction { get; }
+        public byte VictimId { get; }
 
-        public PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction)
+        public PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, byte victimId)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Weather = weather));
             bytes.Add((byte)(WeatherAction = weatherAction));
+            bytes.Add(VictimId = victimId);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEWeatherPacket(byte[] buffer)
@@ -31,6 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 Weather = (PBEWeather)r.ReadByte();
                 WeatherAction = (PBEWeatherAction)r.ReadByte();
+                VictimId = r.ReadByte();
             }
         }
 

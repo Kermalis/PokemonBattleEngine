@@ -131,7 +131,19 @@
         /// </summary>
         public byte LightClayTurnExtension = 3;
         /// <summary>
-        /// The amount of turns <see cref="PBEWeather.Raining"/> lasts.
+        /// The amount of turns <see cref="PBEWeather.Hailstorm"/> lasts.
+        /// </summary>
+        public byte HailTurns = 5;
+        /// <summary>
+        /// A Pokémon in <see cref="PBEWeather.Hailstorm"/> without <see cref="PBEType.Ice"/> loses (1/HailDamageDenominator) HP at the end of every turn.
+        /// </summary>
+        public byte HailDamageDenominator = 16;
+        /// <summary>
+        /// The amount of turns added to <see cref="HailTurns"/> when the user is holding a <see cref="PBEItem.IcyRock"/>.
+        /// </summary>
+        public byte IcyRockTurnExtension = 3;
+        /// <summary>
+        /// The amount of turns <see cref="PBEWeather.Rain"/> lasts.
         /// </summary>
         public byte RainTurns = 5;
         /// <summary>
@@ -139,7 +151,7 @@
         /// </summary>
         public byte DampRockTurnExtension = 3;
         /// <summary>
-        /// The amount of turns <see cref="PBEWeather.Sunny"/> lasts.
+        /// The amount of turns <see cref="PBEWeather.HarshSunlight"/> lasts.
         /// </summary>
         public byte SunTurns = 5;
         /// <summary>

@@ -108,7 +108,6 @@ Uproar
 Stockpile
 Spit Up
 Swallow
-Hail
 Torment
 Memento
 Focus Punch

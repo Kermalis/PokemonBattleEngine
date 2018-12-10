@@ -392,6 +392,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Sets BattleState to PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches/PBEBattleState.Ended
         void TurnEnded()
         {
+            // Weather stops before doing damage
+            if (WeatherCounter > 0)
+            {
+                WeatherCounter--;
+                if (WeatherCounter == 0)
+                {
+                    PBEWeather w = Weather;
+                    Weather = PBEWeather.None;
+                    BroadcastWeather(w, PBEWeatherAction.Ended);
+                }
+            }
+
             // Pokémon
             foreach (PBEPokemon pkmn in ActiveBattlers.ToArray()) // Copy the list so a faint does not cause a collection modified exception
             {
@@ -434,18 +446,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         team.Status &= ~PBETeamStatus.LightScreen;
                         BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.LightScreen, PBETeamStatusAction.Ended);
                     }
-                }
-            }
-
-            // Weather
-            if (WeatherCounter > 0)
-            {
-                WeatherCounter--;
-                if (WeatherCounter == 0)
-                {
-                    PBEWeather w = Weather;
-                    Weather = PBEWeather.None;
-                    BroadcastWeather(w, PBEWeatherAction.Ended);
                 }
             }
 

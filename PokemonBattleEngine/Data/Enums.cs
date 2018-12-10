@@ -1,200 +1,684 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Battle;
+using System;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
+    /// <summary>
+    /// Represents a specific Pokémon's gender.
+    /// </summary>
     public enum PBEGender : byte
     {
+        /// <summary>
+        /// The Pokémon is female.
+        /// </summary>
         Female,
+        /// <summary>
+        /// The Pokémon is genderless.
+        /// </summary>
         Genderless,
+        /// <summary>
+        /// The Pokémon is male.
+        /// </summary>
         Male,
+        /// <summary>
+        /// Invalid gender.
+        /// </summary>
         MAX
     }
+    /// <summary>
+    /// Represents a Pokémon species' <see cref="PBEGender"/> ratio.
+    /// </summary>
     public enum PBEGenderRatio : byte
     {
-        M7_F1, // Male 7:1 Female
-        M3_F1, // Male 3:1 Female
-        M1_F1, // Male 1:1 Female
-        M1_F3, // Male 1:3 Female
-        M1_F7, // Male 1:7 Female (Does not occur before generation 6)
-        M0_F1, // Female species
-        M0_F0, // Genderless species
-        M1_F0  // Male species
+        /// <summary>
+        /// The species is 87.5% male, 12.5% female.
+        /// </summary>
+        M7_F1,
+        /// <summary>
+        /// The species is 75% male, 25% female.
+        /// </summary>
+        M3_F1,
+        /// <summary>
+        /// The species is 50% male, 50% female.
+        /// </summary>
+        M1_F1,
+        /// <summary>
+        /// The species is 25% male, 75% female.
+        /// </summary>
+        M1_F3,
+        /// <summary>
+        /// The species is 12.5% male, 87.5% female.
+        /// </summary>
+        /// <remarks>
+        /// No species introduced before generation 6 has this gender ratio.
+        /// </remarks>
+        M1_F7,
+        /// <summary>
+        /// The species is 0% male, 100% female.
+        /// </summary>
+        M0_F1,
+        /// <summary>
+        /// The species is genderless.
+        /// </summary>
+        M0_F0,
+        /// <summary>
+        /// The species is 100% male, 0% female.
+        /// </summary>
+        M1_F0
     }
+    /// <summary>
+    /// Represents a Pokémon stat.
+    /// </summary>
     public enum PBEStat : byte
     {
+        /// <summary>
+        /// Hit points.
+        /// </summary>
         HP = 0,
+        /// <summary>
+        /// Attack.
+        /// </summary>
         Attack = 1,
+        /// <summary>
+        /// Defense.
+        /// </summary>
         Defense = 2,
+        /// <summary>
+        /// Special Attack.
+        /// </summary>
         SpAttack = 3,
+        /// <summary>
+        /// Special Defense.
+        /// </summary>
         SpDefense = 4,
+        /// <summary>
+        /// Speed.
+        /// </summary>
         Speed = 5,
+        /// <summary>
+        /// Accuracy.
+        /// </summary>
         Accuracy = 6,
+        /// <summary>
+        /// Evasion.
+        /// </summary>
         Evasion = 7
     }
+    /// <summary>
+    /// Represents the effectiveness of a move against a target.
+    /// </summary>
     public enum PBEEffectiveness : byte
     {
+        /// <summary>
+        /// The move does not affect the target.
+        /// </summary>
         Ineffective,
+        /// <summary>
+        /// The move does less damage to the target.
+        /// </summary>
         NotVeryEffective,
+        /// <summary>
+        /// The move affects the target as usual.
+        /// </summary>
         Normal,
+        /// <summary>
+        /// The move does more damage to the target.
+        /// </summary>
         SuperEffective
     }
+    /// <summary>
+    /// Represents the format of a specific battle.
+    /// </summary>
     public enum PBEBattleFormat : byte
     {
+        /// <summary>
+        /// A 1v1 battle. Each Pokémon is able to use moves or switch out for another Pokémon.
+        /// </summary>
         Single,
+        /// <summary>
+        /// A 2v2 battle where all Pokémon are able to use moves or switch out for another Pokémon.
+        /// </summary>
         Double,
+        /// <summary>
+        /// A 3v3 battle where all Pokémon are able to use moves, shift positions with a teammate, or switch out for another Pokémon.
+        /// </summary>
         Triple,
+        /// <summary>
+        /// A 3v3 battle where only the front Pokémon are able to force a team rotation, use a move, or switch out for another Pokémon.
+        /// </summary>
+        /// <remarks>
+        /// Team rotation does not take up a turn and can be done once per turn.
+        /// </remarks>
         Rotation
     }
+    /// <summary>
+    /// Represents the current state of a specific battle.
+    /// </summary>
     public enum PBEBattleState : byte
     {
+        /// <summary>
+        /// The battle is waiting for team shells.
+        /// </summary>
         WaitingForPlayers,
+        /// <summary>
+        /// The battle is ready to begin.
+        /// </summary>
         ReadyToBegin,
+        /// <summary>
+        /// The battle is waiting for players to send actions.
+        /// </summary>
         WaitingForActions,
+        /// <summary>
+        /// The battle is ready to run a turn.
+        /// </summary>
         ReadyToRunTurn,
+        /// <summary>
+        /// The battle is processing.
+        /// </summary>
         Processing,
+        /// <summary>
+        /// The battle is waiting for players to send switch-ins.
+        /// </summary>
         WaitingForSwitchIns,
+        /// <summary>
+        /// The battle ended.
+        /// </summary>
         Ended
     }
+    /// <summary>
+    /// Represents the weather in a specific battle.
+    /// </summary>
     public enum PBEWeather : byte
     {
+        /// <summary>
+        /// There is no weather.
+        /// </summary>
         None,
-        Raining,
-        Sunny
+        /// <summary>
+        /// It is hailing.
+        /// </summary>
+        Hailstorm,
+        /// <summary>
+        /// There is harsh sunlight.
+        /// </summary>
+        HarshSunlight,
+        /// <summary>
+        /// It is raining.
+        /// </summary>
+        Rain,
     }
+    /// <summary>
+    /// Represents a position on the battle field.
+    /// </summary>
     public enum PBEFieldPosition : byte
     {
-        // Not on the field.
+        /// <summary>
+        /// A Pokémon is not on the field.
+        /// </summary>
         None,
-        // In a double, triple, or rotation battle, the Pokémon to __your__ left.
+        /// <summary>
+        /// The Pokémon to a player's left in a Double, Triple, or Rotation battle.
+        /// </summary>
         Left,
-        // In a single battle, Pokémon are in the center.
-        // In a double battle, no Pokémon are in the center.
-        // In a triple or rotation battle, it is obvious.
+        /// <summary>
+        /// The Pokémon in the center of the field in a Single, Triple, or Rotation battle.
+        /// </summary>
         Center,
-        // In a double, triple, or rotation battle, the Pokémon to __your__ right.
+        /// <summary>
+        /// The Pokémon to a player's right in a Double, Triple, or Rotation battle.
+        /// </summary>
         Right
     }
+    /// <summary>
+    /// Represents a <see cref="PBEMove"/>'s targets.
+    /// </summary>
     [Flags]
     public enum PBETarget : byte
     {
+        /// <summary>
+        /// The Pokémon has not chosen any targets.
+        /// </summary>
         None,
+        /// <summary>
+        /// The move is targetting the player's left Pokémon.
+        /// </summary>
         AllyLeft = 1 << 0,
+        /// <summary>
+        /// The move is targetting the player's center Pokémon.
+        /// </summary>
         AllyCenter = 1 << 1,
+        /// <summary>
+        /// The move is targetting the player's right Pokémon.
+        /// </summary>
         AllyRight = 1 << 2,
+        /// <summary>
+        /// The move is targetting the opponent's left Pokémon.
+        /// </summary>
         FoeLeft = 1 << 3,
+        /// <summary>
+        /// The move is targetting the opponent's center Pokémon.
+        /// </summary>
         FoeCenter = 1 << 4,
+        /// <summary>
+        /// The move is targetting the opponent's right Pokémon.
+        /// </summary>
         FoeRight = 1 << 5
     }
+    /// <summary>
+    /// Represents a Pokémon's decision for a turn.
+    /// </summary>
     public enum PBEDecision : byte
     {
+        /// <summary>
+        /// The Pokémon has not made a decision.
+        /// </summary>
         None,
+        /// <summary>
+        /// The Pokémon has chosen to use a move.
+        /// </summary>
         Fight,
+        /// <summary>
+        /// The Pokémon has chosen to switch out for another Pokémon.
+        /// </summary>
         SwitchOut
     }
+    /// <summary>
+    /// Represents a specific <see cref="PBEMove"/>'s category.
+    /// </summary>
     public enum PBEMoveCategory : byte
     {
+        /// <summary>
+        /// The move deals no damage.
+        /// </summary>
         Status,
+        /// <summary>
+        /// The move deals physical damage using the Attack and Defense stats.
+        /// </summary>
         Physical,
+        /// <summary>
+        /// The move deals special damage using the Special Attack and Special Defense stats.
+        /// </summary>
         Special,
+        /// <summary>
+        /// Invalid category.
+        /// </summary>
         MAX
     }
+    /// <summary>
+    /// Represents the various methods in which a Pokémon can learn a <see cref="PBEMove"/>.
+    /// </summary>
     [Flags]
     public enum PBEMoveObtainMethod : ulong
     {
+        /// <summary>
+        /// There is no way to learn this move.
+        /// </summary>
         None,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon Ruby Version and Pokémon Sapphire Version.
+        /// </summary>
         LevelUp_RS = 1u << 0,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon Fire Red Version.
+        /// </summary>
         LevelUp_FR = 1u << 1,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon Leaf Green Version.
+        /// </summary>
         LevelUp_LG = 1u << 2,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon Emerald Version.
+        /// </summary>
         LevelUp_E = 1u << 3,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon Colosseum.
+        /// </summary>
         LevelUp_Colo = 1u << 4,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon XD: Gale of Darkness.
+        /// </summary>
         LevelUp_XD = 1u << 5,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon Diamond Version and Pokémon Pearl Version.
+        /// </summary>
         LevelUp_DP = 1u << 6,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon Platinum Version.
+        /// </summary>
         LevelUp_Pt = 1u << 7,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon HeartGold Version and Pokémon SoulSilver Version.
+        /// </summary>
         LevelUp_HGSS = 1u << 8,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon Black Version and Pokémon White Version.
+        /// </summary>
         LevelUp_BW = 1u << 9,
+        /// <summary>
+        /// The move can be learned by levelling up a Pokémon in Pokémon Black Version 2 and Pokémon White Version 2.
+        /// </summary>
         LevelUp_B2W2 = 1u << 10,
+        /// <summary>
+        /// The move can be learned by using a technical machine on a Pokémon in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version and Pokémon Emerald Version.
+        /// </summary>
         TM_RSFRLGE = 1u << 11,
+        /// <summary>
+        /// The move can be learned by using a technical machine on a Pokémon in Pokémon Diamond Version, Pokémon Pearl Version, Pokémon Platinum Version, Pokémon HeartGold Version and Pokémon SoulSilver Version.
+        /// </summary>
         TM_DPPtHGSS = 1u << 12,
+        /// <summary>
+        /// The move can be learned by using a technical machine on a Pokémon in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2 and Pokémon White Version 2.
+        /// </summary>
         TM_BWB2W2 = 1u << 13,
+        /// <summary>
+        /// The move can be learned by using a hidden machine on a Pokémon in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version and Pokémon Emerald Version.
+        /// </summary>
         HM_RSFRLGE = 1u << 14,
+        /// <summary>
+        /// The move can be learned by using a hidden machine on a Pokémon in Pokémon Diamond Version, Pokémon Pearl Version and Pokémon Platinum Version.
+        /// </summary>
         HM_DPPt = 1u << 15,
+        /// <summary>
+        /// The move can be learned by using a hidden machine on a Pokémon in Pokémon HeartGold Version and Pokémon SoulSilver Version.
+        /// </summary>
         HM_HGSS = 1u << 16,
+        /// <summary>
+        /// The move can be learned by using a hidden machine on a Pokémon in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2 and Pokémon White Version 2.
+        /// </summary>
         HM_BWB2W2 = 1u << 17,
+        /// <summary>
+        /// The move can be taught to a Pokémon by a move tutor in Pokémon Fire Red Version and Pokémon Leaf Green Version.
+        /// </summary>
         MoveTutor_FRLG = 1u << 18,
+        /// <summary>
+        /// The move can be taught to a Pokémon by a move tutor in Pokémon Emerald Version.
+        /// </summary>
         MoveTutor_E = 1u << 19,
+        /// <summary>
+        /// The move can be taught to a Pokémon by a move tutor in Pokémon XD: Gale of Darkness.
+        /// </summary>
         MoveTutor_XD = 1u << 20,
+        /// <summary>
+        /// The move can be taught to a Pokémon by a move tutor in Pokémon Diamond Version and Pokémon Pearl Version.
+        /// </summary>
         MoveTutor_DP = 1u << 21,
+        /// <summary>
+        /// The move can be taught to a Pokémon by a move tutor in Pokémon Platinum Version.
+        /// </summary>
         MoveTutor_Pt = 1u << 22,
+        /// <summary>
+        /// The move can be taught to a Pokémon by a move tutor in Pokémon HeartGold Version and Pokémon SoulSilver Version.
+        /// </summary>
         MoveTutor_HGSS = 1u << 23,
+        /// <summary>
+        /// The move can be taught to a Pokémon by a move tutor in Pokémon Black Version and Pokémon White Version.
+        /// </summary>
         MoveTutor_BW = 1u << 24,
+        /// <summary>
+        /// The move can be taught to a Pokémon by a move tutor in Pokémon Black Version 2 and Pokémon White Version 2.
+        /// </summary>
         MoveTutor_B2W2 = 1u << 25,
+        /// <summary>
+        /// The move can be learned by hatching a Pokémon egg in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version and Pokémon Leaf Green Version.
+        /// </summary>
         EggMove_RSFRLG = 1u << 26,
+        /// <summary>
+        /// The move can be learned by hatching a Pokémon egg in Pokémon Emerald Version.
+        /// </summary>
         EggMove_E = 1u << 27,
+        /// <summary>
+        /// The move can be learned by hatching a Pokémon egg in Pokémon Diamond Version, Pokémon Pearl Version and Pokémon Platinum Version.
+        /// </summary>
         EggMove_DPPt = 1u << 28,
+        /// <summary>
+        /// The move can be learned by hatching a Pokémon egg in Pokémon HeartGold Version and Pokémon SoulSilver Version.
+        /// </summary>
         EggMove_HGSS = 1u << 29,
+        /// <summary>
+        /// The move can be learned by hatching a Pokémon egg in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2 and Pokémon White Version 2.
+        /// </summary>
         EggMove_BWB2W2 = 1u << 30,
+        /// <summary>
+        /// The move is known by a Pokémon when found in the Dream World.
+        /// </summary>
         DreamWorld = 1u << 31,
-        Forme = 1u << 32 // Learned when changing formes
+        /// <summary>
+        /// The move is learned by a Pokémon when changing formes.
+        /// </summary>
+        Forme = 1u << 32
     }
+    /// <summary>
+    /// Represents a specific Pokémon's non-volatile status.
+    /// </summary>
     public enum PBEStatus1 : byte
     {
+        /// <summary>
+        /// The Pokémon has no status.
+        /// </summary>
         None,
+        /// <summary>
+        /// The Pokémon is asleep.
+        /// </summary>
         Asleep,
+        /// <summary>
+        /// The Pokémon is badly poisoned.
+        /// </summary>
         BadlyPoisoned,
+        /// <summary>
+        /// The Pokémon is burned.
+        /// </summary>
         Burned,
+        /// <summary>
+        /// The Pokémon is frozen.
+        /// </summary>
         Frozen,
+        /// <summary>
+        /// The Pokémon is paralyzed.
+        /// </summary>
         Paralyzed,
+        /// <summary>
+        /// The Pokémon is poisoned.
+        /// </summary>
         Poisoned
     }
+    /// <summary>
+    /// Represents a specific Pokémon's volatile status.
+    /// </summary>
     [Flags]
     public enum PBEStatus2 : uint
     {
+        /// <summary>
+        /// The Pokémon has no status.
+        /// </summary>
         None,
+        /// <summary>
+        /// The Pokémon is high up in the air.
+        /// A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsAirborne"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
+        /// </summary>
         Airborne = 1 << 0,
+        /// <summary>
+        /// The Pokémon is confused and may hurt itself instead of execute its chosen move.
+        /// </summary>
         Confused = 1 << 1,
+        /// <summary>
+        /// The Pokémon is cursed and will take damage at the end of each turn.
+        /// </summary>
         Cursed = 1 << 2,
+        /// <summary>
+        /// The Pokémon is flinching and will be unable to move this turn.
+        /// </summary>
         Flinching = 1 << 3,
+        /// <summary>
+        /// The Pokémon is infatuated with another Pokémon and may be unable to a move this turn.
+        /// </summary>
         Infatuated = 1 << 4, // TODO
+        /// <summary>
+        /// The Pokémon is seeded and HP will be stolen at the end of each turn.
+        /// </summary>
         LeechSeed = 1 << 5,
+        /// <summary>
+        /// The Pokémon is minimized and will take double damage from <see cref="PBEMove.Steamroller"/> and <see cref="PBEMove.Stomp"/>.
+        /// </summary>
         Minimized = 1 << 6,
+        /// <summary>
+        /// The Pokémon is protected from moves this turn.
+        /// </summary>
         Protected = 1 << 7,
-        Pumped = 1 << 8, // Focus Energy / Lansat Berry
+        /// <summary>
+        /// The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.
+        /// </summary>
+        Pumped = 1 << 8,
+        /// <summary>
+        /// The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.
+        /// </summary>
         Substitute = 1 << 9,
+        /// <summary>
+        /// The Pokémon is unable to use the same move two times in a row.
+        /// </summary>
         Tormented = 1 << 10, // TODO
+        /// <summary>
+        /// The Pokémon is transformed into another Pokémon.
+        /// </summary>
         Transformed = 1 << 11,
+        /// <summary>
+        /// The Pokémon is underground.
+        /// A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
+        /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.
+        /// </summary>
         Underground = 1 << 12,
+        /// <summary>
+        /// The Pokémon is underwater.
+        /// A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
+        /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.
+        /// </summary>
         Underwater = 1 << 13
     }
+    /// <summary>
+    /// Represents a specific <see cref="PBETeam"/>'s status.
+    /// </summary>
     [Flags]
     public enum PBETeamStatus : byte
     {
+        /// <summary>
+        /// The team has no status.
+        /// </summary>
         None,
+        /// <summary>
+        /// The team will take less damage from <see cref="PBEMoveCategory.Special"/> moves.
+        /// </summary>
         LightScreen = 1 << 0,
+        /// <summary>
+        /// The team will take less damage from <see cref="PBEMoveCategory.Physical"/> moves.
+        /// </summary>
         Reflect = 1 << 1,
+        /// <summary>
+        /// Grounded Pokémon that switch in will take damage.
+        /// The amount of damage is based on <see cref="PBETeam.SpikeCount"/>.
+        /// </summary>
         Spikes = 1 << 2, // TODO: Gravity, magnet rise, magic guard, iron ball, baton pass with ingrain, air balloon
+        /// <summary>
+        /// Pokémon that switch in will take damage.
+        /// The amount of damage is based on the effectiveness of <see cref="PBEType.Rock"/> on the Pokémon.
+        /// </summary>
         StealthRock = 1 << 3, // TODO: magic guard, castform transforms after taking damage
+        /// <summary>
+        /// Grounded Pokémon that switch in will be <see cref="PBEStatus1.Poisoned"/> if <see cref="PBETeam.ToxicSpikeCount"/> is 1 or <see cref="PBEStatus1.BadlyPoisoned"/> if it is 2.
+        /// Grounded <see cref="PBEType.Poison"/> Pokémon will remove toxic spikes.
+        /// </summary>
         ToxicSpikes = 1 << 4 // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
     }
+    /// <summary>
+    /// Represents an action regarding a <see cref="PBEItem"/>.
+    /// </summary>
     public enum PBEItemAction : byte
     {
+        /// <summary>
+        /// The item caused damage to a Pokémon.
+        /// </summary>
         CausedDamage,
+        /// <summary>
+        /// The item was consumed by a Pokémon.
+        /// </summary>
         Consumed,
+        /// <summary>
+        /// The item restored HP to a Pokémon.
+        /// </summary>
         RestoredHP
     }
+    /// <summary>
+    /// Represents an action regarding a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
+    /// </summary>
     public enum PBEStatusAction : byte
     {
-        Activated, // flinch prevented movement, protect activated, etc
-        Added, // protected itself, became paralyzed, etc
-        Cured, // limber curing paralysis
-        Damage, // hurt from confusion, substitute took damage, etc
-        Ended // woke up, no longer confused, etc
+        /// <summary>
+        /// The status activated its main effect.
+        /// </summary>
+        /// <example>
+        /// <see cref="PBEStatus2.Flinching"/> prevented movement.
+        /// </example>
+        Activated,
+        /// <summary>
+        /// The status was added to a Pokémon.
+        /// </summary>
+        /// <example>
+        /// The Pokémon became <see cref="PBEStatus1.Paralyzed"/>.
+        /// </example>
+        Added,
+        /// <summary>
+        /// The status was cured from a Pokémon.
+        /// </summary>
+        /// <example>
+        /// <see cref="PBEAbility.Limber"/> cured a Pokémon of <see cref="PBEStatus1.Paralyzed"/>.
+        /// </example>
+        Cured,
+        /// <summary>
+        /// The status was involved with damage.
+        /// </summary>
+        /// <example>
+        /// A Pokémon's <see cref="PBEStatus2.Substitute"/> took damage.
+        /// </example>
+        Damage,
+        /// <summary>
+        /// The status has ended.
+        /// </summary>
+        /// <example>
+        /// A Pokémon with <see cref="PBEStatus2.Confused"/> regained its senses.
+        /// </example>
+        Ended
     }
+    /// <summary>
+    /// Represents an action regarding a <see cref="PBETeamStatus"/>.
+    /// </summary>
     public enum PBETeamStatusAction : byte
     {
-        Added, // set up
-        Cleared, // brick break destroying reflect, defog clearing spikes, etc
-        Damage, // hazard causing damage
-        Ended // reflect & light screen wearing off
+        /// <summary>
+        /// The status was added to a team.
+        /// </summary>
+        /// <example>
+        /// The team set up <see cref="PBETeamStatus.LightScreen"/>.
+        /// </example>
+        Added,
+        /// <summary>
+        /// The status was removed from a team.
+        /// </summary>
+        /// <example>
+        /// An opponent used <see cref="PBEMove.BrickBreak"/> and destroyed <see cref="PBETeamStatus.Reflect"/>.
+        /// </example>
+        Cleared,
+        /// <summary>
+        /// The status caused a Pokémon to take damage.
+        /// </summary>
+        /// <example>
+        /// An Pokémon switched in and took damage from <see cref="PBETeamStatus.StealthRock"/>.
+        /// </example>
+        Damage,
+        /// <summary>
+        /// The status ended.
+        /// </summary>
+        /// <example>
+        /// <see cref="PBETeamStatus.LightScreen"/> wore off.
+        /// </example>
+        Ended
     }
     public enum PBEFailReason : byte
     {
@@ -206,6 +690,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEWeatherAction : byte
     {
         Added,
+        CausedDamage,
         Ended
     }
     public enum PBEType : byte
@@ -286,6 +771,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HardStone,
         HeatRock,
         IciclePlate,
+        IcyRock,
         InsectPlate,
         IronPlate,
         LaxIncense,
@@ -504,8 +990,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         ZenMode, // TODO
         MAX,
     }
+    /// <summary>
+    /// Represents a specific Pokémon species.
+    /// </summary>
     public enum PBESpecies : uint
     {
+        /// <summary>
+        /// <see cref="PBEPokemonData.Data[PBESpecies.Bulbasaur]"/>
+        /// </summary>
         Bulbasaur = 1,
         Ivysaur = 2,
         Venusaur = 3,
@@ -680,6 +1172,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Fly,
         FocusEnergy,
         Growth,
+        Hail,
         Hit,
         Hit__MaybeBurn,
         Hit__MaybeConfuse,
@@ -843,6 +1336,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Growl,
         Growth,
         GunkShot,
+        Hail,
         HammerArm,
         Harden,
         Headbutt,

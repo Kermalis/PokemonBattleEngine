@@ -67,6 +67,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBETeam userTeam = Teams[pkmn.LocalTeam ? 0 : 1];
             PBETeam opposingTeam = Teams[pkmn.LocalTeam ? 1 : 0];
 
+            // Weather
+            switch (Weather)
+            {
+                case PBEWeather.Hailstorm:
+                    if (!pkmn.HasType(PBEType.Ice))
+                    {
+                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), PBEEffectiveness.Normal, true);
+                        if (FaintCheck(pkmn))
+                        {
+                            return;
+                        }
+                    }
+                    break;
+            }
+
             // Items
             switch (pkmn.Item)
             {
@@ -252,6 +268,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEMoveEffect.Growth:
                     Ef_Growth(user);
+                    break;
+                case PBEMoveEffect.Hail:
+                    Ef_Hail(user);
                     break;
                 case PBEMoveEffect.Hit:
                     Ef_Hit(user, targets, move);
@@ -1433,17 +1452,32 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        void Ef_RainDance(PBEPokemon user)
+        void Ef_Hail(PBEPokemon user)
         {
-            BroadcastMoveUsed(user, PBEMove.RainDance);
-            PPReduce(user, PBEMove.RainDance);
-            if (Weather == PBEWeather.Raining)
+            BroadcastMoveUsed(user, PBEMove.Hail);
+            PPReduce(user, PBEMove.Hail);
+            if (Weather == PBEWeather.Hailstorm)
             {
                 BroadcastMoveFailed(user, user, PBEFailReason.Default);
             }
             else
             {
-                Weather = PBEWeather.Raining;
+                Weather = PBEWeather.Hailstorm;
+                WeatherCounter = (byte)(Settings.HailTurns + (user.Item == PBEItem.IcyRock ? Settings.IcyRockTurnExtension : 0));
+                BroadcastWeather(Weather, PBEWeatherAction.Added);
+            }
+        }
+        void Ef_RainDance(PBEPokemon user)
+        {
+            BroadcastMoveUsed(user, PBEMove.RainDance);
+            PPReduce(user, PBEMove.RainDance);
+            if (Weather == PBEWeather.Rain)
+            {
+                BroadcastMoveFailed(user, user, PBEFailReason.Default);
+            }
+            else
+            {
+                Weather = PBEWeather.Rain;
                 WeatherCounter = (byte)(Settings.RainTurns + (user.Item == PBEItem.DampRock ? Settings.DampRockTurnExtension : 0));
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
             }
@@ -1452,13 +1486,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, PBEMove.SunnyDay);
             PPReduce(user, PBEMove.SunnyDay);
-            if (Weather == PBEWeather.Sunny)
+            if (Weather == PBEWeather.HarshSunlight)
             {
                 BroadcastMoveFailed(user, user, PBEFailReason.Default);
             }
             else
             {
-                Weather = PBEWeather.Sunny;
+                Weather = PBEWeather.HarshSunlight;
                 WeatherCounter = (byte)(Settings.SunTurns + (user.Item == PBEItem.HeatRock ? Settings.HeatRockTurnExtension : 0));
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
             }
@@ -1487,7 +1521,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void Ef_Growth(PBEPokemon user)
         {
-            short change = (short)(Weather == PBEWeather.Sunny ? +2 : +1);
+            short change = (short)(Weather == PBEWeather.HarshSunlight ? +2 : +1);
             ChangeUserStats(user, PBEMove.Growth, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { change, change });
         }
         void Ef_RestoreUserHealth(PBEPokemon user, PBEMove move, int percent)
@@ -1507,7 +1541,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (Weather)
             {
                 case PBEWeather.None: percentage = 0.5; break;
-                case PBEWeather.Sunny: percentage = 0.66; break;
+                case PBEWeather.HarshSunlight: percentage = 0.66; break;
                 default: percentage = 0.25; break;
             }
             ushort hp = (ushort)(user.MaxHP * percentage);

@@ -47,12 +47,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBEStatus1Packet(culprit, victim, status1, statusAction));
         void BroadcastStatus2(PBEPokemon culprit, PBEPokemon victim, PBEStatus2 status2, PBEStatusAction statusAction)
             => OnNewEvent?.Invoke(this, new PBEStatus2Packet(culprit, victim, status2, statusAction));
-        void BroadcastTeamStatus(bool local, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, byte victimId = 0)
+        void BroadcastTeamStatus(bool local, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, byte victimId = 0) // TODO: Make byte?
             => OnNewEvent?.Invoke(this, new PBETeamStatusPacket(local, teamStatus, teamStatusAction, victimId));
         void BroadcastTransform(PBEPokemon culprit, PBEPokemon victim)
             => OnNewEvent?.Invoke(this, new PBETransformPacket(culprit, victim, Settings));
-        void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction)
-            => OnNewEvent?.Invoke(this, new PBEWeatherPacket(weather, weatherAction));
+        void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction, byte victimId = 0) // TODO: Make byte?
+            => OnNewEvent?.Invoke(this, new PBEWeatherPacket(weather, weatherAction, victimId));
         void BroadcastActionsRequest(bool localTeam, IEnumerable<PBEPokemon> pkmn)
             => OnNewEvent?.Invoke(this, new PBEActionsRequestPacket(localTeam, pkmn));
         void BroadcastSwitchInRequest(bool localTeam, byte amount)
@@ -434,17 +434,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Console.WriteLine("{0} transformed into {1}!", culprit.NameForTrainer(true), victim.NameForTrainer(false));
                     break;
                 case PBEWeatherPacket wp:
+                    victim = battle.GetPokemon(wp.VictimId);
                     switch (wp.Weather)
                     {
-                        case PBEWeather.Raining:
+                        case PBEWeather.Hailstorm:
                             switch (wp.WeatherAction)
                             {
-                                case PBEWeatherAction.Added: message = "It started to rain!"; break;
-                                case PBEWeatherAction.Ended: message = "The rain stopped."; break;
+                                case PBEWeatherAction.Added: message = "It started to hail!"; break;
+                                case PBEWeatherAction.CausedDamage: message = "{0} is buffeted by the hail!"; break;
+                                case PBEWeatherAction.Ended: message = "The hail stopped."; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
                             }
                             break;
-                        case PBEWeather.Sunny:
+                        case PBEWeather.HarshSunlight:
                             switch (wp.WeatherAction)
                             {
                                 case PBEWeatherAction.Added: message = "The sunlight turned harsh!"; break;
@@ -452,10 +454,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
                             }
                             break;
-                        // It started to hail!
+                        case PBEWeather.Rain:
+                            switch (wp.WeatherAction)
+                            {
+                                case PBEWeatherAction.Added: message = "It started to rain!"; break;
+                                case PBEWeatherAction.Ended: message = "The rain stopped."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
+                            }
+                            break;
                         default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
                     }
-                    Console.WriteLine(message);
+                    Console.WriteLine(message, victim.NameForTrainer(true));
                     break;
                 case PBEActionsRequestPacket arp:
                     Console.WriteLine("{0} must submit actions for {1} Pokémon.", battle.Teams[arp.LocalTeam ? 0 : 1].TrainerName, arp.PokemonIDs.Length);

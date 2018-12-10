@@ -33,6 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEItem.HardStone, new PBEItemData { FlingPower = 100 } },
             { PBEItem.HeatRock, new PBEItemData { FlingPower = 60 } },
             { PBEItem.IciclePlate, new PBEItemData { FlingPower = 90 } },
+            { PBEItem.IcyRock, new PBEItemData { FlingPower = 40 } },
             { PBEItem.InsectPlate, new PBEItemData { FlingPower = 90 } },
             { PBEItem.IronPlate, new PBEItemData { FlingPower = 90 } },
             { PBEItem.LaxIncense, new PBEItemData { FlingPower = 10 } },

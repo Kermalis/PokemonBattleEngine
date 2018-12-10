@@ -184,22 +184,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             switch (Weather)
             {
-                case PBEWeather.Raining:
-                    if (moveType == PBEType.Water)
-                    {
-                        basePower *= 1.5;
-                    }
-                    else if (moveType == PBEType.Fire)
-                    {
-                        basePower *= 0.5;
-                    }
-                    break;
-                case PBEWeather.Sunny:
+                case PBEWeather.HarshSunlight:
                     if (moveType == PBEType.Fire)
                     {
                         basePower *= 1.5;
                     }
                     else if (moveType == PBEType.Water)
+                    {
+                        basePower *= 0.5;
+                    }
+                    break;
+                case PBEWeather.Rain:
+                    if (moveType == PBEType.Water)
+                    {
+                        basePower *= 1.5;
+                    }
+                    else if (moveType == PBEType.Fire)
                     {
                         basePower *= 0.5;
                     }

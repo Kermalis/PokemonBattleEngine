@@ -638,6 +638,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     messageView.Add(message);
                     break;
                 case PBEWeatherPacket wp:
+                    victim = Battle.GetPokemon(wp.VictimId);
                     switch (wp.WeatherAction)
                     {
                         case PBEWeatherAction.Added:
@@ -649,15 +650,16 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     switch (wp.Weather)
                     {
-                        case PBEWeather.Raining:
+                        case PBEWeather.Hailstorm:
                             switch (wp.WeatherAction)
                             {
-                                case PBEWeatherAction.Added: message = "It started to rain!"; break;
-                                case PBEWeatherAction.Ended: message = "The rain stopped."; break;
+                                case PBEWeatherAction.Added: message = "It started to hail!"; break;
+                                case PBEWeatherAction.CausedDamage: message = "{0} is buffeted by the hail!"; break;
+                                case PBEWeatherAction.Ended: message = "The hail stopped."; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
                             }
                             break;
-                        case PBEWeather.Sunny:
+                        case PBEWeather.HarshSunlight:
                             switch (wp.WeatherAction)
                             {
                                 case PBEWeatherAction.Added: message = "The sunlight turned harsh!"; break;
@@ -665,8 +667,17 @@ namespace Kermalis.PokemonBattleEngineClient
                                 default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
                             }
                             break;
+                        case PBEWeather.Rain:
+                            switch (wp.WeatherAction)
+                            {
+                                case PBEWeatherAction.Added: message = "It started to rain!"; break;
+                                case PBEWeatherAction.Ended: message = "The rain stopped."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
+                            }
+                            break;
                         default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
                     }
+                    message = string.Format(message, victim.NameForTrainer(true));
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
