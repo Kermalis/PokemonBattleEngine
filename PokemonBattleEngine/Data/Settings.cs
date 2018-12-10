@@ -135,7 +135,7 @@
         /// </summary>
         public byte HailTurns = 5;
         /// <summary>
-        /// A Pokémon in <see cref="PBEWeather.Hailstorm"/> without <see cref="PBEType.Ice"/> loses (1/HailDamageDenominator) HP at the end of every turn.
+        /// A Pokémon in <see cref="PBEWeather.Hailstorm"/> loses (1/HailDamageDenominator) HP at the end of every turn.
         /// </summary>
         public byte HailDamageDenominator = 16;
         /// <summary>
@@ -150,6 +150,18 @@
         /// The amount of turns added to <see cref="RainTurns"/> when the user is holding a <see cref="PBEItem.DampRock"/>.
         /// </summary>
         public byte DampRockTurnExtension = 3;
+        /// <summary>
+        /// The amount of turns <see cref="PBEWeather.Sandstorm"/> lasts.
+        /// </summary>
+        public byte SandstormTurns = 5;
+        /// <summary>
+        /// A Pokémon in <see cref="PBEWeather.Sandstorm"/> loses (1/SandstormDamageDenominator) HP at the end of every turn.
+        /// </summary>
+        public byte SandstormDamageDenominator = 16;
+        /// <summary>
+        /// The amount of turns added to <see cref="SandstormTurns"/> when the user is holding a <see cref="PBEItem.SmoothRock"/>.
+        /// </summary>
+        public byte SmoothRockTurnExtension = 3;
         /// <summary>
         /// The amount of turns <see cref="PBEWeather.HarshSunlight"/> lasts.
         /// </summary>

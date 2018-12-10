@@ -2349,6 +2349,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PBEMove.Sandstorm,
+                new PBEMoveData
+                {
+                    Type = PBEType.Rock, Category = PBEMoveCategory.Status,
+                    Effect = PBEMoveEffect.Sandstorm, EffectParam = 0,
+                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PBEMoveFlag.None,
+                    Targets = PBEMoveTarget.All
+                }
+            },
+            {
                 PBEMove.Scald,
                 new PBEMoveData
                 {

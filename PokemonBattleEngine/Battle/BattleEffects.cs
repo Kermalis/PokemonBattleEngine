@@ -81,6 +81,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                     break;
+                case PBEWeather.Sandstorm:
+                    if (!pkmn.HasType(PBEType.Ice)
+                        && !pkmn.HasType(PBEType.Ground)
+                        && !pkmn.HasType(PBEType.Steel)
+                        && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
+                        && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
+                    {
+                        BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.SandstormDamageDenominator), PBEEffectiveness.Normal, true);
+                        if (FaintCheck(pkmn))
+                        {
+                            return;
+                        }
+                    }
+                    break;
             }
 
             // Items
@@ -270,7 +285,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_Growth(user);
                     break;
                 case PBEMoveEffect.Hail:
-                    Ef_Hail(user);
+                    TryForceWeather(user, move, PBEWeather.Hailstorm);
                     break;
                 case PBEMoveEffect.Hit:
                     Ef_Hit(user, targets, move);
@@ -384,7 +399,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Ef_PsychUp(user, targets[0]);
                     break;
                 case PBEMoveEffect.RainDance:
-                    Ef_RainDance(user);
+                    TryForceWeather(user, move, PBEWeather.Rain);
                     break;
                 case PBEMoveEffect.RaiseUser_ATK_ACC_By1:
                     ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Accuracy }, new short[] { +1, +1 });
@@ -419,6 +434,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.RestoreUserHealth:
                     Ef_RestoreUserHealth(user, move, mData.EffectParam);
                     break;
+                case PBEMoveEffect.Sandstorm:
+                    TryForceWeather(user, move, PBEWeather.Sandstorm);
+                    break;
                 case PBEMoveEffect.Sleep:
                     TryForceStatus1(user, targets, move, PBEStatus1.Asleep);
                     break;
@@ -432,7 +450,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     TryForceStatus2(user, targets, move, PBEStatus2.Substitute);
                     break;
                 case PBEMoveEffect.SunnyDay:
-                    Ef_SunnyDay(user);
+                    TryForceWeather(user, move, PBEWeather.HarshSunlight);
                     break;
                 case PBEMoveEffect.Swagger:
                     Ef_Swagger(user, targets[0]);
@@ -764,7 +782,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-        
+
         public static unsafe void ApplyStatChange(PBEBattle battle, PBEPokemon pkmn, PBEStat stat, short change, bool broadcast = true, bool ignoreSimple = false)
         {
             if (!ignoreSimple && pkmn.Ability == PBEAbility.Simple)
@@ -1148,6 +1166,49 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             BroadcastMoveFailed(user, user, PBEFailReason.Default);
         }
+        void TryForceWeather(PBEPokemon user, PBEMove move, PBEWeather weather)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (Weather == weather)
+            {
+                BroadcastMoveFailed(user, user, PBEFailReason.Default);
+            }
+            else
+            {
+                byte turns;
+                PBEItem extensionItem;
+                byte itemTurnExtension;
+                switch (weather)
+                {
+                    case PBEWeather.Hailstorm:
+                        turns = Settings.HailTurns;
+                        extensionItem = PBEItem.IcyRock;
+                        itemTurnExtension = Settings.IcyRockTurnExtension;
+                        break;
+                    case PBEWeather.HarshSunlight:
+                        turns = Settings.SunTurns;
+                        extensionItem = PBEItem.HeatRock;
+                        itemTurnExtension = Settings.HeatRockTurnExtension;
+                        break;
+                    case PBEWeather.Rain:
+                        turns = Settings.RainTurns;
+                        extensionItem = PBEItem.DampRock;
+                        itemTurnExtension = Settings.DampRockTurnExtension;
+                        break;
+                    case PBEWeather.Sandstorm:
+                        turns = Settings.SandstormTurns;
+                        extensionItem = PBEItem.SmoothRock;
+                        itemTurnExtension = Settings.SmoothRockTurnExtension;
+                        break;
+                    default: throw new ArgumentOutOfRangeException(nameof(weather), $"Invalid weather: {weather}");
+                }
+
+                Weather = weather;
+                WeatherCounter = (byte)(turns + (user.Item == extensionItem ? itemTurnExtension : 0));
+                BroadcastWeather(Weather, PBEWeatherAction.Added);
+            }
+        }
         void HitAndMaybeInflictStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status, int chanceToInflict)
         {
             BroadcastMoveUsed(user, move);
@@ -1450,51 +1511,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     goto top;
                 }
-            }
-        }
-        void Ef_Hail(PBEPokemon user)
-        {
-            BroadcastMoveUsed(user, PBEMove.Hail);
-            PPReduce(user, PBEMove.Hail);
-            if (Weather == PBEWeather.Hailstorm)
-            {
-                BroadcastMoveFailed(user, user, PBEFailReason.Default);
-            }
-            else
-            {
-                Weather = PBEWeather.Hailstorm;
-                WeatherCounter = (byte)(Settings.HailTurns + (user.Item == PBEItem.IcyRock ? Settings.IcyRockTurnExtension : 0));
-                BroadcastWeather(Weather, PBEWeatherAction.Added);
-            }
-        }
-        void Ef_RainDance(PBEPokemon user)
-        {
-            BroadcastMoveUsed(user, PBEMove.RainDance);
-            PPReduce(user, PBEMove.RainDance);
-            if (Weather == PBEWeather.Rain)
-            {
-                BroadcastMoveFailed(user, user, PBEFailReason.Default);
-            }
-            else
-            {
-                Weather = PBEWeather.Rain;
-                WeatherCounter = (byte)(Settings.RainTurns + (user.Item == PBEItem.DampRock ? Settings.DampRockTurnExtension : 0));
-                BroadcastWeather(Weather, PBEWeatherAction.Added);
-            }
-        }
-        void Ef_SunnyDay(PBEPokemon user)
-        {
-            BroadcastMoveUsed(user, PBEMove.SunnyDay);
-            PPReduce(user, PBEMove.SunnyDay);
-            if (Weather == PBEWeather.HarshSunlight)
-            {
-                BroadcastMoveFailed(user, user, PBEFailReason.Default);
-            }
-            else
-            {
-                Weather = PBEWeather.HarshSunlight;
-                WeatherCounter = (byte)(Settings.SunTurns + (user.Item == PBEItem.HeatRock ? Settings.HeatRockTurnExtension : 0));
-                BroadcastWeather(Weather, PBEWeatherAction.Added);
             }
         }
         void Ef_Flatter(PBEPokemon user, PBEPokemon target)

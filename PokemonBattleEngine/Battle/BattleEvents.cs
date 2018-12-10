@@ -462,6 +462,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
                             }
                             break;
+                        case PBEWeather.Sandstorm:
+                            switch (wp.WeatherAction)
+                            {
+                                case PBEWeatherAction.Added: message = "A sandstorm kicked up!"; break;
+                                case PBEWeatherAction.CausedDamage: message = "{0} is buffeted by the sandstorm!"; break;
+                                case PBEWeatherAction.Ended: message = "The sandstorm subsided."; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
+                            }
+                            break;
                         default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
                     }
                     Console.WriteLine(message, victim.NameForTrainer(true));

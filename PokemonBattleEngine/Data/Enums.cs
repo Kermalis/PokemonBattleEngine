@@ -199,13 +199,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Hailstorm,
         /// <summary>
-        /// There is harsh sunlight.
+        /// The sunlight is harsh.
         /// </summary>
         HarshSunlight,
         /// <summary>
         /// It is raining.
         /// </summary>
         Rain,
+        /// <summary>
+        /// A sandstorm is brewing.
+        /// </summary>
+        Sandstorm
     }
     /// <summary>
     /// Represents a position on the battle field.
@@ -804,6 +808,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SilkScarf,
         SilverPowder,
         SkyPlate,
+        SmoothRock,
         SoftSand,
         SoulDew,
         SpellTag,
@@ -1222,6 +1227,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_SPE_By2_ATK_By1,
         Reflect,
         RestoreUserHealth,
+        Sandstorm,
         Sleep,
         Spikes,
         StealthRock,
@@ -1442,6 +1448,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RockTomb,
         SacredFire,
         SandAttack,
+        Sandstorm,
         Scald,
         ScaryFace,
         Scratch,

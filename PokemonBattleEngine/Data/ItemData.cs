@@ -66,6 +66,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEItem.SilkScarf, new PBEItemData { FlingPower = 10 } },
             { PBEItem.SilverPowder, new PBEItemData { FlingPower = 10 } },
             { PBEItem.SkyPlate, new PBEItemData { FlingPower = 90 } },
+            { PBEItem.SmoothRock, new PBEItemData { FlingPower = 10 } },
             { PBEItem.SoftSand, new PBEItemData { FlingPower = 10 } },
             { PBEItem.SoulDew, new PBEItemData { FlingPower = 30 } },
             { PBEItem.SpellTag, new PBEItemData { FlingPower = 30 } },

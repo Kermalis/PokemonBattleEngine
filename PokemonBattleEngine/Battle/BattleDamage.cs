@@ -585,6 +585,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spDefense *= 1.5;
             }
+            // A Rock-type Pokémon in a Sandstorm gets a 50% SpDefense boost
+            if (Weather == PBEWeather.Sandstorm && target.HasType(PBEType.Rock))
+            {
+                spDefense *= 1.5;
+            }
 
             return (ushort)spDefense;
         }
