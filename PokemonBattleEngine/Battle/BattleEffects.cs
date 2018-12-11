@@ -72,7 +72,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEWeather.Hailstorm:
                     if (!pkmn.HasType(PBEType.Ice)
-                        && pkmn.Ability != PBEAbility.Overcoat)
+                        && pkmn.Ability != PBEAbility.Overcoat
+                        && pkmn.Ability != PBEAbility.SnowCloak)
                     {
                         if (pkmn.Ability == PBEAbility.IceBody)
                         {
@@ -632,8 +633,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 0.8;
             }
-            // Pokémon with Sand Veil get a 20% Evasion boost in a Sandstorm
             if (Weather == PBEWeather.Sandstorm && user.Ability == PBEAbility.SandVeil)
+            {
+                chance *= 0.8;
+            }
+            if (Weather == PBEWeather.Hailstorm && user.Ability == PBEAbility.SnowCloak)
             {
                 chance *= 0.8;
             }

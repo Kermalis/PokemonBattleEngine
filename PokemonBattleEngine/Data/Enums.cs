@@ -960,6 +960,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         SandForce,
         SandRush,
         SandStream, // TODO
+        /// <summary>
+        /// A Pokémon with Sand Veil takes no damage from a sandstorm and gets a 20% evasion boost during a sandstorm.
+        /// </summary>
         SandVeil,
         SapSipper, // TODO
         Scrappy, // TODO
@@ -973,7 +976,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         SkillLink, // TODO
         SlowStart, // TODO
         Sniper,
-        SnowCloak, // TODO
+        /// <summary>
+        /// A Pokémon with Snow Cloak takes no damage from a hailstorm and gets a 20% evasion boost during a hailstorm.
+        /// </summary>
+        SnowCloak,
         SnowWarning, // TODO
         SolarPower, // TODO
         SolidRock, // TODO
