@@ -11,10 +11,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public delegate void BattleEvent(PBEBattle battle, INetPacket packet);
         public event BattleEvent OnNewEvent;
 
+        void BroadcastAbility(PBEPokemon culprit, PBEPokemon victim, PBEAbility ability, PBEAbilityAction abilityAction)
+            => OnNewEvent?.Invoke(this, new PBEAbilityPacket(culprit, victim, ability, abilityAction));
         void BroadcastItem(PBEPokemon culprit, PBEPokemon victim, PBEItem item, PBEItemAction itemAction)
             => OnNewEvent?.Invoke(this, new PBEItemPacket(culprit, victim, item, itemAction));
-        void BroadcastLimber(PBEPokemon pkmn, bool prevented) // Prevented or cured
-            => OnNewEvent?.Invoke(this, new PBELimberPacket(pkmn, prevented));
         void BroadcastMagnitude(byte magnitude)
             => OnNewEvent?.Invoke(this, new PBEMagnitudePacket(magnitude));
         void BroadcastMoveCrit()
@@ -47,11 +47,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBEStatus1Packet(culprit, victim, status1, statusAction));
         void BroadcastStatus2(PBEPokemon culprit, PBEPokemon victim, PBEStatus2 status2, PBEStatusAction statusAction)
             => OnNewEvent?.Invoke(this, new PBEStatus2Packet(culprit, victim, status2, statusAction));
-        void BroadcastTeamStatus(bool local, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, byte victimId = 0) // TODO: Make byte?
+        void BroadcastTeamStatus(bool local, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, byte victimId = 0)
             => OnNewEvent?.Invoke(this, new PBETeamStatusPacket(local, teamStatus, teamStatusAction, victimId));
         void BroadcastTransform(PBEPokemon culprit, PBEPokemon victim)
             => OnNewEvent?.Invoke(this, new PBETransformPacket(culprit, victim, Settings));
-        void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction, byte victimId = 0) // TODO: Make byte?
+        void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction, byte victimId = 0)
             => OnNewEvent?.Invoke(this, new PBEWeatherPacket(weather, weatherAction, victimId));
         void BroadcastActionsRequest(bool localTeam, IEnumerable<PBEPokemon> pkmn)
             => OnNewEvent?.Invoke(this, new PBEActionsRequestPacket(localTeam, pkmn));
@@ -69,6 +69,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             switch (packet)
             {
+                case PBEAbilityPacket ap:
+                    b1 = true; // culprit caps
+                    b2 = false; // victim caps
+                    culprit = battle.GetPokemon(ap.CulpritId);
+                    victim = battle.GetPokemon(ap.VictimId);
+                    Console.Write("{0}'s {1}: ", culprit.NameForTrainer(true), ap.Ability);
+                    switch (ap.Ability)
+                    {
+                        case PBEAbility.Limber:
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.CuredStatus: return; // Message is displayed from a status packet
+                                case PBEAbilityAction.PreventedStatus: return; // Message is displayed from an effectiveness packet
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                            }
+                        default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");
+                    }
+                    Console.WriteLine(message, culprit.NameForTrainer(b1), victim.NameForTrainer(b2));
+                    break;
                 case PBEItemPacket ip:
                     b1 = true; // culprit caps
                     b2 = false; // victim caps
@@ -104,10 +123,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         culprit.NameForTrainer(b1),
                         victim.NameForTrainer(b2)
                         );
-                    break;
-                case PBELimberPacket lp:
-                    victim = battle.GetPokemon(lp.PokemonId);
-                    Console.Write("{0}'s Limber: ", victim.Shell.Nickname);
                     break;
                 case PBEMagnitudePacket mp:
                     Console.WriteLine("Magnitude {0}!", mp.Magnitude);

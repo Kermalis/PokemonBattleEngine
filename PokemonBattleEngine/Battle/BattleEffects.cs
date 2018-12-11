@@ -741,7 +741,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (pkmn.Ability == PBEAbility.Limber && pkmn.Status1 == PBEStatus1.Paralyzed)
             {
                 pkmn.Status1 = PBEStatus1.None;
-                BroadcastLimber(pkmn, false);
+                BroadcastAbility(pkmn, pkmn, PBEAbility.Limber, PBEAbilityAction.CuredStatus);
                 BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cured);
             }
         }
@@ -828,7 +828,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (broadcastFailOrEffectiveness)
                 {
-                    BroadcastLimber(target, true);
+                    BroadcastAbility(target, target, PBEAbility.Limber, PBEAbilityAction.PreventedStatus);
                     BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                 }
                 return false;

@@ -592,12 +592,30 @@ namespace Kermalis.PokemonBattleEngine.Data
         ToxicSpikes = 1 << 4 // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
     }
     /// <summary>
+    /// Represents an action regarding a <see cref="PBEAbility"/>.
+    /// </summary>
+    public enum PBEAbilityAction : byte
+    {
+        /// <summary>
+        /// The ability cured a Pokémon from a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
+        /// </summary>
+        CuredStatus,
+        /// <summary>
+        /// The ability was involved with damage.
+        /// </summary>
+        Damage,
+        /// <summary>
+        /// The ability prevented a Pokémon from being inflicted with a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
+        /// </summary>
+        PreventedStatus
+    }
+    /// <summary>
     /// Represents an action regarding a <see cref="PBEItem"/>.
     /// </summary>
     public enum PBEItemAction : byte
     {
         /// <summary>
-        /// The item caused damage to a Pokémon.
+        /// The item caused a Pokémon to take damage.
         /// </summary>
         CausedDamage,
         /// <summary>

@@ -127,6 +127,28 @@ namespace Kermalis.PokemonBattleEngineClient
 
             switch (packet)
             {
+                case PBEAbilityPacket ap:
+                    b1 = true; // culprit caps
+                    b2 = false; // victim caps
+                    culprit = Battle.GetPokemon(ap.CulpritId);
+                    victim = Battle.GetPokemon(ap.VictimId);
+                    culprit.Ability = ap.Ability;
+                    switch (ap.Ability)
+                    {
+                        case PBEAbility.Limber:
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.CuredStatus: // Message is displayed from a status packet
+                                case PBEAbilityAction.PreventedStatus: message = "{0}'s Limber activated!"; break; // Message is displayed from an effectiveness packet
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                            }
+                            break;
+                        default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");
+                    }
+                    message = string.Format(message, culprit.NameForTrainer(b1), victim.NameForTrainer(b2));
+                    battleView.SetMessage(message);
+                    messageView.Add(message);
+                    break;
                 case PBEItemPacket ip:
                     b1 = true; // culprit caps
                     b2 = false; // victim caps
@@ -172,12 +194,6 @@ namespace Kermalis.PokemonBattleEngineClient
                         culprit.NameForTrainer(b1),
                         victim.NameForTrainer(b2)
                         );
-                    battleView.SetMessage(message);
-                    messageView.Add(message);
-                    break;
-                case PBELimberPacket lp:
-                    victim = Battle.GetPokemon(lp.PokemonId);
-                    message = string.Format("{0}'s Limber", victim.Shell.Nickname); // TODO: Ability stuff
                     battleView.SetMessage(message);
                     messageView.Add(message);
                     break;
