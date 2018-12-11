@@ -3,7 +3,6 @@ Drizzle
 Speed Boost
 Sturdy
 Damp
-Sand Veil
 Static
 Volt Absorb
 Water Absorb

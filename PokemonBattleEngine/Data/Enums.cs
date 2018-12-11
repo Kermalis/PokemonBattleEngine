@@ -956,7 +956,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SandForce, // TODO
         SandRush, // TODO
         SandStream, // TODO
-        SandVeil, // TODO
+        SandVeil,
         SapSipper, // TODO
         Scrappy, // TODO
         SereneGrace, // TODO

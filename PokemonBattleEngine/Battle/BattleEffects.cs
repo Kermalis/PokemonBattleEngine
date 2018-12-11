@@ -85,6 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!pkmn.HasType(PBEType.Ice)
                         && !pkmn.HasType(PBEType.Ground)
                         && !pkmn.HasType(PBEType.Steel)
+                        && pkmn.Ability != PBEAbility.SandVeil
                         && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
                         && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
                     {
@@ -606,6 +607,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             // Pokémon with Hustle get a 20% Accuracy reduction for Physical moves
             if (user.Ability == PBEAbility.Hustle && mData.Category == PBEMoveCategory.Physical)
+            {
+                chance *= 0.8;
+            }
+            // Pokémon with Sand Veil get a 20% Evasion boost in a Sandstorm
+            if (Weather == PBEWeather.Sandstorm && user.Ability == PBEAbility.SandVeil)
             {
                 chance *= 0.8;
             }
