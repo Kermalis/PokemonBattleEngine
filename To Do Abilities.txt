@@ -89,7 +89,6 @@ Filter
 Slow Start
 Scrappy
 Storm Drain
-Ice Body
 Solid Rock
 Snow Warning
 Frisk

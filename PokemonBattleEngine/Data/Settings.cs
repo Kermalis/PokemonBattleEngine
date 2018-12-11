@@ -143,6 +143,10 @@
         /// </summary>
         public byte IcyRockTurnExtension = 3;
         /// <summary>
+        /// A Pokémon with <see cref="PBEAbility.IceBody"/> in <see cref="PBEWeather.Hailstorm"/> gains (1/IceBodyHealDenominator) HP at the end of every turn.
+        /// </summary>
+        public byte IceBodyHealDenominator = 16;
+        /// <summary>
         /// The amount of turns <see cref="PBEWeather.Rain"/> lasts.
         /// </summary>
         public byte RainTurns = 5;

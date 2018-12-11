@@ -74,11 +74,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!pkmn.HasType(PBEType.Ice)
                         && pkmn.Ability != PBEAbility.Overcoat)
                     {
-                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
-                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), PBEEffectiveness.Normal, true);
-                        if (FaintCheck(pkmn))
+                        if (pkmn.Ability == PBEAbility.IceBody)
                         {
-                            return;
+                            ushort hp = (ushort)(pkmn.MaxHP / Settings.IceBodyHealDenominator);
+                            if (pkmn.HP < pkmn.MaxHP && pkmn.HP + hp <= pkmn.MaxHP)
+                            {
+                                BroadcastAbility(pkmn, pkmn, PBEAbility.IceBody, PBEAbilityAction.RestoredHP);
+                                HealDamage(pkmn, hp);
+                            }
+                        }
+                        else
+                        {
+                            BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
+                            DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), PBEEffectiveness.Normal, true);
+                            if (FaintCheck(pkmn))
+                            {
+                                return;
+                            }
                         }
                     }
                     break;
@@ -109,8 +121,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEItem.BlackSludge:
                     if (pkmn.HasType(PBEType.Poison))
                     {
-                        if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator)) > 0)
+                        ushort hp = (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator);
+                        if (pkmn.HP < pkmn.MaxHP && pkmn.HP + hp <= pkmn.MaxHP)
                         {
+                            HealDamage(pkmn, hp);
                             BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.RestoredHP);
                         }
                     }
@@ -125,9 +139,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEItem.Leftovers:
-                    if (HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator)) > 0)
                     {
-                        BroadcastItem(pkmn, pkmn, PBEItem.Leftovers, PBEItemAction.RestoredHP);
+                        ushort hp = (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator);
+                        if (pkmn.HP < pkmn.MaxHP && pkmn.HP + hp <= pkmn.MaxHP)
+                        {
+                            HealDamage(pkmn, hp);
+                            BroadcastItem(pkmn, pkmn, PBEItem.Leftovers, PBEItemAction.RestoredHP);
+                        }
                     }
                     break;
             }
@@ -603,7 +621,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
             double chance = mData.Accuracy;
-            chance *= GetStatMultiplier(user.AccuracyChange, true) / GetStatMultiplier(target.EvasionChange, true); // Accuracy & Evasion changes
+            chance *= GetStatMultiplier(user.AccuracyChange, true) / GetStatMultiplier(target.EvasionChange, true);
             // Pokémon with Compoundeyes get a 30% Accuracy boost
             if (user.Ability == PBEAbility.Compoundeyes)
             {

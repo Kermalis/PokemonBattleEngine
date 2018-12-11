@@ -135,6 +135,13 @@ namespace Kermalis.PokemonBattleEngineClient
                     culprit.Ability = ap.Ability;
                     switch (ap.Ability)
                     {
+                        case PBEAbility.IceBody:
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.RestoredHP: message = "{0}'s Ice Body activated!"; break; // Message is displayed from a hp changed packet
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                            }
+                            break;
                         case PBEAbility.Limber:
                             switch (ap.AbilityAction)
                             {

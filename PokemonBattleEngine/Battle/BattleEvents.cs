@@ -77,6 +77,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Console.Write("{0}'s {1}: ", culprit.NameForTrainer(true), ap.Ability);
                     switch (ap.Ability)
                     {
+                        case PBEAbility.IceBody:
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.RestoredHP: return; // Message is displayed from a hp changed packet
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                            }
                         case PBEAbility.Limber:
                             switch (ap.AbilityAction)
                             {

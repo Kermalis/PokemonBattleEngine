@@ -607,7 +607,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The ability prevented a Pokémon from being inflicted with a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
         /// </summary>
-        PreventedStatus
+        PreventedStatus,
+        /// <summary>
+        /// The ability restored a Pokémon's HP.
+        /// </summary>
+        RestoredHP
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEItem"/>.
@@ -895,7 +899,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hustle,
         Hydration, // TODO
         HyperCutter, // TODO
-        IceBody, // TODO
+        IceBody,
         Illuminate,
         Illusion, // TODO
         Immunity, // TODO
