@@ -932,7 +932,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         NoGuard,
         Normalize, // TODO
         Oblivious, // TODO
-        Overcoat, // TODO
+        Overcoat,
         Overgrow,
         OwnTempo, // TODO
         Pickpocket, // TODO

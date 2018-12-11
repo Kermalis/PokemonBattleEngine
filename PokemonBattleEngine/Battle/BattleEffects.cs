@@ -71,7 +71,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (Weather)
             {
                 case PBEWeather.Hailstorm:
-                    if (!pkmn.HasType(PBEType.Ice))
+                    if (!pkmn.HasType(PBEType.Ice)
+                        && pkmn.Ability != PBEAbility.Overcoat)
                     {
                         BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
                         DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), PBEEffectiveness.Normal, true);
@@ -85,6 +86,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!pkmn.HasType(PBEType.Ice)
                         && !pkmn.HasType(PBEType.Ground)
                         && !pkmn.HasType(PBEType.Steel)
+                        && pkmn.Ability != PBEAbility.Overcoat
                         && pkmn.Ability != PBEAbility.SandForce
                         && pkmn.Ability != PBEAbility.SandRush
                         && pkmn.Ability != PBEAbility.SandVeil
