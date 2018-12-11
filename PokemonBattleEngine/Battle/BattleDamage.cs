@@ -204,6 +204,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 0.5;
                     }
                     break;
+                case PBEWeather.Sandstorm:
+                    if (user.Ability == PBEAbility.SandForce && (user.HasType(PBEType.Rock) || user.HasType(PBEType.Ground) || user.HasType(PBEType.Steel)))
+                    {
+                        basePower *= 1.3;
+                    }
+                    break;
             }
 
             // Reflect & Light Screen reduce damage by 50% if there is one active battler or by 33% if there is more than one

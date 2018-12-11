@@ -953,7 +953,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RockHead, // TODO
         RoughSkin, // TODO
         RunAway,
-        SandForce, // TODO
+        SandForce,
         SandRush,
         SandStream, // TODO
         SandVeil,
