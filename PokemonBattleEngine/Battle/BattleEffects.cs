@@ -85,6 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!pkmn.HasType(PBEType.Ice)
                         && !pkmn.HasType(PBEType.Ground)
                         && !pkmn.HasType(PBEType.Steel)
+                        && pkmn.Ability != PBEAbility.SandRush
                         && pkmn.Ability != PBEAbility.SandVeil
                         && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
                         && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))

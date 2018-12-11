@@ -954,7 +954,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RoughSkin, // TODO
         RunAway,
         SandForce, // TODO
-        SandRush, // TODO
+        SandRush,
         SandStream, // TODO
         SandVeil,
         SapSipper, // TODO

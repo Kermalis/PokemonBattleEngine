@@ -291,16 +291,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (pkmn.Item)
                     {
                         case PBEItem.ChoiceScarf:
-                            if (pkmn.Item == PBEItem.ChoiceScarf)
-                            {
-                                speed *= 1.5;
-                            }
+                            speed *= 1.5;
                             break;
                         case PBEItem.MachoBrace:
-                            if (pkmn.Item == PBEItem.MachoBrace)
-                            {
-                                speed *= 0.5;
-                            }
+                            speed *= 0.5;
                             break;
                         case PBEItem.QuickPowder:
                             if (pkmn.Species == PBESpecies.Ditto)
@@ -309,11 +303,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                     }
+                    // Pokémon with Sand Rush get a 100% Speed boost in a Sandstorm
+                    if (Weather == PBEWeather.Sandstorm && pkmn.Ability == PBEAbility.SandRush)
+                    {
+                        speed *= 2.0;
+                    }
                     // Paralyzed Pokémon get a 75% speed decrease
                     if (pkmn.Status1 == PBEStatus1.Paralyzed)
                     {
                         speed *= 0.25;
                     }
+
                     Debug.WriteLine("{0} {1}'s evaluated speed: {2}", pkmn.LocalTeam ? "LocalTeam" : "Remote", pkmn.Shell.Nickname, speed);
                     var tup = Tuple.Create(pkmn, speed);
                     if (evaluated.Count == 0)
