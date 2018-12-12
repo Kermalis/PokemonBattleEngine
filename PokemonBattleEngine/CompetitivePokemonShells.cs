@@ -629,6 +629,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.IceBeam, PBEMove.HiddenPower, PBEMove.Reflect, PBEMove.Protect },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Druddigon_VGC = new PBEPokemonShell
+            {
+                Species = PBESpecies.Druddigon,
+                Nickname = "Teddy",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.LifeOrb,
+                Ability = PBEAbility.RoughSkin,
+                Gender = PBEGender.Male,
+                Nature = PBENature.Brave,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+                EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
+                Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect }, // Dragon Claw, Sucker Punch, Superpower, Protect
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Genesect_Uber = new PBEPokemonShell
             {
                 Species = PBESpecies.Genesect,
