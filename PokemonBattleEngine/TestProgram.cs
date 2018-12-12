@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine
 {
@@ -10,9 +11,8 @@ namespace Kermalis.PokemonBattleEngine
         {
             Console.WriteLine("Pokémon Battle Engine Test");
             Console.WriteLine();
-            Console.WriteLine("The test is not updated at this time.");
 
-            /*PBETeamShell team0 = new PBETeamShell
+            PBETeamShell team0 = new PBETeamShell
             {
                 PlayerName = "Sasha",
                 Party = { PBECompetitivePokemonShells.Ditto_Uber, PBECompetitivePokemonShells.Azumarill_VGC }
@@ -23,65 +23,73 @@ namespace Kermalis.PokemonBattleEngine
                 Party = { PBECompetitivePokemonShells.Darkrai_Uber, PBECompetitivePokemonShells.Latios_VGC }
             };
 
-            PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, team0, team1);
+            PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0, team1);
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            battle.OnStateChanged += Battle_OnStateChanged;
             battle.Begin();
-
-            PBEPokemon lCenter = battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Center);
-            PBEPokemon rCenter = battle.Teams[1].PokemonAtPosition(PBEFieldPosition.Center);
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine(lCenter);
-            Console.WriteLine();
-            Console.WriteLine(rCenter);
-            Console.WriteLine();
-
-            while (battle.TemporaryKeepBattlingBool)
+        }
+        static void Battle_OnStateChanged(PBEBattle battle)
+        {
+            switch (battle.BattleState)
             {
-                Console.WriteLine();
-                Console.WriteLine();
-
-                // Temporary
-                do
-                {
-                    byte move;
-                    PBEAction[] actions = new PBEAction[1];
-                    bool valid;
-
-                    move = (byte)PBEUtils.RNG.Next(0, PBESettings.NumMoves);
-                    actions[0].PokemonId = lCenter.Id;
-                    actions[0].Decision = PBEDecision.Fight;
-                    actions[0].FightMove = lCenter.Moves[move];
-                    actions[0].FightTargets = PBETarget.FoeCenter;
-                    valid = battle.SelectActionsIfValid(actions);
-
-                    move = (byte)PBEUtils.RNG.Next(0, PBESettings.NumMoves);
-                    actions[0].PokemonId = rCenter.Id;
-                    actions[0].Decision = PBEDecision.Fight;
-                    actions[0].FightMove = rCenter.Moves[move];
-                    actions[0].FightTargets = PBETarget.FoeCenter;
-                    valid = battle.SelectActionsIfValid(actions);
-
-                } while (!battle.IsReadyToRunTurn());
-                try
-                {
+                case PBEBattleState.Ended:
+                    Console.ReadKey();
+                    break;
+                case PBEBattleState.ReadyToRunTurn:
+                    Console.WriteLine();
+                    foreach (PBEPokemon pkmn in battle.ActiveBattlers)
+                    {
+                        Console.WriteLine(pkmn);
+                        Console.WriteLine();
+                    }
                     battle.RunTurn();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.StackTrace);
-                }
-
-                lCenter = battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Center);
-                rCenter = battle.Teams[1].PokemonAtPosition(PBEFieldPosition.Center);
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine(lCenter);
-                Console.WriteLine();
-                Console.WriteLine(rCenter);
-                Console.WriteLine();
-            }*/
-            Console.ReadKey();
+                    break;
+                case PBEBattleState.WaitingForActions:
+                    {
+                        var actions = new PBEAction[1];
+                        bool valid;
+                        PBEPokemon pkmn;
+                        int move;
+                        do
+                        {
+                            pkmn = battle.Teams[0].ActiveBattlers[0];
+                            move = PBEUtils.RNG.Next(0, pkmn.Moves.Length);
+                            actions[0].PokemonId = pkmn.Id;
+                            actions[0].Decision = PBEDecision.Fight;
+                            actions[0].FightMove = pkmn.Moves[move];
+                            actions[0].FightTargets = PBETarget.FoeCenter;
+                            valid = battle.SelectActionsIfValid(true, actions);
+                        } while (!valid);
+                        do
+                        {
+                            pkmn = battle.Teams[1].ActiveBattlers[0];
+                            move = PBEUtils.RNG.Next(0, pkmn.Moves.Length);
+                            actions[0].PokemonId = pkmn.Id;
+                            actions[0].Decision = PBEDecision.Fight;
+                            actions[0].FightMove = pkmn.Moves[move];
+                            actions[0].FightTargets = PBETarget.FoeCenter;
+                            valid = battle.SelectActionsIfValid(false, actions);
+                        } while (!valid);
+                    }
+                    break;
+                case PBEBattleState.WaitingForSwitchIns:
+                    {
+                        var switches = new Tuple<byte, PBEFieldPosition>[1];
+                        if (battle.Teams[0].SwitchInsRequired > 0)
+                        {
+                            PBEPokemon pkmn = battle.Teams[0].Party.First(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0);
+                            switches[0] = Tuple.Create(pkmn.Id, PBEFieldPosition.Center);
+                            battle.SelectSwitchesIfValid(true, switches);
+                        }
+                        if (battle.Teams[1].SwitchInsRequired > 0)
+                        {
+                            PBEPokemon pkmn = battle.Teams[1].Party.First(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0);
+                            switches[0] = Tuple.Create(pkmn.Id, PBEFieldPosition.Center);
+                            battle.SelectSwitchesIfValid(false, switches);
+                        }
+                    }
+                    break;
+            }
         }
     }
 }
