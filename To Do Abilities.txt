@@ -1,5 +1,4 @@
 Stench
-Drizzle
 Speed Boost
 Sturdy
 Damp
@@ -36,7 +35,6 @@ Water Veil
 Magnet Pull
 Soundproof
 Rain Dish
-Sand Stream
 Pressure
 Early Bird
 Flame Body
@@ -52,7 +50,6 @@ Sticky Hold
 Shed Skin
 Liquid Ooze
 Rock Head
-Drought
 Arena Trap
 Vital Spirit
 White Smoke
@@ -89,7 +86,6 @@ Slow Start
 Scrappy
 Storm Drain
 Solid Rock
-Snow Warning
 Frisk
 Reckless
 Multitype

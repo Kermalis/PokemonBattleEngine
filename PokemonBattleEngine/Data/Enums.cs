@@ -597,6 +597,10 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEAbilityAction : byte
     {
         /// <summary>
+        /// The ability changed the battle's weather.
+        /// </summary>
+        ChangedWeather,
+        /// <summary>
         /// The ability cured a Pokémon from a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
         /// </summary>
         CuredStatus,
@@ -874,8 +878,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         Defeatist, // TODO
         Defiant, // TODO
         Download, // TODO
-        Drizzle, // TODO
-        Drought, // TODO
+        /// <summary>
+        /// The Pokémon changes the weather to infinite rain.
+        /// </summary>
+        Drizzle,
+        /// <summary>
+        /// The Pokémon changes the weather to infinite harsh sunlight.
+        /// </summary>
+        Drought,
         DrySkin, // TODO
         EarlyBird, // TODO
         EffectSpore, // TODO
@@ -959,7 +969,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         RunAway,
         SandForce,
         SandRush,
-        SandStream, // TODO
+        /// <summary>
+        /// The Pokémon changes the weather to an infinite sandstorm.
+        /// </summary>
+        SandStream,
         /// <summary>
         /// A Pokémon with Sand Veil takes no damage from a sandstorm and gets a 20% evasion boost during a sandstorm.
         /// </summary>
@@ -980,7 +993,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// A Pokémon with Snow Cloak takes no damage from a hailstorm and gets a 20% evasion boost during a hailstorm.
         /// </summary>
         SnowCloak,
-        SnowWarning, // TODO
+        /// <summary>
+        /// The Pokémon changes the weather to an infinite hailstorm.
+        /// </summary>
+        SnowWarning,
         SolarPower, // TODO
         SolidRock, // TODO
         Soundproof, // TODO

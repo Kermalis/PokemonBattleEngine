@@ -77,6 +77,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Console.Write("{0}'s {1}: ", culprit.NameForTrainer(true), ap.Ability);
                     switch (ap.Ability)
                     {
+                        case PBEAbility.Drizzle:
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.ChangedWeather: return; // Message is displayed from a weather packet
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                            }
+                        case PBEAbility.Drought:
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.ChangedWeather: return; // Message is displayed from a weather packet
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                            }
                         case PBEAbility.IceBody:
                             switch (ap.AbilityAction)
                             {
@@ -88,6 +100,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 case PBEAbilityAction.CuredStatus: return; // Message is displayed from a status packet
                                 case PBEAbilityAction.PreventedStatus: return; // Message is displayed from an effectiveness packet
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                            }
+                        case PBEAbility.SandStream:
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.ChangedWeather: return; // Message is displayed from a weather packet
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                            }
+                        case PBEAbility.SnowWarning:
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.ChangedWeather: return; // Message is displayed from a weather packet
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                             }
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");

@@ -56,6 +56,45 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             // Abilities
             LimberCheck(pkmn);
+            switch (pkmn.Ability)
+            {
+                case PBEAbility.Drizzle:
+                    if (Weather != PBEWeather.Rain || WeatherCounter != 0)
+                    {
+                        Weather = PBEWeather.Rain;
+                        WeatherCounter = 0;
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.Drizzle, PBEAbilityAction.ChangedWeather);
+                        BroadcastWeather(PBEWeather.Rain, PBEWeatherAction.Added);
+                    }
+                    break;
+                case PBEAbility.Drought:
+                    if (Weather != PBEWeather.HarshSunlight || WeatherCounter != 0)
+                    {
+                        Weather = PBEWeather.HarshSunlight;
+                        WeatherCounter = 0;
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.Drought, PBEAbilityAction.ChangedWeather);
+                        BroadcastWeather(PBEWeather.HarshSunlight, PBEWeatherAction.Added);
+                    }
+                    break;
+                case PBEAbility.SandStream:
+                    if (Weather != PBEWeather.Sandstorm || WeatherCounter != 0)
+                    {
+                        Weather = PBEWeather.Sandstorm;
+                        WeatherCounter = 0;
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.SandStream, PBEAbilityAction.ChangedWeather);
+                        BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.Added);
+                    }
+                    break;
+                case PBEAbility.SnowWarning:
+                    if (Weather != PBEWeather.Hailstorm || WeatherCounter != 0)
+                    {
+                        Weather = PBEWeather.Hailstorm;
+                        WeatherCounter = 0;
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.SnowWarning, PBEAbilityAction.ChangedWeather);
+                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.Added);
+                    }
+                    break;
+            }
         }
         void DoPreMoveEffects(PBEPokemon pkmn)
         {
