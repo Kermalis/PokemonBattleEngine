@@ -1139,6 +1139,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Gothita = 574,
         Gothorita = 575,
         Gothitelle = 576,
+        Lampent = 608,
         Chandelure = 609,
         Cryogonal = 615,
         Druddigon = 621,
