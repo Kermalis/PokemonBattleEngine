@@ -1,4 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine
 {
@@ -661,5 +663,25 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.BugBuzz, PBEMove.IceBeam, PBEMove.Flamethrower, PBEMove.IronHead }, // U-Turn, Ice Beam, Flamethrower, Iron Head
                 PPUps = new byte[] { 3, 3, 3, 3 }
             };
+
+        /// <summary>
+        /// Creates a random team with pre-defined competitive Pokémon shells.
+        /// </summary>
+        /// <param name="numPkmn">The amount of Pokémon to add to the team.</param>
+        public static PBETeamShell CreateRandomTeam(int numPkmn)
+        {
+            var team = new PBETeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample() };
+            var possiblePokemon = new List<PBEPokemonShell>
+            {
+                Absol_RU, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Butterfree_RU, Charizard_VGC, Cofagrigus_VGC, Cradily_OU,
+                Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber, Farfetchd_OU, Flareon_RU,
+                Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU, Marowak_VGC,
+                Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC,
+                Victini_Uber,
+            };
+            possiblePokemon.Shuffle();
+            team.Party.AddRange(possiblePokemon.Take(numPkmn));
+            return team;
+        }
     }
 }

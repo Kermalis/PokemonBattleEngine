@@ -12,18 +12,8 @@ namespace Kermalis.PokemonBattleEngine
             Console.WriteLine("Pokémon Battle Engine Test");
             Console.WriteLine();
 
-            PBETeamShell team0 = new PBETeamShell
-            {
-                PlayerName = "Sasha",
-                Party = { PBECompetitivePokemonShells.Ditto_Uber, PBECompetitivePokemonShells.Azumarill_VGC }
-            };
-            PBETeamShell team1 = new PBETeamShell
-            {
-                PlayerName = "Jess",
-                Party = { PBECompetitivePokemonShells.Darkrai_Uber, PBECompetitivePokemonShells.Latios_VGC }
-            };
-
-            PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0, team1);
+            PBESettings settings = PBESettings.DefaultSettings;
+            PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, settings, PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize), PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize));
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.OnStateChanged += Battle_OnStateChanged;
             battle.Begin();

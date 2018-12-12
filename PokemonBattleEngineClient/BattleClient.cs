@@ -63,28 +63,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     message = "Sending team info...";
                     battleView.SetMessage(message);
                     messageView.Add(message);
-                    var team = new PBETeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample() };
-                    var possiblePokemon = new List<PBEPokemonShell>
-                    {
-                        PBECompetitivePokemonShells.Absol_RU, PBECompetitivePokemonShells.Arceus_Normal_Uber, PBECompetitivePokemonShells.Azelf_VGC,
-                        PBECompetitivePokemonShells.Azumarill_VGC,
-                        PBECompetitivePokemonShells.Beedrill_NU, PBECompetitivePokemonShells.Blastoise_UU, PBECompetitivePokemonShells.Butterfree_RU,
-                        PBECompetitivePokemonShells.Charizard_VGC, PBECompetitivePokemonShells.Cofagrigus_VGC, PBECompetitivePokemonShells.Cradily_OU,
-                        PBECompetitivePokemonShells.Cresselia_VGC, PBECompetitivePokemonShells.Crobat_VGC, PBECompetitivePokemonShells.Cryogonal_VGC,
-                        PBECompetitivePokemonShells.Darkrai_Uber, PBECompetitivePokemonShells.Dialga_Uber, PBECompetitivePokemonShells.Ditto_Uber,
-                        PBECompetitivePokemonShells.Druddigon_VGC, PBECompetitivePokemonShells.Espeon_Uber, PBECompetitivePokemonShells.Farfetchd_OU,
-                        PBECompetitivePokemonShells.Flareon_RU,
-                        PBECompetitivePokemonShells.Genesect_Uber, PBECompetitivePokemonShells.Giratina_Origin_Uber, PBECompetitivePokemonShells.Glaceon_VGC,
-                        PBECompetitivePokemonShells.Gothitelle_VGC,
-                        PBECompetitivePokemonShells.Jirachi_Uber, PBECompetitivePokemonShells.Jolteon_VGC, PBECompetitivePokemonShells.Latias_VGC,
-                        PBECompetitivePokemonShells.Latios_VGC, PBECompetitivePokemonShells.Leafeon_RU,
-                        PBECompetitivePokemonShells.Marowak_VGC, PBECompetitivePokemonShells.Mesprit_UU, PBECompetitivePokemonShells.Mismagius_UU,
-                        PBECompetitivePokemonShells.Ninetales_VGC, PBECompetitivePokemonShells.Palkia_Uber, PBECompetitivePokemonShells.Pikachu_VGC,
-                        PBECompetitivePokemonShells.Rotom_Wash_VGC, PBECompetitivePokemonShells.Umbreon_UU, PBECompetitivePokemonShells.Uxie_VGC,
-                        PBECompetitivePokemonShells.Vaporeon_VGC, PBECompetitivePokemonShells.Venusaur_VGC, PBECompetitivePokemonShells.Victini_Uber,
-                    };
-                    possiblePokemon.Shuffle();
-                    team.Party.AddRange(possiblePokemon.Take(Battle.Settings.MaxPartySize));
+                    PBETeamShell team = PBECompetitivePokemonShells.CreateRandomTeam(Battle.Settings.MaxPartySize);
                     Battle.Teams[0].TrainerName = team.PlayerName;
                     Send(new PBEPartyResponsePacket(team, Battle.Settings));
                     break;
@@ -757,6 +736,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         int amt = sirp.Amount;
                         var switches = new List<Tuple<byte, PBEFieldPosition>>(amt);
                         PBEPokemon[] available = Battle.Teams[0].Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+                        available.Shuffle();
                         var availablePositions = new List<PBEFieldPosition>();
                         switch (Battle.BattleFormat)
                         {
