@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -31,23 +30,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                         default: return Data[PBEMove.TechnoBlast].Type;
                     }
                 default: return Data[move].Type;
-            }
-        }
-        public static PBEMoveTarget GetMoveTargetsForPokemon(PBEPokemon pkmn, PBEMove move)
-        {
-            switch (move)
-            {
-                case PBEMove.Curse:
-                    if (pkmn.HasType(PBEType.Ghost))
-                    {
-                        return PBEMoveTarget.SingleSurrounding;
-                    }
-                    else
-                    {
-                        return PBEMoveTarget.Self;
-                    }
-                default: return Data[move].Targets;
-                case PBEMove.None: throw new ArgumentOutOfRangeException(nameof(move), $"Invalid move: {move}");
             }
         }
 

@@ -264,7 +264,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
-            PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, PBEMoveData.GetMoveTargetsForPokemon(user, move) == PBEMoveTarget.SingleNotSelf);
+            PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, GetMoveTargetsForPokemon(user, move) == PBEMoveTarget.SingleNotSelf);
             if (targets.Length == 0)
             {
                 BroadcastMoveUsed(user, move);

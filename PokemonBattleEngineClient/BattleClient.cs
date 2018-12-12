@@ -773,7 +773,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         {
                             switches.Add(Tuple.Create(available[i].Id, availablePositions[i]));
                         }
-                        Send(new PBESwitchInResponsePacket(switches.ToArray()));
+                        Send(new PBESwitchInResponsePacket(switches));
                     }
                     break;
             }
