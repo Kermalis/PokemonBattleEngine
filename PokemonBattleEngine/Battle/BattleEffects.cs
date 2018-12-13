@@ -444,7 +444,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     TryForceStatus2(user, targets, move, PBEStatus2.Minimized);
                     break;
                 case PBEMoveEffect.Moonlight:
-                    Ef_Moonlight(user);
+                    Ef_Moonlight(user, move);
                     break;
                 case PBEMoveEffect.PainSplit:
                     Ef_PainSplit(user, targets[0]);
@@ -1620,10 +1620,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
             }
         }
-        void Ef_Moonlight(PBEPokemon user)
+        void Ef_Moonlight(PBEPokemon user, PBEMove move)
         {
-            BroadcastMoveUsed(user, PBEMove.Moonlight);
-            PPReduce(user, PBEMove.Moonlight);
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
             double percentage;
             switch (Weather)
             {
