@@ -41,6 +41,7 @@ namespace Kermalis.PokemonBattleEngineClient
             { '*', "Asterisk" },
             { '^', "Caret" },
             { ':', "Colon" },
+            { 'é', "e2" },
             { '♀', "Female" },
             { '#', "Hashtag" },
             { '♂', "Male" },
