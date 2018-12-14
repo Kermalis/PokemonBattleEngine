@@ -615,6 +615,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.Flatter, PBEMove.Psychic, PBEMove.ShadowBall, PBEMove.Protect }, // Trick Room, Psychic, Shadow Ball, Protect
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Chandelure_VGC = new PBEPokemonShell
+            {
+                Species = PBESpecies.Chandelure,
+                Nickname = "Candela",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.LifeOrb, // Fire Gem
+                Ability = PBEAbility.FlashFire,
+                Gender = PBEGender.Female,
+                Nature = PBENature.Quiet,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+                EVs = new byte[] { 252, 0, 0, 252, 4, 0 },
+                Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.ShadowBall, PBEMove.EnergyBall, PBEMove.Protect }, // Heat Wave, Shadow Ball, Trick Room, Protect
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Cryogonal_VGC = new PBEPokemonShell
             {
                 Species = PBESpecies.Cryogonal,
@@ -673,11 +689,11 @@ namespace Kermalis.PokemonBattleEngine
             var team = new PBETeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample() };
             var possiblePokemon = new List<PBEPokemonShell>
             {
-                Absol_RU, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Butterfree_RU, Charizard_VGC, Cofagrigus_VGC, Cradily_OU,
-                Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber, Farfetchd_OU, Flareon_RU,
-                Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU, Marowak_VGC,
-                Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC,
-                Victini_Uber,
+                Absol_RU, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Butterfree_RU, Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
+                Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber, Farfetchd_OU,
+                Flareon_RU, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU,
+                Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC,
+                Venusaur_VGC, Victini_Uber,
             };
             possiblePokemon.Shuffle();
             team.Party.AddRange(possiblePokemon.Take(numPkmn));
