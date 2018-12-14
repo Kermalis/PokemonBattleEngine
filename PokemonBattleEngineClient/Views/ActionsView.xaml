@@ -1,9 +1,49 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:model="clr-namespace:Kermalis.PokemonBattleEngineClient.Models;assembly=PokemonBattleEngineClient"
-        Width="512" Height="128" Background="#313131" Name="Actions0">
+        Width="512" Height="128" Background="#313131" Name="Actions0">  
   <StackPanel>
-    <Canvas Width="512" Height="128" IsVisible="{Binding TargetsVisible}">
+    <StackPanel IsVisible="{Binding MovesVisible}">
+      <ItemsControl Items="{Binding Moves}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" Spacing="20" Margin="20"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Button Width="103" Height="30" Command="{Binding SelectMoveCommand}" Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4">
+              <StackPanel>
+                <Image Source="{Binding Label}"/>
+              </StackPanel>
+              <ToolTip.Tip>
+                <TextBlock Text="{Binding Description}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+              </ToolTip.Tip>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <ItemsControl Items="{Binding Party}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="12,8"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="Black" BorderBrush="#757575" BorderThickness="4">
+              <StackPanel>
+                <Image Source="{Binding Label}"/>
+              </StackPanel>
+              <ToolTip.Tip>
+                <TextBlock Text="{Binding Pokemon}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+              </ToolTip.Tip>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </StackPanel>
+    <Canvas IsVisible="{Binding TargetsVisible}">
       <Rectangle IsVisible="{Binding TargetLineFoeRightAllyLeftEnabled}" Width="12" Height="26" Canvas.Left="{Binding LeftLineX}" Canvas.Top="51" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
       <Rectangle IsVisible="{Binding TargetLineFoeRightFoeCenterEnabled}" Width="32" Height="12" Canvas.Left="{Binding CenterLineX}" Canvas.Top="32" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
       <Rectangle IsVisible="{Binding TargetLineAllyLeftAllyCenterEnabled}" Width="32" Height="12" Canvas.Left="{Binding CenterLineX}" Canvas.Top="84" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
@@ -48,45 +88,32 @@
         </StackPanel>
       </Button>
     </Canvas>
-    <StackPanel Width="512" Height="128" IsVisible="{Binding MovesVisible}">
-      <ItemsControl Items="{Binding Moves}">
-        <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
-            <StackPanel Orientation="Horizontal" Spacing="20" Margin="20"/>
-          </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <Button Width="103" Height="30" Command="{Binding SelectMoveCommand}" Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4">
-              <StackPanel>
-                <Image Source="{Binding Label}"/>
-              </StackPanel>
-              <ToolTip.Tip>
-                <TextBlock Text="{Binding Description}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
-              </ToolTip.Tip>
-            </Button>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
-      <ItemsControl Items="{Binding Party}">
-        <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
-            <StackPanel Orientation="Horizontal" Spacing="10" Margin="12"/>
-          </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="Black" BorderBrush="#757575" BorderThickness="4">
-              <StackPanel>
-                <Image Source="{Binding Label}"/>
-              </StackPanel>
-              <ToolTip.Tip>
-                <TextBlock Text="{Binding Pokemon}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
-              </ToolTip.Tip>
-            </Button>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
-    </StackPanel>
-  </StackPanel>
+    <ItemsControl Items="{Binding Party}" IsVisible="{Binding SwitchesVisible}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal" Spacing="10" Margin="12,49"/>
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="Black" BorderBrush="#757575" BorderThickness="4">
+            <StackPanel>
+              <Image Source="{Binding Label}"/>
+            </StackPanel>
+            <ToolTip.Tip>
+              <TextBlock Text="{Binding Pokemon}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+            </ToolTip.Tip>
+          </Button>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <Canvas IsVisible="{Binding PositionsVisible}">
+      <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="49" IsEnabled="{Binding LeftPositionEnabled}"
+              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Left" Foreground="White" Content="Left"/>
+      <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="49" IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterTargetsVisible}"
+              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Center" Foreground="White" Content="Center"/>
+      <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="49" IsEnabled="{Binding RightPositionEnabled}"
+              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Right" Foreground="White" Content="Right"/>
+    </Canvas>
+  </StackPanel>  
 </UserControl>

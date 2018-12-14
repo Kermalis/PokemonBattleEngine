@@ -1,8 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngineClient.Views;
 using ReactiveUI;
-using System.Collections.Generic;
+using System;
 using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
@@ -14,15 +13,15 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public PBEPokemon Pokemon { get; }
         IBitmap Label { get; }
 
-        public PokemonInfo(PBEPokemon pkmn, ActionsView parent, List<PBEPokemon> standBy)
+        public PokemonInfo(PBEPokemon pkmn, bool locked, Action<PokemonInfo> clickAction)
         {
             Pokemon = pkmn;
             Label = Utils.RenderString(pkmn.NameWithGender);
 
-            bool enabled = parent.Pokemon.LockedAction.Decision != PBEDecision.Fight && pkmn.FieldPosition == PBEFieldPosition.None && !standBy.Contains(pkmn) && pkmn.HP > 0;
+            bool enabled = !locked && pkmn.FieldPosition == PBEFieldPosition.None && pkmn.HP > 0;
 
             var sub = new Subject<bool>();
-            SelectPokemonCommand = ReactiveCommand.Create(() => parent.SelectPokemon(this), sub);
+            SelectPokemonCommand = ReactiveCommand.Create(() => clickAction(this), sub);
             sub.OnNext(enabled);
         }
     }

@@ -287,12 +287,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             var sb = new StringBuilder();
             sb.AppendLine($"{Shell.Nickname}/{Species} {GenderSymbol} Lv.{Shell.Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})");
+            sb.AppendLine($"Position: {FieldPosition}");
             sb.AppendLine($"Status1: {Status1}");
             sb.AppendLine($"Status2: {Status2}");
             if (!remotePokemon && Status2.HasFlag(PBEStatus2.Substitute))
             {
                 sb.AppendLine($"Substitute HP: {SubstituteHP}");
             }
+            sb.AppendLine($"Stat changes: {AttackChange} {DefenseChange} {SpAttackChange} {SpDefenseChange} {SpeedChange} {AccuracyChange} {EvasionChange}");
             sb.AppendLine($"Item: {item}");
             sb.AppendLine($"Ability: {ability}");
             if (!remotePokemon)

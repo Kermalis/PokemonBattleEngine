@@ -1,7 +1,6 @@
 ﻿using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngineClient.Views;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -47,7 +46,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         IBrush BorderBrush { get; }
         string Description { get; }
 
-        public MoveInfo(int i, PBEPokemon pkmn, ActionsView parent)
+        public MoveInfo(int i, PBEPokemon pkmn, Action<MoveInfo> clickAction)
         {
             PBEMove move = pkmn.Moves[i];
             var ttb = typeToBrush[PBEMoveData.GetMoveTypeForPokemon(pkmn, move)];
@@ -68,7 +67,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             Description = move == PBEMove.None ? string.Empty : PBEMoveData.Data[move].ToString();
 
             var sub = new Subject<bool>();
-            SelectMoveCommand = ReactiveCommand.Create(() => parent.SelectMove(this), sub);
+            SelectMoveCommand = ReactiveCommand.Create(() => clickAction(this), sub);
             sub.OnNext(enabled);
         }
     }

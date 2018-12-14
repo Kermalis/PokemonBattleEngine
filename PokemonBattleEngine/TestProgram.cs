@@ -37,37 +37,55 @@ namespace Kermalis.PokemonBattleEngine
         }
         static void Battle_OnStateChanged(PBEBattle battle)
         {
-            switch (battle.BattleState)
+            try
             {
-                case PBEBattleState.Ended:
-                    Console.SetOut(oldWriter);
-                    writer.Close();
-                    Console.WriteLine($"Test battle ended. \"{logFile}\" contains the battle.");
-                    Console.ReadKey();
-                    break;
-                case PBEBattleState.ReadyToRunTurn:
-                    Console.WriteLine();
-                    foreach (PBEPokemon pkmn in battle.Teams[0].ActiveBattlers.Concat(battle.Teams[1].ActiveBattlers))
-                    {
-                        Console.WriteLine(pkmn);
-                        Console.WriteLine();
-                    }
-                    battle.RunTurn();
-                    break;
-                case PBEBattleState.WaitingForActions:
-                    battle.SelectActionsIfValid(true, AIManager.CreateActions(battle, true));
-                    battle.SelectActionsIfValid(false, AIManager.CreateActions(battle, false));
-                    break;
-                case PBEBattleState.WaitingForSwitchIns:
-                    if (battle.Teams[0].SwitchInsRequired > 0)
-                    {
-                        battle.SelectSwitchesIfValid(true, AIManager.CreateSwitches(battle, true));
-                    }
-                    if (battle.Teams[1].SwitchInsRequired > 0)
-                    {
-                        battle.SelectSwitchesIfValid(false, AIManager.CreateSwitches(battle, false));
-                    }
-                    break;
+                switch (battle.BattleState)
+                {
+                    case PBEBattleState.Ended:
+                        Console.SetOut(oldWriter);
+                        writer.Close();
+                        Console.WriteLine($"Test battle ended. \"{logFile}\" contains the battle.");
+                        Console.ReadKey();
+                        break;
+                    case PBEBattleState.ReadyToRunTurn:
+                        foreach (PBETeam team in battle.Teams)
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("{0}'s team:", team.TrainerName);
+                            foreach (PBEPokemon pkmn in team.ActiveBattlers.OrderBy(p => p.FieldPosition))
+                            {
+                                Console.WriteLine(pkmn);
+                                Console.WriteLine();
+                            }
+                        }
+                        battle.RunTurn();
+                        break;
+                    case PBEBattleState.WaitingForActions:
+                        foreach (PBETeam team in battle.Teams)
+                        {
+                            battle.SelectActionsIfValid(team.LocalTeam, AIManager.CreateActions(battle, team.LocalTeam));
+                        }
+                        break;
+                    case PBEBattleState.WaitingForSwitchIns:
+                        foreach (PBETeam team in battle.Teams)
+                        {
+                            if (team.SwitchInsRequired > 0)
+                            {
+                                battle.SelectSwitchesIfValid(team.LocalTeam, AIManager.CreateSwitches(battle, team.LocalTeam));
+                            }
+                        }
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+                Console.SetOut(oldWriter);
+                writer.Close();
+                Console.WriteLine($"Test battle threw an exception, check \"{logFile}\" for details.");
+                Console.ReadKey();
+                Environment.Exit(-1);
             }
         }
     }

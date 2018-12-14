@@ -5,13 +5,14 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Models;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    // If you dislike spaghetti code please close this file
+    // If you dislike spaghetti code please close this file unless I told you otherwise
     class ActionsView : UserControl, INotifyPropertyChanged
     {
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
@@ -270,13 +271,45 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
 
+        bool leftPositionEnabled;
+        bool LeftPositionEnabled
+        {
+            get => leftPositionEnabled;
+            set
+            {
+                leftPositionEnabled = value;
+                OnPropertyChanged(nameof(LeftPositionEnabled));
+            }
+        }
+        bool centerPositionEnabled;
+        bool CenterPositionEnabled
+        {
+            get => centerPositionEnabled;
+            set
+            {
+                centerPositionEnabled = value;
+                OnPropertyChanged(nameof(CenterPositionEnabled));
+            }
+        }
+        bool rightPositionEnabled;
+        bool RightPositionEnabled
+        {
+            get => rightPositionEnabled;
+            set
+            {
+                rightPositionEnabled = value;
+                OnPropertyChanged(nameof(RightPositionEnabled));
+            }
+        }
+
         PBETarget targetAllyLeftResult, targetAllyCenterResult, targetAllyRightResult,
             targetFoeLeftResult, targetFoeCenterResult, targetFoeRightResult;
 
         ReactiveCommand SelectTargetCommand { get; }
+        ReactiveCommand SelectPositionCommand { get; }
 
-        MoveInfo[] moves;
-        MoveInfo[] Moves
+        IEnumerable<MoveInfo> moves;
+        IEnumerable<MoveInfo> Moves
         {
             get => moves;
             set
@@ -285,9 +318,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Moves));
             }
         }
-
-        PokemonInfo[] party;
-        PokemonInfo[] Party
+        IEnumerable<PokemonInfo> party;
+        IEnumerable<PokemonInfo> Party
         {
             get => party;
             set
@@ -317,6 +349,26 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(MovesVisible));
             }
         }
+        bool switchesVisible;
+        bool SwitchesVisible
+        {
+            get => switchesVisible;
+            set
+            {
+                switchesVisible = value;
+                OnPropertyChanged(nameof(SwitchesVisible));
+            }
+        }
+        bool positionsVisible;
+        bool PositionsVisible
+        {
+            get => positionsVisible;
+            set
+            {
+                positionsVisible = value;
+                OnPropertyChanged(nameof(PositionsVisible));
+            }
+        }
 
         public BattleClient Client;
         public PBEPokemon Pokemon { get; private set; }
@@ -326,39 +378,52 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
             SelectTargetCommand = ReactiveCommand.Create<string>(SelectTarget);
+            SelectPositionCommand = ReactiveCommand.Create<string>(SelectPosition);
 
             MoveInfo.CreateBrushes();
         }
 
-        public void DisplayActions(IEnumerable<PBEPokemon> party, PBEPokemon pkmn, List<PBEPokemon> standBy)
+        public void DisplayActions(PBEPokemon pkmn)
         {
             Pokemon = pkmn;
 
-            Party = party.Select(p => new PokemonInfo(p, this, standBy)).ToArray();
+            Party = Client.Battle.Teams[0].Party.Select(p => new PokemonInfo(p, Pokemon.LockedAction.Decision == PBEDecision.Fight || Client.StandBy.Contains(p), SelectPokemonForTurn));
 
             var mInfo = new MoveInfo[pkmn.Moves.Length];
             for (int i = 0; i < mInfo.Length; i++)
             {
-                mInfo[i] = new MoveInfo(i, Pokemon, this);
+                mInfo[i] = new MoveInfo(i, Pokemon, SelectMoveForTurn);
             }
             Moves = mInfo;
 
             MovesVisible = true;
         }
+        public void DisplaySwitches()
+        {
+            Party = Client.Battle.Teams[0].Party.Select(p => new PokemonInfo(p, Client.StandBy.Contains(p), SelectSwitch));
+            SwitchesVisible = true;
+        }
 
-        public void SelectPokemon(PokemonInfo pkmnInfo)
+        void SelectPokemonForTurn(PokemonInfo pkmnInfo)
         {
             Pokemon.SelectedAction.Decision = PBEDecision.SwitchOut;
             Pokemon.SelectedAction.SwitchPokemonId = pkmnInfo.Pokemon.Id;
+            Client.StandBy.Add(pkmnInfo.Pokemon);
             MovesVisible = false;
             Client.ActionsLoop(false);
         }
-        public void SelectMove(MoveInfo moveInfo)
+        void SelectMoveForTurn(MoveInfo moveInfo)
         {
             Pokemon.SelectedAction.Decision = PBEDecision.Fight;
             Pokemon.SelectedAction.FightMove = moveInfo.Move;
             MovesVisible = false;
             DisplayTargets(moveInfo);
+        }
+        void SelectSwitch(PokemonInfo pkmnInfo)
+        {
+            Pokemon = pkmnInfo.Pokemon;
+            SwitchesVisible = false;
+            DisplayPositions();
         }
         void DisplayTargets(MoveInfo moveInfo)
         {
@@ -782,6 +847,55 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 TargetsVisible = true;
             }
         }
+        void DisplayPositions()
+        {
+            LeftPositionEnabled = CenterPositionEnabled = RightPositionEnabled = false;
+            switch (Client.Battle.BattleFormat)
+            {
+                case PBEBattleFormat.Single:
+                    SelectPosition("Center");
+                    break;
+                case PBEBattleFormat.Double:
+                    LeftPositionEnabled = !Client.PositionStandBy.Contains(PBEFieldPosition.Left) && Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left) == null;
+                    RightPositionEnabled = !Client.PositionStandBy.Contains(PBEFieldPosition.Right) && Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Right) == null;
+                    if (leftPositionEnabled && !rightPositionEnabled)
+                    {
+                        SelectPosition("Left");
+                    }
+                    else if (!leftPositionEnabled && rightPositionEnabled)
+                    {
+                        SelectPosition("Right");
+                    }
+                    else
+                    {
+                        Client.BattleView.SetMessage($"Send {Pokemon.Shell.Nickname} where?");
+                        PositionsVisible = true;
+                    }
+                    break;
+                case PBEBattleFormat.Triple:
+                case PBEBattleFormat.Rotation:
+                    LeftPositionEnabled = !Client.PositionStandBy.Contains(PBEFieldPosition.Left) && Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left) == null;
+                    CenterPositionEnabled = !Client.PositionStandBy.Contains(PBEFieldPosition.Center) && Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Center) == null;
+                    RightPositionEnabled = !Client.PositionStandBy.Contains(PBEFieldPosition.Right) && Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Right) == null;
+                    if (leftPositionEnabled && !centerPositionEnabled && !rightPositionEnabled)
+                    {
+                        SelectPosition("Left");
+                    }
+                    else if (!leftPositionEnabled && centerPositionEnabled && !rightPositionEnabled)
+                    {
+                        SelectPosition("Center");
+                    }
+                    else if (!leftPositionEnabled && !centerPositionEnabled && rightPositionEnabled)
+                    {
+                        SelectPosition("Right");
+                    }
+                    else
+                    {
+                        PositionsVisible = true;
+                    }
+                    break;
+            }
+        }
         void SelectTarget(string arg)
         {
             switch (arg)
@@ -795,6 +909,15 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             TargetsVisible = false;
             Client.ActionsLoop(false);
+        }
+        void SelectPosition(string arg)
+        {
+            PBEFieldPosition pos = Enum.Parse<PBEFieldPosition>(arg);
+            Client.Switches.Add(Tuple.Create(Pokemon.Id, pos));
+            Client.StandBy.Add(Pokemon);
+            Client.PositionStandBy.Add(pos);
+            PositionsVisible = false;
+            Client.SwitchesLoop(false);
         }
     }
 }

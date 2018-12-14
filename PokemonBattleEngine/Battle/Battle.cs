@@ -18,9 +18,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public int NumPkmnAlive => Party.Count(p => p.HP > 0);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PBEFieldPosition.None);
 
-        public List<PBEPokemon> ActionsRequired { get; } = new List<PBEPokemon>(); // PBEBattleState.WaitingForActions // TODO: Do not allow outsiders to add
-        public byte SwitchInsRequired { get; internal set; } // PBEBattleState.WaitingForSwitchIns
-        public List<PBEPokemon> SwitchInQueue { get; } = new List<PBEPokemon>(); // PBEBattleState.WaitingForSwitchIns // TODO: Do not allow outsiders to add
+        public List<PBEPokemon> ActionsRequired { get; } = new List<PBEPokemon>(3); // PBEBattleState.WaitingForActions
+        public byte SwitchInsRequired; // PBEBattleState.WaitingForSwitchIns
+        public List<PBEPokemon> SwitchInQueue { get; } = new List<PBEPokemon>(3); // PBEBattleState.WaitingForSwitchIns
 
         public PBETeamStatus Status;
         public byte ReflectCount, LightScreenCount; // Reflect & Light Screen
@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public readonly PBEBattleFormat BattleFormat;
         public readonly PBESettings Settings;
         public readonly PBETeam[] Teams = new PBETeam[2];
-        public readonly List<PBEPokemon> ActiveBattlers = new List<PBEPokemon>(); // TODO: Do not allow outsiders to add
+        public readonly List<PBEPokemon> ActiveBattlers;
         List<PBEPokemon> turnOrder = new List<PBEPokemon>();
 
         public PBEWeather Weather;
@@ -82,6 +82,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BattleFormat = battleFormat;
             Settings = settings;
+            ActiveBattlers = new List<PBEPokemon>(Settings.MaxPartySize);
 
             byte idCount = 0;
             Teams[0] = new PBETeam(this, localTeamShell, true, ref idCount);
@@ -174,6 +175,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BattleFormat = battleFormat;
             Settings = settings;
+            ActiveBattlers = new List<PBEPokemon>(Settings.MaxPartySize);
 
             Teams[0] = new PBETeam(this, true);
             Teams[1] = new PBETeam(this, false);
