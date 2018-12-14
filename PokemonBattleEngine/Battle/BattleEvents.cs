@@ -80,19 +80,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEAbility.Drizzle:
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.ChangedWeather: return; // Message is displayed from a weather packet
+                                case PBEAbilityAction.Weather: return; // Message is displayed from a weather packet
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                             }
                         case PBEAbility.Drought:
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.ChangedWeather: return; // Message is displayed from a weather packet
+                                case PBEAbilityAction.Weather: return; // Message is displayed from a weather packet
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                             }
                         case PBEAbility.IceBody:
                             switch (ap.AbilityAction)
                             {
                                 case PBEAbilityAction.RestoredHP: return; // Message is displayed from a hp changed packet
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                            }
+                        case PBEAbility.Levitate:
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Damage: return; // Message is displayed from an effectiveness packet
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                             }
                         case PBEAbility.Limber:
@@ -105,13 +111,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEAbility.SandStream:
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.ChangedWeather: return; // Message is displayed from a weather packet
+                                case PBEAbilityAction.Weather: return; // Message is displayed from a weather packet
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                             }
                         case PBEAbility.SnowWarning:
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.ChangedWeather: return; // Message is displayed from a weather packet
+                                case PBEAbilityAction.Weather: return; // Message is displayed from a weather packet
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                             }
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");

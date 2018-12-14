@@ -597,10 +597,6 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEAbilityAction : byte
     {
         /// <summary>
-        /// The ability changed the battle's weather.
-        /// </summary>
-        ChangedWeather,
-        /// <summary>
         /// The ability cured a Pokémon from a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
         /// </summary>
         CuredStatus,
@@ -615,7 +611,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The ability restored a Pokémon's HP.
         /// </summary>
-        RestoredHP
+        RestoredHP,
+        /// <summary>
+        /// The ability was involved with weather.
+        /// </summary>
+        Weather
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEItem"/>.
@@ -924,7 +924,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         KeenEye, // TODO
         Klutz, // TODO
         LeafGuard, // TODO
-        Levitate, // TODO: Immunity to ground-type moves
+        /// <summary>
+        /// Grants the Pokémon immunity to Ground-type moves and most entry hazards.
+        /// </summary>
+        Levitate,
         LightMetal, // TODO
         LightningRod, // TODO
         Limber,

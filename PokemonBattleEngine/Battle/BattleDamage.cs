@@ -5,8 +5,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        // "forMissing" is true if the multiplier will be used for accuracy or evasion
-        public double GetStatMultiplier(sbyte change, bool forMissing = false)
+        /// <summary>
+        /// Gets the influence a stat change has on a stat.
+        /// </summary>
+        /// <param name="change">The stat change.</param>
+        /// <param name="forMissing">True if the stat is <see cref="PBEStat.Accuracy"/> or <see cref="PBEStat.Evasion"/>.</param>
+        public static double GetStatChangeModifier(sbyte change, bool forMissing)
         {
             double baseVal = forMissing ? 3 : 2;
             double numerator = Math.Max(baseVal, baseVal + change);
@@ -14,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        public void TypeCheck(PBEPokemon user, PBEPokemon target, PBEMove move, out PBEType moveType, out PBEEffectiveness effectiveness, ref double damageMultiplier)
+        void TypeCheck(PBEPokemon user, PBEPokemon target, PBEMove move, out PBEType moveType, out PBEEffectiveness effectiveness, ref double damageMultiplier)
         {
             PBEPokemonData targetPData = PBEPokemonData.Data[target.Species];
             moveType = PBEMoveData.GetMoveTypeForPokemon(user, move);
@@ -37,6 +41,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 effectiveness = PBEEffectiveness.SuperEffective;
             }
             damageMultiplier *= mult;
+
+            // Levitate doesn't activate if the target is Flying, so it goes down here
+            if (target.Ability == PBEAbility.Levitate && moveType == PBEType.Ground)
+            {
+                effectiveness = PBEEffectiveness.Ineffective;
+                damageMultiplier = 0;
+                BroadcastAbility(target, target, PBEAbility.Levitate, PBEAbilityAction.Damage);
+            }
         }
 
         public ushort CalculateBasePower(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
@@ -505,7 +517,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public ushort CalculateAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Negative Attack changes are ignored for critical hits
-            double attack = user.Attack * GetStatMultiplier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange);
+            double attack = user.Attack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
 
             // Pokemon with Huge Power or Pure Power get a 100% Attack boost
             if (user.Ability == PBEAbility.HugePower || user.Ability == PBEAbility.PurePower)
@@ -538,7 +550,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public ushort CalculateDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Positive Defense changes are ignored for critical hits
-            double defense = user.Defense * GetStatMultiplier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange);
+            double defense = user.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
 
             // A Ditto holding a Metal Powder gets a 100% Defense boost
             if (target.Item == PBEItem.MetalPowder && target.Species == PBESpecies.Ditto)
@@ -556,7 +568,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public ushort CalculateSpAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Negative SpAttack changes are ignored for critical hits
-            double spAttack = user.SpAttack * GetStatMultiplier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange);
+            double spAttack = user.SpAttack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
 
             // A Clamperl holding a Deep Sea Tooth gets a 100% SpAttack boost
             if (user.Item == PBEItem.DeepSeaTooth && user.Shell.Species == PBESpecies.Clamperl)
@@ -579,7 +591,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public ushort CalculateSpDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Positive SpDefense changes are ignored for critical hits
-            double spDefense = user.SpDefense * GetStatMultiplier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange);
+            double spDefense = user.SpDefense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
 
             // A Clamperl holding a Deep Sea Scale gets a 100% SpDefense boost
             if (target.Item == PBEItem.DeepSeaScale && target.Shell.Species == PBESpecies.Clamperl)

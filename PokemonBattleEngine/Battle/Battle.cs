@@ -288,7 +288,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 var evaluated = new List<Tuple<PBEPokemon, double>>(); // TODO: two bools for wanting to go first or last
                 foreach (PBEPokemon pkmn in pkmnWithThisPriority)
                 {
-                    double speed = pkmn.Speed * GetStatMultiplier(pkmn.SpeedChange);
+                    double speed = pkmn.Speed * GetStatChangeModifier(pkmn.SpeedChange, false);
 
                     switch (pkmn.Item)
                     {

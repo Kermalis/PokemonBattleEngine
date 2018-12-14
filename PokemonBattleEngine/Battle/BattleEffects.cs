@@ -63,7 +63,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         Weather = PBEWeather.Rain;
                         WeatherCounter = 0;
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.Drizzle, PBEAbilityAction.ChangedWeather);
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.Drizzle, PBEAbilityAction.Weather);
                         BroadcastWeather(PBEWeather.Rain, PBEWeatherAction.Added);
                     }
                     break;
@@ -72,7 +72,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         Weather = PBEWeather.HarshSunlight;
                         WeatherCounter = 0;
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.Drought, PBEAbilityAction.ChangedWeather);
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.Drought, PBEAbilityAction.Weather);
                         BroadcastWeather(PBEWeather.HarshSunlight, PBEWeatherAction.Added);
                     }
                     break;
@@ -81,7 +81,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         Weather = PBEWeather.Sandstorm;
                         WeatherCounter = 0;
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.SandStream, PBEAbilityAction.ChangedWeather);
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.SandStream, PBEAbilityAction.Weather);
                         BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.Added);
                     }
                     break;
@@ -90,7 +90,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         Weather = PBEWeather.Hailstorm;
                         WeatherCounter = 0;
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.SnowWarning, PBEAbilityAction.ChangedWeather);
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.SnowWarning, PBEAbilityAction.Weather);
                         BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.Added);
                     }
                     break;
@@ -661,7 +661,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
             double chance = mData.Accuracy;
-            chance *= GetStatMultiplier(user.AccuracyChange, true) / GetStatMultiplier(target.EvasionChange, true);
+            chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
             // Pokémon with Compoundeyes get a 30% Accuracy boost
             if (user.Ability == PBEAbility.Compoundeyes)
             {
