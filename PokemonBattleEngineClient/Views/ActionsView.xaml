@@ -1,7 +1,29 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:model="clr-namespace:Kermalis.PokemonBattleEngineClient.Models;assembly=PokemonBattleEngineClient"
-        Width="512" Height="128" Background="#313131" Name="Actions0">  
+        Width="512" Height="128" Background="#313131" Name="Actions0">
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="model:MoveInfo">
+      <Button Width="103" Height="30" Command="{Binding SelectMoveCommand}" Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4">
+        <StackPanel>
+          <Image Source="{Binding Label}"/>
+        </StackPanel>
+        <ToolTip.Tip>
+          <TextBlock Text="{Binding Description}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+        </ToolTip.Tip>
+      </Button>
+    </DataTemplate>
+    <DataTemplate DataType="model:PokemonInfo">
+      <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="Black" BorderBrush="#757575" BorderThickness="4">
+        <StackPanel>
+          <Image Source="{Binding Label}"/>
+        </StackPanel>
+        <ToolTip.Tip>
+          <TextBlock Text="{Binding Pokemon}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+        </ToolTip.Tip>
+      </Button>
+    </DataTemplate>
+  </UserControl.DataTemplates>
   <StackPanel>
     <StackPanel IsVisible="{Binding MovesVisible}">
       <ItemsControl Items="{Binding Moves}">
@@ -10,18 +32,6 @@
             <StackPanel Orientation="Horizontal" Spacing="20" Margin="20"/>
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <Button Width="103" Height="30" Command="{Binding SelectMoveCommand}" Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4">
-              <StackPanel>
-                <Image Source="{Binding Label}"/>
-              </StackPanel>
-              <ToolTip.Tip>
-                <TextBlock Text="{Binding Description}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
-              </ToolTip.Tip>
-            </Button>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
       </ItemsControl>
       <ItemsControl Items="{Binding Party}">
         <ItemsControl.ItemsPanel>
@@ -29,18 +39,6 @@
             <StackPanel Orientation="Horizontal" Spacing="10" Margin="12,8"/>
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="Black" BorderBrush="#757575" BorderThickness="4">
-              <StackPanel>
-                <Image Source="{Binding Label}"/>
-              </StackPanel>
-              <ToolTip.Tip>
-                <TextBlock Text="{Binding Pokemon}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
-              </ToolTip.Tip>
-            </Button>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
       </ItemsControl>
     </StackPanel>
     <Canvas IsVisible="{Binding TargetsVisible}">
@@ -94,18 +92,6 @@
           <StackPanel Orientation="Horizontal" Spacing="10" Margin="12,49"/>
         </ItemsPanelTemplate>
       </ItemsControl.ItemsPanel>
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="Black" BorderBrush="#757575" BorderThickness="4">
-            <StackPanel>
-              <Image Source="{Binding Label}"/>
-            </StackPanel>
-            <ToolTip.Tip>
-              <TextBlock Text="{Binding Pokemon}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
-            </ToolTip.Tip>
-          </Button>
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
     </ItemsControl>
     <Canvas IsVisible="{Binding PositionsVisible}">
       <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="49" IsEnabled="{Binding LeftPositionEnabled}"
@@ -115,5 +101,5 @@
       <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="49" IsEnabled="{Binding RightPositionEnabled}"
               Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Right" Foreground="White" Content="Right"/>
     </Canvas>
-  </StackPanel>  
+  </StackPanel>
 </UserControl>
