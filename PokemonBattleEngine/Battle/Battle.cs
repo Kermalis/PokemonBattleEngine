@@ -305,7 +305,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             break;
                     }
-                    // Pokémon with Sand Rush get a 100% Speed boost in a Sandstorm
+                    if (Weather == PBEWeather.HarshSunlight && pkmn.Ability == PBEAbility.Chlorophyll)
+                    {
+                        speed *= 2.0;
+                    }
+                    if (Weather == PBEWeather.Rain && pkmn.Ability == PBEAbility.SwiftSwim)
+                    {
+                        speed *= 2.0;
+                    }
                     if (Weather == PBEWeather.Sandstorm && pkmn.Ability == PBEAbility.SandRush)
                     {
                         speed *= 2.0;

@@ -870,7 +870,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         BattleArmor,
         BigPecks, // TODO
         Blaze,
-        Chlorophyll, // TODO
+        /// <summary>
+        /// The Pokémon gets a speed boost in harsh sunlight.
+        /// </summary>
+        Chlorophyll,
         ClearBody, // TODO
         CloudNine, // TODO
         ColorChange, // TODO
@@ -978,6 +981,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         RoughSkin, // TODO
         RunAway,
         SandForce,
+        /// <summary>
+        /// The Pokémon gets a speed boost in a sandstorm.
+        /// </summary>
         SandRush,
         /// <summary>
         /// The Pokémon changes the weather to an infinite sandstorm.
@@ -1024,7 +1030,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         SuctionCups, // TODO
         SuperLuck,
         Swarm,
-        SwiftSwim, // TODO
+        /// <summary>
+        /// The Pokémon gets a speed boost in rain.
+        /// </summary>
+        SwiftSwim,
         Synchronize, // TODO
         TangledFeet, // TODO
         Technician, // TODO
