@@ -53,6 +53,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public bool Shiny;
         public PBEAbility Ability;
         public PBEType Type1, Type2;
+        public double Weight;
         public PBEItem Item;
         public PBEFieldPosition FieldPosition;
         public PBEStatus1 Status1;
@@ -98,8 +99,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PP[i] = MaxPP[i] = (byte)movePP;
                 }
             }
-            Type1 = PBEPokemonData.Data[Species].Type1;
-            Type2 = PBEPokemonData.Data[Species].Type2;
+            PBEPokemonData pData = PBEPokemonData.Data[Species];
+            Type1 = pData.Type1;
+            Type2 = pData.Type2;
+            Weight = pData.Weight;
         }
         // This constructor is to define an unknown remote Pokémon
         // LocalTeam is set to false here
@@ -133,8 +136,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 Moves[i] = PBEMove.MAX;
             }
-            Type1 = PBEPokemonData.Data[Species].Type1;
-            Type2 = PBEPokemonData.Data[Species].Type2;
+            PBEPokemonData pData = PBEPokemonData.Data[Species];
+            Type1 = pData.Type1;
+            Type2 = pData.Type2;
+            Weight = pData.Weight;
         }
 
         public bool HasType(PBEType type) => Type1 == type || Type2 == type;
@@ -194,18 +199,24 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         // Transforms into "target" and sets both Pokémons' information to the parameters
         // Also sets the Status2 transformed bit
-        public void Transform(PBEPokemon target, PBESettings settings, ushort targetAttack, ushort targetDefense, ushort targetSpAttack, ushort targetSpDefense, ushort targetSpeed, PBEAbility targetAbility, PBEType targetType1, PBEType targetType2, PBEMove[] targetMoves)
+        /// <summary>
+        /// Transforms into <paramref name="target"/> and sets <see cref="PBEStatus2.Transformed"/>.
+        /// </summary>
+        /// <param name="target">The Pokémon to transform into.</param>
+        /// <param name="settings">The battle settings.</param>
+        public void Transform(PBEPokemon target, PBESettings settings)
         {
             Species = target.Species;
             Shiny = target.Shiny;
-            Ability = target.Ability = targetAbility;
-            Type1 = target.Type1 = targetType1;
-            Type2 = target.Type2 = targetType2;
-            Attack = target.Attack = targetAttack;
-            Defense = target.Defense = targetDefense;
-            SpAttack = target.SpAttack = targetSpAttack;
-            SpDefense = target.SpDefense = targetSpDefense;
-            Speed = target.Speed = targetSpeed;
+            Ability = target.Ability;
+            Type1 = target.Type1;
+            Type2 = target.Type2;
+            Weight = target.Weight;
+            Attack = target.Attack;
+            Defense = target.Defense;
+            SpAttack = target.SpAttack;
+            SpDefense = target.SpDefense;
+            Speed = target.Speed;
             AttackChange = target.AttackChange;
             DefenseChange = target.DefenseChange;
             SpAttackChange = target.SpAttackChange;
@@ -213,10 +224,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             SpeedChange = target.SpeedChange;
             AccuracyChange = target.AccuracyChange;
             EvasionChange = target.EvasionChange;
-            Moves = target.Moves = targetMoves;
+            Moves = (PBEMove[])target.Moves.Clone();
             for (int i = 0; i < Moves.Length; i++)
             {
-                PP[i] = MaxPP[i] = settings.PPMultiplier;
+                byte pp = Moves[i] == PBEMove.None ? (byte)0 : settings.PPMultiplier;
+                PP[i] = MaxPP[i] = pp;
             }
             Status2 |= PBEStatus2.Transformed;
         }

@@ -12,16 +12,16 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x10;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte VictimId { get; }
+        public byte PokemonId { get; }
         public PBEStat Stat { get; }
         public short Change { get; }
         public bool IsTooMuch { get; }
 
-        public PBEPkmnStatChangedPacket(PBEPokemon victim, PBEStat stat, short change, bool isTooMuch)
+        public PBEPkmnStatChangedPacket(PBEPokemon pkmn, PBEStat stat, short change, bool isTooMuch)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(VictimId = victim.Id);
+            bytes.Add(PokemonId = pkmn.Id);
             bytes.Add((byte)(Stat = stat));
             bytes.AddRange(BitConverter.GetBytes(Change = change));
             bytes.Add((byte)((IsTooMuch = isTooMuch) ? 1 : 0));
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                VictimId = r.ReadByte();
+                PokemonId = r.ReadByte();
                 Stat = (PBEStat)r.ReadByte();
                 Change = r.ReadInt16();
                 IsTooMuch = r.ReadBoolean();

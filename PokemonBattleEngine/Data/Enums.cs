@@ -543,7 +543,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The Pokémon is transformed into another Pokémon.
         /// </summary>
-        Transformed = 1 << 11,
+        Transformed = 1 << 11, // TODO: Fail if target is disguised with illusion
         /// <summary>
         /// The Pokémon is underground.
         /// A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.

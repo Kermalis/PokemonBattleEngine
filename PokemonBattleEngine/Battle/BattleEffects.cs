@@ -525,7 +525,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     TryForceTeamStatus(user, move, PBETeamStatus.ToxicSpikes);
                     break;
                 case PBEMoveEffect.Transform:
-                    Ef_Transform(user, targets[0]);
+                    TryForceStatus2(user, targets, move, PBEStatus2.Transformed);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
@@ -1033,6 +1033,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastStatus2(user, user, PBEStatus2.Substitute, PBEStatusAction.Added);
                             return true;
                         }
+                    }
+                    break;
+                case PBEStatus2.Transformed:
+                    if (!target.Status2.HasFlag(PBEStatus2.Substitute)
+                        && !user.Status2.HasFlag(PBEStatus2.Transformed)
+                        && !target.Status2.HasFlag(PBEStatus2.Transformed))
+                    {
+                        user.Transform(target, Settings);
+                        BroadcastTransform(user, target);
+                        BroadcastStatus2(target, user, PBEStatus2.Transformed, PBEStatusAction.Added); // user = victim because user receives the transformed flag
+                        return true;
                     }
                     break;
             }
@@ -1636,24 +1647,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
             }
-        }
-        void Ef_Transform(PBEPokemon user, PBEPokemon target)
-        {
-            BroadcastMoveUsed(user, PBEMove.Transform);
-            PPReduce(user, PBEMove.Transform);
-            if (user.Status2.HasFlag(PBEStatus2.Transformed)
-                || target.Status2.HasFlag(PBEStatus2.Transformed)
-                || target.Status2.HasFlag(PBEStatus2.Substitute))
-            {
-                BroadcastMoveFailed(user, target, PBEFailReason.Default);
-                return;
-            }
-            if (MissCheck(user, target, PBEMove.Transform))
-            {
-                return;
-            }
-            user.Transform(target, Settings, target.Attack, target.Defense, target.SpAttack, target.SpDefense, target.Speed, target.Ability, target.Type1, target.Type2, target.Moves);
-            BroadcastTransform(user, target);
         }
         void Ef_Curse(PBEPokemon user, PBEPokemon target)
         {

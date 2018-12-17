@@ -254,16 +254,31 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBEPkmnSwitchInPacket _:
                 case PBESwitchInRequestPacket _:
                 case PBETeamStatusPacket _:
+                    // These packets get sent to all players, but the "LocalTeam" argument is changed for team index 1 so its client sees it as local.
                     dynamic pack = packet;
                     foreach (Player client in Clients)
                     {
                         if (client == battlers[1])
                         {
-                            pack.LocalTeam = !pack.LocalTeam; // Correctly set for this team
+                            pack.LocalTeam = !pack.LocalTeam;
                         }
                         client.Send(packet);
                     }
                     WaitForBattlersResponses();
+                    break;
+                case PBETransformPacket tp:
+                    {
+                        PBEPokemon user = battle.GetPokemon(tp.UserId),
+                            target = battle.GetPokemon(tp.TargetId);
+                        if (user.LocalTeam || target.LocalTeam)
+                        {
+                            battlers[0].Send(tp);
+                        }
+                        if (!user.LocalTeam || !target.LocalTeam)
+                        {
+                            battlers[1].Send(tp);
+                        }
+                    }
                     break;
                 default:
                     SendToAll(packet);

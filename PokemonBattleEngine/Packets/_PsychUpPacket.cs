@@ -12,8 +12,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x22;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte CulpritId { get; }
-        public byte VictimId { get; }
+        public byte UserId { get; }
+        public byte TargetId { get; }
         public sbyte AttackChange { get; }
         public sbyte DefenseChange { get; }
         public sbyte SpAttackChange { get; }
@@ -22,19 +22,19 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public sbyte AccuracyChange { get; }
         public sbyte EvasionChange { get; }
 
-        public PBEPsychUpPacket(PBEPokemon culprit, PBEPokemon victim)
+        public PBEPsychUpPacket(PBEPokemon user, PBEPokemon target)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(CulpritId = culprit.Id);
-            bytes.Add(VictimId = victim.Id);
-            bytes.Add((byte)(AttackChange = victim.AttackChange));
-            bytes.Add((byte)(DefenseChange = victim.DefenseChange));
-            bytes.Add((byte)(SpAttackChange = victim.SpAttackChange));
-            bytes.Add((byte)(SpDefenseChange = victim.SpDefenseChange));
-            bytes.Add((byte)(SpeedChange = victim.SpeedChange));
-            bytes.Add((byte)(AccuracyChange = victim.AccuracyChange));
-            bytes.Add((byte)(EvasionChange = victim.EvasionChange));
+            bytes.Add(UserId = user.Id);
+            bytes.Add(TargetId = target.Id);
+            bytes.Add((byte)(AttackChange = target.AttackChange));
+            bytes.Add((byte)(DefenseChange = target.DefenseChange));
+            bytes.Add((byte)(SpAttackChange = target.SpAttackChange));
+            bytes.Add((byte)(SpDefenseChange = target.SpDefenseChange));
+            bytes.Add((byte)(SpeedChange = target.SpeedChange));
+            bytes.Add((byte)(AccuracyChange = target.AccuracyChange));
+            bytes.Add((byte)(EvasionChange = target.EvasionChange));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEPsychUpPacket(byte[] buffer)
@@ -43,8 +43,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                CulpritId = r.ReadByte();
-                VictimId = r.ReadByte();
+                UserId = r.ReadByte();
+                TargetId = r.ReadByte();
                 AttackChange = r.ReadSByte();
                 DefenseChange = r.ReadSByte();
                 SpAttackChange = r.ReadSByte();
