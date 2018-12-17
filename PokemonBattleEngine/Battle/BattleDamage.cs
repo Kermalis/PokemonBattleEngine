@@ -31,6 +31,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else if (mult < 1)
             {
                 effectiveness = PBEEffectiveness.NotVeryEffective;
+                if (user.Ability == PBEAbility.TintedLens)
+                {
+                    mult *= 2.0;
+                }
             }
             else if (mult == 1.0)
             {

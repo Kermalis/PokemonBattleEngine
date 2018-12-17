@@ -894,7 +894,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         EarlyBird, // TODO
         EffectSpore, // TODO
         /// <summary>
-        /// The Pokémon takes less damage from incoming supereffective moves.
+        /// The Pokémon takes less damage from incoming super-effective moves.
         /// </summary>
         Filter,
         FlameBody, // TODO
@@ -1009,7 +1009,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SnowWarning,
         SolarPower, // TODO
         /// <summary>
-        /// The Pokémon takes less damage from incoming supereffective moves.
+        /// The Pokémon takes less damage from incoming super-effective moves.
         /// </summary>
         SolidRock,
         Soundproof, // TODO
@@ -1031,7 +1031,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         Telepathy, // TODO
         Teravolt, // TODO
         ThickFat,
-        TintedLens, // TODO
+        /// <summary>
+        /// The Pokémon deals double damage for outgoing not-very-effective moves.
+        /// </summary>
+        TintedLens,
         Torrent,
         ToxicBoost, // TODO
         Trace, // TODO
