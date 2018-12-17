@@ -972,7 +972,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pressure, // TODO
         PurePower,
         QuickFeet, // TODO
-        RainDish, // TODO
+        /// <summary>
+        /// In rain, the Pokémon restores HP at the end of each turn.
+        /// </summary>
+        RainDish,
         Rattled, // TODO
         Reckless, // TODO
         Regenerator, // TODO

@@ -124,27 +124,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (Weather)
             {
                 case PBEWeather.Hailstorm:
-                    if (!pkmn.HasType(PBEType.Ice)
+                    if (pkmn.Ability == PBEAbility.IceBody)
+                    {
+                        if (pkmn.HP < pkmn.MaxHP)
+                        {
+                            BroadcastAbility(pkmn, pkmn, PBEAbility.IceBody, PBEAbilityAction.RestoredHP);
+                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.IceBodyHealDenominator));
+                        }
+                    }
+                    else if (!pkmn.HasType(PBEType.Ice)
                         && pkmn.Ability != PBEAbility.Overcoat
                         && pkmn.Ability != PBEAbility.SnowCloak)
                     {
-                        if (pkmn.Ability == PBEAbility.IceBody)
+                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), PBEEffectiveness.Normal, true);
+                        if (FaintCheck(pkmn))
                         {
-                            ushort hp = (ushort)(pkmn.MaxHP / Settings.IceBodyHealDenominator);
-                            if (pkmn.HP < pkmn.MaxHP && pkmn.HP + hp <= pkmn.MaxHP)
-                            {
-                                BroadcastAbility(pkmn, pkmn, PBEAbility.IceBody, PBEAbilityAction.RestoredHP);
-                                HealDamage(pkmn, hp);
-                            }
-                        }
-                        else
-                        {
-                            BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
-                            DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), PBEEffectiveness.Normal, true);
-                            if (FaintCheck(pkmn))
-                            {
-                                return;
-                            }
+                            return;
                         }
                     }
                     break;
@@ -156,6 +152,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (FaintCheck(pkmn))
                         {
                             return;
+                        }
+                    }
+                    break;
+                case PBEWeather.Rain:
+                    if (pkmn.Ability == PBEAbility.RainDish)
+                    {
+                        if (pkmn.HP < pkmn.MaxHP)
+                        {
+                            BroadcastAbility(pkmn, pkmn, PBEAbility.RainDish, PBEAbilityAction.RestoredHP);
+                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / 16));
                         }
                     }
                     break;
@@ -186,10 +192,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEItem.BlackSludge:
                     if (pkmn.HasType(PBEType.Poison))
                     {
-                        ushort hp = (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator);
-                        if (pkmn.HP < pkmn.MaxHP && pkmn.HP + hp <= pkmn.MaxHP)
+                        if (pkmn.HP < pkmn.MaxHP)
                         {
-                            HealDamage(pkmn, hp);
+                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator));
                             BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.RestoredHP);
                         }
                     }
@@ -205,10 +210,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEItem.Leftovers:
                     {
-                        ushort hp = (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator);
-                        if (pkmn.HP < pkmn.MaxHP && pkmn.HP + hp <= pkmn.MaxHP)
+                        if (pkmn.HP < pkmn.MaxHP)
                         {
-                            HealDamage(pkmn, hp);
+                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator));
                             BroadcastItem(pkmn, pkmn, PBEItem.Leftovers, PBEItemAction.RestoredHP);
                         }
                     }
@@ -258,8 +262,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PBEPokemon seeder = opposingTeam.PokemonAtPosition(pkmn.SeededPosition);
                 if (seeder != null)
                 {
-                    ushort hp = (ushort)(pkmn.MaxHP / Settings.LeechSeedDenominator);
-                    ushort amtDealt = DealDamage(seeder, pkmn, hp, PBEEffectiveness.Normal, true);
+                    ushort amtDealt = DealDamage(seeder, pkmn, (ushort)(pkmn.MaxHP / Settings.LeechSeedDenominator), PBEEffectiveness.Normal, true);
                     HealDamage(seeder, amtDealt);
                     BroadcastStatus2(seeder, pkmn, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))

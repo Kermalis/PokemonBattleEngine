@@ -30,6 +30,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Move substitute to "post damage effects" with items and abilities and remove effectiveness from DealDamage()
 * Winning
 * Watchable replays
+* Change all ability/item boosts to settings instead of constants.
 
 ----
 # PokemonBattleEngine Uses:

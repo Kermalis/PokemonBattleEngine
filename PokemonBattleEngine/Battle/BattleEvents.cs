@@ -113,6 +113,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     case PBEAbilityAction.PreventedStatus: return; // Message is displayed from an effectiveness packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
+                            case PBEAbility.RainDish:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.RestoredHP: return; // Message is displayed from a hp changed packet
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
                             case PBEAbility.SandStream:
                                 switch (ap.AbilityAction)
                                 {

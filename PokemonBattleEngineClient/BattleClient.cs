@@ -149,6 +149,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
+                            case PBEAbility.RainDish:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.RestoredHP: message = "{0}'s Rain Dish activated!"; break; // Message is displayed from a hp changed packet
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
                             case PBEAbility.SandStream:
                                 switch (ap.AbilityAction)
                                 {
