@@ -39,6 +39,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else // > 1
             {
                 effectiveness = PBEEffectiveness.SuperEffective;
+                if (target.Ability == PBEAbility.Filter || target.Ability == PBEAbility.SolidRock)
+                {
+                    mult *= 0.75;
+                }
             }
             damageMultiplier *= mult;
 

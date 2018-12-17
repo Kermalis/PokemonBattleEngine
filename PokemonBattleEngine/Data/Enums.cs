@@ -893,7 +893,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         DrySkin, // TODO
         EarlyBird, // TODO
         EffectSpore, // TODO
-        Filter, // TODO
+        /// <summary>
+        /// The Pokémon takes less damage from incoming supereffective moves.
+        /// </summary>
+        Filter,
         FlameBody, // TODO
         FlareBoost, // TODO
         FlashFire, // TODO
@@ -1005,7 +1008,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         SnowWarning,
         SolarPower, // TODO
-        SolidRock, // TODO
+        /// <summary>
+        /// The Pokémon takes less damage from incoming supereffective moves.
+        /// </summary>
+        SolidRock,
         Soundproof, // TODO
         SpeedBoost, // TODO
         Stall, // TODO
