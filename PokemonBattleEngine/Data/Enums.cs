@@ -597,6 +597,10 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEAbilityAction : byte
     {
         /// <summary>
+        /// The ability caused a Pokémon to change its appearance.
+        /// </summary>
+        ChangedAppearance,
+        /// <summary>
         /// The ability cured a Pokémon from a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
         /// </summary>
         CuredStatus,

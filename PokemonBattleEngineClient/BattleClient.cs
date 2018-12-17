@@ -127,6 +127,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
+                            case PBEAbility.Imposter:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.ChangedAppearance: message = "{0}'s Imposter activated!"; break; // Message is displayed from a status2 packet
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
                             case PBEAbility.Levitate:
                                 switch (ap.AbilityAction)
                                 {
@@ -137,7 +144,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEAbility.Limber:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.CuredStatus: // Message is displayed from a status packet
+                                    case PBEAbilityAction.CuredStatus: // Message is displayed from a status1 packet
                                     case PBEAbilityAction.PreventedStatus: message = "{0}'s Limber activated!"; break; // Message is displayed from an effectiveness packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }

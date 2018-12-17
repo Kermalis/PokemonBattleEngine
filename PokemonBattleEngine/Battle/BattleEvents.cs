@@ -94,6 +94,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     case PBEAbilityAction.RestoredHP: return; // Message is displayed from a hp changed packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
+                            case PBEAbility.Imposter:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.ChangedAppearance: return; // Message is displayed from a status2 packet
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
                             case PBEAbility.Levitate:
                                 switch (ap.AbilityAction)
                                 {
@@ -103,7 +109,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             case PBEAbility.Limber:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.CuredStatus: return; // Message is displayed from a status packet
+                                    case PBEAbilityAction.CuredStatus: return; // Message is displayed from a status1 packet
                                     case PBEAbilityAction.PreventedStatus: return; // Message is displayed from an effectiveness packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
