@@ -64,7 +64,6 @@ Iron Fist
 Poison Heal
 Skill Link
 Hydration
-Solar Power
 Quick Feet
 Normalize
 Magic Guard

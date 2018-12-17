@@ -148,6 +148,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                     break;
+                case PBEWeather.HarshSunlight:
+                    if (pkmn.Ability == PBEAbility.SolarPower)
+                    {
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.SolarPower, PBEAbilityAction.Damage);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / 8), PBEEffectiveness.Normal, true);
+                        if (FaintCheck(pkmn))
+                        {
+                            return;
+                        }
+                    }
+                    break;
                 case PBEWeather.Sandstorm:
                     if (!pkmn.HasType(PBEType.Ice)
                         && !pkmn.HasType(PBEType.Ground)

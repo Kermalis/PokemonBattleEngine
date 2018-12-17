@@ -1013,7 +1013,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The Pokémon changes the weather to an infinite hailstorm.
         /// </summary>
         SnowWarning,
-        SolarPower, // TODO
+        /// <summary>
+        /// During harsh sunlight, the Pokémon gets a special attack boost, but takes damage at the end of each turn.
+        /// </summary>
+        SolarPower,
         /// <summary>
         /// The Pokémon takes less damage from incoming super-effective moves.
         /// </summary>

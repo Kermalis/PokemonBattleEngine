@@ -583,6 +583,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spAttack *= 2.0;
             }
+            if (Weather == PBEWeather.HarshSunlight && user.Ability == PBEAbility.SolarPower)
+            {
+                spAttack *= 1.5;
+            }
             // A Latios or Latias holding a Soul Dew gets a 50% SpAttack boost
             if (user.Item == PBEItem.SoulDew && (user.Shell.Species == PBESpecies.Latias || user.Shell.Species == PBESpecies.Latios))
             {

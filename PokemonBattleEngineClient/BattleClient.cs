@@ -163,6 +163,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
+                            case PBEAbility.SolarPower:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.Damage: message = "{0}'s Solar Power activated!"; break; // Message is displayed from a hp changed packet
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");
                         }
                         message = string.Format(message, culprit.NameForTrainer(true), victim.NameForTrainer(false));
