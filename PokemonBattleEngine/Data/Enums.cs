@@ -714,17 +714,44 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </example>
         Ended
     }
+    /// <summary>
+    /// Represents the reason for a move failing.
+    /// </summary>
     public enum PBEFailReason : byte
     {
-        AlreadyConfused, // Swagger/Flatter
-        Default, // "But it failed!"
-        HPFull, // Trying to use a healing move with max HP
-        NoTarget // All opponents fainted already
+        /// <summary>
+        /// The move failed because the target is already confused.
+        /// </summary>
+        AlreadyConfused,
+        /// <summary>
+        /// General failure.
+        /// </summary>
+        Default,
+        /// <summary>
+        /// The move tried to heal a Pokémon's HP when it was already full.
+        /// </summary>
+        HPFull,
+        /// <summary>
+        /// The move was used when there were no available targets to hit.
+        /// </summary>
+        NoTarget
     }
+    /// <summary>
+    /// Represents an action regarding a <see cref="PBEWeather"/>.
+    /// </summary>
     public enum PBEWeatherAction : byte
     {
+        /// <summary>
+        /// The weather was added to the battle.
+        /// </summary>
         Added,
+        /// <summary>
+        /// The weather caused a Pokémon to take damage.
+        /// </summary>
         CausedDamage,
+        /// <summary>
+        /// The weather was removed from the battle.
+        /// </summary>
         Ended
     }
     public enum PBEType : byte
@@ -748,35 +775,119 @@ namespace Kermalis.PokemonBattleEngine.Data
         Steel,
         Water
     }
+    /// <summary>
+    /// Represents a specific Pokémon's nature.
+    /// </summary>
     public enum PBENature : byte
     {
+        /// <summary>
+        /// The Pokémon favors attack and hinders special attack.
+        /// </summary>
         Adamant,
+        /// <summary>
+        /// The Pokémon doesn't favor any stat.
+        /// </summary>
         Bashful,
+        /// <summary>
+        /// The Pokémon favors defense and hinders attack.
+        /// </summary>
         Bold,
+        /// <summary>
+        /// The Pokémon favors attack and hinders speed.
+        /// </summary>
         Brave,
+        /// <summary>
+        /// The Pokémon favors special defense and hinders attack.
+        /// </summary>
         Calm,
+        /// <summary>
+        /// The Pokémon favors special defense and hinders special attack.
+        /// </summary>
         Careful,
+        /// <summary>
+        /// The Pokémon doesn't favor any stat.
+        /// </summary>
         Docile,
+        /// <summary>
+        /// The Pokémon favors special defense and hinders defense.
+        /// </summary>
         Gentle,
+        /// <summary>
+        /// The Pokémon doesn't favor any stat.
+        /// </summary>
         Hardy,
+        /// <summary>
+        /// The Pokémon favors speed and hinders defense.
+        /// </summary>
         Hasty,
+        /// <summary>
+        /// defense special attack
+        /// </summary>
         Impish,
+        /// <summary>
+        /// speed special attack
+        /// </summary>
         Jolly,
+        /// <summary>
+        /// defense special defense
+        /// </summary>
         Lax,
+        /// <summary>
+        /// attack defense
+        /// </summary>
         Loney,
+        /// <summary>
+        /// special attack defense
+        /// </summary>
         Mild,
+        /// <summary>
+        /// special attack attack
+        /// </summary>
         Modest,
+        /// <summary>
+        /// speed special defense
+        /// </summary>
         Naive,
+        /// <summary>
+        /// attack special defense
+        /// </summary>
         Naughty,
+        /// <summary>
+        /// special attack speed
+        /// </summary>
         Quiet,
+        /// <summary>
+        /// The Pokémon doesn't favor any stat.
+        /// </summary>
         Quirky,
+        /// <summary>
+        /// special attack special defense
+        /// </summary>
         Rash,
+        /// <summary>
+        /// defense speed
+        /// </summary>
         Relaxed,
+        /// <summary>
+        /// special defense speed
+        /// </summary>
         Sassy,
+        /// <summary>
+        /// The Pokémon doesn't favor any stat.
+        /// </summary>
         Serious,
+        /// <summary>
+        /// speed attack
+        /// </summary>
         Timid,
+        /// <summary>
+        /// Invalid nature.
+        /// </summary>
         MAX
     }
+    /// <summary>
+    /// Represents a specific Pokémon's held item.
+    /// </summary>
     public enum PBEItem : ushort
     {
         None,
@@ -854,11 +965,23 @@ namespace Kermalis.PokemonBattleEngine.Data
         WideLens,
         WiseGlasses,
         ZapPlate,
+        /// <summary>
+        /// Invalid item.
+        /// </summary>
         MAX
     }
+    /// <summary>
+    /// Represents a specific Pokémon's special ability.
+    /// </summary>
     public enum PBEAbility : byte
     {
-        None, // Only used when an ability is removed
+        /// <summary>
+        /// The Pokémon's ability was removed.
+        /// </summary>
+        None,
+        /// <summary>
+        /// The Pokémon has a stronger same-type-attack-bonus.
+        /// </summary>
         Adaptability,
         Aftermath, // TODO
         AirLock, // TODO
@@ -867,8 +990,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         Anticipation, // TODO
         ArenaTrap, // TODO
         BadDreams, // TODO
+        /// <summary>
+        /// The Pokémon takes no critical hits.
+        /// </summary>
         BattleArmor,
         BigPecks, // TODO
+        /// <summary>
+        /// When the Pokémon has low HP, its Fire-type moves get a power boost.
+        /// </summary>
         Blaze,
         /// <summary>
         /// The Pokémon gets a speed boost in harsh sunlight.
@@ -877,6 +1006,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         ClearBody, // TODO
         CloudNine, // TODO
         ColorChange, // TODO
+        /// <summary>
+        /// The Pokémon accuracy is boosted.
+        /// </summary>
         Compoundeyes,
         Contrary, // TODO
         CursedBody, // TODO
@@ -909,21 +1041,45 @@ namespace Kermalis.PokemonBattleEngine.Data
         FriendGuard, // TODO
         Frisk, // TODO
         Gluttony, // TODO
+        /// <summary>
+        /// The Pokémon's attack is boosted when it is afflicted with a <see cref="PBEStatus1"/>, and the damage reduction when burned is not applied.
+        /// </summary>
         Guts,
         Harvest, // TODO
         Healer, // TODO
+        /// <summary>
+        /// The Pokémon takes less damage from Fire-type moves and from a burn.
+        /// </summary>
         Heatproof,
         HeavyMetal, // TODO
+        /// <summary>
+        /// No effect in battle.
+        /// </summary>
         HoneyGather,
+        /// <summary>
+        /// The Pokémon's attack is boosted.
+        /// </summary>
         HugePower,
+        /// <summary>
+        /// The Pokémon's attack is boosted, but its accuracy is lower for physical moves.
+        /// </summary>
         Hustle,
         Hydration, // TODO
         HyperCutter, // TODO
+        /// <summary>
+        /// In a hailstorm, the Pokémon takes no damage from the hailstorm and restores HP at the end of each turn.
+        /// </summary>
         IceBody,
+        /// <summary>
+        /// No effect in battle.
+        /// </summary>
         Illuminate,
         Illusion, // TODO
         Immunity, // TODO
-        Imposter, // TODO
+        /// <summary>
+        /// The Pokémon transforms into the foe across from it when switching in.
+        /// </summary>
+        Imposter,
         Infiltrator, // TODO
         InnerFocus, // TODO
         Insomnia, // TODO
@@ -935,17 +1091,23 @@ namespace Kermalis.PokemonBattleEngine.Data
         Klutz, // TODO
         LeafGuard, // TODO
         /// <summary>
-        /// Grants the Pokémon immunity to Ground-type moves and most entry hazards.
+        /// The Pokémon is immune to Ground-type moves and most entry hazards.
         /// </summary>
         Levitate,
         LightMetal, // TODO
         LightningRod, // TODO
+        /// <summary>
+        /// The Pokémon cannot be paralyzed.
+        /// </summary>
         Limber,
         LiquidOoze, // TODO
         MagicBounce, // TODO
         MagicGuard, // TODO
         MagmaArmor, // TODO
         MagnetPull, // TODO
+        /// <summary>
+        /// The Pokémon's defense is boosted when it is afflicted with a <see cref="PBEStatus1"/>.
+        /// </summary>
         MarvelScale,
         Minus, // TODO
         MoldBreaker, // TODO
@@ -953,13 +1115,25 @@ namespace Kermalis.PokemonBattleEngine.Data
         MotorDrive, // TODO
         Moxie, // TODO
         Multiscale, // TODO
+        /// <summary>
+        /// No effect in battle.
+        /// </summary>
         Multitype,
         Mummy, // TODO
         NaturalCure, // TODO
+        /// <summary>
+        /// The Pokémon will always hit and always get hit unless protection is used.
+        /// </summary>
         NoGuard,
         Normalize, // TODO
         Oblivious, // TODO
+        /// <summary>
+        /// The Pokémon takes no damage from a hailstorm or sandstorm.
+        /// </summary>
         Overcoat,
+        /// <summary>
+        /// When the Pokémon has low HP, its Grass-type moves get a power boost.
+        /// </summary>
         Overgrow,
         OwnTempo, // TODO
         Pickpocket, // TODO
@@ -970,6 +1144,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         PoisonTouch, // TODO
         Prankster, // TODO
         Pressure, // TODO
+        /// <summary>
+        /// The Pokémon's attack is boosted.
+        /// </summary>
         PurePower,
         QuickFeet, // TODO
         /// <summary>
@@ -982,7 +1159,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rivalry, // TODO
         RockHead, // TODO
         RoughSkin, // TODO
+        /// <summary>
+        /// No effect in battle.
+        /// </summary>
         RunAway,
+        /// <summary>
+        /// In a sandstorm, the Pokémon takes no damage from the sandstorm and its Rock-, Ground-, and Steel-type moves get a power boost.
+        /// </summary>
         SandForce,
         /// <summary>
         /// The Pokémon gets a speed boost in a sandstorm.
@@ -993,7 +1176,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         SandStream,
         /// <summary>
-        /// A Pokémon with Sand Veil takes no damage from a sandstorm and gets a 20% evasion boost during a sandstorm.
+        /// In a sandstorm, the Pokémon takes no damage from the sandstorm and gets a 20% evasion boost.
         /// </summary>
         SandVeil,
         SapSipper, // TODO
@@ -1002,14 +1185,23 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShadowTag, // TODO
         ShedSkin, // TODO
         SheerForce, // TODO
+        /// <summary>
+        /// The Pokémon takes no critical hits.
+        /// </summary>
         ShellArmor,
         ShieldDust, // TODO
+        /// <summary>
+        /// The Pokémon's stat changes are doubled.
+        /// </summary>
         Simple,
         SkillLink, // TODO
         SlowStart, // TODO
+        /// <summary>
+        /// The Pokémon deals more damage when landing critical hits.
+        /// </summary>
         Sniper,
         /// <summary>
-        /// A Pokémon with Snow Cloak takes no damage from a hailstorm and gets a 20% evasion boost during a hailstorm.
+        /// In a hailstorm, the Pokémon takes no damage from the hailstorm and gets a 20% evasion boost.
         /// </summary>
         SnowCloak,
         /// <summary>
@@ -1017,7 +1209,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         SnowWarning,
         /// <summary>
-        /// During harsh sunlight, the Pokémon gets a special attack boost, but takes damage at the end of each turn.
+        /// In harsh sunlight, the Pokémon gets a special attack boost and takes damage at the end of each turn.
         /// </summary>
         SolarPower,
         /// <summary>
@@ -1034,7 +1226,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         StormDrain, // TODO
         Sturdy, // TODO
         SuctionCups, // TODO
+        /// <summary>
+        /// The Pokémon is more likely to land critical hits.
+        /// </summary>
         SuperLuck,
+        /// <summary>
+        /// When the Pokémon has low HP, its Bug-type moves get a power boost.
+        /// </summary>
         Swarm,
         /// <summary>
         /// The Pokémon gets a speed boost in rain.
@@ -1045,11 +1243,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         Technician, // TODO
         Telepathy, // TODO
         Teravolt, // TODO
+        /// <summary>
+        /// The Pokémon takes less damage from Ice- and Fire-type moves.
+        /// </summary>
         ThickFat,
         /// <summary>
-        /// The Pokémon deals double damage for outgoing not-very-effective moves.
+        /// The Pokémon deals double damage with outgoing not-very-effective moves.
         /// </summary>
         TintedLens,
+        /// <summary>
+        /// When the Pokémon has low HP, its Water-type moves get a power boost.
+        /// </summary>
         Torrent,
         ToxicBoost, // TODO
         Trace, // TODO
@@ -1068,6 +1272,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         WonderGuard, // TODO
         WonderSkin, // TODO
         ZenMode, // TODO
+        /// <summary>
+        /// Invalid ability.
+        /// </summary>
         MAX,
     }
     /// <summary>
@@ -1075,9 +1282,6 @@ namespace Kermalis.PokemonBattleEngine.Data
     /// </summary>
     public enum PBESpecies : uint
     {
-        /// <summary>
-        /// <see cref="PBEPokemonData.Data[PBESpecies.Bulbasaur]"/>
-        /// </summary>
         Bulbasaur = 1,
         Ivysaur = 2,
         Venusaur = 3,
@@ -1616,6 +1820,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         XScissor,
         ZapCannon,
         ZenHeadbutt,
+        /// <summary>
+        /// Invalid move.
+        /// </summary>
         MAX
     }
 }

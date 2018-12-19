@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 double denominator = 10.0 - (2 * userTeam.SpikeCount);
                 ushort damage = (ushort)(pkmn.MaxHP / denominator);
-                DealDamage(pkmn, pkmn, damage, PBEEffectiveness.Normal, true);
+                DealDamage(pkmn, pkmn, damage, true);
                 BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
                 {
@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type1];
                 effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type2];
                 ushort damage = (ushort)(pkmn.MaxHP * effectiveness);
-                DealDamage(pkmn, pkmn, damage, PBEEffectiveness.Normal, true);
+                DealDamage(pkmn, pkmn, damage, true);
                 BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn.Id);
                 if (FaintCheck(pkmn))
                 {
@@ -115,6 +115,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Abilities
             LimberCheck(pkmn);
         }
+        void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move)
+        {
+            if (victim.Status2.HasFlag(PBEStatus2.Substitute) && victim.SubstituteHP == 0)
+            {
+                victim.Status2 &= ~PBEStatus2.Substitute;
+                BroadcastStatus2(user, victim, PBEStatus2.Substitute, PBEStatusAction.Ended);
+            }
+
+            FaintCheck(user);
+            FaintCheck(victim);
+        }
         void DoTurnEndedEffects(PBEPokemon pkmn)
         {
             PBETeam userTeam = Teams[pkmn.LocalTeam ? 0 : 1];
@@ -137,7 +148,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         && pkmn.Ability != PBEAbility.SnowCloak)
                     {
                         BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
-                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), PBEEffectiveness.Normal, true);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), true);
                         if (FaintCheck(pkmn))
                         {
                             return;
@@ -148,7 +159,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (pkmn.Ability == PBEAbility.SolarPower)
                     {
                         BroadcastAbility(pkmn, pkmn, PBEAbility.SolarPower, PBEAbilityAction.Damage);
-                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / 8), PBEEffectiveness.Normal, true);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / 8), true);
                         if (FaintCheck(pkmn))
                         {
                             return;
@@ -177,7 +188,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
                     {
                         BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
-                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.SandstormDamageDenominator), PBEEffectiveness.Normal, true);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.SandstormDamageDenominator), true);
                         if (FaintCheck(pkmn))
                         {
                             return;
@@ -200,7 +211,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), PBEEffectiveness.Normal, true);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), true);
                         BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.CausedDamage);
                         if (FaintCheck(pkmn))
                         {
@@ -224,12 +235,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEStatus1.Burned:
                     int damage = pkmn.MaxHP / Settings.BurnDamageDenominator;
-                    // Pokémon with the Heatproof ability take half as much damage from burns
                     if (pkmn.Ability == PBEAbility.Heatproof)
                     {
                         damage /= 2;
                     }
-                    DealDamage(pkmn, pkmn, (ushort)damage, PBEEffectiveness.Normal, true);
+                    DealDamage(pkmn, pkmn, (ushort)damage, true);
                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
                     {
@@ -237,12 +247,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEStatus1.Poisoned:
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.PoisonDamageDenominator), PBEEffectiveness.Normal, true);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.PoisonDamageDenominator), true);
                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.Poisoned, PBEStatusAction.Damage);
                     FaintCheck(pkmn);
                     break;
                 case PBEStatus1.BadlyPoisoned:
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator), PBEEffectiveness.Normal, true);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator), true);
                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
                     {
@@ -262,7 +272,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PBEPokemon seeder = opposingTeam.PokemonAtPosition(pkmn.SeededPosition);
                 if (seeder != null)
                 {
-                    ushort amtDealt = DealDamage(seeder, pkmn, (ushort)(pkmn.MaxHP / Settings.LeechSeedDenominator), PBEEffectiveness.Normal, true);
+                    ushort amtDealt = DealDamage(seeder, pkmn, (ushort)(pkmn.MaxHP / Settings.LeechSeedDenominator), true);
                     HealDamage(seeder, amtDealt);
                     BroadcastStatus2(seeder, pkmn, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
@@ -273,7 +283,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (pkmn.Status2.HasFlag(PBEStatus2.Cursed))
             {
-                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.CurseDenominator), PBEEffectiveness.Normal, true);
+                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.CurseDenominator), true);
                 BroadcastStatus2(pkmn, pkmn, PBEStatus2.Cursed, PBEStatusAction.Damage);
                 if (FaintCheck(pkmn))
                 {
@@ -640,7 +650,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // 50% chance to hit itself
                     if (PBEUtils.ApplyChance(50, 100))
                     {
-                        DealDamage(user, user, CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, true, true), PBEEffectiveness.Normal, true);
+                        ushort damage = CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, true, true);
+                        DealDamage(user, user, damage, true);
                         BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         FaintCheck(user);
                         return true;
@@ -663,7 +674,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus2(user, target, PBEStatus2.Protected, PBEStatusAction.Activated);
                 return true;
             }
-            // No Guard always hits
             if (user.Ability == PBEAbility.NoGuard || target.Ability == PBEAbility.NoGuard)
             {
                 return false;
@@ -690,12 +700,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             double chance = mData.Accuracy;
             chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
-            // Pokémon with Compoundeyes get a 30% Accuracy boost
             if (user.Ability == PBEAbility.Compoundeyes)
             {
                 chance *= 1.3;
             }
-            // Pokémon with Hustle get a 20% Accuracy reduction for Physical moves
             if (user.Ability == PBEAbility.Hustle && mData.Category == PBEMoveCategory.Physical)
             {
                 chance *= 0.8;
@@ -731,7 +739,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Returns true if a critical hit was determined
         bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move, ref double damageMultiplier)
         {
-            // If critical hits cannot be landed, return false
             if (target.Ability == PBEAbility.BattleArmor
                 || target.Ability == PBEAbility.ShellArmor)
             {
@@ -788,25 +795,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns amount of damage done
         // Broadcasts the hp changing, effectiveness, substitute
-        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, PBEEffectiveness effectiveness, bool ignoreSubstitute)
+        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute)
         {
-            if (effectiveness == PBEEffectiveness.Ineffective)
-            {
-                BroadcastEffectiveness(victim, effectiveness);
-                return 0;
-            }
             if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
                 ushort oldHP = victim.SubstituteHP;
                 victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
                 ushort damageAmt = (ushort)(oldHP - victim.SubstituteHP);
                 BroadcastStatus2(culprit, victim, PBEStatus2.Substitute, PBEStatusAction.Damage);
-                BroadcastEffectiveness(victim, effectiveness);
-                if (victim.SubstituteHP == 0)
-                {
-                    victim.Status2 &= ~PBEStatus2.Substitute;
-                    BroadcastStatus2(culprit, victim, PBEStatus2.Substitute, PBEStatusAction.Ended);
-                }
                 return damageAmt;
             }
             else
@@ -815,7 +811,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
                 ushort damageAmt = (ushort)(oldHP - victim.HP);
                 BroadcastPkmnHPChanged(victim, -damageAmt);
-                BroadcastEffectiveness(victim, effectiveness);
                 return damageAmt;
             }
         }
@@ -995,7 +990,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         target.Status2 |= PBEStatus2.Cursed;
                         BroadcastStatus2(user, target, PBEStatus2.Cursed, PBEStatusAction.Added);
-                        DealDamage(user, user, (ushort)(user.MaxHP / 2), PBEEffectiveness.Normal, true);
+                        DealDamage(user, user, (ushort)(user.MaxHP / 2), true);
                         FaintCheck(user);
                         return true;
                     }
@@ -1055,7 +1050,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         ushort hpRequired = (ushort)(user.MaxHP / 4);
                         if (!user.Status2.HasFlag(PBEStatus2.Substitute) && hpRequired > 0 && user.HP > hpRequired)
                         {
-                            DealDamage(user, user, hpRequired, PBEEffectiveness.Normal, true);
+                            DealDamage(user, user, hpRequired, true);
                             user.Status2 |= PBEStatus2.Substitute;
                             user.SubstituteHP = hpRequired;
                             BroadcastStatus2(user, user, PBEStatus2.Substitute, PBEStatusAction.Added);
@@ -1086,26 +1081,32 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, move))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, move))
-                {
-                    continue;
-                }
+
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    continue;
+                }
+
+                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                FaintCheck(target);
+
+                DoPostHitEffects(user, target, move);
             }
         }
         // TODO: Convert the following into HitAndMaybeInflictStatus2
@@ -1113,68 +1114,72 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, move))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, move))
-                {
-                    continue;
-                }
+
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
-                bool behindSubstitute = target.Status2.HasFlag(PBEStatus2.Substitute);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    continue;
+                }
+
+                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                if (FaintCheck(target))
-                {
-                    continue;
-                }
-                if (effectiveness != PBEEffectiveness.Ineffective && !behindSubstitute && PBEUtils.ApplyChance(chanceToConfuse, 100))
+
+                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.ApplyChance(chanceToConfuse, 100))
                 {
                     ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, false);
                 }
+                DoPostHitEffects(user, target, move);
             }
         }
         void Ef_Hit__MaybeFlinch(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int chanceToFlinch)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, move))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, move))
-                {
-                    continue;
-                }
+
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
-                bool behindSubstitute = target.Status2.HasFlag(PBEStatus2.Substitute);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    continue;
+                }
+
+                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                if (FaintCheck(target))
-                {
-                    continue;
-                }
-                if (effectiveness != PBEEffectiveness.Ineffective && !behindSubstitute && PBEUtils.ApplyChance(chanceToFlinch, 100))
+
+                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.ApplyChance(chanceToFlinch, 100))
                 {
                     ApplyStatus2IfPossible(user, target, PBEStatus2.Flinching, false);
                 }
+                DoPostHitEffects(user, target, move);
             }
         }
 
@@ -1182,16 +1187,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, move))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, move))
-                {
-                    continue;
-                }
+
                 double d = 1.0;
                 TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref d);
                 if (effectiveness == PBEEffectiveness.Ineffective) // Paralysis, Normalize
@@ -1208,16 +1211,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, move))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, move))
-                {
-                    continue;
-                }
+
                 ApplyStatus2IfPossible(user, target, status, true);
             }
         }
@@ -1225,6 +1226,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             PBETeam userTeam = Teams[user.LocalTeam ? 0 : 1];
             PBETeam opposingTeam = Teams[user.LocalTeam ? 1 : 0];
             switch (status)
@@ -1280,6 +1282,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             if (Weather == weather)
             {
                 BroadcastMoveFailed(user, user, PBEFailReason.Default);
@@ -1323,34 +1326,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, move))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, move))
-                {
-                    continue;
-                }
+
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
-                bool behindSubstitute = target.Status2.HasFlag(PBEStatus2.Substitute);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    continue;
+                }
+
+                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                if (FaintCheck(target))
-                {
-                    continue;
-                }
-                if (effectiveness != PBEEffectiveness.Ineffective && !behindSubstitute && PBEUtils.ApplyChance(chanceToInflict, 100))
+
+                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.ApplyChance(chanceToInflict, 100))
                 {
                     ApplyStatus1IfPossible(user, target, status, false);
                 }
+                DoPostHitEffects(user, target, move);
             }
         }
 
@@ -1358,16 +1363,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, move))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, move))
-                {
-                    continue;
-                }
+
                 if (target.Status2.HasFlag(PBEStatus2.Substitute))
                 {
                     BroadcastMoveFailed(user, target, PBEFailReason.Default);
@@ -1385,6 +1388,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             for (int i = 0; i < stats.Length; i++)
             {
                 ApplyStatChange(this, user, stats[i], changes[i]);
@@ -1394,69 +1398,75 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, move))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, move))
-                {
-                    continue;
-                }
+
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
-                bool behindSubstitute = target.Status2.HasFlag(PBEStatus2.Substitute);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    continue;
+                }
+
+                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                if (FaintCheck(target))
-                {
-                    continue;
-                }
-                if (effectiveness != PBEEffectiveness.Ineffective && !behindSubstitute && PBEUtils.ApplyChance(chanceToChangeStats, 100))
+
+                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.ApplyChance(chanceToChangeStats, 100))
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
                         ApplyStatChange(this, target, stats[i], changes[i]);
                     }
                 }
+                DoPostHitEffects(user, target, move);
             }
         }
         void HitAndMaybeChangeUserStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             byte hit = 0;
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, move))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, move))
-                {
-                    continue;
-                }
+
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    continue;
+                }
+
+                bool crit = CritCheck(user, target, move, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                FaintCheck(target);
-                if (effectiveness != PBEEffectiveness.Ineffective)
-                {
-                    hit++;
-                }
+
+                hit++;
+                DoPostHitEffects(user, target, move);
             }
+
             if (hit > 0)
             {
                 if (PBEUtils.ApplyChance(chanceToChangeStats, 100))
@@ -1479,72 +1489,87 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, PBEMove.BrickBreak);
             PPReduce(user, PBEMove.BrickBreak);
+
             if (MissCheck(user, target, PBEMove.BrickBreak))
             {
                 return;
             }
+
             double damageMultiplier = 1.0;
-            bool crit = CritCheck(user, target, PBEMove.BrickBreak, ref damageMultiplier);
             TypeCheck(user, target, PBEMove.BrickBreak, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
             if (effectiveness == PBEEffectiveness.Ineffective)
             {
                 BroadcastEffectiveness(target, effectiveness);
+                return;
             }
-            else
+
+            PBETeam team = Teams[target.LocalTeam ? 0 : 1];
+            if (team.Status.HasFlag(PBETeamStatus.Reflect))
             {
-                PBETeam team = Teams[target.LocalTeam ? 0 : 1];
-                if (team.Status.HasFlag(PBETeamStatus.Reflect))
-                {
-                    team.Status &= ~PBETeamStatus.Reflect;
-                    team.ReflectCount = 0;
-                    BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
-                }
-                if (team.Status.HasFlag(PBETeamStatus.LightScreen))
-                {
-                    team.Status &= ~PBETeamStatus.LightScreen;
-                    team.LightScreenCount = 0;
-                    BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
-                }
-                ushort damage = CalculateDamage(user, target, PBEMove.BrickBreak, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
-                if (crit)
-                {
-                    BroadcastMoveCrit();
-                }
-                FaintCheck(target);
+                team.Status &= ~PBETeamStatus.Reflect;
+                team.ReflectCount = 0;
+                BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
             }
+            if (team.Status.HasFlag(PBETeamStatus.LightScreen))
+            {
+                team.Status &= ~PBETeamStatus.LightScreen;
+                team.LightScreenCount = 0;
+                BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
+            }
+
+            bool crit = CritCheck(user, target, PBEMove.BrickBreak, ref damageMultiplier);
+            ushort damage = CalculateDamage(user, target, PBEMove.BrickBreak, moveType, criticalHit: crit);
+            DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+            BroadcastEffectiveness(target, effectiveness);
+            if (crit)
+            {
+                BroadcastMoveCrit();
+            }
+
+            DoPostHitEffects(user, target, PBEMove.BrickBreak);
         }
         void Ef_Dig(PBEPokemon user, PBEPokemon target)
         {
             BroadcastMoveUsed(user, PBEMove.Dig);
             PPReduce(user, PBEMove.Dig);
+
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underground))
             {
                 user.LockedAction.Decision = PBEDecision.None;
                 user.Status2 &= ~PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
+
                 if (MissCheck(user, target, PBEMove.Dig))
                 {
                     return;
                 }
 
                 double damageMultiplier = 1.0;
-                bool crit = CritCheck(user, target, PBEMove.Dig, ref damageMultiplier);
                 TypeCheck(user, target, PBEMove.Dig, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    return;
+                }
+
+                bool crit = CritCheck(user, target, PBEMove.Dig, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, PBEMove.Dig, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                FaintCheck(target);
+
+                DoPostHitEffects(user, target, PBEMove.Dig);
             }
             else
             {
                 user.LockedAction = user.SelectedAction;
                 user.Status2 |= PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
+
                 if (PowerHerbCheck(user))
                 {
                     goto top;
@@ -1555,32 +1580,44 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, PBEMove.Dive);
             PPReduce(user, PBEMove.Dive);
+
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underwater))
             {
                 user.LockedAction.Decision = PBEDecision.None;
                 user.Status2 &= ~PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
+
                 if (MissCheck(user, target, PBEMove.Dive))
                 {
                     return;
                 }
+
                 double damageMultiplier = 1.0;
-                bool crit = CritCheck(user, target, PBEMove.Dive, ref damageMultiplier);
                 TypeCheck(user, target, PBEMove.Dive, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    return;
+                }
+
+                bool crit = CritCheck(user, target, PBEMove.Dive, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, PBEMove.Dive, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                FaintCheck(target);
+
+                DoPostHitEffects(user, target, PBEMove.Dive);
             }
             else
             {
                 user.LockedAction = user.SelectedAction;
                 user.Status2 |= PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
+
                 if (PowerHerbCheck(user))
                 {
                     goto top;
@@ -1591,32 +1628,44 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, PBEMove.Fly);
             PPReduce(user, PBEMove.Fly);
+
         top:
             if (user.Status2.HasFlag(PBEStatus2.Airborne))
             {
                 user.LockedAction.Decision = PBEDecision.None;
                 user.Status2 &= ~PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
+
                 if (MissCheck(user, target, PBEMove.Fly))
                 {
                     return;
                 }
+
                 double damageMultiplier = 1.0;
-                bool crit = CritCheck(user, target, PBEMove.Fly, ref damageMultiplier);
                 TypeCheck(user, target, PBEMove.Fly, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    return;
+                }
+
+                bool crit = CritCheck(user, target, PBEMove.Fly, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, PBEMove.Fly, moveType, criticalHit: crit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                FaintCheck(target);
+
+                DoPostHitEffects(user, target, PBEMove.Fly);
             }
             else
             {
                 user.LockedAction = user.SelectedAction;
                 user.Status2 |= PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
+
                 if (PowerHerbCheck(user))
                 {
                     goto top;
@@ -1627,10 +1676,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, PBEMove.Flatter);
             PPReduce(user, PBEMove.Flatter);
+
             if (MissCheck(user, target, PBEMove.Flatter))
             {
                 return;
             }
+
             ApplyStatChange(this, target, PBEStat.SpAttack, +1);
             ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
         }
@@ -1638,10 +1689,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, PBEMove.Swagger);
             PPReduce(user, PBEMove.Swagger);
+
             if (MissCheck(user, target, PBEMove.Swagger))
             {
                 return;
             }
+
             ApplyStatChange(this, target, PBEStat.Attack, +2);
             ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
         }
@@ -1654,7 +1707,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            if (HealDamage(user, (ushort)(user.MaxHP * (percent / 100D))) == 0)
+
+            if (HealDamage(user, (ushort)(user.MaxHP * (percent / 100.0))) == 0)
             {
                 BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
             }
@@ -1663,6 +1717,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+
             double percentage;
             switch (Weather)
             {
@@ -1670,8 +1725,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEWeather.HarshSunlight: percentage = 0.66; break;
                 default: percentage = 0.25; break;
             }
-            ushort hp = (ushort)(user.MaxHP * percentage);
-            if (HealDamage(user, hp) == 0)
+            if (HealDamage(user, (ushort)(user.MaxHP * percentage)) == 0)
             {
                 BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
             }
@@ -1680,6 +1734,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, PBEMove.Curse);
             PPReduce(user, PBEMove.Curse);
+
             if (user.HasType(PBEType.Ghost))
             {
                 if (target == user) // Just gained the Ghost type after selecting the move, so get a target
@@ -1707,6 +1762,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     target = targets[0];
                 }
+
                 if (!MissCheck(user, target, PBEMove.Curse))
                 {
                     ApplyStatus2IfPossible(user, target, PBEStatus2.Cursed, true);
@@ -1732,6 +1788,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, PBEMove.Magnitude);
             PPReduce(user, PBEMove.Magnitude);
+
             int val = PBEUtils.RNG.Next(0, 100);
             byte magnitude, basePower;
             if (val < 5) // Magnitude 4 - 5%
@@ -1770,32 +1827,39 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 basePower = 150;
             }
             BroadcastMagnitude(magnitude);
+
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1)
+                if (target.HP < 1 || MissCheck(user, target, PBEMove.Magnitude))
                 {
                     continue;
                 }
-                if (MissCheck(user, target, PBEMove.Magnitude))
-                {
-                    continue;
-                }
+
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                bool crit = CritCheck(user, target, PBEMove.Magnitude, ref damageMultiplier);
                 TypeCheck(user, target, PBEMove.Magnitude, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+                if (effectiveness == PBEEffectiveness.Ineffective)
+                {
+                    BroadcastEffectiveness(target, effectiveness);
+                    continue;
+                }
+
+                bool crit = CritCheck(user, target, PBEMove.Magnitude, ref damageMultiplier);
                 ushort damage = CalculateDamage(user, target, PBEMove.Magnitude, moveType, criticalHit: crit, power: basePower);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), effectiveness, false);
+                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                BroadcastEffectiveness(target, effectiveness);
                 if (crit)
                 {
                     BroadcastMoveCrit();
                 }
-                FaintCheck(target);
+
+                DoPostHitEffects(user, target, PBEMove.Magnitude);
             }
         }
         void Ef_Endeavor(PBEPokemon user, PBEPokemon target)
         {
             BroadcastMoveUsed(user, PBEMove.Endeavor);
             PPReduce(user, PBEMove.Endeavor);
+
             if (MissCheck(user, target, PBEMove.Endeavor))
             {
                 return;
@@ -1805,12 +1869,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastMoveFailed(user, target, PBEFailReason.Default);
                 return;
             }
-            DealDamage(user, target, (ushort)(target.HP - user.HP), PBEEffectiveness.Normal, false);
+
+            double damageMultiplier = 1.0;
+            TypeCheck(user, target, PBEMove.Endeavor, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
+            if (effectiveness == PBEEffectiveness.Ineffective)
+            {
+                BroadcastEffectiveness(target, effectiveness);
+                return;
+            }
+
+            DealDamage(user, target, (ushort)(target.HP - user.HP), false);
+            DoPostHitEffects(user, target, PBEMove.Endeavor);
         }
         void Ef_PainSplit(PBEPokemon user, PBEPokemon target)
         {
             BroadcastMoveUsed(user, PBEMove.PainSplit);
             PPReduce(user, PBEMove.PainSplit);
+
             if (target.Status2.HasFlag(PBEStatus2.Substitute))
             {
                 BroadcastMoveFailed(user, target, PBEFailReason.Default);
@@ -1820,29 +1895,34 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
+
             ushort total = (ushort)(user.HP + target.HP);
             ushort hp = (ushort)(total / 2);
             foreach (PBEPokemon pkmn in new PBEPokemon[] { user, target })
             {
                 if (hp >= pkmn.HP)
                 {
-                    HealDamage(user, (ushort)(hp - pkmn.HP));
+                    HealDamage(pkmn, (ushort)(hp - pkmn.HP));
                 }
                 else
                 {
-                    DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), PBEEffectiveness.Normal, true);
+                    DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), true);
+                    DoPostHitEffects(user, pkmn, PBEMove.PainSplit);
                 }
             }
+
             BroadcastPainSplit();
         }
         void Ef_PsychUp(PBEPokemon user, PBEPokemon target)
         {
             BroadcastMoveUsed(user, PBEMove.PsychUp);
             PPReduce(user, PBEMove.PsychUp);
+
             if (MissCheck(user, target, PBEMove.PsychUp))
             {
                 return;
             }
+
             user.AttackChange = target.AttackChange;
             user.DefenseChange = target.DefenseChange;
             user.SpAttackChange = target.SpAttackChange;

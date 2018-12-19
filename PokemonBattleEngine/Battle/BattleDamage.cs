@@ -61,8 +61,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public ushort CalculateBasePower(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
         {
-            PBEPokemonData userPData = PBEPokemonData.Data[target.Species]; // These are only used for weight, but weight can be changed (Autotomize)
-            PBEPokemonData targetPData = PBEPokemonData.Data[target.Species];
             double basePower = power;
 
             // If no overriding power is given, determine the move's basePower
@@ -79,23 +77,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     case PBEMove.GrassKnot:
                     case PBEMove.LowKick:
-                        if (targetPData.Weight >= 200.0)
+                        if (target.Weight >= 200.0)
                         {
                             basePower = 120;
                         }
-                        else if (targetPData.Weight >= 100.0)
+                        else if (target.Weight >= 100.0)
                         {
                             basePower = 100;
                         }
-                        else if (targetPData.Weight >= 50.0)
+                        else if (target.Weight >= 50.0)
                         {
                             basePower = 80;
                         }
-                        else if (targetPData.Weight >= 25.0)
+                        else if (target.Weight >= 25.0)
                         {
                             basePower = 60;
                         }
-                        else if (targetPData.Weight >= 10.0)
+                        else if (target.Weight >= 10.0)
                         {
                             basePower = 40;
                         }
@@ -106,7 +104,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     case PBEMove.HeatCrash:
                     case PBEMove.HeavySlam:
-                        double relative = targetPData.Weight / userPData.Weight;
+                        double relative = target.Weight / user.Weight;
                         if (relative <= 1 / 5D)
                         {
                             basePower = 120;
@@ -250,7 +248,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // If a Pokémon uses a move that shares a type with it, it gains a 50% power boost (100% if it has Adaptability)
             if (user.HasType(moveType))
             {
                 if (user.Ability == PBEAbility.Adaptability)
@@ -265,7 +262,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (moveType)
             {
                 case PBEType.Bug:
-                    // Swarm gives a 50% power boost to Bug attacks if the user is below 1/3 max HP
                     if (user.Ability == PBEAbility.Swarm && user.HP <= user.MaxHP / 3)
                     {
                         basePower *= 1.5;
@@ -333,17 +329,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEType.Fire:
-                    // Blaze gives a 50% power boost to Fire attacks if the user is below 1/3 max HP
                     if (user.Ability == PBEAbility.Blaze && user.HP <= user.MaxHP / 3)
                     {
                         basePower *= 1.5;
                     }
-                    // Pokémon with Heatproof take half as much damage from fire attacks
                     if (target.Ability == PBEAbility.Heatproof)
                     {
                         basePower *= 0.5;
                     }
-                    // Damage is halved when using Fire or Ice moves against a Pokémon with Thick Fat
                     if (target.Ability == PBEAbility.ThickFat)
                     {
                         basePower *= 0.5;
@@ -381,7 +374,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEType.Grass:
-                    // Overgrow gives a 50% power boost to Grass attacks if the user is below 1/3 max HP
                     if (user.Ability == PBEAbility.Overgrow && user.HP <= user.MaxHP / 3)
                     {
                         basePower *= 1.5;
@@ -405,7 +397,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEType.Ice:
-                    // Damage is halved when using Fire or Ice moves against a Pokémon with Thick Fat
                     if (target.Ability == PBEAbility.ThickFat)
                     {
                         basePower *= 0.5;
@@ -471,7 +462,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEType.Water:
-                    // Torrent gives a 50% power boost to Water attacks if the user is below 1/3 max HP
                     if (user.Ability == PBEAbility.Torrent && user.HP <= user.MaxHP / 3)
                     {
                         basePower *= 1.5;
@@ -527,7 +517,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Negative Attack changes are ignored for critical hits
             double attack = user.Attack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
 
-            // Pokemon with Huge Power or Pure Power get a 100% Attack boost
             if (user.Ability == PBEAbility.HugePower || user.Ability == PBEAbility.PurePower)
             {
                 attack *= 2.0;
@@ -537,12 +526,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 2.0;
             }
-            // A Pokémon with Hustle gets a 50% Attack boost
             if (user.Ability == PBEAbility.Hustle)
             {
                 attack *= 1.5;
             }
-            // A Pokémon with Guts gets a 50% Attack boost when afflicted with a status
             if (user.Ability == PBEAbility.Guts && user.Status1 != PBEStatus1.None)
             {
                 attack *= 1.5;
@@ -565,7 +552,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 defense *= 2.0;
             }
-            // A Pokémon with Marvel Scale gets a 50% Defense boost when afflicted with a status
             if (target.Ability == PBEAbility.MarvelScale && target.Status1 != PBEStatus1.None)
             {
                 defense *= 1.5;

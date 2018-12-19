@@ -27,7 +27,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Implement a better way to lock actions besides "PPokemon.LockedAction" (Consider "Follow Me" as well)
 * Damage, effectiveness and critical packets should include a list of hit Pokémon
 * Switch-in effects and turn ended effects should go by speed (with speed ties and everything like turn order)
-* Move substitute to "post damage effects" with items and abilities and remove effectiveness from DealDamage()
 * Winning
 * Watchable replays
 * Change all ability/item boosts to settings instead of constants.
