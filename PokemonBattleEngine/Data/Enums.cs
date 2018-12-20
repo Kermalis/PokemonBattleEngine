@@ -821,39 +821,39 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Hasty,
         /// <summary>
-        /// defense special attack
+        /// The Pokémon favors defense and hinders special attack.
         /// </summary>
         Impish,
         /// <summary>
-        /// speed special attack
+        /// The Pokémon favors speed and hinders special attack.
         /// </summary>
         Jolly,
         /// <summary>
-        /// defense special defense
+        /// The Pokémon favors defense and hinders special defense.
         /// </summary>
         Lax,
         /// <summary>
-        /// attack defense
+        /// The Pokémon favors attack and hinders defense.
         /// </summary>
         Loney,
         /// <summary>
-        /// special attack defense
+        /// The Pokémon favors special attack and hinders defense.
         /// </summary>
         Mild,
         /// <summary>
-        /// special attack attack
+        /// The Pokémon favors special attack and hinders attack.
         /// </summary>
         Modest,
         /// <summary>
-        /// speed special defense
+        /// The Pokémon favors speed and hinders special defense.
         /// </summary>
         Naive,
         /// <summary>
-        /// attack special defense
+        /// The Pokémon favors attack and hinders special defense.
         /// </summary>
         Naughty,
         /// <summary>
-        /// special attack speed
+        /// The Pokémon favors special attack and hinders speed.
         /// </summary>
         Quiet,
         /// <summary>
@@ -861,15 +861,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Quirky,
         /// <summary>
-        /// special attack special defense
+        /// The Pokémon favors special attack and hinders special defense.
         /// </summary>
         Rash,
         /// <summary>
-        /// defense speed
+        /// The Pokémon favors defense and hinders speed.
         /// </summary>
         Relaxed,
         /// <summary>
-        /// special defense speed
+        /// The Pokémon favors special defense and hinders speed.
         /// </summary>
         Sassy,
         /// <summary>
@@ -877,7 +877,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Serious,
         /// <summary>
-        /// speed attack
+        /// The Pokémon favors speed and hinders attack.
         /// </summary>
         Timid,
         /// <summary>

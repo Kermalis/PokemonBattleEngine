@@ -737,7 +737,7 @@ namespace Kermalis.PokemonBattleEngine
                 Item = PBEItem.LifeOrb,
                 Ability = PBEAbility.Levitate,
                 Gender = PBEGender.Female,
-                Nature = PBENature.Modest,
+                Nature = PBENature.Timid,
                 IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
                 EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
                 Moves = new PBEMove[] { PBEMove.DracoMeteor, PBEMove.DarkPulse, PBEMove.Flamethrower, PBEMove.Surf },
