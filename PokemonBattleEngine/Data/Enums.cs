@@ -1358,6 +1358,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Gible = 443,
         Gabite = 444,
         Garchomp = 445,
+        Lucario = 448,
         Leafeon = 470,
         Glaceon = 471,
         Rotom = 479 | (0 << 0x10),
