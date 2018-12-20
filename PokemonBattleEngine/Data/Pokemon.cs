@@ -299,6 +299,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             sb.AppendLine($"{Shell.Nickname}/{Species} {GenderSymbol} Lv.{Shell.Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})");
             sb.AppendLine($"Position: {FieldPosition}");
+            sb.AppendLine($"Type1: {Type1}");
+            sb.AppendLine($"Type2: {Type2}");
             sb.AppendLine($"Status1: {Status1}");
             sb.AppendLine($"Status2: {Status2}");
             if (!remotePokemon && Status2.HasFlag(PBEStatus2.Substitute))
