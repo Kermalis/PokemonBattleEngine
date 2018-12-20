@@ -391,6 +391,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Thunderbolt },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Garchomp_VGC = new PBEPokemonShell
+            {
+                Species = PBESpecies.Garchomp,
+                Nickname = "Gru",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.DracoPlate, // Yache Berry
+                Ability = PBEAbility.RoughSkin,
+                Gender = PBEGender.Male,
+                Nature = PBENature.Jolly,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+                Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.Earthquake, PBEMove.Crunch, PBEMove.Protect },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Leafeon_RU = new PBEPokemonShell
             {
                 Species = PBESpecies.Leafeon,
@@ -707,8 +723,8 @@ namespace Kermalis.PokemonBattleEngine
             {
                 Absol_RU, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Butterfree_RU, Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
                 Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
-                Farfetchd_OU,
-                Flareon_RU, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU,
+                Farfetchd_OU, Flareon_RU,
+                Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU,
                 Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC,
                 Venusaur_VGC, Victini_Uber,
             };
