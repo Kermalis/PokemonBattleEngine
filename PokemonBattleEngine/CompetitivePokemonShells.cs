@@ -279,6 +279,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.Snarl, PBEMove.DarkPulse, PBEMove.Moonlight, PBEMove.Protect }, // Wish, Foul Play, Heal Bell, Protect
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Delcatty_NU = new PBEPokemonShell
+            {
+                Species = PBESpecies.Delcatty,
+                Nickname = "Anika",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.Leftovers,
+                Ability = PBEAbility.WonderSkin,
+                Gender = PBEGender.Female,
+                Nature = PBENature.Bold,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 252, 0, 200, 0, 0, 56 },
+                Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.CalmMind, PBEMove.HyperVoice, PBEMove.Substitute }, // Baton Pass, Calm Mind, Hyper Voice, Substitute
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Cradily_OU = new PBEPokemonShell
             {
                 Species = PBESpecies.Cradily,
@@ -690,7 +706,8 @@ namespace Kermalis.PokemonBattleEngine
             var possiblePokemon = new List<PBEPokemonShell>
             {
                 Absol_RU, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Butterfree_RU, Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
-                Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber, Farfetchd_OU,
+                Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
+                Farfetchd_OU,
                 Flareon_RU, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU,
                 Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC,
                 Venusaur_VGC, Victini_Uber,
