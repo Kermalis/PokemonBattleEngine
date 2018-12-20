@@ -375,6 +375,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.Protect, PBEMove.StealthRock, PBEMove.IronHead, PBEMove.Thunder }, // Wish, Stealth Rock, Iron Head, Roar
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Luxray_NU = new PBEPokemonShell
+            {
+                Species = PBESpecies.Luxray,
+                Nickname = "Mittens",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.LifeOrb, // Flame Orb
+                Ability = PBEAbility.Guts,
+                Gender = PBEGender.Male,
+                Nature = PBENature.Jolly,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+                Moves = new PBEMove[] { PBEMove.Spark, PBEMove.Superpower, PBEMove.Facade, PBEMove.Crunch }, // Wild Charge, Superpower, Facade, Crunch
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Mismagius_UU = new PBEPokemonShell
             {
                 Species = PBESpecies.Mismagius,
@@ -725,8 +741,8 @@ namespace Kermalis.PokemonBattleEngine
                 Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
                 Farfetchd_OU, Flareon_RU,
                 Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU,
-                Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC,
-                Venusaur_VGC, Victini_Uber,
+                Luxray_NU, Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC,
+                Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
             };
             possiblePokemon.Shuffle();
             team.Party.AddRange(possiblePokemon.Take(numPkmn));
