@@ -1401,6 +1401,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Chandelure = 609,
         Cryogonal = 615,
         Druddigon = 621,
+        Deino = 633,
         Zweilous = 634,
         Hydreigon = 635,
         Genesect = 649 | (0 << 0x10),
