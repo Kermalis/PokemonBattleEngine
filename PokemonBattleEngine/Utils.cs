@@ -6,12 +6,26 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngine
 {
-    static class PBEUtils
+    /// <summary>
+    /// Contains utilities used in the battle engine.
+    /// </summary>
+    public static class PBEUtils
     {
+        /// <summary>
+        /// An ordinary pseudo-random number generator.
+        /// </summary>
         public static readonly Random RNG = new Random();
 
-        // Returns true if you are lucky
-        public static bool ApplyChance(int chance, int outOf) => RNG.Next(0, outOf) < chance;
+        /// <summary>
+        /// Generates a random boolean from a chance.
+        /// </summary>
+        /// <example><paramref name="chanceNumerator"/> is 30, <paramref name="chanceDenominator"/> is 100, there is a 30% chance to return True and a 70% chance to return False.</example>
+        /// <param name="chanceNumerator">The numerator of the chance.</param>
+        /// <param name="chanceDenominator">The denominator of the chance.</param>
+        public static bool ApplyChance(int chanceNumerator, int chanceDenominator)
+        {
+            return RNG.Next(0, chanceDenominator) < chanceNumerator;
+        }
 
         public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
         {
@@ -28,15 +42,40 @@ namespace Kermalis.PokemonBattleEngine
                 return val;
             }
         }
-        public static string Print<T>(this IEnumerable<T> source, bool includeParenthesis = true)
+        public static string Print<T>(this IEnumerable<T> source, bool includeParenthesis)
         {
             string str = includeParenthesis ? "( " : "";
             str += string.Join(", ", source);
             str += includeParenthesis ? " )" : "";
             return str;
         }
+        public static string Andify<T>(this IEnumerable<T> source)
+        {
+            T[] array = source.ToArray();
+            string str = array[0].ToString();
+            for (int i = 1; i < array.Length; i++)
+            {
+                if (i == array.Length - 1)
+                {
+                    if (array.Length > 2)
+                    {
+                        str += ',';
+                    }
+                    str += " and ";
+                }
+                else
+                {
+                    str += ", ";
+                }
+                str += array[i].ToString();
+            }
+            return str;
+        }
         public static T Sample<T>(this IEnumerable<T> source) => source.ElementAt(RNG.Next(0, source.Count()));
-        // Fisher-Yates Shuffle
+        /// <summary>
+        /// Shuffles the items in a list using the Fisher-Yates Shuffle algorithm.
+        /// </summary>
+        /// <param name="source">The list to shuffle.</param>
         public static void Shuffle<T>(this IList<T> source)
         {
             for (int a = 0; a < source.Count - 1; a++)
@@ -47,9 +86,17 @@ namespace Kermalis.PokemonBattleEngine
                 source[b] = value;
             }
         }
-        public static bool NextBoolean(this Random rand) => rand.NextDouble() >= 0.5;
+        /// <summary>
+        /// Returns a random boolean.
+        /// </summary>
+        /// <param name="rand"></param>
+        /// <returns>A random boolean.</returns>
+        public static bool NextBoolean(this Random rand)
+        {
+            return rand.NextDouble() >= 0.5;
+        }
 
-        public static byte[] StringToBytes(string str)
+        internal static byte[] StringToBytes(string str)
         {
             var bytes = new List<byte>();
             byte[] nameBytes = Encoding.ASCII.GetBytes(str);
@@ -57,7 +104,7 @@ namespace Kermalis.PokemonBattleEngine
             bytes.AddRange(nameBytes);
             return bytes.ToArray();
         }
-        public static string StringFromBytes(BinaryReader r)
+        internal static string StringFromBytes(BinaryReader r)
         {
             return Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte()));
         }

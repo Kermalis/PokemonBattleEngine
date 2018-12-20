@@ -8,11 +8,10 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEPokemon
     {
-        public readonly byte Id;
-        // Not included in ToBytes() or FromBytes(). Set manually by the host
+        public byte Id { get; }
         // True indicates this Pokémon is owned by the client or team 0 in the eyes of the host/spectators
-        public bool LocalTeam;
-        public readonly PBEPokemonShell Shell;
+        public bool LocalTeam { get; }
+        public PBEPokemonShell Shell { get; }
 
         public string NameForTrainer(bool firstLetterCapitalized)
         {
@@ -74,15 +73,16 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public PBEAction PreviousAction, LockedAction, SelectedAction;
 
-        // Stats & PP are set from the shell info, but LocalTeam will need to be manually set by the host
-        public PBEPokemon(byte id, PBEPokemonShell shell, PBESettings settings)
+        // Stats & PP are set from the shell info
+        public PBEPokemon(bool localTeam, byte id, PBEPokemonShell shell, PBESettings settings)
         {
+            LocalTeam = localTeam;
+            Id = id;
             Shell = shell;
             Species = Shell.Species;
             Shiny = Shell.Shiny;
             Ability = Shell.Ability;
             Item = Shell.Item;
-            Id = id;
             SelectedAction.PokemonId = id;
             CalculateStats(settings);
             HP = MaxHP;
@@ -105,18 +105,17 @@ namespace Kermalis.PokemonBattleEngine.Data
             Weight = pData.Weight;
         }
         // This constructor is to define an unknown remote Pokémon
-        // LocalTeam is set to false here
-        public PBEPokemon(PBEPkmnSwitchInPacket psip, PBESettings settings)
+        public PBEPokemon(bool localTeam, PBEPkmnSwitchInPacket.PBESwitchInInfo info, PBESettings settings)
         {
-            Id = psip.PokemonId;
-            LocalTeam = false;
+            LocalTeam = localTeam;
+            Id = info.PokemonId;
             Shell = new PBEPokemonShell
             {
-                Species = psip.Species,
-                Shiny = psip.Shiny,
-                Nickname = psip.Nickname,
-                Level = psip.Level,
-                Gender = psip.Gender,
+                Species = info.Species,
+                Shiny = info.Shiny,
+                Nickname = info.Nickname,
+                Level = info.Level,
+                Gender = info.Gender,
                 Ability = PBEAbility.MAX,
                 Item = PBEItem.MAX,
                 Nature = PBENature.MAX,
@@ -125,8 +124,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 EVs = new byte[6],
                 IVs = new byte[6]
             };
-            Species = psip.Species;
-            Shiny = psip.Shiny;
+            Species = info.Species;
+            Shiny = info.Shiny;
             Ability = PBEAbility.MAX;
             Item = PBEItem.MAX;
             Moves = new PBEMove[settings.NumMoves];
@@ -265,7 +264,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         internal static PBEPokemon FromBytes(BinaryReader r, PBESettings settings)
         {
-            return new PBEPokemon(r.ReadByte(), PBEPokemonShell.FromBytes(r, settings), settings);
+            return new PBEPokemon(true, r.ReadByte(), PBEPokemonShell.FromBytes(r, settings), settings);
         }
 
         public override bool Equals(object obj)

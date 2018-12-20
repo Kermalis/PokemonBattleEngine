@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public readonly PBEBattle Battle;
         public string TrainerName;
         public readonly bool LocalTeam;
-        public List<PBEPokemon> Party { get; private set; } // TODO: Do not allow outsiders to add
+        public List<PBEPokemon> Party { get; internal set; } // TODO: Do not allow outsiders to add
 
         public PBEPokemon[] ActiveBattlers => Battle.ActiveBattlers.Where(p => p.LocalTeam == LocalTeam).ToArray();
         public int NumPkmnAlive => Party.Count(p => p.HP > 0);
@@ -36,7 +36,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
             for (int i = 0; i < shell.Party.Count; i++)
             {
-                Party.Add(new PBEPokemon(idCount++, shell.Party[i], battle.Settings) { LocalTeam = localTeam });
+                Party.Add(new PBEPokemon(localTeam, idCount++, shell.Party[i], battle.Settings));
             }
         }
         // Client constructor
@@ -49,15 +49,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // Returns null if there is no Pokémon at that position
         public PBEPokemon PokemonAtPosition(PBEFieldPosition pos) => Party.SingleOrDefault(p => p.FieldPosition == pos);
-
-        internal void SetParty(IEnumerable<PBEPokemon> party)
-        {
-            Party = new List<PBEPokemon>(party);
-            foreach (PBEPokemon p in Party)
-            {
-                p.LocalTeam = LocalTeam;
-            }
-        }
     }
     public sealed partial class PBEBattle
     {
@@ -189,7 +180,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForPlayers)} to set a team's party.");
             }
-            Teams[localTeam ? 0 : 1].SetParty(party);
+            Teams[localTeam ? 0 : 1].Party = new List<PBEPokemon>(party);
             if (Teams[0].NumPkmnAlive > 1 && Teams[1].NumPkmnAlive > 1)
             {
                 BattleState = PBEBattleState.ReadyToBegin;
@@ -197,22 +188,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
         // For clients
+        // Does not update ActiveBattlers
         public void RemotePokemonSwitchedIn(PBEPkmnSwitchInPacket psip)
         {
-            if (psip.LocalTeam)
+            foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
             {
-                return;
+                PBEPokemon pkmn = GetPokemon(info.PokemonId);
+                if (pkmn == null)
+                {
+                    pkmn = new PBEPokemon(psip.LocalTeam, info, Settings);
+                    Teams[psip.LocalTeam ? 0 : 1].Party.Add(pkmn);
+                }
+                pkmn.HP = info.HP;
+                pkmn.MaxHP = info.MaxHP;
+                pkmn.FieldPosition = info.FieldPosition;
             }
-            PBEPokemon pkmn = GetPokemon(psip.PokemonId);
-            if (pkmn == null)
-            {
-                // Use remote Pokémon constructor which sets LocalTeam to false and moves to PBEMove.MAX
-                pkmn = new PBEPokemon(psip, Settings);
-                Teams[1].Party.Add(pkmn);
-            }
-            // If this Pokémon was already added, the client already knows info other than hp (could have Regenerator or could have been healed by an ally)
-            pkmn.HP = psip.HP;
-            pkmn.MaxHP = psip.MaxHP;
         }
         // Starts the battle
         // Sets BattleState to PBEBattleState.Processing, then PBEBattleState.WaitingForActions
@@ -245,13 +235,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BattleState = PBEBattleState.Processing;
             OnStateChanged?.Invoke(this);
-            IEnumerable<PBEPokemon> all = Teams[0].SwitchInQueue.Concat(Teams[1].SwitchInQueue);
-            foreach (PBEPokemon pkmn in all)
+            foreach (PBETeam team in Teams)
             {
-                ActiveBattlers.Add(pkmn);
-                BroadcastPkmnSwitchIn(pkmn);
+                if (team.SwitchInQueue.Count > 0)
+                {
+                    ActiveBattlers.AddRange(team.SwitchInQueue);
+                    BroadcastPkmnSwitchIn(team.LocalTeam, team.SwitchInQueue);
+                }
             }
-            foreach (PBEPokemon pkmn in all)
+            foreach (PBEPokemon pkmn in Teams[0].SwitchInQueue.Concat(Teams[1].SwitchInQueue))
             {
                 DoSwitchInEffects(pkmn); // BattleEffects.cs
             }
@@ -363,7 +355,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                     }
-                    Debug.WriteLine(evaluated.Select(t => $"{(t.Item1.LocalTeam ? "LocalTeam" : "Remote")} {t.Item1.Shell.Nickname} {t.Item2}").Print());
+                    Debug.WriteLine(evaluated.Select(t => $"{(t.Item1.LocalTeam ? "LocalTeam" : "Remote")} {t.Item1.Shell.Nickname} {t.Item2}").Print(true));
                 }
                 turnOrder.AddRange(evaluated.Select(t => t.Item1));
             }
@@ -390,7 +382,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         PBEPokemon switchPkmn = GetPokemon(pkmn.SelectedAction.SwitchPokemonId);
                         switchPkmn.FieldPosition = pos;
                         ActiveBattlers.Add(switchPkmn);
-                        BroadcastPkmnSwitchIn(switchPkmn);
+                        BroadcastPkmnSwitchIn(switchPkmn.LocalTeam, new PBEPokemon[] { switchPkmn });
                         DoSwitchInEffects(switchPkmn);
                         break;
                     default: throw new ArgumentOutOfRangeException(nameof(pkmn.SelectedAction.Decision), $"Invalid decision: {pkmn.SelectedAction.Decision}");

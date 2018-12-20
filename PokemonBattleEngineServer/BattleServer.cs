@@ -23,7 +23,6 @@ namespace Kermalis.PokemonBattleEngineServer
             WaitingForSwitchIns, // Server is waiting for players to switch in new Pokémon
         }
         ServerState state = ServerState.Startup;
-        readonly PBEBattleFormat intendedBattleFormat = PBEBattleFormat.Double; // TODO: Let the client know what kind of format this server is running (matchmaking)
         PBEBattle battle;
         static readonly PBESettings settings = PBESettings.DefaultSettings;
         Player[] battlers;
@@ -159,7 +158,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     state = ServerState.StartingMatch;
                     Console.WriteLine("Battle starting!");
 
-                    battle = new PBEBattle(intendedBattleFormat, settings, battlers[0].Shell, battlers[1].Shell);
+                    battle = new PBEBattle(PBEBattleFormat.Double, settings, battlers[0].Shell, battlers[1].Shell);
                     battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
                     battle.OnNewEvent += BattleEventHandler;
                     battle.OnStateChanged += BattleStateHandler;

@@ -338,7 +338,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         BattleView.UpdatePokemon(victim);
                         int hp = Math.Abs(phcp.Change);
                         double percentage = (double)hp / victim.MaxHP;
-                        string message = string.Format("{0} {3} {1} ({2:P2}) HP!", victim.NameForTrainer(true), hp, percentage, phcp.Change <= 0 ? "lost" : "gained");
+                        string message = string.Format("{0} {1} {2} ({3:P2}) HP!", victim.NameForTrainer(true), phcp.Change <= 0 ? "lost" : "gained", hp, percentage);
                         BattleView.SetMessage(message);
                         messageView.Add(message);
                         break;
@@ -384,16 +384,21 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                 case PBEPkmnSwitchInPacket psip:
                     {
+                        // Add new unknown foes
                         if (!psip.LocalTeam)
                         {
                             Battle.RemotePokemonSwitchedIn(psip);
                         }
-                        PBEPokemon pkmn = Battle.GetPokemon(psip.PokemonId);
-                        Battle.ActiveBattlers.Add(pkmn);
-                        PBEFieldPosition oldPos = pkmn.FieldPosition;
-                        pkmn.FieldPosition = psip.FieldPosition;
-                        BattleView.UpdatePokemon(pkmn, oldPos);
-                        string message = string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, Battle.Teams[pkmn.LocalTeam ? 0 : 1].TrainerName);
+                        foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
+                        {
+                            PBEPokemon pkmn = Battle.GetPokemon(info.PokemonId);
+                            Battle.ActiveBattlers.Add(pkmn);
+                            pkmn.FieldPosition = info.FieldPosition;
+                            BattleView.UpdatePokemon(pkmn);
+                        }
+                        string message = string.Format("{1} sent out {0}!",
+                            PBEUtils.Andify(psip.SwitchIns.Select(s => s.Nickname)),
+                            Battle.Teams[psip.LocalTeam ? 0 : 1].TrainerName);
                         BattleView.SetMessage(message);
                         messageView.Add(message);
                         break;

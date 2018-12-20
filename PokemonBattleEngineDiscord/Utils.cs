@@ -27,14 +27,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
             { PBEType.Water, new Color(57, 156, 255) }
         };
 
-        public static string Print<T>(this IEnumerable<T> source, bool includeParenthesis = true)
-        {
-            string str = includeParenthesis ? "( " : "";
-            str += string.Join(", ", source);
-            str += includeParenthesis ? " )" : "";
-            return str;
-        }
-
         // https://stackoverflow.com/a/3722337
         public static Color Blend(this Color color, Color backColor, double depth = 0.5)
         {

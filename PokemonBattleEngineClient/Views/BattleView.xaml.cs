@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
+using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
@@ -39,10 +40,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             string s;
             switch (battle.BattleFormat)
             {
-                case PBEBattleFormat.Single: s = new string[] { "1-s", "2-s", "3-s", "4-s", "5-s", "6-s", "8-s" }.Sample(); break;
-                case PBEBattleFormat.Double: s = new string[] { "1-d", "7-d" }.Sample(); break;
-                case PBEBattleFormat.Triple: s = new string[] { "1-t", "4-t", "5-t", "8-t" }.Sample(); break;
-                case PBEBattleFormat.Rotation: s = new string[] { "1-r", "2-r" }.Sample(); break;
+                case PBEBattleFormat.Single: s = PBEUtils.Sample(new string[] { "1-s", "2-s", "3-s", "4-s", "5-s", "6-s", "8-s" }); break;
+                case PBEBattleFormat.Double: s = PBEUtils.Sample(new string[] { "1-d", "7-d" }); break;
+                case PBEBattleFormat.Triple: s = PBEUtils.Sample(new string[] { "1-t", "4-t", "5-t", "8-t" }); break;
+                case PBEBattleFormat.Rotation: s = PBEUtils.Sample(new string[] { "1-r", "2-r" }); break;
                 default: throw new ArgumentOutOfRangeException(nameof(battle.BattleFormat));
             }
             BGSource = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Backgrounds.{s}.png?assembly=PokemonBattleEngineClient"));

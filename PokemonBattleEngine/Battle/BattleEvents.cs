@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -37,8 +38,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBEPkmnHPChangedPacket(victim, change));
         void BroadcastPkmnStatChanged(PBEPokemon pkmn, PBEStat stat, short change, bool isTooMuch)
             => OnNewEvent?.Invoke(this, new PBEPkmnStatChangedPacket(pkmn, stat, change, isTooMuch));
-        void BroadcastPkmnSwitchIn(PBEPokemon pkmn)
-            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchInPacket(pkmn));
+        void BroadcastPkmnSwitchIn(bool localTeam, IEnumerable<PBEPokemon> pokemon)
+            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchInPacket(localTeam, pokemon));
         void BroadcastPkmnSwitchOut(PBEPokemon pkmn)
             => OnNewEvent?.Invoke(this, new PBEPkmnSwitchOutPacket(pkmn));
         void BroadcastPsychUp(PBEPokemon user, PBEPokemon target)
@@ -251,7 +252,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         PBEPokemon victim = battle.GetPokemon(phcp.VictimId);
                         int hp = Math.Abs(phcp.Change);
                         double percentage = (double)hp / victim.MaxHP;
-                        Console.WriteLine("{0} {3} {1} ({2:P2}) HP!", victim.NameForTrainer(true), hp, percentage, phcp.Change <= 0 ? "lost" : "gained");
+                        Console.WriteLine("{0} {1} {2} ({3:P2}) HP!", victim.NameForTrainer(true), phcp.Change <= 0 ? "lost" : "gained", hp, percentage);
                         break;
                     }
                 case PBEPkmnStatChangedPacket pscp:
@@ -292,8 +293,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEPkmnSwitchInPacket psip:
                     {
-                        PBEPokemon pkmn = battle.GetPokemon(psip.PokemonId);
-                        Console.WriteLine("{1} sent out {0}!", pkmn.Shell.Nickname, battle.Teams[pkmn.LocalTeam ? 0 : 1].TrainerName);
+                        Console.WriteLine("{1} sent out {0}!",
+                            psip.SwitchIns.Select(s => s.Nickname).Andify(),
+                            battle.Teams[psip.LocalTeam ? 0 : 1].TrainerName);
                         break;
                     }
                 case PBEPkmnSwitchOutPacket psop:

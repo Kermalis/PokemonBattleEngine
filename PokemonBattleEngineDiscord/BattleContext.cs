@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Packets;
 using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
@@ -84,7 +83,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
             switch (packet)
             {
-                case PBEPkmnSwitchInPacket psip:
+                /*case PBEPkmnSwitchInPacket psip:
                     culprit = battle.GetPokemon(psip.PokemonId);
                     message = string.Format("{1} sent out {0}!", culprit.Shell.Nickname, battle.Teams[culprit.LocalTeam ? 0 : 1].TrainerName);
                     embed = new EmbedBuilder()
@@ -94,7 +93,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .WithDescription(message)
                         .WithImageUrl("http://sprites.pokecheck.org/i/445.gif");
                     await Channel.SendMessageAsync(string.Empty, embed: embed.Build());
-                    break;
+                    break;*/
                 default:
                     await Channel.SendMessageAsync($"Battle Event: \"{packet.GetType().Name}\"");
                     break;
