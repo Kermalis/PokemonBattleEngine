@@ -307,6 +307,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 sb.AppendLine($"Substitute HP: {SubstituteHP}");
             }
+            if (!remotePokemon)
+            {
+                sb.AppendLine($"Stats: {Attack} {Defense} {SpAttack} {SpDefense} {Speed}");
+            }
             sb.AppendLine($"Stat changes: {AttackChange} {DefenseChange} {SpAttackChange} {SpDefenseChange} {SpeedChange} {AccuracyChange} {EvasionChange}");
             sb.AppendLine($"Item: {item}");
             sb.AppendLine($"Ability: {ability}");
