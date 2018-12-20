@@ -711,6 +711,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect }, // Dragon Claw, Sucker Punch, Superpower, Protect
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Hydreigon_VGC = new PBEPokemonShell
+            {
+                Species = PBESpecies.Hydreigon,
+                Nickname = "Heidi",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.LifeOrb,
+                Ability = PBEAbility.Levitate,
+                Gender = PBEGender.Female,
+                Nature = PBENature.Modest,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+                Moves = new PBEMove[] { PBEMove.DracoMeteor, PBEMove.DarkPulse, PBEMove.Flamethrower, PBEMove.Surf },
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Genesect_Uber = new PBEPokemonShell
             {
                 Species = PBESpecies.Genesect,
@@ -729,21 +745,26 @@ namespace Kermalis.PokemonBattleEngine
             };
 
         /// <summary>
+        /// A collection of all default competitive Pokémon.
+        /// </summary>
+        public static readonly PBEPokemonShell[] DefaultCompetitivePokemon = new PBEPokemonShell[]
+        {
+            Absol_RU, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Butterfree_RU, Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
+            Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
+            Farfetchd_OU, Flareon_RU, Garchomp_VGC,
+            Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU,
+            Luxray_NU, Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC,
+            Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
+        };
+
+        /// <summary>
         /// Creates a random team with pre-defined competitive Pokémon shells.
         /// </summary>
         /// <param name="numPkmn">The amount of Pokémon to add to the team.</param>
         public static PBETeamShell CreateRandomTeam(int numPkmn)
         {
             var team = new PBETeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample() };
-            var possiblePokemon = new List<PBEPokemonShell>
-            {
-                Absol_RU, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Butterfree_RU, Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
-                Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
-                Farfetchd_OU, Flareon_RU,
-                Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU,
-                Luxray_NU, Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC,
-                Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
-            };
+            var possiblePokemon = new List<PBEPokemonShell>(DefaultCompetitivePokemon);
             possiblePokemon.Shuffle();
             team.Party.AddRange(possiblePokemon.Take(numPkmn));
             return team;
