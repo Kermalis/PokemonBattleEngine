@@ -183,8 +183,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             Status2 &= ~PBEStatus2.Confused;
             ConfusionCounter = ConfusionTurns = 0;
+            Status2 &= ~PBEStatus2.Cursed;
             Status2 &= ~PBEStatus2.LeechSeed;
             SeededPosition = PBEFieldPosition.None;
+            Status2 &= ~PBEStatus2.Minimized;
             Status2 &= ~PBEStatus2.Pumped;
             Status2 &= ~PBEStatus2.Substitute;
             SubstituteHP = 0;
