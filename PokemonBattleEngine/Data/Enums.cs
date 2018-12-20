@@ -1350,6 +1350,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Latias = 380,
         Latios = 381,
         Jirachi = 385,
+        Luxio = 404,
         Luxray = 405,
         Mismagius = 429,
         Gible = 443,
