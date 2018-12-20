@@ -1351,6 +1351,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Latios = 381,
         Jirachi = 385,
         Mismagius = 429,
+        Gible = 443,
         Gabite = 444,
         Garchomp = 445,
         Leafeon = 470,
