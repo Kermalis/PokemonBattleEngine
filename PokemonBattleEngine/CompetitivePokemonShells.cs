@@ -423,6 +423,22 @@ namespace Kermalis.PokemonBattleEngine
                 Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.Earthquake, PBEMove.Crunch, PBEMove.Protect },
                 PPUps = new byte[] { 3, 3, 3, 3 }
             },
+            Lucario_VGC = new PBEPokemonShell
+            {
+                Species = PBESpecies.Lucario,
+                Nickname = "Carly",
+                Level = 100,
+                Friendship = 255,
+                Shiny = false,
+                Item = PBEItem.FistPlate, // Chople Berry
+                Ability = PBEAbility.InnerFocus,
+                Gender = PBEGender.Female,
+                Nature = PBENature.Adamant,
+                IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+                EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+                Moves = new PBEMove[] { PBEMove.CloseCombat, PBEMove.ExtremeSpeed, PBEMove.IcePunch, PBEMove.Detect }, // Close Combat, Extreme Speed, Ice Punch, Follow Me
+                PPUps = new byte[] { 3, 3, 3, 3 }
+            },
             Leafeon_RU = new PBEPokemonShell
             {
                 Species = PBESpecies.Leafeon,
@@ -751,10 +767,9 @@ namespace Kermalis.PokemonBattleEngine
         {
             Absol_RU, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Butterfree_RU, Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
             Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
-            Farfetchd_OU, Flareon_RU, Garchomp_VGC,
-            Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC, Latias_VGC, Latios_VGC, Leafeon_RU,
-            Luxray_NU, Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC,
-            Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
+            Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
+            Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Palkia_Uber,
+            Pikachu_VGC, Rotom_Wash_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
         };
 
         /// <summary>
