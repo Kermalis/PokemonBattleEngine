@@ -1416,6 +1416,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Deino = 633,
         Zweilous = 634,
         Hydreigon = 635,
+        Volcarona = 637,
         Genesect = 649 | (0 << 0x10),
         Genesect_Burn = 649 | (1 << 0x10),
         Genesect_Chill = 649 | (2 << 0x10),
