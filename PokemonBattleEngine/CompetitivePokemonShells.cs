@@ -757,7 +757,7 @@ namespace Kermalis.PokemonBattleEngine
         public static PBEPokemonShell Victini_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Victini,
-            Nickname = "Vicki", // ビクティニ (this is an event Victini)
+            Nickname = "ビクティニ", // This is an event Victini
             Level = 100,
             Friendship = 255,
             Shiny = false,
@@ -882,6 +882,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.DracoMeteor, PBEMove.DarkPulse, PBEMove.Flamethrower, PBEMove.Surf },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Volcarona_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Volcarona,
+            Nickname = "Vicki",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb, // Focus Sash
+            Ability = PBEAbility.FlameBody,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.BugBuzz, PBEMove.HiddenPower, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Genesect_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Genesect,
@@ -910,6 +926,7 @@ namespace Kermalis.PokemonBattleEngine
             Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
             Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Ninjask_VGC,
             Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Shedinja_VGC, Smeargle_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
+            Volcarona_VGC,
         };
 
         /// <summary>
