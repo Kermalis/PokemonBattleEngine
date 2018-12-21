@@ -1403,6 +1403,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Arceus_Water = 493 | (16 << 0x10),
         Victini = 494,
         Cofagrigus = 563,
+        Carracosta = 565,
         Gothita = 574,
         Gothorita = 575,
         Gothitelle = 576,
