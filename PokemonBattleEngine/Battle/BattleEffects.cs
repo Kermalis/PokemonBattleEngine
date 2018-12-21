@@ -131,7 +131,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBETeam userTeam = Teams[pkmn.LocalTeam ? 0 : 1];
             PBETeam opposingTeam = Teams[pkmn.LocalTeam ? 1 : 0];
 
-            // Weather
+            // Weather effects happen first
             switch (Weather)
             {
                 case PBEWeather.Hailstorm:
@@ -197,7 +197,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
             }
 
-            // Items
+            // These items happen before taking damage from statuses
             switch (pkmn.Item)
             {
                 case PBEItem.BlackSludge:
@@ -205,14 +205,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (pkmn.HP < pkmn.MaxHP)
                         {
-                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator));
                             BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.RestoredHP);
+                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator));
                         }
                     }
                     else
                     {
-                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), true);
                         BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.CausedDamage);
+                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), true);
                         if (FaintCheck(pkmn))
                         {
                             return;
@@ -223,37 +223,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (pkmn.HP < pkmn.MaxHP)
                         {
-                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator));
                             BroadcastItem(pkmn, pkmn, PBEItem.Leftovers, PBEItemAction.RestoredHP);
+                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator));
                         }
                     }
                     break;
             }
 
-            // Major statuses
             switch (pkmn.Status1)
             {
                 case PBEStatus1.Burned:
+                    BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Damage);
                     int damage = pkmn.MaxHP / Settings.BurnDamageDenominator;
                     if (pkmn.Ability == PBEAbility.Heatproof)
                     {
                         damage /= 2;
                     }
                     DealDamage(pkmn, pkmn, (ushort)damage, true);
-                    BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
                     {
                         return;
                     }
                     break;
                 case PBEStatus1.Poisoned:
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.PoisonDamageDenominator), true);
                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.Poisoned, PBEStatusAction.Damage);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.PoisonDamageDenominator), true);
                     FaintCheck(pkmn);
                     break;
                 case PBEStatus1.BadlyPoisoned:
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator), true);
                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Damage);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator), true);
                     if (FaintCheck(pkmn))
                     {
                         pkmn.Status1Counter = 0;
@@ -266,15 +265,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
             }
 
-            // Minor statuses
             if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
             {
                 PBEPokemon seeder = opposingTeam.PokemonAtPosition(pkmn.SeededPosition);
                 if (seeder != null)
                 {
+                    BroadcastStatus2(seeder, pkmn, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
                     ushort amtDealt = DealDamage(seeder, pkmn, (ushort)(pkmn.MaxHP / Settings.LeechSeedDenominator), true);
                     HealDamage(seeder, amtDealt);
-                    BroadcastStatus2(seeder, pkmn, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
                     if (FaintCheck(pkmn))
                     {
                         return;
@@ -283,16 +281,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (pkmn.Status2.HasFlag(PBEStatus2.Cursed))
             {
-                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.CurseDenominator), true);
                 BroadcastStatus2(pkmn, pkmn, PBEStatus2.Cursed, PBEStatusAction.Damage);
+                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.CurseDenominator), true);
                 if (FaintCheck(pkmn))
                 {
                     return;
                 }
             }
 
-            // Abilities
+            // These abilities cure the Pokémon from statuses
             LimberCheck(pkmn);
+
+            // These items change the Pokémon's status but don't activate the status's effect
+            switch (pkmn.Item)
+            {
+                case PBEItem.FlameOrb:
+                    if (pkmn.Status1 == PBEStatus1.None)
+                    {
+                        pkmn.Status1 = PBEStatus1.Burned;
+                        BroadcastItem(pkmn, pkmn, PBEItem.FlameOrb, PBEItemAction.ChangedStatus);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Added);
+                    }
+                    break;
+            }
         }
 
         void UseMove(PBEPokemon user)

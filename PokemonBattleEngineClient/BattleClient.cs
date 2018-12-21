@@ -197,12 +197,11 @@ namespace Kermalis.PokemonBattleEngineClient
                             victim = Battle.GetPokemon(ip.VictimId);
                         switch (ip.ItemAction)
                         {
-                            case PBEItemAction.CausedDamage:
-                            case PBEItemAction.RestoredHP:
-                                culprit.Item = ip.Item;
-                                break;
                             case PBEItemAction.Consumed:
                                 culprit.Item = PBEItem.None;
+                                break;
+                            default:
+                                culprit.Item = ip.Item;
                                 break;
                         }
                         string message;
@@ -213,6 +212,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEItemAction.CausedDamage: message = "{0} is hurt by its Black Sludge!"; break;
                                     case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its Black Sludge!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                }
+                                break;
+                            case PBEItem.FlameOrb:
+                                switch (ip.ItemAction)
+                                {
+                                    case PBEItemAction.ChangedStatus: message = "{0} was burned by Flame Orb!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;

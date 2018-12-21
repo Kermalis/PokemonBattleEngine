@@ -148,7 +148,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     {
                         PBETeamShell.ValidateMany(battlers.Select(b => b.Shell), settings);
                     }
-                    catch
+                    catch (Exception e)
                     {
                         Console.WriteLine("Invalid Team data received!");
                         CancelMatch();

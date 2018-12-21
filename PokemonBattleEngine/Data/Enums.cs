@@ -631,6 +631,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         CausedDamage,
         /// <summary>
+        /// The item caused a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/> to change.
+        /// </summary>
+        ChangedStatus,
+        /// <summary>
         /// The item was consumed by a Pokémon.
         /// </summary>
         Consumed,
@@ -914,6 +918,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         DreadPlate,
         EarthPlate,
         FistPlate,
+        /// <summary>
+        /// The Pokémon contracts <see cref="PBEStatus1.Burned"/> at the end of each turn if it has no other <see cref="PBEStatus1"/>.
+        /// </summary>
+        FlameOrb,
         FlamePlate,
         GriseousOrb,
         HardStone,
@@ -1045,7 +1053,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Frisk, // TODO
         Gluttony, // TODO
         /// <summary>
-        /// The Pokémon's attack is boosted when it is afflicted with a <see cref="PBEStatus1"/>, and the damage reduction when burned is not applied.
+        /// The Pokémon's attack is boosted when it is afflicted with a <see cref="PBEStatus1"/>, and the damage reduction from <see cref="PBEStatus1.Burned"/> is not applied.
         /// </summary>
         Guts,
         Harvest, // TODO

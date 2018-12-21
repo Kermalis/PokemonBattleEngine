@@ -28,6 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEItem.DreadPlate, new PBEItemData { FlingPower = 90 } },
             { PBEItem.EarthPlate, new PBEItemData { FlingPower = 90 } },
             { PBEItem.FistPlate, new PBEItemData { FlingPower = 90 } },
+            { PBEItem.FlameOrb, new PBEItemData { FlingPower = 30 } },
             { PBEItem.FlamePlate, new PBEItemData { FlingPower = 90 } },
             { PBEItem.GriseousOrb, new PBEItemData { FlingPower = 60 } },
             { PBEItem.HardStone, new PBEItemData { FlingPower = 100 } },

@@ -505,7 +505,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.LifeOrb, // Flame Orb
+            Item = PBEItem.FlameOrb,
             Ability = PBEAbility.Guts,
             Gender = PBEGender.Male,
             Nature = PBENature.Jolly,

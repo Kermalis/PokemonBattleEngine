@@ -164,6 +164,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
+                            case PBEItem.FlameOrb:
+                                switch (ip.ItemAction)
+                                {
+                                    case PBEItemAction.ChangedStatus: message = "{0} was burned by Flame Orb!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                }
+                                break;
                             case PBEItem.Leftovers:
                                 switch (ip.ItemAction)
                                 {
