@@ -193,7 +193,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 if (!battle.SelectActionsIfValid(local, actions))
                 {
                     Console.WriteLine("Actions are invalid!");
-                    player.Send(new PBEActionsRequestPacket(local, battle.Teams[local ? 0 : 1].ActionsRequired));
+                    player.Send(new PBEActionsRequestPacket(true, battle.Teams[local ? 0 : 1].ActionsRequired));
                 }
             }
         }
@@ -214,7 +214,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 if (!battle.SelectSwitchesIfValid(local, switches))
                 {
                     Console.WriteLine("Switches are invalid!");
-                    player.Send(new PBESwitchInRequestPacket(local, battle.Teams[local ? 0 : 1].SwitchInsRequired));
+                    player.Send(new PBESwitchInRequestPacket(true, battle.Teams[local ? 0 : 1].SwitchInsRequired));
                 }
             }
         }
