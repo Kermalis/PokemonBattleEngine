@@ -387,7 +387,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             Pokemon = pkmn;
 
-            Party = Client.Battle.Teams[0].Party.Select(p => new PokemonInfo(p, Pokemon.LockedAction.Decision == PBEDecision.Fight || Client.StandBy.Contains(p), SelectPokemonForTurn));
+            Party = Client.Battle.Teams[0].Party.Select(p => new PokemonInfo(p, Pokemon.TempLockedMove != PBEMove.None || Client.StandBy.Contains(p), SelectPokemonForTurn));
 
             var mInfo = new MoveInfo[pkmn.Moves.Length];
             for (int i = 0; i < mInfo.Length; i++)
@@ -816,29 +816,29 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                 }
 
-                if (Pokemon.LockedAction.Decision == PBEDecision.Fight && Pokemon.LockedAction.FightTargets != PBETarget.None)
+                if (Pokemon.TempLockedTargets != PBETarget.None)
                 {
-                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.AllyLeft))
+                    if (!Pokemon.TempLockedTargets.HasFlag(PBETarget.AllyLeft))
                     {
                         TargetAllyLeftEnabled = false;
                     }
-                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.AllyCenter))
+                    if (!Pokemon.TempLockedTargets.HasFlag(PBETarget.AllyCenter))
                     {
                         TargetAllyCenterEnabled = false;
                     }
-                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.AllyRight))
+                    if (!Pokemon.TempLockedTargets.HasFlag(PBETarget.AllyRight))
                     {
                         TargetAllyRightEnabled = false;
                     }
-                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.FoeLeft))
+                    if (!Pokemon.TempLockedTargets.HasFlag(PBETarget.FoeLeft))
                     {
                         TargetFoeLeftEnabled = false;
                     }
-                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.FoeCenter))
+                    if (!Pokemon.TempLockedTargets.HasFlag(PBETarget.FoeCenter))
                     {
                         TargetFoeCenterEnabled = false;
                     }
-                    if (!Pokemon.LockedAction.FightTargets.HasFlag(PBETarget.FoeRight))
+                    if (!Pokemon.TempLockedTargets.HasFlag(PBETarget.FoeRight))
                     {
                         TargetFoeRightEnabled = false;
                     }

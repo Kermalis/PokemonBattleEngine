@@ -6,13 +6,30 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
+    /// <summary>
+    /// Represents a specific Pokémon during a battle.
+    /// </summary>
     public sealed class PBEPokemon
     {
+        // TODO: Include battle this pokemon belongs to
+
+        /// <summary>
+        /// The Pokémon's ID for the current battle.
+        /// </summary>
         public byte Id { get; }
-        // True indicates this Pokémon is owned by the client or team 0 in the eyes of the host/spectators
+        /// <summary>
+        /// True indicates the Pokémon is owned by team 0, False indicates the Pokémon is owned by team 1.
+        /// </summary>
         public bool LocalTeam { get; }
+        /// <summary>
+        /// The shell that was used to construct this Pokémon.
+        /// </summary>
         public PBEPokemonShell Shell { get; }
 
+        /// <summary>
+        /// Returns a string that represents the relation of this Pokémon to the trainer.
+        /// </summary>
+        /// <param name="firstLetterCapitalized">True if this string will be used at the start of a sentence, False otherwise.</param>
         public string NameForTrainer(bool firstLetterCapitalized)
         {
             string prefix;
@@ -40,38 +57,102 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             return prefix + Shell.Nickname;
         }
+        /// <summary>
+        /// The Pokémon's nickname with its gender attached.
+        /// </summary>
         public string NameWithGender => Shell.Nickname + GenderSymbol;
+        /// <summary>
+        /// The Pokémon's gender as a string.
+        /// </summary>
         public string GenderSymbol => Shell.Gender == PBEGender.Female ? "♀" : Shell.Gender == PBEGender.Male ? "♂" : string.Empty;
 
-        public ushort HP, MaxHP, Attack, Defense, SpAttack, SpDefense, Speed;
-        public PBEMove[] Moves;
-        public byte[] PP;
-        public byte[] MaxPP;
+        /// <summary>
+        /// The Pokémon's current HP.
+        /// </summary>
+        public ushort HP { get; set; }
+        /// <summary>
+        /// The Pokémon's maximum HP.
+        /// </summary>
+        public ushort MaxHP { get; set; }
+        /// <summary>
+        /// The Pokémon's attack stat.
+        /// </summary>
+        public ushort Attack { get; set; }
+        /// <summary>
+        /// The Pokémon's defense stat.
+        /// </summary>
+        public ushort Defense { get; set; }
+        /// <summary>
+        /// The Pokémon's special attack stat.
+        /// </summary>
+        public ushort SpAttack { get; set; }
+        /// <summary>
+        /// The Pokémon's special defense stat.
+        /// </summary>
+        public ushort SpDefense { get; set; }
+        /// <summary>
+        /// The Pokémon's speed stat.
+        /// </summary>
+        public ushort Speed { get; set; }
+        public PBEMove[] Moves { get; set; }
+        public byte[] PP { get; set; }
+        public byte[] MaxPP { get; set; }
 
-        public PBESpecies Species;
-        public bool Shiny;
-        public PBEAbility Ability;
-        public PBEType Type1, Type2;
-        public double Weight;
-        public PBEItem Item;
-        public PBEFieldPosition FieldPosition;
-        public PBEStatus1 Status1;
-        public PBEStatus2 Status2;
+        public PBESpecies Species { get; set; }
+        public bool Shiny { get; set; }
+        public PBEAbility Ability { get; set; }
+        public PBEType Type1 { get; set; }
+        public PBEType Type2 { get; set; }
+        public double Weight { get; set; }
+        public PBEItem Item { get; set; }
+        public PBEFieldPosition FieldPosition { get; set; }
+        public PBEStatus1 Status1 { get; set; }
+        public PBEStatus2 Status2 { get; set; }
         // These are in a set order; see BattleEffects->ApplyStatChange()
         public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
 
-        public byte Status1Counter; // Toxic/Sleep
-        public byte SleepTurns; // Amount of turns to Sleep
+        /// <summary>
+        /// The counter used for <see cref="PBEStatus1.BadlyPoisoned"/> and <see cref="PBEStatus1.Asleep"/>.
+        /// </summary>
+        public byte Status1Counter { get; set; }
+        /// <summary>
+        /// The amount of turns the Pokémon will sleep for before waking.
+        /// </summary>
+        public byte SleepTurns { get; internal set; }
+        /// <summary>
+        /// The counter used for <see cref="PBEStatus2.Confused"/>.
+        /// </summary>
+        public byte ConfusionCounter { get; set; }
+        /// <summary>
+        /// The amount of turns the Pokémon will be confused for before snapping out of it.
+        /// </summary>
+        public byte ConfusionTurns { get; internal set; }
+        /// <summary>
+        /// The amount of consecutive turns the Pokémon has used protection.
+        /// </summary>
+        public byte ProtectCounter { get; set; }
+        /// <summary>
+        /// The amount of HP the Pokémon's <see cref="PBEStatus2.Substitute"/> has left.
+        /// </summary>
+        public ushort SubstituteHP { get; set; }
+        /// <summary>
+        /// The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on the opposing team.
+        /// </summary>
+        public PBEFieldPosition SeededPosition { get; set; }
 
-        public byte ConfusionCounter; // Confused
-        public byte ConfusionTurns; // Amount of turns to be Confused
-
-        public byte ProtectCounter; // Protect
-        public ushort SubstituteHP; // Substitute
-
-        public PBEFieldPosition SeededPosition; // The position to return Leech Seed HP to on the opposing team
-
-        public PBEAction PreviousAction, LockedAction, SelectedAction;
+        public PBEAction PreviousAction, SelectedAction;
+        /// <summary>
+        /// The move the Pokémon is forced to use by multi-turn moves.
+        /// </summary>
+        public PBEMove TempLockedMove { get; set; }
+        /// <summary>
+        /// The targets the Pokémon is forced to target by multi-turn moves.
+        /// </summary>
+        public PBETarget TempLockedTargets { get; set; }
+        /// <summary>
+        /// The move the Pokémon is forced to use by its choice item.
+        /// </summary>
+        public PBEMove ChoiceLockedMove { get; set; }
 
         // Stats & PP are set from the shell info
         public PBEPokemon(bool localTeam, byte id, PBEPokemonShell shell, PBESettings settings)
@@ -141,8 +222,16 @@ namespace Kermalis.PokemonBattleEngine.Data
             Weight = pData.Weight;
         }
 
+        /// <summary>
+        /// Returns True if the Pokémon has <paramref name="type"/>, False otherwise.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
         public bool HasType(PBEType type) => Type1 == type || Type2 == type;
 
+        /// <summary>
+        /// Calculates and sets the Pokémon's stats based on its level, IVs, EVs, nature, and species.
+        /// </summary>
+        /// <param name="settings"></param>
         void CalculateStats(PBESettings settings)
         {
             PBEPokemonData pData = PBEPokemonData.Data[Species];
@@ -164,6 +253,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             Speed = OtherStat(pData.Speed);
         }
 
+        /// <summary>
+        /// Sets and clears all information required for switching out.
+        /// </summary>
+        /// <param name="settings">The battle settings.</param>
         public void ClearForSwitch(PBESettings settings)
         {
             FieldPosition = PBEFieldPosition.None;
@@ -192,19 +285,21 @@ namespace Kermalis.PokemonBattleEngine.Data
             SubstituteHP = 0;
             Status2 &= ~PBEStatus2.Transformed;
 
+            TempLockedMove = ChoiceLockedMove = PBEMove.None;
+            TempLockedTargets = PBETarget.None;
+
             if (Shell.Nature != PBENature.MAX) // If the nature is unset, the program is not the host and does not own the Pokémon
             {
                 CalculateStats(settings);
             }
         }
 
-        // Transforms into "target" and sets both Pokémons' information to the parameters
-        // Also sets the Status2 transformed bit
         /// <summary>
         /// Transforms into <paramref name="target"/> and sets <see cref="PBEStatus2.Transformed"/>.
         /// </summary>
         /// <param name="target">The Pokémon to transform into.</param>
         /// <param name="settings">The battle settings.</param>
+        /// <remarks>Frees the Pokémon of its <see cref="ChoiceLockedMove"/>.</remarks>
         public void Transform(PBEPokemon target, PBESettings settings)
         {
             Species = target.Species;
@@ -231,9 +326,13 @@ namespace Kermalis.PokemonBattleEngine.Data
                 byte pp = Moves[i] == PBEMove.None ? (byte)0 : settings.PPMultiplier;
                 PP[i] = MaxPP[i] = pp;
             }
+            ChoiceLockedMove = PBEMove.None;
             Status2 |= PBEStatus2.Transformed;
         }
 
+        /// <summary>
+        /// Gets the type that <see cref="PBEMove.HiddenPower"/> will become when used by this Pokémon.
+        /// </summary>
         public PBEType GetHiddenPowerType()
         {
             int a = Shell.IVs[0] & 1,
@@ -244,6 +343,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 f = Shell.IVs[4] & 1;
             return PBEPokemonData.HiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (PBEPokemonData.HiddenPowerTypes.Length - 1) / ((1 << 6) - 1)];
         }
+        /// <summary>
+        /// Gets the base power that <see cref="PBEMove.HiddenPower"/> will have when used by this Pokémon.
+        /// </summary>
         public int GetHiddenPowerBasePower()
         {
             int a = (Shell.IVs[0] & 2) == 2 ? 1 : 0,

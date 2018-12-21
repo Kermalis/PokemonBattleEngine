@@ -80,18 +80,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         // TODO: Struggle
                         // Out of PP
-                        if (pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] < 1)
+                        if (pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0)
                         {
                             return false;
                         }
-                        // If the mon has a locked move, it must be used
-                        if (pkmn.LockedAction.Decision == PBEDecision.Fight)
+                        // If the mon has a locked action, it must be used
+                        if ((pkmn.ChoiceLockedMove != PBEMove.None && pkmn.ChoiceLockedMove != action.FightMove)
+                            || (pkmn.TempLockedMove != PBEMove.None && pkmn.TempLockedMove != action.FightMove)
+                            || (pkmn.TempLockedTargets != PBETarget.None && pkmn.TempLockedTargets != action.FightTargets))
                         {
-                            if ((pkmn.LockedAction.FightMove != PBEMove.None && pkmn.LockedAction.FightMove != action.FightMove)
-                                || (pkmn.LockedAction.FightTargets != PBETarget.None && pkmn.LockedAction.FightTargets != action.FightTargets))
-                            {
-                                return false;
-                            }
+                            return false;
                         }
                         // Verify targets
                         if (!AreTargetsValid(pkmn, action.FightMove, action.FightTargets))
@@ -155,6 +153,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (pkmn.SelectedAction.Decision)
                     {
                         case PBEDecision.Fight:
+                            if (pkmn.Item == PBEItem.ChoiceBand || pkmn.Item == PBEItem.ChoiceScarf || pkmn.Item == PBEItem.ChoiceSpecs)
+                            {
+                                pkmn.ChoiceLockedMove = pkmn.SelectedAction.FightMove;
+                            }
                             switch (GetMoveTargetsForPokemon(pkmn, pkmn.SelectedAction.FightMove))
                             {
                                 case PBEMoveTarget.RandomFoeSurrounding:

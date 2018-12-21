@@ -532,10 +532,18 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEStatusAction.Added:
                                         message = "{0} flew up high!";
-                                        victim.LockedAction = victim.SelectedAction;
+                                        if (victim.LocalTeam)
+                                        {
+                                            victim.TempLockedMove = victim.SelectedAction.FightMove;
+                                            victim.TempLockedTargets = victim.SelectedAction.FightTargets;
+                                        }
                                         break;
                                     case PBEStatusAction.Ended:
-                                        victim.LockedAction.Decision = PBEDecision.None;
+                                        if (victim.LocalTeam)
+                                        {
+                                            victim.TempLockedMove = PBEMove.None;
+                                            victim.TempLockedTargets = PBETarget.None;
+                                        }
                                         return true;
                                     default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                                 }
@@ -619,10 +627,18 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEStatusAction.Added:
                                         message = "{0} burrowed its way under the ground!";
-                                        victim.LockedAction = victim.SelectedAction;
+                                        if (victim.LocalTeam)
+                                        {
+                                            victim.TempLockedMove = victim.SelectedAction.FightMove;
+                                            victim.TempLockedTargets = victim.SelectedAction.FightTargets;
+                                        }
                                         break;
                                     case PBEStatusAction.Ended:
-                                        victim.LockedAction.Decision = PBEDecision.None;
+                                        if (victim.LocalTeam)
+                                        {
+                                            victim.TempLockedMove = PBEMove.None;
+                                            victim.TempLockedTargets = PBETarget.None;
+                                        }
                                         return true;
                                     default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                                 }
@@ -633,10 +649,18 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEStatusAction.Added:
                                         message = "{0} hid underwater!";
-                                        victim.LockedAction = victim.SelectedAction;
+                                        if (victim.LocalTeam)
+                                        {
+                                            victim.TempLockedMove = victim.SelectedAction.FightMove;
+                                            victim.TempLockedTargets = victim.SelectedAction.FightTargets;
+                                        }
                                         break;
                                     case PBEStatusAction.Ended:
-                                        victim.LockedAction.Decision = PBEDecision.None;
+                                        if (victim.LocalTeam)
+                                        {
+                                            victim.TempLockedMove = PBEMove.None;
+                                            victim.TempLockedTargets = PBETarget.None;
+                                        }
                                         return true;
                                     default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
                                 }
@@ -816,22 +840,24 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                 case PBEActionsRequestPacket arp:
                     {
-                        if (!arp.LocalTeam)
+                        if (arp.LocalTeam)
                         {
-                            return true;
+                            ActionsLoop(true);
                         }
-                        ActionsLoop(true);
-                        break;
+                        return true;
                     }
                 case PBESwitchInRequestPacket sirp:
                     {
-                        if (!sirp.LocalTeam)
+                        Battle.Teams[sirp.LocalTeam ? 0 : 1].SwitchInsRequired = sirp.Amount;
+                        if (sirp.LocalTeam)
                         {
-                            return true;
+                            SwitchesLoop(true);
                         }
-                        Battle.Teams[0].SwitchInsRequired = sirp.Amount;
-                        SwitchesLoop(true);
-                        break;
+                        else if (Battle.Teams[0].SwitchInsRequired == 0) // Don't display this message if we're in switchesloop because it'd overwrite the messages we need to see.
+                        {
+                            BattleView.SetMessage($"Waiting for {Battle.Teams[1].TrainerName}...");
+                        }
+                        return true;
                     }
             }
             return false;
@@ -843,9 +869,9 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             if (begin)
             {
-                foreach (PBEPokemon p in Battle.Teams[0].Party)
+                foreach (PBEPokemon pkmn in Battle.Teams[0].Party)
                 {
-                    p.SelectedAction.Decision = PBEDecision.None;
+                    pkmn.SelectedAction.Decision = PBEDecision.None;
                 }
                 actions.Clear();
                 actions.AddRange(Battle.Teams[0].ActiveBattlers.OrderBy(p => p.FieldPosition));
@@ -854,6 +880,16 @@ namespace Kermalis.PokemonBattleEngineClient
             int i = actions.FindIndex(p => p.SelectedAction.Decision == PBEDecision.None);
             if (i == -1)
             {
+                foreach (PBEPokemon pkmn in actions)
+                {
+                    if (pkmn.SelectedAction.Decision == PBEDecision.Fight)
+                    {
+                        if (pkmn.Item == PBEItem.ChoiceBand || pkmn.Item == PBEItem.ChoiceScarf || pkmn.Item == PBEItem.ChoiceSpecs)
+                        {
+                            pkmn.ChoiceLockedMove = pkmn.SelectedAction.FightMove;
+                        }
+                    }
+                }
                 BattleView.SetMessage($"Waiting for {Battle.Teams[1].TrainerName}...");
                 Send(new PBEActionsResponsePacket(actions.Select(p => p.SelectedAction)));
             }
@@ -879,7 +915,7 @@ namespace Kermalis.PokemonBattleEngineClient
             }
             if (Battle.Teams[0].SwitchInsRequired == 0)
             {
-                BattleView.SetMessage("Waiting for server...");
+                BattleView.SetMessage($"Waiting for {(Battle.Teams[1].SwitchInsRequired > 0 ? Battle.Teams[1].TrainerName : "server")}...");
                 Send(new PBESwitchInResponsePacket(Switches));
             }
             else

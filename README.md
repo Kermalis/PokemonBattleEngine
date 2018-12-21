@@ -24,7 +24,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Spectators
 * Specific place for event Pokémon shells
 * Better validation for Pokémon (programmatically deduce how the Pokémon was obtained, make MinLevel relevant)
-* Implement a better way to lock actions besides "PPokemon.LockedAction" (Consider "Follow Me" as well)
+* Find out how locked moves behave when PP runs out
 * Damage, effectiveness and critical packets should include a list of hit Pokémon
 * Switch-in effects and turn ended effects should go by speed (with speed ties and everything like turn order)
 * Winning

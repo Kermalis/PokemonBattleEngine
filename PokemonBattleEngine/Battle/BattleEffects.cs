@@ -1536,7 +1536,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underground))
             {
-                user.LockedAction.Decision = PBEDecision.None;
+                user.TempLockedMove = PBEMove.None;
+                user.TempLockedTargets = PBETarget.None;
                 user.Status2 &= ~PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
 
@@ -1566,7 +1567,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                user.LockedAction = user.SelectedAction;
+                user.TempLockedMove = user.SelectedAction.FightMove;
+                user.TempLockedTargets = user.SelectedAction.FightTargets;
                 user.Status2 |= PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
 
@@ -1584,7 +1586,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underwater))
             {
-                user.LockedAction.Decision = PBEDecision.None;
+                user.TempLockedMove = PBEMove.None;
+                user.TempLockedTargets = PBETarget.None;
                 user.Status2 &= ~PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
 
@@ -1614,7 +1617,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                user.LockedAction = user.SelectedAction;
+                user.TempLockedMove = user.SelectedAction.FightMove;
+                user.TempLockedTargets = user.SelectedAction.FightTargets;
                 user.Status2 |= PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
 
@@ -1632,7 +1636,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         top:
             if (user.Status2.HasFlag(PBEStatus2.Airborne))
             {
-                user.LockedAction.Decision = PBEDecision.None;
+                user.TempLockedMove = PBEMove.None;
+                user.TempLockedTargets = PBETarget.None;
                 user.Status2 &= ~PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
 
@@ -1662,7 +1667,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                user.LockedAction = user.SelectedAction;
+                user.TempLockedMove = user.SelectedAction.FightMove;
+                user.TempLockedTargets = user.SelectedAction.FightTargets;
                 user.Status2 |= PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
 

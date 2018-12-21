@@ -890,6 +890,9 @@ namespace Kermalis.PokemonBattleEngine.Data
     /// </summary>
     public enum PBEItem : ushort
     {
+        /// <summary>
+        /// No item.
+        /// </summary>
         None,
         AdamantOrb,
         BlackBelt,
@@ -899,9 +902,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         BurnDrive,
         Charcoal,
         ChillDrive,
-        ChoiceBand, // TODO: Lock move
-        ChoiceScarf, // TODO: Lock move
-        ChoiceSpecs, // TODO: Lock move
+        ChoiceBand,
+        ChoiceScarf,
+        ChoiceSpecs,
         DampRock,
         DeepSeaScale,
         DeepSeaTooth,
@@ -1095,7 +1098,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Levitate,
         LightMetal, // TODO
-        LightningRod, // TODO
+        Lightningrod, // TODO
         /// <summary>
         /// The Pokémon cannot be paralyzed.
         /// </summary>

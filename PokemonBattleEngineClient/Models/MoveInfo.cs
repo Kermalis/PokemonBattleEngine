@@ -52,9 +52,13 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             var ttb = typeToBrush[PBEMoveData.GetMoveTypeForPokemon(pkmn, move)];
 
             bool enabled;
-            if (pkmn.LockedAction.Decision == PBEDecision.Fight && pkmn.LockedAction.FightMove != PBEMove.None)
+            if (pkmn.TempLockedMove != PBEMove.None)
             {
-                enabled = pkmn.LockedAction.FightMove == move;
+                enabled = pkmn.TempLockedMove == move;
+            }
+            else if (pkmn.ChoiceLockedMove != PBEMove.None)
+            {
+                enabled = pkmn.ChoiceLockedMove == move;
             }
             else
             {
