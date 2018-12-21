@@ -138,6 +138,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     case PBEAbilityAction.Damage: return; // Message is displayed from a hp changed packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
+                            case PBEAbility.WonderGuard:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.Damage: return; // Message is displayed from an effectiveness packet
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
                             default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");
                         }
                         Console.WriteLine(message, culprit.NameForTrainer(true), victim.NameForTrainer(false));

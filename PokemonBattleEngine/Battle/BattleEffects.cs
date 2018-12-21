@@ -793,42 +793,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
-        // Returns amount of damage done
-        // Broadcasts the hp changing, effectiveness, substitute
-        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute)
-        {
-            if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
-            {
-                ushort oldHP = victim.SubstituteHP;
-                victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
-                ushort damageAmt = (ushort)(oldHP - victim.SubstituteHP);
-                BroadcastStatus2(culprit, victim, PBEStatus2.Substitute, PBEStatusAction.Damage);
-                return damageAmt;
-            }
-            else
-            {
-                ushort oldHP = victim.HP;
-                victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
-                ushort damageAmt = (ushort)(oldHP - victim.HP);
-                BroadcastPkmnHPChanged(victim, -damageAmt);
-                return damageAmt;
-            }
-        }
-
-        // Returns amount of hp healed
-        // Broadcasts the event if it healed more than 0
-        ushort HealDamage(PBEPokemon pkmn, ushort hp)
-        {
-            ushort oldHP = pkmn.HP;
-            pkmn.HP = (ushort)Math.Min(pkmn.MaxHP, pkmn.HP + Math.Max((ushort)1, hp)); // Always try to heal at least 1 HP
-            ushort healAmt = (ushort)(pkmn.HP - oldHP);
-            if (healAmt > 0)
-            {
-                BroadcastPkmnHPChanged(pkmn, healAmt);
-            }
-            return healAmt;
-        }
-
         // Will cure Paralysis if the Pokémon has Limber
         void LimberCheck(PBEPokemon pkmn)
         {
@@ -1196,7 +1160,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
 
                 double d = 1.0;
-                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref d);
+                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref d, true);
                 if (effectiveness == PBEEffectiveness.Ineffective) // Paralysis, Normalize
                 {
                     BroadcastEffectiveness(target, effectiveness);

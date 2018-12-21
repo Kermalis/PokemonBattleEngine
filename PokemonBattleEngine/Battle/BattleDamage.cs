@@ -18,17 +18,62 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        void TypeCheck(PBEPokemon user, PBEPokemon target, PBEMove move, out PBEType moveType, out PBEEffectiveness effectiveness, ref double damageMultiplier)
+        /// <summary>
+        /// Deals damage to <paramref name="victim"/> and broadcasts the HP changing and substitute damage.
+        /// </summary>
+        /// <param name="culprit">The Pokémon responsible for the damage.</param>
+        /// <param name="victim">The Pokémon receiving the damage.</param>
+        /// <param name="hp">The amount of HP <paramref name="victim"/> will try to lose.</param>
+        /// <param name="ignoreSubstitute">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEStatus2.Substitute"/>.</param>
+        /// <returns>The amount of damage dealt.</returns>
+        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute)
+        {
+            if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                ushort oldHP = victim.SubstituteHP;
+                victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
+                ushort damageAmt = (ushort)(oldHP - victim.SubstituteHP);
+                BroadcastStatus2(culprit, victim, PBEStatus2.Substitute, PBEStatusAction.Damage);
+                return damageAmt;
+            }
+            else
+            {
+                ushort oldHP = victim.HP;
+                victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
+                ushort damageAmt = (ushort)(oldHP - victim.HP);
+                BroadcastPkmnHPChanged(victim, -damageAmt);
+                return damageAmt;
+            }
+        }
+        /// <summary>
+        /// Restores HP to <paramref name="pkmn"/> and broadcasts the HP changing if it changes.
+        /// </summary>
+        /// <param name="pkmn">The Pokémon receiving the HP.</param>
+        /// <param name="hp">The amount of HP <paramref name="pkmn"/> will try to gain.</param>
+        /// <returns>The amount of HP restored.</returns>
+        ushort HealDamage(PBEPokemon pkmn, ushort hp)
+        {
+            ushort oldHP = pkmn.HP;
+            pkmn.HP = (ushort)Math.Min(pkmn.MaxHP, pkmn.HP + Math.Max((ushort)1, hp)); // Always try to heal at least 1 HP
+            ushort healAmt = (ushort)(pkmn.HP - oldHP);
+            if (healAmt > 0)
+            {
+                BroadcastPkmnHPChanged(pkmn, healAmt);
+            }
+            return healAmt;
+        }
+        void TypeCheck(PBEPokemon user, PBEPokemon target, PBEMove move, out PBEType moveType, out PBEEffectiveness effectiveness, ref double damageMultiplier, bool ignoreWonderGuard = false)
         {
             PBEPokemonData targetPData = PBEPokemonData.Data[target.Species];
             moveType = PBEMoveData.GetMoveTypeForPokemon(user, move);
             double mult = PBEPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type1];
             mult *= PBEPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type2];
-            if (mult <= 0)
+
+            if (mult <= 0) // (-infinity, 0]
             {
                 effectiveness = PBEEffectiveness.Ineffective;
             }
-            else if (mult < 1)
+            else if (mult < 1) // (0, 1)
             {
                 effectiveness = PBEEffectiveness.NotVeryEffective;
                 if (user.Ability == PBEAbility.TintedLens)
@@ -36,11 +81,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     mult *= 2.0;
                 }
             }
-            else if (mult == 1.0)
+            else if (mult == 1.0) // [1, 1]
             {
                 effectiveness = PBEEffectiveness.Normal;
             }
-            else // > 1
+            else // (1, infinity)
             {
                 effectiveness = PBEEffectiveness.SuperEffective;
                 if (target.Ability == PBEAbility.Filter || target.Ability == PBEAbility.SolidRock)
@@ -50,16 +95,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             damageMultiplier *= mult;
 
-            // Levitate doesn't activate if the target is Flying, so it goes down here
-            if (target.Ability == PBEAbility.Levitate && moveType == PBEType.Ground)
+            if (effectiveness != PBEEffectiveness.Ineffective)
             {
-                effectiveness = PBEEffectiveness.Ineffective;
-                damageMultiplier = 0;
-                BroadcastAbility(target, target, PBEAbility.Levitate, PBEAbilityAction.Damage);
+                if ((target.Ability == PBEAbility.Levitate && moveType == PBEType.Ground)
+                    || (!ignoreWonderGuard && target.Ability == PBEAbility.WonderGuard && effectiveness != PBEEffectiveness.SuperEffective))
+                {
+                    effectiveness = PBEEffectiveness.Ineffective;
+                    damageMultiplier = 0;
+                    BroadcastAbility(target, target, target.Ability, PBEAbilityAction.Damage);
+                }
             }
         }
 
-        public ushort CalculateBasePower(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
+        ushort CalculateBasePower(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
         {
             double basePower = power;
 
@@ -512,7 +560,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)basePower;
         }
-        public ushort CalculateAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
+        ushort CalculateAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Negative Attack changes are ignored for critical hits
             double attack = user.Attack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
@@ -542,7 +590,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)attack;
         }
-        public ushort CalculateDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
+        ushort CalculateDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Positive Defense changes are ignored for critical hits
             double defense = user.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
@@ -559,7 +607,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)defense;
         }
-        public ushort CalculateSpAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
+        ushort CalculateSpAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Negative SpAttack changes are ignored for critical hits
             double spAttack = user.SpAttack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
@@ -586,7 +634,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return (ushort)spAttack;
         }
-        public ushort CalculateSpDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
+        ushort CalculateSpDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Positive SpDefense changes are ignored for critical hits
             double spDefense = user.SpDefense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
@@ -612,7 +660,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         // If moveCategory is PBEMoveCategory.MAX, category is determined by the move
         // If power is 0, power is determined by the move
-        public ushort CalculateDamage(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory = PBEMoveCategory.MAX, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
+        ushort CalculateDamage(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory = PBEMoveCategory.MAX, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
         {
             if (moveCategory == PBEMoveCategory.MAX)
             {

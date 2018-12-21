@@ -1272,7 +1272,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         WaterVeil, // TODO
         WeakArmor, // TODO
         WhiteSmoke, // TODO
-        WonderGuard, // TODO
+        /// <summary>
+        /// The Pokémon is immune to all damaging moves except for moves that would deal super-effective damage.
+        /// </summary>
+        WonderGuard, // TODO: Mold Breaker, Teravolt, Turboblaze, Role Play, Skill Swap
         WonderSkin, // TODO
         ZenMode, // TODO
         /// <summary>
