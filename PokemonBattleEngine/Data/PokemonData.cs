@@ -62,7 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBENature.Impish,  new sbyte[] {    0,   +1,   -1,    0,    0} },
             { PBENature.Jolly,   new sbyte[] {    0,    0,   -1,    0,   +1} },
             { PBENature.Lax,     new sbyte[] {    0,   +1,    0,   -1,    0} },
-            { PBENature.Loney,   new sbyte[] {   +1,   -1,    0,    0,    0} },
+            { PBENature.Lonely,  new sbyte[] {   +1,   -1,    0,    0,    0} },
             { PBENature.Mild,    new sbyte[] {    0,   -1,   +1,    0,    0} },
             { PBENature.Modest,  new sbyte[] {   -1,    0,   +1,    0,    0} },
             { PBENature.Naive,   new sbyte[] {    0,    0,    0,   -1,   +1} },

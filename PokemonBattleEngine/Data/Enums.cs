@@ -835,7 +835,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The Pokémon favors attack and hinders defense.
         /// </summary>
-        Loney,
+        Lonely,
         /// <summary>
         /// The Pokémon favors special attack and hinders defense.
         /// </summary>

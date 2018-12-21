@@ -236,7 +236,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             PBEPokemonData pData = PBEPokemonData.Data[Species];
 
-            MaxHP = (ushort)(((2 * pData.HP + Shell.IVs[0] + (Shell.EVs[0] / 4)) * Shell.Level / settings.MaxLevel) + Shell.Level + 10);
+            MaxHP = (ushort)(Species == PBESpecies.Shedinja ? 1 : (((2 * pData.HP + Shell.IVs[0] + (Shell.EVs[0] / 4)) * Shell.Level / settings.MaxLevel) + Shell.Level + 10));
 
             int i = 0;
             ushort OtherStat(byte baseVal)
