@@ -1344,6 +1344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Question = 201 | (27 << 0x10),
         Smeargle = 235,
         Nincada = 290,
+        Shedinja = 292,
         Skitty = 300,
         Delcatty = 301,
         Lileep = 345,
