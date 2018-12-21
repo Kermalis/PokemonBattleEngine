@@ -3878,11 +3878,82 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Sketch, 61, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Sketch, 71, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Sketch, 81, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.Sketch, 91, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Sketch, 91, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
+                    }
+                }
+            },
+            {
+                PBESpecies.Nincada,
+                new PBEPokemonData
+                {
+                    HP = 31, Attack = 45, Defense = 90, SpAttack = 30, SpDefense = 30, Speed = 40,
+                    GenderRatio = PBEGenderRatio.M1_F1,
+                    Type1 = PBEType.Bug, Type2 = PBEType.Ground,
+                    Abilities = new PBEAbility[] { PBEAbility.Compoundeyes, PBEAbility.RunAway },
+                    MinLevel = 1,
+                    ShinyLocked = false,
+                    Weight = 5.5,
+                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PBEMove.Dig, 45, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.FalseSwipe, 25, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.FurySwipes, 14, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Harden, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.LeechLife, 5, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.MetalClaw, 38, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.MindReader, 19, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.MudSlap, 31, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.SandAttack, 9, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Scratch, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.BugBuzz, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Cut, PBEMoveObtainMethod.HM_RSFRLGE | PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PBEMove.Dig, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.DoubleEdge, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
+                        Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Endure, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Facade, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.FaintAttack, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.FalseSwipe, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.FinalGambit, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Flash, PBEMoveObtainMethod.HM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.FuryCutter, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
+                        //Tuple.Create(PBEMove.GigaDrain, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Gust, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.HoneClaws, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Mimic, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
+                        Tuple.Create(PBEMove.MudSlap, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
+                        //Tuple.Create(PBEMove.NaturalGift, PBEMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PBEMove.NightSlash, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Protect, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Return, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Sandstorm, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.SecretPower, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS),
+                        Tuple.Create(PBEMove.ShadowBall, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.SilverWind, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.SolarBeam, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Spite, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.StringShot, PBEMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PBEMove.StruggleBug, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Substitute, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.SunnyDay, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
                 }
             },

@@ -1343,6 +1343,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Exclamation = 201 | (26 << 0x10),
         Unown_Question = 201 | (27 << 0x10),
         Smeargle = 235,
+        Nincada = 290,
         Skitty = 300,
         Delcatty = 301,
         Lileep = 345,
