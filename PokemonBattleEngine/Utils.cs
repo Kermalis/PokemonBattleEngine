@@ -99,14 +99,14 @@ namespace Kermalis.PokemonBattleEngine
         internal static byte[] StringToBytes(string str)
         {
             var bytes = new List<byte>();
-            byte[] nameBytes = Encoding.ASCII.GetBytes(str);
+            byte[] nameBytes = Encoding.Unicode.GetBytes(str);
             bytes.Add((byte)nameBytes.Length);
             bytes.AddRange(nameBytes);
             return bytes.ToArray();
         }
         internal static string StringFromBytes(BinaryReader r)
         {
-            return Encoding.ASCII.GetString(r.ReadBytes(r.ReadByte()));
+            return Encoding.Unicode.GetString(r.ReadBytes(r.ReadByte()));
         }
     }
 }

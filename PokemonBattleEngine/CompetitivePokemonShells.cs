@@ -938,7 +938,7 @@ namespace Kermalis.PokemonBattleEngine
             var team = new PBETeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample() };
             var possiblePokemon = new List<PBEPokemonShell>(DefaultCompetitivePokemon);
             possiblePokemon.Shuffle();
-            team.Party.AddRange(possiblePokemon.Take(numPkmn));
+            team.Party = possiblePokemon.Take(numPkmn).ToArray();
             return team;
         }
     }

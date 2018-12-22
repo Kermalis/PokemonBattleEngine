@@ -39,12 +39,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 PBETeamShell team0 = new PBETeamShell
                 {
                     PlayerName = Context.User.Username,
-                    Party = { PBECompetitivePokemonShells.Palkia_Uber }
+                    Party = new PBEPokemonShell[] { PBECompetitivePokemonShells.Palkia_Uber }
                 };
                 PBETeamShell team1 = new PBETeamShell
                 {
                     PlayerName = battler1.Username,
-                    Party = { PBECompetitivePokemonShells.Dialga_Uber }
+                    Party = new PBEPokemonShell[] { PBECompetitivePokemonShells.Dialga_Uber }
                 };
                 PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0, team1);
                 var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);

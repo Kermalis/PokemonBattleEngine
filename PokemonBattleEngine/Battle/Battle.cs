@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             TrainerName = shell.PlayerName;
             LocalTeam = localTeam;
             Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
-            for (int i = 0; i < shell.Party.Count; i++)
+            for (int i = 0; i < shell.Party.Length; i++)
             {
                 Party.Add(new PBEPokemon(localTeam, idCount++, shell.Party[i], battle.Settings));
             }

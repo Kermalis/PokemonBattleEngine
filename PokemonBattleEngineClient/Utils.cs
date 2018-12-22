@@ -21,30 +21,12 @@ namespace Kermalis.PokemonBattleEngineClient
             return new Bitmap(assets.Open(uri));
         }
 
-        static readonly Dictionary<char, string> SpecialCharKeys = new Dictionary<char, string>()
-        {
-            { '*', "Asterisk" },
-            { '^', "Caret" },
-            { ':', "Colon" },
-            { 'é', "e2" },
-            { '♀', "Female" },
-            { '#', "Hashtag" },
-            { '♂', "Male" },
-            { '%', "Percent" },
-            { '.', "Period" },
-            { '?', "QuestionMark" },
-            { '"', "QuotationMark" },
-            { ' ', "Space" }
-        };
         static readonly Dictionary<string, Bitmap> LoadedBitmaps = new Dictionary<string, Bitmap>();
         static string GetCharKey(char c)
         {
-            if (SpecialCharKeys.ContainsKey(c))
-            {
-                return SpecialCharKeys[c];
-            }
-            string key = $"{(char.IsUpper(c) ? "U" : "")}{c}";
-            return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{key}.png") ? key : SpecialCharKeys['?'];
+            string key = ((int)c).ToString("X");
+            string questionMark = ((int)'?').ToString("X");
+            return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{key}.png") ? key : questionMark;
         }
         public static Bitmap RenderString(string str)
         {
