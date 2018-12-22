@@ -45,7 +45,7 @@ namespace Kermalis.PokemonBattleEngineClient
             }
 
             int stringWidth = str.Select(c => LoadedBitmaps[GetCharKey(c)].PixelSize.Width).Sum();
-            const byte height = 14;
+            const byte height = 15;
 
             var rtb = new RenderTargetBitmap(new PixelSize(stringWidth, height));
             using (var ctx = rtb.CreateDrawingContext(null))
