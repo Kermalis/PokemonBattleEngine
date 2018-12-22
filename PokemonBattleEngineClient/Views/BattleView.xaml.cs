@@ -5,6 +5,7 @@ using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using System;
 using System.ComponentModel;
 
@@ -16,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public new event PropertyChangedEventHandler PropertyChanged;
 
         IBitmap BGSource { get; set; }
-        IBitmap Message { get; set; }
+        string Message { get; set; }
         bool IsMessageBoxVisible { get; set; }
 
         PBEBattle battle;
@@ -29,7 +30,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void SetMessage(string str)
         {
-            Message = Utils.RenderString(str);
+            Message = str;
             OnPropertyChanged(nameof(Message));
             IsMessageBoxVisible = !string.IsNullOrWhiteSpace(str);
             OnPropertyChanged(nameof(IsMessageBoxVisible));

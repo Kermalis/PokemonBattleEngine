@@ -1,25 +1,30 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
              xmlns:model="clr-namespace:Kermalis.PokemonBattleEngineClient.Models;assembly=PokemonBattleEngineClient"
         Width="512" Height="128" Background="#313131" Name="Actions0">
   <UserControl.DataTemplates>
     <DataTemplate DataType="model:MoveInfo">
       <Button Width="103" Height="30" Command="{Binding SelectMoveCommand}" Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4">
         <StackPanel>
-          <Image Source="{Binding Label}"/>
+          <Image Source="{Binding Label, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
         <ToolTip.Tip>
-          <TextBlock Text="{Binding Description}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+          <ToolTip Background="Black">
+            <Image Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          </ToolTip>
         </ToolTip.Tip>
       </Button>
     </DataTemplate>
     <DataTemplate DataType="model:PokemonInfo">
       <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="Black" BorderBrush="#757575" BorderThickness="4">
         <StackPanel>
-          <Image Source="{Binding Label}"/>
+          <Image Source="{Binding Pokemon.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
         <ToolTip.Tip>
-          <TextBlock Text="{Binding Pokemon}" Foreground="Black" FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+          <ToolTip Background="Black">
+            <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          </ToolTip>
         </ToolTip.Tip>
       </Button>
     </DataTemplate>
@@ -52,41 +57,41 @@
       <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="23" IsEnabled="{Binding TargetFoeRightEnabled}"
               Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeRight">
         <StackPanel>
-          <Image Source="{Binding TargetFoeRight}"/>
+          <Image Source="{Binding TargetFoeRight.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
       </Button>
       <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="23" IsEnabled="{Binding TargetFoeCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
               Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeCenter">
         <StackPanel>
-          <Image Source="{Binding TargetFoeCenter}"/>
+          <Image Source="{Binding TargetFoeCenter.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
       </Button>
       <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="23" IsEnabled="{Binding TargetFoeLeftEnabled}"
               Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeLeft">
         <StackPanel>
-          <Image Source="{Binding TargetFoeLeft}"/>
+          <Image Source="{Binding TargetFoeLeft.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
       </Button>
       <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="75" IsEnabled="{Binding TargetAllyLeftEnabled}"
               Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyLeft">
         <StackPanel>
-          <Image Source="{Binding TargetAllyLeft}"/>
+          <Image Source="{Binding TargetAllyLeft.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
       </Button>
       <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="75"  IsEnabled="{Binding TargetAllyCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
               Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyCenter">
         <StackPanel>
-          <Image Source="{Binding TargetAllyCenter}"/>
+          <Image Source="{Binding TargetAllyCenter.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
       </Button>
       <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="75" IsEnabled="{Binding TargetAllyRightEnabled}"
               Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyRight">
         <StackPanel>
-          <Image Source="{Binding TargetAllyRight}"/>
+          <Image Source="{Binding TargetAllyRight.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
       </Button>
     </Canvas>
-    <ItemsControl Items="{Binding Party}" IsVisible="{Binding SwitchesVisible}">
+    <ItemsControl IsVisible="{Binding SwitchesVisible}" Items="{Binding Party}">
       <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>
           <StackPanel Orientation="Horizontal" Spacing="10" Margin="12,49"/>
@@ -95,11 +100,23 @@
     </ItemsControl>
     <Canvas IsVisible="{Binding PositionsVisible}">
       <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="49" IsEnabled="{Binding LeftPositionEnabled}"
-              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Left" Foreground="White" Content="Left"/>
+              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Left">
+        <StackPanel>
+          <Image Source="{Binding Source='Left', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+        </StackPanel>
+      </Button>
       <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="49" IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterTargetsVisible}"
-              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Center" Foreground="White" Content="Center"/>
+              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Center">
+        <StackPanel>
+          <Image Source="{Binding Source='Center', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+        </StackPanel>
+      </Button>
       <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="49" IsEnabled="{Binding RightPositionEnabled}"
-              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Right" Foreground="White" Content="Right"/>
+              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Right">
+        <StackPanel>
+          <Image Source="{Binding Source='Right', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+        </StackPanel>
+      </Button>
     </Canvas>
   </StackPanel>
 </UserControl>

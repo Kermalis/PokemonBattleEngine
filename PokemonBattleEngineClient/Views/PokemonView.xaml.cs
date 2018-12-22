@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using System;
 using System.ComponentModel;
 

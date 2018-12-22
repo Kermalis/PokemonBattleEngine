@@ -42,16 +42,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Location));
             }
         }
-        string nickname;
-        string Nickname
-        {
-            get => nickname;
-            set
-            {
-                nickname = value;
-                OnPropertyChanged(nameof(Nickname));
-            }
-        }
         string level;
         string Level
         {
@@ -112,7 +102,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             else
             {
-                Nickname = pokemon.Shell.Nickname;
                 Level = $"{pokemon.GenderSymbol} Lv.{pokemon.Shell.Level}";
                 switch (pokemon.Status1)
                 {
@@ -125,14 +114,20 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     default: Status = string.Empty; break;
                 }
 
-                const byte lineX = 49, lineY = 17, lineW = 47;
+                const byte lineX = 50, lineY = 18, lineW = 47;
                 double hpLeft = (double)pokemon.HP / pokemon.MaxHP;
                 if (hpLeft <= 0.20)
+                {
                     HPColor = red;
+                }
                 else if (hpLeft <= 0.50)
+                {
                     HPColor = yellow;
+                }
                 else
+                {
                     HPColor = green;
+                }
                 HPEndLocation = new Point(hpLeft * lineW + lineX, lineY);
 
                 Visible = true;

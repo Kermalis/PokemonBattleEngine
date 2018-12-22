@@ -1,5 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
              xmlns:view="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient"
              Background="Black">
   <Canvas Width="512" Height="384">
@@ -24,7 +25,7 @@
     <Line StartPoint="0,336" EndPoint="512,336" Stroke="#35000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <Line StartPoint="0,337" EndPoint="512,337" Stroke="#7C000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <Rectangle Width="512" Height="36" Canvas.Left="0" Canvas.Top="338" Fill="#83000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
-    <Image Source="{Binding Message}" Canvas.Left="16" Canvas.Top="342" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="3"/>
+    <Image Source="{Binding Message, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}" Canvas.Left="16" Canvas.Top="342" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="3"/>
     <Line StartPoint="0,375" EndPoint="512,375" Stroke="#7C000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <Line StartPoint="0,376" EndPoint="512,376" Stroke="#35000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>
     <Line StartPoint="0,377" EndPoint="512,377" Stroke="#C3000000" IsVisible="{Binding IsMessageBoxVisible}" ZIndex="2"/>

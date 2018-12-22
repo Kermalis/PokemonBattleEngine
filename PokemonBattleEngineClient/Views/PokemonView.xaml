@@ -1,6 +1,7 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:gif="clr-namespace:AvaloniaGif;assembly=AvaloniaGif"
+             xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
              Width="192" Height="192" IsVisible="{Binding Visible}">
   <UserControl.RenderTransform>
     <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
@@ -12,8 +13,9 @@
          RenderOptions.BitmapInterpolationMode="Default"
          gif:GifImage.SourceUri="{Binding Source}">
     <ToolTip.Tip>
-      <TextBlock Text="{Binding Pokemon}"
-                 FontSize="16" FontFamily="resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts?assembly=PokemonBattleEngineClient#Pokémon B/W"/>
+      <ToolTip Background="Black">
+        <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+      </ToolTip>
     </ToolTip.Tip>
   </Image>
   <!--</Border>-->

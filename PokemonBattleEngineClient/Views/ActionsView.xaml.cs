@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Models;
@@ -18,8 +17,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        IBitmap targetAllyLeft;
-        IBitmap TargetAllyLeft
+        PBEPokemon targetAllyLeft;
+        PBEPokemon TargetAllyLeft
         {
             get => targetAllyLeft;
             set
@@ -38,8 +37,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetAllyLeftEnabled));
             }
         }
-        IBitmap targetAllyCenter;
-        IBitmap TargetAllyCenter
+        PBEPokemon targetAllyCenter;
+        PBEPokemon TargetAllyCenter
         {
             get => targetAllyCenter;
             set
@@ -58,8 +57,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetAllyCenterEnabled));
             }
         }
-        IBitmap targetAllyRight;
-        IBitmap TargetAllyRight
+        PBEPokemon targetAllyRight;
+        PBEPokemon TargetAllyRight
         {
             get => targetAllyRight;
             set
@@ -78,8 +77,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetAllyRightEnabled));
             }
         }
-        IBitmap targetFoeLeft;
-        IBitmap TargetFoeLeft
+        PBEPokemon targetFoeLeft;
+        PBEPokemon TargetFoeLeft
         {
             get => targetFoeLeft;
             set
@@ -98,8 +97,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetFoeLeftEnabled));
             }
         }
-        IBitmap targetFoeCenter;
-        IBitmap TargetFoeCenter
+        PBEPokemon targetFoeCenter;
+        PBEPokemon TargetFoeCenter
         {
             get => targetFoeCenter;
             set
@@ -118,8 +117,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(TargetFoeCenterEnabled));
             }
         }
-        IBitmap targetFoeRight;
-        IBitmap TargetFoeRight
+        PBEPokemon targetFoeRight;
+        PBEPokemon TargetFoeRight
         {
             get => targetFoeRight;
             set
@@ -456,20 +455,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             else // Double / Triple
             {
-                PBEPokemon pkmn;
-
-                pkmn = Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left);
-                TargetAllyLeft = Utils.RenderString(pkmn?.NameWithGender);
-                pkmn = Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Center);
-                TargetAllyCenter = Utils.RenderString(pkmn?.NameWithGender);
-                pkmn = Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Right);
-                TargetAllyRight = Utils.RenderString(pkmn?.NameWithGender);
-                pkmn = Client.Battle.Teams[1].PokemonAtPosition(PBEFieldPosition.Left);
-                TargetFoeLeft = Utils.RenderString(pkmn?.NameWithGender);
-                pkmn = Client.Battle.Teams[1].PokemonAtPosition(PBEFieldPosition.Center);
-                TargetFoeCenter = Utils.RenderString(pkmn?.NameWithGender);
-                pkmn = Client.Battle.Teams[1].PokemonAtPosition(PBEFieldPosition.Right);
-                TargetFoeRight = Utils.RenderString(pkmn?.NameWithGender);
+                TargetAllyLeft = Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Left);
+                TargetAllyCenter = Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Center);
+                TargetAllyRight = Client.Battle.Teams[0].PokemonAtPosition(PBEFieldPosition.Right);
+                TargetFoeLeft = Client.Battle.Teams[1].PokemonAtPosition(PBEFieldPosition.Left);
+                TargetFoeCenter = Client.Battle.Teams[1].PokemonAtPosition(PBEFieldPosition.Center);
+                TargetFoeRight = Client.Battle.Teams[1].PokemonAtPosition(PBEFieldPosition.Right);
 
                 if (Client.Battle.BattleFormat == PBEBattleFormat.Double)
                 {
