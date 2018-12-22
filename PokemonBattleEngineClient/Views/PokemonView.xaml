@@ -13,9 +13,7 @@
          RenderOptions.BitmapInterpolationMode="Default"
          gif:GifImage.SourceUri="{Binding Source}">
     <ToolTip.Tip>
-      <ToolTip Background="Black">
-        <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-      </ToolTip>
+      <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
     </ToolTip.Tip>
   </Image>
   <!--</Border>-->
