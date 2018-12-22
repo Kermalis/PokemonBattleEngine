@@ -9,7 +9,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static ObjectToTextBitmapConverter Instance { get; } = new ObjectToTextBitmapConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Utils.RenderString(value?.ToString());
+            Enum.TryParse(parameter?.ToString(), out Utils.StringRenderStyle style);
+            return Utils.RenderString(value?.ToString(), style);
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

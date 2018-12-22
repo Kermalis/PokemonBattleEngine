@@ -10,21 +10,17 @@
           <Image Source="{Binding Label, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
         <ToolTip.Tip>
-          <ToolTip Background="Black">
-            <Image Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-          </ToolTip>
+          <Image Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </ToolTip.Tip>
       </Button>
     </DataTemplate>
     <DataTemplate DataType="model:PokemonInfo">
-      <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="Black" BorderBrush="#757575" BorderThickness="4">
+      <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4">
         <StackPanel>
-          <Image Source="{Binding Pokemon.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <Image Source="{Binding Pokemon.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </StackPanel>
         <ToolTip.Tip>
-          <ToolTip Background="Black">
-            <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-          </ToolTip>
+          <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </ToolTip.Tip>
       </Button>
     </DataTemplate>
@@ -100,21 +96,21 @@
     </ItemsControl>
     <Canvas IsVisible="{Binding PositionsVisible}">
       <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="49" IsEnabled="{Binding LeftPositionEnabled}"
-              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Left">
+              Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Left">
         <StackPanel>
-          <Image Source="{Binding Source='Left', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <Image Source="{Binding Source='Left', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </StackPanel>
       </Button>
       <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="49" IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterTargetsVisible}"
-              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Center">
+              Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Center">
         <StackPanel>
-          <Image Source="{Binding Source='Center', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <Image Source="{Binding Source='Center', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </StackPanel>
       </Button>
       <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="49" IsEnabled="{Binding RightPositionEnabled}"
-              Background="Black" BorderBrush="#757575" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Right">
+              Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Right">
         <StackPanel>
-          <Image Source="{Binding Source='Right', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <Image Source="{Binding Source='Right', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </StackPanel>
       </Button>
     </Canvas>

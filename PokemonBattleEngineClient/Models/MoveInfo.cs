@@ -1,7 +1,5 @@
 ﻿using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;

@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void Add(string value)
         {
-            Bitmap bmp = Utils.RenderString(value);
+            Bitmap bmp = Utils.RenderString(value, Utils.StringRenderStyle.MenuBlack);
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Messages.Add(bmp);
