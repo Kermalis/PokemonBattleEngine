@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -16,7 +16,7 @@
     <EmbeddedResource Include="**\*.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-	<EmbeddedResource Include="Assets\**" />
+    <EmbeddedResource Include="Assets\**" />
   </ItemGroup>
 
   <ItemGroup>

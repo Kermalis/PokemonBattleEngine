@@ -919,7 +919,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         EarthPlate,
         FistPlate,
         /// <summary>
-        /// The Pokémon contracts <see cref="PBEStatus1.Burned"/> at the end of each turn if it has no other <see cref="PBEStatus1"/>.
+        /// The Pokémon contracts <see cref="PBEStatus1.Burned"/> at the end of each turn if it has no other <see cref="PBEStatus1"/> and it does not have <see cref="PBEType.Fire"/>.
         /// </summary>
         FlameOrb,
         FlamePlate,
@@ -969,6 +969,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         Stick,
         StonePlate,
         ThickClub,
+        /// <summary>
+        /// The Pokémon contracts <see cref="PBEStatus1.BadlyPoisoned"/> at the end of each turn if it has no other <see cref="PBEStatus1"/> and it does not have <see cref="PBEType.Poison"/> or <see cref="PBEType.Steel"/>.
+        /// </summary>
+        ToxicOrb,
         ToxicPlate,
         TwistedSpoon,
         UpGrade,

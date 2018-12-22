@@ -296,11 +296,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (pkmn.Item)
             {
                 case PBEItem.FlameOrb:
-                    if (pkmn.Status1 == PBEStatus1.None)
+                    if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Fire))
                     {
                         pkmn.Status1 = PBEStatus1.Burned;
                         BroadcastItem(pkmn, pkmn, PBEItem.FlameOrb, PBEItemAction.ChangedStatus);
                         BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Added);
+                    }
+                    break;
+                case PBEItem.ToxicOrb:
+                    if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel))
+                    {
+                        pkmn.Status1 = PBEStatus1.BadlyPoisoned;
+                        BroadcastItem(pkmn, pkmn, PBEItem.ToxicOrb, PBEItemAction.ChangedStatus);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Added);
                     }
                     break;
             }

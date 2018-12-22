@@ -18,6 +18,6 @@
     <Reference Include="Ether.Network">
       <HintPath>../Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>
-  </ItemGroup>  
+  </ItemGroup>
 
 </Project>

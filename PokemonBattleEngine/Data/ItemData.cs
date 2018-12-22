@@ -76,6 +76,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEItem.Stick, new PBEItemData { FlingPower = 60 } },
             { PBEItem.StonePlate, new PBEItemData { FlingPower = 90 } },
             { PBEItem.ThickClub, new PBEItemData { FlingPower = 90 } },
+            { PBEItem.ToxicOrb, new PBEItemData { FlingPower = 30 } },
             { PBEItem.ToxicPlate, new PBEItemData { FlingPower = 90 } },
             { PBEItem.TwistedSpoon, new PBEItemData { FlingPower = 30 } },
             { PBEItem.UpGrade, new PBEItemData { FlingPower = 30 } },

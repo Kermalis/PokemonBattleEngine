@@ -185,6 +185,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
+                            case PBEItem.ToxicOrb:
+                                switch (ip.ItemAction)
+                                {
+                                    case PBEItemAction.ChangedStatus: message = "{0} was badly poisoned by the Toxic Orb!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                }
+                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(ip.Item), $"Invalid item: {ip.Item}");
                         }
                         Console.WriteLine(message, culprit.NameForTrainer(true), victim.NameForTrainer(false));
