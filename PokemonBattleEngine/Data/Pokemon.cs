@@ -108,8 +108,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEFieldPosition FieldPosition { get; set; }
         public PBEStatus1 Status1 { get; set; }
         public PBEStatus2 Status2 { get; set; }
-        // These are in a set order; see BattleEffects->ApplyStatChange()
-        public sbyte AttackChange, DefenseChange, SpAttackChange, SpDefenseChange, SpeedChange, AccuracyChange, EvasionChange;
+
+        public sbyte AttackChange { get; set; }
+        public sbyte DefenseChange { get; set; }
+        public sbyte SpAttackChange { get; set; }
+        public sbyte SpDefenseChange { get; set; }
+        public sbyte SpeedChange { get; set; }
+        public sbyte AccuracyChange { get; set; }
+        public sbyte EvasionChange { get; set; }
 
         /// <summary>
         /// The counter used for <see cref="PBEStatus1.BadlyPoisoned"/> and <see cref="PBEStatus1.Asleep"/>.

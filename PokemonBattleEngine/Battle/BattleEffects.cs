@@ -868,24 +868,97 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
-        public static unsafe void ApplyStatChange(PBEBattle battle, PBEPokemon pkmn, PBEStat stat, short change, bool broadcast = true, bool ignoreSimple = false)
+        /// <summary>
+        /// Changes a Pokémon's stat.
+        /// </summary>
+        /// <param name="battle">The battle the stat change happened in.</param>
+        /// <param name="pkmn">The Pokémon who's stats will be changed.</param>
+        /// <param name="stat">The stat to change.</param>
+        /// <param name="change">The stat change which will be added.</param>
+        /// <param name="broadcast">True if the event should be broadcast from the battle, False otherwise.</param>
+        /// <param name="ignoreSimple">True if the stat change should not be modified by <see cref="PBEAbility.Simple"/>, False otherwise.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="stat"/> is invalid.</exception>
+        public static void ApplyStatChange(PBEBattle battle, PBEPokemon pkmn, PBEStat stat, short change, bool broadcast = true, bool ignoreSimple = false)
         {
             if (!ignoreSimple && pkmn.Ability == PBEAbility.Simple)
             {
                 change *= 2;
             }
             bool isTooMuch = false;
-            fixed (sbyte* ptr = &pkmn.AttackChange)
+            // I used to use unsafe pointers, and even though it was cool and compact, I decided to use properties and a more C#-styled approach
+            switch (stat)
             {
-                sbyte* scPtr = ptr + (stat - PBEStat.Attack); // Points to the proper stat change sbyte
-                if (*scPtr <= -battle.Settings.MaxStatChange || *scPtr >= battle.Settings.MaxStatChange)
-                {
-                    isTooMuch = true;
-                }
-                else
-                {
-                    *scPtr = (sbyte)PBEUtils.Clamp(*scPtr + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
-                }
+                case PBEStat.Attack:
+                    if (pkmn.AttackChange <= -battle.Settings.MaxStatChange || pkmn.AttackChange >= battle.Settings.MaxStatChange)
+                    {
+                        isTooMuch = true;
+                    }
+                    else
+                    {
+                        pkmn.AttackChange = (sbyte)PBEUtils.Clamp(pkmn.AttackChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
+                    }
+                    break;
+                case PBEStat.Defense:
+                    if (pkmn.DefenseChange <= -battle.Settings.MaxStatChange || pkmn.DefenseChange >= battle.Settings.MaxStatChange)
+                    {
+                        isTooMuch = true;
+                    }
+                    else
+                    {
+                        pkmn.DefenseChange = (sbyte)PBEUtils.Clamp(pkmn.DefenseChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
+                    }
+                    break;
+                case PBEStat.SpAttack:
+                    if (pkmn.SpAttackChange <= -battle.Settings.MaxStatChange || pkmn.SpAttackChange >= battle.Settings.MaxStatChange)
+                    {
+                        isTooMuch = true;
+                    }
+                    else
+                    {
+                        pkmn.SpAttackChange = (sbyte)PBEUtils.Clamp(pkmn.SpAttackChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
+                    }
+                    break;
+                case PBEStat.SpDefense:
+                    if (pkmn.SpDefenseChange <= -battle.Settings.MaxStatChange || pkmn.SpDefenseChange >= battle.Settings.MaxStatChange)
+                    {
+                        isTooMuch = true;
+                    }
+                    else
+                    {
+                        pkmn.SpDefenseChange = (sbyte)PBEUtils.Clamp(pkmn.SpDefenseChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
+                    }
+                    break;
+                case PBEStat.Speed:
+                    if (pkmn.SpeedChange <= -battle.Settings.MaxStatChange || pkmn.SpeedChange >= battle.Settings.MaxStatChange)
+                    {
+                        isTooMuch = true;
+                    }
+                    else
+                    {
+                        pkmn.SpeedChange = (sbyte)PBEUtils.Clamp(pkmn.SpeedChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
+                    }
+                    break;
+                case PBEStat.Accuracy:
+                    if (pkmn.AccuracyChange <= -battle.Settings.MaxStatChange || pkmn.AccuracyChange >= battle.Settings.MaxStatChange)
+                    {
+                        isTooMuch = true;
+                    }
+                    else
+                    {
+                        pkmn.AccuracyChange = (sbyte)PBEUtils.Clamp(pkmn.AccuracyChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
+                    }
+                    break;
+                case PBEStat.Evasion:
+                    if (pkmn.EvasionChange <= -battle.Settings.MaxStatChange || pkmn.EvasionChange >= battle.Settings.MaxStatChange)
+                    {
+                        isTooMuch = true;
+                    }
+                    else
+                    {
+                        pkmn.EvasionChange = (sbyte)PBEUtils.Clamp(pkmn.EvasionChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
+                    }
+                    break;
+                default: throw new ArgumentOutOfRangeException(nameof(stat), "Invalid stat.");
             }
             if (broadcast)
             {

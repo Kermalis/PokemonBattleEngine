@@ -7,10 +7,6 @@
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
     <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
