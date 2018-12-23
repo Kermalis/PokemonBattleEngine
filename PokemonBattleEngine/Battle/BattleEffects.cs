@@ -123,8 +123,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus2(user, victim, PBEStatus2.Substitute, PBEStatusAction.Ended);
             }
 
-            FaintCheck(user);
             FaintCheck(victim);
+
+            // Life Orb happens after recoil and rough skin and victim fainting
+            if (user.Item == PBEItem.LifeOrb)
+            {
+                BroadcastItem(user, user, PBEItem.LifeOrb, PBEItemAction.CausedDamage);
+                DealDamage(user, user, (ushort)(user.MaxHP / 10), true);
+            }
+
+            FaintCheck(user);
         }
         void DoTurnEndedEffects(PBEPokemon pkmn)
         {

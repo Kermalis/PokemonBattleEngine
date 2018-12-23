@@ -178,6 +178,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
+                            case PBEItem.LifeOrb:
+                                switch (ip.ItemAction)
+                                {
+                                    case PBEItemAction.CausedDamage: message = "{0} lost some of its HP!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                }
+                                break;
                             case PBEItem.PowerHerb:
                                 switch (ip.ItemAction)
                                 {

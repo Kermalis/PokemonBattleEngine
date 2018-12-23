@@ -1252,7 +1252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         LevelBall,
-        LifeOrb, // TODO: Damage user
+        LifeOrb,
         LightBall,
         LightClay,
         /// <summary>
