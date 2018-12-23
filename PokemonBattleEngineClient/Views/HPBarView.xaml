@@ -6,7 +6,7 @@
     <Rectangle Width="100" Height="23" Fill="#313131" Stroke="Black" StrokeThickness="1" ZIndex="0"/>
     <Image Canvas.Left="2" Canvas.Top="2" Source="{Binding Pokemon.Shell.Nickname, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}" ZIndex="1"/>
     <Image Canvas.Right="2" Canvas.Top="2" Source="{Binding Level, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}" ZIndex="1"/>
-    <Image Canvas.Left="2" Canvas.Bottom="1" Source="{Binding Status, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}" ZIndex="1"/>
+    <!--<Image Canvas.Left="2" Canvas.Bottom="1" Source="{Binding Status, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}" ZIndex="1"/>-->
     <Rectangle Width="48" Height="5" Canvas.Left="50" Canvas.Top="16" Fill="Transparent" Stroke="White" StrokeThickness="1" ZIndex="2"/>
     <Line StartPoint="50,19" EndPoint="{Binding HPEndLocation}" Stroke="{Binding HPColor}" StrokeThickness="3" ZIndex="1"/>
   </Canvas>
