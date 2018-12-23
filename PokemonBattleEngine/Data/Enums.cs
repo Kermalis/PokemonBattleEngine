@@ -1412,7 +1412,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         Potion,
+        PowerAnklet,
+        PowerBand,
+        PowerBelt,
+        PowerBracer,
         PowerHerb,
+        PowerLens,
+        PowerWeight,
         /// <summary>
         /// No effect.
         /// </summary>
