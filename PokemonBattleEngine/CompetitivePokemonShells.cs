@@ -882,6 +882,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect }, // Dragon Claw, Sucker Punch, Superpower, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Bouffalant_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Bouffalant,
+            Nickname = "Bob",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.SapSipper,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.Headbutt, PBEMove.ZenHeadbutt, PBEMove.Earthquake, PBEMove.Protect }, // Head Charge, Wild Charge, Earthquake, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Hydreigon_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Hydreigon,
@@ -936,8 +952,8 @@ namespace Kermalis.PokemonBattleEngine
         /// </summary>
         public static PBEPokemonShell[] DefaultCompetitivePokemon { get; } = new PBEPokemonShell[]
         {
-            Absol_RU, Alomomola_VGC, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Butterfree_RU, Carracosta_VGC, Chandelure_VGC,
-            Charizard_VGC, Cofagrigus_VGC,
+            Absol_RU, Alomomola_VGC, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Bouffalant_VGC, Butterfree_RU, Carracosta_VGC,
+            Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
             Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
             Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
             Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Ninjask_VGC,
