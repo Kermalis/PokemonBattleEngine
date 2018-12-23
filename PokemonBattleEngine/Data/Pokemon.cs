@@ -357,6 +357,28 @@ namespace Kermalis.PokemonBattleEngine.Data
             // 30 is minimum, 30+40 is maximum
             return (((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * 40 / ((1 << 6) - 1)) + 30;
         }
+        /// <summary>
+        /// Gets the type that a move will become when used by this Pokémon.
+        /// </summary>
+        /// <param name="move">The move to check.</param>
+        public PBEType GetMoveType(PBEMove move)
+        {
+            switch (move)
+            {
+                case PBEMove.None: return PBEType.Normal;
+                case PBEMove.HiddenPower: return GetHiddenPowerType();
+                case PBEMove.TechnoBlast:
+                    switch (Item)
+                    {
+                        case PBEItem.BurnDrive: return PBEType.Fire;
+                        case PBEItem.ChillDrive: return PBEType.Ice;
+                        case PBEItem.DouseDrive: return PBEType.Water;
+                        case PBEItem.ShockDrive: return PBEType.Electric;
+                        default: return PBEMoveData.Data[PBEMove.TechnoBlast].Type;
+                    }
+                default: return PBEMoveData.Data[move].Type;
+            }
+        }
 
         // ToBytes() and FromBytes() will only be used when the server sends you your team Ids, so they do not need to contain all info
         internal byte[] ToBytes(PBESettings settings)

@@ -95,7 +95,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBEType.Dark      // 1.5625 %
         };
 
-        public static Dictionary<PBESpecies, PBEPokemonData> Data = new Dictionary<PBESpecies, PBEPokemonData>()
+        public static IReadOnlyDictionary<PBESpecies, PBEPokemonData> Data { get; } = new Dictionary<PBESpecies, PBEPokemonData>()
         {
             {
                 PBESpecies.Bulbasaur,

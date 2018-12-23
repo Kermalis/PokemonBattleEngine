@@ -288,6 +288,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             speed *= 1.5;
                             break;
                         case PBEItem.MachoBrace:
+                        case PBEItem.PowerAnklet:
+                        case PBEItem.PowerBand:
+                        case PBEItem.PowerBelt:
+                        case PBEItem.PowerBracer:
+                        case PBEItem.PowerLens:
+                        case PBEItem.PowerWeight:
                             speed *= 0.5;
                             break;
                         case PBEItem.QuickPowder:

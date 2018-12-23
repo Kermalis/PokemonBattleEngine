@@ -899,87 +899,833 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         None,
         AdamantOrb,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        AmuletCoin,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Antidote,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ArmorFossil,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Awakening,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BalmMushroom,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BigMushroom,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BigNugget,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BigPearl,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BlackApricorn,
         BlackBelt,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BlackFlute,
         BlackGlasses,
         BlackSludge,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BlueApricorn,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BlueFlute,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BlueScarf,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BlueShard,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BridgeMailD,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BridgeMailM,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BridgeMailS,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BridgeMailT,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BridgeMailV,
         BrightPowder,
         BurnDrive,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BurnHeal,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Calcium,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Carbos,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Casteliacone,
         Charcoal,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        CherishBall,
         ChillDrive,
         ChoiceBand,
         ChoiceScarf,
         ChoiceSpecs,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ClawFossil,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        CleanseTag,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        CleverWing,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        CometShard,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        CoverFossil,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DampMulch,
         DampRock,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DawnStone,
         DeepSeaScale,
         DeepSeaTooth,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DireHit,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DiveBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DomeFossil,
         DouseDrive,
         DracoPlate,
         DragonFang,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DragonScale,
         DreadPlate,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DreamBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DubiousDisc,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DuskBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        DuskStone,
         EarthPlate,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Electirizer,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Elixir,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        EnergyPowder,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        EnergyRoot,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        EscapeRope,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Ether,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Everstone,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ExpShare,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        FastBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        FavoredMail,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        FireStone,
         FistPlate,
         /// <summary>
         /// The Pokémon contracts <see cref="PBEStatus1.Burned"/> at the end of each turn if it has no other <see cref="PBEStatus1"/> and it does not have <see cref="PBEType.Fire"/>.
         /// </summary>
         FlameOrb,
         FlamePlate,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        FluffyTail,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        FreshWater,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        FriendBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        FullHeal,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        FullRestore,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GeniusWing,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GooeyMulch,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GreatBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GreenApricorn,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GreenScarf,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GreenShard,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GreetMail,
         GriseousOrb,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GrowthMulch,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GuardSpec,
         HardStone,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        HealBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        HealPowder,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        HealthWing,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        HeartScale,
         HeatRock,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        HeavyBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        HelixFossil,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Honey,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        HPUp,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        HyperPotion,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        IceHeal,
         IciclePlate,
         IcyRock,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        InquiryMail,
         InsectPlate,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Iron,
         IronPlate,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        LavaCookie,
         LaxIncense,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        LeafStone,
         Leftovers,
-        LifeOrb, // TODO: Damage user
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Lemonade,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        LevelBall,
+        LifeOrb,
         LightBall,
         LightClay,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        LikeMail,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        LoveBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        LuckIncense,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        LuckyEgg,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        LureBall,
         LustrousOrb,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        LuxuryBall,
         MachoBrace,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Magmarizer,
         Magnet,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MasterBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MaxElixir,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MaxEther,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MaxPotion,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MaxRepel,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MaxRevive,
         MeadowPlate,
         MetalCoat,
         MetalPowder,
         MindPlate,
         MiracleSeed,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MoomooMilk,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MoonBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MoonStone,
         MuscleBand,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        MuscleWing,
         MysticWater,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        NestBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        NetBall,
         NeverMeltIce,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Nugget,
         OddIncense,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        OddKeystone,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        OldAmber,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        OldGateau,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        OvalStone,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ParalyzeHeal,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ParkBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PassOrb,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Pearl,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PearlString,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PinkApricorn,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PinkScarf,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PlumeFossil,
         PoisonBarb,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PokeBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PokeDoll,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PokeToy,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Potion,
+        PowerAnklet,
+        PowerBand,
+        PowerBelt,
+        PowerBracer,
         PowerHerb,
+        PowerLens,
+        PowerWeight,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PPMax,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PPUp,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PremierBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PrettyWing,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PrismScale,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Protector,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Protein,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PureIncense,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        QuickBall,
         QuickPowder,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RageCandyBar,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RareBone,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RareCandy,
         RazorClaw,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ReaperCloth,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RedApricorn,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RedFlute,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RedScarf,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RedShard,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RelicBand,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RelicCopper,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RelicCrown,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RelicGold,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RelicSilver,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RelicStatue,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RelicVase,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RepeatBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Repel,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ReplyMail,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ResistWing,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RevivalHerb,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Revive,
         RockIncense,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RootFossil,
         RoseIncense,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        RSVPMail,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SacredAsh,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SafariBall,
         ScopeLens,
         SeaIncense,
         SharpBeak,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ShinyStone,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ShoalSalt,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ShoalShell,
         ShockDrive,
         SilkScarf,
         SilverPowder,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SkullFossil,
         SkyPlate,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SmokeBall,
         SmoothRock,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SodaPop,
         SoftSand,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SootheBell,
         SoulDew,
         SpellTag,
         SplashPlate,
         SpookyPlate,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SportBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        StableMulch,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Stardust,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        StarPiece,
         Stick,
         StonePlate,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SunStone,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SuperPotion,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SuperRepel,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SweetHeart,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        SwiftWing,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ThanksMail,
         ThickClub,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        ThunderStone,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        TimerBall,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        TinyMushroom,
         /// <summary>
         /// The Pokémon contracts <see cref="PBEStatus1.BadlyPoisoned"/> at the end of each turn if it has no other <see cref="PBEStatus1"/> and it does not have <see cref="PBEType.Poison"/> or <see cref="PBEType.Steel"/>.
         /// </summary>
         ToxicOrb,
         ToxicPlate,
         TwistedSpoon,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        UltraBall,
         UpGrade,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        WaterStone,
         WaveIncense,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        WhiteApricorn,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        WhiteFlute,
         WideLens,
         WiseGlasses,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        XAccuracy,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        XAttack,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        XDefense,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        XSpAtk,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        XSpDef,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        XSpeed,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        YellowApricorn,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        YellowFlute,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        YellowScarf,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        YellowShard,
         ZapPlate,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        Zinc,
         /// <summary>
         /// Invalid item.
         /// </summary>
