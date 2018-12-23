@@ -2,7 +2,10 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngineClient.Infrastructure;
+using System;
 using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
@@ -52,8 +55,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Level));
             }
         }
-        string status;
-        string Status
+        IBitmap status;
+        IBitmap Status
         {
             get => status;
             set
@@ -103,16 +106,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             else
             {
                 Level = $"{pokemon.GenderSymbol} Lv.{pokemon.Shell.Level}";
-                switch (pokemon.Status1)
-                {
-                    case PBEStatus1.Asleep: Status = "SLP"; break;
-                    case PBEStatus1.BadlyPoisoned:
-                    case PBEStatus1.Poisoned: Status = "PSN"; break;
-                    case PBEStatus1.Burned: Status = "BRN"; break;
-                    case PBEStatus1.Frozen: Status = "FRZ"; break;
-                    case PBEStatus1.Paralyzed: Status = "PAR"; break;
-                    default: Status = string.Empty; break;
-                }
+                Status = pokemon.Status1 == PBEStatus1.None ? null : Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Misc.{pokemon.Status1}.png?assembly=PokemonBattleEngineClient"));
 
                 const byte lineX = 50, lineY = 18, lineW = 47;
                 double hpLeft = (double)pokemon.HP / pokemon.MaxHP;
