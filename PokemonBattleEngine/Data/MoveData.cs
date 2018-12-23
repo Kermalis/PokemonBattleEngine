@@ -14,25 +14,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEMoveFlag Flags;
         public PBEMoveTarget Targets;
 
-        public static PBEType GetMoveTypeForPokemon(PBEPokemon pkmn, PBEMove move)
-        {
-            switch (move)
-            {
-                case PBEMove.None: return PBEType.Normal;
-                case PBEMove.HiddenPower: return pkmn.GetHiddenPowerType();
-                case PBEMove.TechnoBlast:
-                    switch (pkmn.Item)
-                    {
-                        case PBEItem.BurnDrive: return PBEType.Fire;
-                        case PBEItem.ChillDrive: return PBEType.Ice;
-                        case PBEItem.DouseDrive: return PBEType.Water;
-                        case PBEItem.ShockDrive: return PBEType.Electric;
-                        default: return Data[PBEMove.TechnoBlast].Type;
-                    }
-                default: return Data[move].Type;
-            }
-        }
-
         public override string ToString()
         {
             var sb = new StringBuilder();

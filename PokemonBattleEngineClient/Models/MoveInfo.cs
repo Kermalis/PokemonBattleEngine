@@ -48,7 +48,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public MoveInfo(int i, PBEPokemon pkmn, Action<MoveInfo> clickAction)
         {
             PBEMove move = pkmn.Moves[i];
-            var ttb = typeToBrush[PBEMoveData.GetMoveTypeForPokemon(pkmn, move)];
+            var ttb = typeToBrush[pkmn.GetMoveType(move)];
 
             bool enabled;
             if (pkmn.TempLockedMove != PBEMove.None)

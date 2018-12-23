@@ -65,7 +65,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void TypeCheck(PBEPokemon user, PBEPokemon target, PBEMove move, out PBEType moveType, out PBEEffectiveness effectiveness, ref double damageMultiplier, bool ignoreWonderGuard = false)
         {
             PBEPokemonData targetPData = PBEPokemonData.Data[target.Species];
-            moveType = PBEMoveData.GetMoveTypeForPokemon(user, move);
+            moveType = user.GetMoveType(move);
             double mult = PBEPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type1];
             mult *= PBEPokemonData.TypeEffectiveness[(int)moveType, (int)targetPData.Type2];
 
