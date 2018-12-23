@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             return sb.ToString();
         }
 
-        public static Dictionary<PBEMove, PBEMoveData> Data = new Dictionary<PBEMove, PBEMoveData>()
+        public static IReadOnlyDictionary<PBEMove, PBEMoveData> Data { get; } = new Dictionary<PBEMove, PBEMoveData>()
         {
             {
                 PBEMove.Acid,

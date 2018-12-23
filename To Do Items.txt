@@ -62,96 +62,13 @@ Micle Berry
 Custap Berry
 Jaboca Berry
 Rowap Berry
-Guard Spec.
-Dire Hit
-X Attack
-X Defense
-X Speed
-X Accuracy
-X Sp. Atk
-X Sp. Def
-Poké Doll
-Fluffy Tail
-Blue Flute
-Yellow Flute
-Red Flute
-Black Flute
-White Flute
-Shoal Salt
-Shoal Shell
-Red Shard
-Blue Shard
-Yellow Shard
-Green Shard
-Super Repel
-Max Repel
-Escape Rope
-Repel
-Sun Stone
-Moon Stone
-Fire Stone
-Thunder Stone
-Water Stone
-Leaf Stone
-Tiny Mushroom
-Big Mushroom
-Pearl
-Big Pearl
-Stardust
-Star Piece
-Nugget
-Heart Scale
-Honey
-Growth Mulch
-Damp Mulch
-Stable Mulch
-Gooey Mulch
-Root Fossil
-Claw Fossil
-Helix Fossil
-Dome Fossil
-Old Amber
-Armor Fossil
-Skull Fossil
-Rare Bone
-Shiny Stone
-Dusk Stone
-Dawn Stone
-Oval Stone
-Odd Keystone
-Greet Mail
-Favored Mail
-RSVP Mail
-Thanks Mail
-Inquiry Mail
-Like Mail
-Reply Mail
-BridgeMail S
-BridgeMail D
-BridgeMail T
-BridgeMail V
-BridgeMail M
 White Herb
-Exp. Share
 Quick Claw
-Soothe Bell
 Mental Herb
-Choice Band
 King's Rock
-Amulet Coin
-Cleanse Tag
-Smoke Ball
-Everstone
 Focus Band
-Lucky Egg
-Dragon Scale
 Shell Bell
 Lucky Punch
-Red Scarf
-Blue Scarf
-Pink Scarf
-Green Scarf
-Yellow Scarf
 Expert Belt
 Life Orb
 Focus Sash
@@ -161,7 +78,6 @@ Iron Ball
 Lagging Tail
 Destiny Knot
 Grip Claw
-Choice Scarf
 Sticky Barb
 Power Bracer
 Power Belt
@@ -171,24 +87,8 @@ Power Anklet
 Power Weight
 Shed Shell
 Big Root
-Choice Specs
 Full Incense
-Luck Incense
-Pure Incense
-Protector
-Electirizer
-Magmarizer
-Dubious Disc
-Reaper Cloth
 Razor Fang
-Red Apricorn
-Blue Apricorn
-Yellow Apricorn
-Green Apricorn
-Pink Apricorn
-White Apricorn
-Black Apricorn
-Prism Scale
 Eviolite
 Float Stone
 Rocky Helmet
@@ -216,92 +116,4 @@ Dragon Gem
 Dark Gem
 Steel Gem
 Normal Gem
-Pretty Wing
-Cover Fossil
-Plume Fossil
-Pass Orb
-Poké Toy
-Balm Mushroom
-Big Nugget
-Pearl String
-Comet Shard
-Relic Copper
-Relic Silver
-Relic Gold
-Relic Vase
-Relic Band
-Relic Statue
-Relic Crown
-Potion
-Antidote
-Burn Heal
-Ice Heal
-Awakening
-Paralyze Heal
-Full Restore
-Max Potion
-Hyper Potion
-Super Potion
-Full Heal
-Revive
-Max Revive
-Fresh Water
-Soda Pop
-Lemonade
-Moomoo Milk
-Energy Powder
-Energy Root
-Heal Powder
-Revival Herb
-Ether
-Max Ether
-Elixir
-Max Elixir
-Lava Cookie
 Berry Juice
-Sacred Ash
-HP Up
-Protein
-Iron
-Carbos
-Calcium
-Rare Candy
-PP Up
-Zinc
-PP Max
-Old Gateau
-Sweet Heart
-Rage Candy Bar
-Health Wing
-Muscle Wing
-Resist Wing
-Genius Wing
-Clever Wing
-Swift Wing
-Casteliacone
-Master Ball
-Ultra Ball
-Great Ball
-Poké Ball
-Safari Ball
-Net Ball
-Dive Ball
-Nest Ball
-Repeat Ball
-Timer Ball
-Luxury Ball
-Premier Ball
-Dusk Ball
-Heal Ball
-Quick Ball
-Cherish Ball
-Fast Ball
-Level Ball
-Lure Ball
-Heavy Ball
-Love Ball
-Friend Ball
-Moon Ball
-Sport Ball
-Park Ball
-Dream Ball
