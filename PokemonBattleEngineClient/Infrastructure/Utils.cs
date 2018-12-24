@@ -29,6 +29,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             MenuWhite,
             MenuBlack,
             BattleWhite,
+            BattleName,
+            MAX,
         }
         private class WbFb : IFramebufferPlatformSurface
         {
@@ -36,12 +38,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public WbFb(WriteableBitmap bmp) => _bitmap = bmp;
             public ILockedFramebuffer Lock() => _bitmap.Lock();
         }
-        static Dictionary<string, Bitmap> LoadedBitmaps { get; } = new Dictionary<string, Bitmap>();
-        static string GetCharKey(char c)
+        static Dictionary<string, Dictionary<string, Bitmap>> LoadedBitmaps { get; } = new Dictionary<string, Dictionary<string, Bitmap>>();
+        static string GetCharKey(string path, char c)
         {
             string key = ((int)c).ToString("X");
-            string questionMark = ((int)'?').ToString("X");
-            return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{key}.png") ? key : questionMark;
+            const string questionMark = "3F";
+            return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png") ? key : questionMark;
         }
         public static Bitmap RenderString(string str, StringRenderStyle style)
         {
@@ -49,6 +51,17 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             if (string.IsNullOrWhiteSpace(str))
             {
                 return null;
+            }
+            if (style >= StringRenderStyle.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(style), "Invalid style.");
+            }
+
+            string path; int charHeight, spaceWidth;
+            switch (style)
+            {
+                case StringRenderStyle.BattleName: path = "BattleName"; charHeight = 11; spaceWidth = 2; break;
+                default: path = "Default"; charHeight = 15; spaceWidth = 4; break;
             }
 
             // Load char bitmaps
@@ -60,23 +73,25 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 else
                 {
-                    string key = GetCharKey(c);
-                    if (!LoadedBitmaps.ContainsKey(key))
+                    string key = GetCharKey(path, c);
+                    if (!LoadedBitmaps.ContainsKey(path))
                     {
-                        LoadedBitmaps.Add(key, UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts.{key}.png?assembly=PokemonBattleEngineClient")));
+                        LoadedBitmaps.Add(path, new Dictionary<string, Bitmap>());
+                    }
+                    if (!LoadedBitmaps[path].ContainsKey(key))
+                    {
+                        LoadedBitmaps[path].Add(key, UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png?assembly=PokemonBattleEngineClient")));
                     }
                 }
             }
 
             // Measure how large the string will end up
-            const int charHeight = 15;
-            int lineWidth = 0, stringHeight = charHeight;
-            var eachLineWidth = new List<int>();
+            int stringWidth = 0, stringHeight = charHeight, curLineWidth = 0;
             foreach (char c in str)
             {
                 if (c == ' ')
                 {
-                    lineWidth += 4;
+                    curLineWidth += spaceWidth;
                 }
                 else if (c == '\r')
                 {
@@ -85,16 +100,21 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 else if (c == '\n')
                 {
                     stringHeight += charHeight + 1;
-                    eachLineWidth.Add(lineWidth);
-                    lineWidth = 0;
+                    if (curLineWidth > stringWidth)
+                    {
+                        stringWidth = curLineWidth;
+                    }
+                    curLineWidth = 0;
                 }
                 else
                 {
-                    lineWidth += LoadedBitmaps[GetCharKey(c)].PixelSize.Width;
+                    curLineWidth += LoadedBitmaps[path][GetCharKey(path, c)].PixelSize.Width;
                 }
             }
-            eachLineWidth.Add(lineWidth);
-            int stringWidth = eachLineWidth.Max();
+            if (curLineWidth > stringWidth)
+            {
+                stringWidth = curLineWidth;
+            }
 
             // Draw the string
             var wb = new WriteableBitmap(new PixelSize(stringWidth, stringHeight), new Vector(96, 96), PixelFormat.Bgra8888);
@@ -107,7 +127,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     {
                         if (c == ' ')
                         {
-                            x += 4;
+                            x += spaceWidth;
                         }
                         else if (c == '\r')
                         {
@@ -120,7 +140,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         }
                         else
                         {
-                            Bitmap bmp = LoadedBitmaps[GetCharKey(c)];
+                            Bitmap bmp = LoadedBitmaps[path][GetCharKey(path, c)];
                             int charWidth = bmp.PixelSize.Width;
                             ctx.DrawImage(bmp.PlatformImpl, 1, new Rect(0, 0, charWidth, charHeight), new Rect(x, y, charWidth, charHeight));
                             x += charWidth;
@@ -131,12 +151,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             // Edit colors
             using (ILockedFramebuffer l = wb.Lock())
             {
-                uint primary = 0xFFFFFFFF, secondary = 0xFF000000;
+                uint primary = 0xFFFFFFFF, secondary = 0xFF000000, tertiary = 0xFF808080;
                 switch (style)
                 {
                     case StringRenderStyle.MenuBlack: primary = 0xFF5A5252; secondary = 0xFFA5A5AD; break;
                     case StringRenderStyle.BattleWhite: //secondary = 0xF0FFFFFF; break; // Looks horrible because of Avalonia's current issues
                     case StringRenderStyle.MenuWhite: secondary = 0xFF848484; break;
+                    case StringRenderStyle.BattleName: primary = 0xFFF7F7F7; secondary = 0xFF181818; break;
                 }
                 for (int x = 0; x < stringWidth; x++)
                 {
@@ -152,11 +173,71 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         {
                             Marshal.WriteInt32(address, (int)secondary);
                         }
+                        else if (pixel == 0xFF808080)
+                        {
+                            Marshal.WriteInt32(address, (int)tertiary);
+                        }
                     }
                 }
             }
             return wb;
         }
+        /*public static void SizeFix()
+        {
+            foreach (string file in System.IO.Directory.GetFiles(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineClient\Assets\Fonts\BattleName"))
+            {
+                var bmp = new Bitmap(file);
+                var wb = new WriteableBitmap(new PixelSize(bmp.PixelSize.Width, 11), new Vector(96, 96), PixelFormat.Bgra8888);
+                using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WbFb(wb) }))
+                {
+                    using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
+                    {
+                        ctx.DrawImage(bmp.PlatformImpl, 1, new Rect(0, 0, bmp.PixelSize.Width, bmp.PixelSize.Height), new Rect(0, 1, bmp.PixelSize.Width, bmp.PixelSize.Height));
+                    }
+                }
+                wb.Save(file);
+            }
+        }*/
+        /*public static void ColorFix()
+        {
+            foreach (string file in System.IO.Directory.GetFiles(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineClient\Assets\Fonts\Default"))
+            {
+                var bmp = new Bitmap(file);
+                var wb = new WriteableBitmap(bmp.PixelSize, new Vector(96, 96), PixelFormat.Bgra8888);
+                using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WbFb(wb) }))
+                {
+                    using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
+                    {
+                        var rect = new Rect(0, 0, bmp.PixelSize.Width, bmp.PixelSize.Height);
+                        ctx.DrawImage(bmp.PlatformImpl, 1, rect, rect);
+                    }
+                }
+                using (ILockedFramebuffer l = wb.Lock())
+                {
+                    for (int x = 0; x < bmp.PixelSize.Width; x++)
+                    {
+                        for (int y = 0; y < bmp.PixelSize.Height; y++)
+                        {
+                            var address = new IntPtr(l.Address.ToInt64() + (x * sizeof(uint)) + (y * l.RowBytes));
+                            uint pixel = (uint)Marshal.ReadInt32(address);
+                            if (pixel == 0xFFEFEFEF)
+                            {
+                                Marshal.WriteInt32(address, unchecked((int)0xFFFFFFFF));
+                            }
+                            else if (pixel == 0xFF848484)
+                            {
+                                Marshal.WriteInt32(address, unchecked((int)0xFF000000));
+                            }
+                            else if (pixel != 0xFFFFFFFF && pixel != 0xFF000000 && pixel != 0x00000000)
+                            {
+                                ;
+                            }
+                        }
+                    }
+                }
+                wb.Save(file);
+            }
+        }*/
         #endregion
     }
 }
