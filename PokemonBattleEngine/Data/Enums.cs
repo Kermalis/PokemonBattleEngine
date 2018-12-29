@@ -2172,6 +2172,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Gothita = 574,
         Gothorita = 575,
         Gothitelle = 576,
+        Emolga = 587,
         Alomomola = 594,
         Litwick = 607,
         Lampent = 608,
