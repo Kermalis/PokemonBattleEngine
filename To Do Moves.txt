@@ -92,7 +92,6 @@ Sleep Talk
 Heal Bell
 Present
 Safeguard
-Dynamic Punch
 Baton Pass
 Encore
 Pursuit

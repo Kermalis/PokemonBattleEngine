@@ -750,6 +750,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PBEMove.DynamicPunch,
+                new PBEMoveData
+                {
+                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
+                    Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 100,
+                    PPTier = 1, Power = 100, Accuracy = 50, Priority = 0,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Targets = PBEMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PBEMove.EarthPower,
                 new PBEMoveData
                 {

@@ -2379,6 +2379,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DoubleTeam,
         DrillPeck,
         DrillRun,
+        DynamicPunch, // TODO: Iron Fist
         EarthPower,
         Earthquake,
         EggBomb,
