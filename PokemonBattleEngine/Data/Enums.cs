@@ -2112,6 +2112,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Shedinja = 292,
         Skitty = 300,
         Delcatty = 301,
+        Plusle = 311,
         Lileep = 345,
         Cradily = 346,
         Absol = 359,
