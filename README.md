@@ -29,7 +29,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Switch-in effects and turn ended effects should go by speed (with speed ties and everything like turn order)
 * Winning
 * Watchable replays
-* Change all ability/item boosts to settings instead of constants.
+* Change all ability/item boosts to settings instead of constants
 
 ----
 # PokemonBattleEngine Uses:

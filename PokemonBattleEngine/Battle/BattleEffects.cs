@@ -721,11 +721,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 goto miss;
             }
             // Moves that always hit
-            if (mData.Accuracy == 0)
+            if (mData.Accuracy == 0 || (move == PBEMove.Thunder && Weather == PBEWeather.Rain))
             {
                 return false;
             }
             double chance = mData.Accuracy;
+            if (move == PBEMove.Thunder && Weather == PBEWeather.HarshSunlight)
+            {
+                chance = 50.0;
+            }
             chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
             if (user.Ability == PBEAbility.Compoundeyes)
             {

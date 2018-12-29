@@ -2585,7 +2585,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         TeeterDance,
         Teleport,
         Tickle,
-        Thunder, // TODO: Bypass accuracy checks in rain, reduce accuracy in harsh sunlight
+        Thunder,
         Thunderbolt,
         ThunderPunch,
         ThunderShock,

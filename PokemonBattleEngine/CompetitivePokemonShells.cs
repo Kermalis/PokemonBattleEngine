@@ -967,7 +967,7 @@ namespace Kermalis.PokemonBattleEngine
         /// <param name="numPkmn">The amount of Pokémon to add to the team.</param>
         public static PBETeamShell CreateRandomTeam(int numPkmn)
         {
-            var team = new PBETeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina" }.Sample() };
+            var team = new PBETeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole", "Clarissa" }.Sample() };
             var possiblePokemon = new List<PBEPokemonShell>(DefaultCompetitivePokemon);
             possiblePokemon.Shuffle();
             team.Party = possiblePokemon.Take(numPkmn).ToArray();
