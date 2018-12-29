@@ -2124,6 +2124,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Shinx = 403,
         Luxio = 404,
         Luxray = 405,
+        Pachirisu = 417,
         Mismagius = 429,
         Gible = 443,
         Gabite = 444,
