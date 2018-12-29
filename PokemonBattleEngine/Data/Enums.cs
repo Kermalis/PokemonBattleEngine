@@ -2065,6 +2065,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Kakuna = 14,
         Beedrill = 15,
         Pikachu = 25,
+        Raichu = 26,
         Vulpix = 37,
         Ninetales = 38,
         Farfetchd = 83,
