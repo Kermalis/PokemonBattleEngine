@@ -532,27 +532,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
             }
 
-            // Life Orb boosts power but deals damage to the user
             if (!ignoreLifeOrb && user.Item == PBEItem.LifeOrb)
             {
                 basePower = basePower * 5324 / 4096;
             }
-            // A Pikachu holding a Light Ball gets a 100% power boost
+            if (user.Ability == PBEAbility.IronFist && move != PBEMove.None && PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.AffectedByIronFist))
+            {
+                basePower *= 1.2;
+            }
             if (user.Item == PBEItem.LightBall && user.Shell.Species == PBESpecies.Pikachu)
             {
                 basePower *= 2.0;
             }
-            // Physical moves' power gets a 10% boost if the user is holding a Muscle Band
             if (moveCategory == PBEMoveCategory.Physical && user.Item == PBEItem.MuscleBand)
             {
                 basePower *= 1.1;
             }
-            // Special moves' power gets a 10% boost if the user is holding a Wise Glasses
             if (moveCategory == PBEMoveCategory.Special && user.Item == PBEItem.WiseGlasses)
             {
                 basePower *= 1.1;
             }
-            // Physical moves' power is halved from a Burned Pokémon unless it has Guts
             if (moveCategory == PBEMoveCategory.Physical && user.Status1 == PBEStatus1.Burned && user.Ability != PBEAbility.Guts)
             {
                 basePower *= 0.5;

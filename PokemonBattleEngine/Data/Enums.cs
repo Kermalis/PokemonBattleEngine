@@ -74,35 +74,35 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// Hit points.
         /// </summary>
-        HP = 0,
+        HP,
         /// <summary>
         /// Attack.
         /// </summary>
-        Attack = 1,
+        Attack,
         /// <summary>
         /// Defense.
         /// </summary>
-        Defense = 2,
+        Defense,
         /// <summary>
         /// Special Attack.
         /// </summary>
-        SpAttack = 3,
+        SpAttack,
         /// <summary>
         /// Special Defense.
         /// </summary>
-        SpDefense = 4,
+        SpDefense,
         /// <summary>
         /// Speed.
         /// </summary>
-        Speed = 5,
+        Speed,
         /// <summary>
         /// Accuracy.
         /// </summary>
-        Accuracy = 6,
+        Accuracy,
         /// <summary>
         /// Evasion.
         /// </summary>
-        Evasion = 7
+        Evasion
     }
     /// <summary>
     /// Represents the effectiveness of a move against a target.
@@ -1846,7 +1846,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         Insomnia, // TODO
         Intimidate, // TODO
         IronBarbs, // TODO
-        IronFist, // TODO
+        /// <summary>
+        /// The power of moves with <see cref="PBEMoveFlag.AffectedByIronFist"/> is increased.
+        /// </summary>
+        IronFist,
         Justified, // TODO
         KeenEye, // TODO
         Klutz, // TODO
@@ -2207,22 +2210,68 @@ namespace Kermalis.PokemonBattleEngine.Data
         SingleSurrounding,     // Single battler surrounding (Ex. Tackle)
         Varies                 // Possible targets vary (Ex. Curse)
     }
+    /// <summary>
+    /// Represents a specific <see cref="PBEMove"/>'s flags.
+    /// </summary>
     [Flags]
     public enum PBEMoveFlag : ushort
     {
+        /// <summary>
+        /// The move has no flags.
+        /// </summary>
         None,
-        AlwaysCrit = 1 << 0,           // Always lands a critical hit
-        AffectedByMagicCoat = 1 << 1,  // Magic Coat blocks the move
-        AffectedByMirrorMove = 1 << 2, // Mirror Move can copy the move
-        AffectedByProtect = 1 << 3,    // Protect blocks the move
-        AffectedBySnatch = 1 << 4,     // Snatch can steal the move
-        DefrostsUser = 1 << 5,         // User unfreezes when using this move
-        HighCritChance = 1 << 6,       // +1 critical hit stage
-        HitsAirborne = 1 << 7,         // Can hit airborne targets
-        HitsUnderground = 1 << 8,      // Can hit underground targets
-        HitsUnderwater = 1 << 9,       // Can hit underwater targets
-        MakesContact = 1 << 10,        // Rough Skin, Iron Barbs and Rocky Helmet hurt the user
-        SoundBased = 1 << 11           // Soundproof blocks the move
+        /// <summary>
+        /// The move's power is boosted by <see cref="PBEAbility.IronFist"/>.
+        /// </summary>
+        AffectedByIronFist = 1 << 0,
+        /// <summary>
+        /// The move is blocked by <see cref="PBEMove.MagicCoat"/> and <see cref="PBEAbility.MagicBounce"/>.
+        /// </summary>
+        AffectedByMagicCoat = 1 << 1,
+        /// <summary>
+        /// The move can be copied by <see cref="PBEMove.MirrorMove"/>.
+        /// </summary>
+        AffectedByMirrorMove = 1 << 2,
+        /// <summary>
+        /// The move is blocked by <see cref="PBEMove.Detect"/>, <see cref="PBEMove.Protect"/>, and <see cref="PBEMove.WideGuard"/>.
+        /// </summary>
+        AffectedByProtect = 1 << 3,
+        /// <summary>
+        /// The move can be stolen by <see cref="PBEMove.Snatch"/>.
+        /// </summary>
+        AffectedBySnatch = 1 << 4,
+        /// <summary>
+        /// The move always lands a critical hit.
+        /// </summary>
+        AlwaysCrit = 1 << 5,
+        /// <summary>
+        /// The move removes <see cref="PBEStatus1.Frozen"/> from the user.
+        /// </summary>
+        DefrostsUser = 1 << 6,
+        /// <summary>
+        /// The move has a higher chance of landing a critical hit.
+        /// </summary>
+        HighCritChance = 1 << 7,
+        /// <summary>
+        /// The move can hit <see cref="PBEStatus2.Airborne"/> targets.
+        /// </summary>
+        HitsAirborne = 1 << 8,
+        /// <summary>
+        /// The move can hit <see cref="PBEStatus2.Underground"/> targets.
+        /// </summary>
+        HitsUnderground = 1 << 9,
+        /// <summary>
+        /// The move can hit <see cref="PBEStatus2.Underwater"/> targets.
+        /// </summary>
+        HitsUnderwater = 1 << 10,
+        /// <summary>
+        /// The user makes contact with the target, causing it to take damage from the target's <see cref="PBEAbility.IronBarbs"/>, <see cref="PBEAbility.RoughSkin"/>, and <see cref="PBEItem.RockyHelmet"/>.
+        /// </summary>
+        MakesContact = 1 << 11,
+        /// <summary>
+        /// The move is blocked by <see cref="PBEAbility.Soundproof"/>.
+        /// </summary>
+        SoundBased = 1 << 12
     }
     public enum PBEMoveEffect : byte
     {
@@ -2351,6 +2400,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Chatter,
         CloseCombat,
         Coil,
+        //CometPunch, // TODO: Iron Fist
         ConfuseRay,
         Confusion,
         CosmicPower,
@@ -2376,10 +2426,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         DragonDance,
         DragonPulse,
         DragonRush,
+        //DrainPunch, // TODO: Iron Fist
         DoubleTeam,
         DrillPeck,
         DrillRun,
-        DynamicPunch, // TODO: Iron Fist
+        DynamicPunch,
         EarthPower,
         Earthquake,
         EggBomb,
@@ -2406,6 +2457,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Fly,
         FocusBlast,
         FocusEnergy,
+        //FocusPunch, // TODO: Iron Fist
         ForcePalm,
         FrostBreath,
         Frustration,

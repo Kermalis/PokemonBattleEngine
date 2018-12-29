@@ -371,7 +371,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Steel, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit, EffectParam = 0,
                     PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -646,7 +646,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 20,
                     PPTier = 2, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -756,7 +756,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 100,
                     PPTier = 1, Power = 100, Accuracy = 50, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -943,7 +943,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Fire, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 10,
                     PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -1174,7 +1174,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit__MaybeLowerUser_SPE_By1, EffectParam = 100,
                     PPTier = 2, Power = 100, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -1372,7 +1372,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Ice, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
                     PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -1614,7 +1614,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit, EffectParam = 0,
                     PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -1691,7 +1691,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit, EffectParam = 0,
                     PPTier = 4, Power = 80, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -1724,7 +1724,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Steel, Category = PBEMoveCategory.Special,
                     Effect = PBEMoveEffect.Hit__MaybeRaiseUser_ATK_By1, EffectParam = 20,
                     PPTier = 2, Power = 100, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -2450,7 +2450,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Ghost, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit, EffectParam = 0,
                     PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -2549,7 +2549,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit, EffectParam = 0,
                     PPTier = 3, Power = 85, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HitsAirborne,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HitsAirborne | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
@@ -3055,7 +3055,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Electric, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 10,
                     PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
