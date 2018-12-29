@@ -63,13 +63,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Location));
             }
         }
-        Uri uri;
+        Uri source;
         Uri Source
         {
-            get => uri;
+            get => source;
             set
             {
-                uri = value;
+                source = value;
                 OnPropertyChanged(nameof(Source));
             }
         }

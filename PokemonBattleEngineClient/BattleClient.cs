@@ -816,9 +816,11 @@ namespace Kermalis.PokemonBattleEngineClient
                         {
                             case PBEWeatherAction.Added:
                                 Battle.Weather = wp.Weather;
+                                BattleView.UpdateWeather();
                                 break;
                             case PBEWeatherAction.Ended:
                                 Battle.Weather = PBEWeather.None;
+                                BattleView.UpdateWeather();
                                 break;
                         }
                         string message;
