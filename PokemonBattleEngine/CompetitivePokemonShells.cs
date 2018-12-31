@@ -866,6 +866,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Flatter, PBEMove.Psychic, PBEMove.ShadowBall, PBEMove.Protect }, // Trick Room, Psychic, Shadow Ball, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Emolga_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Emolga,
+            Nickname = "Helo",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.MotorDrive,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Agility, PBEMove.LightScreen, PBEMove.SignalBeam, PBEMove.AirSlash }, // Tailwind, Encore, U-turn, Air Slash
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Alomomola_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Alomomola,
@@ -1002,7 +1018,8 @@ namespace Kermalis.PokemonBattleEngine
         {
             Absol_RU, Alomomola_VGC, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Bouffalant_VGC, Butterfree_RU, Carracosta_VGC,
             Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
-            Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
+            Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Emolga_NU,
+            Espeon_Uber,
             Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
             Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Minun_NU, Mismagius_UU, Ninetales_VGC,
             Ninjask_VGC, Pachirisu_NU, Palkia_Uber,
