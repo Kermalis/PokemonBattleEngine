@@ -2111,6 +2111,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Exclamation = 201 | (26 << 0x10),
         Unown_Question = 201 | (27 << 0x10),
         Smeargle = 235,
+        Blaziken = 257,
         Nincada = 290,
         Ninjask = 291,
         Shedinja = 292,
