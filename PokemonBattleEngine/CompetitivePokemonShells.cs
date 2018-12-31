@@ -157,7 +157,23 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Rash,
             IVs = new byte[] { 31, 30, 30, 31, 31, 31 },
             EVs = new byte[] { 0, 4, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.GrassKnot }, // Fake Out, Thunderbolt, Hidden Power Ice, Grass Knot
+            Moves = new PBEMove[] { PBEMove.Protect, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.GrassKnot }, // Fake Out, Thunderbolt, Hidden Power Ice, Grass Knot
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Raichu_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Raichu,
+            Nickname = "Archu",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.ZapPlate, // Focus Sash
+            Ability = PBEAbility.Lightningrod,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Discharge, PBEMove.GrassKnot, PBEMove.FocusBlast, PBEMove.Protect }, // Discharge, Fake Out, Focus Blast, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
@@ -1022,8 +1038,8 @@ namespace Kermalis.PokemonBattleEngine
             Espeon_Uber,
             Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
             Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Minun_NU, Mismagius_UU, Ninetales_VGC,
-            Ninjask_VGC, Pachirisu_NU, Palkia_Uber,
-            Pikachu_VGC, Plusle_NU, Rotom_Wash_VGC, Shedinja_VGC, Smeargle_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
+            Ninjask_VGC, Pachirisu_NU, Palkia_Uber, Pikachu_VGC,
+            Plusle_NU, Raichu_VGC, Rotom_Wash_VGC, Shedinja_VGC, Smeargle_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
             Volcarona_VGC,
         };
 
