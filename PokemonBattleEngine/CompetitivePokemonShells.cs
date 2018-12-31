@@ -434,6 +434,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.QuickAttack }, // Nasty Plot, Thunderbolt, Hidden Power Ice, Baton Pass
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Minun_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Minun,
+            Nickname = "MIKEY",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.Minus,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 4, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.QuickAttack }, // Nasty Plot, Thunderbolt, Encore, Baton Pass
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Cradily_OU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Cradily,
@@ -972,8 +988,8 @@ namespace Kermalis.PokemonBattleEngine
             Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
             Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
             Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
-            Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Ninjask_VGC,
-            Plusle_NU,
+            Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Minun_NU, Mismagius_UU, Ninetales_VGC,
+            Ninjask_VGC, Plusle_NU,
             Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Shedinja_VGC, Smeargle_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
             Volcarona_VGC,
         };
