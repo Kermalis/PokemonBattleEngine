@@ -418,6 +418,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.CalmMind, PBEMove.HyperVoice, PBEMove.Substitute }, // Baton Pass, Calm Mind, Hyper Voice, Substitute
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Plusle_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Plusle,
+            Nickname = "Peanut",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Plus,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.QuickAttack }, // Nasty Plot, Thunderbolt, Hidden Power Ice, Baton Pass
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Cradily_OU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Cradily,
@@ -957,6 +973,7 @@ namespace Kermalis.PokemonBattleEngine
             Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Espeon_Uber,
             Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
             Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Mismagius_UU, Ninetales_VGC, Ninjask_VGC,
+            Plusle_NU,
             Palkia_Uber, Pikachu_VGC, Rotom_Wash_VGC, Shedinja_VGC, Smeargle_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
             Volcarona_VGC,
         };
