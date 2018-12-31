@@ -2123,6 +2123,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Minun = 312,
         Lileep = 345,
         Cradily = 346,
+        Tropius = 357,
         Absol = 359,
         Clamperl = 366,
         Latias = 380,
