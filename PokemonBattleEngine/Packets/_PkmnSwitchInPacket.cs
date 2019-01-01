@@ -1,7 +1,9 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -10,7 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
     public sealed class PBEPkmnSwitchInPacket : INetPacket
     {
         public const short Code = 0x06;
-        public IEnumerable<byte> Buffer => BuildBuffer();
+        public IEnumerable<byte> Buffer { get; }
 
         public class PBESwitchInInfo
         {
@@ -69,40 +71,34 @@ namespace Kermalis.PokemonBattleEngine.Packets
             }
         }
 
-        public bool LocalTeam { get; set; }
-        public PBESwitchInInfo[] SwitchIns { get; }
+        public PBETeam Team { get; }
+        public ReadOnlyCollection<PBESwitchInInfo> SwitchIns { get; }
 
-        public PBEPkmnSwitchInPacket(bool localTeam, IEnumerable<PBEPokemon> pokemon)
+        public PBEPkmnSwitchInPacket(PBETeam team, IEnumerable<PBEPokemon> pokemon)
         {
-            LocalTeam = localTeam;
-            SwitchIns = pokemon.Select(p => new PBESwitchInInfo(p)).ToArray();
+            var bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Code));
+            bytes.Add((Team = team).Id);
+            bytes.Add((byte)(SwitchIns = pokemon.Select(p => new PBESwitchInInfo(p)).ToList().AsReadOnly()).Count);
+            foreach (PBESwitchInInfo info in SwitchIns)
+            {
+                bytes.AddRange(info.ToBytes());
+            }
+            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBEPkmnSwitchInPacket(byte[] buffer)
+        public PBEPkmnSwitchInPacket(byte[] buffer, PBEBattle battle)
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                LocalTeam = r.ReadBoolean();
-                var num = Math.Min((byte)3, r.ReadByte());
-                SwitchIns = new PBESwitchInInfo[num];
-                for (int i = 0; i < num; i++)
+                Team = battle.Teams[r.ReadByte()];
+                var switches = new List<PBESwitchInInfo>(r.ReadByte());
+                for (int i = 0; i < switches.Capacity; i++)
                 {
-                    SwitchIns[i] = PBESwitchInInfo.FromBytes(r);
+                    switches.Add(PBESwitchInInfo.FromBytes(r));
                 }
+                SwitchIns = switches.AsReadOnly();
             }
-        }
-        IEnumerable<byte> BuildBuffer()
-        {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(LocalTeam ? 1 : 0));
-            var num = Math.Min(3, SwitchIns.Length);
-            bytes.Add((byte)num);
-            for (int i = 0; i < num; i++)
-            {
-                bytes.AddRange(SwitchIns[i].ToBytes());
-            }
-            return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
 
         public void Dispose() { }

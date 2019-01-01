@@ -9,46 +9,51 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed class PBETeam
     {
-        public readonly PBEBattle Battle;
-        public string TrainerName;
-        public readonly bool LocalTeam;
-        public List<PBEPokemon> Party { get; internal set; } // TODO: Do not allow outsiders to add
+        public PBEBattle Battle { get; }
+        public byte Id { get; }
+        public string TrainerName { get; set; }
+        public List<PBEPokemon> Party { get; private set; }
 
-        public PBEPokemon[] ActiveBattlers => Battle.ActiveBattlers.Where(p => p.LocalTeam == LocalTeam).ToArray();
+        public IEnumerable<PBEPokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Team == this).OrderBy(p => p.FieldPosition);
         public int NumPkmnAlive => Party.Count(p => p.HP > 0);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PBEFieldPosition.None);
 
         public List<PBEPokemon> ActionsRequired { get; } = new List<PBEPokemon>(3); // PBEBattleState.WaitingForActions
-        public byte SwitchInsRequired; // PBEBattleState.WaitingForSwitchIns
+        public byte SwitchInsRequired { get; set; } // PBEBattleState.WaitingForSwitchIns
         public List<PBEPokemon> SwitchInQueue { get; } = new List<PBEPokemon>(3); // PBEBattleState.WaitingForSwitchIns
 
-        public PBETeamStatus Status;
-        public byte ReflectCount, LightScreenCount; // Reflect & Light Screen
-        public byte SpikeCount, ToxicSpikeCount; // Spikes & Toxic Spikes
-        public bool MonFaintedLastTurn; // Retaliate
+        public PBETeamStatus Status { get; set; }
+        public byte ReflectCount { get; set; }
+        public byte LightScreenCount { get; set; }
+        public byte SpikeCount { get; set; }
+        public byte ToxicSpikeCount { get; set; }
+        public bool MonFaintedLastTurn { get; set; }
 
         // Host constructor
-        internal PBETeam(PBEBattle battle, PBETeamShell shell, bool localTeam, ref byte idCount)
+        internal PBETeam(PBEBattle battle, byte id, IEnumerable<PBEPokemonShell> party, ref byte pkmnIdCounter)
         {
             Battle = battle;
-            TrainerName = shell.PlayerName;
-            LocalTeam = localTeam;
-            Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
-            for (int i = 0; i < shell.Party.Length; i++)
-            {
-                Party.Add(new PBEPokemon(localTeam, idCount++, shell.Party[i], battle.Settings));
-            }
+            Id = id;
+            CreateParty(party, ref pkmnIdCounter);
         }
         // Client constructor
-        internal PBETeam(PBEBattle battle, bool localTeam)
+        internal PBETeam(PBEBattle battle, byte id)
         {
             Battle = battle;
-            LocalTeam = localTeam;
+            Id = id;
             Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
+        }
+        internal void CreateParty(IEnumerable<PBEPokemonShell> party, ref byte pkmnIdCounter)
+        {
+            Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
+            foreach(PBEPokemonShell pkmn in party)
+            {
+                new PBEPokemon(this, pkmnIdCounter++, pkmn);
+            }
         }
 
         // Returns null if there is no Pokémon at that position
-        public PBEPokemon PokemonAtPosition(PBEFieldPosition pos) => Party.SingleOrDefault(p => p.FieldPosition == pos);
+        public PBEPokemon TryGetPokemonAtPosition(PBEFieldPosition pos) => Party.SingleOrDefault(p => p.FieldPosition == pos);
     }
     public sealed partial class PBEBattle
     {
@@ -56,136 +61,137 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public event BattleStateChangedEvent OnStateChanged;
         public PBEBattleState BattleState { get; private set; }
 
-        public readonly PBEBattleFormat BattleFormat;
-        public readonly PBESettings Settings;
-        public readonly PBETeam[] Teams = new PBETeam[2];
-        public readonly List<PBEPokemon> ActiveBattlers;
-        List<PBEPokemon> turnOrder = new List<PBEPokemon>();
+        public PBEBattleFormat BattleFormat { get; }
+        public PBESettings Settings { get; }
+        public PBETeam[] Teams { get; } = new PBETeam[2];
+        public List<PBEPokemon> ActiveBattlers { get; }
+        List<PBEPokemon> turnOrder { get; } = new List<PBEPokemon>();
 
-        public PBEWeather Weather;
-        public byte WeatherCounter;
+        public PBEWeather Weather { get; set; }
+        public byte WeatherCounter { get; set; }
 
         // Returns null if it doesn't exist
-        public PBEPokemon GetPokemon(byte pkmnId) => Teams[0].Party.Concat(Teams[1].Party).SingleOrDefault(p => p.Id == pkmnId);
+        public PBEPokemon TryGetPokemon(byte pkmnId) => Teams.SelectMany(t => t.Party).SingleOrDefault(p => p.Id == pkmnId);
 
-        // Host constructor
-        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, PBETeamShell localTeamShell, PBETeamShell remoteTeamShell)
+        byte pkmnIdCounter;
+        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IEnumerable<PBEPokemonShell> team0Party, IEnumerable<PBEPokemonShell> team1Party)
         {
             BattleFormat = battleFormat;
             Settings = settings;
             ActiveBattlers = new List<PBEPokemon>(Settings.MaxPartySize);
-
-            byte idCount = 0;
-            Teams[0] = new PBETeam(this, localTeamShell, true, ref idCount);
-            Teams[1] = new PBETeam(this, remoteTeamShell, false, ref idCount);
-
-            // Set pokemon field positions
-            switch (BattleFormat)
-            {
-                case PBEBattleFormat.Single:
-                    Teams[0].Party[0].FieldPosition = PBEFieldPosition.Center;
-                    Teams[0].SwitchInQueue.Add(Teams[0].Party[0]);
-                    Teams[1].Party[0].FieldPosition = PBEFieldPosition.Center;
-                    Teams[1].SwitchInQueue.Add(Teams[1].Party[0]);
-                    break;
-                case PBEBattleFormat.Double:
-                    Teams[0].Party[0].FieldPosition = PBEFieldPosition.Left;
-                    Teams[0].SwitchInQueue.Add(Teams[0].Party[0]);
-                    if (Teams[0].Party.Count > 1)
-                    {
-                        Teams[0].Party[1].FieldPosition = PBEFieldPosition.Right;
-                        Teams[0].SwitchInQueue.Add(Teams[0].Party[1]);
-                    }
-                    Teams[1].Party[0].FieldPosition = PBEFieldPosition.Left;
-                    Teams[1].SwitchInQueue.Add(Teams[1].Party[0]);
-                    if (Teams[1].Party.Count > 1)
-                    {
-                        Teams[1].Party[1].FieldPosition = PBEFieldPosition.Right;
-                        Teams[1].SwitchInQueue.Add(Teams[1].Party[1]);
-                    }
-                    break;
-                case PBEBattleFormat.Triple:
-                    Teams[0].Party[0].FieldPosition = PBEFieldPosition.Left;
-                    Teams[0].SwitchInQueue.Add(Teams[0].Party[0]);
-                    if (Teams[0].Party.Count > 1)
-                    {
-                        Teams[0].Party[1].FieldPosition = PBEFieldPosition.Center;
-                        Teams[0].SwitchInQueue.Add(Teams[0].Party[1]);
-                    }
-                    if (Teams[0].Party.Count > 2)
-                    {
-                        Teams[0].Party[2].FieldPosition = PBEFieldPosition.Right;
-                        Teams[0].SwitchInQueue.Add(Teams[0].Party[2]);
-                    }
-                    Teams[1].Party[0].FieldPosition = PBEFieldPosition.Left;
-                    Teams[1].SwitchInQueue.Add(Teams[1].Party[0]);
-                    if (Teams[1].Party.Count > 1)
-                    {
-                        Teams[1].Party[1].FieldPosition = PBEFieldPosition.Center;
-                        Teams[1].SwitchInQueue.Add(Teams[1].Party[1]);
-                    }
-                    if (Teams[1].Party.Count > 2)
-                    {
-                        Teams[1].Party[2].FieldPosition = PBEFieldPosition.Right;
-                        Teams[1].SwitchInQueue.Add(Teams[1].Party[2]);
-                    }
-                    break;
-                case PBEBattleFormat.Rotation:
-                    Teams[0].Party[0].FieldPosition = PBEFieldPosition.Center;
-                    Teams[0].SwitchInQueue.Add(Teams[0].Party[0]);
-                    if (Teams[0].Party.Count > 1)
-                    {
-                        Teams[0].Party[1].FieldPosition = PBEFieldPosition.Left;
-                        Teams[0].SwitchInQueue.Add(Teams[0].Party[1]);
-                    }
-                    if (Teams[0].Party.Count > 2)
-                    {
-                        Teams[0].Party[2].FieldPosition = PBEFieldPosition.Right;
-                        Teams[0].SwitchInQueue.Add(Teams[0].Party[2]);
-                    }
-                    Teams[1].Party[0].FieldPosition = PBEFieldPosition.Center;
-                    Teams[1].SwitchInQueue.Add(Teams[1].Party[0]);
-                    if (Teams[1].Party.Count > 1)
-                    {
-                        Teams[1].Party[1].FieldPosition = PBEFieldPosition.Left;
-                        Teams[1].SwitchInQueue.Add(Teams[1].Party[1]);
-                    }
-                    if (Teams[1].Party.Count > 2)
-                    {
-                        Teams[1].Party[2].FieldPosition = PBEFieldPosition.Right;
-                        Teams[1].SwitchInQueue.Add(Teams[1].Party[2]);
-                    }
-                    break;
-            }
-
-            BattleState = PBEBattleState.ReadyToBegin;
-            OnStateChanged?.Invoke(this);
+            Teams[0] = new PBETeam(this, 0, team0Party, ref pkmnIdCounter);
+            Teams[1] = new PBETeam(this, 1, team1Party, ref pkmnIdCounter);
+            CheckForReadiness();
         }
-        // Client constructor
         public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings)
         {
             BattleFormat = battleFormat;
             Settings = settings;
             ActiveBattlers = new List<PBEPokemon>(Settings.MaxPartySize);
 
-            Teams[0] = new PBETeam(this, true);
-            Teams[1] = new PBETeam(this, false);
+            Teams[0] = new PBETeam(this, 0);
+            Teams[1] = new PBETeam(this, 1);
 
             BattleState = PBEBattleState.WaitingForPlayers;
             OnStateChanged?.Invoke(this);
         }
-        public void SetTeamParty(bool localTeam, IEnumerable<PBEPokemon> party)
+        // Sets BattleState to PBEBattleState.ReadyToBegin
+        void CheckForReadiness()
         {
-            if (BattleState != PBEBattleState.WaitingForPlayers)
+            if (Teams.All(t => t.NumPkmnAlive > 1))
             {
-                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForPlayers)} to set a team's party.");
-            }
-            Teams[localTeam ? 0 : 1].Party = new List<PBEPokemon>(party);
-            if (Teams[0].NumPkmnAlive > 1 && Teams[1].NumPkmnAlive > 1)
-            {
+                // Set pokemon field positions
+                switch (BattleFormat)
+                {
+                    case PBEBattleFormat.Single:
+                        Teams[0].Party[0].FieldPosition = PBEFieldPosition.Center;
+                        Teams[0].SwitchInQueue.Add(Teams[0].Party[0]);
+                        Teams[1].Party[0].FieldPosition = PBEFieldPosition.Center;
+                        Teams[1].SwitchInQueue.Add(Teams[1].Party[0]);
+                        break;
+                    case PBEBattleFormat.Double:
+                        Teams[0].Party[0].FieldPosition = PBEFieldPosition.Left;
+                        Teams[0].SwitchInQueue.Add(Teams[0].Party[0]);
+                        if (Teams[0].Party.Count > 1)
+                        {
+                            Teams[0].Party[1].FieldPosition = PBEFieldPosition.Right;
+                            Teams[0].SwitchInQueue.Add(Teams[0].Party[1]);
+                        }
+                        Teams[1].Party[0].FieldPosition = PBEFieldPosition.Left;
+                        Teams[1].SwitchInQueue.Add(Teams[1].Party[0]);
+                        if (Teams[1].Party.Count > 1)
+                        {
+                            Teams[1].Party[1].FieldPosition = PBEFieldPosition.Right;
+                            Teams[1].SwitchInQueue.Add(Teams[1].Party[1]);
+                        }
+                        break;
+                    case PBEBattleFormat.Triple:
+                        Teams[0].Party[0].FieldPosition = PBEFieldPosition.Left;
+                        Teams[0].SwitchInQueue.Add(Teams[0].Party[0]);
+                        if (Teams[0].Party.Count > 1)
+                        {
+                            Teams[0].Party[1].FieldPosition = PBEFieldPosition.Center;
+                            Teams[0].SwitchInQueue.Add(Teams[0].Party[1]);
+                        }
+                        if (Teams[0].Party.Count > 2)
+                        {
+                            Teams[0].Party[2].FieldPosition = PBEFieldPosition.Right;
+                            Teams[0].SwitchInQueue.Add(Teams[0].Party[2]);
+                        }
+                        Teams[1].Party[0].FieldPosition = PBEFieldPosition.Left;
+                        Teams[1].SwitchInQueue.Add(Teams[1].Party[0]);
+                        if (Teams[1].Party.Count > 1)
+                        {
+                            Teams[1].Party[1].FieldPosition = PBEFieldPosition.Center;
+                            Teams[1].SwitchInQueue.Add(Teams[1].Party[1]);
+                        }
+                        if (Teams[1].Party.Count > 2)
+                        {
+                            Teams[1].Party[2].FieldPosition = PBEFieldPosition.Right;
+                            Teams[1].SwitchInQueue.Add(Teams[1].Party[2]);
+                        }
+                        break;
+                    case PBEBattleFormat.Rotation:
+                        Teams[0].Party[0].FieldPosition = PBEFieldPosition.Center;
+                        Teams[0].SwitchInQueue.Add(Teams[0].Party[0]);
+                        if (Teams[0].Party.Count > 1)
+                        {
+                            Teams[0].Party[1].FieldPosition = PBEFieldPosition.Left;
+                            Teams[0].SwitchInQueue.Add(Teams[0].Party[1]);
+                        }
+                        if (Teams[0].Party.Count > 2)
+                        {
+                            Teams[0].Party[2].FieldPosition = PBEFieldPosition.Right;
+                            Teams[0].SwitchInQueue.Add(Teams[0].Party[2]);
+                        }
+                        Teams[1].Party[0].FieldPosition = PBEFieldPosition.Center;
+                        Teams[1].SwitchInQueue.Add(Teams[1].Party[0]);
+                        if (Teams[1].Party.Count > 1)
+                        {
+                            Teams[1].Party[1].FieldPosition = PBEFieldPosition.Left;
+                            Teams[1].SwitchInQueue.Add(Teams[1].Party[1]);
+                        }
+                        if (Teams[1].Party.Count > 2)
+                        {
+                            Teams[1].Party[2].FieldPosition = PBEFieldPosition.Right;
+                            Teams[1].SwitchInQueue.Add(Teams[1].Party[2]);
+                        }
+                        break;
+                }
+
                 BattleState = PBEBattleState.ReadyToBegin;
                 OnStateChanged?.Invoke(this);
             }
+        }
+        // Sets BattleState to PBEBattleState.ReadyToBegin
+        public static void CreateTeamParty(PBETeam team, IEnumerable<PBEPokemonShell> party)
+        {
+            if (team.Battle.BattleState != PBEBattleState.WaitingForPlayers)
+            {
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForPlayers)} to set a team's party.");
+            }
+            team.CreateParty(party, ref team.Battle.pkmnIdCounter);
+            team.Battle.CheckForReadiness();
         }
         // For clients
         // Does not update ActiveBattlers
@@ -193,11 +199,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
             {
-                PBEPokemon pkmn = GetPokemon(info.PokemonId);
+                PBEPokemon pkmn = TryGetPokemon(info.PokemonId);
                 if (pkmn == null)
                 {
-                    pkmn = new PBEPokemon(psip.LocalTeam, info, Settings);
-                    Teams[psip.LocalTeam ? 0 : 1].Party.Add(pkmn);
+                    pkmn = new PBEPokemon(psip.Team, info);
                 }
                 pkmn.HP = info.HP;
                 pkmn.MaxHP = info.MaxHP;
@@ -240,10 +245,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (team.SwitchInQueue.Count > 0)
                 {
                     ActiveBattlers.AddRange(team.SwitchInQueue);
-                    BroadcastPkmnSwitchIn(team.LocalTeam, team.SwitchInQueue);
+                    BroadcastPkmnSwitchIn(team, team.SwitchInQueue);
                 }
             }
-            foreach (PBEPokemon pkmn in Teams[0].SwitchInQueue.Concat(Teams[1].SwitchInQueue))
+            foreach (PBEPokemon pkmn in Teams.SelectMany(t => t.SwitchInQueue))
             {
                 DoSwitchInEffects(pkmn); // BattleEffects.cs
             }
@@ -255,7 +260,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 team.ActionsRequired.Clear();
                 team.ActionsRequired.AddRange(team.ActiveBattlers);
-                BroadcastActionsRequest(team.LocalTeam, team.ActionsRequired);
+                BroadcastActionsRequest(team);
             }
             BattleState = PBEBattleState.WaitingForActions;
             OnStateChanged?.Invoke(this);
@@ -321,7 +326,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         speed *= 0.25;
                     }
 
-                    Debug.WriteLine("{0} {1}'s evaluated speed: {2}", pkmn.LocalTeam ? "LocalTeam" : "Remote", pkmn.Shell.Nickname, speed);
+                    Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Shell.Nickname, speed);
                     var tup = Tuple.Create(pkmn, speed);
                     if (evaluated.Count == 0)
                     {
@@ -361,7 +366,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                     }
-                    Debug.WriteLine(evaluated.Select(t => $"{(t.Item1.LocalTeam ? "LocalTeam" : "Remote")} {t.Item1.Shell.Nickname} {t.Item2}").Print(true));
+                    Debug.WriteLine(evaluated.Select(t => $"{t.Item1.Team.Id} {t.Item1.Shell.Nickname} {t.Item2}").Print(true));
                 }
                 turnOrder.AddRange(evaluated.Select(t => t.Item1));
             }
@@ -370,7 +375,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             foreach (PBEPokemon pkmn in turnOrder)
             {
-                if (pkmn.HP < 1)
+                if (pkmn.HP == 0)
                 {
                     continue;
                 }
@@ -382,13 +387,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     case PBEDecision.SwitchOut:
                         PBEFieldPosition pos = pkmn.FieldPosition;
-                        pkmn.ClearForSwitch(Settings);
+                        pkmn.ClearForSwitch();
                         ActiveBattlers.Remove(pkmn);
                         BroadcastPkmnSwitchOut(pkmn);
-                        PBEPokemon switchPkmn = GetPokemon(pkmn.SelectedAction.SwitchPokemonId);
+                        PBEPokemon switchPkmn = TryGetPokemon(pkmn.SelectedAction.SwitchPokemonId);
                         switchPkmn.FieldPosition = pos;
                         ActiveBattlers.Add(switchPkmn);
-                        BroadcastPkmnSwitchIn(switchPkmn.LocalTeam, new PBEPokemon[] { switchPkmn });
+                        BroadcastPkmnSwitchIn(switchPkmn.Team, new[] { switchPkmn });
                         DoSwitchInEffects(switchPkmn);
                         break;
                     default: throw new ArgumentOutOfRangeException(nameof(pkmn.SelectedAction.Decision), $"Invalid decision: {pkmn.SelectedAction.Decision}");
@@ -442,7 +447,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (team.ReflectCount == 0)
                     {
                         team.Status &= ~PBETeamStatus.Reflect;
-                        BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.Reflect, PBETeamStatusAction.Ended);
+                        BroadcastTeamStatus(team, PBETeamStatus.Reflect, PBETeamStatusAction.Ended);
                     }
                 }
                 if (team.Status.HasFlag(PBETeamStatus.LightScreen))
@@ -451,7 +456,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (team.LightScreenCount == 0)
                     {
                         team.Status &= ~PBETeamStatus.LightScreen;
-                        BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.LightScreen, PBETeamStatusAction.Ended);
+                        BroadcastTeamStatus(team, PBETeamStatus.LightScreen, PBETeamStatusAction.Ended);
                     }
                 }
             }
@@ -466,49 +471,49 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (BattleFormat)
                 {
                     case PBEBattleFormat.Single:
-                        if (available > 0 && team.PokemonAtPosition(PBEFieldPosition.Center) == null)
+                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Center) == null)
                         {
                             team.SwitchInsRequired = 1;
                             nextState = PBEBattleState.WaitingForSwitchIns;
-                            BroadcastSwitchInRequest(team.LocalTeam, team.SwitchInsRequired);
+                            BroadcastSwitchInRequest(team);
                         }
                         break;
                     case PBEBattleFormat.Double:
-                        if (available > 0 && team.PokemonAtPosition(PBEFieldPosition.Left) == null)
+                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Left) == null)
                         {
                             available--;
                             team.SwitchInsRequired++;
                         }
-                        if (available > 0 && team.PokemonAtPosition(PBEFieldPosition.Right) == null)
+                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Right) == null)
                         {
                             team.SwitchInsRequired++;
                         }
                         if (team.SwitchInsRequired > 0)
                         {
                             nextState = PBEBattleState.WaitingForSwitchIns;
-                            BroadcastSwitchInRequest(team.LocalTeam, team.SwitchInsRequired);
+                            BroadcastSwitchInRequest(team);
                         }
                         break;
                     case PBEBattleFormat.Rotation:
                     case PBEBattleFormat.Triple:
-                        if (available > 0 && team.PokemonAtPosition(PBEFieldPosition.Left) == null)
+                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Left) == null)
                         {
                             available--;
                             team.SwitchInsRequired++;
                         }
-                        if (available > 0 && team.PokemonAtPosition(PBEFieldPosition.Center) == null)
+                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Center) == null)
                         {
                             available--;
                             team.SwitchInsRequired++;
                         }
-                        if (available > 0 && team.PokemonAtPosition(PBEFieldPosition.Right) == null)
+                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Right) == null)
                         {
                             team.SwitchInsRequired++;
                         }
                         if (team.SwitchInsRequired > 0)
                         {
                             nextState = PBEBattleState.WaitingForSwitchIns;
-                            BroadcastSwitchInRequest(team.LocalTeam, team.SwitchInsRequired);
+                            BroadcastSwitchInRequest(team);
                         }
                         break;
                 }

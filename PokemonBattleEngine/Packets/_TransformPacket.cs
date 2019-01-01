@@ -1,7 +1,9 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -12,8 +14,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x18;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte UserId { get; }
-        public byte TargetId { get; }
+        public byte User { get; }
+        public byte Target { get; }
         public ushort TargetAttack { get; }
         public ushort TargetDefense { get; }
         public ushort TargetSpAttack { get; }
@@ -30,14 +32,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEType TargetType1 { get; }
         public PBEType TargetType2 { get; }
         public double TargetWeight { get; }
-        public PBEMove[] TargetMoves { get; }
+        public ReadOnlyCollection<PBEMove> TargetMoves { get; }
 
-        public PBETransformPacket(PBEPokemon user, PBEPokemon target, PBESettings settings)
+        public PBETransformPacket(PBEPokemon user, PBEPokemon target)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(UserId = user.Id);
-            bytes.Add(TargetId = target.Id);
+            bytes.Add(User = user.Id);
+            bytes.Add(Target = target.Id);
             bytes.AddRange(BitConverter.GetBytes(TargetAttack = target.Attack));
             bytes.AddRange(BitConverter.GetBytes(TargetDefense = target.Defense));
             bytes.AddRange(BitConverter.GetBytes(TargetSpAttack = target.SpAttack));
@@ -54,20 +56,21 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)(TargetType1 = target.Type1));
             bytes.Add((byte)(TargetType2 = target.Type2));
             bytes.AddRange(BitConverter.GetBytes(TargetWeight = target.Weight));
-            for (int i = 0; i < settings.NumMoves; i++)
+            bytes.Add((byte)(TargetMoves = Array.AsReadOnly(target.Moves)).Count);
+            for (int i = 0; i < TargetMoves.Count; i++)
             {
-                bytes.AddRange(BitConverter.GetBytes((ushort)target.Moves[i]));
+                bytes.AddRange(BitConverter.GetBytes((ushort)TargetMoves[i]));
             }
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBETransformPacket(byte[] buffer, PBESettings settings)
+        public PBETransformPacket(byte[] buffer, PBEBattle battle)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                UserId = r.ReadByte();
-                TargetId = r.ReadByte();
+                User = r.ReadByte();
+                Target = r.ReadByte();
                 TargetAttack = r.ReadUInt16();
                 TargetDefense = r.ReadUInt16();
                 TargetSpAttack = r.ReadUInt16();
@@ -84,11 +87,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 TargetType1 = (PBEType)r.ReadByte();
                 TargetType2 = (PBEType)r.ReadByte();
                 TargetWeight = r.ReadDouble();
-                TargetMoves = new PBEMove[settings.NumMoves];
-                for (int i = 0; i < TargetMoves.Length; i++)
+                var moves = new List<PBEMove>(r.ReadByte());
+                for (int i = 0; i < moves.Capacity; i++)
                 {
-                    TargetMoves[i] = (PBEMove)r.ReadUInt16();
+                    moves.Add((PBEMove)r.ReadUInt16());
                 }
+                TargetMoves = moves.AsReadOnly();
             }
         }
 

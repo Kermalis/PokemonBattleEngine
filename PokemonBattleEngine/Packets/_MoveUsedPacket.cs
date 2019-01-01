@@ -1,4 +1,5 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x09;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte CulpritId { get; }
+        public byte Culprit { get; }
         public PBEMove Move { get; }
         public bool OwnsMove { get; }
 
@@ -20,18 +21,18 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(CulpritId = culprit.Id);
+            bytes.Add(Culprit = culprit.Id);
             bytes.AddRange(BitConverter.GetBytes((ushort)(Move = move)));
             bytes.Add((byte)((OwnsMove = culprit.Moves.Contains(Move)) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBEMoveUsedPacket(byte[] buffer)
+        public PBEMoveUsedPacket(byte[] buffer, PBEBattle battle)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                CulpritId = r.ReadByte();
+                Culprit = r.ReadByte();
                 Move = (PBEMove)r.ReadUInt16();
                 OwnsMove = r.ReadBoolean();
             }

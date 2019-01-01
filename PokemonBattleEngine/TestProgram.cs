@@ -19,6 +19,8 @@ namespace Kermalis.PokemonBattleEngine
 
             PBESettings settings = PBESettings.DefaultSettings;
             PBEBattle battle = new PBEBattle(PBEBattleFormat.Triple, settings, PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize), PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize));
+            battle.Teams[0].TrainerName = "Team 1";
+            battle.Teams[1].TrainerName = "Team 2";
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.OnStateChanged += Battle_OnStateChanged;
             try
@@ -52,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine
                         {
                             Console.WriteLine();
                             Console.WriteLine("{0}'s team:", team.TrainerName);
-                            foreach (PBEPokemon pkmn in team.ActiveBattlers.OrderBy(p => p.FieldPosition))
+                            foreach (PBEPokemon pkmn in team.ActiveBattlers)
                             {
                                 Console.WriteLine(pkmn);
                                 Console.WriteLine();
@@ -63,7 +65,7 @@ namespace Kermalis.PokemonBattleEngine
                     case PBEBattleState.WaitingForActions:
                         foreach (PBETeam team in battle.Teams)
                         {
-                            battle.SelectActionsIfValid(team.LocalTeam, AIManager.CreateActions(battle, team.LocalTeam));
+                            PBEBattle.SelectActionsIfValid(team, AIManager.CreateActions(team));
                         }
                         break;
                     case PBEBattleState.WaitingForSwitchIns:
@@ -71,7 +73,7 @@ namespace Kermalis.PokemonBattleEngine
                         {
                             if (team.SwitchInsRequired > 0)
                             {
-                                battle.SelectSwitchesIfValid(team.LocalTeam, AIManager.CreateSwitches(battle, team.LocalTeam));
+                                PBEBattle.SelectSwitchesIfValid(team, AIManager.CreateSwitches(team));
                             }
                         }
                         break;

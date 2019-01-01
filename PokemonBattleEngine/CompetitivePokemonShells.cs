@@ -1047,13 +1047,11 @@ namespace Kermalis.PokemonBattleEngine
         /// Creates a random team with pre-defined competitive Pokémon shells.
         /// </summary>
         /// <param name="numPkmn">The amount of Pokémon to add to the team.</param>
-        public static PBETeamShell CreateRandomTeam(int numPkmn)
+        public static IEnumerable<PBEPokemonShell> CreateRandomTeam(int numPkmn)
         {
-            var team = new PBETeamShell { PlayerName = new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" }.Sample() };
             var possiblePokemon = new List<PBEPokemonShell>(DefaultCompetitivePokemon);
             possiblePokemon.Shuffle();
-            team.Party = possiblePokemon.Take(numPkmn).ToArray();
-            return team;
+            return possiblePokemon.Take(numPkmn);
         }
     }
 }

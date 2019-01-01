@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -12,31 +13,31 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x08;
         public IEnumerable<byte> Buffer { get; }
 
-        public PBEAction[] Actions { get; }
+        public ReadOnlyCollection<PBEAction> Actions { get; }
 
         public PBEActionsResponsePacket(IEnumerable<PBEAction> actions)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Actions = actions.ToArray()).Length);
-            foreach (var a in Actions)
+            bytes.Add((byte)(Actions = actions.ToList().AsReadOnly()).Count);
+            foreach (PBEAction a in Actions)
             {
                 bytes.AddRange(a.ToBytes());
             }
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBEActionsResponsePacket(byte[] buffer)
+        public PBEActionsResponsePacket(byte[] buffer, PBEBattle battle)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                byte numActions = r.ReadByte();
-                Actions = new PBEAction[numActions];
-                for (int i = 0; i < numActions; i++)
+                var actions = new List<PBEAction>(r.ReadByte());
+                for (int i = 0; i < actions.Capacity; i++)
                 {
-                    Actions[i] = PBEAction.FromBytes(r);
+                    actions.Add(PBEAction.FromBytes(r));
                 }
+                Actions = actions.AsReadOnly();
             }
         }
 

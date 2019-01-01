@@ -5,10 +5,10 @@ namespace Kermalis.PokemonBattleEngine.AI
 {
     public static partial class AIManager
     {
-        static PBETarget DecideTargets(PBEBattle battle, PBEPokemon pkmn, PBEMove move)
+        static PBETarget DecideTargets(PBEPokemon pkmn, PBEMove move)
         {
             PBEMoveTarget possibleTargets = PBEBattle.GetMoveTargetsForPokemon(pkmn, move);
-            switch (battle.BattleFormat)
+            switch (pkmn.Team.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                 case PBEBattleFormat.Rotation:

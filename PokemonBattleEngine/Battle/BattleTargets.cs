@@ -82,42 +82,41 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="canHitFarCorners">Whether the move can hit far Pokémon in a triple battle.</param>
         PBEPokemon[] GetRuntimeTargets(PBEPokemon user, PBETarget requestedTargets, bool canHitFarCorners)
         {
-            PBETeam attackerTeam = Teams[user.LocalTeam ? 0 : 1]; // Attacker's team
-            PBETeam opposingTeam = Teams[user.LocalTeam ? 1 : 0]; // Other team
+            PBETeam opposingTeam = user.Team == Teams[0] ? Teams[1] : Teams[0];
 
             var targets = new List<PBEPokemon>();
             if (requestedTargets.HasFlag(PBETarget.AllyLeft))
             {
-                PBEPokemon b = attackerTeam.PokemonAtPosition(PBEFieldPosition.Left);
+                PBEPokemon b = user.Team.TryGetPokemonAtPosition(PBEFieldPosition.Left);
                 targets.Add(b);
             }
             if (requestedTargets.HasFlag(PBETarget.AllyCenter))
             {
-                PBEPokemon b = attackerTeam.PokemonAtPosition(PBEFieldPosition.Center);
+                PBEPokemon b = user.Team.TryGetPokemonAtPosition(PBEFieldPosition.Center);
                 targets.Add(b);
             }
             if (requestedTargets.HasFlag(PBETarget.AllyRight))
             {
-                PBEPokemon b = attackerTeam.PokemonAtPosition(PBEFieldPosition.Right);
+                PBEPokemon b = user.Team.TryGetPokemonAtPosition(PBEFieldPosition.Right);
                 targets.Add(b);
             }
             if (requestedTargets.HasFlag(PBETarget.FoeLeft))
             {
-                PBEPokemon b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
+                PBEPokemon b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
                     if (BattleFormat == PBEBattleFormat.Double)
                     {
-                        b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
+                        b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
                     }
                     else if (BattleFormat == PBEBattleFormat.Triple)
                     {
-                        b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Center);
+                        b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far right
                         if (b == null && (user.FieldPosition != PBEFieldPosition.Right || canHitFarCorners))
                         {
-                            b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
+                            b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
                         }
                     }
                 }
@@ -125,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (requestedTargets.HasFlag(PBETarget.FoeCenter))
             {
-                PBEPokemon b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Center);
+                PBEPokemon b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Center);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
@@ -133,26 +132,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (user.FieldPosition == PBEFieldPosition.Left)
                         {
-                            b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
+                            b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
                             // Right fainted as well and user can reach far left
                             if (b == null && (user.FieldPosition != PBEFieldPosition.Left || canHitFarCorners))
                             {
-                                b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
+                                b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
                             }
                         }
                         else if (user.FieldPosition == PBEFieldPosition.Right)
                         {
-                            b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
+                            b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
                             // Left fainted as well and user can reach far right
                             if (b == null && (user.FieldPosition != PBEFieldPosition.Right || canHitFarCorners))
                             {
-                                b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
+                                b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
                             }
                         }
                         else // Center
                         {
-                            PBEPokemon oppLeft = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left),
-                                oppRight = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
+                            PBEPokemon oppLeft = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left),
+                                oppRight = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
                             // Left is dead but not right
                             if (oppLeft == null && oppRight != null)
                             {
@@ -175,21 +174,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (requestedTargets.HasFlag(PBETarget.FoeRight))
             {
-                PBEPokemon b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Right);
+                PBEPokemon b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
                 // Target fainted, fallback to its teammate
                 if (b == null)
                 {
                     if (BattleFormat == PBEBattleFormat.Double)
                     {
-                        b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
+                        b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
                     }
                     else if (BattleFormat == PBEBattleFormat.Triple)
                     {
-                        b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Center);
+                        b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far left
                         if (b == null && (user.FieldPosition != PBEFieldPosition.Left || canHitFarCorners))
                         {
-                            b = opposingTeam.PokemonAtPosition(PBEFieldPosition.Left);
+                            b = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
                         }
                     }
                 }

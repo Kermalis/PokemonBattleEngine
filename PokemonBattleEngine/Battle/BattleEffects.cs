@@ -7,51 +7,46 @@ namespace Kermalis.PokemonBattleEngine.Battle
     {
         void DoSwitchInEffects(PBEPokemon pkmn)
         {
-            PBETeam userTeam = Teams[pkmn.LocalTeam ? 0 : 1];
-            PBETeam opposingTeam = Teams[pkmn.LocalTeam ? 1 : 0];
+            PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
 
             // Entry Hazards
-            if (userTeam.Status.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
+            if (pkmn.Team.Status.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
             {
-                double denominator = 10.0 - (2 * userTeam.SpikeCount);
-                ushort damage = (ushort)(pkmn.MaxHP / denominator);
-                DealDamage(pkmn, pkmn, damage, true);
-                BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn.Id);
+                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))), true);
+                BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn);
                 if (FaintCheck(pkmn))
                 {
                     return;
                 }
             }
-            if (userTeam.Status.HasFlag(PBETeamStatus.StealthRock))
+            if (pkmn.Team.Status.HasFlag(PBETeamStatus.StealthRock))
             {
                 double effectiveness = 0.125;
                 effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type1];
                 effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type2];
-                ushort damage = (ushort)(pkmn.MaxHP * effectiveness);
-                DealDamage(pkmn, pkmn, damage, true);
-                BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn.Id);
+                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * effectiveness), true);
+                BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn);
                 if (FaintCheck(pkmn))
                 {
                     return;
                 }
             }
-            if (userTeam.Status.HasFlag(PBETeamStatus.ToxicSpikes))
+            if (pkmn.Team.Status.HasFlag(PBETeamStatus.ToxicSpikes))
             {
                 // Grounded Poison types remove the Toxic Spikes
                 if (pkmn.HasType(PBEType.Poison) && pkmn.Ability != PBEAbility.Levitate && !pkmn.HasType(PBEType.Flying))
                 {
-                    BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
+                    BroadcastTeamStatus(pkmn.Team, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
                 }
                 // Steel types and floating Pokémon don't get Poisoned
                 else if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Steel) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
                 {
-                    PBEStatus1 status = userTeam.ToxicSpikeCount == 1 ? PBEStatus1.Poisoned : PBEStatus1.BadlyPoisoned;
-                    pkmn.Status1 = status;
-                    if (status == PBEStatus1.BadlyPoisoned)
+                    pkmn.Status1 = pkmn.Team.ToxicSpikeCount == 1 ? PBEStatus1.Poisoned : PBEStatus1.BadlyPoisoned;
+                    if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
                     {
                         pkmn.Status1Counter = 1;
                     }
-                    BroadcastStatus1(pkmn, pkmn, status, PBEStatusAction.Added);
+                    BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Added);
                 }
             }
 
@@ -80,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEAbility.Imposter:
                     {
                         PBEFieldPosition targetPos = GetPositionAcross(BattleFormat, pkmn.FieldPosition);
-                        PBEPokemon target = opposingTeam.PokemonAtPosition(targetPos);
+                        PBEPokemon target = opposingTeam.TryGetPokemonAtPosition(targetPos);
                         if (target != null
                             && !target.Status2.HasFlag(PBEStatus2.Substitute)
                             && !target.Status2.HasFlag(PBEStatus2.Transformed))
@@ -136,8 +131,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void DoTurnEndedEffects(PBEPokemon pkmn)
         {
-            PBETeam userTeam = Teams[pkmn.LocalTeam ? 0 : 1];
-            PBETeam opposingTeam = Teams[pkmn.LocalTeam ? 1 : 0];
+            PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
 
             // Weather effects happen first
             switch (Weather)
@@ -155,7 +149,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         && pkmn.Ability != PBEAbility.Overcoat
                         && pkmn.Ability != PBEAbility.SnowCloak)
                     {
-                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
+                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
                         DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), true);
                         if (FaintCheck(pkmn))
                         {
@@ -195,7 +189,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
                         && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
                     {
-                        BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn.Id);
+                        BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
                         DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.SandstormDamageDenominator), true);
                         if (FaintCheck(pkmn))
                         {
@@ -275,7 +269,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
             {
-                PBEPokemon seeder = opposingTeam.PokemonAtPosition(pkmn.SeededPosition);
+                PBEPokemon seeder = opposingTeam.TryGetPokemonAtPosition(pkmn.SeededPosition);
                 if (seeder != null)
                 {
                     BroadcastStatus2(seeder, pkmn, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
@@ -763,7 +757,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return false;
             }
         miss:
-            BroadcastMoveMissed(user);
+            BroadcastMoveMissed(user, target);
             return true;
         }
 
@@ -1131,7 +1125,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         && !user.Status2.HasFlag(PBEStatus2.Transformed)
                         && !target.Status2.HasFlag(PBEStatus2.Transformed))
                     {
-                        user.Transform(target, Settings);
+                        user.Transform(target);
                         BroadcastTransform(user, target);
                         BroadcastStatus2(target, user, PBEStatus2.Transformed, PBEStatusAction.Added); // user = victim because user receives the transformed flag
                         return true;
@@ -1295,25 +1289,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
 
-            PBETeam userTeam = Teams[user.LocalTeam ? 0 : 1];
-            PBETeam opposingTeam = Teams[user.LocalTeam ? 1 : 0];
+            PBETeam opposingTeam = user.Team == Teams[0] ? Teams[1] : Teams[0];
             switch (status)
             {
                 case PBETeamStatus.LightScreen:
-                    if (!userTeam.Status.HasFlag(PBETeamStatus.LightScreen))
+                    if (!user.Team.Status.HasFlag(PBETeamStatus.LightScreen))
                     {
-                        userTeam.Status |= PBETeamStatus.LightScreen;
-                        userTeam.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
-                        BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
+                        user.Team.Status |= PBETeamStatus.LightScreen;
+                        user.Team.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
+                        BroadcastTeamStatus(user.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
                 case PBETeamStatus.Reflect:
-                    if (!userTeam.Status.HasFlag(PBETeamStatus.Reflect))
+                    if (!user.Team.Status.HasFlag(PBETeamStatus.Reflect))
                     {
-                        userTeam.Status |= PBETeamStatus.Reflect;
-                        userTeam.ReflectCount = (byte)(Settings.ReflectTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
-                        BroadcastTeamStatus(userTeam.LocalTeam, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
+                        user.Team.Status |= PBETeamStatus.Reflect;
+                        user.Team.ReflectCount = (byte)(Settings.ReflectTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
+                        BroadcastTeamStatus(user.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
@@ -1322,7 +1315,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         opposingTeam.Status |= PBETeamStatus.Spikes;
                         opposingTeam.SpikeCount++;
-                        BroadcastTeamStatus(opposingTeam.LocalTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
+                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
@@ -1330,7 +1323,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (!opposingTeam.Status.HasFlag(PBETeamStatus.StealthRock))
                     {
                         opposingTeam.Status |= PBETeamStatus.StealthRock;
-                        BroadcastTeamStatus(opposingTeam.LocalTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
+                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
@@ -1339,7 +1332,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         opposingTeam.Status |= PBETeamStatus.ToxicSpikes;
                         opposingTeam.ToxicSpikeCount++;
-                        BroadcastTeamStatus(opposingTeam.LocalTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
+                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
@@ -1571,18 +1564,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
 
-            PBETeam team = Teams[target.LocalTeam ? 0 : 1];
-            if (team.Status.HasFlag(PBETeamStatus.Reflect))
+            if (target.Team.Status.HasFlag(PBETeamStatus.Reflect))
             {
-                team.Status &= ~PBETeamStatus.Reflect;
-                team.ReflectCount = 0;
-                BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
+                target.Team.Status &= ~PBETeamStatus.Reflect;
+                target.Team.ReflectCount = 0;
+                BroadcastTeamStatus(target.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
             }
-            if (team.Status.HasFlag(PBETeamStatus.LightScreen))
+            if (target.Team.Status.HasFlag(PBETeamStatus.LightScreen))
             {
-                team.Status &= ~PBETeamStatus.LightScreen;
-                team.LightScreenCount = 0;
-                BroadcastTeamStatus(team.LocalTeam, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
+                target.Team.Status &= ~PBETeamStatus.LightScreen;
+                target.Team.LightScreenCount = 0;
+                BroadcastTeamStatus(target.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
             }
 
             bool crit = CritCheck(user, target, PBEMove.BrickBreak, ref damageMultiplier);

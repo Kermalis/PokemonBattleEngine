@@ -46,17 +46,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>
         /// Determines whether chosen actions are valid.
         /// </summary>
-        /// <param name="localTeam">Which team the inputted actions belong to.</param>
+        /// <param name="team">The team the inputted actions belong to.</param>
         /// <param name="actions">The actions the team wishes to execute.</param>
         /// <returns>False if the team already chose actions or the actions are illegal, True otherwise.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the battle state is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
-        public bool AreActionsValid(bool localTeam, IEnumerable<PBEAction> actions)
+        public static bool AreActionsValid(PBETeam team, IEnumerable<PBEAction> actions)
         {
-            if (BattleState != PBEBattleState.WaitingForActions)
+            if (team.Battle.BattleState != PBEBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForActions)} to validate actions.");
             }
-            PBETeam team = Teams[localTeam ? 0 : 1];
             if (actions.Count() == 0 || actions.Count() != team.ActionsRequired.Count)
             {
                 return false;
@@ -64,7 +63,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var standBy = new List<PBEPokemon>();
             foreach (PBEAction action in actions)
             {
-                PBEPokemon pkmn = GetPokemon(action.PokemonId);
+                PBEPokemon pkmn = team.Battle.TryGetPokemon(action.PokemonId);
                 // Validate Pokémon
                 if (!team.ActionsRequired.Contains(pkmn))
                 {
@@ -92,7 +91,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             return false;
                         }
                         // Verify targets
-                        if (!AreTargetsValid(pkmn, action.FightMove, action.FightTargets))
+                        if (!team.Battle.AreTargetsValid(pkmn, action.FightMove, action.FightTargets))
                         {
                             return false;
                         }
@@ -103,9 +102,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             return false;
                         }
-                        PBEPokemon switchPkmn = GetPokemon(action.SwitchPokemonId);
+                        PBEPokemon switchPkmn = team.Battle.TryGetPokemon(action.SwitchPokemonId);
                         // Validate the new battler's ID
-                        if (switchPkmn == null || switchPkmn.LocalTeam != localTeam || switchPkmn.Id == pkmn.Id)
+                        if (switchPkmn == null || switchPkmn.Team != team || switchPkmn.Id == pkmn.Id)
                         {
                             return false;
                         }
@@ -133,22 +132,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>
         /// Selects actions if they are valid. Changes the battle state if both teams have selected valid actions.
         /// </summary>
-        /// <param name="localTeam">Which team the inputted actions belong to.</param>
+        /// <param name="team">The team the inputted actions belong to.</param>
         /// <param name="actions">The actions the team wishes to execute.</param>
         /// <returns>True if the actions are valid and were selected.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the battle state is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
-        public bool SelectActionsIfValid(bool localTeam, IEnumerable<PBEAction> actions)
+        public static bool SelectActionsIfValid(PBETeam team, IEnumerable<PBEAction> actions)
         {
-            if (BattleState != PBEBattleState.WaitingForActions)
+            if (team.Battle.BattleState != PBEBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForActions)} to select actions.");
             }
-            if (AreActionsValid(localTeam, actions))
+            if (AreActionsValid(team, actions))
             {
-                Teams[localTeam ? 0 : 1].ActionsRequired.Clear();
+                team.ActionsRequired.Clear();
                 foreach (PBEAction action in actions)
                 {
-                    PBEPokemon pkmn = GetPokemon(action.PokemonId);
+                    PBEPokemon pkmn = team.Battle.TryGetPokemon(action.PokemonId);
                     pkmn.SelectedAction = action;
                     switch (pkmn.SelectedAction.Decision)
                     {
@@ -160,7 +159,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             switch (GetMoveTargetsForPokemon(pkmn, pkmn.SelectedAction.FightMove))
                             {
                                 case PBEMoveTarget.RandomFoeSurrounding:
-                                    switch (BattleFormat)
+                                    switch (team.Battle.BattleFormat)
                                     {
                                         case PBEBattleFormat.Single:
                                         case PBEBattleFormat.Rotation:
@@ -176,13 +175,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                             }
                                             else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                             {
-                                                PBETeam opposingTeam = Teams[pkmn.LocalTeam ? 1 : 0]; // Other team                                                                                                  
+                                                PBETeam opposingTeam = team == team.Battle.Teams[0] ? team.Battle.Teams[1] : team.Battle.Teams[0];
                                                 int r; // Keep randomly picking until a non-fainted foe is selected
                                             roll:
                                                 r = PBEUtils.RNG.Next(3);
                                                 if (r == 0)
                                                 {
-                                                    if (opposingTeam.PokemonAtPosition(PBEFieldPosition.Left) != null)
+                                                    if (opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left) != null)
                                                     {
                                                         pkmn.SelectedAction.FightTargets = PBETarget.FoeLeft;
                                                     }
@@ -193,7 +192,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                                 }
                                                 else if (r == 1)
                                                 {
-                                                    if (opposingTeam.PokemonAtPosition(PBEFieldPosition.Center) != null)
+                                                    if (opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Center) != null)
                                                     {
                                                         pkmn.SelectedAction.FightTargets = PBETarget.FoeCenter;
                                                     }
@@ -204,7 +203,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                                 }
                                                 else
                                                 {
-                                                    if (opposingTeam.PokemonAtPosition(PBEFieldPosition.Right) != null)
+                                                    if (opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right) != null)
                                                     {
                                                         pkmn.SelectedAction.FightTargets = PBETarget.FoeRight;
                                                     }
@@ -222,7 +221,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                     break;
                                 case PBEMoveTarget.SingleAllySurrounding:
-                                    if (BattleFormat == PBEBattleFormat.Single || BattleFormat == PBEBattleFormat.Rotation)
+                                    if (team.Battle.BattleFormat == PBEBattleFormat.Single || team.Battle.BattleFormat == PBEBattleFormat.Rotation)
                                     {
                                         pkmn.SelectedAction.FightTargets = PBETarget.AllyCenter;
                                     }
@@ -231,10 +230,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                     }
                 }
-                if (Teams[0].ActionsRequired.Count == 0 && Teams[1].ActionsRequired.Count == 0)
+                if (team.Battle.Teams.All(t => t.ActionsRequired.Count == 0))
                 {
-                    BattleState = PBEBattleState.ReadyToRunTurn;
-                    OnStateChanged?.Invoke(this);
+                    team.Battle.BattleState = PBEBattleState.ReadyToRunTurn;
+                    team.Battle.OnStateChanged?.Invoke(team.Battle);
                 }
                 return true;
             }
@@ -244,24 +243,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>
         /// Determines whether chosen switches are valid.
         /// </summary>
-        /// <param name="localTeam">Which team the inputted switches belong to.</param>
+        /// <param name="team">The team the inputted switches belong to.</param>
         /// <param name="switches">The switches the team wishes to execute.</param>
         /// <returns>False if the team already chose switches or the switches are illegal, True otherwise.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the battle state is not <see cref="PBEBattleState.WaitingForSwitchIns"/>.</exception>
-        public bool AreSwitchesValid(bool localTeam, IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
+        public static bool AreSwitchesValid(PBETeam team, IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
         {
-            if (BattleState != PBEBattleState.WaitingForSwitchIns)
+            if (team.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForSwitchIns)} to validate switches.");
             }
-            if (switches.Count() == 0 || switches.Count() != Teams[localTeam ? 0 : 1].SwitchInsRequired)
+            if (switches.Count() == 0 || switches.Count() != team.SwitchInsRequired)
             {
                 return false;
             }
             foreach (Tuple<byte, PBEFieldPosition> s in switches)
             {
-                PBEPokemon pkmn = GetPokemon(s.Item1);
-                if (pkmn == null || pkmn.LocalTeam != localTeam || pkmn.HP < 1 || pkmn.FieldPosition != PBEFieldPosition.None)
+                PBEPokemon pkmn = team.Battle.TryGetPokemon(s.Item1);
+                if (pkmn == null || pkmn.Team != team || pkmn.HP == 0 || pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     return false;
                 }
@@ -271,30 +270,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>
         /// Selects switches if they are valid. Changes the battle state if both teams have selected valid switches.
         /// </summary>
-        /// <param name="localTeam">Which team the inputted switches belong to.</param>
+        /// <param name="team">The team the inputted switches belong to.</param>
         /// <param name="switches">The switches the team wishes to execute.</param>
         /// <returns>True if the switches are valid and were selected.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the battle state is not <see cref="PBEBattleState.WaitingForSwitchIns"/>.</exception>
-        public bool SelectSwitchesIfValid(bool localTeam, IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
+        public static bool SelectSwitchesIfValid(PBETeam team, IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
         {
-            if (BattleState != PBEBattleState.WaitingForSwitchIns)
+            if (team.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {nameof(PBEBattleState.WaitingForSwitchIns)} to select switches.");
             }
-            if (AreSwitchesValid(localTeam, switches))
+            if (AreSwitchesValid(team, switches))
             {
-                PBETeam team = Teams[localTeam ? 0 : 1];
                 team.SwitchInsRequired = 0;
                 foreach (Tuple<byte, PBEFieldPosition> s in switches)
                 {
-                    PBEPokemon pkmn = GetPokemon(s.Item1);
+                    PBEPokemon pkmn = team.Battle.TryGetPokemon(s.Item1);
                     pkmn.FieldPosition = s.Item2;
                     team.SwitchInQueue.Add(pkmn);
                 }
-                if (Teams[0].SwitchInsRequired == 0 && Teams[1].SwitchInsRequired == 0)
+                if (team.Battle.Teams.All(t => t.SwitchInsRequired == 0))
                 {
-                    SwitchInQueuedPokemon();
-                    RequestActions();
+                    team.Battle.SwitchInQueuedPokemon();
+                    team.Battle.RequestActions();
                 }
                 return true;
             }

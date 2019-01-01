@@ -1,4 +1,5 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,32 +10,27 @@ namespace Kermalis.PokemonBattleEngine.Packets
     public sealed class PBESwitchInRequestPacket : INetPacket
     {
         public const short Code = 0x23;
-        public IEnumerable<byte> Buffer => BuildBuffer();
+        public IEnumerable<byte> Buffer { get; }
 
-        public bool LocalTeam { get; set; }
+        public PBETeam Team { get; }
         public byte Amount { get; }
 
-        public PBESwitchInRequestPacket(bool localTeam, byte amount)
+        public PBESwitchInRequestPacket(PBETeam team)
         {
-            LocalTeam = localTeam;
-            Amount = amount;
+            var bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Code));
+            bytes.Add((Team = team).Id);
+            bytes.Add(Amount = Team.SwitchInsRequired);
+            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBESwitchInRequestPacket(byte[] buffer)
+        public PBESwitchInRequestPacket(byte[] buffer, PBEBattle battle)
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                LocalTeam = r.ReadBoolean();
+                Team = battle.Teams[r.ReadByte()];
                 Amount = r.ReadByte();
             }
-        }
-        IEnumerable<byte> BuildBuffer()
-        {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(LocalTeam ? 1 : 0));
-            bytes.Add(Amount);
-            return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
 
         public void Dispose() { }

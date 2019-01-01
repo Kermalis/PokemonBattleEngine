@@ -1,4 +1,5 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
@@ -10,40 +11,33 @@ namespace Kermalis.PokemonBattleEngine.Packets
     public sealed class PBETeamStatusPacket : INetPacket
     {
         public const short Code = 0x13;
-        public IEnumerable<byte> Buffer => BuildBuffer();
+        public IEnumerable<byte> Buffer { get; }
 
-        public bool LocalTeam { get; set; }
+        public PBETeam Team { get; }
         public PBETeamStatus TeamStatus { get; }
         public PBETeamStatusAction TeamStatusAction { get; }
-        public byte VictimId { get; } // Victim of PBETeamStatusAction.CausedDamage
+        public byte Victim { get; } // Victim of PBETeamStatusAction.CausedDamage (byte.MaxValue means no victim)
 
-        public PBETeamStatusPacket(bool localTeam, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, byte victimId) // TODO: Change victimId to a PPokemon and have null checks (byte? VictimId)
+        public PBETeamStatusPacket(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEPokemon victim)
         {
-            LocalTeam = localTeam;
-            TeamStatus = teamStatus;
-            TeamStatusAction = teamStatusAction;
-            VictimId = victimId;
+            var bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Code));
+            bytes.Add((Team = team).Id);
+            bytes.Add((byte)(TeamStatus = teamStatus));
+            bytes.Add((byte)(TeamStatusAction = teamStatusAction));
+            bytes.Add(victim == null ? byte.MaxValue : victim.Id);
+            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBETeamStatusPacket(byte[] buffer)
+        public PBETeamStatusPacket(byte[] buffer, PBEBattle battle)
         {
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                LocalTeam = r.ReadBoolean();
+                Team = battle.Teams[r.ReadByte()];
                 TeamStatus = (PBETeamStatus)r.ReadByte();
                 TeamStatusAction = (PBETeamStatusAction)r.ReadByte();
-                VictimId = r.ReadByte();
+                Victim = r.ReadByte();
             }
-        }
-        IEnumerable<byte> BuildBuffer()
-        {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(LocalTeam ? 1 : 0));
-            bytes.Add((byte)TeamStatus);
-            bytes.Add((byte)TeamStatusAction);
-            bytes.Add(VictimId);
-            return BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
 
         public void Dispose() { }

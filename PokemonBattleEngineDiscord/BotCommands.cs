@@ -36,17 +36,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Command("challenge")]
             public async Task Challenge(SocketUser battler1)
             {
-                PBETeamShell team0 = new PBETeamShell
-                {
-                    PlayerName = Context.User.Username,
-                    Party = new PBEPokemonShell[] { PBECompetitivePokemonShells.Palkia_Uber }
-                };
-                PBETeamShell team1 = new PBETeamShell
-                {
-                    PlayerName = battler1.Username,
-                    Party = new PBEPokemonShell[] { PBECompetitivePokemonShells.Dialga_Uber }
-                };
+                var team0 = new[] { PBECompetitivePokemonShells.Palkia_Uber };
+                var team1 = new[] { PBECompetitivePokemonShells.Dialga_Uber };
                 PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0, team1);
+                battle.Teams[0].TrainerName = Context.User.Username;
+                battle.Teams[1].TrainerName = battler1.Username;
                 var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);
             }
         }

@@ -1,4 +1,5 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
@@ -14,18 +15,18 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEWeather Weather { get; }
         public PBEWeatherAction WeatherAction { get; }
-        public byte VictimId { get; }
+        public byte Victim { get; } // byte.MaxValue means no victim
 
-        public PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, byte victimId)
+        public PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon victim)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Weather = weather));
             bytes.Add((byte)(WeatherAction = weatherAction));
-            bytes.Add(VictimId = victimId);
+            bytes.Add(victim == null ? byte.MaxValue : victim.Id);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBEWeatherPacket(byte[] buffer)
+        public PBEWeatherPacket(byte[] buffer, PBEBattle battle)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
@@ -33,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 Weather = (PBEWeather)r.ReadByte();
                 WeatherAction = (PBEWeatherAction)r.ReadByte();
-                VictimId = r.ReadByte();
+                Victim = r.ReadByte();
             }
         }
 

@@ -60,6 +60,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
 
+        BattleClient client;
         PBEBattle battle;
         readonly IBrush hailstormDim, harshSunlightDim, rainDim, sandstormDim;
 
@@ -100,8 +101,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             MessageBoxVisible = !string.IsNullOrWhiteSpace(str);
             OnPropertyChanged(nameof(MessageBoxVisible));
         }
-        public void SetBattle(PBEBattle battle)
+        public void SetStuff(BattleClient client, PBEBattle battle)
         {
+            this.client = client;
             this.battle = battle;
             string s;
             switch (battle.BattleFormat)
@@ -210,21 +212,22 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
             HPBarView hpView;
             PokemonView pkmnView;
+            bool local = (pkmn.Team.Id == 0 && client.Index != 1) || (pkmn.Team.Id == 1 && client.Index == 1);
             if (oldPosition != PBEFieldPosition.None)
             {
-                hpView = this.FindControl<HPBarView>($"Bar{(pkmn.LocalTeam ? 0 : 1)}_{oldPosition}");
+                hpView = this.FindControl<HPBarView>($"Bar{(local ? 0 : 1)}_{oldPosition}");
                 hpView.Update();
-                pkmnView = this.FindControl<PokemonView>($"Battler{(pkmn.LocalTeam ? 0 : 1)}_{oldPosition}");
-                pkmnView.Update();
+                pkmnView = this.FindControl<PokemonView>($"Battler{(local ? 0 : 1)}_{oldPosition}");
+                pkmnView.Update(local);
             }
             if (pkmn.FieldPosition != PBEFieldPosition.None)
             {
-                hpView = this.FindControl<HPBarView>($"Bar{(pkmn.LocalTeam ? 0 : 1)}_{pkmn.FieldPosition}");
+                hpView = this.FindControl<HPBarView>($"Bar{(local ? 0 : 1)}_{pkmn.FieldPosition}");
                 hpView.Pokemon = pkmn;
                 hpView.Update();
-                pkmnView = this.FindControl<PokemonView>($"Battler{(pkmn.LocalTeam ? 0 : 1)}_{pkmn.FieldPosition}");
+                pkmnView = this.FindControl<PokemonView>($"Battler{(local ? 0 : 1)}_{pkmn.FieldPosition}");
                 pkmnView.Pokemon = pkmn;
-                pkmnView.Update();
+                pkmnView.Update(local);
             }
         }
     }

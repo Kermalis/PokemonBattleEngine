@@ -2,6 +2,7 @@
 using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
@@ -10,9 +11,9 @@ namespace Kermalis.PokemonBattleEngineServer
     sealed class Player : NetUser
     {
         public readonly ManualResetEvent ResetEvent = new ManualResetEvent(true);
-
-        public bool IsSpectator = true;
-        public PBETeamShell Shell;
+        public string PlayerName { get; set; }
+        public byte Index { get; set; }
+        public IEnumerable<PBEPokemonShell> Party { get; private set; }
 
         public override void Send(INetPacket packet)
         {
@@ -23,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineServer
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({Id})");
 
-            if (!IsSpectator)
+            if (Index < 2)
             {
                 var ser = (BattleServer)Server;
                 switch (packet)
@@ -32,7 +33,8 @@ namespace Kermalis.PokemonBattleEngineServer
                         ser.ActionsSubmitted(this, arp.Actions);
                         break;
                     case PBEPartyResponsePacket prp:
-                        ser.PartySubmitted(this, prp.TeamShell);
+                        Party = prp.Party;
+                        ser.PartySubmitted(this);
                         break;
                     case PBESwitchInResponsePacket sirp:
                         ser.SwitchesSubmitted(this, sirp.Switches);

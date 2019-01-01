@@ -1,4 +1,5 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x19;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte CulpritId { get; } // Ability owner
-        public byte VictimId { get; }
+        public byte Culprit { get; } // Ability owner
+        public byte Victim { get; }
         public PBEAbility Ability { get; }
         public PBEAbilityAction AbilityAction { get; }
 
@@ -21,20 +22,20 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(CulpritId = culprit.Id);
-            bytes.Add(VictimId = victim.Id);
+            bytes.Add(Culprit = culprit.Id);
+            bytes.Add(Victim = victim.Id);
             bytes.Add((byte)(Ability = ability));
             bytes.Add((byte)(AbilityAction = abilityAction));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBEAbilityPacket(byte[] buffer)
+        public PBEAbilityPacket(byte[] buffer, PBEBattle battle)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                CulpritId = r.ReadByte();
-                VictimId = r.ReadByte();
+                Culprit = r.ReadByte();
+                Victim = r.ReadByte();
                 Ability = (PBEAbility)r.ReadByte();
                 AbilityAction = (PBEAbilityAction)r.ReadByte();
             }

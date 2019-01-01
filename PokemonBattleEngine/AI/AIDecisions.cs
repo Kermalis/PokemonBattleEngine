@@ -14,13 +14,11 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <summary>
         /// Creates valid actions for a battle turn for a specific team.
         /// </summary>
-        /// <param name="battle">The battle to look at.</param>
-        /// <param name="localTeam">The team to create actions for.</param>
+        /// <param name="team">The team to create actions for.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the battle format is invalid.</exception>
-        public static IEnumerable<PBEAction> CreateActions(PBEBattle battle, bool localTeam)
+        public static IEnumerable<PBEAction> CreateActions(PBETeam team)
         {
-            PBETeam team = battle.Teams[localTeam ? 0 : 1];
-            PBEPokemon[] active = team.ActiveBattlers;
+            PBEPokemon[] active = team.ActiveBattlers.ToArray();
             var actions = new PBEAction[active.Length];
             PBEPokemon pkmn;
             int move;
@@ -34,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 actions[i].PokemonId = pkmn.Id;
                 actions[i].Decision = PBEDecision.Fight;
                 actions[i].FightMove = pkmn.Moves[move];
-                actions[i].FightTargets = DecideTargets(battle, pkmn, pkmn.Moves[move]);
+                actions[i].FightTargets = DecideTargets(pkmn, pkmn.Moves[move]);
             }
             return actions;
         }
@@ -42,42 +40,40 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <summary>
         /// Creates valid switches for a battle for a specific team.
         /// </summary>
-        /// <param name="battle">The battle to look at.</param>
-        /// <param name="localTeam">The team to create switches for.</param>
+        /// <param name="team">The team to create switches for.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the battle format is invalid.</exception>
-        public static IEnumerable<Tuple<byte, PBEFieldPosition>> CreateSwitches(PBEBattle battle, bool localTeam)
+        public static IEnumerable<Tuple<byte, PBEFieldPosition>> CreateSwitches(PBETeam team)
         {
-            PBETeam team = battle.Teams[localTeam ? 0 : 1];
             var switches = new List<Tuple<byte, PBEFieldPosition>>(team.SwitchInsRequired);
             PBEPokemon[] available = team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
             available.Shuffle();
             var availablePositions = new List<PBEFieldPosition>();
-            switch (battle.BattleFormat)
+            switch (team.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                     availablePositions.Add(PBEFieldPosition.Center);
                     break;
                 case PBEBattleFormat.Double:
-                    if (team.PokemonAtPosition(PBEFieldPosition.Left) == null)
+                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Left) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Left);
                     }
-                    if (team.PokemonAtPosition(PBEFieldPosition.Right) == null)
+                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Right) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Right);
                     }
                     break;
                 case PBEBattleFormat.Triple:
                 case PBEBattleFormat.Rotation:
-                    if (team.PokemonAtPosition(PBEFieldPosition.Left) == null)
+                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Left) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Left);
                     }
-                    if (team.PokemonAtPosition(PBEFieldPosition.Center) == null)
+                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Center) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Center);
                     }
-                    if (team.PokemonAtPosition(PBEFieldPosition.Right) == null)
+                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Right) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Right);
                     }

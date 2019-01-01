@@ -23,9 +23,10 @@
         /// </summary>
         public byte MaxPokemonNameLength = 10;
         /// <summary>
-        /// The maximum amount of characters a player's name can have.
+        /// The maximum amount of characters a trainer's name can have.
         /// </summary>
-        public byte MaxPlayerNameLength = 7;
+        [System.Obsolete]
+        public byte MaxTrainerNameLength = 7;
         /// <summary>
         /// The maximum sum of a Pokémon's EVs.
         /// </summary>

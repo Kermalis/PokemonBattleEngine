@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             DataContext = this;
         }
 
-        public void Update()
+        public void Update(bool local)
         {
             if (pokemon == null || pokemon.FieldPosition == PBEFieldPosition.None)
             {
@@ -88,12 +88,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             else
             {
-                Scale = pokemon.LocalTeam ? 2 : 1;
+                Scale = local ? 2.0 : 1.0;
 
                 // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
                 SpriteOpacity = !pokemon.Status2.HasFlag(PBEStatus2.Substitute) && (pokemon.Status2.HasFlag(PBEStatus2.Airborne) || pokemon.Status2.HasFlag(PBEStatus2.Underground) || pokemon.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
 
-                string orientation = pokemon.LocalTeam ? "-B" : "-F";
+                string orientation = local ? "-B" : "-F";
                 if (pokemon.Status2.HasFlag(PBEStatus2.Substitute))
                 {
                     Source = new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.Substitute{orientation}.gif?assembly=PokemonBattleEngineClient");

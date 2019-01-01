@@ -1,4 +1,5 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x22;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte UserId { get; }
-        public byte TargetId { get; }
+        public byte User { get; }
+        public byte Target { get; }
         public sbyte AttackChange { get; }
         public sbyte DefenseChange { get; }
         public sbyte SpAttackChange { get; }
@@ -26,8 +27,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(UserId = user.Id);
-            bytes.Add(TargetId = target.Id);
+            bytes.Add(User = user.Id);
+            bytes.Add(Target = target.Id);
             bytes.Add((byte)(AttackChange = target.AttackChange));
             bytes.Add((byte)(DefenseChange = target.DefenseChange));
             bytes.Add((byte)(SpAttackChange = target.SpAttackChange));
@@ -37,14 +38,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)(EvasionChange = target.EvasionChange));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBEPsychUpPacket(byte[] buffer)
+        public PBEPsychUpPacket(byte[] buffer, PBEBattle battle)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                UserId = r.ReadByte();
-                TargetId = r.ReadByte();
+                User = r.ReadByte();
+                Target = r.ReadByte();
                 AttackChange = r.ReadSByte();
                 DefenseChange = r.ReadSByte();
                 SpAttackChange = r.ReadSByte();

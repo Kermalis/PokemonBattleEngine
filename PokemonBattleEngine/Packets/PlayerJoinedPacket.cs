@@ -1,4 +1,5 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,24 +12,27 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x01;
         public IEnumerable<byte> Buffer { get; }
 
-        public Guid PlayerId { get; }
+        public bool IsMe { get; }
+        public byte Index { get; }
         public string TrainerName { get; }
 
-        public PBEPlayerJoinedPacket(Guid playerId, string trainerName)
+        public PBEPlayerJoinedPacket(bool isMe, byte index, string trainerName)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange((PlayerId = playerId).ToByteArray());
+            bytes.Add((byte)((IsMe = isMe) ? 1 : 0));
+            bytes.Add(Index = index);
             bytes.AddRange(PBEUtils.StringToBytes(TrainerName = trainerName));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBEPlayerJoinedPacket(byte[] buffer)
+        public PBEPlayerJoinedPacket(byte[] buffer, PBEBattle battle)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                PlayerId = new Guid(r.ReadBytes(0x10));
+                IsMe = r.ReadBoolean();
+                Index = r.ReadByte();
                 TrainerName = PBEUtils.StringFromBytes(r);
             }
         }

@@ -1,4 +1,5 @@
 ﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Battle;
 using System.Collections.Generic;
 
 namespace Kermalis.PokemonBattleEngine.Packets
@@ -9,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public IEnumerable<byte> Buffer { get; } = new byte[] { 0x02, 0x00, 0x03, 0x00 };
 
         public PBEPartyRequestPacket() { }
-        public PBEPartyRequestPacket(byte[] buffer) { }
+        public PBEPartyRequestPacket(byte[] buffer, PBEBattle battle) { }
 
         public void Dispose() { }
     }
