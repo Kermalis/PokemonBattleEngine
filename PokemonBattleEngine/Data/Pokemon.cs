@@ -717,6 +717,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                         case PBEItem.ShockDrive: return PBEType.Electric;
                         default: return PBEMoveData.Data[PBEMove.TechnoBlast].Type;
                     }
+                case PBEMove.WeatherBall:
+                    switch (Team.Battle.Weather)
+                    {
+                        case PBEWeather.Hailstorm: return PBEType.Ice;
+                        case PBEWeather.HarshSunlight: return PBEType.Fire;
+                        case PBEWeather.Rain: return PBEType.Water;
+                        case PBEWeather.Sandstorm: return PBEType.Rock;
+                        default: return PBEMoveData.Data[PBEMove.WeatherBall].Type;
+                    }
                 default: return PBEMoveData.Data[move].Type;
             }
         }

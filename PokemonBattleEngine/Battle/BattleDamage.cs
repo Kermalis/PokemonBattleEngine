@@ -246,6 +246,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 2.0;
                     }
                     break;
+                case PBEMove.WeatherBall:
+                    if (Weather != PBEWeather.None)
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
             }
 
             switch (Weather)

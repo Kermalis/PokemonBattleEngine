@@ -3225,6 +3225,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PBEMove.WeatherBall,
+                new PBEMoveData
+                {
+                    Type = PBEType.Normal, Category = PBEMoveCategory.Special,
+                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 2, Power = 50, Accuracy = 100, Priority = 0,
+                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Targets = PBEMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PBEMove.WillOWisp,
                 new PBEMoveData
                 {

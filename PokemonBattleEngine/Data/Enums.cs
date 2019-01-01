@@ -1889,7 +1889,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The Pokémon will always hit and always get hit unless protection is used.
         /// </summary>
         NoGuard,
-        Normalize, // TODO
+        Normalize, // TODO: Main effect, ignore [weather ball, hidden power, natural gift, judgment, techno blast], separate thunder wave from other status force effects
         Oblivious, // TODO
         /// <summary>
         /// The Pokémon takes no damage from a hailstorm or sandstorm.
@@ -2661,6 +2661,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WaterGun,
         WaterPulse,
         WaterSpout,
+        WeatherBall,
         WillOWisp,
         WingAttack,
         Withdraw,
