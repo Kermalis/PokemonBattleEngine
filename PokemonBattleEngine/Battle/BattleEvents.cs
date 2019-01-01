@@ -515,6 +515,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
                                 }
                                 break;
+                            case PBETeamStatus.LuckyChant:
+                                switch (tsp.TeamStatusAction)
+                                {
+                                    case PBETeamStatusAction.Added: message = "The Lucky Chant shielded {0}'s team from critical hits!"; break;
+                                    case PBETeamStatusAction.Ended: message = "{0}'s team's Lucky Chant wore off!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
+                                }
+                                break;
                             case PBETeamStatus.Reflect:
                                 switch (tsp.TeamStatusAction)
                                 {

@@ -25,6 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBETeamStatus Status { get; set; }
         public byte ReflectCount { get; set; }
         public byte LightScreenCount { get; set; }
+        public byte LuckyChantCount { get; set; }
         public byte SpikeCount { get; set; }
         public byte ToxicSpikeCount { get; set; }
         public bool MonFaintedLastTurn { get; set; }
@@ -46,7 +47,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         internal void CreateParty(IEnumerable<PBEPokemonShell> party, ref byte pkmnIdCounter)
         {
             Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
-            foreach(PBEPokemonShell pkmn in party)
+            foreach (PBEPokemonShell pkmn in party)
             {
                 new PBEPokemon(this, pkmnIdCounter++, pkmn);
             }
@@ -457,6 +458,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         team.Status &= ~PBETeamStatus.LightScreen;
                         BroadcastTeamStatus(team, PBETeamStatus.LightScreen, PBETeamStatusAction.Ended);
+                    }
+                }
+                if (team.Status.HasFlag(PBETeamStatus.LuckyChant))
+                {
+                    team.LuckyChantCount--;
+                    if (team.LuckyChantCount == 0)
+                    {
+                        team.Status &= ~PBETeamStatus.LuckyChant;
+                        BroadcastTeamStatus(team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Ended);
                     }
                 }
             }

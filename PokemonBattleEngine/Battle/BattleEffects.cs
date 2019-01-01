@@ -496,6 +496,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
                     ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense, PBEStat.Attack, PBEStat.SpAttack, PBEStat.Speed }, new short[] { -1, -1, +2, +2, +2 });
                     break;
+                case PBEMoveEffect.LuckyChant:
+                    TryForceTeamStatus(user, move, PBETeamStatus.LuckyChant);
+                    break;
                 case PBEMoveEffect.Magnitude:
                     Ef_Magnitude(user, targets);
                     break;
@@ -765,7 +768,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move, ref double damageMultiplier)
         {
             if (target.Ability == PBEAbility.BattleArmor
-                || target.Ability == PBEAbility.ShellArmor)
+                || target.Ability == PBEAbility.ShellArmor
+                || target.Team.Status.HasFlag(PBETeamStatus.LuckyChant))
             {
                 return false;
             }
@@ -1298,6 +1302,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         user.Team.Status |= PBETeamStatus.LightScreen;
                         user.Team.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
                         BroadcastTeamStatus(user.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
+                        return;
+                    }
+                    break;
+                case PBETeamStatus.LuckyChant:
+                    if (!user.Team.Status.HasFlag(PBETeamStatus.LuckyChant))
+                    {
+                        user.Team.Status |= PBETeamStatus.LuckyChant;
+                        user.Team.LuckyChantCount = 5;
+                        BroadcastTeamStatus(user.Team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Added);
                         return;
                     }
                     break;

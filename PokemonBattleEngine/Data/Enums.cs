@@ -572,24 +572,28 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         LightScreen = 1 << 0,
         /// <summary>
+        /// The team is shielded from critical hits.
+        /// </summary>
+        LuckyChant = 1 << 1,
+        /// <summary>
         /// The team will take less damage from <see cref="PBEMoveCategory.Physical"/> moves.
         /// </summary>
-        Reflect = 1 << 1,
+        Reflect = 1 << 2,
         /// <summary>
         /// Grounded Pokémon that switch in will take damage.
         /// The amount of damage is based on <see cref="PBETeam.SpikeCount"/>.
         /// </summary>
-        Spikes = 1 << 2, // TODO: Gravity, magnet rise, magic guard, iron ball, baton pass with ingrain, air balloon
+        Spikes = 1 << 3, // TODO: Gravity, magnet rise, magic guard, iron ball, baton pass with ingrain, air balloon
         /// <summary>
         /// Pokémon that switch in will take damage.
         /// The amount of damage is based on the effectiveness of <see cref="PBEType.Rock"/> on the Pokémon.
         /// </summary>
-        StealthRock = 1 << 3, // TODO: magic guard, castform transforms after taking damage
+        StealthRock = 1 << 4, // TODO: magic guard, castform transforms after taking damage
         /// <summary>
         /// Grounded Pokémon that switch in will be <see cref="PBEStatus1.Poisoned"/> if <see cref="PBETeam.ToxicSpikeCount"/> is 1 or <see cref="PBEStatus1.BadlyPoisoned"/> if it is 2.
         /// Grounded <see cref="PBEType.Poison"/> Pokémon will remove toxic spikes.
         /// </summary>
-        ToxicSpikes = 1 << 4 // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
+        ToxicSpikes = 1 << 5 // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEAbility"/>.
@@ -2335,6 +2339,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LightScreen,
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
+        LuckyChant,
         Magnitude,
         Minimize,
         Moonlight,
@@ -2515,6 +2520,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LovelyKiss,
         LowKick,
         LowSweep,
+        LuckyChant,
         LusterPurge,
         MachPunch,
         MagicalLeaf,

@@ -1608,6 +1608,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PBEMove.LuckyChant,
+                new PBEMoveData
+                {
+                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
+                    Effect = PBEMoveEffect.LuckyChant, EffectParam = 0,
+                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PBEMoveFlag.AffectedBySnatch,
+                    Targets = PBEMoveTarget.AllTeam
+                }
+            },
+            {
                 PBEMove.LusterPurge,
                 new PBEMoveData
                 {
