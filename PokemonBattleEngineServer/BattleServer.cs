@@ -272,10 +272,12 @@ namespace Kermalis.PokemonBattleEngineServer
                         if (user.LocalTeam || target.LocalTeam)
                         {
                             battlers[0].Send(tp);
+                            battlers[0].ResetEvent.WaitOne();
                         }
                         if (!user.LocalTeam || !target.LocalTeam)
                         {
                             battlers[1].Send(tp);
+                            battlers[1].ResetEvent.WaitOne();
                         }
                     }
                     break;
