@@ -596,6 +596,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PBEMove.DefenseCurl,
+                new PBEMoveData
+                {
+                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
+                    Effect = PBEMoveEffect.ChangeUser_DEF, EffectParam = +1,
+                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PBEMoveFlag.AffectedBySnatch,
+                    Targets = PBEMoveTarget.Self
+                }
+            },
+            {
                 PBEMove.Detect,
                 new PBEMoveData
                 {

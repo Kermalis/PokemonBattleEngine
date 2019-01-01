@@ -37,7 +37,6 @@ Fissure
 Rage
 Night Shade
 Mimic
-Defense Curl
 Haze
 Bide
 Metronome
