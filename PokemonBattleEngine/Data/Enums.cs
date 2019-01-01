@@ -1101,6 +1101,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         Everstone,
+        ExpertBelt,
         /// <summary>
         /// No effect.
         /// </summary>

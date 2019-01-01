@@ -92,6 +92,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     mult *= 0.75;
                 }
+                if (user.Item == PBEItem.ExpertBelt)
+                {
+                    mult *= 1.2;
+                }
             }
             damageMultiplier *= mult;
 

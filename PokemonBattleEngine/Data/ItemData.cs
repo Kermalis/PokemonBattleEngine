@@ -91,6 +91,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEItem.EscapeRope, new PBEItemData(30) },
             { PBEItem.Ether, new PBEItemData(30) },
             { PBEItem.Everstone, new PBEItemData(30) },
+            { PBEItem.ExpertBelt, new PBEItemData(10) },
             { PBEItem.ExpShare, new PBEItemData(30) },
             { PBEItem.FastBall, new PBEItemData() },
             { PBEItem.FavoredMail, new PBEItemData() },
