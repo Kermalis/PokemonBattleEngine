@@ -3,7 +3,7 @@ using Avalonia.Controls.Platform.Surfaces;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public WbFb(WriteableBitmap bmp) => _bitmap = bmp;
             public ILockedFramebuffer Lock() => _bitmap.Lock();
         }
-        static Dictionary<string, Dictionary<string, Bitmap>> LoadedBitmaps { get; } = new Dictionary<string, Dictionary<string, Bitmap>>();
+        static ConcurrentDictionary<string, ConcurrentDictionary<string, Bitmap>> LoadedBitmaps { get; } = new ConcurrentDictionary<string, ConcurrentDictionary<string, Bitmap>>();
         static string GetCharKey(string path, char c)
         {
             string key = ((int)c).ToString("X");
@@ -76,11 +76,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     string key = GetCharKey(path, c);
                     if (!LoadedBitmaps.ContainsKey(path))
                     {
-                        LoadedBitmaps.Add(path, new Dictionary<string, Bitmap>());
+                        LoadedBitmaps.TryAdd(path, new ConcurrentDictionary<string, Bitmap>());
                     }
                     if (!LoadedBitmaps[path].ContainsKey(key))
                     {
-                        LoadedBitmaps[path].Add(key, UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png?assembly=PokemonBattleEngineClient")));
+                        LoadedBitmaps[path].TryAdd(key, UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png?assembly=PokemonBattleEngineClient")));
                     }
                 }
             }
