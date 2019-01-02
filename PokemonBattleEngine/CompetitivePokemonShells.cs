@@ -386,6 +386,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Spore, PBEMove.Reflect, PBEMove.Brine, PBEMove.Hex }, // Fake Out, Spore, Follow Me, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Blaziken_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Blaziken,
+            Nickname = "Brenda",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.SpeedBoost,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.BlazeKick, PBEMove.SkyUppercut, PBEMove.RockSlide, PBEMove.Protect }, // Flare Blitz, High Jump Kick, Rock Slide, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Ninjask_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Ninjask,
@@ -1032,8 +1048,8 @@ namespace Kermalis.PokemonBattleEngine
         /// </summary>
         public static PBEPokemonShell[] DefaultCompetitivePokemon { get; } = new PBEPokemonShell[]
         {
-            Absol_RU, Alomomola_VGC, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Bouffalant_VGC, Butterfree_RU, Carracosta_VGC,
-            Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
+            Absol_RU, Alomomola_VGC, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Blaziken_VGC, Bouffalant_VGC, Butterfree_RU,
+            Carracosta_VGC, Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
             Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Emolga_NU,
             Espeon_Uber,
             Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
