@@ -110,7 +110,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Abilities
             LimberCheck(pkmn);
         }
-        void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move)
+        void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move, ushort recoilDamage = 0)
         {
             if (victim.Status2.HasFlag(PBEStatus2.Substitute) && victim.SubstituteHP == 0)
             {
@@ -119,6 +119,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             FaintCheck(victim);
+
+            if (recoilDamage > 0)
+            {
+                BroadcastRecoil(user);
+                DealDamage(user, user, recoilDamage, true);
+                if (FaintCheck(user))
+                {
+                    return;
+                }
+            }
 
             // Life Orb happens after recoil and rough skin and victim fainting
             if (user.Item == PBEItem.LifeOrb)
@@ -570,6 +580,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEMoveEffect.StealthRock:
                     TryForceTeamStatus(user, move, PBETeamStatus.StealthRock);
+                    break;
+                case PBEMoveEffect.Struggle:
+                    Ef_Struggle(user, targets[0]);
                     break;
                 case PBEMoveEffect.Substitute:
                     TryForceStatus2(user, targets, move, PBEStatus2.Substitute);
@@ -1990,7 +2003,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            BroadcastPainSplit();
+            BroadcastPainSplit(user, target);
         }
         void Ef_PsychUp(PBEPokemon user, PBEPokemon target)
         {
@@ -2010,6 +2023,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
             user.AccuracyChange = target.AccuracyChange;
             user.EvasionChange = target.EvasionChange;
             BroadcastPsychUp(user, target);
+        }
+        void Ef_Struggle(PBEPokemon user, PBEPokemon target)
+        {
+            BroadcastStruggle(user);
+            BroadcastMoveUsed(user, PBEMove.Struggle);
+
+            if (MissCheck(user, target, PBEMove.Struggle))
+            {
+                return;
+            }
+
+            double damageMultiplier = 1.0;
+            bool crit = CritCheck(user, target, PBEMove.Struggle, ref damageMultiplier);
+            ushort damage = CalculateDamage(user, target, PBEMove.Struggle, PBEType.None, criticalHit: crit);
+            DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+            if (crit)
+            {
+                BroadcastMoveCrit();
+            }
+
+            DoPostHitEffects(user, target, PBEMove.Struggle, (ushort)(user.MaxHP / 4));
         }
     }
 }

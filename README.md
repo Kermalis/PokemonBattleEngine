@@ -17,7 +17,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 
 ----
 # To Do:
-* Struggle
 * Rotation battles, triple battle shifting, triple battle auto-center
 * Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
@@ -25,7 +24,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Spectators
 * Specific place for event Pokémon shells
 * Better validation for Pokémon (programmatically deduce how the Pokémon was obtained, make MinLevel relevant)
-* Find out how locked moves behave when PP runs out
 * Damage, effectiveness and critical packets should include a list of hit Pokémon
 * Switch-in effects and turn ended effects should go by speed (with speed ties and everything like turn order)
 * Winning

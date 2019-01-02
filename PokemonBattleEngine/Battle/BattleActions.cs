@@ -72,28 +72,34 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (action.Decision)
                 {
                     case PBEDecision.Fight:
-                        // Invalid move
-                        if (!pkmn.Moves.Contains(action.FightMove) || action.FightMove == PBEMove.None)
+                        if (action.FightMove == PBEMove.Struggle && pkmn.IsForcedToStruggle())
                         {
-                            return false;
+                            continue;
                         }
-                        // TODO: Struggle
-                        // Out of PP
-                        if (pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0)
+                        else
                         {
-                            return false;
-                        }
-                        // If the mon has a locked action, it must be used
-                        if ((pkmn.ChoiceLockedMove != PBEMove.None && pkmn.ChoiceLockedMove != action.FightMove)
-                            || (pkmn.TempLockedMove != PBEMove.None && pkmn.TempLockedMove != action.FightMove)
-                            || (pkmn.TempLockedTargets != PBETarget.None && pkmn.TempLockedTargets != action.FightTargets))
-                        {
-                            return false;
-                        }
-                        // Verify targets
-                        if (!team.Battle.AreTargetsValid(pkmn, action.FightMove, action.FightTargets))
-                        {
-                            return false;
+                            // Invalid move
+                            if (!pkmn.Moves.Contains(action.FightMove) || action.FightMove == PBEMove.None)
+                            {
+                                return false;
+                            }
+                            // Out of PP
+                            if (pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0)
+                            {
+                                return false;
+                            }
+                            // If the mon has a locked action, it must be used
+                            if ((pkmn.ChoiceLockedMove != PBEMove.None && pkmn.ChoiceLockedMove != action.FightMove)
+                                || (pkmn.TempLockedMove != PBEMove.None && pkmn.TempLockedMove != action.FightMove)
+                                || (pkmn.TempLockedTargets != PBETarget.None && pkmn.TempLockedTargets != action.FightTargets))
+                            {
+                                return false;
+                            }
+                            // Verify targets
+                            if (!team.Battle.AreTargetsValid(pkmn, action.FightMove, action.FightTargets))
+                            {
+                                return false;
+                            }
                         }
                         break;
                     case PBEDecision.SwitchOut:

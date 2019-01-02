@@ -762,6 +762,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Ended
     }
+    public enum PBESpecialMessage : byte
+    {
+        Magnitude,
+        PainSplit,
+        Recoil,
+        Struggle,
+    }
     public enum PBEType : byte
     {
         None,
@@ -2364,6 +2371,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Sleep,
         Spikes,
         StealthRock,
+        Struggle,
         Substitute,
         SunnyDay,
         Swagger,
@@ -2631,6 +2639,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StormThrow,
         Strength,
         StringShot,
+        Struggle,
         StruggleBug,
         StunSpore,
         Substitute,

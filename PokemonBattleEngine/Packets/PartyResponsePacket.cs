@@ -33,12 +33,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                var party = new List<PBEPokemonShell>(r.ReadByte());
-                for (int i = 0; i < party.Capacity; i++)
+                var party = new PBEPokemonShell[r.ReadByte()];
+                for (int i = 0; i < party.Length; i++)
                 {
-                    party.Add(PBEPokemonShell.FromBytes(r));
+                    party[i] = PBEPokemonShell.FromBytes(r);
                 }
-                Party = party.AsReadOnly();
+                Party = Array.AsReadOnly(party);
             }
         }
 

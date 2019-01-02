@@ -312,13 +312,6 @@ namespace Kermalis.PokemonBattleEngineClient
                         messageView.Add(message);
                         break;
                     }
-                case PBEMagnitudePacket mp:
-                    {
-                        string message = string.Format("Magnitude {0}!", mp.Magnitude);
-                        BattleView.SetMessage(message);
-                        messageView.Add(message);
-                        break;
-                    }
                 case PBEMoveCritPacket _:
                     {
                         string message = "A critical hit!";
@@ -382,17 +375,9 @@ namespace Kermalis.PokemonBattleEngineClient
                         if (mup.OwnsMove && !culprit.Moves.Contains(mup.Move))
                         {
                             // Set the first unknown move to the used move
-                            int i = Array.IndexOf(culprit.Moves, PBEMove.MAX);
-                            culprit.Moves[i] = mup.Move;
+                            culprit.Moves[Array.IndexOf(culprit.Moves, PBEMove.MAX)] = mup.Move;
                         }
                         string message = string.Format("{0} used {1}!", NameForTrainer(culprit, true), mup.Move);
-                        BattleView.SetMessage(message);
-                        messageView.Add(message);
-                        break;
-                    }
-                case PBEPainSplitPacket psp:
-                    {
-                        string message = "The battlers shared their pain!";
                         BattleView.SetMessage(message);
                         messageView.Add(message);
                         break;
@@ -503,6 +488,29 @@ namespace Kermalis.PokemonBattleEngineClient
                         user.AccuracyChange = target.AccuracyChange = pup.AccuracyChange;
                         user.EvasionChange = target.EvasionChange = pup.EvasionChange;
                         string message = string.Format("{0} copied {1}'s stat changes!", user.Shell.Nickname, target.Shell.Nickname);
+                        BattleView.SetMessage(message);
+                        messageView.Add(message);
+                        break;
+                    }
+                case PBESpecialMessagePacket smp:
+                    {
+                        string message;
+                        switch (smp.Message)
+                        {
+                            case PBESpecialMessage.Magnitude:
+                                message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
+                                break;
+                            case PBESpecialMessage.PainSplit:
+                                message = string.Format("The battlers shared their pain!");
+                                break;
+                            case PBESpecialMessage.Recoil:
+                                message = string.Format("{0} is damaged by recoil!", NameForTrainer(Battle.TryGetPokemon((byte)smp.Params[0]), true));
+                                break;
+                            case PBESpecialMessage.Struggle:
+                                message = string.Format("{0} has no moves left!", NameForTrainer(Battle.TryGetPokemon((byte)smp.Params[0]), true));
+                                break;
+                            default: throw new ArgumentOutOfRangeException(nameof(smp.Message), $"Invalid {smp.Message}: {smp.Message}");
+                        }
                         BattleView.SetMessage(message);
                         messageView.Add(message);
                         break;
@@ -971,7 +979,7 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 foreach (PBEPokemon pkmn in actions)
                 {
-                    if (pkmn.SelectedAction.Decision == PBEDecision.Fight)
+                    if (pkmn.SelectedAction.Decision == PBEDecision.Fight && pkmn.ChoiceLockedMove == PBEMove.None)
                     {
                         if (pkmn.Item == PBEItem.ChoiceBand || pkmn.Item == PBEItem.ChoiceScarf || pkmn.Item == PBEItem.ChoiceSpecs)
                         {

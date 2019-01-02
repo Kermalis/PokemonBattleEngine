@@ -36,12 +36,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 Team = battle.Teams[r.ReadByte()];
-                var party = new List<PBEPokemon>(r.ReadByte());
-                for (int i = 0; i < party.Capacity; i++)
+                var party = new PBEPokemon[r.ReadByte()];
+                for (int i = 0; i < party.Length; i++)
                 {
-                    party.Add(PBEPokemon.FromBytes(r, Team));
+                    party[i] = PBEPokemon.FromBytes(r, Team);
                 }
-                Party = party.AsReadOnly();
+                Party = Array.AsReadOnly(party);
             }
         }
 

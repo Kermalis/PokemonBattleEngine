@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -9,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEMoveCategory Category;
         public PBEMoveEffect Effect;
         public int EffectParam;
-        public byte PPTier, Power, Accuracy; // 0 power or accuracy will show up as --
+        public byte PPTier, Power, Accuracy; // 0 PPTier will become 1 PP (unaffected by pp ups), 0 power or accuracy will show up as --
         public sbyte Priority;
         public PBEMoveFlag Flags;
         public PBEMoveTarget Targets;
@@ -22,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             sb.AppendLine($"Category: {Category}");
             sb.AppendLine($"Effect: {Effect}");
             sb.AppendLine($"Effect Parameter: {EffectParam}");
-            sb.AppendLine($"PP: {PPTier * PBESettings.DefaultSettings.PPMultiplier}");
+            sb.AppendLine($"PP: {Math.Max(1, PPTier * PBESettings.DefaultSettings.PPMultiplier)}");
             sb.AppendLine($"Power: {(Power == 0 ? "--" : Power.ToString())}");
             sb.AppendLine($"Accuracy: {(Accuracy == 0 ? "--" : Accuracy.ToString())}");
             sb.AppendLine($"Priority: {Priority}");
@@ -2826,6 +2827,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PPTier = 8, Power = 0, Accuracy = 95, Priority = 0,
                     Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
                     Targets = PBEMoveTarget.AllFoesSurrounding
+                }
+            },
+            {
+                PBEMove.Struggle,
+                new PBEMoveData
+                {
+                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
+                    Effect = PBEMoveEffect.Struggle, EffectParam = 0,
+                    PPTier = 0, Power = 50, Accuracy = 0, Priority = 0,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect,
+                    Targets = PBEMoveTarget.RandomFoeSurrounding
                 }
             },
             {

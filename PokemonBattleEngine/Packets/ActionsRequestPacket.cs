@@ -31,7 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 Team = battle.Teams[r.ReadByte()];
-                Pokemon = new List<byte>(r.ReadBytes(r.ReadByte())).AsReadOnly();
+                Pokemon = new ReadOnlyCollection<byte>(r.ReadBytes(r.ReadByte()));
             }
         }
 

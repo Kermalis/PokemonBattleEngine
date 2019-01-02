@@ -32,12 +32,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                var actions = new List<PBEAction>(r.ReadByte());
-                for (int i = 0; i < actions.Capacity; i++)
+                var actions = new PBEAction[r.ReadByte()];
+                for (int i = 0; i < actions.Length; i++)
                 {
-                    actions.Add(PBEAction.FromBytes(r));
+                    actions[i] = PBEAction.FromBytes(r);
                 }
-                Actions = actions.AsReadOnly();
+                Actions = Array.AsReadOnly(actions);
             }
         }
 

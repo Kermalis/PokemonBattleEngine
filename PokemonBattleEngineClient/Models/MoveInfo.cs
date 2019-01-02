@@ -47,11 +47,16 @@ namespace Kermalis.PokemonBattleEngineClient.Models
 
         public MoveInfo(int i, PBEPokemon pkmn, Action<MoveInfo> clickAction)
         {
-            PBEMove move = pkmn.Moves[i];
+            bool forcedToStruggle = pkmn.IsForcedToStruggle();
+            PBEMove move = forcedToStruggle ? PBEMove.Struggle : pkmn.Moves[i];
             var ttb = typeToBrush[pkmn.GetMoveType(move)];
 
             bool enabled;
-            if (pkmn.TempLockedMove != PBEMove.None)
+            if (forcedToStruggle)
+            {
+                enabled = true;
+            }
+            else if (pkmn.TempLockedMove != PBEMove.None)
             {
                 enabled = pkmn.TempLockedMove == move;
             }

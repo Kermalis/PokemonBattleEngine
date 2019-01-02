@@ -92,12 +92,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 Team = battle.Teams[r.ReadByte()];
-                var switches = new List<PBESwitchInInfo>(r.ReadByte());
-                for (int i = 0; i < switches.Capacity; i++)
+                var switches = new PBESwitchInInfo[r.ReadByte()];
+                for (int i = 0; i < switches.Length; i++)
                 {
-                    switches.Add(PBESwitchInInfo.FromBytes(r));
+                    switches[i] = PBESwitchInInfo.FromBytes(r);
                 }
-                SwitchIns = switches.AsReadOnly();
+                SwitchIns = Array.AsReadOnly(switches);
             }
         }
 

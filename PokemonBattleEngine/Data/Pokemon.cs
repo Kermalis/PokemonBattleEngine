@@ -518,7 +518,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 if (move != PBEMove.None)
                 {
                     byte tier = PBEMoveData.Data[move].PPTier;
-                    int movePP = (tier * Team.Battle.Settings.PPMultiplier) + (tier * Shell.PPUps[i]);
+                    int movePP = Math.Max(1, (tier * Team.Battle.Settings.PPMultiplier) + (tier * Shell.PPUps[i]));
                     PP[i] = MaxPP[i] = (byte)movePP;
                 }
             }
@@ -664,8 +664,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             Moves = (PBEMove[])target.Moves.Clone();
             for (int i = 0; i < Moves.Length; i++)
             {
-                byte pp = Moves[i] == PBEMove.None ? (byte)0 : Team.Battle.Settings.PPMultiplier;
-                PP[i] = MaxPP[i] = pp;
+                int pp = Moves[i] == PBEMove.None ? 0 : PBEMoveData.Data[Moves[i]].PPTier == 0 ? 1 : Team.Battle.Settings.PPMultiplier;
+                PP[i] = MaxPP[i] = (byte)pp;
             }
             ChoiceLockedMove = PBEMove.None;
             Status2 |= PBEStatus2.Transformed;
@@ -728,6 +728,16 @@ namespace Kermalis.PokemonBattleEngine.Data
                     }
                 default: return PBEMoveData.Data[move].Type;
             }
+        }
+        /// <summary>
+        /// Returns True if the Pokémon is only able to use <see cref="PBEMove.Struggle"/>, False otherwise.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsForcedToStruggle()
+        {
+            return
+                (ChoiceLockedMove != PBEMove.None && PP[Array.IndexOf(Moves, ChoiceLockedMove)] == 0)
+                || PP.All(p => p == 0);
         }
 
         // ToBytes() and FromBytes() will only be used when the server sends you your team Ids, so they do not need to contain all info

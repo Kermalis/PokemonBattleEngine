@@ -87,12 +87,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 TargetType1 = (PBEType)r.ReadByte();
                 TargetType2 = (PBEType)r.ReadByte();
                 TargetWeight = r.ReadDouble();
-                var moves = new List<PBEMove>(r.ReadByte());
-                for (int i = 0; i < moves.Capacity; i++)
+                var moves = new PBEMove[r.ReadByte()];
+                for (int i = 0; i < moves.Length; i++)
                 {
-                    moves.Add((PBEMove)r.ReadUInt16());
+                    moves[i] = (PBEMove)r.ReadUInt16();
                 }
-                TargetMoves = moves.AsReadOnly();
+                TargetMoves = Array.AsReadOnly(moves);
             }
         }
 

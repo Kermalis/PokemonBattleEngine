@@ -34,12 +34,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                var switches = new List<Tuple<byte, PBEFieldPosition>>(r.ReadByte());
-                for (int i = 0; i < switches.Capacity; i++)
+                var switches = new Tuple<byte, PBEFieldPosition>[r.ReadByte()];
+                for (int i = 0; i < switches.Length; i++)
                 {
-                    switches.Add(Tuple.Create(r.ReadByte(), (PBEFieldPosition)r.ReadByte()));
+                    switches[i] = Tuple.Create(r.ReadByte(), (PBEFieldPosition)r.ReadByte());
                 }
-                Switches = switches.AsReadOnly();
+                Switches = Array.AsReadOnly(switches);
             }
         }
 
