@@ -25,6 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Params = Array.AsReadOnly(parameters);
             switch (Message)
             {
+                case PBESpecialMessage.DraggedOut:
                 case PBESpecialMessage.Magnitude:
                 case PBESpecialMessage.Recoil:
                 case PBESpecialMessage.Struggle:
@@ -46,6 +47,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Message = (PBESpecialMessage)r.ReadByte();
                 switch (Message)
                 {
+                    case PBESpecialMessage.DraggedOut:
                     case PBESpecialMessage.Magnitude:
                     case PBESpecialMessage.Recoil:
                     case PBESpecialMessage.Struggle:

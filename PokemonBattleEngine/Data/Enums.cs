@@ -764,6 +764,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PBESpecialMessage : byte
     {
+        DraggedOut,
         Magnitude,
         PainSplit,
         Recoil,
@@ -2377,7 +2378,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Swagger,
         Toxic,
         ToxicSpikes,
-        Transform
+        Transform,
+        Whirlwind
     }
     public enum PBEMove : ushort
     {
@@ -2587,6 +2589,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reflect,
         Retaliate, // TODO
         Return,
+        Roar, // TODO: Suction Cups, Soundproof, Ingrain
         RockClimb,
         RockPolish,
         RockSlide,
@@ -2679,6 +2682,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WaterPulse,
         WaterSpout,
         WeatherBall,
+        Whirlwind, // TODO: Suction Cups, Ingrain
         WillOWisp,
         WingAttack,
         Withdraw,

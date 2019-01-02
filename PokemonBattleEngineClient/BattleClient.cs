@@ -459,9 +459,12 @@ namespace Kermalis.PokemonBattleEngineClient
                             pkmn.FieldPosition = info.FieldPosition;
                             BattleView.UpdatePokemon(pkmn);
                         }
-                        string message = string.Format("{1} sent out {0}!", PBEUtils.Andify(psip.SwitchIns.Select(s => s.Nickname)), psip.Team.TrainerName);
-                        BattleView.SetMessage(message);
-                        messageView.Add(message);
+                        if (!psip.Forced)
+                        {
+                            string message = string.Format("{1} sent out {0}!", PBEUtils.Andify(psip.SwitchIns.Select(s => s.Nickname)), psip.Team.TrainerName);
+                            BattleView.SetMessage(message);
+                            messageView.Add(message);
+                        }
                         break;
                     }
                 case PBEPkmnSwitchOutPacket psop:
@@ -471,9 +474,12 @@ namespace Kermalis.PokemonBattleEngineClient
                         PBEFieldPosition oldPos = pkmn.FieldPosition;
                         pkmn.ClearForSwitch();
                         BattleView.UpdatePokemon(pkmn, oldPos);
-                        string message = string.Format("{1} withdrew {0}!", pkmn.Shell.Nickname, pkmn.Team.TrainerName);
-                        BattleView.SetMessage(message);
-                        messageView.Add(message);
+                        if (!psop.Forced)
+                        {
+                            string message = string.Format("{1} withdrew {0}!", pkmn.Shell.Nickname, pkmn.Team.TrainerName);
+                            BattleView.SetMessage(message);
+                            messageView.Add(message);
+                        }
                         break;
                     }
                 case PBEPsychUpPacket pup:
@@ -497,6 +503,9 @@ namespace Kermalis.PokemonBattleEngineClient
                         string message;
                         switch (smp.Message)
                         {
+                            case PBESpecialMessage.DraggedOut:
+                                message = string.Format("{0} was dragged out!", NameForTrainer(Battle.TryGetPokemon((byte)smp.Params[0]), true));
+                                break;
                             case PBESpecialMessage.Magnitude:
                                 message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
                                 break;

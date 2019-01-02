@@ -1,5 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -602,6 +604,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Transform:
                     TryForceStatus2(user, targets, move, PBEStatus2.Transformed);
                     break;
+                case PBEMoveEffect.Whirlwind:
+                    Ef_Whirlwind(user, targets[0], move);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
             }
@@ -1154,6 +1159,42 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastMoveFailed(user, target, failReason);
             }
             return false;
+        }
+
+        // Switches in all Pokémon in PBETeam.SwitchInQueue
+        // Sets BattleState to PBEBattleState.Processing
+        void SwitchInQueuedPokemon()
+        {
+            BattleState = PBEBattleState.Processing;
+            OnStateChanged?.Invoke(this);
+            foreach (PBETeam team in Teams)
+            {
+                if (team.SwitchInQueue.Count > 0)
+                {
+                    ActiveBattlers.AddRange(team.SwitchInQueue);
+                    BroadcastPkmnSwitchIn(team, team.SwitchInQueue, false);
+                }
+            }
+            foreach (PBEPokemon pkmn in Teams.SelectMany(t => t.SwitchInQueue))
+            {
+                DoSwitchInEffects(pkmn);
+            }
+        }
+        void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
+        {
+            PBEFieldPosition pos = pkmnLeaving.FieldPosition;
+            pkmnLeaving.ClearForSwitch();
+            turnOrder.Remove(pkmnLeaving); // Necessary?
+            ActiveBattlers.Remove(pkmnLeaving);
+            BroadcastPkmnSwitchOut(pkmnLeaving, forced);
+            pkmnComing.FieldPosition = pos;
+            ActiveBattlers.Add(pkmnComing);
+            BroadcastPkmnSwitchIn(pkmnComing.Team, new[] { pkmnComing }, forced);
+            if (forced)
+            {
+                BroadcastDraggedOut(pkmnComing);
+            }
+            DoSwitchInEffects(pkmnComing);
         }
 
         void Ef_Hit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
@@ -2044,6 +2085,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             DoPostHitEffects(user, target, PBEMove.Struggle, (ushort)(user.MaxHP / 4));
+        }
+        void Ef_Whirlwind(PBEPokemon user, PBEPokemon target, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            if (MissCheck(user, target, move))
+            {
+                return;
+            }
+
+            IEnumerable<PBEPokemon> possibleSwitcheroonies = target.Team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None);
+            if (possibleSwitcheroonies.Count() == 0)
+            {
+                BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                return;
+            }
+
+            SwitchTwoPokemon(target, possibleSwitcheroonies.Sample(), true);
         }
     }
 }

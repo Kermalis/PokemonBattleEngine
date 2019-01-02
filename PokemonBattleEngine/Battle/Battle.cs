@@ -4,11 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
+    /// <summary>
+    /// Represents a team in a specific <see cref="PBEBattle"/>.
+    /// </summary>
     public sealed class PBETeam
     {
+        /// <summary>
+        /// The battle this team and its party belongs to.
+        /// </summary>
         public PBEBattle Battle { get; }
         public byte Id { get; }
         public string TrainerName { get; set; }
@@ -53,9 +60,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        // Returns null if there is no Pokémon at that position
-        public PBEPokemon TryGetPokemonAtPosition(PBEFieldPosition pos) => Party.SingleOrDefault(p => p.FieldPosition == pos);
+        /// <summary>
+        /// Gets a specific active Pokémon by its position.
+        /// </summary>
+        /// <param name="pos">The position of the Pokémon you want to get.</param>
+        /// <returns>null if no Pokémon was found was found at <paramref name="pos"/>; otherwise the <see cref="PBEPokemon"/>.</returns>
+        public PBEPokemon TryGetPokemonAtPosition(PBEFieldPosition pos) => ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
+
+        public override bool Equals(object obj)
+        {
+            if (obj is PBETeam other)
+            {
+                return other.Id.Equals(Id) && other.Battle.Equals(Battle);
+            }
+            return base.Equals(obj);
+        }
+        public override int GetHashCode() => Id.GetHashCode() ^ Battle.GetHashCode();
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{TrainerName}'s team:");
+            sb.AppendLine($"Status: {Status}");
+            sb.AppendLine($"NumPkmn: {Party.Count}");
+            sb.AppendLine($"NumPkmnAlive: {NumPkmnAlive}");
+            sb.AppendLine($"NumPkmnOnField: {NumPkmnOnField}");
+            return sb.ToString();
+        }
     }
+
+    /// <summary>
+    /// Represents a specific Pokémon battle.
+    /// </summary>
     public sealed partial class PBEBattle
     {
         public delegate void BattleStateChangedEvent(PBEBattle battle);
@@ -66,12 +101,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBESettings Settings { get; }
         public PBETeam[] Teams { get; } = new PBETeam[2];
         public List<PBEPokemon> ActiveBattlers { get; }
-        List<PBEPokemon> turnOrder { get; } = new List<PBEPokemon>();
+        readonly List<PBEPokemon> turnOrder = new List<PBEPokemon>();
 
         public PBEWeather Weather { get; set; }
         public byte WeatherCounter { get; set; }
 
-        // Returns null if it doesn't exist
+        /// <summary>
+        /// Gets a specific Pokémon participating in this battle by its ID.
+        /// </summary>
+        /// <param name="pkmnId">The ID of the Pokémon you want to get.</param>
+        /// <returns>null if no Pokémon was found with <paramref name="pkmnId"/>; otherwise the <see cref="PBEPokemon"/>.</returns>
         public PBEPokemon TryGetPokemon(byte pkmnId) => Teams.SelectMany(t => t.Party).SingleOrDefault(p => p.Id == pkmnId);
 
         byte pkmnIdCounter;
@@ -235,25 +274,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RunActionsInOrder();
             TurnEnded();
         }
-        // Switches in all Pokémon in PBETeam.SwitchInQueue
-        // Sets BattleState to PBEBattleState.Processing
-        void SwitchInQueuedPokemon()
-        {
-            BattleState = PBEBattleState.Processing;
-            OnStateChanged?.Invoke(this);
-            foreach (PBETeam team in Teams)
-            {
-                if (team.SwitchInQueue.Count > 0)
-                {
-                    ActiveBattlers.AddRange(team.SwitchInQueue);
-                    BroadcastPkmnSwitchIn(team, team.SwitchInQueue);
-                }
-            }
-            foreach (PBEPokemon pkmn in Teams.SelectMany(t => t.SwitchInQueue))
-            {
-                DoSwitchInEffects(pkmn); // BattleEffects.cs
-            }
-        }
         // Sets BattleState to PBEBattleState.WaitingForActions
         void RequestActions()
         {
@@ -374,28 +394,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void RunActionsInOrder()
         {
-            foreach (PBEPokemon pkmn in turnOrder)
+            foreach (PBEPokemon pkmn in turnOrder.ToArray()) // Copy the list so a faint or ejection does not cause a collection modified exception
             {
-                if (pkmn.HP == 0)
+                if (!ActiveBattlers.Contains(pkmn))
                 {
                     continue;
                 }
                 switch (pkmn.SelectedAction.Decision)
                 {
                     case PBEDecision.Fight:
-                        DoPreMoveEffects(pkmn); // BattleEffects.cs
-                        UseMove(pkmn); // BattleEffects.cs
+                        DoPreMoveEffects(pkmn);
+                        UseMove(pkmn);
                         break;
                     case PBEDecision.SwitchOut:
-                        PBEFieldPosition pos = pkmn.FieldPosition;
-                        pkmn.ClearForSwitch();
-                        ActiveBattlers.Remove(pkmn);
-                        BroadcastPkmnSwitchOut(pkmn);
-                        PBEPokemon switchPkmn = TryGetPokemon(pkmn.SelectedAction.SwitchPokemonId);
-                        switchPkmn.FieldPosition = pos;
-                        ActiveBattlers.Add(switchPkmn);
-                        BroadcastPkmnSwitchIn(switchPkmn.Team, new[] { switchPkmn });
-                        DoSwitchInEffects(switchPkmn);
+                        SwitchTwoPokemon(pkmn, TryGetPokemon(pkmn.SelectedAction.SwitchPokemonId), false);
                         break;
                     default: throw new ArgumentOutOfRangeException(nameof(pkmn.SelectedAction.Decision), $"Invalid decision: {pkmn.SelectedAction.Decision}");
                 }
@@ -418,19 +430,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Pokémon
-            foreach (PBEPokemon pkmn in ActiveBattlers.ToArray()) // Copy the list so a faint does not cause a collection modified exception
+            foreach (PBEPokemon pkmn in ActiveBattlers.ToArray()) // Copy the list so a faint or ejection does not cause a collection modified exception
             {
-                pkmn.SelectedAction.Decision = PBEDecision.None;
+                if (!ActiveBattlers.Contains(pkmn))
+                {
+                    continue;
+                }
+                pkmn.SelectedAction.Decision = PBEDecision.None; // No longer necessary
                 pkmn.Status2 &= ~PBEStatus2.Flinching;
                 pkmn.Status2 &= ~PBEStatus2.Protected;
                 if (pkmn.PreviousAction.Decision == PBEDecision.Fight && pkmn.PreviousAction.FightMove != PBEMove.Protect && pkmn.PreviousAction.FightMove != PBEMove.Detect)
                 {
                     pkmn.ProtectCounter = 0;
                 }
-                if (pkmn.HP > 0)
-                {
-                    DoTurnEndedEffects(pkmn); // BattleEffects.cs
-                }
+                DoTurnEndedEffects(pkmn);
             }
 
             // Teams

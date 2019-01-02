@@ -14,12 +14,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public IEnumerable<byte> Buffer { get; }
 
         public byte Pokemon { get; }
+        public bool Forced { get; }
 
-        public PBEPkmnSwitchOutPacket(PBEPokemon pokemon)
+        public PBEPkmnSwitchOutPacket(PBEPokemon pokemon, bool forced)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add(Pokemon = pokemon.Id);
+            bytes.Add((byte)((Forced = forced) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEPkmnSwitchOutPacket(byte[] buffer, PBEBattle battle)
@@ -29,6 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 Pokemon = r.ReadByte();
+                Forced = r.ReadBoolean();
             }
         }
 

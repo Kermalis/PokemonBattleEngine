@@ -73,8 +73,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBETeam Team { get; }
         public ReadOnlyCollection<PBESwitchInInfo> SwitchIns { get; }
+        public bool Forced { get; }
 
-        public PBEPkmnSwitchInPacket(PBETeam team, IEnumerable<PBEPokemon> pokemon)
+        public PBEPkmnSwitchInPacket(PBETeam team, IEnumerable<PBEPokemon> pokemon, bool forced)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -84,6 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 bytes.AddRange(info.ToBytes());
             }
+            bytes.Add((byte)((Forced = forced) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEPkmnSwitchInPacket(byte[] buffer, PBEBattle battle)
@@ -98,6 +100,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     switches[i] = PBESwitchInInfo.FromBytes(r);
                 }
                 SwitchIns = Array.AsReadOnly(switches);
+                Forced = r.ReadBoolean();
             }
         }
 

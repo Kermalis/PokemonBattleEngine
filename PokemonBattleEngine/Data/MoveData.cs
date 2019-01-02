@@ -2258,6 +2258,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PBEMove.Roar,
+                new PBEMoveData
+                {
+                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
+                    Effect = PBEMoveEffect.Whirlwind, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 100, Priority = -6,
+                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
+                    Targets = PBEMoveTarget.SingleSurrounding
+                }
+            },
+            {
                 PBEMove.RockClimb,
                 new PBEMoveData
                 {
@@ -3266,6 +3277,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Effect = PBEMoveEffect.Hit, EffectParam = 0,
                     PPTier = 2, Power = 50, Accuracy = 100, Priority = 0,
                     Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Targets = PBEMoveTarget.SingleSurrounding
+                }
+            },
+            {
+                PBEMove.Whirlwind,
+                new PBEMoveData
+                {
+                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
+                    Effect = PBEMoveEffect.Whirlwind, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 100, Priority = -6,
+                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },

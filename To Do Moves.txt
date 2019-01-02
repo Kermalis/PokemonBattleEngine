@@ -4,7 +4,6 @@ Pay Day
 Guillotine
 Razor Wind
 Gust
-Whirlwind
 Bind
 Double Kick
 Jump Kick
@@ -17,7 +16,6 @@ Thrash
 Double-Edge
 Twineedle
 Pin Missile
-Roar
 Sonic Boom
 Disable
 Mist

@@ -34,13 +34,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBEPkmnHPChangedPacket(victim, change));
         void BroadcastPkmnStatChanged(PBEPokemon victim, PBEStat stat, short change, bool isTooMuch)
             => OnNewEvent?.Invoke(this, new PBEPkmnStatChangedPacket(victim, stat, change, isTooMuch));
-        void BroadcastPkmnSwitchIn(PBETeam team, IEnumerable<PBEPokemon> pokemon)
-            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchInPacket(team, pokemon));
-        void BroadcastPkmnSwitchOut(PBEPokemon pokemon)
-            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchOutPacket(pokemon));
+        void BroadcastPkmnSwitchIn(PBETeam team, IEnumerable<PBEPokemon> pokemon, bool forced)
+            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchInPacket(team, pokemon, forced));
+        void BroadcastPkmnSwitchOut(PBEPokemon pokemon, bool forced)
+            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchOutPacket(pokemon, forced));
         void BroadcastPsychUp(PBEPokemon user, PBEPokemon target)
             => OnNewEvent?.Invoke(this, new PBEPsychUpPacket(user, target));
 
+        void BroadcastDraggedOut(PBEPokemon victim)
+            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, victim.Id));
         void BroadcastMagnitude(byte magnitude)
             => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude));
         void BroadcastPainSplit(PBEPokemon user, PBEPokemon target)
@@ -319,13 +321,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEPkmnSwitchInPacket psip:
                     {
-                        Console.WriteLine("{1} sent out {0}!", psip.SwitchIns.Select(s => s.Nickname).Andify(), psip.Team.TrainerName);
+                        if (!psip.Forced)
+                        {
+                            Console.WriteLine("{1} sent out {0}!", psip.SwitchIns.Select(s => s.Nickname).Andify(), psip.Team.TrainerName);
+                        }
                         break;
                     }
                 case PBEPkmnSwitchOutPacket psop:
                     {
-                        PBEPokemon pkmn = battle.TryGetPokemon(psop.Pokemon);
-                        Console.WriteLine("{1} withdrew {0}!", pkmn.Shell.Nickname, pkmn.Team.TrainerName);
+                        if (!psop.Forced)
+                        {
+                            PBEPokemon pkmn = battle.TryGetPokemon(psop.Pokemon);
+                            Console.WriteLine("{1} withdrew {0}!", pkmn.Shell.Nickname, pkmn.Team.TrainerName);
+                        }
                         break;
                     }
                 case PBEPsychUpPacket pup:
@@ -337,6 +345,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         switch (smp.Message)
                         {
+                            case PBESpecialMessage.DraggedOut:
+                                Console.WriteLine("{0} was dragged out!", NameForTrainer(battle.TryGetPokemon((byte)smp.Params[0])));
+                                break;
                             case PBESpecialMessage.Magnitude:
                                 Console.WriteLine("Magnitude {0}!", (byte)smp.Params[0]);
                                 break;

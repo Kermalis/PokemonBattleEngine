@@ -757,11 +757,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             if (obj is PBEPokemon other)
             {
-                return other.Id.Equals(Id);
+                return other.Id.Equals(Id) && other.Team.Equals(Team);
             }
             return base.Equals(obj);
         }
-        public override int GetHashCode() => Id.GetHashCode();
+        public override int GetHashCode() => Id.GetHashCode() ^ Team.GetHashCode();
         public override string ToString()
         {
             bool remotePokemon = Shell.Nature == PBENature.MAX; // If the nature is unset, the program is not the host and does not own the Pokémon
