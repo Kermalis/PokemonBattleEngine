@@ -498,6 +498,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Curse, PBEMove.RockSlide, PBEMove.StealthRock, PBEMove.SeedBomb }, // Curse, Rest, Sleep Talk, Rock Slide
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Tropius_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Tropius,
+            Nickname = "Bucky",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers, // Sitrus Berry
+            Ability = PBEAbility.Harvest,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Bold,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 248, 0, 144, 0, 0, 116 },
+            Moves = new PBEMove[] { PBEMove.LeechSeed, PBEMove.Substitute, PBEMove.AirSlash, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Absol_RU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Absol,
@@ -1055,8 +1071,8 @@ namespace Kermalis.PokemonBattleEngine
             Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
             Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Minun_NU, Mismagius_UU, Ninetales_VGC,
             Ninjask_VGC, Pachirisu_NU, Palkia_Uber, Pikachu_VGC,
-            Plusle_NU, Raichu_VGC, Rotom_Wash_VGC, Shedinja_VGC, Smeargle_VGC, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC, Victini_Uber,
-            Volcarona_VGC,
+            Plusle_NU, Raichu_VGC, Rotom_Wash_VGC, Shedinja_VGC, Smeargle_VGC, Tropius_NU, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC,
+            Victini_Uber, Volcarona_VGC,
         };
 
         /// <summary>
