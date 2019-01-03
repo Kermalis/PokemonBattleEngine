@@ -1284,6 +1284,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         LuckyEgg,
+        LuckyPunch,
         /// <summary>
         /// No effect.
         /// </summary>

@@ -145,6 +145,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEItem.LoveBall, new PBEItemData() },
             { PBEItem.LuckIncense, new PBEItemData(10) },
             { PBEItem.LuckyEgg, new PBEItemData(30) },
+            { PBEItem.LuckyPunch, new PBEItemData(40) },
             { PBEItem.LureBall, new PBEItemData() },
             { PBEItem.LustrousOrb, new PBEItemData(60) },
             { PBEItem.LuxuryBall, new PBEItemData() },

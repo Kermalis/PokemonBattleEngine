@@ -811,6 +811,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 stage += 2;
             }
+            if (user.Shell.Species == PBESpecies.Chansey && user.Item == PBEItem.LuckyPunch)
+            {
+                stage += 2;
+            }
             if (user.Shell.Species == PBESpecies.Farfetchd && user.Item == PBEItem.Stick)
             {
                 stage += 2;
