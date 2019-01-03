@@ -2612,6 +2612,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SecretSword,
         SeedBomb,
         SeedFlare,
+        SeismicToss,
         ShadowBall,
         ShadowClaw,
         ShadowPunch,

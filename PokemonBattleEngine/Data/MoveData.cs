@@ -2456,6 +2456,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PBEMove.SeismicToss,
+                new PBEMoveData
+                {
+                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
+                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
+                    Targets = PBEMoveTarget.AllSurrounding
+                }
+            },
+            {
                 PBEMove.ShadowBall,
                 new PBEMoveData
                 {
