@@ -20,10 +20,10 @@ namespace Kermalis.PokemonBattleEngineClient
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
         public PBEBattle Battle { get; }
-        public BattleView BattleView { get; }
+        public BattleView BattleView { get; set; }
         public byte Index { get; private set; }
 
-        public BattleClient(string host, int port, BattleView battleView)
+        public BattleClient(string host, int port)
         {
             Configuration.Host = host;
             Configuration.Port = port;
@@ -31,8 +31,6 @@ namespace Kermalis.PokemonBattleEngineClient
 
             Battle = new PBEBattle(PBEBattleFormat.Double, PBESettings.DefaultSettings);
             packetProcessor = new PBEPacketProcessor(Battle);
-            BattleView = battleView;
-            BattleView.Client = this;
 
             packetTimer.Elapsed += PacketTimer_Elapsed;
             packetTimer.Start();
