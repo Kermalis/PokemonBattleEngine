@@ -2149,6 +2149,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Luxray = 405,
         Pachirisu = 417,
         Mismagius = 429,
+        Happiny = 440,
         Gible = 443,
         Gabite = 444,
         Garchomp = 445,
