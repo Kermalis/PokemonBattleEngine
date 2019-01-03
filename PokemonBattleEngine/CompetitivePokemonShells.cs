@@ -156,6 +156,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.BlazeKick, PBEMove.SkyUppercut, PBEMove.RockSlide, PBEMove.Protect }, // Flare Blitz, High Jump Kick, Rock Slide, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Blissey_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Blissey,
+            Nickname = "Eggina",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.NaturalCure,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Calm,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 252, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.Toxic, PBEMove.Softboiled, PBEMove.EggBomb, PBEMove.Protect }, // Toxic, Softboiled, SeismicToss, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Bouffalant_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Bouffalant,
