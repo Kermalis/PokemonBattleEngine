@@ -387,7 +387,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                     }
-                    Debug.WriteLine(evaluated.Select(t => $"{t.Item1.Team.Id} {t.Item1.Shell.Nickname} {t.Item2}").Print(true));
+                    Debug.WriteLine(evaluated.Select(t => $"{t.Item1.Team.Id} {t.Item1.Shell.Nickname} {t.Item2}").Print());
                 }
                 turnOrder.AddRange(evaluated.Select(t => t.Item1));
             }

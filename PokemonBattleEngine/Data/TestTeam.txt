@@ -1,0 +1,53 @@
+4
+Torchic
+Torchic
+100
+255
+False
+Blaze
+Timid
+Male
+LifeOrb
+0, 0, 36, 200, 36, 236
+3, 30, 31, 30, 31, 31
+Agility, FireBlast, HiddenPower, FeatherDance
+3, 3, 3, 3
+Skitty
+Skitty
+100
+255
+False
+Normalize
+Adamant
+Female
+SilkScarf
+0, 236, 0, 0, 76, 196
+31, 31, 31, 31, 31, 31
+ThunderWave, Return, Protect, PsychUp
+3, 3, 3, 3
+Lileep
+Lileep
+100
+255
+False
+StormDrain
+Bold
+Male
+MeadowPlate
+228, 0, 220, 0, 60, 0
+31, 31, 31, 31, 31, 31
+EnergyBall, Recover, StealthRock, Toxic
+3, 3, 3, 3
+Gible
+Gible
+100
+255
+False
+SandVeil
+Naive
+Female
+LifeOrb
+0, 196, 0, 116, 0, 180
+31, 31, 31, 31, 31, 31
+Substitute, DragonClaw, Earthquake, FireBlast
+3, 3, 3, 3

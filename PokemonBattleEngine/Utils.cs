@@ -42,12 +42,9 @@ namespace Kermalis.PokemonBattleEngine
                 return val;
             }
         }
-        public static string Print<T>(this IEnumerable<T> source, bool includeParenthesis)
+        public static string Print<T>(this IEnumerable<T> source)
         {
-            string str = includeParenthesis ? "( " : "";
-            str += string.Join(", ", source);
-            str += includeParenthesis ? " )" : "";
-            return str;
+            return "( " + string.Join(", ", source) + " )";
         }
         public static string Andify<T>(this IEnumerable<T> source)
         {

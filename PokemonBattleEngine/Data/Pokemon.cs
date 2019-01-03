@@ -326,6 +326,90 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        public static IEnumerable<PBEPokemonShell> TeamFromTextFile(string path)
+        {
+            using (StreamReader r = File.OpenText(path))
+            {
+                int amt = int.Parse(r.ReadLine());
+                var team = new PBEPokemonShell[amt];
+                for (int i = 0; i < amt; i++)
+                {
+                    team[i] = new PBEPokemonShell
+                    {
+                        Species = (PBESpecies)Enum.Parse(typeof(PBESpecies), r.ReadLine()),
+                        Nickname = r.ReadLine(),
+                        Level = byte.Parse(r.ReadLine()),
+                        Friendship = byte.Parse(r.ReadLine()),
+                        Shiny = bool.Parse(r.ReadLine()),
+                        Ability = (PBEAbility)Enum.Parse(typeof(PBEAbility), r.ReadLine()),
+                        Nature = (PBENature)Enum.Parse(typeof(PBENature), r.ReadLine()),
+                        Gender = (PBEGender)Enum.Parse(typeof(PBEGender), r.ReadLine()),
+                        Item = (PBEItem)Enum.Parse(typeof(PBEItem), r.ReadLine()),
+                    };
+                    // Setup for arrays
+                    string line;
+                    string[] args;
+                    void SplitNext()
+                    {
+                        line = r.ReadLine();
+                        args = line.Split(new[] { ", " }, StringSplitOptions.None);
+                    }
+                    // EVs
+                    SplitNext();
+                    team[i].EVs = new byte[args.Length];
+                    for (int j = 0; j < args.Length; j++)
+                    {
+                        team[i].EVs[j] = byte.Parse(args[j]);
+                    }
+                    // IVs
+                    SplitNext();
+                    team[i].IVs = new byte[args.Length];
+                    for (int j = 0; j < args.Length; j++)
+                    {
+                        team[i].IVs[j] = byte.Parse(args[j]);
+                    }
+                    // Moves
+                    SplitNext();
+                    team[i].Moves = new PBEMove[args.Length];
+                    for (int j = 0; j < args.Length; j++)
+                    {
+                        team[i].Moves[j] = (PBEMove)Enum.Parse(typeof(PBEMove), args[j]);
+                    }
+                    // PPUps
+                    SplitNext();
+                    team[i].PPUps = new byte[args.Length];
+                    for (int j = 0; j < args.Length; j++)
+                    {
+                        team[i].PPUps[j] = byte.Parse(args[j]);
+                    }
+                }
+                return team;
+            }
+        }
+        public static void TeamToTextFile(string path, IEnumerable<PBEPokemonShell> team)
+        {
+            using (var w = new StreamWriter(path))
+            {
+                w.WriteLine(team.Count());
+                foreach (PBEPokemonShell pkmn in team)
+                {
+                    w.WriteLine(pkmn.Species);
+                    w.WriteLine(pkmn.Nickname);
+                    w.WriteLine(pkmn.Level);
+                    w.WriteLine(pkmn.Friendship);
+                    w.WriteLine(pkmn.Shiny);
+                    w.WriteLine(pkmn.Ability);
+                    w.WriteLine(pkmn.Nature);
+                    w.WriteLine(pkmn.Gender);
+                    w.WriteLine(pkmn.Item);
+                    w.WriteLine(string.Join(", ", pkmn.EVs));
+                    w.WriteLine(string.Join(", ", pkmn.IVs));
+                    w.WriteLine(string.Join(", ", pkmn.Moves));
+                    w.WriteLine(string.Join(", ", pkmn.PPUps));
+                }
+            }
+        }
+
         internal byte[] ToBytes()
         {
             var bytes = new List<byte>();
@@ -779,7 +863,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
                 moveStrs[i] = mStr;
             }
-            string moves = moveStrs.Print(false);
+            string moves = string.Join(", ", moveStrs);
 
             var sb = new StringBuilder();
             sb.AppendLine($"{Shell.Nickname}/{Species} {GenderSymbol} Lv.{Shell.Level}");

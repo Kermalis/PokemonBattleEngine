@@ -115,7 +115,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .WithTitle(species.ToString())
                         .WithAuthor(Context.User)
                         .AddField("Types", types, true)
-                        .AddField("Abilities", pData.Abilities.Print(false), true)
+                        .AddField("Abilities", string.Join(", ", pData.Abilities), true)
                         .AddField("Gender Ratio", ratio, false)
                         .AddField("Weight", $"{pData.Weight:N1} kg", true)
                         .AddField("Minimum Level", pData.MinLevel, true)
