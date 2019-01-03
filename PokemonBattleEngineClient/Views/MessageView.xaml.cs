@@ -11,8 +11,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
     class MessageView : UserControl, INotifyPropertyChanged
     {
         ObservableCollection<Bitmap> Messages { get; } = new ObservableCollection<Bitmap>();
+        readonly ListBox listBox;
 
-        ListBox listBox;
         public MessageView()
         {
             AvaloniaXamlLoader.Load(this);
@@ -21,9 +21,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             listBox = this.FindControl<ListBox>("List");
         }
 
-        public void Add(string value)
+        public void AddMessage(string message)
         {
-            Bitmap bmp = Utils.RenderString(value, Utils.StringRenderStyle.MenuBlack);
+            Bitmap bmp = Utils.RenderString(message, Utils.StringRenderStyle.MenuBlack);
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Messages.Add(bmp);

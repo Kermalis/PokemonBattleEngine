@@ -280,8 +280,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         PBEPokemon victim = battle.TryGetPokemon(phcp.Victim);
                         int hp = Math.Abs(phcp.Change);
-                        double percentage = (double)hp / victim.MaxHP;
-                        Console.WriteLine("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(victim), phcp.Change <= 0 ? "lost" : "gained", hp, percentage);
+                        Console.WriteLine("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(victim), phcp.Change <= 0 ? "lost" : "gained", hp, (double)hp / victim.MaxHP);
                         break;
                     }
                 case PBEPkmnStatChangedPacket pscp:

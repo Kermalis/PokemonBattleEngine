@@ -1,13 +1,14 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:view="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient"
-        Width="896" Height="512" CanResize="False" WindowStartupLocation="CenterScreen"
+        Width="896" Height="566" CanResize="False" WindowStartupLocation="CenterScreen"
         Title="Pokémon Battle Engine">
-  <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-    <StackPanel Orientation="Vertical">
-      <view:BattleView Name="Battle0"/>
-      <view:ActionsView Name="Actions0"/>
-    </StackPanel>
-    <view:MessageView Name="Messages0"/>
-  </StackPanel>
+  <TabControl Background="#313131">
+    <TabItem Header="Battle 1">
+      <view:BattleView Name="Battle1"/>
+    </TabItem>
+    <TabItem Header="Team Builder">
+      <Button Width="100" Height="35" Content="Test"/>
+    </TabItem>
+  </TabControl>
 </Window>
