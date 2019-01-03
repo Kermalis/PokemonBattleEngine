@@ -2124,6 +2124,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Exclamation = 201 | (26 << 0x10),
         Unown_Question = 201 | (27 << 0x10),
         Smeargle = 235,
+        Blissey = 242,
         Torchic = 255,
         Combusken = 256,
         Blaziken = 257,
