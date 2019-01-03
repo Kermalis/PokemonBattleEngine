@@ -2084,6 +2084,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Farfetchd = 83,
         Cubone = 104,
         Marowak = 105,
+        Chansey = 113,
         Ditto = 132,
         Eevee = 133,
         Vaporeon = 134,
