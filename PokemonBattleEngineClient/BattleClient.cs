@@ -64,6 +64,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         BattleView.AddMessage("Sending team info...", false, true);
                         PBEPokemonShell[] team = PBECompetitivePokemonShells.CreateRandomTeam(Battle.Settings.MaxPartySize).ToArray();
+                        //IEnumerable<PBEPokemonShell> team = PBEPokemonShell.TeamFromTextFile(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngine\Data\TestTeam.txt");
                         Send(new PBEPartyResponsePacket(team));
                         break;
                     }
