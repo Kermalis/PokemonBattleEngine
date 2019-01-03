@@ -161,7 +161,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         throw new ArgumentOutOfRangeException(nameof(EVs), $"{Species} cannot have any HP EVs.");
                     }
                     break;
-                case PBESpecies.Giratina_Altered:
+                case PBESpecies.Giratina:
                     if (Item == PBEItem.GriseousOrb)
                     {
                         throw new ArgumentOutOfRangeException(nameof(Item), $"{Species} cannot hold a {Item}.");
@@ -173,7 +173,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         throw new ArgumentOutOfRangeException(nameof(Item), $"{Species} must hold a {PBEItem.GriseousOrb}.");
                     }
                     break;
-                case PBESpecies.Arceus_Normal:
+                case PBESpecies.Arceus:
                     if (Item == PBEItem.DracoPlate
                         || Item == PBEItem.DreadPlate
                         || Item == PBEItem.EarthPlate

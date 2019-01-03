@@ -9,104 +9,84 @@ namespace Kermalis.PokemonBattleEngine
     /// </summary>
     public static class PBECompetitivePokemonShells
     {
-        /// <summary>
-        /// <para>Venusaur VGC</para>
-        /// <para>Item: Life Orb</para>
-        /// <para>Ability: Chlorophyll</para>
-        /// <para>Nature: Modest (+SpAtk -Atk)</para>
-        /// <para>Hidden Power: Ice/70</para>
-        /// <para>EVs: 4 HP, 252 SpAtk, 252 Spe</para>
-        /// <para>Moves: Sleep Powder, Energy Ball, Hidden Power, Protect</para>
-        /// </summary>
-        public static PBEPokemonShell Venusaur_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Absol_RU { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Venusaur,
-            Nickname = "Viola",
+            Species = PBESpecies.Absol,
+            Nickname = "Absoul",
             Level = 100,
             Friendship = 255,
             Shiny = false,
+            Item = PBEItem.DreadPlate,
+            Ability = PBEAbility.SuperLuck,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 252, 4, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.RockSlide, PBEMove.NightSlash, PBEMove.Superpower }, // Sucker Punch, Superpower, Night Slash, Pursuit
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Alomomola_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Alomomola,
+            Nickname = "Aloha",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers, // Wacan Berry
+            Ability = PBEAbility.Healer,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Careful,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 4, 252, 0, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.Facade, PBEMove.Waterfall, PBEMove.Protect }, // Helping Hand, Heal Pulse, Waterfall, Wide Guard
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Arceus_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Arceus,
+            Nickname = "Exon",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.SilkScarf,
+            Ability = PBEAbility.Multitype,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 200, 252, 0, 0, 0, 56 },
+            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.ExtremeSpeed, PBEMove.ShadowClaw, PBEMove.BrickBreak },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Azelf_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Azelf,
+            Nickname = "Zinc",
+            Level = 100,
+            Friendship = 255,
             Item = PBEItem.LifeOrb,
-            Ability = PBEAbility.Chlorophyll,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Modest,
-            IVs = new byte[] { 31, 30, 30, 31, 31, 31 },
-            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.SleepPowder, PBEMove.EnergyBall, PBEMove.HiddenPower, PBEMove.Protect },
+            Shiny = false,
+            Ability = PBEAbility.Levitate,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.ZenHeadbutt, PBEMove.IcePunch, PBEMove.FirePunch, PBEMove.Detect }, // Zen Headbutt, Ice Punch, Explosion, Detect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        /// <summary>
-        /// <para>Charizard VGC</para>
-        /// <para>Item: Choice Scarf</para>
-        /// <para>Ability: Solar Power</para>
-        /// <para>Nature: Modest (+SpAtk -Atk)</para>
-        /// <para>Hidden Power: Ice/70</para>
-        /// <para>EVs: 252 SpAtk, 4 SpDef, 252 Spe</para>
-        /// <para>Moves: Fire Blast, Air Slash, Focus Blast, Hidden Power </para>
-        /// </summary>
-        public static PBEPokemonShell Charizard_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Azumarill_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Charizard,
-            Nickname = "Chomp",
+            Species = PBESpecies.Azumarill,
+            Nickname = "ZuWEEE",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.ChoiceScarf,
-            Ability = PBEAbility.SolarPower,
+            Item = PBEItem.ChoiceBand,
+            Ability = PBEAbility.HugePower,
             Gender = PBEGender.Male,
-            Nature = PBENature.Modest,
-            IVs = new byte[] { 31, 30, 30, 31, 31, 31 },
-            EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
-            Moves = new PBEMove[] { PBEMove.FireBlast, PBEMove.AirSlash, PBEMove.FocusBlast, PBEMove.HiddenPower },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        /// <summary>
-        /// <para>Blastoise UU</para>
-        /// <para>Item: Leftovers</para>
-        /// <para>Ability: Rain Dish</para>
-        /// <para>Nature: Relaxed (+Def -Spe)</para>
-        /// <para>Hidden Power: Dark/70</para>
-        /// <para>EVs: 252 HP, 252 Def, 4 SpDef</para>
-        /// <para>Moves: Substitute, Scald, Protect, Rain Dance</para>
-        /// </summary>
-        public static PBEPokemonShell Blastoise_UU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Blastoise,
-            Nickname = "Boost",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers,
-            Ability = PBEAbility.RainDish,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Relaxed,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
-            EVs = new byte[] { 252, 0, 252, 0, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.Scald, PBEMove.Roar, PBEMove.RainDance }, // Rapid Spin, Scald, Roar, Foresight
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        /// <summary>
-        /// <para>Butterfree RU</para>
-        /// <para>Item: Leftovers</para>
-        /// <para>Ability: Compoundeyes</para>
-        /// <para>Nature: Timid (+Spe -Atk)</para>
-        /// <para>Hidden Power: Dark/70</para>
-        /// <para>EVs: 252 SpAtk, 4 SpDef, 252 Spe</para>
-        /// <para>Moves: Sleep Powder, Quiver Dance, Bug Buzz, Substitute</para>
-        /// </summary>
-        public static PBEPokemonShell Butterfree_RU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Butterfree,
-            Nickname = "Fluff",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers,
-            Ability = PBEAbility.Compoundeyes,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
-            EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
-            Moves = new PBEMove[] { PBEMove.SleepPowder, PBEMove.QuiverDance, PBEMove.BugBuzz, PBEMove.Substitute },
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 164, 252, 0, 0, 0, 92 },
+            Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.AquaJet, PBEMove.Superpower, PBEMove.IcePunch },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
@@ -136,69 +116,334 @@ namespace Kermalis.PokemonBattleEngine
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
-        /// <para>Pikachu VGC</para>
-        /// <para>Item: Light Ball</para>
-        /// <para>Ability: Lightningrod</para>
-        /// <para>Nature: Rash (+SpAtk -SpDef)</para>
-        /// <para>Hidden Power: Ice/70</para>
-        /// <para>EVs: 4 Atk, 252 SpAtk, 252 Spe</para>
-        /// <para>Moves: Substitute, Thunderbolt, Hidden Power, Grass Knot</para>
+        /// <para>Blastoise UU</para>
+        /// <para>Item: Leftovers</para>
+        /// <para>Ability: Rain Dish</para>
+        /// <para>Nature: Relaxed (+Def -Spe)</para>
+        /// <para>Hidden Power: Dark/70</para>
+        /// <para>EVs: 252 HP, 252 Def, 4 SpDef</para>
+        /// <para>Moves: Substitute, Scald, Protect, Rain Dance</para>
         /// </summary>
-        public static PBEPokemonShell Pikachu_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Blastoise_UU { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Pikachu,
-            Nickname = "Poof",
+            Species = PBESpecies.Blastoise,
+            Nickname = "Boost",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.LightBall,
-            Ability = PBEAbility.Lightningrod,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Rash,
-            IVs = new byte[] { 31, 30, 30, 31, 31, 31 },
-            EVs = new byte[] { 0, 4, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Protect, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.GrassKnot }, // Fake Out, Thunderbolt, Hidden Power Ice, Grass Knot
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.RainDish,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Relaxed,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+            EVs = new byte[] { 252, 0, 252, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.Scald, PBEMove.Roar, PBEMove.RainDance }, // Rapid Spin, Scald, Roar, Foresight
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Raichu_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Blaziken_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Raichu,
-            Nickname = "Archu",
+            Species = PBESpecies.Blaziken,
+            Nickname = "Brenda",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.ZapPlate, // Focus Sash
-            Ability = PBEAbility.Lightningrod,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Timid,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.SpeedBoost,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Adamant,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Discharge, PBEMove.GrassKnot, PBEMove.FocusBlast, PBEMove.Protect }, // Discharge, Fake Out, Focus Blast, Encore
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.BlazeKick, PBEMove.SkyUppercut, PBEMove.RockSlide, PBEMove.Protect }, // Flare Blitz, High Jump Kick, Rock Slide, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Bouffalant_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Bouffalant,
+            Nickname = "Bob",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.SapSipper,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.Headbutt, PBEMove.ZenHeadbutt, PBEMove.Earthquake, PBEMove.Protect }, // Head Charge, Wild Charge, Earthquake, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
-        /// <para>Ninetales VGC</para>
-        /// <para>Item: Flame Plate</para>
-        /// <para>Ability: Drought</para>
-        /// <para>Nature: Modest (+SpAtk -Atk)</para>
-        /// <para>Hidden Power: Ice/70</para>
-        /// <para>EVs: 4 HP, 252 SpAtk, 252 Spe</para>
-        /// <para>Moves: Flamethrower, Hidden Power, Energy Ball, Protect</para>
+        /// <para>Butterfree RU</para>
+        /// <para>Item: Leftovers</para>
+        /// <para>Ability: Compoundeyes</para>
+        /// <para>Nature: Timid (+Spe -Atk)</para>
+        /// <para>Hidden Power: Dark/70</para>
+        /// <para>EVs: 252 SpAtk, 4 SpDef, 252 Spe</para>
+        /// <para>Moves: Sleep Powder, Quiver Dance, Bug Buzz, Substitute</para>
         /// </summary>
-        public static PBEPokemonShell Ninetales_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Butterfree_RU { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Ninetales,
-            Nickname = "Jasmine",
+            Species = PBESpecies.Butterfree,
+            Nickname = "Fluff",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.FlamePlate, // Focus Sash
-            Ability = PBEAbility.Drought,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.Compoundeyes,
             Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
+            EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
+            Moves = new PBEMove[] { PBEMove.SleepPowder, PBEMove.QuiverDance, PBEMove.BugBuzz, PBEMove.Substitute },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Carracosta_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Carracosta,
+            Nickname = "Tortwa",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.SplashPlate, // Water Gem
+            Ability = PBEAbility.Sturdy,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.ShellSmash, PBEMove.Waterfall, PBEMove.RockSlide, PBEMove.AquaJet },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Chandelure_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Chandelure,
+            Nickname = "Candela",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb, // Fire Gem
+            Ability = PBEAbility.FlashFire,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Quiet,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 0, 0, 252, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.ShadowBall, PBEMove.EnergyBall, PBEMove.Protect }, // Heat Wave, Shadow Ball, Trick Room, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        /// <summary>
+        /// <para>Charizard VGC</para>
+        /// <para>Item: Choice Scarf</para>
+        /// <para>Ability: Solar Power</para>
+        /// <para>Nature: Modest (+SpAtk -Atk)</para>
+        /// <para>Hidden Power: Ice/70</para>
+        /// <para>EVs: 252 SpAtk, 4 SpDef, 252 Spe</para>
+        /// <para>Moves: Fire Blast, Air Slash, Focus Blast, Hidden Power </para>
+        /// </summary>
+        public static PBEPokemonShell Charizard_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Charizard,
+            Nickname = "Chomp",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.ChoiceScarf,
+            Ability = PBEAbility.SolarPower,
+            Gender = PBEGender.Male,
             Nature = PBENature.Modest,
             IVs = new byte[] { 31, 30, 30, 31, 31, 31 },
+            EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
+            Moves = new PBEMove[] { PBEMove.FireBlast, PBEMove.AirSlash, PBEMove.FocusBlast, PBEMove.HiddenPower },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Cofagrigus_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Cofagrigus,
+            Nickname = "Coffee",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.Mummy,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Sassy,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 248, 0, 8, 252, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Protect, PBEMove.WillOWisp, PBEMove.Curse }, // Shadow Ball, Will-O-Wisp, Protect, Trick Room
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Cradily_OU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Cradily,
+            Nickname = "PLANT",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.SuctionCups,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Careful,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 80, 0, 176, 0 },
+            Moves = new PBEMove[] { PBEMove.Curse, PBEMove.RockSlide, PBEMove.StealthRock, PBEMove.SeedBomb }, // Curse, Rest, Sleep Talk, Rock Slide
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Cresselia_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Cresselia,
+            Nickname = "Crest",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.Leftovers, // Sitrus Berry
+            Shiny = false,
+            Ability = PBEAbility.Levitate,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Relaxed,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 60, 0, 196, 0 },
+            Moves = new PBEMove[] { PBEMove.Psychic, PBEMove.LightScreen, PBEMove.IcyWind, PBEMove.Toxic }, // Psychic, Trick Room, Icy Wind, Safeguard
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Crobat_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Crobat,
+            Nickname = "Caro",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.BlackSludge, // Flying Gem
+            Ability = PBEAbility.InnerFocus,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252, },
+            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.NastyPlot, PBEMove.AirSlash, PBEMove.Protect }, // Acrobatics, Taunt, Super Fang, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Cryogonal_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Cryogonal,
+            Nickname = "Fug",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers, // Focus Sash
+            Ability = PBEAbility.Levitate,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Hasty,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 28, 0, 252, 0, 228 },
+            Moves = new PBEMove[] { PBEMove.IceBeam, PBEMove.HiddenPower, PBEMove.Reflect, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Darkrai_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Darkrai,
+            Nickname = "Kylo",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.BadDreams,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Flamethrower, PBEMove.HiddenPower, PBEMove.EnergyBall, PBEMove.Protect },
+            Moves = new PBEMove[] { PBEMove.DarkVoid, PBEMove.DarkPulse, PBEMove.NastyPlot, PBEMove.Substitute },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Delcatty_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Delcatty,
+            Nickname = "Anika",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.WonderSkin,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Bold,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 200, 0, 0, 56 },
+            Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.CalmMind, PBEMove.HyperVoice, PBEMove.Substitute }, // Baton Pass, Calm Mind, Hyper Voice, Substitute
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Dialga_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Dialga,
+            Nickname = "Seaweed",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.Leftovers,
+            Shiny = false,
+            Ability = PBEAbility.Pressure,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 0, 56, 200, 0 },
+            Moves = new PBEMove[] { PBEMove.StealthRock, PBEMove.DragonPulse, PBEMove.FireBlast, PBEMove.Thunder },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Ditto_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Ditto,
+            Nickname = "Doot",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.ChoiceScarf,
+            Ability = PBEAbility.Imposter,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Relaxed,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 248, 0, 252, 0, 8, 0 },
+            Moves = new PBEMove[] { PBEMove.Transform, PBEMove.None, PBEMove.None, PBEMove.None },
+            PPUps = new byte[] { 3, 0, 0, 0 }
+        };
+        public static PBEPokemonShell Druddigon_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Druddigon,
+            Nickname = "Teddy",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.RoughSkin,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect }, // Dragon Claw, Sucker Punch, Superpower, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Emolga_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Emolga,
+            Nickname = "Helo",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.MotorDrive,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Agility, PBEMove.LightScreen, PBEMove.SignalBeam, PBEMove.AirSlash }, // Tailwind, Encore, U-turn, Air Slash
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Espeon_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Espeon,
+            Nickname = "Vaqui",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.MeadowPlate, // Focus Sash
+            Ability = PBEAbility.MagicBounce,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 30, 30, 31, 30 }, // Hidden Power: Fire/70
+            EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Psyshock, PBEMove.GrassKnot, PBEMove.HiddenPower }, // Shadow Ball, Yawn, Grass Knot, Hidden Power Fire
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
@@ -226,70 +471,6 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.Return, PBEMove.AirSlash, PBEMove.SteelWing }, // Swords Dance, Return, Brave Bird, Revenge
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Marowak_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Marowak,
-            Nickname = "Mawoogo",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.ThickClub,
-            Ability = PBEAbility.Lightningrod,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Brave,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
-            EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.FirePunch, PBEMove.SwordsDance },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Ditto_Uber { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Ditto,
-            Nickname = "Doot",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.ChoiceScarf,
-            Ability = PBEAbility.Imposter,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Relaxed,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
-            EVs = new byte[] { 248, 0, 252, 0, 8, 0 },
-            Moves = new PBEMove[] { PBEMove.Transform, PBEMove.None, PBEMove.None, PBEMove.None },
-            PPUps = new byte[] { 3, 0, 0, 0 }
-        };
-        public static PBEPokemonShell Vaporeon_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Vaporeon,
-            Nickname = "Pam",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.SplashPlate, // Water Gem
-            Ability = PBEAbility.WaterAbsorb,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Quiet,
-            IVs = new byte[] { 31, 30, 31, 30, 31, 3 }, // Hidden Power: Grass/70
-            EVs = new byte[] { 140, 0, 116, 248, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.MuddyWater, PBEMove.IceBeam, PBEMove.HiddenPower, PBEMove.Detect },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Jolteon_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Jolteon,
-            Nickname = "Jilly",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.ZapPlate, // Focus Sash
-            Ability = PBEAbility.VoltAbsorb,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
-            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Thunderbolt, PBEMove.ThunderWave, PBEMove.HiddenPower, PBEMove.Protect },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
         public static PBEPokemonShell Flareon_RU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Flareon,
@@ -306,244 +487,132 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HyperVoice, PBEMove.Protect, PBEMove.LavaPlume, PBEMove.Toxic }, // Wish, Protect, Lava Plume, Toxic
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Crobat_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Garchomp_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Crobat,
-            Nickname = "Caro",
+            Species = PBESpecies.Garchomp,
+            Nickname = "Gru",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.BlackSludge, // Flying Gem
-            Ability = PBEAbility.InnerFocus,
-            Gender = PBEGender.Female,
+            Item = PBEItem.DracoPlate, // Yache Berry
+            Ability = PBEAbility.RoughSkin,
+            Gender = PBEGender.Male,
             Nature = PBENature.Jolly,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
-            EVs = new byte[] { 4, 252, 0, 0, 0, 252, },
-            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.NastyPlot, PBEMove.AirSlash, PBEMove.Protect }, // Acrobatics, Taunt, Super Fang, Protect
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.Earthquake, PBEMove.Crunch, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Azumarill_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Genesect_Uber { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Azumarill,
-            Nickname = "ZuWEEE",
+            Species = PBESpecies.Genesect,
+            Nickname = "Jessenect",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.ChoiceBand,
-            Ability = PBEAbility.HugePower,
-            Gender = PBEGender.Male,
+            Item = PBEItem.ChoiceScarf,
+            Ability = PBEAbility.Download,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Hasty,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 252, 0, 4, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.BugBuzz, PBEMove.IceBeam, PBEMove.Flamethrower, PBEMove.IronHead }, // U-Turn, Ice Beam, Flamethrower, Iron Head
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Giratina_Origin_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Giratina_Origin,
+            Nickname = "Gary",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.GriseousOrb,
+            Shiny = false,
+            Ability = PBEAbility.Levitate,
+            Gender = PBEGender.Genderless,
             Nature = PBENature.Adamant,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 164, 252, 0, 0, 0, 92 },
-            Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.AquaJet, PBEMove.Superpower, PBEMove.IcePunch },
+            EVs = new byte[] { 164, 252, 8, 0, 0, 84 },
+            Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.ShadowSneak, PBEMove.Earthquake, PBEMove.Substitute }, // Dragon Tail, Shadow Sneak, Earthquake, Magic Coat
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Espeon_Uber { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Glaceon_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Espeon,
-            Nickname = "Vaqui",
+            Species = PBESpecies.Glaceon,
+            Nickname = "Gizzard",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.MeadowPlate, // Focus Sash
-            Ability = PBEAbility.MagicBounce,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 31, 30, 30, 31, 30 }, // Hidden Power: Fire/70
-            EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Psyshock, PBEMove.GrassKnot, PBEMove.HiddenPower }, // Shadow Ball, Yawn, Grass Knot, Hidden Power Fire
+            Item = PBEItem.EarthPlate, // Iron Ball
+            Ability = PBEAbility.SnowCloak,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Quiet,
+            IVs = new byte[] { 31, 31, 31, 30, 30, 3 }, // Hidden Power: Ground/70
+            EVs = new byte[] { 252, 0, 0, 248, 8, 0 },
+            Moves = new PBEMove[] { PBEMove.IceBeam, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Protect }, // Blizzard, Shadow Ball, Hidden Power Ground, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Umbreon_UU { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Gothitelle_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Umbreon,
-            Nickname = "Poppy",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers,
-            Ability = PBEAbility.Synchronize,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Calm,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.Snarl, PBEMove.DarkPulse, PBEMove.Moonlight, PBEMove.Protect }, // Wish, Foul Play, Heal Bell, Protect
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Smeargle_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Smeargle,
-            Nickname = "Leonardo",
+            Species = PBESpecies.Gothitelle,
+            Nickname = "Jazzy",
             Level = 100,
             Friendship = 255,
             Shiny = false,
             Item = PBEItem.Leftovers, // Mental Herb
-            Ability = PBEAbility.Moody,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Jolly,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 4, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Spore, PBEMove.Reflect, PBEMove.Brine, PBEMove.Hex }, // Fake Out, Spore, Follow Me, Encore
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Blaziken_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Blaziken,
-            Nickname = "Brenda",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.LifeOrb,
-            Ability = PBEAbility.SpeedBoost,
+            Ability = PBEAbility.Frisk,
             Gender = PBEGender.Female,
-            Nature = PBENature.Adamant,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.BlazeKick, PBEMove.SkyUppercut, PBEMove.RockSlide, PBEMove.Protect }, // Flare Blitz, High Jump Kick, Rock Slide, Protect
+            Nature = PBENature.Quiet,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 0, 92, 164, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.Flatter, PBEMove.Psychic, PBEMove.ShadowBall, PBEMove.Protect }, // Trick Room, Psychic, Shadow Ball, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Ninjask_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Hydreigon_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Ninjask,
-            Nickname = "Nut",
+            Species = PBESpecies.Hydreigon,
+            Nickname = "Heidi",
             Level = 100,
             Friendship = 255,
             Shiny = false,
             Item = PBEItem.LifeOrb,
-            Ability = PBEAbility.SpeedBoost,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Adamant,
+            Ability = PBEAbility.Levitate,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
-            Moves = new PBEMove[] { PBEMove.XScissor, PBEMove.AerialAce, PBEMove.Dig, PBEMove.Protect }, // X-Scissor, Aerial Ace, Baton Pass, Protect
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.DracoMeteor, PBEMove.DarkPulse, PBEMove.Flamethrower, PBEMove.Surf },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Shedinja_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Jirachi_Uber { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Shedinja,
-            Nickname = "Shu",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.InsectPlate, // Focus Sash
-            Ability = PBEAbility.WonderGuard,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Lonely,
-            IVs = new byte[] { 31, 31, 11, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 0, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.XScissor, PBEMove.ShadowClaw, PBEMove.Protect, PBEMove.SwordsDance },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Delcatty_NU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Delcatty,
-            Nickname = "Anika",
+            Species = PBESpecies.Jirachi,
+            Nickname = "Gina",
             Level = 100,
             Friendship = 255,
             Shiny = false,
             Item = PBEItem.Leftovers,
-            Ability = PBEAbility.WonderSkin,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Bold,
+            Ability = PBEAbility.SereneGrace,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Careful,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 0, 200, 0, 0, 56 },
-            Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.CalmMind, PBEMove.HyperVoice, PBEMove.Substitute }, // Baton Pass, Calm Mind, Hyper Voice, Substitute
+            EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.Protect, PBEMove.StealthRock, PBEMove.IronHead, PBEMove.Roar }, // Wish, Stealth Rock, Iron Head, Roar
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Plusle_NU { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Jolteon_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Plusle,
-            Nickname = "Peanut",
+            Species = PBESpecies.Jolteon,
+            Nickname = "Jilly",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.LifeOrb,
-            Ability = PBEAbility.Plus,
+            Item = PBEItem.ZapPlate, // Focus Sash
+            Ability = PBEAbility.VoltAbsorb,
             Gender = PBEGender.Female,
             Nature = PBENature.Timid,
             IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
             EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.QuickAttack }, // Nasty Plot, Thunderbolt, Hidden Power Ice, Baton Pass
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Minun_NU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Minun,
-            Nickname = "MIKEY",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers,
-            Ability = PBEAbility.Minus,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 0, 4, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.QuickAttack }, // Nasty Plot, Thunderbolt, Encore, Baton Pass
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Cradily_OU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Cradily,
-            Nickname = "PLANT",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers,
-            Ability = PBEAbility.SuctionCups,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Careful,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 0, 80, 0, 176, 0 },
-            Moves = new PBEMove[] { PBEMove.Curse, PBEMove.RockSlide, PBEMove.StealthRock, PBEMove.SeedBomb }, // Curse, Rest, Sleep Talk, Rock Slide
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Tropius_NU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Tropius,
-            Nickname = "Bucky",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers, // Sitrus Berry
-            Ability = PBEAbility.Harvest,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Bold,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 248, 0, 144, 0, 0, 116 },
-            Moves = new PBEMove[] { PBEMove.LeechSeed, PBEMove.Substitute, PBEMove.AirSlash, PBEMove.Protect },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Absol_RU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Absol,
-            Nickname = "Absoul",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.DreadPlate,
-            Ability = PBEAbility.SuperLuck,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Adamant,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 0, 252, 4, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.RockSlide, PBEMove.NightSlash, PBEMove.Superpower }, // Sucker Punch, Superpower, Night Slash, Pursuit
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Regirock_UU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Regirock,
-            Nickname = "Rayman",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers,
-            Ability = PBEAbility.ClearBody,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Careful,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 4, 0, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.StoneEdge, PBEMove.Superpower, PBEMove.Earthquake, PBEMove.Curse }, // Stone Edge, Rest, Sleep Talk, Curse
+            Moves = new PBEMove[] { PBEMove.Thunderbolt, PBEMove.ThunderWave, PBEMove.HiddenPower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Latias_VGC { get; } = new PBEPokemonShell
@@ -578,84 +647,20 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.DracoMeteor, PBEMove.Psychic, PBEMove.Protect, PBEMove.HiddenPower },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Jirachi_Uber { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Leafeon_RU { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Jirachi,
-            Nickname = "Gina",
+            Species = PBESpecies.Leafeon,
+            Nickname = "Gift",
             Level = 100,
             Friendship = 255,
             Shiny = false,
             Item = PBEItem.Leftovers,
-            Ability = PBEAbility.SereneGrace,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Careful,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.Protect, PBEMove.StealthRock, PBEMove.IronHead, PBEMove.Roar }, // Wish, Stealth Rock, Iron Head, Roar
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Luxray_NU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Luxray,
-            Nickname = "Mittens",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.FlameOrb,
-            Ability = PBEAbility.Guts,
+            Ability = PBEAbility.Chlorophyll,
             Gender = PBEGender.Male,
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Spark, PBEMove.Superpower, PBEMove.Facade, PBEMove.Crunch }, // Wild Charge, Superpower, Facade, Crunch
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Pachirisu_NU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Pachirisu,
-            Nickname = "Poolala",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.ZapPlate,
-            Ability = PBEAbility.VoltAbsorb,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 156, 0, 0, 56, 44, 252 },
-            Moves = new PBEMove[] { PBEMove.GrassKnot, PBEMove.ThunderWave, PBEMove.Thunderbolt, PBEMove.HyperFang }, // Fling, Covet, Volt Switch, Super Fang
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Mismagius_UU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Mismagius,
-            Nickname = "Kermie",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.LifeOrb,
-            Ability = PBEAbility.Levitate,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 31, 30, 30, 30, 30 }, // Hidden Power: Fighting/70
-            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Thunderbolt },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Garchomp_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Garchomp,
-            Nickname = "Gru",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.DracoPlate, // Yache Berry
-            Ability = PBEAbility.RoughSkin,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Jolly,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.Earthquake, PBEMove.Crunch, PBEMove.Protect },
+            EVs = new byte[] { 252, 0, 4, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.XScissor, PBEMove.LeafBlade, PBEMove.Synthesis }, // Swords Dance, Baton Pass, Leaf Blade, Synthesis
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Lucario_VGC { get; } = new PBEPokemonShell
@@ -674,68 +679,36 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.CloseCombat, PBEMove.ExtremeSpeed, PBEMove.IcePunch, PBEMove.Detect }, // Close Combat, Extreme Speed, Ice Punch, Follow Me
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Leafeon_RU { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Luxray_NU { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Leafeon,
-            Nickname = "Gift",
+            Species = PBESpecies.Luxray,
+            Nickname = "Mittens",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.Leftovers,
-            Ability = PBEAbility.Chlorophyll,
+            Item = PBEItem.FlameOrb,
+            Ability = PBEAbility.Guts,
             Gender = PBEGender.Male,
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 0, 4, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.XScissor, PBEMove.LeafBlade, PBEMove.Synthesis }, // Swords Dance, Baton Pass, Leaf Blade, Synthesis
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Spark, PBEMove.Superpower, PBEMove.Facade, PBEMove.Crunch }, // Wild Charge, Superpower, Facade, Crunch
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Glaceon_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Marowak_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Glaceon,
-            Nickname = "Gizzard",
+            Species = PBESpecies.Marowak,
+            Nickname = "Mawoogo",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.EarthPlate, // Iron Ball
-            Ability = PBEAbility.SnowCloak,
+            Item = PBEItem.ThickClub,
+            Ability = PBEAbility.Lightningrod,
             Gender = PBEGender.Male,
-            Nature = PBENature.Quiet,
-            IVs = new byte[] { 31, 31, 31, 30, 30, 3 }, // Hidden Power: Ground/70
-            EVs = new byte[] { 252, 0, 0, 248, 8, 0 },
-            Moves = new PBEMove[] { PBEMove.IceBeam, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Protect }, // Blizzard, Shadow Ball, Hidden Power Ground, Protect
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Rotom_Wash_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Rotom_Wash,
-            Nickname = "Wahooey",
-            Level = 100,
-            Friendship = 255,
-            Item = PBEItem.Leftovers, // Sitrus Berry
-            Shiny = false,
-            Ability = PBEAbility.Levitate,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Modest,
-            IVs = new byte[] { 31, 30, 31, 30, 31, 30 }, // Hidden Power: Fire/70
-            EVs = new byte[] { 232, 0, 0, 56, 0, 220 },
-            Moves = new PBEMove[] { PBEMove.HydroPump, PBEMove.HiddenPower, PBEMove.Discharge, PBEMove.Protect },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Uxie_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Uxie,
-            Nickname = "Amy",
-            Level = 100,
-            Friendship = 255,
-            Item = PBEItem.Leftovers, // Sitrus Berry
-            Shiny = false,
-            Ability = PBEAbility.Levitate,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Calm,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 0, 0, 4, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.LightScreen, PBEMove.Psychic, PBEMove.Protect }, // Imprison, Trick Room, Psychic, Protect
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.FirePunch, PBEMove.SwordsDance },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Mesprit_UU { get; } = new PBEPokemonShell
@@ -754,36 +727,93 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.Thunderbolt, PBEMove.Psychic, PBEMove.HiddenPower }, // Thunderbolt, Trick Room, Psychic, U-turn
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Azelf_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Minun_NU { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Azelf,
-            Nickname = "Zinc",
+            Species = PBESpecies.Minun,
+            Nickname = "MIKEY",
             Level = 100,
             Friendship = 255,
-            Item = PBEItem.LifeOrb,
             Shiny = false,
-            Ability = PBEAbility.Levitate,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Jolly,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.Minus,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Timid,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.ZenHeadbutt, PBEMove.IcePunch, PBEMove.FirePunch, PBEMove.Detect }, // Zen Headbutt, Ice Punch, Explosion, Detect
+            EVs = new byte[] { 252, 0, 4, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.QuickAttack }, // Nasty Plot, Thunderbolt, Encore, Baton Pass
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Dialga_Uber { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Mismagius_UU { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Dialga,
-            Nickname = "Seaweed",
+            Species = PBESpecies.Mismagius,
+            Nickname = "Kermie",
             Level = 100,
             Friendship = 255,
-            Item = PBEItem.Leftovers,
             Shiny = false,
-            Ability = PBEAbility.Pressure,
-            Gender = PBEGender.Genderless,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Levitate,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 30, 30, 30, 30 }, // Hidden Power: Fighting/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Thunderbolt },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        /// <summary>
+        /// <para>Ninetales VGC</para>
+        /// <para>Item: Flame Plate</para>
+        /// <para>Ability: Drought</para>
+        /// <para>Nature: Modest (+SpAtk -Atk)</para>
+        /// <para>Hidden Power: Ice/70</para>
+        /// <para>EVs: 4 HP, 252 SpAtk, 252 Spe</para>
+        /// <para>Moves: Flamethrower, Hidden Power, Energy Ball, Protect</para>
+        /// </summary>
+        public static PBEPokemonShell Ninetales_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Ninetales,
+            Nickname = "Jasmine",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.FlamePlate, // Focus Sash
+            Ability = PBEAbility.Drought,
+            Gender = PBEGender.Female,
             Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 30, 30, 31, 31, 31 },
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Flamethrower, PBEMove.HiddenPower, PBEMove.EnergyBall, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Ninjask_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Ninjask,
+            Nickname = "Nut",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.SpeedBoost,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 0, 0, 56, 200, 0 },
-            Moves = new PBEMove[] { PBEMove.StealthRock, PBEMove.DragonPulse, PBEMove.FireBlast, PBEMove.Thunder },
+            EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
+            Moves = new PBEMove[] { PBEMove.XScissor, PBEMove.AerialAce, PBEMove.Dig, PBEMove.Protect }, // X-Scissor, Aerial Ace, Baton Pass, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Pachirisu_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Pachirisu,
+            Nickname = "Poolala",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.ZapPlate,
+            Ability = PBEAbility.VoltAbsorb,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 156, 0, 0, 56, 44, 252 },
+            Moves = new PBEMove[] { PBEMove.GrassKnot, PBEMove.ThunderWave, PBEMove.Thunderbolt, PBEMove.HyperFang }, // Fling, Covet, Volt Switch, Super Fang
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Palkia_Uber { get; } = new PBEPokemonShell
@@ -802,68 +832,214 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.SpacialRend, PBEMove.Surf, PBEMove.FireBlast, PBEMove.Thunder },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Giratina_Origin_Uber { get; } = new PBEPokemonShell
+        /// <summary>
+        /// <para>Pikachu VGC</para>
+        /// <para>Item: Light Ball</para>
+        /// <para>Ability: Lightningrod</para>
+        /// <para>Nature: Rash (+SpAtk -SpDef)</para>
+        /// <para>Hidden Power: Ice/70</para>
+        /// <para>EVs: 4 Atk, 252 SpAtk, 252 Spe</para>
+        /// <para>Moves: Substitute, Thunderbolt, Hidden Power, Grass Knot</para>
+        /// </summary>
+        public static PBEPokemonShell Pikachu_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Giratina_Origin,
-            Nickname = "Gary",
+            Species = PBESpecies.Pikachu,
+            Nickname = "Poof",
             Level = 100,
             Friendship = 255,
-            Item = PBEItem.GriseousOrb,
             Shiny = false,
-            Ability = PBEAbility.Levitate,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Adamant,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 164, 252, 8, 0, 0, 84 },
-            Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.ShadowSneak, PBEMove.Earthquake, PBEMove.Substitute }, // Dragon Tail, Shadow Sneak, Earthquake, Magic Coat
+            Item = PBEItem.LightBall,
+            Ability = PBEAbility.Lightningrod,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Rash,
+            IVs = new byte[] { 31, 30, 30, 31, 31, 31 },
+            EVs = new byte[] { 0, 4, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Protect, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.GrassKnot }, // Fake Out, Thunderbolt, Hidden Power Ice, Grass Knot
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Cresselia_VGC { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Plusle_NU { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Cresselia,
-            Nickname = "Crest",
+            Species = PBESpecies.Plusle,
+            Nickname = "Peanut",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Plus,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.QuickAttack }, // Nasty Plot, Thunderbolt, Hidden Power Ice, Baton Pass
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Raichu_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Raichu,
+            Nickname = "Archu",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.ZapPlate, // Focus Sash
+            Ability = PBEAbility.Lightningrod,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Discharge, PBEMove.GrassKnot, PBEMove.FocusBlast, PBEMove.Protect }, // Discharge, Fake Out, Focus Blast, Encore
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Regirock_UU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Regirock,
+            Nickname = "Rayman",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.ClearBody,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Careful,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 4, 0, 0, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.StoneEdge, PBEMove.Superpower, PBEMove.Earthquake, PBEMove.Curse }, // Stone Edge, Rest, Sleep Talk, Curse
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Rotom_Wash_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Rotom_Wash,
+            Nickname = "Wahooey",
             Level = 100,
             Friendship = 255,
             Item = PBEItem.Leftovers, // Sitrus Berry
             Shiny = false,
             Ability = PBEAbility.Levitate,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Relaxed,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 252, 0, 60, 0, 196, 0 },
-            Moves = new PBEMove[] { PBEMove.Psychic, PBEMove.LightScreen, PBEMove.IcyWind, PBEMove.Toxic }, // Psychic, Trick Room, Icy Wind, Safeguard
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 30, 31, 30, 31, 30 }, // Hidden Power: Fire/70
+            EVs = new byte[] { 232, 0, 0, 56, 0, 220 },
+            Moves = new PBEMove[] { PBEMove.HydroPump, PBEMove.HiddenPower, PBEMove.Discharge, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Darkrai_Uber { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Shedinja_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Darkrai,
-            Nickname = "Kylo",
+            Species = PBESpecies.Shedinja,
+            Nickname = "Shu",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.InsectPlate, // Focus Sash
+            Ability = PBEAbility.WonderGuard,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Lonely,
+            IVs = new byte[] { 31, 31, 11, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.XScissor, PBEMove.ShadowClaw, PBEMove.Protect, PBEMove.SwordsDance },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Smeargle_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Smeargle,
+            Nickname = "Leonardo",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers, // Mental Herb
+            Ability = PBEAbility.Moody,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 4, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Spore, PBEMove.Reflect, PBEMove.Brine, PBEMove.Hex }, // Fake Out, Spore, Follow Me, Encore
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Tropius_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Tropius,
+            Nickname = "Bucky",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.Leftovers, // Sitrus Berry
+            Ability = PBEAbility.Harvest,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Bold,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 248, 0, 144, 0, 0, 116 },
+            Moves = new PBEMove[] { PBEMove.LeechSeed, PBEMove.Substitute, PBEMove.AirSlash, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Umbreon_UU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Umbreon,
+            Nickname = "Poppy",
             Level = 100,
             Friendship = 255,
             Shiny = false,
             Item = PBEItem.Leftovers,
-            Ability = PBEAbility.BadDreams,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Timid,
+            Ability = PBEAbility.Synchronize,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Calm,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.DarkVoid, PBEMove.DarkPulse, PBEMove.NastyPlot, PBEMove.Substitute },
+            EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.Snarl, PBEMove.DarkPulse, PBEMove.Moonlight, PBEMove.Protect }, // Wish, Foul Play, Heal Bell, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Arceus_Normal_Uber { get; } = new PBEPokemonShell
+        public static PBEPokemonShell Uxie_VGC { get; } = new PBEPokemonShell
         {
-            Species = PBESpecies.Arceus_Normal,
-            Nickname = "Exon",
+            Species = PBESpecies.Uxie,
+            Nickname = "Amy",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.Leftovers, // Sitrus Berry
+            Shiny = false,
+            Ability = PBEAbility.Levitate,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Calm,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 0, 4, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.LightScreen, PBEMove.Psychic, PBEMove.Protect }, // Imprison, Trick Room, Psychic, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Vaporeon_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Vaporeon,
+            Nickname = "Pam",
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.SilkScarf,
-            Ability = PBEAbility.Multitype,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Adamant,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 200, 252, 0, 0, 0, 56 },
-            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.ExtremeSpeed, PBEMove.ShadowClaw, PBEMove.BrickBreak },
+            Item = PBEItem.SplashPlate, // Water Gem
+            Ability = PBEAbility.WaterAbsorb,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Quiet,
+            IVs = new byte[] { 31, 30, 31, 30, 31, 3 }, // Hidden Power: Grass/70
+            EVs = new byte[] { 140, 0, 116, 248, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.MuddyWater, PBEMove.IceBeam, PBEMove.HiddenPower, PBEMove.Detect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        /// <summary>
+        /// <para>Venusaur VGC</para>
+        /// <para>Item: Life Orb</para>
+        /// <para>Ability: Chlorophyll</para>
+        /// <para>Nature: Modest (+SpAtk -Atk)</para>
+        /// <para>Hidden Power: Ice/70</para>
+        /// <para>EVs: 4 HP, 252 SpAtk, 252 Spe</para>
+        /// <para>Moves: Sleep Powder, Energy Ball, Hidden Power, Protect</para>
+        /// </summary>
+        public static PBEPokemonShell Venusaur_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Venusaur,
+            Nickname = "Viola",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Chlorophyll,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 30, 30, 31, 31, 31 },
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.SleepPowder, PBEMove.EnergyBall, PBEMove.HiddenPower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Victini_Uber { get; } = new PBEPokemonShell
@@ -882,166 +1058,6 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.VCreate, PBEMove.BoltStrike, PBEMove.GrassKnot, PBEMove.HiddenPower }, // V-create, Bolt Strike, U-turn, Hidden Power Ice
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Cofagrigus_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Cofagrigus,
-            Nickname = "Coffee",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers,
-            Ability = PBEAbility.Mummy,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Sassy,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
-            EVs = new byte[] { 248, 0, 8, 252, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Protect, PBEMove.WillOWisp, PBEMove.Curse }, // Shadow Ball, Will-O-Wisp, Protect, Trick Room
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Carracosta_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Carracosta,
-            Nickname = "Tortwa",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.SplashPlate, // Water Gem
-            Ability = PBEAbility.Sturdy,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Jolly,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.ShellSmash, PBEMove.Waterfall, PBEMove.RockSlide, PBEMove.AquaJet },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Gothitelle_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Gothitelle,
-            Nickname = "Jazzy",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers, // Mental Herb
-            Ability = PBEAbility.Frisk,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Quiet,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
-            EVs = new byte[] { 252, 0, 92, 164, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.Flatter, PBEMove.Psychic, PBEMove.ShadowBall, PBEMove.Protect }, // Trick Room, Psychic, Shadow Ball, Protect
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Emolga_NU { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Emolga,
-            Nickname = "Helo",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers,
-            Ability = PBEAbility.MotorDrive,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Agility, PBEMove.LightScreen, PBEMove.SignalBeam, PBEMove.AirSlash }, // Tailwind, Encore, U-turn, Air Slash
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Alomomola_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Alomomola,
-            Nickname = "Aloha",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers, // Wacan Berry
-            Ability = PBEAbility.Healer,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Careful,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 0, 4, 252, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.Facade, PBEMove.Waterfall, PBEMove.Protect }, // Helping Hand, Heal Pulse, Waterfall, Wide Guard
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Chandelure_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Chandelure,
-            Nickname = "Candela",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.LifeOrb, // Fire Gem
-            Ability = PBEAbility.FlashFire,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Quiet,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
-            EVs = new byte[] { 252, 0, 0, 252, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.ShadowBall, PBEMove.EnergyBall, PBEMove.Protect }, // Heat Wave, Shadow Ball, Trick Room, Protect
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Cryogonal_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Cryogonal,
-            Nickname = "Fug",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.Leftovers, // Focus Sash
-            Ability = PBEAbility.Levitate,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Hasty,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 0, 28, 0, 252, 0, 228 },
-            Moves = new PBEMove[] { PBEMove.IceBeam, PBEMove.HiddenPower, PBEMove.Reflect, PBEMove.Protect },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Druddigon_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Druddigon,
-            Nickname = "Teddy",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.LifeOrb,
-            Ability = PBEAbility.RoughSkin,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Brave,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
-            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect }, // Dragon Claw, Sucker Punch, Superpower, Protect
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Bouffalant_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Bouffalant,
-            Nickname = "Bob",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.LifeOrb,
-            Ability = PBEAbility.SapSipper,
-            Gender = PBEGender.Male,
-            Nature = PBENature.Brave,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
-            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.Headbutt, PBEMove.ZenHeadbutt, PBEMove.Earthquake, PBEMove.Protect }, // Head Charge, Wild Charge, Earthquake, Protect
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-        public static PBEPokemonShell Hydreigon_VGC { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Hydreigon,
-            Nickname = "Heidi",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.LifeOrb,
-            Ability = PBEAbility.Levitate,
-            Gender = PBEGender.Female,
-            Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.DracoMeteor, PBEMove.DarkPulse, PBEMove.Flamethrower, PBEMove.Surf },
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
         public static PBEPokemonShell Volcarona_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Volcarona,
@@ -1058,38 +1074,6 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.BugBuzz, PBEMove.HiddenPower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
-        public static PBEPokemonShell Genesect_Uber { get; } = new PBEPokemonShell
-        {
-            Species = PBESpecies.Genesect,
-            Nickname = "Jessenect",
-            Level = 100,
-            Friendship = 255,
-            Shiny = false,
-            Item = PBEItem.ChoiceScarf,
-            Ability = PBEAbility.Download,
-            Gender = PBEGender.Genderless,
-            Nature = PBENature.Hasty,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
-            EVs = new byte[] { 0, 252, 0, 4, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.BugBuzz, PBEMove.IceBeam, PBEMove.Flamethrower, PBEMove.IronHead }, // U-Turn, Ice Beam, Flamethrower, Iron Head
-            PPUps = new byte[] { 3, 3, 3, 3 }
-        };
-
-        /// <summary>
-        /// A collection of all default competitive Pokémon.
-        /// </summary>
-        public static PBEPokemonShell[] DefaultCompetitivePokemon { get; } = new PBEPokemonShell[]
-        {
-            Absol_RU, Alomomola_VGC, Arceus_Normal_Uber, Azelf_VGC, Azumarill_VGC, Beedrill_NU, Blastoise_UU, Blaziken_VGC, Bouffalant_VGC, Butterfree_RU,
-            Carracosta_VGC, Chandelure_VGC, Charizard_VGC, Cofagrigus_VGC,
-            Cradily_OU, Cresselia_VGC, Crobat_VGC, Cryogonal_VGC, Darkrai_Uber, Delcatty_NU, Dialga_Uber, Ditto_Uber, Druddigon_VGC, Emolga_NU,
-            Espeon_Uber,
-            Farfetchd_OU, Flareon_RU, Garchomp_VGC, Genesect_Uber, Giratina_Origin_Uber, Glaceon_VGC, Gothitelle_VGC, Hydreigon_VGC, Jirachi_Uber, Jolteon_VGC,
-            Latias_VGC, Latios_VGC, Leafeon_RU, Lucario_VGC, Luxray_NU, Marowak_VGC, Mesprit_UU, Minun_NU, Mismagius_UU, Ninetales_VGC,
-            Ninjask_VGC, Pachirisu_NU, Palkia_Uber, Pikachu_VGC, Plusle_NU,
-            Raichu_VGC, Regirock_UU, Rotom_Wash_VGC, Shedinja_VGC, Smeargle_VGC, Tropius_NU, Umbreon_UU, Uxie_VGC, Vaporeon_VGC, Venusaur_VGC,
-            Victini_Uber, Volcarona_VGC,
-        };
 
         /// <summary>
         /// Creates a random team with pre-defined competitive Pokémon shells.
@@ -1097,7 +1081,7 @@ namespace Kermalis.PokemonBattleEngine
         /// <param name="numPkmn">The amount of Pokémon to add to the team.</param>
         public static IEnumerable<PBEPokemonShell> CreateRandomTeam(int numPkmn)
         {
-            var possiblePokemon = new List<PBEPokemonShell>(DefaultCompetitivePokemon);
+            PBEPokemonShell[] possiblePokemon = typeof(PBECompetitivePokemonShells).GetProperties().Select(p => (PBEPokemonShell)p.GetValue(null)).ToArray();
             possiblePokemon.Shuffle();
             return possiblePokemon.Take(numPkmn);
         }
