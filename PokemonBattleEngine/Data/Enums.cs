@@ -2139,6 +2139,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tropius = 357,
         Absol = 359,
         Clamperl = 366,
+        Regirock = 377,
         Latias = 380,
         Latios = 381,
         Jirachi = 385,
