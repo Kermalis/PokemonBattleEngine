@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public new event PropertyChangedEventHandler PropertyChanged;
 
         PBEPokemon pokemon;
-        public PBEPokemon Pokemon
+        PBEPokemon Pokemon
         {
             get => pokemon;
             set
@@ -53,6 +53,16 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 level = value;
                 OnPropertyChanged(nameof(Level));
+            }
+        }
+        ushort hp;
+        ushort HP
+        {
+            get => hp;
+            set
+            {
+                hp = value;
+                OnPropertyChanged(nameof(HP));
             }
         }
         IBitmap status;
@@ -97,19 +107,21 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             red = new SolidColorBrush(Color.FromRgb(255, 49, 66));
         }
 
-        public void Update()
+        public void Update(PBEPokemon pkmn)
         {
-            if (pokemon == null || pokemon.FieldPosition == PBEFieldPosition.None)
+            Pokemon = pkmn;
+            if (pkmn == null || pkmn.FieldPosition == PBEFieldPosition.None)
             {
                 Visible = false;
             }
             else
             {
-                Level = $"{pokemon.GenderSymbol} Lv.{pokemon.Shell.Level}";
-                Status = pokemon.Status1 == PBEStatus1.None ? null : Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Misc.{pokemon.Status1}.png?assembly=PokemonBattleEngineClient"));
+                Level = $"{(pkmn.Shell.Gender == PBEGender.Genderless ? " " : pkmn.GenderSymbol)}[LV]{pkmn.Shell.Level}";
+                HP = pkmn.HP;
+                Status = pkmn.Status1 == PBEStatus1.None ? null : Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Misc.{pkmn.Status1}.png?assembly=PokemonBattleEngineClient"));
 
-                const byte lineX = 50, lineY = 18, lineW = 47;
-                double hpLeft = (double)pokemon.HP / pokemon.MaxHP;
+                const byte lineX = 49, lineY = 14, lineW = 49;
+                double hpLeft = (double)pkmn.HP / pkmn.MaxHP;
                 if (hpLeft <= 0.20)
                 {
                     HPColor = red;

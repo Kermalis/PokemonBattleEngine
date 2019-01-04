@@ -30,6 +30,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             MenuBlack,
             BattleWhite,
             BattleName,
+            BattleLevel,
+            BattleHP,
             MAX,
         }
         private class WbFb : IFramebufferPlatformSurface
@@ -38,13 +40,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public WbFb(WriteableBitmap bmp) => _bitmap = bmp;
             public ILockedFramebuffer Lock() => _bitmap.Lock();
         }
-        static ConcurrentDictionary<string, ConcurrentDictionary<string, Bitmap>> LoadedBitmaps { get; } = new ConcurrentDictionary<string, ConcurrentDictionary<string, Bitmap>>();
-        static string GetCharKey(string path, char c)
-        {
-            string key = ((int)c).ToString("X");
-            const string questionMark = "3F";
-            return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png") ? key : questionMark;
-        }
+        static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, Bitmap>> loadedBitmaps = new ConcurrentDictionary<string, ConcurrentDictionary<string, Bitmap>>();
         public static Bitmap RenderString(string str, StringRenderStyle style)
         {
             // Return null for bad strings
@@ -61,44 +57,52 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             switch (style)
             {
                 case StringRenderStyle.BattleName: path = "BattleName"; charHeight = 11; spaceWidth = 2; break;
+                case StringRenderStyle.BattleLevel: path = "BattleLevel"; charHeight = 10; spaceWidth = 7; break;
+                case StringRenderStyle.BattleHP: path = "BattleHP"; charHeight = 8; spaceWidth = 0; break;
                 default: path = "Default"; charHeight = 15; spaceWidth = 4; break;
             }
 
-            // Load char bitmaps
-            foreach (char c in str)
+            int index;
+            string GetCharKey()
             {
-                if (c == ' ' || c == '\r' || c == '\n')
+                string key;
+                if (index + 6 <= str.Length && str.Substring(index, 6) == "[PKMN]")
                 {
-                    continue;
+                    key = "PKMN";
+                    index += 6;
+                }
+                else if (index + 4 <= str.Length && str.Substring(index, 4) == "[LV]")
+                {
+                    key = "LV";
+                    index += 4;
                 }
                 else
                 {
-                    string key = GetCharKey(path, c);
-                    if (!LoadedBitmaps.ContainsKey(path))
-                    {
-                        LoadedBitmaps.TryAdd(path, new ConcurrentDictionary<string, Bitmap>());
-                    }
-                    if (!LoadedBitmaps[path].ContainsKey(key))
-                    {
-                        LoadedBitmaps[path].TryAdd(key, UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png?assembly=PokemonBattleEngineClient")));
-                    }
+                    key = ((int)str[index]).ToString("X");
+                    index++;
                 }
+                const string questionMark = "3F";
+                return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png") ? key : questionMark;
             }
 
             // Measure how large the string will end up
             int stringWidth = 0, stringHeight = charHeight, curLineWidth = 0;
-            foreach (char c in str)
+            index = 0;
+            while (index < str.Length)
             {
-                if (c == ' ')
+                if (str[index] == ' ')
                 {
+                    index++;
                     curLineWidth += spaceWidth;
                 }
-                else if (c == '\r')
+                else if (str[index] == '\r')
                 {
+                    index++;
                     continue;
                 }
-                else if (c == '\n')
+                else if (str[index] == '\n')
                 {
+                    index++;
                     stringHeight += charHeight + 1;
                     if (curLineWidth > stringWidth)
                     {
@@ -108,7 +112,16 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 else
                 {
-                    curLineWidth += LoadedBitmaps[path][GetCharKey(path, c)].PixelSize.Width;
+                    string key = GetCharKey();
+                    if (!loadedBitmaps.ContainsKey(path))
+                    {
+                        loadedBitmaps.TryAdd(path, new ConcurrentDictionary<string, Bitmap>());
+                    }
+                    if (!loadedBitmaps[path].ContainsKey(key))
+                    {
+                        loadedBitmaps[path].TryAdd(key, UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png?assembly=PokemonBattleEngineClient")));
+                    }
+                    curLineWidth += loadedBitmaps[path][key].PixelSize.Width;
                 }
             }
             if (curLineWidth > stringWidth)
@@ -123,27 +136,30 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
                 {
                     double x = 0, y = 0;
-                    foreach (char c in str)
+                    index = 0;
+                    while (index < str.Length)
                     {
-                        if (c == ' ')
+                        if (str[index] == ' ')
                         {
+                            index++;
                             x += spaceWidth;
                         }
-                        else if (c == '\r')
+                        else if (str[index] == '\r')
                         {
+                            index++;
                             continue;
                         }
-                        else if (c == '\n')
+                        else if (str[index] == '\n')
                         {
+                            index++;
                             y += charHeight + 1;
                             x = 0;
                         }
                         else
                         {
-                            Bitmap bmp = LoadedBitmaps[path][GetCharKey(path, c)];
-                            int charWidth = bmp.PixelSize.Width;
-                            ctx.DrawImage(bmp.PlatformImpl, 1, new Rect(0, 0, charWidth, charHeight), new Rect(x, y, charWidth, charHeight));
-                            x += charWidth;
+                            Bitmap bmp = loadedBitmaps[path][GetCharKey()];
+                            ctx.DrawImage(bmp.PlatformImpl, 1, new Rect(0, 0, bmp.PixelSize.Width, charHeight), new Rect(x, y, bmp.PixelSize.Width, charHeight));
+                            x += bmp.PixelSize.Width;
                         }
                     }
                 }
@@ -157,7 +173,9 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     case StringRenderStyle.MenuBlack: primary = 0xFF5A5252; secondary = 0xFFA5A5AD; break;
                     case StringRenderStyle.BattleWhite: //secondary = 0xF0FFFFFF; break; // Looks horrible because of Avalonia's current issues
                     case StringRenderStyle.MenuWhite: secondary = 0xFF848484; break;
-                    case StringRenderStyle.BattleName: primary = 0xFFF7F7F7; secondary = 0xFF181818; break;
+                    case StringRenderStyle.BattleName:
+                    case StringRenderStyle.BattleLevel: primary = 0xFFF7F7F7; secondary = 0xFF181818; break;
+                    case StringRenderStyle.BattleHP: primary = 0xFFF7F7F7; secondary = 0xFF101010; tertiary = 0xFF9C9CA5; break;
                 }
                 for (int x = 0; x < stringWidth; x++)
                 {

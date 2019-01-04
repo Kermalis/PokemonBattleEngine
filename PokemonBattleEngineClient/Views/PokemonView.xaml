@@ -7,11 +7,8 @@
     <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
   </UserControl.RenderTransform>
   <!--<Border BorderBrush="{DynamicResource ThemeAccentBrush}" BorderThickness="1">-->
-  <Image Name="Sprite"
-         ZIndex="1" Stretch="None" Opacity="{Binding SpriteOpacity}"
-         HorizontalAlignment="Center" VerticalAlignment="Bottom"
-         RenderOptions.BitmapInterpolationMode="Default"
-         gif:GifImage.SourceUri="{Binding Source}">
+  <Image Name="Sprite" Stretch="None" Opacity="{Binding SpriteOpacity}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+       RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceUri="{Binding Source}">
     <ToolTip.Tip>
       <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
     </ToolTip.Tip>
