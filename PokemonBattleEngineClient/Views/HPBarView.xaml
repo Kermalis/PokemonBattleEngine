@@ -1,13 +1,15 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
-             IsVisible="{Binding Visible}">
-  <Canvas Width="100" Height="23">
-    <Rectangle Width="100" Height="23" Fill="White" Stroke="Black" StrokeThickness="1" ZIndex="0"/>
-    <Image Canvas.Left="2" Canvas.Top="2" Source="{Binding Pokemon.Shell.Nickname, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleName, Mode=OneWay}" ZIndex="2"/>
-    <Image Canvas.Right="2" Canvas.Top="2" Source="{Binding Level, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}" ZIndex="2"/>
-    <Image Canvas.Left="2" Canvas.Bottom="2" Source="{Binding Status}" ZIndex="1"/>
-    <Rectangle Width="48" Height="5" Canvas.Right="2" Canvas.Bottom="2" Fill="Transparent" Stroke="Black" StrokeThickness="1" ZIndex="4"/>
-    <Line StartPoint="50,19" EndPoint="{Binding HPEndLocation}" Stroke="{Binding HPColor}" StrokeThickness="3" ZIndex="3"/>
+             Width="114" Height="27" IsVisible="{Binding Visible}">
+  <Canvas>
+    <Image Canvas.Left="2" Source="{Binding Pokemon.Shell.Nickname, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleName, Mode=OneWay}"/>
+    <Image Canvas.Left="66" Canvas.Top="1" Source="{Binding Level, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleLevel, Mode=OneWay}"/>
+    <Image Canvas.Bottom="0" Source="resm:Kermalis.PokemonBattleEngineClient.Assets.Misc.HPBar.png?assembly=PokemonBattleEngineClient" ZIndex="2"/>
+    <Image Canvas.Left="13" Canvas.Bottom="10" Source="{Binding Status}" ZIndex="3"/>
+    <Line StartPoint="49,15" EndPoint="{Binding HPEndLocation}" Stroke="{Binding HPColor}" StrokeThickness="3" ZIndex="1"/>
+    <Rectangle Fill="White" Canvas.Left="50" Canvas.Top="13" Width="48" Height="3"/>
+    <Image Canvas.Right="40" Canvas.Bottom="3" Source="{Binding HP, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleHP, Mode=OneWay}" ZIndex="3"/>
+    <Image Canvas.Left="82" Canvas.Bottom="3" Source="{Binding Pokemon.MaxHP, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleHP, Mode=OneWay}" ZIndex="3"/>
   </Canvas>
 </UserControl>

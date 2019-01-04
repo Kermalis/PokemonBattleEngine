@@ -22,15 +22,15 @@ namespace Kermalis.PokemonBattleEngineClient
         void Connect(string arg)
         {
             var client = new BattleClient(this.FindControl<TextBox>("IP").Text, (int)this.FindControl<NumericUpDown>("Port").Value);
+            battles.Add(client);
             var tabControl = this.FindControl<TabControl>("Tabs");
             List<object> tabs = tabControl.Items.Cast<object>().ToList();
             tabs.Add(new TabItem
             {
-                Header = "Battle " + (battles.Count + 1),
+                Header = "Battle " + battles.Count,
                 Content = new BattleView(client)
             });
             tabControl.Items = tabs;
-            battles.Add(client);
             client.Connect();
         }
     }
