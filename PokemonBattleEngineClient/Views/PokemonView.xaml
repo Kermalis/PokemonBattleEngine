@@ -2,16 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:gif="clr-namespace:AvaloniaGif;assembly=AvaloniaGif"
              xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
-             Width="192" Height="192" IsVisible="{Binding Visible}">
+             Width="192" Height="192" RenderOptions.BitmapInterpolationMode="Default" IsVisible="{Binding Visible}">
   <UserControl.RenderTransform>
     <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
   </UserControl.RenderTransform>
-  <!--<Border BorderBrush="{DynamicResource ThemeAccentBrush}" BorderThickness="1">-->
-  <Image Name="Sprite" Stretch="None" Opacity="{Binding SpriteOpacity}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-       RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceUri="{Binding Source}">
+  <gif:GifImage Stretch="None" Opacity="{Binding SpriteOpacity}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Source="{Binding Source}">
     <ToolTip.Tip>
       <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
     </ToolTip.Tip>
-  </Image>
-  <!--</Border>-->
+  </gif:GifImage>
 </UserControl>

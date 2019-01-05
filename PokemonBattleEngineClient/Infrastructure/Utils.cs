@@ -2,6 +2,7 @@
 using Avalonia.Controls.Platform.Surfaces;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -21,6 +22,49 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
             return new Bitmap(assets.Open(uri));
+        }
+
+        public static Bitmap GetMinisprite(PBESpecies species, bool shiny)
+        {
+            if (!PBEPokemonData.Data.ContainsKey(species))
+            {
+                return null;
+            }
+
+            uint speciesID = (uint)species & 0xFFFF;
+            uint formeID = (uint)species >> 0x10;
+            return UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{speciesID}{(formeID > 0 ? $"-{formeID}" : string.Empty)}{(shiny ? "-S" : string.Empty)}.png?assembly=PokemonBattleEngineClient"));
+        }
+        public static Uri GetPokemonSpriteUri(PBEPokemon pokemon, bool backSprite)
+        {
+            return GetPokemonSpriteUri(pokemon.Species, pokemon.Shiny, pokemon.Shell.Gender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite);
+        }
+        public static Uri GetPokemonSpriteUri(PBEPokemonShell shell)
+        {
+            return GetPokemonSpriteUri(shell.Species, shell.Shiny, shell.Gender, false, false);
+        }
+        public static Uri GetPokemonSpriteUri(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
+        {
+            if (!PBEPokemonData.Data.ContainsKey(species))
+            {
+                return null;
+            }
+
+            string orientation = backSprite ? "-B" : "-F";
+            if (behindSubstitute)
+            {
+                return new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.Substitute{orientation}.gif?assembly=PokemonBattleEngineClient");
+            }
+            else
+            {
+                uint speciesID = (uint)species & 0xFFFF;
+                uint formeID = (uint)species >> 0x10;
+                string sss = $"{speciesID}{(formeID > 0 ? $"-{formeID}" : string.Empty)}{orientation}{(shiny ? "-S" : string.Empty)}";
+                // Following will be false if the species sprites are sss-M.gif and sss-F.gif
+                bool spriteIsGenderNeutral = DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}.gif");
+                string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "-F" : "-M";
+                return new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}{genderStr}.gif?assembly=PokemonBattleEngineClient");
+            }
         }
 
         #region String Rendering

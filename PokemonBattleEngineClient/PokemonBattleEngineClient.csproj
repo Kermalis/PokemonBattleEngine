@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <OutputType>Exe</OutputType>
     <RootNamespace>Kermalis.PokemonBattleEngineClient</RootNamespace>
     <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
@@ -35,9 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="*" />
-    <PackageReference Include="Avalonia.Desktop" Version="*" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="*" />
+    <PackageReference Include="Avalonia" Version="0.7.1-build1021-beta" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.7.1-build1021-beta" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.7.1-build1021-beta" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
     <Reference Include="AvaloniaGif">
       <HintPath>Dependencies\AvaloniaGif.dll</HintPath>

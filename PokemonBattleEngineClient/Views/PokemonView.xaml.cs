@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public new event PropertyChangedEventHandler PropertyChanged;
 
         PBEPokemon pokemon;
-        public PBEPokemon Pokemon
+        PBEPokemon Pokemon
         {
             get => pokemon;
             set
@@ -80,38 +80,22 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             DataContext = this;
         }
 
-        public void Update(bool local)
+        public void Update(PBEPokemon pkmn, bool backSprite)
         {
+            Pokemon = pkmn;
             if (pokemon == null || pokemon.FieldPosition == PBEFieldPosition.None)
             {
                 Visible = false;
             }
             else
             {
-                Scale = local ? 2.0 : 1.0;
+                Scale = backSprite ? 2.0 : 1.0;
 
                 // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
                 SpriteOpacity = !pokemon.Status2.HasFlag(PBEStatus2.Substitute) && (pokemon.Status2.HasFlag(PBEStatus2.Airborne) || pokemon.Status2.HasFlag(PBEStatus2.Underground) || pokemon.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
 
-                string orientation = local ? "-B" : "-F";
-                if (pokemon.Status2.HasFlag(PBEStatus2.Substitute))
-                {
-                    Source = new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.Substitute{orientation}.gif?assembly=PokemonBattleEngineClient");
-                }
-                else
-                {
-                    // Loading the correct sprite requires checking first
-                    uint species = (uint)pokemon.Species & 0xFFFF;
-                    uint forme = (uint)pokemon.Species >> 0x10;
-                    string shiny = pokemon.Shiny ? "-S" : "";
-                    string sss = string.Format("{0}{1}{2}{3}", species, forme > 0 ? $"-{forme}" : "", orientation, shiny);
-                    // Following will be false if the species sprites are sss-M.gif and sss-F.gif
-                    bool spriteIsGenderNeutral = Utils.DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}.gif");
-                    // sss.gif if the sprite is gender neutral, else sss-F.gif if the Pokémon is female, otherwise sss-M.gif
-                    string gender = spriteIsGenderNeutral ? "" : pokemon.Shell.Gender == PBEGender.Female ? "-F" : "-M";
-                    // Set the result
-                    Source = new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}{gender}.gif?assembly=PokemonBattleEngineClient");
-                }
+                Source = Utils.GetPokemonSpriteUri(pokemon, backSprite);
+
                 Visible = true;
             }
         }

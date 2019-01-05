@@ -209,21 +209,20 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
             HPBarView hpView;
             PokemonView pkmnView;
-            bool local = (pkmn.Team.Id == 0 && battleView.Client.Index != 1) || (pkmn.Team.Id == 1 && battleView.Client.Index == 1);
+            bool backSprite = (pkmn.Team.Id == 0 && battleView.Client.Index != 1) || (pkmn.Team.Id == 1 && battleView.Client.Index == 1);
             if (oldPosition != PBEFieldPosition.None)
             {
-                hpView = this.FindControl<HPBarView>($"Bar{(local ? 0 : 1)}_{oldPosition}");
+                hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
                 hpView.Update(pkmn);
-                pkmnView = this.FindControl<PokemonView>($"Battler{(local ? 0 : 1)}_{oldPosition}");
-                pkmnView.Update(local);
+                pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{oldPosition}");
+                pkmnView.Update(pkmn, backSprite);
             }
             if (pkmn.FieldPosition != PBEFieldPosition.None)
             {
-                hpView = this.FindControl<HPBarView>($"Bar{(local ? 0 : 1)}_{pkmn.FieldPosition}");
+                hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
                 hpView.Update(pkmn);
-                pkmnView = this.FindControl<PokemonView>($"Battler{(local ? 0 : 1)}_{pkmn.FieldPosition}");
-                pkmnView.Pokemon = pkmn;
-                pkmnView.Update(local);
+                pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
+                pkmnView.Update(pkmn, backSprite);
             }
         }
     }

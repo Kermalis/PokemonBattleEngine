@@ -23,13 +23,13 @@ namespace Kermalis.PokemonBattleEngineClient
         public BattleView BattleView { get; set; }
         public byte Index { get; private set; }
 
-        public BattleClient(string host, int port)
+        public BattleClient(string host, int port, PBEBattleFormat battleFormat, PBESettings settings)
         {
             Configuration.Host = host;
             Configuration.Port = port;
             Configuration.BufferSize = 1024;
 
-            Battle = new PBEBattle(PBEBattleFormat.Double, PBESettings.DefaultSettings);
+            Battle = new PBEBattle(battleFormat, settings);
             packetProcessor = new PBEPacketProcessor(Battle);
 
             packetTimer.Elapsed += PacketTimer_Elapsed;
