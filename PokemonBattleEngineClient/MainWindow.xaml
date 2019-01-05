@@ -15,12 +15,6 @@
     <DataTemplate x:Key="MenuBlack">
       <Image Height="15" Source="{Binding Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
     </DataTemplate>
-    <DataTemplate x:Key="MenuBlackSpecies">
-      <StackPanel Spacing="4" Orientation="Horizontal">
-        <Image Height="32" Source="{Binding Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, Mode=OneWay}"/>
-        <Image Height="15" Source="{Binding Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
-      </StackPanel>
-    </DataTemplate>
   </Window.Resources>
   <TabControl Name="Tabs" Background="#313131">
     <TabItem Header="Home">
@@ -49,7 +43,16 @@
               <Image Source="{Binding Source='Shiny', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
             </CheckBox>
             <Image Grid.Row="1" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Species:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-            <DropDown Grid.Row="1" Grid.Column="1" Name="Species" Items="{Binding AvailableSpecies}" ItemTemplate="{StaticResource MenuBlackSpecies}"/>
+            <DropDown Grid.Row="1" Grid.Column="1" Name="Species" Items="{Binding AvailableSpecies}">
+              <DropDown.ItemTemplate>
+                <DataTemplate>
+                  <StackPanel Spacing="4" Orientation="Horizontal">
+                    <Image Height="32" Source="{Binding Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, Mode=OneWay}"/>
+                    <Image Height="15" Source="{Binding Converter={x:Static infrastructure:SpeciesToLocalizedBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+                  </StackPanel>
+                </DataTemplate>
+              </DropDown.ItemTemplate>
+            </DropDown>
             <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nickname:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
             <TextBox Grid.Row="2" Grid.Column="1" Name="Nickname"/>
             <Image Grid.Row="3" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Level:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>

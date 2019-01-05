@@ -4,7 +4,9 @@ using Discord.WebSocket;
 using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Localization;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
@@ -87,7 +89,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Command("info")]
             public async Task Info(string speciesName)
             {
-                if (Enum.TryParse(speciesName, true, out PBESpecies species))
+                PBESpecies species = 0;
+                PBELocalizedString localized = PBEPokemonLocalization.Names.Values.FirstOrDefault(l => l.Contains(speciesName));
+                if (localized != null)
+                {
+                    species = PBEPokemonLocalization.Names.First(p => p.Value == localized).Key;
+                }
+                else
+                {
+                    Enum.TryParse(speciesName, true, out species);
+                }
+                if (species != 0)
                 {
                     PBEPokemonData pData = PBEPokemonData.Data[species];
                     string types = pData.Type1.ToString();
@@ -112,7 +124,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     var embed = new EmbedBuilder()
                         .WithColor(Utils.GetColor(species))
                         .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
-                        .WithTitle(species.ToString())
+                        .WithTitle(PBEPokemonLocalization.Names[species].English)
                         .WithAuthor(Context.User)
                         .AddField("Types", types, true)
                         .AddField("Abilities", string.Join(", ", pData.Abilities), true)

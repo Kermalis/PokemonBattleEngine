@@ -6,7 +6,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 {
     static class Utils
     {
-        public static readonly Dictionary<PBEType, Color> TypeToColor = new Dictionary<PBEType, Color>
+        public static Dictionary<PBEType, Color> TypeToColor { get; } = new Dictionary<PBEType, Color>
         {
             { PBEType.Bug, new Color(173, 189, 31) },
             { PBEType.Dark, new Color(115, 90, 74) },

@@ -2,6 +2,7 @@
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Localization;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using Kermalis.PokemonBattleEngineClient.Views;
 using ReactiveUI;
@@ -85,7 +86,7 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
-            
+
             this.FindControl<Button>("Add").Command = ReactiveCommand.Create(AddShell);
             this.FindControl<Button>("Connect").Command = ReactiveCommand.Create(Connect);
             tabs = this.FindControl<TabControl>("Tabs");
@@ -136,11 +137,7 @@ namespace Kermalis.PokemonBattleEngineClient
         void AddShell()
         {
             PBESpecies species = AvailableSpecies.First();
-            Shells.Add(new PBEPokemonShell { Species = species, Nickname = DefaultSpeciesNick(species) });
-        }
-        string DefaultSpeciesNick(PBESpecies species)
-        {
-            return new string(species.ToString().TakeWhile(c => c != '_').ToArray());
+            Shells.Add(new PBEPokemonShell { Species = species, Nickname = PBEPokemonLocalization.Names[species].English });
         }
 
         bool ignoreUpdate = false;
@@ -155,7 +152,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 return;
             }
 
-            string prevSpeciesName = DefaultSpeciesNick(shell.Species);
+            string prevSpeciesName = PBEPokemonLocalization.Names[shell.Species].English;
 
             if (updateShell)
             {
@@ -166,7 +163,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
                 else if ((!illegal.IsChecked.Value && string.IsNullOrWhiteSpace(nickname.Text)) || prevSpeciesName.Equals(nickname.Text))
                 {
-                    nickname.Text = DefaultSpeciesNick(shell.Species);
+                    nickname.Text = PBEPokemonLocalization.Names[shell.Species].English;
                 }
                 shell.Nickname = nickname.Text;
                 shell.Level = (byte)level.Value;
