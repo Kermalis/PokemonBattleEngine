@@ -169,7 +169,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Calm,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 0, 252, 0, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.Toxic, PBEMove.Softboiled, PBEMove.SeismicToss, PBEMove.Protect },
+            Moves = new PBEMove[] { PBEMove.Toxic, PBEMove.Softboiled, PBEMove.EggBomb, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Bouffalant_VGC { get; } = new PBEPokemonShell

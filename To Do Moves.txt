@@ -23,6 +23,7 @@ Blizzard
 Hyper Beam
 Submission
 Counter
+Seismic Toss
 Absorb
 Mega Drain
 Solar Beam

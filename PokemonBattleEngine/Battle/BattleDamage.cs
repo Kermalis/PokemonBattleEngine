@@ -184,9 +184,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMove.Return:
                         basePower = Math.Max(1, user.Shell.Friendship / 2.5);
                         break;
-                    case PBEMove.SeismicToss:
-                        basePower = user.Shell.Level;
-                        break;
                     default:
                         basePower = PBEMoveData.Data[move].Power;
                         break;
