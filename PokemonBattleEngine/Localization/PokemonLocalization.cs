@@ -1,11 +1,12 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Kermalis.PokemonBattleEngine.Localization
 {
     public static class PBEPokemonLocalization
     {
-        public static IReadOnlyDictionary<PBESpecies, PBELocalizedString> Names { get; } = new Dictionary<PBESpecies, PBELocalizedString>()
+        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()
         {
             { PBESpecies.Absol, new PBELocalizedString("Absol", "アブソル") },
             { PBESpecies.Alomomola, new PBELocalizedString("Alomomola", "ママンボウ") },
@@ -160,6 +161,6 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Wartortle, new PBELocalizedString("Wartortle", "カメール") },
             { PBESpecies.Weedle, new PBELocalizedString("Weedle", "ビードル") },
             { PBESpecies.Zweilous, new PBELocalizedString("Zweilous", "ジヘッド") }
-        };
+        });
     }
 }

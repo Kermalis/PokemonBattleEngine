@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -95,7 +96,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBEType.Dark      // 1.5625 %
         };
 
-        public static IReadOnlyDictionary<PBESpecies, PBEPokemonData> Data { get; } = new Dictionary<PBESpecies, PBEPokemonData>()
+        public static ReadOnlyDictionary<PBESpecies, PBEPokemonData> Data { get; } = new ReadOnlyDictionary<PBESpecies, PBEPokemonData>(new Dictionary<PBESpecies, PBEPokemonData>()
         {
             {
                 PBESpecies.Absol,
@@ -13640,6 +13641,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     }
                 }
             }
-        };
+        });
     }
 }

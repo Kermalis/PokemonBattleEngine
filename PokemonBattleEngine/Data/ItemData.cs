@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
@@ -24,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             NaturalGiftType = naturalGiftType;
         }
 
-        public static IReadOnlyDictionary<PBEItem, PBEItemData> Data { get; } = new Dictionary<PBEItem, PBEItemData>()
+        public static ReadOnlyDictionary<PBEItem, PBEItemData> Data { get; } = new ReadOnlyDictionary<PBEItem, PBEItemData>(new Dictionary<PBEItem, PBEItemData>()
         {
             { PBEItem.AdamantOrb, new PBEItemData(60) },
             { PBEItem.AmuletCoin, new PBEItemData(30) },
@@ -295,6 +296,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEItem.YellowShard, new PBEItemData(30) },
             { PBEItem.ZapPlate, new PBEItemData(90) },
             { PBEItem.Zinc, new PBEItemData(30) }
-        };
+        });
     }
 }

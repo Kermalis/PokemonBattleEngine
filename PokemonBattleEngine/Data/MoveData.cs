@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -33,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             return sb.ToString();
         }
 
-        public static IReadOnlyDictionary<PBEMove, PBEMoveData> Data { get; } = new Dictionary<PBEMove, PBEMoveData>()
+        public static ReadOnlyDictionary<PBEMove, PBEMoveData> Data { get; } = new ReadOnlyDictionary<PBEMove, PBEMoveData>(new Dictionary<PBEMove, PBEMoveData>()
         {
             {
                 PBEMove.Acid,
@@ -3368,6 +3369,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Targets = PBEMoveTarget.SingleSurrounding
                 }
             },
-        };
+        });
     }
 }
