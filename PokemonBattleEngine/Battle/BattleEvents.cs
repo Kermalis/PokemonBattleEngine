@@ -1,5 +1,6 @@
 ﻿using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Localization;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
@@ -94,7 +95,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         PBEPokemon culprit = battle.TryGetPokemon(ap.Culprit),
                             victim = battle.TryGetPokemon(ap.Victim);
                         string nameForCulprit = NameForTrainer(culprit);
-                        Console.WriteLine("{0}'s {1} activated!", nameForCulprit, ap.Ability);
+                        Console.WriteLine("{0}'s {1} activated!", nameForCulprit, PBEAbilityLocalization.Names[ap.Ability].English);
                         string message;
                         switch (ap.Ability)
                         {

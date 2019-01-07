@@ -48,7 +48,7 @@
                 <DataTemplate>
                   <StackPanel Spacing="4" Orientation="Horizontal">
                     <Image Height="32" Source="{Binding Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, Mode=OneWay}"/>
-                    <Image Height="15" Source="{Binding Converter={x:Static infrastructure:SpeciesToLocalizedBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+                    <Image Height="15" Source="{Binding Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
                   </StackPanel>
                 </DataTemplate>
               </DropDown.ItemTemplate>
