@@ -262,7 +262,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         }*/
         /*public static void ColorFix()
         {
-            foreach (string file in System.IO.Directory.GetFiles(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineClient\Assets\Fonts\Default"))
+            //foreach (string file in System.IO.Directory.GetFiles(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineClient\Assets\Fonts\Default"))
+            foreach (string file in System.IO.Directory.GetFiles(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineClient\Assets\Fonts\BattleName"))
             {
                 var bmp = new Bitmap(file);
                 var wb = new WriteableBitmap(bmp.PixelSize, new Vector(96, 96), PixelFormat.Bgra8888);
@@ -282,11 +283,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         {
                             var address = new IntPtr(l.Address.ToInt64() + (x * sizeof(uint)) + (y * l.RowBytes));
                             uint pixel = (uint)Marshal.ReadInt32(address);
-                            if (pixel == 0xFFEFEFEF)
+                            //if (pixel == 0xFFEFEFEF) // Default
+                            if (pixel == 0xFFF7F7F7) // BattleName
                             {
                                 Marshal.WriteInt32(address, unchecked((int)0xFFFFFFFF));
                             }
-                            else if (pixel == 0xFF848484)
+                            //else if (pixel == 0xFF848484) // Default
+                            else if (pixel == 0xFF181818) // BattleName
                             {
                                 Marshal.WriteInt32(address, unchecked((int)0xFF000000));
                             }
