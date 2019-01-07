@@ -664,6 +664,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
+                PBEMove.DoubleTeam,
+                new PBEMoveData
+                {
+                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
+                    Effect = PBEMoveEffect.ChangeUser_EVA, EffectParam = +1,
+                    PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
+                    Flags = PBEMoveFlag.AffectedBySnatch,
+                    Targets = PBEMoveTarget.Self
+                }
+            },
+            {
                 PBEMove.DracoMeteor,
                 new PBEMoveData
                 {
@@ -727,17 +738,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PPTier = 2, Power = 100, Accuracy = 75, Priority = 0,
                     Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
                     Targets = PBEMoveTarget.SingleSurrounding
-                }
-            },
-            {
-                PBEMove.DoubleTeam,
-                new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_EVA, EffectParam = +1,
-                    PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
                 }
             },
             {
@@ -3062,17 +3062,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             },
             {
-                PBEMove.Tickle,
-                new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.LowerTarget_ATK_DEF_By1, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
-            },
-            {
                 PBEMove.Thunder,
                 new PBEMoveData
                 {
@@ -3122,6 +3111,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     Type = PBEType.Electric, Category = PBEMoveCategory.Status,
                     Effect = PBEMoveEffect.Paralyze, EffectParam = 0,
+                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
+                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
+                    Targets = PBEMoveTarget.SingleSurrounding
+                }
+            },
+            {
+                PBEMove.Tickle,
+                new PBEMoveData
+                {
+                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
+                    Effect = PBEMoveEffect.LowerTarget_ATK_DEF_By1, EffectParam = 0,
                     PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
                     Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
                     Targets = PBEMoveTarget.SingleSurrounding
