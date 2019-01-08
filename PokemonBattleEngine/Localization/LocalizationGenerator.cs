@@ -12,6 +12,10 @@ namespace Kermalis.PokemonBattleEngine.Localization
     {
         public static void GenerateAbilities()
         {
+            string data = new WebClient().DownloadString("https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/ability_names.csv");
+            string[][] lines = data.Split('\n').Skip(1).Select(s => s.Split(',')).ToArray();
+            IEnumerable<PBEAbility> allAbilities = Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }).OrderBy(e => e.ToString());
+
             var sb = new StringBuilder();
             sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
             sb.AppendLine("using System.Collections.Generic;");
@@ -24,12 +28,10 @@ namespace Kermalis.PokemonBattleEngine.Localization
             sb.AppendLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
             sb.AppendLine("        {");
             sb.AppendLine("            { PBEAbility.None, new PBELocalizedString(\"--\", \"--\") },");
-            string data = new WebClient().DownloadString("https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/ability_names.csv");
-            string[][] lines = data.Split('\n').Skip(1).Select(s => s.Split(',')).ToArray();
-            IEnumerable<PBEAbility> allAbilities = Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }).OrderBy(e => e.ToString());
             foreach (PBEAbility ability in allAbilities)
             {
                 string japanese = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 1.ToString())[2];
+                string korean = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 3.ToString())[2];
                 string french = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 5.ToString())[2];
                 string german = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 6.ToString())[2];
                 string spanish = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 7.ToString())[2];
@@ -64,15 +66,20 @@ namespace Kermalis.PokemonBattleEngine.Localization
                     case PBEAbility.WeakArmor: spanish = "Arm. Frágil"; break;
                 }
                 sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{english}\", \"{japanese}\") }}{(ability == allAbilities.Last() ? string.Empty : ",")}");
+                //sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(ability == allAbilities.Last() ? string.Empty : ",")}");
             }
             sb.AppendLine("        });");
             sb.AppendLine("    }");
             sb.AppendLine("}");
+
             File.WriteAllText(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngine\Localization\AbilityLocalization.cs", sb.ToString());
         }
 
         public static void GenerateMoves()
         {
+            string data = new WebClient().DownloadString("https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/move_names.csv");
+            string[][] lines = data.Split('\n').Skip(1).Select(s => s.Split(',')).ToArray(); // "10,000,000 volt thunderbolt" will break but it isn't needed
+
             var sb = new StringBuilder();
             sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
             sb.AppendLine("using System.Collections.Generic;");
@@ -85,12 +92,11 @@ namespace Kermalis.PokemonBattleEngine.Localization
             sb.AppendLine("        public static ReadOnlyDictionary<PBEMove, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEMove, PBELocalizedString>(new Dictionary<PBEMove, PBELocalizedString>()");
             sb.AppendLine("        {");
             sb.AppendLine("            { PBEMove.None, new PBELocalizedString(\"--\", \"--\") },");
-            string data = new WebClient().DownloadString("https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/move_names.csv");
-            string[][] lines = data.Split('\n').Skip(1).Select(s => s.Split(',')).ToArray(); // "10,000,000 volt thunderbolt" will break but it isn't needed
             for (ushort i = 1; i < (ushort)PBEMove.MAX; i++)
             {
                 bool moveExists = Enum.IsDefined(typeof(PBEMove), i);
                 string japanese = lines.Single(s => s[0] == i.ToString() && s[1] == 1.ToString())[2];
+                string korean = lines.Single(s => s[0] == i.ToString() && s[1] == 3.ToString())[2];
                 string french = lines.Single(s => s[0] == i.ToString() && s[1] == 5.ToString())[2];
                 string german = lines.Single(s => s[0] == i.ToString() && s[1] == 6.ToString())[2];
                 string spanish = lines.Single(s => s[0] == i.ToString() && s[1] == 7.ToString())[2];
@@ -197,11 +203,63 @@ namespace Kermalis.PokemonBattleEngine.Localization
                     case (PBEMove)35: spanish = "Repetición"; break; // PBEMove.Wrap
                 }
                 sb.AppendLine($"            {(moveExists ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{english}\", \"{japanese}\") }}{(i == (ushort)(PBEMove.MAX - 1) ? string.Empty : ",")}");
+                //sb.AppendLine($"            {(moveExists ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(i == (ushort)(PBEMove.MAX - 1) ? string.Empty : ",")}");
             }
             sb.AppendLine("        });");
             sb.AppendLine("    }");
             sb.AppendLine("}");
+
             File.WriteAllText(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngine\Localization\MoveLocalization.cs", sb.ToString());
+        }
+
+        public static void GeneratePokemon()
+        {
+            string data = new WebClient().DownloadString("https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/pokemon_species_names.csv");
+            string[][] lines = data.Split('\n').Skip(1).Select(s => s.Split(',')).ToArray();
+            uint numSpecies = 649;
+
+            var sb = new StringBuilder();
+            sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Collections.ObjectModel;");
+            sb.AppendLine();
+            sb.AppendLine("namespace Kermalis.PokemonBattleEngine.Localization");
+            sb.AppendLine("{");
+            sb.AppendLine("    public static class PBEPokemonLocalization");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
+            sb.AppendLine("        {");
+            for (uint i = 1; i <= numSpecies; i++)
+            {
+                bool speciesExists = Enum.IsDefined(typeof(PBESpecies), i);
+                string japanese = lines.Single(s => s[0] == i.ToString() && s[1] == 1.ToString())[2];
+                string korean = lines.Single(s => s[0] == i.ToString() && s[1] == 3.ToString())[2];
+                string french = lines.Single(s => s[0] == i.ToString() && s[1] == 5.ToString())[2];
+                string german = lines.Single(s => s[0] == i.ToString() && s[1] == 6.ToString())[2];
+                string spanish = lines.Single(s => s[0] == i.ToString() && s[1] == 7.ToString())[2];
+                string italian = lines.Single(s => s[0] == i.ToString() && s[1] == 8.ToString())[2];
+                string english = lines.Single(s => s[0] == i.ToString() && s[1] == 9.ToString())[2];
+                uint numForms;
+                switch ((PBESpecies)i)
+                {
+                    case PBESpecies.Arceus: numForms = 17; break;
+                    case PBESpecies.Genesect: numForms = 5; break;
+                    case PBESpecies.Giratina: numForms = 2; break;
+                    case PBESpecies.Rotom: numForms = 6; break;
+                    case PBESpecies.Unown_A: numForms = 28; break;
+                    default: numForms = 1; break;
+                }
+                for (uint j = 0; j < numForms; j++)
+                {
+                    sb.AppendLine($"            {(speciesExists ? string.Empty : "// ")}{{ PBESpecies.{(PBESpecies)(i | (j << 0x10))}, new PBELocalizedString(\"{english}\", \"{japanese}\") }}{(i == numSpecies && j == numForms - 1 ? string.Empty : ",")}");
+                    //sb.AppendLine($"            {(speciesExists ? string.Empty : "// ")}{{ PBESpecies.{(PBESpecies)(i | (j << 0x10))}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(i == numSpecies && j == numForms - 1 ? string.Empty : ",")}");
+                }
+            }
+            sb.AppendLine("        });");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            File.WriteAllText(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngine\Localization\PokemonLocalization.cs", sb.ToString());
         }
     }
 }
