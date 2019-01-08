@@ -30,7 +30,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Watchable replays
 * Change all ability/item boosts to settings instead of constants
 * Remove "Minimized" status and make it behave like rollout/defensecurl
-* Make items and abilities use their real ids
 
 ----
 # PokemonBattleEngine Uses:

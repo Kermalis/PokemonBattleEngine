@@ -909,841 +909,837 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// No item.
         /// </summary>
-        None,
-        AdamantOrb,
+        None = 0,
+        AdamantOrb = 135,
         /// <summary>
         /// No effect.
         /// </summary>
-        AmuletCoin,
+        AmuletCoin = 223,
         /// <summary>
         /// No effect.
         /// </summary>
-        Antidote,
+        Antidote = 18,
         /// <summary>
         /// No effect.
         /// </summary>
-        ArmorFossil,
+        ArmorFossil = 104,
         /// <summary>
         /// No effect.
         /// </summary>
-        Awakening,
+        Awakening = 21,
         /// <summary>
         /// No effect.
         /// </summary>
-        BalmMushroom,
+        BalmMushroom = 580,
         /// <summary>
         /// No effect.
         /// </summary>
-        BigMushroom,
+        BigMushroom = 87,
         /// <summary>
         /// No effect.
         /// </summary>
-        BigNugget,
+        BigNugget = 581,
         /// <summary>
         /// No effect.
         /// </summary>
-        BigPearl,
+        BigPearl = 89,
         /// <summary>
         /// No effect.
         /// </summary>
-        BlackApricorn,
-        BlackBelt,
+        BlackApricorn = 491,
+        BlackBelt = 241,
         /// <summary>
         /// No effect.
         /// </summary>
-        BlackFlute,
-        BlackGlasses,
-        BlackSludge,
+        BlackFlute = 68,
+        BlackGlasses = 240,
+        BlackSludge = 281,
         /// <summary>
         /// No effect.
         /// </summary>
-        BlueApricorn,
+        BlueApricorn = 486,
         /// <summary>
         /// No effect.
         /// </summary>
-        BlueFlute,
+        BlueFlute = 65,
         /// <summary>
         /// No effect.
         /// </summary>
-        BlueScarf,
+        BlueScarf = 261,
         /// <summary>
         /// No effect.
         /// </summary>
-        BlueShard,
+        BlueShard = 73,
         /// <summary>
         /// No effect.
         /// </summary>
-        BridgeMailD,
+        BridgeMailD = 145,
         /// <summary>
         /// No effect.
         /// </summary>
-        BridgeMailM,
+        BridgeMailM = 148,
         /// <summary>
         /// No effect.
         /// </summary>
-        BridgeMailS,
+        BridgeMailS = 144,
         /// <summary>
         /// No effect.
         /// </summary>
-        BridgeMailT,
+        BridgeMailT = 146,
         /// <summary>
         /// No effect.
         /// </summary>
-        BridgeMailV,
-        BrightPowder,
-        BurnDrive,
+        BridgeMailV = 147,
+        BrightPowder = 213,
+        BurnDrive = 118,
         /// <summary>
         /// No effect.
         /// </summary>
-        BurnHeal,
+        BurnHeal = 19,
         /// <summary>
         /// No effect.
         /// </summary>
-        Calcium,
+        Calcium = 49,
         /// <summary>
         /// No effect.
         /// </summary>
-        Carbos,
+        Carbos = 48,
         /// <summary>
         /// No effect.
         /// </summary>
-        Casteliacone,
-        Charcoal,
+        Casteliacone = 591,
+        Charcoal = 249,
         /// <summary>
         /// No effect.
         /// </summary>
-        CherishBall,
-        ChillDrive,
-        ChoiceBand,
-        ChoiceScarf,
-        ChoiceSpecs,
+        CherishBall = 16,
+        ChillDrive = 119,
+        ChoiceBand = 220,
+        ChoiceScarf = 287,
+        ChoiceSpecs = 297,
         /// <summary>
         /// No effect.
         /// </summary>
-        ClawFossil,
+        ClawFossil = 100,
         /// <summary>
         /// No effect.
         /// </summary>
-        CleanseTag,
+        CleanseTag = 224,
         /// <summary>
         /// No effect.
         /// </summary>
-        CleverWing,
+        CleverWing = 569,
         /// <summary>
         /// No effect.
         /// </summary>
-        CometShard,
+        CometShard = 583,
         /// <summary>
         /// No effect.
         /// </summary>
-        CoverFossil,
+        CoverFossil = 572,
         /// <summary>
         /// No effect.
         /// </summary>
-        DampMulch,
-        DampRock,
+        DampMulch = 96,
+        DampRock = 285,
         /// <summary>
         /// No effect.
         /// </summary>
-        DawnStone,
-        DeepSeaScale,
-        DeepSeaTooth,
+        DawnStone = 109,
+        DeepSeaScale = 227,
+        DeepSeaTooth = 226,
         /// <summary>
         /// No effect.
         /// </summary>
-        DireHit,
+        DireHit = 56,
         /// <summary>
         /// No effect.
         /// </summary>
-        DiveBall,
+        DiveBall = 7,
         /// <summary>
         /// No effect.
         /// </summary>
-        DomeFossil,
-        DouseDrive,
-        DracoPlate,
-        DragonFang,
+        DomeFossil = 102,
+        DouseDrive = 116,
+        DracoPlate = 311,
+        DragonFang = 250,
         /// <summary>
         /// No effect.
         /// </summary>
-        DragonScale,
-        DreadPlate,
+        DragonScale = 235,
+        DreadPlate = 312,
         /// <summary>
         /// No effect.
         /// </summary>
-        DreamBall,
+        DreamBall = 576,
         /// <summary>
         /// No effect.
         /// </summary>
-        DubiousDisc,
+        DubiousDisc = 324,
         /// <summary>
         /// No effect.
         /// </summary>
-        DuskBall,
+        DuskBall = 13,
         /// <summary>
         /// No effect.
         /// </summary>
-        DuskStone,
-        EarthPlate,
+        DuskStone = 108,
+        EarthPlate = 305,
         /// <summary>
         /// No effect.
         /// </summary>
-        Electirizer,
+        Electirizer = 322,
         /// <summary>
         /// No effect.
         /// </summary>
-        Elixir,
+        Elixir = 40,
         /// <summary>
         /// No effect.
         /// </summary>
-        EnergyPowder,
+        EnergyPowder = 34,
         /// <summary>
         /// No effect.
         /// </summary>
-        EnergyRoot,
+        EnergyRoot = 35,
         /// <summary>
         /// No effect.
         /// </summary>
-        EscapeRope,
+        EscapeRope = 78,
         /// <summary>
         /// No effect.
         /// </summary>
-        Ether,
+        Ether = 38,
         /// <summary>
         /// No effect.
         /// </summary>
-        Everstone,
-        ExpertBelt,
+        Everstone = 229,
+        ExpertBelt = 268,
         /// <summary>
         /// No effect.
         /// </summary>
-        ExpShare,
+        ExpShare = 216,
         /// <summary>
         /// No effect.
         /// </summary>
-        FastBall,
+        FastBall = 492,
         /// <summary>
         /// No effect.
         /// </summary>
-        FavoredMail,
+        FavoredMail = 138,
         /// <summary>
         /// No effect.
         /// </summary>
-        FireStone,
-        FistPlate,
+        FireStone = 82,
+        FistPlate = 303,
         /// <summary>
         /// The Pokémon contracts <see cref="PBEStatus1.Burned"/> at the end of each turn if it has no other <see cref="PBEStatus1"/> and it does not have <see cref="PBEType.Fire"/>.
         /// </summary>
-        FlameOrb,
-        FlamePlate,
+        FlameOrb = 273,
+        FlamePlate = 298,
         /// <summary>
         /// No effect.
         /// </summary>
-        FluffyTail,
+        FluffyTail = 64,
         /// <summary>
         /// No effect.
         /// </summary>
-        FreshWater,
+        FreshWater = 30,
         /// <summary>
         /// No effect.
         /// </summary>
-        FriendBall,
+        FriendBall = 497,
         /// <summary>
         /// No effect.
         /// </summary>
-        FullHeal,
+        FullHeal = 27,
         /// <summary>
         /// No effect.
         /// </summary>
-        FullRestore,
+        FullRestore = 23,
         /// <summary>
         /// No effect.
         /// </summary>
-        GeniusWing,
+        GeniusWing = 568,
         /// <summary>
         /// No effect.
         /// </summary>
-        GooeyMulch,
+        GooeyMulch = 98,
         /// <summary>
         /// No effect.
         /// </summary>
-        GreatBall,
+        GreatBall = 3,
         /// <summary>
         /// No effect.
         /// </summary>
-        GreenApricorn,
+        GreenApricorn = 488,
         /// <summary>
         /// No effect.
         /// </summary>
-        GreenScarf,
+        GreenScarf = 263,
         /// <summary>
         /// No effect.
         /// </summary>
-        GreenShard,
+        GreenShard = 75,
         /// <summary>
         /// No effect.
         /// </summary>
-        GreetMail,
-        GriseousOrb,
+        GreetMail = 137,
+        GriseousOrb = 112,
         /// <summary>
         /// No effect.
         /// </summary>
-        GrowthMulch,
+        GrowthMulch = 95,
         /// <summary>
         /// No effect.
         /// </summary>
-        GuardSpec,
-        HardStone,
+        GuardSpec = 55,
+        HardStone = 238,
         /// <summary>
         /// No effect.
         /// </summary>
-        HealBall,
+        HealBall = 14,
         /// <summary>
         /// No effect.
         /// </summary>
-        HealPowder,
+        HealPowder = 36,
         /// <summary>
         /// No effect.
         /// </summary>
-        HealthWing,
+        HealthWing = 565,
         /// <summary>
         /// No effect.
         /// </summary>
-        HeartScale,
-        HeatRock,
+        HeartScale = 93,
+        HeatRock = 284,
         /// <summary>
         /// No effect.
         /// </summary>
-        HeavyBall,
+        HeavyBall = 495,
         /// <summary>
         /// No effect.
         /// </summary>
-        HelixFossil,
+        HelixFossil = 101,
         /// <summary>
         /// No effect.
         /// </summary>
-        Honey,
+        Honey = 94,
         /// <summary>
         /// No effect.
         /// </summary>
-        HPUp,
+        HPUp = 45,
         /// <summary>
         /// No effect.
         /// </summary>
-        HyperPotion,
+        HyperPotion = 25,
         /// <summary>
         /// No effect.
         /// </summary>
-        IceHeal,
-        IciclePlate,
-        IcyRock,
+        IceHeal = 20,
+        IciclePlate = 302,
+        IcyRock = 282,
         /// <summary>
         /// No effect.
         /// </summary>
-        InquiryMail,
-        InsectPlate,
+        InquiryMail = 141,
+        InsectPlate = 308,
         /// <summary>
         /// No effect.
         /// </summary>
-        Iron,
-        IronPlate,
+        Iron = 47,
+        IronPlate = 313,
         /// <summary>
         /// No effect.
         /// </summary>
-        LavaCookie,
-        LaxIncense,
+        LavaCookie = 42,
+        LaxIncense = 255,
         /// <summary>
         /// No effect.
         /// </summary>
-        LeafStone,
-        Leftovers,
+        LeafStone = 85,
+        Leftovers = 234,
         /// <summary>
         /// No effect.
         /// </summary>
-        Lemonade,
+        Lemonade = 32,
         /// <summary>
         /// No effect.
         /// </summary>
-        LevelBall,
-        LifeOrb,
-        LightBall,
-        LightClay,
+        LevelBall = 493,
+        LifeOrb = 270,
+        LightBall = 236,
+        LightClay = 269,
         /// <summary>
         /// No effect.
         /// </summary>
-        LikeMail,
+        LikeMail = 142,
         /// <summary>
         /// No effect.
         /// </summary>
-        LoveBall,
+        LoveBall = 496,
         /// <summary>
         /// No effect.
         /// </summary>
-        LuckIncense,
+        LuckIncense = 319,
         /// <summary>
         /// No effect.
         /// </summary>
-        LuckyEgg,
-        LuckyPunch,
+        LuckyEgg = 231,
+        LuckyPunch = 256,
         /// <summary>
         /// No effect.
         /// </summary>
-        LureBall,
-        LustrousOrb,
+        LureBall = 494,
+        LustrousOrb = 136,
         /// <summary>
         /// No effect.
         /// </summary>
-        LuxuryBall,
-        MachoBrace,
+        LuxuryBall = 11,
+        MachoBrace = 215,
         /// <summary>
         /// No effect.
         /// </summary>
-        Magmarizer,
-        Magnet,
+        Magmarizer = 323,
+        Magnet = 242,
         /// <summary>
         /// No effect.
         /// </summary>
-        MasterBall,
+        MasterBall = 1,
         /// <summary>
         /// No effect.
         /// </summary>
-        MaxElixir,
+        MaxElixir = 41,
         /// <summary>
         /// No effect.
         /// </summary>
-        MaxEther,
+        MaxEther = 39,
         /// <summary>
         /// No effect.
         /// </summary>
-        MaxPotion,
+        MaxPotion = 24,
         /// <summary>
         /// No effect.
         /// </summary>
-        MaxRepel,
+        MaxRepel = 77,
         /// <summary>
         /// No effect.
         /// </summary>
-        MaxRevive,
-        MeadowPlate,
-        MetalCoat,
-        MetalPowder,
-        MindPlate,
-        MiracleSeed,
+        MaxRevive = 29,
+        MeadowPlate = 301,
+        MetalCoat = 233,
+        MetalPowder = 257,
+        MindPlate = 307,
+        MiracleSeed = 239,
         /// <summary>
         /// No effect.
         /// </summary>
-        MoomooMilk,
+        MoomooMilk = 33,
         /// <summary>
         /// No effect.
         /// </summary>
-        MoonBall,
+        MoonBall = 498,
         /// <summary>
         /// No effect.
         /// </summary>
-        MoonStone,
-        MuscleBand,
+        MoonStone = 81,
+        MuscleBand = 266,
         /// <summary>
         /// No effect.
         /// </summary>
-        MuscleWing,
-        MysticWater,
+        MuscleWing = 566,
+        MysticWater = 243,
         /// <summary>
         /// No effect.
         /// </summary>
-        NestBall,
+        NestBall = 8,
         /// <summary>
         /// No effect.
         /// </summary>
-        NetBall,
-        NeverMeltIce,
+        NetBall = 6,
+        NeverMeltIce = 246,
         /// <summary>
         /// No effect.
         /// </summary>
-        Nugget,
-        OddIncense,
+        Nugget = 92,
+        OddIncense = 314,
         /// <summary>
         /// No effect.
         /// </summary>
-        OddKeystone,
+        OddKeystone = 111,
         /// <summary>
         /// No effect.
         /// </summary>
-        OldAmber,
+        OldAmber = 103,
         /// <summary>
         /// No effect.
         /// </summary>
-        OldGateau,
+        OldGateau = 54,
         /// <summary>
         /// No effect.
         /// </summary>
-        OvalStone,
+        OvalStone = 110,
         /// <summary>
         /// No effect.
         /// </summary>
-        ParalyzeHeal,
+        ParalyzeHeal = 22,
         /// <summary>
         /// No effect.
         /// </summary>
-        ParkBall,
+        ParkBall = 500,
         /// <summary>
         /// No effect.
         /// </summary>
-        PassOrb,
+        PassOrb = 575,
         /// <summary>
         /// No effect.
         /// </summary>
-        Pearl,
+        Pearl = 88,
         /// <summary>
         /// No effect.
         /// </summary>
-        PearlString,
+        PearlString = 582,
         /// <summary>
         /// No effect.
         /// </summary>
-        PinkApricorn,
+        PinkApricorn = 489,
         /// <summary>
         /// No effect.
         /// </summary>
-        PinkScarf,
+        PinkScarf = 262,
         /// <summary>
         /// No effect.
         /// </summary>
-        PlumeFossil,
-        PoisonBarb,
+        PlumeFossil = 573,
+        PoisonBarb = 245,
         /// <summary>
         /// No effect.
         /// </summary>
-        PokeBall,
+        PokeBall = 4,
         /// <summary>
         /// No effect.
         /// </summary>
-        PokeDoll,
+        PokeDoll = 63,
         /// <summary>
         /// No effect.
         /// </summary>
-        PokeToy,
+        PokeToy = 577,
         /// <summary>
         /// No effect.
         /// </summary>
-        Potion,
-        PowerAnklet,
-        PowerBand,
-        PowerBelt,
-        PowerBracer,
-        PowerHerb,
-        PowerLens,
-        PowerWeight,
+        Potion = 17,
+        PowerAnklet = 293,
+        PowerBand = 292,
+        PowerBelt = 290,
+        PowerBracer = 289,
+        PowerHerb = 271,
+        PowerLens = 291,
+        PowerWeight = 294,
         /// <summary>
         /// No effect.
         /// </summary>
-        PPMax,
+        PPMax = 53,
         /// <summary>
         /// No effect.
         /// </summary>
-        PPUp,
+        PPUp = 51,
         /// <summary>
         /// No effect.
         /// </summary>
-        PremierBall,
+        PremierBall = 12,
         /// <summary>
         /// No effect.
         /// </summary>
-        PrettyWing,
+        PrettyWing = 571,
         /// <summary>
         /// No effect.
         /// </summary>
-        PrismScale,
+        PrismScale = 537,
         /// <summary>
         /// No effect.
         /// </summary>
-        Protector,
+        Protector = 321,
         /// <summary>
         /// No effect.
         /// </summary>
-        Protein,
+        Protein = 46,
         /// <summary>
         /// No effect.
         /// </summary>
-        PureIncense,
+        PureIncense = 320,
         /// <summary>
         /// No effect.
         /// </summary>
-        QuickBall,
-        QuickPowder,
+        QuickBall = 15,
+        QuickPowder = 274,
         /// <summary>
         /// No effect.
         /// </summary>
-        RageCandyBar,
+        RageCandyBar = 504,
         /// <summary>
         /// No effect.
         /// </summary>
-        RareBone,
+        RareBone = 106,
         /// <summary>
         /// No effect.
         /// </summary>
-        RareCandy,
-        RazorClaw,
+        RareCandy = 50,
+        RazorClaw = 326,
         /// <summary>
         /// No effect.
         /// </summary>
-        ReaperCloth,
+        ReaperCloth = 325,
         /// <summary>
         /// No effect.
         /// </summary>
-        RedApricorn,
+        RedApricorn = 485,
         /// <summary>
         /// No effect.
         /// </summary>
-        RedFlute,
+        RedFlute = 67,
         /// <summary>
         /// No effect.
         /// </summary>
-        RedScarf,
+        RedScarf = 260,
         /// <summary>
         /// No effect.
         /// </summary>
-        RedShard,
+        RedShard = 72,
         /// <summary>
         /// No effect.
         /// </summary>
-        RelicBand,
+        RelicBand = 588,
         /// <summary>
         /// No effect.
         /// </summary>
-        RelicCopper,
+        RelicCopper = 584,
         /// <summary>
         /// No effect.
         /// </summary>
-        RelicCrown,
+        RelicCrown = 590,
         /// <summary>
         /// No effect.
         /// </summary>
-        RelicGold,
+        RelicGold = 586,
         /// <summary>
         /// No effect.
         /// </summary>
-        RelicSilver,
+        RelicSilver = 585,
         /// <summary>
         /// No effect.
         /// </summary>
-        RelicStatue,
+        RelicStatue = 589,
         /// <summary>
         /// No effect.
         /// </summary>
-        RelicVase,
+        RelicVase = 587,
         /// <summary>
         /// No effect.
         /// </summary>
-        RepeatBall,
+        RepeatBall = 9,
         /// <summary>
         /// No effect.
         /// </summary>
-        Repel,
+        Repel = 79,
         /// <summary>
         /// No effect.
         /// </summary>
-        ReplyMail,
+        ReplyMail = 143,
         /// <summary>
         /// No effect.
         /// </summary>
-        ResistWing,
+        ResistWing = 567,
         /// <summary>
         /// No effect.
         /// </summary>
-        RevivalHerb,
+        RevivalHerb = 37,
         /// <summary>
         /// No effect.
         /// </summary>
-        Revive,
-        RockIncense,
+        Revive = 28,
+        RockIncense = 315,
         /// <summary>
         /// No effect.
         /// </summary>
-        RootFossil,
-        RoseIncense,
+        RootFossil = 99,
+        RoseIncense = 318,
         /// <summary>
         /// No effect.
         /// </summary>
-        RSVPMail,
+        RSVPMail = 139,
         /// <summary>
         /// No effect.
         /// </summary>
-        SacredAsh,
+        SacredAsh = 44,
         /// <summary>
         /// No effect.
         /// </summary>
-        SafariBall,
-        ScopeLens,
-        SeaIncense,
-        SharpBeak,
+        SafariBall = 5,
+        ScopeLens = 232,
+        SeaIncense = 254,
+        SharpBeak = 244,
         /// <summary>
         /// No effect.
         /// </summary>
-        ShinyStone,
+        ShinyStone = 107,
         /// <summary>
         /// No effect.
         /// </summary>
-        ShoalSalt,
+        ShoalSalt = 70,
         /// <summary>
         /// No effect.
         /// </summary>
-        ShoalShell,
-        ShockDrive,
-        SilkScarf,
-        SilverPowder,
+        ShoalShell = 71,
+        ShockDrive = 117,
+        SilkScarf = 251,
+        SilverPowder = 222,
         /// <summary>
         /// No effect.
         /// </summary>
-        SkullFossil,
-        SkyPlate,
+        SkullFossil = 105,
+        SkyPlate = 306,
         /// <summary>
         /// No effect.
         /// </summary>
-        SmokeBall,
-        SmoothRock,
+        SmokeBall = 228,
+        SmoothRock = 283,
         /// <summary>
         /// No effect.
         /// </summary>
-        SodaPop,
-        SoftSand,
+        SodaPop = 31,
+        SoftSand = 237,
         /// <summary>
         /// No effect.
         /// </summary>
-        SootheBell,
-        SoulDew,
-        SpellTag,
-        SplashPlate,
-        SpookyPlate,
+        SootheBell = 218,
+        SoulDew = 225,
+        SpellTag = 247,
+        SplashPlate = 299,
+        SpookyPlate = 310,
         /// <summary>
         /// No effect.
         /// </summary>
-        SportBall,
+        SportBall = 499,
         /// <summary>
         /// No effect.
         /// </summary>
-        StableMulch,
+        StableMulch = 97,
         /// <summary>
         /// No effect.
         /// </summary>
-        Stardust,
+        Stardust = 90,
         /// <summary>
         /// No effect.
         /// </summary>
-        StarPiece,
-        Stick,
-        StonePlate,
+        StarPiece = 91,
+        Stick = 259,
+        StonePlate = 309,
         /// <summary>
         /// No effect.
         /// </summary>
-        SunStone,
+        SunStone = 80,
         /// <summary>
         /// No effect.
         /// </summary>
-        SuperPotion,
+        SuperPotion = 26,
         /// <summary>
         /// No effect.
         /// </summary>
-        SuperRepel,
+        SuperRepel = 76,
         /// <summary>
         /// No effect.
         /// </summary>
-        SweetHeart,
+        SweetHeart = 134,
         /// <summary>
         /// No effect.
         /// </summary>
-        SwiftWing,
+        SwiftWing = 570,
         /// <summary>
         /// No effect.
         /// </summary>
-        ThanksMail,
-        ThickClub,
+        ThanksMail = 140,
+        ThickClub = 258,
         /// <summary>
         /// No effect.
         /// </summary>
-        ThunderStone,
+        ThunderStone = 83,
         /// <summary>
         /// No effect.
         /// </summary>
-        TimerBall,
+        TimerBall = 10,
         /// <summary>
         /// No effect.
         /// </summary>
-        TinyMushroom,
+        TinyMushroom = 86,
         /// <summary>
         /// The Pokémon contracts <see cref="PBEStatus1.BadlyPoisoned"/> at the end of each turn if it has no other <see cref="PBEStatus1"/> and it does not have <see cref="PBEType.Poison"/> or <see cref="PBEType.Steel"/>.
         /// </summary>
-        ToxicOrb,
-        ToxicPlate,
-        TwistedSpoon,
+        ToxicOrb = 272,
+        ToxicPlate = 304,
+        TwistedSpoon = 248,
         /// <summary>
         /// No effect.
         /// </summary>
-        UltraBall,
-        UpGrade,
+        UltraBall = 2,
+        UpGrade = 252,
         /// <summary>
         /// No effect.
         /// </summary>
-        WaterStone,
-        WaveIncense,
+        WaterStone = 84,
+        WaveIncense = 317,
         /// <summary>
         /// No effect.
         /// </summary>
-        WhiteApricorn,
+        WhiteApricorn = 490,
         /// <summary>
         /// No effect.
         /// </summary>
-        WhiteFlute,
-        WideLens,
-        WiseGlasses,
+        WhiteFlute = 69,
+        WideLens = 265,
+        WiseGlasses = 267,
         /// <summary>
         /// No effect.
         /// </summary>
-        XAccuracy,
+        XAccuracy = 60,
         /// <summary>
         /// No effect.
         /// </summary>
-        XAttack,
+        XAttack = 57,
         /// <summary>
         /// No effect.
         /// </summary>
-        XDefense,
+        XDefense = 58,
         /// <summary>
         /// No effect.
         /// </summary>
-        XSpAtk,
+        XSpecial = 61,
         /// <summary>
         /// No effect.
         /// </summary>
-        XSpDef,
+        XSpDef = 62,
         /// <summary>
         /// No effect.
         /// </summary>
-        XSpeed,
+        XSpeed = 59,
         /// <summary>
         /// No effect.
         /// </summary>
-        YellowApricorn,
+        YellowApricorn = 487,
         /// <summary>
         /// No effect.
         /// </summary>
-        YellowFlute,
+        YellowFlute = 66,
         /// <summary>
         /// No effect.
         /// </summary>
-        YellowScarf,
+        YellowScarf = 264,
         /// <summary>
         /// No effect.
         /// </summary>
-        YellowShard,
-        ZapPlate,
+        YellowShard = 74,
+        ZapPlate = 300,
         /// <summary>
         /// No effect.
         /// </summary>
-        Zinc,
-        /// <summary>
-        /// Invalid item.
-        /// </summary>
-        MAX
+        Zinc = 52
     }
     /// <summary>
     /// Represents a specific Pokémon's special ability.

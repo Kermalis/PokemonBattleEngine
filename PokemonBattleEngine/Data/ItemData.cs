@@ -287,7 +287,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEItem.XAccuracy, new PBEItemData(30) },
             { PBEItem.XAttack, new PBEItemData(30) },
             { PBEItem.XDefense, new PBEItemData(30) },
-            { PBEItem.XSpAtk, new PBEItemData(30) },
+            { PBEItem.XSpecial, new PBEItemData(30) },
             { PBEItem.XSpDef, new PBEItemData(30) },
             { PBEItem.XSpeed, new PBEItemData(30) },
             { PBEItem.YellowApricorn, new PBEItemData() },

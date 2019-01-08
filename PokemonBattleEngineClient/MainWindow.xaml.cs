@@ -31,7 +31,7 @@ namespace Kermalis.PokemonBattleEngineClient
 
         readonly IEnumerable<PBEAbility> allAbilities = new[] { PBEAbility.None }.Concat(Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }));
         readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
-        readonly IEnumerable<PBEItem> allItems = new[] { PBEItem.None }.Concat(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>().Except(new[] { PBEItem.None, PBEItem.MAX }));
+        readonly IEnumerable<PBEItem> allItems = new[] { PBEItem.None }.Concat(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>().Except(new[] { PBEItem.None }));
 
         IEnumerable<PBESpecies> AvailableSpecies { get; } = PBEPokemonData.Data.Keys;
         IEnumerable<PBEAbility> availableAbilities;

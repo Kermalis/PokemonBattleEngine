@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Localization;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
@@ -625,7 +626,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Level = info.Level,
                 Gender = info.Gender,
                 Ability = PBEAbility.MAX,
-                Item = PBEItem.MAX,
+                Item = (PBEItem)ushort.MaxValue,
                 Nature = PBENature.MAX,
                 Moves = new PBEMove[Team.Battle.Settings.NumMoves],
                 PPUps = new byte[Team.Battle.Settings.NumMoves],
@@ -635,7 +636,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Species = info.Species;
             Shiny = info.Shiny;
             Ability = PBEAbility.MAX;
-            Item = PBEItem.MAX;
+            Item = (PBEItem)ushort.MaxValue;
             Moves = new PBEMove[Team.Battle.Settings.NumMoves];
             PP = new byte[Moves.Length];
             MaxPP = new byte[Moves.Length];
@@ -850,13 +851,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             bool remotePokemon = Shell.Nature == PBENature.MAX; // If the nature is unset, the program is not the host and does not own the Pokémon
 
-            string item = Item.ToString().Replace("MAX", "???");
-            string nature = Shell.Nature.ToString().Replace("MAX", "???");
-            string ability = Ability.ToString().Replace("MAX", "???");
+            string item = Item == (PBEItem)ushort.MaxValue ? "???" : Item.ToString();
+            string nature = Shell.Nature == PBENature.MAX ? "???" : Shell.Nature.ToString();
+            string ability = Ability == PBEAbility.MAX ? "???" : PBEAbilityLocalization.Names[Ability].English;
             string[] moveStrs = new string[Moves.Length];
             for (int i = 0; i < moveStrs.Length; i++)
             {
-                string mStr = Moves[i].ToString().Replace("MAX", "???");
+                string mStr = Moves[i] == PBEMove.MAX ? "???" : PBEMoveLocalization.Names[Moves[i]].English;
                 if (!remotePokemon)
                 {
                     mStr += $" {PP[i]}/{MaxPP[i]}";
@@ -879,9 +880,9 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             if (!remotePokemon)
             {
-                sb.AppendLine($"Stats: {Attack} {Defense} {SpAttack} {SpDefense} {Speed}");
+                sb.AppendLine($"Stats: A: {Attack} D: {Defense} SA: {SpAttack} SD: {SpDefense} S: {Speed}");
             }
-            sb.AppendLine($"Stat changes: {AttackChange} {DefenseChange} {SpAttackChange} {SpDefenseChange} {SpeedChange} {AccuracyChange} {EvasionChange}");
+            sb.AppendLine($"Stat changes: A: {AttackChange} D: {DefenseChange} SA: {SpAttackChange} SD: {SpDefenseChange} S: {SpeedChange} AC: {AccuracyChange} E: {EvasionChange}");
             sb.AppendLine($"Item: {item}");
             sb.AppendLine($"Ability: {ability}");
             if (!remotePokemon)
