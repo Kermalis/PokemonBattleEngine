@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,6 +10,67 @@ namespace Kermalis.PokemonBattleEngine.Localization
 {
     static class PBELocalizationGenerator
     {
+        public static void GenerateAbilities()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Collections.ObjectModel;");
+            sb.AppendLine();
+            sb.AppendLine("namespace Kermalis.PokemonBattleEngine.Localization");
+            sb.AppendLine("{");
+            sb.AppendLine("    public static class PBEAbilityLocalization");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            { PBEAbility.None, new PBELocalizedString(\"--\", \"--\") },");
+            string data = new WebClient().DownloadString("https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/ability_names.csv");
+            string[][] lines = data.Split('\n').Skip(1).Select(s => s.Split(',')).ToArray();
+            IEnumerable<PBEAbility> allAbilities = Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }).OrderBy(e => e.ToString());
+            foreach (PBEAbility ability in allAbilities)
+            {
+                string japanese = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 1.ToString())[2];
+                string french = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 5.ToString())[2];
+                string german = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 6.ToString())[2];
+                string spanish = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 7.ToString())[2];
+                string italian = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 8.ToString())[2];
+                string english = lines.Single(s => s[0] == ((byte)ability).ToString() && s[1] == 9.ToString())[2];
+                switch (ability)
+                {
+                    case PBEAbility.Analytic: spanish = "Cálc. Final"; break;
+                    case PBEAbility.ArenaTrap: french = "Piège"; break;
+                    case PBEAbility.BattleArmor: spanish = "Armad. Bat."; break;
+                    case PBEAbility.Chlorophyll: french = "Chlorophyle"; break;
+                    case PBEAbility.Compoundeyes: spanish = "Ojocompuesto"; english = "Compoundeyes"; break;
+                    case PBEAbility.CursedBody: spanish = "Cue. Maldito"; break;
+                    case PBEAbility.EffectSpore: spanish = "Efec. Espora"; break;
+                    case PBEAbility.FlareBoost: spanish = "Ím. Ardiente"; break;
+                    case PBEAbility.FlashFire: spanish = "Absor. Fuego"; break;
+                    case PBEAbility.HeavyMetal: spanish = "Met. Pesado"; break;
+                    case PBEAbility.InnerFocus: italian = "Fuocodentro"; break;
+                    case PBEAbility.LeafGuard: french = "Feuil. Garde"; break;
+                    case PBEAbility.LightMetal: spanish = "Met. Liviano"; break;
+                    case PBEAbility.Lightningrod: english = "Lightningrod"; break;
+                    case PBEAbility.MagicBounce: spanish = "Espejomágico"; break;
+                    case PBEAbility.MarvelScale: french = "Écaille Spé."; spanish = "Escama Esp."; break;
+                    case PBEAbility.ShadowTag: spanish = "Sombratrampa"; break;
+                    case PBEAbility.SheerForce: spanish = "Pot. Bruta"; break;
+                    case PBEAbility.Sniper: spanish = "Francotirad."; break;
+                    case PBEAbility.Static: spanish = "Elec. Estát."; break;
+                    case PBEAbility.ToxicBoost: spanish = "Ím. Tóxico"; break;
+                    case PBEAbility.VitalSpirit: spanish = "Espír. Vital"; break;
+                    case PBEAbility.VoltAbsorb: spanish = "Absor. Elec."; break;
+                    case PBEAbility.WaterAbsorb: spanish = "Absor. Agua"; break;
+                    case PBEAbility.WeakArmor: spanish = "Arm. Frágil"; break;
+                }
+                sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{english}\", \"{japanese}\") }}{(ability == allAbilities.Last() ? string.Empty : ",")}");
+            }
+            sb.AppendLine("        });");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            File.WriteAllText(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngine\Localization\AbilityLocalization.cs", sb.ToString());
+        }
+
         public static void GenerateMoves()
         {
             var sb = new StringBuilder();
@@ -29,10 +91,10 @@ namespace Kermalis.PokemonBattleEngine.Localization
             {
                 bool moveExists = Enum.IsDefined(typeof(PBEMove), i);
                 string japanese = lines.Single(s => s[0] == i.ToString() && s[1] == 1.ToString())[2];
-                string french; // = lines.Single(s => s[0] == i.ToString() && s[1] == 5.ToString())[2];
-                string german; // 6
-                string spanish; // 7
-                string italian; // 8
+                string french = lines.Single(s => s[0] == i.ToString() && s[1] == 5.ToString())[2];
+                string german = lines.Single(s => s[0] == i.ToString() && s[1] == 6.ToString())[2];
+                string spanish = lines.Single(s => s[0] == i.ToString() && s[1] == 7.ToString())[2];
+                string italian = lines.Single(s => s[0] == i.ToString() && s[1] == 8.ToString())[2];
                 string english = lines.Single(s => s[0] == i.ToString() && s[1] == 9.ToString())[2];
                 switch ((PBEMove)i)
                 {
@@ -44,11 +106,11 @@ namespace Kermalis.PokemonBattleEngine.Localization
                     case PBEMove.BubbleBeam: english = "BubbleBeam"; break;
                     case (PBEMove)499: spanish = "Nieblaclara"; break; // PBEMove.ClearSmog
                     case (PBEMove)160: french = "Adaptation"; break; // PBEMove.Conversion
-                    case (PBEMove)68: italian = "Contatore"; spanish = "Contador"; break; // PBEMove.Counter
+                    case (PBEMove)68: spanish = "Contador"; italian = "Contatore"; break; // PBEMove.Counter
                     case PBEMove.CrushClaw: french = "Éclategriffe"; break;
                     case PBEMove.DefendOrder: french = "Appel Défens"; break;
-                    case (PBEMove)194: french = "Prlvt Destin"; italian = "Destinobbl."; spanish = "Mismodestino"; break; // PBEMove.DestinyBond
-                    case (PBEMove)3: english = "DoubleSlap"; spanish = "Doblebofetón"; break; // PBEMove.DoubleSlap
+                    case (PBEMove)194: french = "Prlvt Destin"; spanish = "Mismodestino"; italian = "Destinobbl."; break; // PBEMove.DestinyBond
+                    case (PBEMove)3: spanish = "Doblebofetón"; english = "DoubleSlap"; break; // PBEMove.DoubleSlap
                     case PBEMove.DracoMeteor: french = "Draco Météor"; break;
                     case PBEMove.DragonBreath: english = "DreagonBreath"; break;
                     case PBEMove.DynamicPunch: spanish = "Puñodinámico"; english = "DynamicPunch"; break;

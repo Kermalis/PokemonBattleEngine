@@ -1,4 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
     {
         public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()
         {
-            { PBEAbility.None, new PBELocalizedString("No special ability", "特別な能力なし") },
+            { PBEAbility.None, new PBELocalizedString("--", "--") },
             { PBEAbility.Adaptability, new PBELocalizedString("Adaptability", "てきおうりょく") },
             { PBEAbility.Aftermath, new PBELocalizedString("Aftermath", "ゆうばく") },
             { PBEAbility.AirLock, new PBELocalizedString("Air Lock", "エアロック") },
