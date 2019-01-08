@@ -1753,310 +1753,310 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The Pokémon's ability was removed.
         /// </summary>
-        None,
+        None = 0,
         /// <summary>
         /// The Pokémon has a stronger same-type-attack-bonus.
         /// </summary>
-        Adaptability,
-        Aftermath, // TODO
-        AirLock, // TODO
-        Analytic, // TODO
-        AngerPoint, // TODO
-        Anticipation, // TODO
-        ArenaTrap, // TODO
-        BadDreams, // TODO
+        Adaptability = 91,
+        Aftermath = 106, // TODO
+        AirLock = 76, // TODO
+        Analytic = 148, // TODO
+        AngerPoint = 83, // TODO
+        Anticipation = 107, // TODO
+        ArenaTrap = 71, // TODO
+        BadDreams = 123, // TODO
         /// <summary>
         /// The Pokémon takes no critical hits.
         /// </summary>
-        BattleArmor,
-        BigPecks, // TODO
+        BattleArmor = 4,
+        BigPecks = 145, // TODO
         /// <summary>
         /// When the Pokémon has low HP, its Fire-type moves get a power boost.
         /// </summary>
-        Blaze,
+        Blaze = 66,
         /// <summary>
         /// The Pokémon gets a speed boost in harsh sunlight.
         /// </summary>
-        Chlorophyll,
-        ClearBody, // TODO
-        CloudNine, // TODO
-        ColorChange, // TODO
+        Chlorophyll = 34,
+        ClearBody = 29, // TODO
+        CloudNine = 13, // TODO
+        ColorChange = 16, // TODO
         /// <summary>
         /// The Pokémon accuracy is boosted.
         /// </summary>
-        Compoundeyes,
-        Contrary, // TODO
-        CursedBody, // TODO
-        CuteCharm, // TODO
-        Damp, // TODO
-        Defeatist, // TODO
-        Defiant, // TODO
-        Download, // TODO
+        Compoundeyes = 14,
+        Contrary = 126, // TODO
+        CursedBody = 130, // TODO
+        CuteCharm = 56, // TODO
+        Damp = 6, // TODO
+        Defeatist = 129, // TODO
+        Defiant = 128, // TODO
+        Download = 88, // TODO
         /// <summary>
         /// The Pokémon changes the weather to infinite rain.
         /// </summary>
-        Drizzle,
+        Drizzle = 2,
         /// <summary>
         /// The Pokémon changes the weather to infinite harsh sunlight.
         /// </summary>
-        Drought,
-        DrySkin, // TODO
-        EarlyBird, // TODO
-        EffectSpore, // TODO
+        Drought = 70,
+        DrySkin = 87, // TODO
+        EarlyBird = 48, // TODO
+        EffectSpore = 27, // TODO
         /// <summary>
         /// The Pokémon takes less damage from incoming super-effective moves.
         /// </summary>
-        Filter,
-        FlameBody, // TODO
-        FlareBoost, // TODO
-        FlashFire, // TODO
-        FlowerGift, // TODO
-        Forecast, // TODO
-        Forewarn, // TODO
-        FriendGuard, // TODO
-        Frisk, // TODO
-        Gluttony, // TODO
+        Filter = 111,
+        FlameBody = 49, // TODO
+        FlareBoost = 138, // TODO
+        FlashFire = 18, // TODO
+        FlowerGift = 122, // TODO
+        Forecast = 59, // TODO
+        Forewarn = 108, // TODO
+        FriendGuard = 132, // TODO
+        Frisk = 119, // TODO
+        Gluttony = 82, // TODO
         /// <summary>
         /// The Pokémon's attack is boosted when it is afflicted with a <see cref="PBEStatus1"/>, and the damage reduction from <see cref="PBEStatus1.Burned"/> is not applied.
         /// </summary>
-        Guts,
-        Harvest, // TODO
-        Healer, // TODO
+        Guts = 62,
+        Harvest = 139, // TODO
+        Healer = 131, // TODO
         /// <summary>
         /// The Pokémon takes less damage from Fire-type moves and from a burn.
         /// </summary>
-        Heatproof,
-        HeavyMetal, // TODO
+        Heatproof = 85,
+        HeavyMetal = 134, // TODO
         /// <summary>
         /// No effect in battle.
         /// </summary>
-        HoneyGather,
+        HoneyGather = 118,
         /// <summary>
         /// The Pokémon's attack is boosted.
         /// </summary>
-        HugePower,
+        HugePower = 37,
         /// <summary>
         /// The Pokémon's attack is boosted, but its accuracy is lower for physical moves.
         /// </summary>
-        Hustle,
-        Hydration, // TODO
-        HyperCutter, // TODO
+        Hustle = 55,
+        Hydration = 93, // TODO
+        HyperCutter = 52, // TODO
         /// <summary>
         /// In a hailstorm, the Pokémon takes no damage from the hailstorm and restores HP at the end of each turn.
         /// </summary>
-        IceBody,
+        IceBody = 115,
         /// <summary>
         /// No effect in battle.
         /// </summary>
-        Illuminate,
-        Illusion, // TODO
-        Immunity, // TODO
+        Illuminate = 35,
+        Illusion = 149, // TODO
+        Immunity = 17, // TODO
         /// <summary>
         /// The Pokémon transforms into the foe across from it when switching in.
         /// </summary>
-        Imposter,
-        Infiltrator, // TODO
-        InnerFocus, // TODO
-        Insomnia, // TODO
-        Intimidate, // TODO
-        IronBarbs, // TODO
+        Imposter = 150,
+        Infiltrator = 151, // TODO
+        InnerFocus = 39, // TODO
+        Insomnia = 15, // TODO
+        Intimidate = 22, // TODO
+        IronBarbs = 160, // TODO
         /// <summary>
         /// The power of moves with <see cref="PBEMoveFlag.AffectedByIronFist"/> is increased.
         /// </summary>
-        IronFist,
-        Justified, // TODO
-        KeenEye, // TODO
-        Klutz, // TODO
-        LeafGuard, // TODO
+        IronFist = 89,
+        Justified = 154, // TODO
+        KeenEye = 51, // TODO
+        Klutz = 103, // TODO
+        LeafGuard = 102, // TODO
         /// <summary>
         /// The Pokémon is immune to Ground-type moves and most entry hazards.
         /// </summary>
-        Levitate,
-        LightMetal, // TODO
-        Lightningrod, // TODO
+        Levitate = 26,
+        LightMetal = 135, // TODO
+        Lightningrod = 31, // TODO
         /// <summary>
         /// The Pokémon cannot be paralyzed.
         /// </summary>
-        Limber,
-        LiquidOoze, // TODO
-        MagicBounce, // TODO
-        MagicGuard, // TODO
-        MagmaArmor, // TODO
-        MagnetPull, // TODO
+        Limber = 7,
+        LiquidOoze = 64, // TODO
+        MagicBounce = 156, // TODO
+        MagicGuard = 98, // TODO
+        MagmaArmor = 40, // TODO
+        MagnetPull = 42, // TODO
         /// <summary>
         /// The Pokémon's defense is boosted when it is afflicted with a <see cref="PBEStatus1"/>.
         /// </summary>
-        MarvelScale,
-        Minus, // TODO
-        MoldBreaker, // TODO
-        Moody, // TODO
-        MotorDrive, // TODO
-        Moxie, // TODO
-        Multiscale, // TODO
+        MarvelScale = 63,
+        Minus = 58, // TODO
+        MoldBreaker = 104, // TODO
+        Moody = 141, // TODO
+        MotorDrive = 78, // TODO
+        Moxie = 153, // TODO
+        Multiscale = 136, // TODO
         /// <summary>
         /// No effect in battle.
         /// </summary>
-        Multitype,
-        Mummy, // TODO
-        NaturalCure, // TODO
+        Multitype = 121,
+        Mummy = 152, // TODO
+        NaturalCure = 30, // TODO
         /// <summary>
         /// The Pokémon will always hit and always get hit unless protection is used.
         /// </summary>
-        NoGuard,
-        Normalize, // TODO: Main effect, ignore [weather ball, hidden power, natural gift, judgment, techno blast], separate thunder wave from other status force effects
-        Oblivious, // TODO
+        NoGuard = 99,
+        Normalize = 96, // TODO: Main effect, ignore [weather ball, hidden power, natural gift, judgment, techno blast], separate thunder wave from other status force effects
+        Oblivious = 12, // TODO
         /// <summary>
         /// The Pokémon takes no damage from a hailstorm or sandstorm.
         /// </summary>
-        Overcoat,
+        Overcoat = 142,
         /// <summary>
         /// When the Pokémon has low HP, its Grass-type moves get a power boost.
         /// </summary>
-        Overgrow,
-        OwnTempo, // TODO
-        Pickpocket, // TODO
-        Pickup, // TODO
-        Plus, // TODO
-        PoisonHeal, // TODO
-        PoisonPoint, // TODO
-        PoisonTouch, // TODO
-        Prankster, // TODO
-        Pressure, // TODO
+        Overgrow = 65,
+        OwnTempo = 20, // TODO
+        Pickpocket = 124, // TODO
+        Pickup = 53, // TODO
+        Plus = 57, // TODO
+        PoisonHeal = 90, // TODO
+        PoisonPoint = 38, // TODO
+        PoisonTouch = 143, // TODO
+        Prankster = 158, // TODO
+        Pressure = 46, // TODO
         /// <summary>
         /// The Pokémon's attack is boosted.
         /// </summary>
-        PurePower,
-        QuickFeet, // TODO
+        PurePower = 74,
+        QuickFeet = 95, // TODO
         /// <summary>
         /// In rain, the Pokémon restores HP at the end of each turn.
         /// </summary>
-        RainDish,
-        Rattled, // TODO
-        Reckless, // TODO
-        Regenerator, // TODO
-        Rivalry, // TODO
-        RockHead, // TODO
-        RoughSkin, // TODO
+        RainDish = 44,
+        Rattled = 155, // TODO
+        Reckless = 120, // TODO
+        Regenerator = 144, // TODO
+        Rivalry = 79, // TODO
+        RockHead = 69, // TODO
+        RoughSkin = 24, // TODO
         /// <summary>
         /// No effect in battle.
         /// </summary>
-        RunAway,
+        RunAway = 50,
         /// <summary>
         /// In a sandstorm, the Pokémon takes no damage from the sandstorm and its Rock-, Ground-, and Steel-type moves get a power boost.
         /// </summary>
-        SandForce,
+        SandForce = 159,
         /// <summary>
         /// The Pokémon gets a speed boost in a sandstorm.
         /// </summary>
-        SandRush,
+        SandRush = 146,
         /// <summary>
         /// The Pokémon changes the weather to an infinite sandstorm.
         /// </summary>
-        SandStream,
+        SandStream = 45,
         /// <summary>
         /// In a sandstorm, the Pokémon takes no damage from the sandstorm and gets a 20% evasion boost.
         /// </summary>
-        SandVeil,
-        SapSipper, // TODO
-        Scrappy, // TODO
-        SereneGrace, // TODO
-        ShadowTag, // TODO
-        ShedSkin, // TODO
-        SheerForce, // TODO
+        SandVeil = 8,
+        SapSipper = 157, // TODO
+        Scrappy = 113, // TODO
+        SereneGrace = 32, // TODO
+        ShadowTag = 23, // TODO
+        ShedSkin = 61, // TODO
+        SheerForce = 125, // TODO
         /// <summary>
         /// The Pokémon takes no critical hits.
         /// </summary>
-        ShellArmor,
-        ShieldDust, // TODO
+        ShellArmor = 75,
+        ShieldDust = 19, // TODO
         /// <summary>
         /// The Pokémon's stat changes are doubled.
         /// </summary>
-        Simple,
-        SkillLink, // TODO
-        SlowStart, // TODO
+        Simple = 86,
+        SkillLink = 92, // TODO
+        SlowStart = 112, // TODO
         /// <summary>
         /// The Pokémon deals more damage when landing critical hits.
         /// </summary>
-        Sniper,
+        Sniper = 97,
         /// <summary>
         /// In a hailstorm, the Pokémon takes no damage from the hailstorm and gets a 20% evasion boost.
         /// </summary>
-        SnowCloak,
+        SnowCloak = 81,
         /// <summary>
         /// The Pokémon changes the weather to an infinite hailstorm.
         /// </summary>
-        SnowWarning,
+        SnowWarning = 117,
         /// <summary>
         /// In harsh sunlight, the Pokémon gets a special attack boost and takes damage at the end of each turn.
         /// </summary>
-        SolarPower,
+        SolarPower = 94,
         /// <summary>
         /// The Pokémon takes less damage from incoming super-effective moves.
         /// </summary>
-        SolidRock,
-        Soundproof, // TODO
-        SpeedBoost, // TODO
-        Stall, // TODO
-        Static, // TODO
-        Steadfast, // TODO
-        Stench, // TODO
-        StickyHold, // TODO
-        StormDrain, // TODO
-        Sturdy, // TODO
-        SuctionCups, // TODO
+        SolidRock = 116,
+        Soundproof = 43, // TODO
+        SpeedBoost = 3, // TODO
+        Stall = 100, // TODO
+        Static = 9, // TODO
+        Steadfast = 80, // TODO
+        Stench = 1, // TODO
+        StickyHold = 60, // TODO
+        StormDrain = 114, // TODO
+        Sturdy = 5, // TODO
+        SuctionCups = 21, // TODO
         /// <summary>
         /// The Pokémon is more likely to land critical hits.
         /// </summary>
-        SuperLuck,
+        SuperLuck = 105,
         /// <summary>
         /// When the Pokémon has low HP, its Bug-type moves get a power boost.
         /// </summary>
-        Swarm,
+        Swarm = 68,
         /// <summary>
         /// The Pokémon gets a speed boost in rain.
         /// </summary>
-        SwiftSwim,
-        Synchronize, // TODO
-        TangledFeet, // TODO
-        Technician, // TODO
-        Telepathy, // TODO
-        Teravolt, // TODO
+        SwiftSwim = 33,
+        Synchronize = 28, // TODO
+        TangledFeet = 77, // TODO
+        Technician = 101, // TODO
+        Telepathy = 140, // TODO
+        Teravolt = 164, // TODO
         /// <summary>
         /// The Pokémon takes less damage from Ice- and Fire-type moves.
         /// </summary>
-        ThickFat,
+        ThickFat = 47,
         /// <summary>
         /// The Pokémon deals double damage with outgoing not-very-effective moves.
         /// </summary>
-        TintedLens,
+        TintedLens = 110,
         /// <summary>
         /// When the Pokémon has low HP, its Water-type moves get a power boost.
         /// </summary>
-        Torrent,
-        ToxicBoost, // TODO
-        Trace, // TODO
-        Truant, // TODO
-        Turboblaze, // TODO
-        Unaware, // TODO
-        Unburden, // TODO
-        Unnerve, // TODO
-        VictoryStar, // TODO
-        VitalSpirit, // TODO
-        VoltAbsorb, // TODO
-        WaterAbsorb, // TODO
-        WaterVeil, // TODO
-        WeakArmor, // TODO
-        WhiteSmoke, // TODO
+        Torrent = 67,
+        ToxicBoost = 137, // TODO
+        Trace = 36, // TODO
+        Truant = 54, // TODO
+        Turboblaze = 163, // TODO
+        Unaware = 109, // TODO
+        Unburden = 84, // TODO
+        Unnerve = 127, // TODO
+        VictoryStar = 162, // TODO
+        VitalSpirit = 72, // TODO
+        VoltAbsorb = 10, // TODO
+        WaterAbsorb = 11, // TODO
+        WaterVeil = 41, // TODO
+        WeakArmor = 133, // TODO
+        WhiteSmoke = 73, // TODO
         /// <summary>
         /// The Pokémon is immune to all damaging moves except for moves that would deal super-effective damage.
         /// </summary>
-        WonderGuard, // TODO: Mold Breaker, Teravolt, Turboblaze, Role Play, Skill Swap
-        WonderSkin, // TODO
-        ZenMode, // TODO
+        WonderGuard = 25, // TODO: Mold Breaker, Teravolt, Turboblaze, Role Play, Skill Swap
+        WonderSkin = 147, // TODO
+        ZenMode = 161, // TODO
         /// <summary>
         /// Invalid ability.
         /// </summary>
-        MAX,
+        MAX = 165,
     }
     /// <summary>
     /// Represents a specific Pokémon species.
