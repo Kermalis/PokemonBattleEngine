@@ -51,9 +51,19 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public class MoveCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
-            public async Task Info(string moveName)
+            public async Task Info([Remainder] string moveName)
             {
-                if (Enum.TryParse(moveName, true, out PBEMove move))
+                PBEMove move = 0;
+                PBELocalizedString localized = PBEMoveLocalization.Names.Values.FirstOrDefault(l => l.Contains(moveName));
+                if (localized != null)
+                {
+                    move = PBEMoveLocalization.Names.First(p => p.Value == localized).Key;
+                }
+                else
+                {
+                    Enum.TryParse(moveName, true, out move);
+                }
+                if (move != 0)
                 {
                     if (move == PBEMove.None)
                     {
@@ -63,7 +73,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     var embed = new EmbedBuilder()
                         .WithColor(Utils.TypeToColor[mData.Type])
                         .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
-                        .WithTitle(move.ToString())
+                        .WithTitle(PBEMoveLocalization.Names[move].English)
                         .WithAuthor(Context.User)
                         .AddField("Type", mData.Type, true)
                         .AddField("Category", mData.Category, true)
@@ -87,7 +97,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public class PokemonCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
-            public async Task Info(string speciesName)
+            public async Task Info([Remainder] string speciesName)
             {
                 PBESpecies species = 0;
                 PBELocalizedString localized = PBEPokemonLocalization.Names.Values.FirstOrDefault(l => l.Contains(speciesName));

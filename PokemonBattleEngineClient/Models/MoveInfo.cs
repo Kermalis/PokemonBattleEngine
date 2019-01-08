@@ -40,7 +40,6 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         ReactiveCommand SelectMoveCommand { get; }
 
         public PBEMove Move { get; }
-        string Label { get; }
         IBrush Brush { get; }
         IBrush BorderBrush { get; }
         string Description { get; }
@@ -69,7 +68,6 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 enabled = move != PBEMove.None && pkmn.PP[i] > 0;
             }
             Move = move;
-            Label = move.ToString();
             Brush = ttb.Item1;
             BorderBrush = ttb.Item2;
             Description = move == PBEMove.None ? string.Empty : PBEMoveData.Data[move].ToString();

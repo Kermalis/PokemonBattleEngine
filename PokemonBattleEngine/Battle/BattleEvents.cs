@@ -264,12 +264,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEMovePPChangedPacket mpcp:
                     {
-                        Console.WriteLine("{0}'s {1} {3} {2} PP!", NameForTrainer(battle.TryGetPokemon(mpcp.Victim)), mpcp.Move, Math.Abs(mpcp.Change), mpcp.Change <= 0 ? "lost" : "gained");
+                        Console.WriteLine("{0}'s {1} {3} {2} PP!", NameForTrainer(battle.TryGetPokemon(mpcp.Victim)), PBEMoveLocalization.Names[mpcp.Move].English, Math.Abs(mpcp.Change), mpcp.Change <= 0 ? "lost" : "gained");
                         break;
                     }
                 case PBEMoveUsedPacket mup:
                     {
-                        Console.WriteLine("{0} used {1}!", NameForTrainer(battle.TryGetPokemon(mup.Culprit)), mup.Move);
+                        Console.WriteLine("{0} used {1}!", NameForTrainer(battle.TryGetPokemon(mup.Culprit)), PBEMoveLocalization.Names[mup.Move].English);
                         break;
                     }
                 case PBEPkmnFaintedPacket pfap:

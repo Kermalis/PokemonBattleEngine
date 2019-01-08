@@ -7,7 +7,7 @@
     <DataTemplate DataType="model:MoveInfo">
       <Button Width="103" Height="30" Command="{Binding SelectMoveCommand}" Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4">
         <StackPanel>
-          <Image Source="{Binding Label, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+          <Image Source="{Binding Move, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         </StackPanel>
         <ToolTip.Tip>
           <Image Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>

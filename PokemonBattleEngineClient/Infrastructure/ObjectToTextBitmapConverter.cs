@@ -16,6 +16,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 str = PBEAbilityLocalization.Names[ability].English;
             }
+            else if (value is PBEMove move)
+            {
+                str = PBEMoveLocalization.Names[move].English;
+            }
             else if (value is PBESpecies species)
             {
                 str = PBEPokemonLocalization.Names[species].English;

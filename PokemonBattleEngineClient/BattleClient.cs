@@ -3,6 +3,7 @@ using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Localization;
 using Kermalis.PokemonBattleEngine.Packets;
 using Kermalis.PokemonBattleEngineClient.Views;
 using System;
@@ -354,7 +355,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             // Set the first unknown move to the used move
                             culprit.Moves[Array.IndexOf(culprit.Moves, PBEMove.MAX)] = mup.Move;
                         }
-                        BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(culprit, true), mup.Move), true, true);
+                        BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(culprit, true), PBEMoveLocalization.Names[mup.Move].English), true, true);
                         break;
                     }
                 case PBEPkmnFaintedPacket pfap:
