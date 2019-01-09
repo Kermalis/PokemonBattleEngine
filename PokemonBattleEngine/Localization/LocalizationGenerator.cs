@@ -26,7 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             sb.AppendLine("    {");
             sb.AppendLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
             sb.AppendLine("        {");
-            sb.AppendLine("            { PBEAbility.None, new PBELocalizedString(\"--\", \"--\") },");
+            sb.AppendLine("            { PBEAbility.None, new PBELocalizedString(\"--\", \"--\", \"--\", \"--\", \"--\", \"--\", \"--\") },");
             foreach (PBEAbility ability in allAbilities)
             {
                 string abilityID = ((byte)ability).ToString();
@@ -65,8 +65,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
                     case PBEAbility.WaterAbsorb: spanish = "Absor. Agua"; break;
                     case PBEAbility.WeakArmor: spanish = "Arm. Frágil"; break;
                 }
-                sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{english}\", \"{japanese}\") }}{(ability == allAbilities.Last() ? string.Empty : ",")}");
-                //sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(ability == allAbilities.Last() ? string.Empty : ",")}");
+                sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(ability == allAbilities.Last() ? string.Empty : ",")}");
             }
             sb.AppendLine("        });");
             sb.AppendLine("    }");
@@ -93,7 +92,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             sb.AppendLine("    {");
             sb.AppendLine("        public static ReadOnlyDictionary<PBEItem, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEItem, PBELocalizedString>(new Dictionary<PBEItem, PBELocalizedString>()");
             sb.AppendLine("        {");
-            sb.AppendLine("            { PBEItem.None, new PBELocalizedString(\"--\", \"--\") },");
+            sb.AppendLine("            { PBEItem.None, new PBELocalizedString(\"--\", \"--\", \"--\", \"--\", \"--\", \"--\", \"--\") },");
             foreach (PBEItem item in allItems)
             {
                 string theirID = ids.Single(s => s[1] == "5" && s[2] == ((ushort)item).ToString())[0];
@@ -226,8 +225,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
                     case PBEItem.YlwApricorn: spanish = "Bonguri Ama"; italian = "Ghic. Gialla"; english = "Ylw Apricorn"; break;
                     case PBEItem.ZoomLens: french = "Lentil. Zoom"; break;
                 }
-                sb.AppendLine($"            {{ PBEItem.{item}, new PBELocalizedString(\"{english}\", \"{japanese}\") }}{(item == allItems.Last() ? string.Empty : ",")}");
-                //sb.AppendLine($"            {{ PBEItem.{item}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(item == allItems.Last() ? string.Empty : ",")}");
+                sb.AppendLine($"            {{ PBEItem.{item}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(item == allItems.Last() ? string.Empty : ",")}");
             }
             sb.AppendLine("        });");
             sb.AppendLine("    }");
@@ -252,7 +250,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             sb.AppendLine("    {");
             sb.AppendLine("        public static ReadOnlyDictionary<PBEMove, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEMove, PBELocalizedString>(new Dictionary<PBEMove, PBELocalizedString>()");
             sb.AppendLine("        {");
-            sb.AppendLine("            { PBEMove.None, new PBELocalizedString(\"--\", \"--\") },");
+            sb.AppendLine("            { PBEMove.None, new PBELocalizedString(\"--\", \"--\", \"--\", \"--\", \"--\", \"--\", \"--\") },");
             for (ushort i = 1; i < (ushort)PBEMove.MAX; i++)
             {
                 bool moveExists = Enum.IsDefined(typeof(PBEMove), i);
@@ -364,8 +362,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
                     case PBEMove.WingAttack: italian = "Att. d'Ala"; break;
                     case (PBEMove)35: spanish = "Repetición"; break; // PBEMove.Wrap
                 }
-                sb.AppendLine($"            {(moveExists ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{english}\", \"{japanese}\") }}{(i == (ushort)(PBEMove.MAX - 1) ? string.Empty : ",")}");
-                //sb.AppendLine($"            {(moveExists ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(i == (ushort)(PBEMove.MAX - 1) ? string.Empty : ",")}");
+                sb.AppendLine($"            {(moveExists ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(i == (ushort)(PBEMove.MAX - 1) ? string.Empty : ",")}");
             }
             sb.AppendLine("        });");
             sb.AppendLine("    }");
@@ -413,8 +410,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
                 }
                 for (uint j = 0; j < numForms; j++)
                 {
-                    sb.AppendLine($"            {(speciesExists ? string.Empty : "// ")}{{ PBESpecies.{(PBESpecies)(i | (j << 0x10))}, new PBELocalizedString(\"{english}\", \"{japanese}\") }}{(i == numSpecies && j == numForms - 1 ? string.Empty : ",")}");
-                    //sb.AppendLine($"            {(speciesExists ? string.Empty : "// ")}{{ PBESpecies.{(PBESpecies)(i | (j << 0x10))}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(i == numSpecies && j == numForms - 1 ? string.Empty : ",")}");
+                    sb.AppendLine($"            {(speciesExists ? string.Empty : "// ")}{{ PBESpecies.{(PBESpecies)(i | (j << 0x10))}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(i == numSpecies && j == numForms - 1 ? string.Empty : ",")}");
                 }
             }
             sb.AppendLine("        });");
