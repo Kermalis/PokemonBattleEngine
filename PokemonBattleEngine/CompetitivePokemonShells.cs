@@ -599,6 +599,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Flatter, PBEMove.Psychic, PBEMove.ShadowBall, PBEMove.Protect }, // Trick Room, Psychic, Shadow Ball, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Gyarados_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Gyarados,
+            Nickname = "GOOOO",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.WacanBerry,
+            Ability = PBEAbility.Intimidate,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 52, 140, 0, 20, 44 },
+            Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.ThunderWave, PBEMove.StoneEdge, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Hydreigon_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Hydreigon,
