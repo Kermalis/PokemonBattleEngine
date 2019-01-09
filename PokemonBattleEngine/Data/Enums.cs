@@ -2128,6 +2128,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Gothita = 574,
         Gothitelle = 576,
         Gothorita = 575,
+        Gyarados = 130,
         Happiny = 440,
         Hydreigon = 635,
         Ivysaur = 2,

@@ -137,7 +137,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.127, new PBELocalizedString("Pinsir", "カイロス") },
             // { PBESpecies.128, new PBELocalizedString("Tauros", "ケンタロス") },
              { PBESpecies.Magikarp, new PBELocalizedString("Magikarp", "コイキング") },
-            // { PBESpecies.130, new PBELocalizedString("Gyarados", "ギャラドス") },
+             { PBESpecies.Gyarados, new PBELocalizedString("Gyarados", "ギャラドス") },
             // { PBESpecies.131, new PBELocalizedString("Lapras", "ラプラス") },
             { PBESpecies.Ditto, new PBELocalizedString("Ditto", "メタモン") },
             { PBESpecies.Eevee, new PBELocalizedString("Eevee", "イーブイ") },
