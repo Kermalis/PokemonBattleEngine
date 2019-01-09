@@ -2158,6 +2158,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pichu = 172,
         Pikachu = 25,
         Plusle = 311,
+        Psyduck = 54,
         Raichu = 26,
         Regirock = 377,
         Riolu = 447,

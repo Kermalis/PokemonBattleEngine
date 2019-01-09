@@ -61,7 +61,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.51, new PBELocalizedString("Dugtrio", "ダグトリオ") },
             // { PBESpecies.52, new PBELocalizedString("Meowth", "ニャース") },
             // { PBESpecies.53, new PBELocalizedString("Persian", "ペルシアン") },
-            // { PBESpecies.54, new PBELocalizedString("Psyduck", "コダック") },
+             { PBESpecies.Psyduck, new PBELocalizedString("Psyduck", "コダック") },
              { PBESpecies.Golduck, new PBELocalizedString("Golduck", "ゴルダック") },
             // { PBESpecies.56, new PBELocalizedString("Mankey", "マンキー") },
             // { PBESpecies.57, new PBELocalizedString("Primeape", "オコリザル") },
