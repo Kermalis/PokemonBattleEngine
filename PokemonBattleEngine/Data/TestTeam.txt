@@ -33,7 +33,7 @@ False
 StormDrain
 Bold
 Male
-MeadowPlate
+Eviolite
 228, 0, 220, 0, 60, 0
 31, 31, 31, 31, 31, 31
 EnergyBall, Recover, StealthRock, Toxic

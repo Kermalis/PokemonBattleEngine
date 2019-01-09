@@ -17,8 +17,8 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 
 ----
 # To Do:
-* Rotation battles, triple battle shifting, triple battle auto-center
-* Add most moves, items, Pokémon, secondary statuses (underwater, cursed, mud sport, etc.)
+* Rotation battles, triple battle shifting, and triple battle auto-center
+* Add lots of items and most moves, Pokémon, and secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Protect from corrupt packets (if they are even a problem)
 * Spectators

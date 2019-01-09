@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.Leftovers, // Wacan Berry
+            Item = PBEItem.WacanBerry,
             Ability = PBEAbility.Healer,
             Gender = PBEGender.Female,
             Nature = PBENature.Careful,
@@ -106,7 +106,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.ChoiceScarf, // Focus Sash
+            Item = PBEItem.FocusSash,
             Ability = PBEAbility.Swarm,
             Gender = PBEGender.Male,
             Nature = PBENature.Jolly,
@@ -220,7 +220,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.SplashPlate, // Water Gem
+            Item = PBEItem.WaterGem,
             Ability = PBEAbility.Sturdy,
             Gender = PBEGender.Male,
             Nature = PBENature.Jolly,
@@ -236,7 +236,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.LifeOrb, // Fire Gem
+            Item = PBEItem.FireGem,
             Ability = PBEAbility.FlashFire,
             Gender = PBEGender.Female,
             Nature = PBENature.Quiet,
@@ -308,7 +308,7 @@ namespace Kermalis.PokemonBattleEngine
             Nickname = "Crest",
             Level = 100,
             Friendship = 255,
-            Item = PBEItem.Leftovers, // Sitrus Berry
+            Item = PBEItem.SitrusBerry,
             Shiny = false,
             Ability = PBEAbility.Levitate,
             Gender = PBEGender.Female,
@@ -325,7 +325,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.BlackSludge, // Flying Gem
+            Item = PBEItem.FlyingGem,
             Ability = PBEAbility.InnerFocus,
             Gender = PBEGender.Female,
             Nature = PBENature.Jolly,
@@ -341,7 +341,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.Leftovers, // Focus Sash
+            Item = PBEItem.FocusSash,
             Ability = PBEAbility.Levitate,
             Gender = PBEGender.Genderless,
             Nature = PBENature.Hasty,
@@ -453,7 +453,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.MeadowPlate, // Focus Sash
+            Item = PBEItem.FocusSash,
             Ability = PBEAbility.MagicBounce,
             Gender = PBEGender.Female,
             Nature = PBENature.Timid,
@@ -510,7 +510,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.DracoPlate, // Yache Berry
+            Item = PBEItem.YacheBerry,
             Ability = PBEAbility.RoughSkin,
             Gender = PBEGender.Male,
             Nature = PBENature.Jolly,
@@ -558,7 +558,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.EarthPlate, // Iron Ball
+            Item = PBEItem.IronBall,
             Ability = PBEAbility.SnowCloak,
             Gender = PBEGender.Male,
             Nature = PBENature.Quiet,
@@ -574,7 +574,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.Leftovers, // Mental Herb
+            Item = PBEItem.MentalHerb,
             Ability = PBEAbility.Frisk,
             Gender = PBEGender.Female,
             Nature = PBENature.Quiet,
@@ -622,7 +622,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.ZapPlate, // Focus Sash
+            Item = PBEItem.FocusSash,
             Ability = PBEAbility.VoltAbsorb,
             Gender = PBEGender.Female,
             Nature = PBENature.Timid,
@@ -638,7 +638,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.LifeOrb, // Yache Berry
+            Item = PBEItem.YacheBerry,
             Ability = PBEAbility.Levitate,
             Gender = PBEGender.Female,
             Nature = PBENature.Bold,
@@ -686,7 +686,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.FistPlate, // Chople Berry
+            Item = PBEItem.ChopleBerry,
             Ability = PBEAbility.InnerFocus,
             Gender = PBEGender.Female,
             Nature = PBENature.Adamant,
@@ -791,7 +791,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.FlamePlate, // Focus Sash
+            Item = PBEItem.FocusSash,
             Ability = PBEAbility.Drought,
             Gender = PBEGender.Female,
             Nature = PBENature.Modest,
@@ -896,7 +896,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.ZapPlate, // Focus Sash
+            Item = PBEItem.FocusSash,
             Ability = PBEAbility.Lightningrod,
             Gender = PBEGender.Male,
             Nature = PBENature.Timid,
@@ -927,7 +927,7 @@ namespace Kermalis.PokemonBattleEngine
             Nickname = "Wahooey",
             Level = 100,
             Friendship = 255,
-            Item = PBEItem.Leftovers, // Sitrus Berry
+            Item = PBEItem.SitrusBerry,
             Shiny = false,
             Ability = PBEAbility.Levitate,
             Gender = PBEGender.Genderless,
@@ -944,7 +944,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.InsectPlate, // Focus Sash
+            Item = PBEItem.FocusSash,
             Ability = PBEAbility.WonderGuard,
             Gender = PBEGender.Genderless,
             Nature = PBENature.Lonely,
@@ -960,7 +960,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.Leftovers, // Mental Herb
+            Item = PBEItem.MentalHerb,
             Ability = PBEAbility.Moody,
             Gender = PBEGender.Male,
             Nature = PBENature.Jolly,
@@ -976,7 +976,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.Leftovers, // Sitrus Berry
+            Item = PBEItem.SitrusBerry,
             Ability = PBEAbility.Harvest,
             Gender = PBEGender.Male,
             Nature = PBENature.Bold,
@@ -1007,7 +1007,7 @@ namespace Kermalis.PokemonBattleEngine
             Nickname = "Amy",
             Level = 100,
             Friendship = 255,
-            Item = PBEItem.Leftovers, // Sitrus Berry
+            Item = PBEItem.SitrusBerry,
             Shiny = false,
             Ability = PBEAbility.Levitate,
             Gender = PBEGender.Genderless,
@@ -1024,7 +1024,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.SplashPlate, // Water Gem
+            Item = PBEItem.WaterGem,
             Ability = PBEAbility.WaterAbsorb,
             Gender = PBEGender.Female,
             Nature = PBENature.Quiet,
@@ -1081,7 +1081,7 @@ namespace Kermalis.PokemonBattleEngine
             Level = 100,
             Friendship = 255,
             Shiny = false,
-            Item = PBEItem.LifeOrb, // Focus Sash
+            Item = PBEItem.FocusSash,
             Ability = PBEAbility.FlameBody,
             Gender = PBEGender.Female,
             Nature = PBENature.Timid,
