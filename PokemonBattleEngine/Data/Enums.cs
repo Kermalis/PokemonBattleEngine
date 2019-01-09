@@ -2124,6 +2124,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Giratina = 487 | (0 << 0x10),
         Giratina_Origin = 487 | (1 << 0x10),
         Glaceon = 471,
+        Golduck = 55,
         Gothita = 574,
         Gothitelle = 576,
         Gothorita = 575,
