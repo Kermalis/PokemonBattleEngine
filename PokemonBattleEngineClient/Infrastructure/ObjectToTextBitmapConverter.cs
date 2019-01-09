@@ -12,21 +12,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string str;
-            if (value is PBEAbility ability)
+            switch (value)
             {
-                str = PBEAbilityLocalization.Names[ability].English;
-            }
-            else if (value is PBEMove move)
-            {
-                str = PBEMoveLocalization.Names[move].English;
-            }
-            else if (value is PBESpecies species)
-            {
-                str = PBEPokemonLocalization.Names[species].English;
-            }
-            else
-            {
-                str = value?.ToString();
+                case PBEAbility ability: str = PBEAbilityLocalization.Names[ability].English; break;
+                case PBEItem item: str = PBEItemLocalization.Names[item].English; break;
+                case PBEMove move: str = PBEMoveLocalization.Names[move].English; break;
+                case PBESpecies species: str = PBEPokemonLocalization.Names[species].English; break;
+                default: str = value?.ToString(); break;
             }
             Enum.TryParse(parameter?.ToString(), out Utils.StringRenderStyle style);
             return Utils.RenderString(str, style);

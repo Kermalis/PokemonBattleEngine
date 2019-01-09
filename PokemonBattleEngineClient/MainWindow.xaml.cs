@@ -29,11 +29,11 @@ namespace Kermalis.PokemonBattleEngineClient
             }
         }
 
-        readonly IEnumerable<PBEAbility> allAbilities = new[] { PBEAbility.None }.Concat(Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }));
+        readonly IEnumerable<PBEAbility> allAbilities = PBEAbilityLocalization.Names.OrderBy(k => k.Value.English).Select(k => k.Key);
         readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
-        readonly IEnumerable<PBEItem> allItems = new[] { PBEItem.None }.Concat(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>().Except(new[] { PBEItem.None }));
+        readonly IEnumerable<PBEItem> allItems = PBEItemLocalization.Names.OrderBy(k => k.Value.English).Select(k => k.Key);
 
-        IEnumerable<PBESpecies> AvailableSpecies { get; } = PBEPokemonData.Data.Keys;
+        IEnumerable<PBESpecies> AvailableSpecies { get; } = PBEPokemonLocalization.Names.OrderBy(k => k.Value.English).Select(k => k.Key);
         IEnumerable<PBEAbility> availableAbilities;
         IEnumerable<PBEAbility> AvailableAbilities
         {
@@ -234,7 +234,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
                 else
                 {
-                    AvailableAbilities = pData.Abilities;
+                    AvailableAbilities = pData.Abilities.OrderBy(a => PBEAbilityLocalization.Names[a].English);
                 }
                 shell.Ability = availableAbilities.Contains(shell.Ability) ? shell.Ability : availableAbilities.First();
                 if (ability.SelectedItem != (object)shell.Ability)

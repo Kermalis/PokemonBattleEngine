@@ -851,7 +851,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             bool remotePokemon = Shell.Nature == PBENature.MAX; // If the nature is unset, the program is not the host and does not own the Pokémon
 
-            string item = Item == (PBEItem)ushort.MaxValue ? "???" : Item.ToString();
+            string item = Item == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[Item].English;
             string nature = Shell.Nature == PBENature.MAX ? "???" : Shell.Nature.ToString();
             string ability = Ability == PBEAbility.MAX ? "???" : PBEAbilityLocalization.Names[Ability].English;
             string[] moveStrs = new string[Moves.Length];

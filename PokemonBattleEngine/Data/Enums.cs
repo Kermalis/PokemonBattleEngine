@@ -953,10 +953,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         BigPearl = 89,
         BigRoot = 296, // TODO
         BindingBand = 544, // TODO
-        /// <summary>
-        /// No effect.
-        /// </summary>
-        BlackApricorn = 491,
         BlackBelt = 241,
         /// <summary>
         /// No effect.
@@ -967,7 +963,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// No effect.
         /// </summary>
-        BlueApricorn = 486,
+        BlkApricorn = 491,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        BluApricorn = 486,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1212,10 +1212,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// No effect.
         /// </summary>
-        GreenApricorn = 488,
-        /// <summary>
-        /// No effect.
-        /// </summary>
         GreenScarf = 263,
         /// <summary>
         /// No effect.
@@ -1228,6 +1224,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         GrepaBerry = 173, // TODO
         GripClaw = 286, // TODO
         GriseousOrb = 112,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        GrnApricorn = 488,
         GroundGem = 555, // TODO
         /// <summary>
         /// No effect.
@@ -1476,15 +1476,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// No effect.
         /// </summary>
-        PinkApricorn = 489,
-        /// <summary>
-        /// No effect.
-        /// </summary>
         PinkScarf = 262,
         /// <summary>
         /// No effect.
         /// </summary>
         PlumeFossil = 573,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        PnkApricorn = 489,
         PoisonBarb = 245,
         PoisonGem = 554, // TODO
         /// <summary>
@@ -1762,7 +1762,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// No effect.
         /// </summary>
-        ThunderStone = 83,
+        Thunderstone = 83,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1791,10 +1791,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         WatmelBerry = 181, // TODO
         WaveIncense = 317,
         WepearBerry = 167, // TODO
-        /// <summary>
-        /// No effect.
-        /// </summary>
-        WhiteApricorn = 490,
         WhiteHerb = 214, // TODO
         /// <summary>
         /// No effect.
@@ -1806,6 +1802,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// No effect.
         /// </summary>
+        WhtApricorn = 490,
+        /// <summary>
+        /// No effect.
+        /// </summary>
         XAccuracy = 60,
         /// <summary>
         /// No effect.
@@ -1814,7 +1814,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// No effect.
         /// </summary>
-        XDefense = 58,
+        XDefend = 58,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1831,10 +1831,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// No effect.
         /// </summary>
-        YellowApricorn = 487,
-        /// <summary>
-        /// No effect.
-        /// </summary>
         YellowFlute = 66,
         /// <summary>
         /// No effect.
@@ -1844,6 +1840,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         YellowShard = 74,
+        /// <summary>
+        /// No effect.
+        /// </summary>
+        YlwApricorn = 487,
         ZapPlate = 300,
         /// <summary>
         /// No effect.
