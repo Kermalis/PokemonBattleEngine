@@ -11,17 +11,16 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static ObjectToTextBitmapConverter Instance { get; } = new ObjectToTextBitmapConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string str;
+            PBELocalizedString localized = null;
             switch (value)
             {
-                case PBEAbility ability: str = PBEAbilityLocalization.Names[ability].English; break;
-                case PBEItem item: str = PBEItemLocalization.Names[item].English; break;
-                case PBEMove move: str = PBEMoveLocalization.Names[move].English; break;
-                case PBESpecies species: str = PBEPokemonLocalization.Names[species].English; break;
-                default: str = value?.ToString(); break;
+                case PBEAbility ability: localized = PBEAbilityLocalization.Names[ability]; break;
+                case PBEItem item: localized = PBEItemLocalization.Names[item]; break;
+                case PBEMove move: localized = PBEMoveLocalization.Names[move]; break;
+                case PBESpecies species: localized = PBEPokemonLocalization.Names[species]; break;
             }
             Enum.TryParse(parameter?.ToString(), out Utils.StringRenderStyle style);
-            return Utils.RenderString(str, style);
+            return Utils.RenderString(localized == null ? value?.ToString() : localized.FromUICultureInfo(), style);
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

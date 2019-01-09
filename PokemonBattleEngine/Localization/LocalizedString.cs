@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Threading;
 
 namespace Kermalis.PokemonBattleEngine.Localization
 {
@@ -38,6 +40,25 @@ namespace Kermalis.PokemonBattleEngine.Localization
             else
             {
                 return false;
+            }
+        }
+
+        public string FromUICultureInfo()
+        {
+            return FromCultureInfo(Thread.CurrentThread.CurrentUICulture);
+        }
+        public string FromCultureInfo(CultureInfo cultureInfo)
+        {
+            switch (cultureInfo.TwoLetterISOLanguageName)
+            {
+                case "en": return English;
+                case "fr": return French;
+                case "de": return German;
+                case "it": return Italian;
+                case "ja": return Japanese;
+                case "ko": return Korean;
+                case "es": return Spanish;
+                default: throw new InvalidOperationException();
             }
         }
     }
