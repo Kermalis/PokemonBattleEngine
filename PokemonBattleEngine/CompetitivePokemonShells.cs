@@ -567,6 +567,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.IceBeam, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Protect }, // Blizzard, Shadow Ball, Hidden Power Ground, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Golduck_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Golduck,
+            Nickname = "Wawa",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.CloudNine,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Scald, PBEMove.IcyWind, PBEMove.PsychUp, PBEMove.Protect }, // Scald, Icy Wind, Encore, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Gothitelle_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Gothitelle,
