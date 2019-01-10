@@ -1142,7 +1142,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         Everstone = 229,
-        Eviolite = 538, // TODO
+        Eviolite = 538,
         ExpertBelt = 268,
         /// <summary>
         /// No effect.

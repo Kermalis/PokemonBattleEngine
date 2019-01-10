@@ -612,6 +612,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 defense *= 1.5;
             }
+            if (user.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.Shell.Species].Evolutions.Count > 0)
+            {
+                defense *= 1.5;
+            }
 
             return (ushort)defense;
         }
@@ -659,6 +663,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             // A Rock-type Pokémon in a Sandstorm gets a 50% SpDefense boost
             if (Weather == PBEWeather.Sandstorm && target.HasType(PBEType.Rock))
+            {
+                spDefense *= 1.5;
+            }
+            if (user.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.Shell.Species].Evolutions.Count > 0)
             {
                 spDefense *= 1.5;
             }

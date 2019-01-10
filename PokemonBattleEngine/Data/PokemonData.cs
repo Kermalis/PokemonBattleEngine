@@ -7,15 +7,42 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEPokemonData
     {
-        public byte HP, Attack, Defense, SpAttack, SpDefense, Speed;
-        public PBEGenderRatio GenderRatio;
-        public PBEType Type1, Type2;
-        public PBEAbility[] Abilities;
-        public byte MinLevel;
-        public bool ShinyLocked;
-        public double Weight; // Kilograms
-        public Tuple<PBEMove, int, PBEMoveObtainMethod>[] LevelUpMoves;
-        public Tuple<PBEMove, PBEMoveObtainMethod>[] OtherMoves;
+        public byte HP { get; }
+        public byte Attack { get; }
+        public byte Defense { get; }
+        public byte SpAttack { get; }
+        public byte SpDefense { get; }
+        public byte Speed { get; }
+        public PBEType Type1 { get; }
+        public PBEType Type2 { get; }
+        public PBEGenderRatio GenderRatio { get; }
+        public byte MinLevel { get; }
+        public bool ShinyLocked { get; }
+        public double Weight { get; } // Kilograms
+        public ReadOnlyCollection<PBESpecies> PreEvolutions { get; }
+        public ReadOnlyCollection<PBESpecies> Evolutions { get; }
+        public ReadOnlyCollection<PBEAbility> Abilities { get; }
+        public ReadOnlyCollection<Tuple<PBEMove, byte, PBEMoveObtainMethod>> LevelUpMoves { get; }
+        public ReadOnlyCollection<Tuple<PBEMove, PBEMoveObtainMethod>> OtherMoves { get; }
+
+        private PBEPokemonData(byte hp, byte attack, byte defense, byte spAttack, byte spDefense, byte speed,
+            PBEType type1, PBEType type2, PBEGenderRatio genderRatio,
+            byte minLevel, bool shinyLocked, double weight,
+            IList<PBESpecies> preEvolutions,
+            IList<PBESpecies> evolutions,
+            IList<PBEAbility> abilities,
+            IList<Tuple<PBEMove, int, PBEMoveObtainMethod>> levelUpMoves,
+            IList<Tuple<PBEMove, PBEMoveObtainMethod>> otherMoves)
+        {
+            HP = hp; Attack = attack; Defense = defense; SpAttack = spAttack; SpDefense = spDefense; Speed = speed;
+            Type1 = type1; Type2 = type2; GenderRatio = genderRatio;
+            MinLevel = minLevel; ShinyLocked = shinyLocked; Weight = weight;
+            PreEvolutions = new ReadOnlyCollection<PBESpecies>(preEvolutions);
+            Evolutions = new ReadOnlyCollection<PBESpecies>(evolutions);
+            Abilities = new ReadOnlyCollection<PBEAbility>(abilities);
+            LevelUpMoves = new ReadOnlyCollection<Tuple<PBEMove, byte, PBEMoveObtainMethod>>(levelUpMoves.Select(t => Tuple.Create(t.Item1, (byte)t.Item2, t.Item3)).ToArray());
+            OtherMoves = new ReadOnlyCollection<Tuple<PBEMove, PBEMoveObtainMethod>>(otherMoves);
+        }
 
         public bool HasAbility(PBEAbility ability) => Abilities.Contains(ability);
         public bool HasType(PBEType type) => Type1 == type || Type2 == type;
@@ -101,15 +128,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 PBESpecies.Absol,
                 new PBEPokemonData
-                {
-                    HP = 65, Attack = 130, Defense = 60, SpAttack = 75, SpDefense = 60, Speed = 75,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Dark, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Pressure, PBEAbility.SuperLuck, PBEAbility.Justified },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 47.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    65, 130, 60, 75, 60, 75,
+                    PBEType.Dark, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 47.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Pressure, PBEAbility.SuperLuck, PBEAbility.Justified },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Bite, 20, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Bite, 21, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -150,27 +176,26 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SwordsDance, 33, PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Taunt, 9, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         //Tuple.Create(PBEMove.Taunt, 17, PBEMoveObtainMethod.LevelUp_B2W2)
-
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.Assurance, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.Assurance, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.BatonPass, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
-						//Tuple.Create(PBEMove.Bounce, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Bounce, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.Captivate, PBEMoveObtainMethod.TM_DPPtHGSS),
+                        //Tuple.Create(PBEMove.Captivate, PBEMoveObtainMethod.TM_DPPtHGSS),
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.Counter, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E),
+                        //Tuple.Create(PBEMove.Counter, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E),
                         Tuple.Create(PBEMove.Curse, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Cut, PBEMoveObtainMethod.HM_RSFRLGE | PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.DarkPulse, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-						//Tuple.Create(PBEMove.DoubleEdge, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.DoubleEdge, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.DreamEater, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.DreamEater, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.EchoedVoice, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Endure, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.TM_DPPtHGSS),
                         Tuple.Create(PBEMove.Facade, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -179,51 +204,51 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.FireBlast, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Flamethrower, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Flash, PBEMoveObtainMethod.HM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.FoulPlay, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.FoulPlay, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.FuryCutter, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
+                        //Tuple.Create(PBEMove.FuryCutter, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.GigaImpact, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Hail, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Headbutt, PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Hex, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.HoneClaws, PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.HyperBeam, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.HyperBeam, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.IceBeam, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.IcyWind, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Incinerate, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.IronTail, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-						//Tuple.Create(PBEMove.KnockOff, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.KnockOff, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.MagicCoat, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.MeanLook, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.MeFirst, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Megahorn, PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
-						//Tuple.Create(PBEMove.Mimic, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
+                        //Tuple.Create(PBEMove.Mimic, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
                         Tuple.Create(PBEMove.MudSlap, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
-						//Tuple.Create(PBEMove.NaturalGift, PBEMoveObtainMethod.TM_DPPtHGSS),
+                        //Tuple.Create(PBEMove.NaturalGift, PBEMoveObtainMethod.TM_DPPtHGSS),
                         //Tuple.Create(PBEMove.Nightmare, PBEMoveObtainMethod.MoveTutor_XD),
                         //Tuple.Create(PBEMove.Payback, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.PerishSong, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Protect, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.PsychUp, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.Punishment, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.Punishment, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.RainDance, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Retaliate, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Return, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.RockSlide, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.RockSmash, PBEMoveObtainMethod.HM_RSFRLGE | PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.RockTomb, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.RolePlay, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.RolePlay, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Sandstorm, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.SecretPower, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS),
                         Tuple.Create(PBEMove.ShadowBall, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ShadowClaw, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ShockWave, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS),
-						//Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.Snarl, PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.Snatch, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Snatch, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Spite, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.StoneEdge, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -232,10 +257,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.SuckerPunch, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.SunnyDay, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Superpower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-						Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Swift, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.SwordsDance, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.Taunt, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Taunt, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Thunder, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -247,20 +272,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Alomomola,
                 new PBEPokemonData
-                {
-                    HP = 165, Attack = 75, Defense = 80, SpAttack = 40, SpDefense = 45, Speed = 65,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Healer, PBEAbility.Hydration, PBEAbility.Regenerator },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 31.6,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    165, 75, 80, 40, 45, 65,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 31.6,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Healer, PBEAbility.Hydration, PBEAbility.Regenerator },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                        Tuple.Create(PBEMove.AquaJet, 9, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        //Tuple.Create(PBEMove.AquaRing, 5, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -280,7 +304,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                        //Tuple.Create(PBEMove.WideGuard, 53, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        //Tuple.Create(PBEMove.Wish, 37, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_BWB2W2),
@@ -322,20 +346,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -350,9 +373,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -469,20 +492,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Bug,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Bug, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Bug, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -497,9 +519,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -616,20 +638,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Dark,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Dark, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Dark, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -644,9 +665,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -763,20 +784,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Dragon,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Dragon, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -791,9 +811,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -911,20 +931,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Electric,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -939,9 +958,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -1058,20 +1077,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Fighting,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Fighting, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -1086,9 +1104,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -1205,20 +1223,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Fire,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Fire, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -1233,9 +1250,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -1352,20 +1369,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Flying,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Flying, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Flying, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -1380,9 +1396,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -1499,20 +1515,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Ghost,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Ghost, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -1527,9 +1542,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -1646,20 +1661,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Grass,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Grass, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -1674,9 +1688,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -1793,20 +1807,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Ground,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Ground, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Ground, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -1821,9 +1834,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -1940,20 +1953,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Ice,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Ice, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -1968,9 +1980,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -2087,20 +2099,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Poison,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Poison, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Poison, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -2115,9 +2126,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -2234,20 +2245,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Psychic,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -2262,9 +2272,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -2381,20 +2391,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Rock,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Rock, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Rock, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -2409,9 +2418,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -2528,20 +2537,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Steel,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Steel, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Steel, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -2556,9 +2564,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -2675,20 +2683,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Arceus_Water,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 120, Defense = 120, SpAttack = 120, SpDefense = 120, Speed = 120,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Multitype },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 320.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 120, 120, 120, 120, 120,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 320.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Multitype },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.CosmicPower, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.EarthPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -2703,9 +2710,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Punishment, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Recover, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Refresh, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.SeismicToss, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -2822,20 +2829,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Azelf,
                 new PBEPokemonData
-                {
-                    HP = 75, Attack = 125, Defense = 70, SpAttack = 125, SpDefense = 70, Speed = 115,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 0.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    75, 125, 70, 125, 70, 115,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Confusion, 1, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 21, PBEMoveObtainMethod.LevelUp_DP),
@@ -2851,7 +2857,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Swift, 21, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Uproar, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -2926,20 +2932,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Azumarill,
                 new PBEPokemonData
-                {
-                    HP = 100, Attack = 50, Defense = 80, SpAttack = 50, SpDefense = 80, Speed = 50,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.ThickFat, PBEAbility.HugePower, PBEAbility.SapSipper },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 28.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    100, 50, 80, 50, 80, 50,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 28.5,
+                    new PBESpecies[] { /*PBESpecies.Azurill, PBESpecies.Marill*/ },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.ThickFat, PBEAbility.HugePower, PBEAbility.SapSipper },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.AquaRing, 27, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         //Tuple.Create(PBEMove.AquaRing, 31, PBEMoveObtainMethod.LevelUp_B2W2),
@@ -2977,7 +2982,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WaterSport, 1, PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.WaterSport, 5, PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Amnesia, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.AquaJet, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -3059,20 +3064,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Whirlpool, PBEMoveObtainMethod.HM_HGSS),
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Beedrill,
                 new PBEPokemonData
-                {
-                    HP = 65, Attack = 80, Defense = 40, SpAttack = 45, SpDefense = 80, Speed = 75,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Poison,
-                    Abilities = new PBEAbility[] { PBEAbility.Swarm, PBEAbility.Sniper },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 29.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    65, 80, 40, 45, 80, 75,
+                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1,
+                    1, false, 29.5,
+                    new PBESpecies[] { PBESpecies.Weedle, PBESpecies.Kakuna },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Swarm, PBEAbility.Sniper },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Agility, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Agility, 40, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -3094,7 +3098,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Twineedle, 16, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Twineedle, 20, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.Levelup_XD)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -3152,20 +3156,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Venoshock, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Blastoise,
                 new PBEPokemonData
-                {
-                    HP = 79, Attack = 83, Defense = 100, SpAttack = 85, SpDefense = 105, Speed = 78,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Torrent, PBEAbility.RainDish },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 85.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    79, 83, 100, 85, 105, 78,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 85.5,
+                    new PBESpecies[] { PBESpecies.Squirtle, PBESpecies.Wartortle },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Torrent, PBEAbility.RainDish },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, 32, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Bite, 16, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -3194,7 +3197,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Withdraw, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Withdraw, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaJet, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.AquaRing, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -3281,20 +3284,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Blaziken,
                 new PBEPokemonData
-                {
-                    HP = 80, Attack = 120, Defense = 70, SpAttack = 110, SpDefense = 70, Speed = 80,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Fire, Type2 = PBEType.Fighting,
-                    Abilities = new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SpeedBoost },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 52.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    80, 120, 70, 110, 70, 80,
+                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1,
+                    1, false, 52.0,
+                    new PBESpecies[] { PBESpecies.Torchic, PBESpecies.Combusken },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SpeedBoost },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BlazeKick, 36, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.BraveBird, 49, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -3316,7 +3318,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SkyUppercut, 59, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Slash, 42, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -3408,20 +3410,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Blissey,
                 new PBEPokemonData
-                {
-                    HP = 255, Attack = 10, Defense = 10, SpAttack = 75, SpDefense = 135, Speed = 55,
-                    GenderRatio = PBEGenderRatio.M0_F1,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace, PBEAbility.Healer },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 46.8,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    255, 10, 10, 75, 135, 55,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F1,
+                    1, false, 46.8,
+                    new PBESpecies[] { PBESpecies.Happiny, PBESpecies.Chansey },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace, PBEAbility.Healer },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Bestow, 20, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.DefenseCurl, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -3460,7 +3461,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.TailWhip, 5, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.TakeDown, 27, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Aromatherapy, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -3560,20 +3561,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Bouffalant,
                 new PBEPokemonData
-                {
-                    HP = 95, Attack = 110, Defense = 95, SpAttack = 40, SpDefense = 95, Speed = 55,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Reckless, PBEAbility.SapSipper, PBEAbility.Soundproof },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 94.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    95, 110, 95, 40, 95, 55,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 94.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Reckless, PBEAbility.SapSipper, PBEAbility.Soundproof },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                        Tuple.Create(PBEMove.FocusEnergy, 36, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        //Tuple.Create(PBEMove.FuryAttack, 11, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -3590,7 +3590,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                        Tuple.Create(PBEMove.SwordsDance, 56, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        //Tuple.Create(PBEMove.Thrash, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Amnesia, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -3640,20 +3640,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Bulbasaur,
                 new PBEPokemonData
-                {
-                    HP = 45, Attack = 49, Defense = 49, SpAttack = 65, SpDefense = 65, Speed = 45,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Grass, Type2 = PBEType.Poison,
-                    Abilities = new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Chlorophyll },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 6.9,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    45, 49, 49, 65, 65, 45,
+                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M7_F1,
+                    1, false, 6.9,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Ivysaur, PBESpecies.Venusaur },
+                    new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Chlorophyll },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.DoubleEdge, 27, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Growl, 3, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -3679,7 +3678,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.VineWhip, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         //Tuple.Create(PBEMove.WorrySeed, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Amnesia, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -3742,20 +3741,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Venoshock, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Butterfree,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 45, Defense = 50, SpAttack = 80, SpDefense = 80, Speed = 70,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Flying,
-                    Abilities = new PBEAbility[] { PBEAbility.Compoundeyes, PBEAbility.TintedLens },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 32.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 45, 50, 80, 80, 70,
+                    PBEType.Bug, PBEType.Flying, PBEGenderRatio.M1_F1,
+                    1, false, 32.0,
+                    new PBESpecies[] { PBESpecies.Caterpie, PBESpecies.Metapod },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Compoundeyes, PBEAbility.TintedLens },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BugBuzz, 40, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         Tuple.Create(PBEMove.BugBuzz, 42, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -3785,7 +3783,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Whirlwind, 22, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Whirlwind, 23, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -3841,20 +3839,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Venoshock, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Carracosta,
                 new PBEPokemonData
-                {
-                    HP = 74, Attack = 108, Defense = 133, SpAttack = 83, SpDefense = 65, Speed = 32,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.Rock,
-                    Abilities = new PBEAbility[] { PBEAbility.SolidRock, PBEAbility.Sturdy, PBEAbility.SwiftSwim },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 81.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    74, 108, 133, 83, 65, 32,
+                    PBEType.Water, PBEType.Rock, PBEGenderRatio.M7_F1,
+                    1, false, 81.0,
+                    new PBESpecies[] { PBESpecies.Tirtouga },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.SolidRock, PBEAbility.Sturdy, PBEAbility.SwiftSwim },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, 18, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AquaJet, 15, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -3876,7 +3873,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WideGuard, 25, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Withdraw, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
@@ -3932,53 +3929,51 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Whirlpool, PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Caterpie,
                 new PBEPokemonData
-                {
-                    HP = 45, Attack = 30, Defense = 35, SpAttack = 20, SpDefense = 20, Speed = 45,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.ShieldDust, PBEAbility.RunAway },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 2.9,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    45, 30, 35, 20, 20, 45,
+                    PBEType.Bug, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 2.9,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Metapod, PBESpecies.Butterfree },
+                    new PBEAbility[] { PBEAbility.ShieldDust, PBEAbility.RunAway },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Bite, 15, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.StringShot, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.Electroweb, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.StringShot, PBEMoveObtainMethod.MoveTutor_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Chandelure,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 55, Defense = 90, SpAttack = 145, SpDefense = 90, Speed = 80,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Ghost, Type2 = PBEType.Fire,
-                    Abilities = new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.FlameBody, PBEAbility.ShadowTag },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 34.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 55, 90, 145, 90, 80,
+                    PBEType.Ghost, PBEType.Fire, PBEGenderRatio.M1_F1,
+                    1, false, 34.3,
+                    new PBESpecies[] { PBESpecies.Litwick, PBESpecies.Lampent },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.FlameBody, PBEAbility.ShadowTag },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.ConfuseRay, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.FlameBurst, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Hex, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Smog, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Acid, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.AcidArmor, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -4030,20 +4025,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Chansey,
                 new PBEPokemonData
-                {
-                    HP = 250, Attack = 5, Defense = 5, SpAttack = 35, SpDefense = 105, Speed = 50,
-                    GenderRatio = PBEGenderRatio.M0_F1,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace, PBEAbility.Healer },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 34.6,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    250, 5, 5, 35, 105, 50,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F1,
+                    1, false, 34.6,
+                    new PBESpecies[] { PBESpecies.Happiny },
+                    new PBESpecies[] { PBESpecies.Blissey },
+                    new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace, PBEAbility.Healer },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Bestow, 20, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.DefenseCurl, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -4080,7 +4074,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.TailWhip, 5, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.TakeDown, 27, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Aromatherapy, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -4177,20 +4171,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Charizard,
                 new PBEPokemonData
-                {
-                    HP = 78, Attack = 84, Defense = 78, SpAttack = 109, SpDefense = 85, Speed = 100,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Fire, Type2 = PBEType.Flying,
-                    Abilities = new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SolarPower },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 90.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    78, 84, 78, 109, 85, 100,
+                    PBEType.Fire, PBEType.Flying, PBEGenderRatio.M7_F1,
+                    1, false, 90.5,
+                    new PBESpecies[] { PBESpecies.Charmander, PBESpecies.Charmeleon },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SolarPower },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AirSlash, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.DragonClaw, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -4229,7 +4222,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SmokeScreen, 20, PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG),
                         Tuple.Create(PBEMove.WingAttack, 36, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -4319,20 +4312,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Charmander,
                 new PBEPokemonData
-                {
-                    HP = 39, Attack = 52, Defense = 43, SpAttack = 60, SpDefense = 50, Speed = 65,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Fire, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SolarPower },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 8.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    39, 52, 43, 60, 50, 65,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 8.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Charmeleon, PBESpecies.Charizard },
+                    new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SolarPower },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.DragonRage, 16, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.DragonRage, 43, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.Levelup_XD),
@@ -4359,7 +4351,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SmokeScreen, 13, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.SmokeScreen, 19, PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -4431,20 +4423,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Charmeleon,
                 new PBEPokemonData
-                {
-                    HP = 58, Attack = 64, Defense = 58, SpAttack = 80, SpDefense = 65, Speed = 80,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Fire, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SolarPower },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 19.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    58, 64, 58, 80, 65, 80,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 19.0,
+                    new PBESpecies[] { PBESpecies.Charmander },
+                    new PBESpecies[] { PBESpecies.Charizard },
+                    new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SolarPower },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.DragonRage, 17, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.DragonRage, 48, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.Levelup_XD),
@@ -4472,7 +4463,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SmokeScreen, 13, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.SmokeScreen, 20, PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -4544,28 +4535,27 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Clamperl,
                 new PBEPokemonData
-                {
-                    HP = 35, Attack = 64, Defense = 85, SpAttack = 74, SpDefense = 55, Speed = 32,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.ShellArmor, PBEAbility.Rattled },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 52.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    35, 64, 85, 74, 55, 32,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 52.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { /*PBESpecies.Huntail, PBESpecies.Gorebyss*/ },
+                    new PBEAbility[] { PBEAbility.ShellArmor, PBEAbility.Rattled },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Clamp, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.IronDefense, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ShellSmash, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.WaterGun, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.Whirlpool, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Whirlpool, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.AquaRing, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -4581,7 +4571,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Endure, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Facade, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						Tuple.Create(PBEMove.Hail, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Hail, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.IceBeam, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.IcyWind, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -4608,20 +4598,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
 						//Tuple.Create(PBEMove.Whirlpool, PBEMoveObtainMethod.HM_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Cofagrigus,
                 new PBEPokemonData
-                {
-                    HP = 58, Attack = 50, Defense = 145, SpAttack = 95, SpDefense = 105, Speed = 30,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Ghost, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Mummy },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 76.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    58, 50, 145, 95, 105, 30,
+                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 76.5,
+                    new PBESpecies[] { /*PBESpecies.Yamask*/ },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Mummy },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Curse, 29, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -4642,7 +4631,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ShadowBall, 39, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, 21, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.AfterYou, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
@@ -4696,22 +4685,21 @@ namespace Kermalis.PokemonBattleEngine.Data
 						//Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BWB2W2),
-						//Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
+						//Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Combusken,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 85, Defense = 60, SpAttack = 85, SpDefense = 60, Speed = 55,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Fire, Type2 = PBEType.Fighting,
-                    Abilities = new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SpeedBoost },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 19.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 85, 60, 85, 60, 55,
+                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1,
+                    1, false, 19.5,
+                    new PBESpecies[] { PBESpecies.Torchic },
+                    new PBESpecies[] { PBESpecies.Blaziken },
+                    new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SpeedBoost },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BulkUp, 28, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.DoubleKick, 16, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -4729,7 +4717,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SkyUppercut, 50, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Slash, 39, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Agility, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -4808,20 +4796,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Cradily,
                 new PBEPokemonData
-                {
-                    HP = 86, Attack = 81, Defense = 97, SpAttack = 81, SpDefense = 107, Speed = 43,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Rock, Type2 = PBEType.Grass,
-                    Abilities = new PBEAbility[] { PBEAbility.SuctionCups, PBEAbility.StormDrain },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 60.4,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    86, 81, 97, 81, 107, 43,
+                    PBEType.Rock, PBEType.Grass, PBEGenderRatio.M7_F1,
+                    1, false, 60.4,
+                    new PBESpecies[] { PBESpecies.Lileep },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.SuctionCups, PBEAbility.StormDrain },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Acid, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Acid, 8, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -4848,7 +4835,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Swallow, 66, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.WringOut, 76, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -4915,20 +4902,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.WringOut, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Cresselia,
                 new PBEPokemonData
-                {
-                    HP = 120, Attack = 70, Defense = 120, SpAttack = 75, SpDefense = 130, Speed = 85,
-                    GenderRatio = PBEGenderRatio.M0_F1,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 85.6,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    120, 70, 120, 75, 130, 85,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F1,
+                    1, false, 85.6,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AuroraBeam, 29, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -4943,7 +4929,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Safeguard, 11, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Slash, 47, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -4999,20 +4985,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Crobat,
                 new PBEPokemonData
-                {
-                    HP = 85, Attack = 90, Defense = 80, SpAttack = 70, SpDefense = 80, Speed = 130,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Poison, Type2 = PBEType.Flying,
-                    Abilities = new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Infiltrator },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 75.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    85, 90, 80, 70, 80, 130,
+                    PBEType.Poison, PBEType.Flying, PBEGenderRatio.M1_F1,
+                    1, false, 75.0,
+                    new PBESpecies[] { /*PBESpecies.Zubat, PBESpecies.Golbat*/ },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Infiltrator },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, 33, PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Acrobatics, 39, PBEMoveObtainMethod.LevelUp_BW),
@@ -5057,7 +5042,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WingAttack, 17, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.WingAttack, 21, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -5123,20 +5108,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Cryogonal,
                 new PBEPokemonData
-                {
-                    HP = 70, Attack = 50, Defense = 30, SpAttack = 95, SpDefense = 135, Speed = 105,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Ice, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 148.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    70, 50, 30, 95, 135, 105,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 148.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AcidArmor, 29, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AuroraBeam, 25, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -5157,7 +5141,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Slash, 41, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.SolarBeam, 53, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
@@ -5193,20 +5177,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Cubone,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 50, Defense = 95, SpAttack = 40, SpDefense = 50, Speed = 35,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Ground, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.RockHead, PBEAbility.Lightningrod, PBEAbility.BattleArmor },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 6.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 50, 95, 40, 50, 35,
+                    PBEType.Ground, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 6.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Marowak },
+                    new PBEAbility[] { PBEAbility.RockHead, PBEAbility.Lightningrod, PBEAbility.BattleArmor },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BoneClub, 7, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.BoneClub, 9, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -5235,7 +5218,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Thrash, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Thrash, 37, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -5312,20 +5295,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Darkrai,
                 new PBEPokemonData
-                {
-                    HP = 70, Attack = 90, Defense = 90, SpAttack = 135, SpDefense = 90, Speed = 125,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Dark, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.BadDreams },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 50.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    70, 90, 90, 135, 90, 125,
+                    PBEType.Dark, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 50.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.BadDreams },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.DarkPulse, 93, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.DarkVoid, 66, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -5343,7 +5325,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Pursuit, 29, PBEMoveObtainMethod.LevelUp_DP),
                         Tuple.Create(PBEMove.QuickAttack, 11, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
 						//Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -5419,20 +5401,19 @@ namespace Kermalis.PokemonBattleEngine.Data
 						//Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Deino,
                 new PBEPokemonData
-                {
-                    HP = 52, Attack = 65, Defense = 50, SpAttack = 45, SpDefense = 50, Speed = 38,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Dark, Type2 = PBEType.Dragon,
-                    Abilities = new PBEAbility[] { PBEAbility.Hustle },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 17.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    52, 65, 50, 45, 50, 38,
+                    PBEType.Dark, PBEType.Dragon, PBEGenderRatio.M1_F1,
+                    1, false, 17.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Zweilous, PBESpecies.Hydreigon },
+                    new PBEAbility[] { PBEAbility.Hustle },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                        Tuple.Create(PBEMove.Bite, 9, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.BodySlam, 48, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -5451,7 +5432,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                        Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.WorkUp, 38, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Assurance, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -5500,28 +5481,27 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Delcatty,
                 new PBEPokemonData
-                {
-                    HP = 70, Attack = 65, Defense = 65, SpAttack = 55, SpDefense = 55, Speed = 70,
-                    GenderRatio = PBEGenderRatio.M1_F3,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.CuteCharm, PBEAbility.Normalize, PBEAbility.WonderSkin },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 32.6,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    70, 65, 65, 55, 55, 70,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F3,
+                    1, false, 32.6,
+                    new PBESpecies[] { PBESpecies.Skitty },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.CuteCharm, PBEAbility.Normalize, PBEAbility.WonderSkin },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.DoubleSlap, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.FakeOut, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Growl, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
-                        Tuple.Create(PBEMove.Sing, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Sing, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.BatonPass, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -5595,20 +5575,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Dialga,
                 new PBEPokemonData
-                {
-                    HP = 100, Attack = 120, Defense = 120, SpAttack = 150, SpDefense = 100, Speed = 90,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Steel, Type2 = PBEType.Dragon,
-                    Abilities = new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 683.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    100, 120, 120, 150, 100, 90,
+                    PBEType.Steel, PBEType.Dragon, PBEGenderRatio.M0_F0,
+                    1, false, 683.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, 10, PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AncientPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt),
@@ -5634,7 +5613,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Slash, 15, PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Slash, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -5707,41 +5686,39 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Ditto,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 48, Defense = 48, SpAttack = 48, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Limber, PBEAbility.Imposter },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 4.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 48, 48, 48, 48, 48,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 4.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Limber, PBEAbility.Imposter },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Transform, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Druddigon,
                 new PBEPokemonData
-                {
-                    HP = 77, Attack = 120, Defense = 90, SpAttack = 60, SpDefense = 90, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Dragon, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.RoughSkin, PBEAbility.SheerForce, PBEAbility.MoldBreaker },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 139.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    77, 120, 90, 60, 90, 48,
+                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 139.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.RoughSkin, PBEAbility.SheerForce, PBEAbility.MoldBreaker },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Bite, 9, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.ChipAway, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -5760,7 +5737,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Slash, 21, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Superpower, 55, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -5832,20 +5809,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Eevee,
                 new PBEPokemonData
-                {
-                    HP = 55, Attack = 55, Defense = 50, SpAttack = 45, SpDefense = 65, Speed = 55,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.RunAway, PBEAbility.Adaptability, PBEAbility.Anticipation },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 6.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    55, 55, 50, 45, 65, 55,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 6.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Vaporeon, PBESpecies.Jolteon, PBESpecies.Flareon, PBESpecies.Espeon, PBESpecies.Umbreon, PBESpecies.Leafeon, PBESpecies.Glaceon },
+                    new PBEAbility[] { PBEAbility.RunAway, PBEAbility.Adaptability, PBEAbility.Anticipation },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.BatonPass, 33, PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.BatonPass, 36, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
@@ -5874,7 +5850,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.TrumpCard, 45, PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.TrumpCard, 57, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
@@ -5924,20 +5900,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Emolga,
                 new PBEPokemonData
-                {
-                    HP = 55, Attack = 75, Defense = 60, SpAttack = 75, SpDefense = 60, Speed = 103,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.Flying,
-                    Abilities = new PBEAbility[] { PBEAbility.Static, PBEAbility.MotorDrive },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    55, 75, 60, 75, 60, 103,
+                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M1_F1,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Static, PBEAbility.MotorDrive },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, 30, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Agility, 46, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -5955,7 +5930,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderShock, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.VoltSwitch, 42, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
@@ -6001,20 +5976,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Espeon,
                 new PBEPokemonData
-                {
-                    HP = 65, Attack = 65, Defense = 60, SpAttack = 130, SpDefense = 95, Speed = 110,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Synchronize, PBEAbility.MagicBounce },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 26.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    65, 65, 60, 130, 95, 110,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 26.5,
+                    new PBESpecies[] { PBESpecies.Eevee },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Synchronize, PBEAbility.MagicBounce },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Confusion, 9, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
@@ -6048,7 +6022,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
@@ -6119,20 +6093,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Farfetchd,
                 new PBEPokemonData
-                {
-                    HP = 52, Attack = 65, Defense = 55, SpAttack = 58, SpDefense = 62, Speed = 60,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Normal, Type2 = PBEType.Flying,
-                    Abilities = new PBEAbility[] { PBEAbility.KeenEye, PBEAbility.InnerFocus, PBEAbility.Defiant },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 15.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    52, 65, 55, 58, 62, 60,
+                    PBEType.Normal, PBEType.Flying, PBEGenderRatio.M1_F1,
+                    1, false, 15.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.KeenEye, PBEAbility.InnerFocus, PBEAbility.Defiant },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, 37, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AerialAce, 13, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -6164,7 +6137,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SwordsDance, 25,  PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.SwordsDance, 31, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -6232,20 +6205,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Flareon,
                 new PBEPokemonData
-                {
-                    HP = 65, Attack = 130, Defense = 60, SpAttack = 95, SpDefense = 110, Speed = 65,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Fire, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.Guts },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 25.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    65, 130, 60, 95, 110, 65,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 25.0,
+                    new PBESpecies[] { PBESpecies.Eevee },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.Guts },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Bite, 17, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Bite, 29, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
@@ -6279,7 +6251,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Smog, 42, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.Smog, 57, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.   | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
@@ -6342,20 +6314,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Gabite,
                 new PBEPokemonData
-                {
-                    HP = 68, Attack = 90, Defense = 65, SpAttack = 50, SpDefense = 55, Speed = 82,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Dragon, Type2 = PBEType.Ground,
-                    Abilities = new PBEAbility[] { PBEAbility.SandVeil, PBEAbility.RoughSkin },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 56.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    68, 90, 65, 50, 55, 82,
+                    PBEType.Dragon, PBEType.Ground, PBEGenderRatio.M1_F1,
+                    1, false, 56.0,
+                    new PBESpecies[] { PBESpecies.Gible },
+                    new PBESpecies[] { PBESpecies.Garchomp },
+                    new PBEAbility[] { PBEAbility.SandVeil, PBEAbility.RoughSkin },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Dig, 40, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.DragonClaw, 33, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -6370,7 +6341,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -6433,20 +6404,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Garchomp,
                 new PBEPokemonData
-                {
-                    HP = 108, Attack = 130, Defense = 95, SpAttack = 80, SpDefense = 85, Speed = 102,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Dragon, Type2 = PBEType.Ground,
-                    Abilities = new PBEAbility[] { PBEAbility.SandVeil, PBEAbility.RoughSkin },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 95.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    108, 130, 95, 80, 85, 102,
+                    PBEType.Dragon, PBEType.Ground, PBEGenderRatio.M1_F1,
+                    1, false, 95.0,
+                    new PBESpecies[] { PBESpecies.Gible, PBESpecies.Gabite },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.SandVeil, PBEAbility.RoughSkin },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Crunch, 48, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Dig, 40, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -6465,7 +6435,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -6539,20 +6509,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Whirlpool, PBEMoveObtainMethod.HM_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Genesect,
                 new PBEPokemonData
-                {
-                    HP = 71, Attack = 120, Defense = 95, SpAttack = 120, SpDefense = 95, Speed = 99,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Steel,
-                    Abilities = new PBEAbility[] { PBEAbility.Download },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 82.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    71, 120, 95, 120, 95, 99,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
+                    1, false, 82.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Download },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BugBuzz, 55, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.FlameCharge, 18, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -6574,7 +6543,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZapCannon, 66, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_BWB2W22),
@@ -6630,20 +6599,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Genesect_Burn,
                 new PBEPokemonData
-                {
-                    HP = 71, Attack = 120, Defense = 95, SpAttack = 120, SpDefense = 95, Speed = 99,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Steel,
-                    Abilities = new PBEAbility[] { PBEAbility.Download },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 82.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    71, 120, 95, 120, 95, 99,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
+                    1, false, 82.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Download },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BugBuzz, 55, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.FlameCharge, 18, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -6665,7 +6633,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZapCannon, 66, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_BWB2W22),
@@ -6721,20 +6689,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Genesect_Chill,
                 new PBEPokemonData
-                {
-                    HP = 71, Attack = 120, Defense = 95, SpAttack = 120, SpDefense = 95, Speed = 99,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Steel,
-                    Abilities = new PBEAbility[] { PBEAbility.Download },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 82.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    71, 120, 95, 120, 95, 99,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
+                    1, false, 82.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Download },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BugBuzz, 55, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.FlameCharge, 18, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -6756,7 +6723,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZapCannon, 66, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_BWB2W22),
@@ -6812,20 +6779,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Genesect_Douse,
                 new PBEPokemonData
-                {
-                    HP = 71, Attack = 120, Defense = 95, SpAttack = 120, SpDefense = 95, Speed = 99,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Steel,
-                    Abilities = new PBEAbility[] { PBEAbility.Download },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 82.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    71, 120, 95, 120, 95, 99,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
+                    1, false, 82.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Download },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BugBuzz, 55, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.FlameCharge, 18, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -6847,7 +6813,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZapCannon, 66, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_BWB2W22),
@@ -6903,20 +6869,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Genesect_Shock,
                 new PBEPokemonData
-                {
-                    HP = 71, Attack = 120, Defense = 95, SpAttack = 120, SpDefense = 95, Speed = 99,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Steel,
-                    Abilities = new PBEAbility[] { PBEAbility.Download },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 82.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    71, 120, 95, 120, 95, 99,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
+                    1, false, 82.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Download },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BugBuzz, 55, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.FlameCharge, 18, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -6938,7 +6903,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZapCannon, 66, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_BWB2W22),
@@ -6994,20 +6959,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Gible,
                 new PBEPokemonData
-                {
-                    HP = 58, Attack = 70, Defense = 45, SpAttack = 40, SpDefense = 45, Speed = 42,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Dragon, Type2 = PBEType.Ground,
-                    Abilities = new PBEAbility[] { PBEAbility.SandVeil, PBEAbility.RoughSkin },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 20.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    58, 70, 45, 40, 45, 42,
+                    PBEType.Dragon, PBEType.Ground, PBEGenderRatio.M1_F1,
+                    1, false, 20.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Gabite, PBESpecies.Garchomp },
+                    new PBEAbility[] { PBEAbility.SandVeil, PBEAbility.RoughSkin },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Dig, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.DragonClaw, 27, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -7020,7 +6984,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -7082,20 +7046,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Giratina,
                 new PBEPokemonData
-                {
-                    HP = 150, Attack = 100, Defense = 120, SpAttack = 100, SpDefense = 120, Speed = 90,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Ghost, Type2 = PBEType.Dragon,
-                    Abilities = new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 750.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    150, 100, 120, 100, 120, 90,
+                    PBEType.Ghost, PBEType.Dragon, PBEGenderRatio.M0_F0,
+                    1, false, 750.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, 10, PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AncientPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt),
@@ -7120,7 +7083,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Slash, 15, PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Slash, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -7197,20 +7160,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Giratina_Origin,
                 new PBEPokemonData
-                {
-                    HP = 150, Attack = 120, Defense = 100, SpAttack = 120, SpDefense = 100, Speed = 90,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Ghost, Type2 = PBEType.Dragon,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 650.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    150, 100, 120, 100, 120, 90,
+                    PBEType.Ghost, PBEType.Dragon, PBEGenderRatio.M0_F0,
+                    1, false, 750.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, 10, PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AncientPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt),
@@ -7235,7 +7197,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Slash, 15, PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Slash, 70, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -7313,20 +7275,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Glaceon,
                 new PBEPokemonData
-                {
-                    HP = 65, Attack = 60, Defense = 110, SpAttack = 130, SpDefense = 95, Speed = 65,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Ice, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.SnowCloak, PBEAbility.IceBody },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 25.9,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    65, 60, 110, 130, 95, 65,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 25.9,
+                    new PBESpecies[] { PBESpecies.Eevee },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.SnowCloak, PBEAbility.IceBody },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Barrier, 29, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Barrier, 78, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
@@ -7354,7 +7315,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -7415,20 +7376,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Golduck,
                 new PBEPokemonData
-                {
-                    HP = 80, Attack = 82, Defense = 78, SpAttack = 95, SpDefense = 80, Speed = 85,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Damp, PBEAbility.CloudNine, PBEAbility.SwiftSwim },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 76.6,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    80, 82, 78, 95, 80, 85,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 76.6,
+                    new PBESpecies[] { PBESpecies.Psyduck },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Damp, PBEAbility.CloudNine, PBEAbility.SwiftSwim },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Amnesia, 49, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Amnesia, 50, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
@@ -7474,7 +7434,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ZenHeadbutt, 44, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         Tuple.Create(PBEMove.ZenHeadbutt, 50, PBEMoveObtainMethod.LevelUp_BW)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -7560,20 +7520,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Gothita,
                 new PBEPokemonData
-                {
-                    HP = 45, Attack = 30, Defense = 50, SpAttack = 55, SpDefense = 65, Speed = 45,
-                    GenderRatio = PBEGenderRatio.M1_F3,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Frisk, PBEAbility.ShadowTag },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.8,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    45, 30, 50, 55, 65, 45,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M1_F3,
+                    1, false, 5.8,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Gothorita, PBESpecies.Gothitelle },
+                    new PBEAbility[] { PBEAbility.Frisk, PBEAbility.ShadowTag },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Charm, 46, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 3, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -7592,7 +7551,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Telekinesis, 40, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tickle, 7, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_BWB2W2),
@@ -7655,20 +7614,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.EggMove_BWB2W2 | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Gothitelle,
                 new PBEPokemonData
-                {
-                    HP = 70, Attack = 55, Defense = 95, SpAttack = 95, SpDefense = 110, Speed = 65,
-                    GenderRatio = PBEGenderRatio.M1_F3,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Frisk, PBEAbility.ShadowTag },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 44.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    70, 55, 95, 95, 110, 65,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M1_F3,
+                    1, false, 44.0,
+                    new PBESpecies[] { PBESpecies.Gothita, PBESpecies.Gothorita },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Frisk, PBEAbility.ShadowTag },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Charm, 54, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -7690,7 +7648,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tickle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tickle, 7, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BrickBreak, PBEMoveObtainMethod.TM_BWB2W2),
@@ -7757,20 +7715,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.EggMove_BWB2W2 | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Gothorita,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 45, Defense = 70, SpAttack = 75, SpDefense = 85, Speed = 55,
-                    GenderRatio = PBEGenderRatio.M1_F3,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Frisk, PBEAbility.ShadowTag },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 18.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 45, 70, 75, 85, 55,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M1_F3,
+                    1, false, 18.0,
+                    new PBESpecies[] { PBESpecies.Gothita },
+                    new PBESpecies[] { PBESpecies.Gothitelle },
+                    new PBEAbility[] { PBEAbility.Frisk, PBEAbility.ShadowTag },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Charm, 50, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -7792,7 +7749,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tickle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tickle, 7, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_BWB2W2),
@@ -7855,20 +7812,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.EggMove_BWB2W2 | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Gyarados,
                 new PBEPokemonData
-                {
-                    HP = 95, Attack = 125, Defense = 79, SpAttack = 60, SpDefense = 100, Speed = 81,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.Flying,
-                    Abilities = new PBEAbility[] { PBEAbility.Intimidate, PBEAbility.Moxie },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 235.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    95, 125, 79, 60, 100, 81,
+                    PBEType.Water, PBEType.Flying, PBEGenderRatio.M1_F1,
+                    1, false, 235.0,
+                    new PBESpecies[] { PBESpecies.Magikarp },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Intimidate, PBEAbility.Moxie },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, 35, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Bite, 20, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -7889,7 +7845,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Twister, 29, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Twister, 35, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -7955,20 +7911,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS),
                         //Tuple.Create(PBEMove.Whirlpool, PBEMoveObtainMethod.HM_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Happiny,
                 new PBEPokemonData
-                {
-                    HP = 100, Attack = 5, Defense = 5, SpAttack = 15, SpDefense = 65, Speed = 30,
-                    GenderRatio = PBEGenderRatio.M0_F1,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace, PBEAbility.FriendGuard },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 24.4,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    100, 5, 5, 15, 65, 30,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F1,
+                    1, false, 24.4,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Chansey, PBESpecies.Blissey },
+                    new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace, PBEAbility.FriendGuard },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Charm, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Copycat, 5, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -7976,7 +7931,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Refresh, 9, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.SweetKiss, 12, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Aromatherapy, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -8003,7 +7958,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.HelpingHand, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.HyperVoice, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        Tuple.Create(PBEMove.IcyWind,PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.IcyWind, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Incinerate, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.LastResort, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.LightScreen, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -8023,7 +7978,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Safeguard, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.SecretPower, PBEMoveObtainMethod.TM_DPPtHGSS),
-                        Tuple.Create(PBEMove.ShadowBall,PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.ShadowBall, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ShockWave, PBEMoveObtainMethod.TM_DPPtHGSS),
                         //Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -8038,20 +7993,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Hydreigon,
                 new PBEPokemonData
-                {
-                    HP = 92, Attack = 105, Defense = 90, SpAttack = 125, SpDefense = 90, Speed = 98,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Dark, Type2 = PBEType.Dragon,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 160.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    92, 105, 90, 125, 90, 98,
+                    PBEType.Dark, PBEType.Dragon, PBEGenderRatio.M1_F1,
+                    1, false, 160.0,
+                    new PBESpecies[] { PBESpecies.Deino, PBESpecies.Zweilous },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                        Tuple.Create(PBEMove.Bite, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.Bite, 9, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -8072,7 +8026,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                        //Tuple.Create(PBEMove.TriAttack, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.WorkUp, 38, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -8145,20 +8099,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Ivysaur,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 62, Defense = 63, SpAttack = 80, SpDefense = 80, Speed = 60,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Grass, Type2 = PBEType.Poison,
-                    Abilities = new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Chlorophyll },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 13.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 62, 63, 80, 80, 60,
+                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M7_F1,
+                    1, false, 13.0,
+                    new PBESpecies[] { PBESpecies.Bulbasaur },
+                    new PBESpecies[] { PBESpecies.Venusaur },
+                    new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Chlorophyll },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.DoubleEdge, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Growl, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -8186,7 +8139,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.VineWhip, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         //Tuple.Create(PBEMove.WorrySeed, 36, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Amnesia, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -8249,20 +8202,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Venoshock, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Jirachi,
                 new PBEPokemonData
-                {
-                    HP = 100, Attack = 100, Defense = 100, SpAttack = 100, SpDefense = 100, Speed = 100,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Steel, Type2 = PBEType.Psychic,
-                    Abilities = new PBEAbility[] { PBEAbility.SereneGrace },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 1.1,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    100, 100, 100, 100, 100, 100,
+                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0,
+                    1, false, 1.1,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.SereneGrace },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Confusion, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.CosmicPower, 45, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -8285,7 +8237,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Wish, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, 35, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -8362,20 +8314,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Jolteon,
                 new PBEPokemonData
-                {
-                    HP = 65, Attack = 65, Defense = 60, SpAttack = 110, SpDefense = 95, Speed = 130,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.VoltAbsorb, PBEAbility.QuickFeet },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 24.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    65, 65, 60, 110, 95, 130,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 24.5,
+                    new PBESpecies[] { PBESpecies.Eevee },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.VoltAbsorb, PBEAbility.QuickFeet },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Agility, 29, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Agility, 47, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -8409,7 +8360,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, 42, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.ThunderWave, 57, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
@@ -8475,45 +8426,43 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Kakuna,
                 new PBEPokemonData
-                {
-                    HP = 45, Attack = 25, Defense = 50, SpAttack = 25, SpDefense = 25, Speed = 35,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Poison,
-                    Abilities = new PBEAbility[] { PBEAbility.ShedSkin },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 10.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    45, 25, 50, 25, 25, 35,
+                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1,
+                    1, false, 10.0,
+                    new PBESpecies[] { PBESpecies.Weedle },
+                    new PBESpecies[] { PBESpecies.Beedrill },
+                    new PBEAbility[] { PBEAbility.ShedSkin },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Harden, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Harden, 7, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.Electroweb, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.IronDefense, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.StringShot, PBEMoveObtainMethod.MoveTutor_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Lampent,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 40, Defense = 60, SpAttack = 95, SpDefense = 60, Speed = 55,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Ghost, Type2 = PBEType.Fire,
-                    Abilities = new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.FlameBody, PBEAbility.ShadowTag },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 13.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 40, 60, 95, 60, 55,
+                    PBEType.Ghost, PBEType.Fire, PBEGenderRatio.M1_F1,
+                    1, false, 13.0,
+                    new PBESpecies[] { PBESpecies.Litwick },
+                    new PBESpecies[] { PBESpecies.Chandelure },
+                    new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.FlameBody, PBEAbility.ShadowTag },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ConfuseRay, 10, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -8535,7 +8484,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Smog, 5, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, 16, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Acid, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.AcidArmor, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -8585,20 +8534,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Larvesta,
                 new PBEPokemonData
-                {
-                    HP = 55, Attack = 85, Defense = 55, SpAttack = 50, SpDefense = 55, Speed = 60,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Fire,
-                    Abilities = new PBEAbility[] { PBEAbility.FlameBody, PBEAbility.Swarm },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 28.8,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    55, 85, 55, 50, 55, 60,
+                    PBEType.Bug, PBEType.Fire, PBEGenderRatio.M1_F1,
+                    1, false, 28.8,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Volcarona },
+                    new PBEAbility[] { PBEAbility.FlameBody, PBEAbility.Swarm },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Amnesia, 80, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.BugBite, 40, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -8613,7 +8561,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.TakeDown, 20, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Thrash, 90, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -8656,20 +8604,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Latias,
                 new PBEPokemonData
-                {
-                    HP = 80, Attack = 80, Defense = 90, SpAttack = 110, SpDefense = 130, Speed = 110,
-                    GenderRatio = PBEGenderRatio.M0_F1,
-                    Type1 = PBEType.Dragon, Type2 = PBEType.Psychic,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 40.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    80, 80, 90, 110, 130, 110,
+                    PBEType.Dragon, PBEType.Psychic, PBEGenderRatio.M0_F1,
+                    1, false, 40.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Charm, 50, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.Charm, 55, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -8695,7 +8642,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Wish, 5, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, 40, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -8780,20 +8727,19 @@ namespace Kermalis.PokemonBattleEngine.Data
 						//Tuple.Create(PBEMove.Whirlpool, PBEMoveObtainMethod.HM_HGSS),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Latios,
                 new PBEPokemonData
-                {
-                    HP = 80, Attack = 90, Defense = 80, SpAttack = 130, SpDefense = 110, Speed = 110,
-                    GenderRatio = PBEGenderRatio.M1_F0,
-                    Type1 = PBEType.Dragon, Type2 = PBEType.Psychic,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 60.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    80, 90, 80, 130, 110, 110,
+                    PBEType.Dragon, PBEType.Psychic, PBEGenderRatio.M1_F0,
+                    1, false, 60.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.DragonBreath, 20, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.DragonDance, 50, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -8820,7 +8766,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Telekinesis, 70, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, 40, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -8870,7 +8816,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Retaliate, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Return, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-						Tuple.Create(PBEMove.Roar, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Roar, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Roost, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Safeguard, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -8902,20 +8848,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Leafeon,
                 new PBEPokemonData
-                {
-                    HP = 65, Attack = 110, Defense = 130, SpAttack = 60, SpDefense = 65, Speed = 95,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Grass, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.LeafGuard, PBEAbility.Chlorophyll },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 25.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    65, 110, 130, 60, 65, 95,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 25.5,
+                    new PBESpecies[] { PBESpecies.Eevee },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.LeafGuard, PBEAbility.Chlorophyll },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.GigaDrain, 25, PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.GigaDrain, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
@@ -8943,7 +8888,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -9009,20 +8954,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Lileep,
                 new PBEPokemonData
-                {
-                    HP = 66, Attack = 41, Defense = 77, SpAttack = 61, SpDefense = 87, Speed = 23,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Rock, Type2 = PBEType.Grass,
-                    Abilities = new PBEAbility[] { PBEAbility.SuctionCups, PBEAbility.StormDrain },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 23.8,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    66, 41, 77, 61, 87, 23,
+                    PBEType.Rock, PBEType.Grass, PBEGenderRatio.M7_F1,
+                    1, false, 23.8,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Cradily },
+                    new PBEAbility[] { PBEAbility.SuctionCups, PBEAbility.StormDrain },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Acid, 8, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Acid, 15, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -9046,7 +8990,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Swallow, 57, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.WringOut, 64, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -9103,20 +9047,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.WringOut, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Litwick,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 30, Defense = 55, SpAttack = 65, SpDefense = 55, Speed = 20,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Ghost, Type2 = PBEType.Fire,
-                    Abilities = new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.FlameBody, PBEAbility.ShadowTag },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 3.1,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 30, 55, 65, 55, 20,
+                    PBEType.Ghost, PBEType.Fire, PBEGenderRatio.M1_F1,
+                    1, false, 3.1,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Lampent, PBESpecies.Chandelure },
+                    new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.FlameBody, PBEAbility.ShadowTag },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ConfuseRay, 10, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -9136,7 +9079,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Smog, 5, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, 16, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Acid, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.AcidArmor, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -9186,20 +9129,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Lucario,
                 new PBEPokemonData
-                {
-                    HP = 70, Attack = 110, Defense = 70, SpAttack = 115, SpDefense = 70, Speed = 90,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Fighting, Type2 = PBEType.Steel,
-                    Abilities = new PBEAbility[] { PBEAbility.Steadfast, PBEAbility.InnerFocus, PBEAbility.Justified },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 54.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    70, 110, 70, 115, 70, 90,
+                    PBEType.Fighting, PBEType.Steel, PBEGenderRatio.M7_F1,
+                    1, false, 54.0,
+                    new PBESpecies[] { PBESpecies.Riolu },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Steadfast, PBEAbility.InnerFocus, PBEAbility.Justified },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AuraSphere, 37, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         Tuple.Create(PBEMove.AuraSphere, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -9230,7 +9172,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SwordsDance, 33, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         Tuple.Create(PBEMove.SwordsDance, 37, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Agility, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -9313,20 +9255,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Luxio,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 85, Defense = 49, SpAttack = 60, SpDefense = 49, Speed = 60,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.Intimidate, PBEAbility.Guts },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 30.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 85, 49, 60, 49, 60,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 30.5,
+                    new PBESpecies[] { PBESpecies.Shinx },
+                    new PBESpecies[] { PBESpecies.Luxray },
+                    new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.Intimidate, PBEAbility.Guts },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Bite, 13, PBEMoveObtainMethod.LevelUp_DP),
                         Tuple.Create(PBEMove.Bite, 18, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -9346,7 +9287,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.ThunderFang, 38, PBEMoveObtainMethod.LevelUp_DP),
                         //Tuple.Create(PBEMove.WildCharge, 53, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Captivate, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -9397,20 +9338,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Luxray,
                 new PBEPokemonData
-                {
-                    HP = 80, Attack = 120, Defense = 79, SpAttack = 95, SpDefense = 79, Speed = 70,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.Intimidate, PBEAbility.Guts },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 42.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    80, 120, 79, 95, 79, 70,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 42.0,
+                    new PBESpecies[] { PBESpecies.Shinx, PBESpecies.Luxio },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.Intimidate, PBEAbility.Guts },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Bite, 13, PBEMoveObtainMethod.LevelUp_DP),
                         Tuple.Create(PBEMove.Bite, 18, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -9431,7 +9371,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.ThunderFang, 42, PBEMoveObtainMethod.LevelUp_DP),
                         //Tuple.Create(PBEMove.WildCharge, 63, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Captivate, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -9485,43 +9425,41 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Magikarp,
                 new PBEPokemonData
-                {
-                    HP = 20, Attack = 10, Defense = 55, SpAttack = 15, SpDefense = 20, Speed = 80,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.SwiftSwim, PBEAbility.Rattled },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 10.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    20, 10, 55, 15, 20, 80,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 10.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Gyarados },
+                    new PBEAbility[] { PBEAbility.SwiftSwim, PBEAbility.Rattled },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Flail, 30, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Splash, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tackle, 15, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Bounce, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Marowak,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 80, Defense = 110, SpAttack = 50, SpDefense = 80, Speed = 45,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Ground, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.RockHead, PBEAbility.Lightningrod, PBEAbility.BattleArmor },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 45.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 80, 110, 50, 80, 45,
+                    PBEType.Ground, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 45.0,
+                    new PBESpecies[] { PBESpecies.Cubone },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.RockHead, PBEAbility.Lightningrod, PBEAbility.BattleArmor },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BoneClub, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.BoneClub, 7, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -9553,7 +9491,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Thrash, 33, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Thrash, 46, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -9635,20 +9573,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Mesprit,
                 new PBEPokemonData
-                {
-                    HP = 80, Attack = 105, Defense = 105, SpAttack = 105, SpDefense = 105, Speed = 80,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 0.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    80, 105, 105, 105, 105, 80,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Charm, 46, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 1, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -9663,9 +9600,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Protect, 16, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Rest, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Swift, 21, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
-
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -9733,45 +9669,43 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Metapod,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 20, Defense = 55, SpAttack = 25, SpDefense = 25, Speed = 30,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.ShedSkin },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 9.9,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 20, 55, 25, 25, 30,
+                    PBEType.Bug, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 9.9,
+                    new PBESpecies[] { PBESpecies.Caterpie },
+                    new PBESpecies[] { PBESpecies.Butterfree },
+                    new PBEAbility[] { PBEAbility.ShedSkin },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Harden, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Harden, 7, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.Electroweb, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.IronDefense, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.StringShot, PBEMoveObtainMethod.MoveTutor_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Minun,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 40, Defense = 50, SpAttack = 75, SpDefense = 85, Speed = 95,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Minus },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 4.2,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 40, 50, 75, 85, 95,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 4.2,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Minus },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Agility, 44, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         Tuple.Create(PBEMove.Agility, 47, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -9810,7 +9744,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.TrumpCard, 48, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         //Tuple.Create(PBEMove.TrumpCard, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
@@ -9870,20 +9804,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Wish, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Misdreavus,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 60, Defense = 60, SpAttack = 85, SpDefense = 85, Speed = 85,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Ghost, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 1.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 60, 60, 85, 85, 85,
+                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 1.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Mismagius },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 10, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Astonish, 11, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -9915,7 +9848,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Spite, 5, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Spite, 6, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -9988,20 +9921,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.EggMove_BWB2W2 | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Mismagius,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 60, Defense = 60, SpAttack = 105, SpDefense = 105, Speed = 105,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Ghost, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 4.4,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 60, 60, 105, 105, 105,
+                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 4.4,
+                    new PBESpecies[] { PBESpecies.Misdreavus },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                        Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.Growl, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -10010,7 +9942,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                        //Tuple.Create(PBEMove.Psywave, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        //Tuple.Create(PBEMove.Spite, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -10082,20 +10014,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Nincada,
                 new PBEPokemonData
-                {
-                    HP = 31, Attack = 45, Defense = 90, SpAttack = 30, SpDefense = 30, Speed = 40,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Ground,
-                    Abilities = new PBEAbility[] { PBEAbility.Compoundeyes, PBEAbility.RunAway },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    31, 45, 90, 30, 30, 40,
+                    PBEType.Bug, PBEType.Ground, PBEGenderRatio.M1_F1,
+                    1, false, 5.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Ninjask, PBESpecies.Shedinja },
+                    new PBEAbility[] { PBEAbility.Compoundeyes, PBEAbility.RunAway },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Dig, 45, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.FalseSwipe, 25, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -10108,7 +10039,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SandAttack, 9, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Scratch, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -10153,20 +10084,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Ninetales,
                 new PBEPokemonData
-                {
-                    HP = 73, Attack = 76, Defense = 75, SpAttack = 81, SpDefense = 100, Speed = 100,
-                    GenderRatio = PBEGenderRatio.M1_F3,
-                    Type1 = PBEType.Fire, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.Drought },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 19.9,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    73, 76, 75, 81, 100, 100,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M1_F3,
+                    1, false, 19.9,
+                    new PBESpecies[] { PBESpecies.Vulpix },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.Drought },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.ConfuseRay, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Ember, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -10175,7 +10105,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.QuickAttack, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Safeguard, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
@@ -10240,20 +10170,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Ninjask,
                 new PBEPokemonData
-                {
-                    HP = 61, Attack = 90, Defense = 45, SpAttack = 50, SpDefense = 50, Speed = 160,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Flying,
-                    Abilities = new PBEAbility[] { PBEAbility.SpeedBoost, PBEAbility.Infiltrator },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 12.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    61, 90, 45, 50, 50, 160,
+                    PBEType.Bug, PBEType.Flying, PBEGenderRatio.M1_F1,
+                    1, false, 12.0,
+                    new PBESpecies[] { PBESpecies.Nincada },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.SpeedBoost, PBEAbility.Infiltrator },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Agility, 38, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.BatonPass, 45, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -10273,7 +10202,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SwordsDance, 25, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.XScissor, 52, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -10331,20 +10260,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Pachirisu,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 45, Defense = 70, SpAttack = 45, SpDefense = 90, Speed = 95,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.RunAway, PBEAbility.Pickup, PBEAbility.VoltAbsorb },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 3.9,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 45, 70, 45, 90, 95,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 3.9,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.RunAway, PBEAbility.Pickup, PBEAbility.VoltAbsorb },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Bide, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Charm, 9, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -10365,7 +10293,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Swift, 21, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ThunderWave, 33, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Bestow, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -10418,26 +10346,25 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Thunder, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ThunderPunch, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        Tuple.Create(PBEMove.ThunderWave,PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Palkia,
                 new PBEPokemonData
-                {
-                    HP = 90, Attack = 120, Defense = 100, SpAttack = 150, SpDefense = 120, Speed = 100,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Water, Type2 = PBEType.Dragon,
-                    Abilities = new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 336.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    90, 120, 100, 150, 120, 100,
+                    PBEType.Water, PBEType.Dragon, PBEGenderRatio.M0_F0,
+                    1, false, 336.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, 10, PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AncientPower, 20, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt),
@@ -10463,7 +10390,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterPulse, 6, PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.WaterPulse, 10, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -10539,20 +10466,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
                         //Tuple.Create(PBEMove.Whirlpool, PBEMoveObtainMethod.HM_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Pichu,
                 new PBEPokemonData
-                {
-                    HP = 20, Attack = 40, Defense = 15, SpAttack = 35, SpDefense = 35, Speed = 60,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 2.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    20, 40, 15, 35, 35, 60,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 2.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Pikachu, PBESpecies.Raichu },
+                    new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Charm, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.NastyPlot, 18, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -10564,7 +10490,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, 8, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.ThunderWave, 10, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Bestow, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -10630,20 +10556,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Wish, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)                       
                     }
-                }
+                )
             },
             {
                 PBESpecies.Pikachu,
                 new PBEPokemonData
-                {
-                    HP = 35, Attack = 55, Defense = 30, SpAttack = 50, SpDefense = 40, Speed = 90,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 6.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    35, 55, 30, 50, 40, 90,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 6.0,
+                    new PBESpecies[] { PBESpecies.Pichu },
+                    new PBESpecies[] { PBESpecies.Raichu },
+                    new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Agility, 33, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.Agility, 34, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
@@ -10676,7 +10601,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, 8, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.ThunderWave, 10, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Bestow, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -10747,20 +10672,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Wish, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Plusle,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 50, Defense = 40, SpAttack = 85, SpDefense = 75, Speed = 95,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Plus },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 4.2,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 50, 40, 85, 75, 95,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 4.2,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Plus },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Agility, 44, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         Tuple.Create(PBEMove.Agility, 47, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -10799,7 +10723,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, 3, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ThunderWave, 4, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
@@ -10859,20 +10783,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Wish, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Psyduck,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 52, Defense = 48, SpAttack = 65, SpDefense = 50, Speed = 55,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Damp, PBEAbility.CloudNine, PBEAbility.SwiftSwim },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 19.6,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 52, 48, 65, 50, 55,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 19.6,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Golduck },
+                    new PBEAbility[] { PBEAbility.Damp, PBEAbility.CloudNine, PBEAbility.SwiftSwim },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Amnesia, 43, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Amnesia, 44, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
@@ -10914,7 +10837,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ZenHeadbutt, 40, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         Tuple.Create(PBEMove.ZenHeadbutt, 44, PBEMoveObtainMethod.LevelUp_BW)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -10993,27 +10916,26 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Raichu,
                 new PBEPokemonData
-                {
-                    HP = 60, Attack = 90, Defense = 55, SpAttack = 90, SpDefense = 80, Speed = 110,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 30.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    60, 90, 55, 90, 80, 110,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 30.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.QuickAttack, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Thunderbolt, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ThunderShock, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Bestow, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -11088,20 +11010,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Wish, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Regirock,
                 new PBEPokemonData
-                {
-                    HP = 80, Attack = 100, Defense = 200, SpAttack = 50, SpDefense = 100, Speed = 50,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Rock, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.Sturdy },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 230.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    80, 100, 200, 50, 100, 50,
+                    PBEType.Rock, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 230.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.Sturdy },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, 33, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ChargeBeam, 49, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -11119,7 +11040,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ZapCannon, 49, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.ZapCannon, 65, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Block, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -11189,20 +11110,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Riolu,
                 new PBEPokemonData
-                {
-                    HP = 40, Attack = 70, Defense = 40, SpAttack = 35, SpDefense = 40, Speed = 60,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Fighting, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Steadfast, PBEAbility.InnerFocus, PBEAbility.Prankster },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 20.2,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    40, 70, 40, 35, 40, 60,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 20.2,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Lucario },
+                    new PBEAbility[] { PBEAbility.Steadfast, PBEAbility.InnerFocus, PBEAbility.Prankster },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Copycat, 19, PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Copycat, 29, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
@@ -11220,7 +11140,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Reversal, 29, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Screech, 24, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Agility, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -11291,20 +11211,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Rotom,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 50, Defense = 77, SpAttack = 95, SpDefense = 77, Speed = 91,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Electric, Type2 = PBEType.Ghost,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 0.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 50, 77, 95, 77, 91,
+                    PBEType.Electric, PBEType.Ghost, PBEGenderRatio.M0_F0,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Charge, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
@@ -11323,7 +11242,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Trick, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Uproar, 8, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.DarkPulse, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -11371,20 +11290,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Rotom_Fan,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 65, Defense = 107, SpAttack = 105, SpDefense = 107, Speed = 86,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Electric, Type2 = PBEType.Flying,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 0.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 65, 107, 105, 107, 86,
+                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M0_F0,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Charge, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
@@ -11403,7 +11321,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Trick, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Uproar, 8, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AirSlash, PBEMoveObtainMethod.Forme),
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -11452,20 +11370,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Rotom_Frost,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 65, Defense = 107, SpAttack = 105, SpDefense = 107, Speed = 86,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Electric, Type2 = PBEType.Ice,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 0.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 65, 107, 105, 107, 86,
+                    PBEType.Electric, PBEType.Ice, PBEGenderRatio.M0_F0,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Charge, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
@@ -11484,7 +11401,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Trick, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Uproar, 8, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.Forme),
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -11533,20 +11450,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Rotom_Heat,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 65, Defense = 107, SpAttack = 105, SpDefense = 107, Speed = 86,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Electric, Type2 = PBEType.Fire,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 0.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 65, 107, 105, 107, 86,
+                    PBEType.Electric, PBEType.Fire, PBEGenderRatio.M0_F0,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Charge, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
@@ -11565,7 +11481,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Trick, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Uproar, 8, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.DarkPulse, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -11614,20 +11530,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Rotom_Mow,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 65, Defense = 107, SpAttack = 105, SpDefense = 107, Speed = 86,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Electric, Type2 = PBEType.Grass,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 0.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 65, 107, 105, 107, 86,
+                    PBEType.Electric, PBEType.Grass, PBEGenderRatio.M0_F0,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Charge, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
@@ -11646,7 +11561,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Trick, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Uproar, 8, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.DarkPulse, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -11695,20 +11610,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Rotom_Wash,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 65, Defense = 107, SpAttack = 105, SpDefense = 107, Speed = 86,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Electric, Type2 = PBEType.Water,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 0.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 65, 107, 105, 107, 86,
+                    PBEType.Electric, PBEType.Water, PBEGenderRatio.M0_F0,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Astonish, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Charge, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
@@ -11727,7 +11641,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Trick, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Uproar, 8, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.DarkPulse, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -11776,20 +11690,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Shedinja,
                 new PBEPokemonData
-                {
-                    HP = 1, Attack = 90, Defense = 45, SpAttack = 30, SpDefense = 30, Speed = 40,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Ghost,
-                    Abilities = new PBEAbility[] { PBEAbility.WonderGuard },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 1.2,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    1, 90, 45, 30, 30, 40,
+                    PBEType.Bug, PBEType.Ghost, PBEGenderRatio.M0_F0,
+                    1, false, 1.2,
+                    new PBESpecies[] { PBESpecies.Nincada },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.WonderGuard },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.ConfuseRay, 31, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.FurySwipes, 14, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -11805,7 +11718,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ShadowSneak, 38, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Spite, 25, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -11860,20 +11773,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Shinx,
                 new PBEPokemonData
-                {
-                    HP = 45, Attack = 65, Defense = 34, SpAttack = 40, SpDefense = 34, Speed = 45,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Electric, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.Intimidate, PBEAbility.Guts },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 9.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    45, 65, 34, 40, 34, 45,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 9.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Luxio, PBESpecies.Luxray },
+                    new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.Intimidate, PBEAbility.Guts },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                        Tuple.Create(PBEMove.Bite, 13, PBEMoveObtainMethod.LevelUp_DP),
                        Tuple.Create(PBEMove.Bite, 17, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -11892,7 +11804,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                        //Tuple.Create(PBEMove.ThunderFang, 33, PBEMoveObtainMethod.LevelUp_DP),
                        //Tuple.Create(PBEMove.WildCharge, 45, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Captivate, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -11943,20 +11855,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Skitty,
                 new PBEPokemonData
-                {
-                    HP = 50, Attack = 45, Defense = 45, SpAttack = 35, SpDefense = 35, Speed = 50,
-                    GenderRatio = PBEGenderRatio.M1_F3,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.CuteCharm, PBEAbility.Normalize, PBEAbility.WonderSkin },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 11.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    50, 45, 45, 35, 35, 50,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F3,
+                    1, false, 11.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Delcatty },
+                    new PBEAbility[] { PBEAbility.CuteCharm, PBEAbility.Normalize, PBEAbility.WonderSkin },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Assist, 18, PBEMoveObtainMethod.LevelUp_DP),
                         //Tuple.Create(PBEMove.Assist, 19, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -11994,7 +11905,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WakeUpSlap, 29, PBEMoveObtainMethod.LevelUp_DP),
                         //Tuple.Create(PBEMove.WakeUpSlap, 32, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.BatonPass, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -12064,20 +11975,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Smeargle,
                 new PBEPokemonData
-                {
-                    HP = 55, Attack = 20, Defense = 35, SpAttack = 20, SpDefense = 45, Speed = 75,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Normal, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.OwnTempo, PBEAbility.Technician, PBEAbility.Moody },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 58.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    55, 20, 35, 20, 45, 75,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 58.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.OwnTempo, PBEAbility.Technician, PBEAbility.Moody },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Sketch, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Sketch, 11, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -12090,24 +12000,23 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Sketch, 81, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Sketch, 91, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Squirtle,
                 new PBEPokemonData
-                {
-                    HP = 44, Attack = 48, Defense = 65, SpAttack = 50, SpDefense = 64, Speed = 43,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Torrent, PBEAbility.RainDish },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 9.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    44, 48, 65, 50, 64, 43,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 9.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Wartortle, PBESpecies.Blastoise },
+                    new PBEAbility[] { PBEAbility.Torrent, PBEAbility.RainDish },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, 28, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Bite, 16, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -12132,7 +12041,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterPulse, 25, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Withdraw, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaJet, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.AquaRing, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -12204,20 +12113,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Tirtouga,
                 new PBEPokemonData
-                {
-                    HP = 54, Attack = 78, Defense = 103, SpAttack = 53, SpDefense = 45, Speed = 22,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.Rock,
-                    Abilities = new PBEAbility[] { PBEAbility.SolidRock, PBEAbility.Sturdy, PBEAbility.SwiftSwim },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 16.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    54, 78, 103, 53, 45, 22,
+                    PBEType.Water, PBEType.Rock, PBEGenderRatio.M7_F1,
+                    1, false, 16.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Carracosta },
+                    new PBEAbility[] { PBEAbility.SolidRock, PBEAbility.Sturdy, PBEAbility.SwiftSwim },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, 18, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AquaJet, 15, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -12238,7 +12146,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WideGuard, 25, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Withdraw, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
@@ -12288,20 +12196,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Whirlpool, PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Torchic,
                 new PBEPokemonData
-                {
-                    HP = 45, Attack = 60, Defense = 40, SpAttack = 70, SpDefense = 50, Speed = 45,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Fire, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SpeedBoost },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 2.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    45, 60, 40, 70, 50, 45,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 2.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Combusken, PBESpecies.Blaziken },
+                    new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SpeedBoost },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Ember, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.FireSpin, 25, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -12315,7 +12222,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Slash, 34, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Scratch, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Agility, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -12381,20 +12288,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Tropius,
                 new PBEPokemonData
-                {
-                    HP = 99, Attack = 68, Defense = 83, SpAttack = 72, SpDefense = 87, Speed = 51,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Grass, Type2 = PBEType.Flying,
-                    Abilities = new PBEAbility[] { PBEAbility.SolarPower, PBEAbility.Chlorophyll, PBEAbility.Harvest },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 100.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    99, 68, 83, 72, 87, 51,
+                    PBEType.Grass, PBEType.Flying, PBEGenderRatio.M1_F1,
+                    1, false, 100.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.SolarPower, PBEAbility.Chlorophyll, PBEAbility.Harvest },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AirSlash, 47, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         Tuple.Create(PBEMove.AirSlash, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -12419,7 +12325,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Synthesis, 47, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.Whirlwind, 27, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
@@ -12487,20 +12393,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Umbreon,
                 new PBEPokemonData
-                {
-                    HP = 95, Attack = 65, Defense = 110, SpAttack = 60, SpDefense = 130, Speed = 65,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Dark, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Synchronize, PBEAbility.InnerFocus },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 27.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    95, 65, 110, 60, 130, 65,
+                    PBEType.Dark, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 27.0,
+                    new PBESpecies[] { PBESpecies.Eevee },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Synchronize, PBEAbility.InnerFocus },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Assurance, 25, PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Assurance, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
@@ -12534,7 +12439,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
@@ -12602,608 +12507,579 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_A,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_B,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_C,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_D,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_E,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_Exclamation,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_F,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_G,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_H,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_I,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_J,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_K,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_L,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_M,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_N,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_O,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_P,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_Q,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_Question,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_R,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_S,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_T,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_U,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_V,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_W,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_X,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_Y,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Unown_Z,
                 new PBEPokemonData
-                {
-                    HP = 48, Attack = 72, Defense = 48, SpAttack = 72, SpDefense = 48, Speed = 48,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 5.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    48, 72, 48, 72, 48, 48,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 5.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.HiddenPower, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
 
                     }
-                }
+                )
             },
             {
                 PBESpecies.Uxie,
                 new PBEPokemonData
-                {
-                    HP = 75, Attack = 75, Defense = 130, SpAttack = 75, SpDefense = 130, Speed = 95,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Levitate },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 0.3,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    75, 75, 130, 75, 130, 95,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Amnesia, 46, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 1, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -13219,7 +13095,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Swift, 21, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Yawn, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -13289,20 +13165,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Vaporeon,
                 new PBEPokemonData
-                {
-                    HP = 130, Attack = 65, Defense = 60, SpAttack = 110, SpDefense = 95, Speed = 65,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.Hydration },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 29.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    130, 65, 60, 110, 95, 65,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 29.0,
+                    new PBESpecies[] { PBESpecies.Eevee },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.Hydration },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AcidArmor, 29, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AcidArmor, 47, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -13336,7 +13211,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterGun, 16, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.WaterPulse, 17, PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -13404,20 +13279,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Venusaur,
                 new PBEPokemonData
-                {
-                    HP = 80, Attack = 82, Defense = 83, SpAttack = 100, SpDefense = 100, Speed = 80,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Grass, Type2 = PBEType.Poison,
-                    Abilities = new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Chlorophyll },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 100.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    80, 82, 83, 100, 100, 80,
+                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M7_F1,
+                    1, false, 100.0,
+                    new PBESpecies[] { PBESpecies.Bulbasaur, PBESpecies.Ivysaur },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Chlorophyll },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.DoubleEdge, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Growl, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -13447,7 +13321,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.VineWhip, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         //Tuple.Create(PBEMove.WorrySeed, 39, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Amnesia, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -13519,20 +13393,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Venoshock, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Victini,
                 new PBEPokemonData
-                {
-                    HP = 100, Attack = 100, Defense = 100, SpAttack = 100, SpDefense = 100, Speed = 100,
-                    GenderRatio = PBEGenderRatio.M0_F0,
-                    Type1 = PBEType.Psychic, Type2 = PBEType.Fire,
-                    Abilities = new PBEAbility[] { PBEAbility.VictoryStar },
-                    MinLevel = 1,
-                    ShinyLocked = true,
-                    Weight = 4.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    100, 100, 100, 100, 100, 100,
+                    PBEType.Psychic, PBEType.Fire, PBEGenderRatio.M0_F0,
+                    1, true, 4.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.VictoryStar },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.Confusion, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.DoubleEdge, 65, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -13550,9 +13423,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Reversal, 33, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.SearingShot, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.StoredPower, 89, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        Tuple.Create(PBEMove.ZenHeadbutt, 49, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ZenHeadbutt, 49, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Bounce, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.BrickBreak, PBEMoveObtainMethod.TM_BWB2W2),
@@ -13615,20 +13488,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Volcarona,
                 new PBEPokemonData
-                {
-                    HP = 85, Attack = 60, Defense = 65, SpAttack = 135, SpDefense = 105, Speed = 100,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Fire,
-                    Abilities = new PBEAbility[] { PBEAbility.FlameBody, PBEAbility.Swarm },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 46.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    85, 60, 65, 135, 105, 100,
+                    PBEType.Bug, PBEType.Fire, PBEGenderRatio.M1_F1,
+                    1, false, 46.0,
+                    new PBESpecies[] { PBESpecies.Larvesta },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.FlameBody, PBEAbility.Swarm },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.BugBuzz, 70, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Ember, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -13646,7 +13518,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.StringShot, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Whirlwind, 40, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
@@ -13696,20 +13568,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Vulpix,
                 new PBEPokemonData
-                {
-                    HP = 39, Attack = 41, Defense = 40, SpAttack = 50, SpDefense = 65, Speed = 65,
-                    GenderRatio = PBEGenderRatio.M1_F3,
-                    Type1 = PBEType.Fire, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.Drought },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 9.9,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    39, 41, 40, 50, 65, 65,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M1_F3,
+                    1, false, 9.9,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Ninetales },
+                    new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.Drought },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Captivate, 37, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         //Tuple.Create(PBEMove.Captivate, 41, PBEMoveObtainMethod.LevelUp_BW),
@@ -13762,7 +13633,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, 26, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, 31, PBEMoveObtainMethod.LevelUp_BW)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.BodySlam, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD),
@@ -13821,20 +13692,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Wartortle,
                 new PBEPokemonData
-                {
-                    HP = 59, Attack = 63, Defense = 80, SpAttack = 65, SpDefense = 80, Speed = 58,
-                    GenderRatio = PBEGenderRatio.M7_F1,
-                    Type1 = PBEType.Water, Type2 = PBEType.None,
-                    Abilities = new PBEAbility[] { PBEAbility.Torrent, PBEAbility.RainDish },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 22.5,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    59, 63, 80, 65, 80, 58,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
+                    1, false, 22.5,
+                    new PBESpecies[] { PBESpecies.Squirtle },
+                    new PBESpecies[] { PBESpecies.Blastoise },
+                    new PBEAbility[] { PBEAbility.Torrent, PBEAbility.RainDish },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, 32, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Bite, 16, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -13861,7 +13731,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WaterPulse, 28, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Withdraw, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaJet, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.AquaRing, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -13933,45 +13803,43 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Weedle,
                 new PBEPokemonData
-                {
-                    HP = 40, Attack = 35, Defense = 30, SpAttack = 20, SpDefense = 20, Speed = 50,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Bug, Type2 = PBEType.Poison,
-                    Abilities = new PBEAbility[] { PBEAbility.ShieldDust, PBEAbility.RunAway },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 3.2,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    40, 35, 30, 20, 20, 50,
+                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1,
+                    1, false, 3.2,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Kakuna, PBESpecies.Beedrill },
+                    new PBEAbility[] { PBEAbility.ShieldDust, PBEAbility.RunAway },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.BugBite, 15, PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.PoisonSting, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        Tuple.Create(PBEMove.StringShot, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.StringShot, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.Electroweb, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.StringShot, PBEMoveObtainMethod.MoveTutor_HGSS)
                     }
-                }
+                )
             },
             {
                 PBESpecies.Zweilous,
                 new PBEPokemonData
-                {
-                    HP = 72, Attack = 85, Defense = 70, SpAttack = 65, SpDefense = 70, Speed = 58,
-                    GenderRatio = PBEGenderRatio.M1_F1,
-                    Type1 = PBEType.Dark, Type2 = PBEType.Dragon,
-                    Abilities = new PBEAbility[] { PBEAbility.Hustle },
-                    MinLevel = 1,
-                    ShinyLocked = false,
-                    Weight = 50.0,
-                    LevelUpMoves = new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                (
+                    72, 85, 70, 65, 70, 58,
+                    PBEType.Dark, PBEType.Dragon, PBEGenderRatio.M1_F1,
+                    1, false, 50.0,
+                    new PBESpecies[] { PBESpecies.Deino },
+                    new PBESpecies[] { PBESpecies.Hydreigon },
+                    new PBEAbility[] { PBEAbility.Hustle },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                        Tuple.Create(PBEMove.Bite, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.Bite, 9, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -13992,7 +13860,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                        //Tuple.Create(PBEMove.DoubleHit, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.WorkUp, 38, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
-                    OtherMoves = new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Assurance, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -14041,7 +13909,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
-                }
+                )
             }
         });
     }
