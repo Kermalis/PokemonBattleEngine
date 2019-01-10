@@ -49,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.39, new PBELocalizedString("プリン", "푸린", "Rondoudou", "Pummeluff", "Jigglypuff", "Jigglypuff", "Jigglypuff") },
             // { PBESpecies.40, new PBELocalizedString("プクリン", "푸크린", "Grodoudou", "Knuddeluff", "Wigglytuff", "Wigglytuff", "Wigglytuff") },
             // { PBESpecies.41, new PBELocalizedString("ズバット", "주뱃", "Nosferapti", "Zubat", "Zubat", "Zubat", "Zubat") },
-            // { PBESpecies.42, new PBELocalizedString("ゴルバット", "골뱃", "Nosferalto", "Golbat", "Golbat", "Golbat", "Golbat") },
+            { PBESpecies.Golbat, new PBELocalizedString("ゴルバット", "골뱃", "Nosferalto", "Golbat", "Golbat", "Golbat", "Golbat") },
             // { PBESpecies.43, new PBELocalizedString("ナゾノクサ", "뚜벅쵸", "Mystherbe", "Myrapla", "Oddish", "Oddish", "Oddish") },
             // { PBESpecies.44, new PBELocalizedString("クサイハナ", "냄새꼬", "Ortide", "Duflor", "Gloom", "Gloom", "Gloom") },
             // { PBESpecies.45, new PBELocalizedString("ラフレシア", "라플레시아", "Rafflesia", "Giflor", "Vileplume", "Vileplume", "Vileplume") },
