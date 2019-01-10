@@ -2326,6 +2326,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Vulpix = 37,
         Wartortle = 8,
         Weedle = 13,
+        Zubat = 41,
         Zweilous = 634
     }
     public enum PBEMoveTarget : byte // Used in MoveData
