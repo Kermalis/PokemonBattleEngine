@@ -10,7 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
@@ -65,12 +67,22 @@ namespace Kermalis.PokemonBattleEngineClient
                 OnPropertyChanged(nameof(AvailableItems));
             }
         }
+        IEnumerable<PBEMove> AvailableMoves { get; } = PBEMoveLocalization.Names.OrderBy(k => k.Value.English).Select(k => k.Key);
 
         PBEPokemonShell shell;
-        ObservableCollection<PBEPokemonShell> Shells { get; } = new ObservableCollection<PBEPokemonShell>();
+        Tuple<string, ObservableCollection<PBEPokemonShell>> team;
+        Tuple<string, ObservableCollection<PBEPokemonShell>> Team
+        {
+            get => team;
+            set
+            {
+                team = value;
+                OnPropertyChanged(nameof(Team));
+            }
+        }
+        ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>> Teams { get; } = new ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>>();
 
-        ReactiveCommand AddCommand { get; }
-        ReactiveCommand ConnectCommand { get; }
+        readonly Subject<bool> addPartyEnabled, removePartyEnabled;
 
         readonly PBESettings settings = PBESettings.DefaultSettings;
         readonly List<BattleClient> battles = new List<BattleClient>();
@@ -78,16 +90,23 @@ namespace Kermalis.PokemonBattleEngineClient
         readonly TabControl tabs;
         readonly TextBox ip, nickname;
         readonly NumericUpDown port, level, friendship;
-        readonly ListBox party;
+        readonly NumericUpDown[] evs, ivs, ppups;
+        readonly ListBox party, savedTeams;
         readonly CheckBox illegal, shiny;
         readonly DropDown species, ability, nature, gender, item;
+        readonly DropDown[] moves;
 
         public MainWindow()
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
 
-            this.FindControl<Button>("Add").Command = ReactiveCommand.Create(AddShell);
+            addPartyEnabled = new Subject<bool>();
+            this.FindControl<Button>("AddParty").Command = ReactiveCommand.Create(AddPartyMember, addPartyEnabled);
+            removePartyEnabled = new Subject<bool>();
+            this.FindControl<Button>("RemoveParty").Command = ReactiveCommand.Create(RemovePartyMember, removePartyEnabled);
+            this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
+            this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
             this.FindControl<Button>("Connect").Command = ReactiveCommand.Create(Connect);
             tabs = this.FindControl<TabControl>("Tabs");
             ip = this.FindControl<TextBox>("IP");
@@ -97,31 +116,86 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 if (party.SelectedIndex > -1)
                 {
-                    shell = Shells[party.SelectedIndex];
-                    Update(false, true, true, true);
-                    Update(true, false, false, true);
+                    shell = team.Item2[party.SelectedIndex];
+                    UpdateEditor(false, true, true, true);
+                    UpdateEditor(true, false, false, true);
+                }
+            };
+            savedTeams = this.FindControl<ListBox>("SavedTeams");
+            savedTeams.SelectionChanged += (s, e) =>
+            {
+                if (savedTeams.SelectedIndex > -1)
+                {
+                    Team = Teams[savedTeams.SelectedIndex];
+                    party.SelectedIndex = 0;
+                    EvaluatePartySize();
                 }
             };
             illegal = this.FindControl<CheckBox>("Illegal");
-            illegal.Command = ReactiveCommand.Create(() => Update(false, true, false));
+            illegal.Command = ReactiveCommand.Create(IllegalChanged);
+
+            void shellOnly(object s, EventArgs e) => UpdateEditor(true, false, false);
+
             species = this.FindControl<DropDown>("Species");
-            species.SelectionChanged += (s, e) => Update(true, true, true);
+            species.SelectionChanged += (s, e) => UpdateEditor(true, true, true);
             nickname = this.FindControl<TextBox>("Nickname");
-            nickname.LostFocus += (s, e) => Update(true, false, true);
+            nickname.LostFocus += (s, e) => UpdateEditor(true, false, true);
             level = this.FindControl<NumericUpDown>("Level");
-            level.ValueChanged += (s, e) => Update(true, false, false);
+            level.ValueChanged += shellOnly;
             friendship = this.FindControl<NumericUpDown>("Friendship");
-            friendship.ValueChanged += (s, e) => Update(true, false, false);
+            friendship.ValueChanged += shellOnly;
             shiny = this.FindControl<CheckBox>("Shiny");
-            shiny.Command = ReactiveCommand.Create(() => Update(true, false, true));
+            shiny.Command = ReactiveCommand.Create(() => UpdateEditor(true, false, true));
             ability = this.FindControl<DropDown>("Ability");
-            ability.SelectionChanged += (s, e) => Update(true, false, false);
+            ability.SelectionChanged += shellOnly;
             nature = this.FindControl<DropDown>("Nature");
-            nature.SelectionChanged += (s, e) => Update(true, false, false);
+            nature.SelectionChanged += shellOnly;
             gender = this.FindControl<DropDown>("Gender");
-            gender.SelectionChanged += (s, e) => Update(true, false, true);
+            gender.SelectionChanged += (s, e) => UpdateEditor(true, false, true);
             item = this.FindControl<DropDown>("Item");
-            item.SelectionChanged += (s, e) => Update(true, false, false);
+            item.SelectionChanged += shellOnly;
+            evs = new[]
+            {
+                this.FindControl<NumericUpDown>("HPEV"),
+                this.FindControl<NumericUpDown>("ATKEV"),
+                this.FindControl<NumericUpDown>("DEFEV"),
+                this.FindControl<NumericUpDown>("SPATKEV"),
+                this.FindControl<NumericUpDown>("SPDEFEV"),
+                this.FindControl<NumericUpDown>("SPEEV")
+            };
+            ivs = new[]
+            {
+                this.FindControl<NumericUpDown>("HPIV"),
+                this.FindControl<NumericUpDown>("ATKIV"),
+                this.FindControl<NumericUpDown>("DEFIV"),
+                this.FindControl<NumericUpDown>("SPATKIV"),
+                this.FindControl<NumericUpDown>("SPDEFIV"),
+                this.FindControl<NumericUpDown>("SPEIV")
+            };
+            for (int i = 0; i < 6; i++)
+            {
+                evs[i].ValueChanged += shellOnly;
+                ivs[i].ValueChanged += shellOnly;
+            }
+            moves = new[]
+            {
+                this.FindControl<DropDown>("Move0"),
+                this.FindControl<DropDown>("Move1"),
+                this.FindControl<DropDown>("Move2"),
+                this.FindControl<DropDown>("Move3")
+            };
+            ppups = new[]
+            {
+                this.FindControl<NumericUpDown>("PPUps0"),
+                this.FindControl<NumericUpDown>("PPUps1"),
+                this.FindControl<NumericUpDown>("PPUps2"),
+                this.FindControl<NumericUpDown>("PPUps3")
+            };
+            for (int i = 0; i < moves.Length; i++)
+            {
+                moves[i].SelectionChanged += shellOnly;
+                ppups[i].ValueChanged += shellOnly;
+            }
         }
         byte shows = 0;
         public override void Show()
@@ -129,19 +203,94 @@ namespace Kermalis.PokemonBattleEngineClient
             base.Show();
             if (shows++ == 1)
             {
-                AddShell();
-                party.SelectedIndex = 0;
+                string[] files = Directory.GetFiles("Teams");
+                if (files.Length > 0)
+                {
+                    foreach (string f in files)
+                    {
+                        Teams.Add(Tuple.Create(Path.GetFileNameWithoutExtension(f), new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromTextFile(f))));
+                    }
+                    savedTeams.SelectedIndex = 0;
+                }
+                else
+                {
+                    AddTeam();
+                }
             }
         }
 
-        void AddShell()
+        void AddTeam()
+        {
+
+            Teams.Add(Tuple.Create($"Team {PBEUtils.RNG.Next()}", new ObservableCollection<PBEPokemonShell>()));
+            savedTeams.SelectedIndex = Teams.Count - 1;
+            AddPartyMember();
+        }
+        void RemoveTeam()
+        {
+            Teams.Remove(team);
+            //File.Delete($"Teams\\{team.Item1}.txt");
+            if (Teams.Count == 0)
+            {
+                AddTeam();
+            }
+            else
+            {
+                savedTeams.SelectedIndex = Teams.Count - 1;
+            }
+        }
+        void AddPartyMember()
         {
             PBESpecies species = AvailableSpecies.First();
-            Shells.Add(new PBEPokemonShell { Species = species, Nickname = PBEPokemonLocalization.Names[species].English });
+            team.Item2.Add(new PBEPokemonShell
+            {
+                Species = species,
+                Nickname = PBEPokemonLocalization.Names[species].English,
+                Level = PBEPokemonData.Data[species].MinLevel,
+                EVs = new byte[6],
+                IVs = new byte[6],
+                Moves = new PBEMove[moves.Length],
+                PPUps = new byte[moves.Length]
+            });
+            party.SelectedIndex = team.Item2.Count - 1;
+            EvaluatePartySize();
+        }
+        void RemovePartyMember()
+        {
+            team.Item2.Remove(shell);
+            party.SelectedIndex = team.Item2.Count - 1;
+            EvaluatePartySize();
+        }
+        void EvaluatePartySize()
+        {
+            if (illegal.IsChecked.Value)
+            {
+                addPartyEnabled.OnNext(true);
+            }
+            else
+            {
+                addPartyEnabled.OnNext(team.Item2.Count < settings.MaxPartySize);
+                // Remove if too many
+                if (team.Item2.Count > settings.MaxPartySize)
+                {
+                    party.SelectedIndex = settings.MaxPartySize - 1;
+                    int removeAmt = team.Item2.Count - settings.MaxPartySize;
+                    for (int i = 0; i < removeAmt; i++)
+                    {
+                        team.Item2.RemoveAt(team.Item2.Count - 1);
+                    }
+                }
+            }
+            removePartyEnabled.OnNext(team.Item2.Count > 1);
+        }
+        void IllegalChanged()
+        {
+            EvaluatePartySize();
+            UpdateEditor(false, true, false);
         }
 
         bool ignoreUpdate = false;
-        void Update(bool updateShell, bool updateControls, bool updateSprites, bool toggleIgnore = false)
+        void UpdateEditor(bool updateShell, bool updateControls, bool updateSprites, bool toggleIgnore = false)
         {
             if (toggleIgnore)
             {
@@ -166,8 +315,8 @@ namespace Kermalis.PokemonBattleEngineClient
                     nickname.Text = PBEPokemonLocalization.Names[shell.Species].English;
                 }
                 shell.Nickname = nickname.Text;
-                shell.Level = (byte)level.Value;
-                shell.Friendship = (byte)friendship.Value;
+                //shell.Level = (byte)level.Value;
+                //shell.Friendship = (byte)friendship.Value;
                 shell.Shiny = shiny.IsChecked.Value;
                 if (ability.SelectedItem != null)
                 {
@@ -182,13 +331,28 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     shell.Item = (PBEItem)item.SelectedItem;
                 }
+                //for (int i = 0; i < 6; i++)
+                //{
+                //    shell.EVs[i] = (byte)EVs[i].Value;
+                //    shell.IVs[i] = (byte)IVs[i].Value;
+                //}
+                for (int i = 0; i < moves.Length; i++)
+                {
+                    if (moves[i].SelectedItem != null)
+                    {
+                        shell.Moves[i] = (PBEMove)moves[i].SelectedItem;
+                    }
+                    //shell.PPUps[i] = (byte)ppups[i].Value;
+                }
+
+                //PBEPokemonShell.TeamToTextFile($"Teams\\{team.Item1}.txt", team.Item2);
             }
             if (updateSprites)
             {
                 Source = Utils.GetPokemonSpriteUri(shell);
                 // Force redraw
                 party.Items = new object[0];
-                party.Items = Shells;
+                party.Items = team.Item2;
                 party.InvalidateVisual();
             }
             if (updateControls)
@@ -215,7 +379,7 @@ namespace Kermalis.PokemonBattleEngineClient
 
                 if (friendship.Value != shell.Friendship)
                 {
-                    friendship.Value = shell.Friendship;
+                    //friendship.Value = shell.Friendship; // Crashing
                 }
 
                 if (!(shiny.IsEnabled = illegal.IsChecked.Value || !pData.ShinyLocked))
@@ -225,7 +389,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 if (shiny.IsChecked != shell.Shiny)
                 {
                     shiny.IsChecked = shell.Shiny;
-                    Update(false, false, true);
+                    UpdateEditor(false, false, true);
                 }
 
                 if (illegal.IsChecked.Value)
@@ -314,12 +478,42 @@ namespace Kermalis.PokemonBattleEngineClient
                     item.SelectedItem = shell.Item;
                 }
                 item.IsEnabled = availableItems.Count() > 1;
+
+                byte maxIVs = illegal.IsChecked.Value ? byte.MaxValue : settings.MaxIVs;
+                for (int i = 0; i < 6; i++)
+                {
+                    if (evs[i].Value != shell.EVs[i])
+                    {
+                        //EVs[i].Value = shell.EVs[i]; // Crashing
+                    }
+                    ivs[i].Maximum = maxIVs;
+                    shell.IVs[i] = (byte)ivs[i].Value.Clamp(0, maxIVs);
+                    if (ivs[i].Value != shell.IVs[i])
+                    {
+                        //IVs[i].Value = shell.IVs[i]; // Crashing
+                    }
+                }
+
+                byte maxPPUps = illegal.IsChecked.Value ? byte.MaxValue : settings.MaxPPUps;
+                for (int i = 0; i < moves.Length; i++)
+                {
+                    if (moves[i].SelectedItem != (object)shell.Moves[i])
+                    {
+                        moves[i].SelectedItem = shell.Moves[i];
+                    }
+                    ppups[i].Maximum = maxPPUps;
+                    shell.PPUps[i] = (byte)ppups[i].Value.Clamp(0, maxPPUps);
+                    if (ppups[i].Value != shell.PPUps[i])
+                    {
+                        //ppups[i].Value = shell.PPUps[i]; // Crashing
+                    }
+                }
             }
         }
 
         void Connect()
         {
-            var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, settings);
+            var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, settings, team.Item2);
             battles.Add(client);
             List<object> pages = tabs.Items.Cast<object>().ToList();
             pages.Add(new TabItem

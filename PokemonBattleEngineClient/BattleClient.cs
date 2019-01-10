@@ -23,8 +23,9 @@ namespace Kermalis.PokemonBattleEngineClient
         public PBEBattle Battle { get; }
         public BattleView BattleView { get; set; }
         public byte Index { get; private set; }
+        readonly IEnumerable<PBEPokemonShell> partyShells;
 
-        public BattleClient(string host, int port, PBEBattleFormat battleFormat, PBESettings settings)
+        public BattleClient(string host, int port, PBEBattleFormat battleFormat, PBESettings settings, IEnumerable<PBEPokemonShell> party)
         {
             Configuration.Host = host;
             Configuration.Port = port;
@@ -32,6 +33,7 @@ namespace Kermalis.PokemonBattleEngineClient
 
             Battle = new PBEBattle(battleFormat, settings);
             packetProcessor = new PBEPacketProcessor(Battle);
+            partyShells = party;
 
             packetTimer.Elapsed += PacketTimer_Elapsed;
             packetTimer.Start();
@@ -61,12 +63,9 @@ namespace Kermalis.PokemonBattleEngineClient
                         Send(new PBEResponsePacket());
                         break;
                     }
-                case PBEPartyRequestPacket _: // Temporary
+                case PBEPartyRequestPacket _:
                     {
-                        BattleView.AddMessage("Sending team info...", false, true);
-                        PBEPokemonShell[] team = PBECompetitivePokemonShells.CreateRandomTeam(Battle.Settings.MaxPartySize).ToArray();
-                        //IEnumerable<PBEPokemonShell> team = PBEPokemonShell.TeamFromTextFile(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngine\Data\TestTeam.txt");
-                        Send(new PBEPartyResponsePacket(team));
+                        Send(new PBEPartyResponsePacket(partyShells));
                         break;
                     }
                 case PBESetPartyPacket spp:
