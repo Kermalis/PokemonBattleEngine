@@ -2190,6 +2190,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Arceus_Water = 493 | (16 << 0x10),
         Azelf = 482,
         Azumarill = 184,
+        Azurill = 298,
         Beedrill = 15,
         Blastoise = 9,
         Blaziken = 257,
@@ -2234,6 +2235,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Giratina = 487 | (0 << 0x10),
         Giratina_Origin = 487 | (1 << 0x10),
         Glaceon = 471,
+        Golbat = 42,
         Golduck = 55,
         Gothita = 574,
         Gothitelle = 576,
@@ -2256,6 +2258,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Luxio = 404,
         Luxray = 405,
         Magikarp = 129,
+        Marill = 183,
         Marowak = 105,
         Mesprit = 481,
         Metapod = 11,
@@ -2325,6 +2328,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Vulpix = 37,
         Wartortle = 8,
         Weedle = 13,
+        Yamask = 562,
+        Zubat = 41,
         Zweilous = 634
     }
     public enum PBEMoveTarget : byte // Used in MoveData
