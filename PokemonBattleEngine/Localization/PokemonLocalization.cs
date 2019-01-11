@@ -332,7 +332,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.295, new PBELocalizedString("バクオング", "폭음룡", "Brouhabam", "Krawumms", "Exploud", "Exploud", "Exploud") },
             // { PBESpecies.296, new PBELocalizedString("マクノシタ", "마크탕", "Makuhita", "Makuhita", "Makuhita", "Makuhita", "Makuhita") },
             // { PBESpecies.297, new PBELocalizedString("ハリテヤマ", "하리뭉", "Hariyama", "Hariyama", "Hariyama", "Hariyama", "Hariyama") },
-            // { PBESpecies.298, new PBELocalizedString("ルリリ", "루리리", "Azurill", "Azurill", "Azurill", "Azurill", "Azurill") },
+            { PBESpecies.Azurill, new PBELocalizedString("ルリリ", "루리리", "Azurill", "Azurill", "Azurill", "Azurill", "Azurill") },
             // { PBESpecies.299, new PBELocalizedString("ノズパス", "코코파스", "Tarinor", "Nasgnet", "Nosepass", "Nosepass", "Nosepass") },
             { PBESpecies.Skitty, new PBELocalizedString("エネコ", "에나비", "Skitty", "Eneco", "Skitty", "Skitty", "Skitty") },
             { PBESpecies.Delcatty, new PBELocalizedString("エネコロロ", "델케티", "Delcatty", "Enekoro", "Delcatty", "Delcatty", "Delcatty") },

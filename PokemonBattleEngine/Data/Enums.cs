@@ -2190,6 +2190,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Arceus_Water = 493 | (16 << 0x10),
         Azelf = 482,
         Azumarill = 184,
+        Azurill = 298,
         Beedrill = 15,
         Blastoise = 9,
         Blaziken = 257,
