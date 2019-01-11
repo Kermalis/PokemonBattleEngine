@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -7,14 +7,25 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEMoveData
     {
-        public PBEType Type;
-        public PBEMoveCategory Category;
-        public PBEMoveEffect Effect;
-        public int EffectParam;
-        public byte PPTier, Power, Accuracy; // 0 PPTier will become 1 PP (unaffected by pp ups), 0 power or accuracy will show up as --
-        public sbyte Priority;
-        public PBEMoveFlag Flags;
-        public PBEMoveTarget Targets;
+        public PBEType Type { get; }
+        public PBEMoveCategory Category { get; }
+        public sbyte Priority { get; }
+        public byte PPTier { get; } // 0 PPTier will become 1 PP (unaffected by pp ups)
+        public byte Power { get; } // 0 power or accuracy will show up as --
+        public byte Accuracy { get; }
+        public PBEMoveEffect Effect { get; }
+        public int EffectParam { get; }
+        public PBEMoveTarget Targets { get; }
+        public PBEMoveFlag Flags { get; }
+
+        private PBEMoveData(PBEType type, PBEMoveCategory category, sbyte priority, byte ppTier, byte power, byte accuracy,
+            PBEMoveEffect effect, int effectParam, PBEMoveTarget targets,
+            PBEMoveFlag flags)
+        {
+            Type = type; Category = category; Priority = priority; PPTier = ppTier; Power = power; Accuracy = accuracy;
+            Effect = effect; EffectParam = effectParam; Targets = targets;
+            Flags = flags;
+        }
 
         public override string ToString()
         {
@@ -39,3336 +50,2730 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 PBEMove.Acid,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
-                    PPTier = 6, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Special, 0, 6, 40, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, 10, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.AcidArmor,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_DEF, EffectParam = +2,
-                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Status, 0, 8, 0, 0,
+                    PBEMoveEffect.ChangeUser_DEF, +2, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.AcidSpray,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2, EffectParam = 100,
-                    PPTier = 4, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Special, 0, 4, 40, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.AerialAce,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Physical, 0, 4, 60, 0,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Aeroblast,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 100, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Special, 0, 1, 100, 95,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance
+                )
             },
             {
                 PBEMove.Agility,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_SPE, EffectParam = +2,
-                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.ChangeUser_SPE, +2, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.AirCutter,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 5, Power = 55, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Special, 0, 5, 55, 95,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance
+                )
             },
             {
                 PBEMove.AirSlash,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 4, Power = 75, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Special, 0, 4, 75, 95,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Amnesia,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_SPDEF, EffectParam = +2,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.ChangeUser_SPDEF, +2, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.AncientPower,
                 new PBEMoveData
-                {
-                    Type = PBEType.Rock, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1, EffectParam = 10,
-                    PPTier = 1, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Rock, PBEMoveCategory.Special, 0, 1, 60, 100,
+                    PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.AquaJet,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Physical, +1, 4, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.AquaTail,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 90, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Physical, 0, 2, 90, 90,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Astonish,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 3, Power = 30, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Physical, 0, 3, 30, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.AttackOrder,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Physical, 0, 3, 90, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance
+                )
             },
             {
                 PBEMove.AuraSphere,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 90, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Special, 0, 4, 90, 0,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.AuroraBeam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_ATK_By1, EffectParam = 10,
-                    PPTier = 4, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Special, 0, 4, 65, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_ATK_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Barrier,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_DEF, EffectParam = +2,
-                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.ChangeUser_DEF, +2, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Bite,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 5, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Physical, 0, 5, 60, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.BlazeKick,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 10,
-                    PPTier = 2, Power = 85, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Physical, 0, 2, 85, 90,
+                    PBEMoveEffect.Hit__MaybeBurn, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.BlueFlare,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 20,
-                    PPTier = 1, Power = 130, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 1, 130, 85,
+                    PBEMoveEffect.Hit__MaybeBurn, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.BrickBreak,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.BrickBreak, EffectParam = 0,
-                    PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 3, 75, 100,
+                    PBEMoveEffect.BrickBreak, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Brine,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 2, 65, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.BodySlam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
-                    PPTier = 3, Power = 85, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 3, 85, 100,
+                    PBEMoveEffect.Hit__MaybeParalyze, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.BoltStrike,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 20,
-                    PPTier = 1, Power = 130, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Physical, 0, 1, 130, 85,
+                    PBEMoveEffect.Hit__MaybeParalyze, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.BoneClub,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 10,
-                    PPTier = 4, Power = 65, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Physical, 0, 4, 65, 85,
+                    PBEMoveEffect.Hit__MaybeFlinch, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Bubble,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 10,
-                    PPTier = 6, Power = 20, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 6, 20, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 10, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.BubbleBeam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 10,
-                    PPTier = 4, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 4, 65, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.BugBuzz,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
-                    PPTier = 2, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Special, 0, 2, 90, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.BulkUp,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_ATK_DEF_By1, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.RaiseUser_ATK_DEF_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Bulldoze,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 100,
-                    PPTier = 4, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Physical, 0, 4, 60, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 100, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.BulletPunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Physical, +1, 6, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.CalmMind,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_SPATK_SPDEF_By1, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.RaiseUser_SPATK_SPDEF_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.ChargeBeam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeRaiseUser_SPATK_By1, EffectParam = 70,
-                    PPTier = 2, Power = 50, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Special, 0, 2, 50, 90,
+                    PBEMoveEffect.Hit__MaybeRaiseUser_SPATK_By1, 70, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Charm,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_ATK, EffectParam = -2,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.ChangeTarget_ATK, -2, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Chatter,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 0,
-                    PPTier = 4, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Special, 0, 4, 60, 100,
+                    PBEMoveEffect.Hit__MaybeConfuse, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.CloseCombat,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1, EffectParam = 100,
-                    PPTier = 1, Power = 120, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 1, 120, 100,
+                    PBEMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Coil,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_ATK_DEF_ACC_By1, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.RaiseUser_ATK_DEF_ACC_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.ConfuseRay,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Confuse, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Status, 0, 2, 0, 100,
+                    PBEMoveEffect.Confuse, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Confusion,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 10,
-                    PPTier = 5, Power = 50, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 5, 50, 100,
+                    PBEMoveEffect.Hit__MaybeConfuse, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.CosmicPower,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_DEF_SPDEF_By1, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.RaiseUser_DEF_SPDEF_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.CottonGuard,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_DEF, EffectParam = +3,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.ChangeUser_DEF, +3, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Crabhammer,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 90, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Physical, 0, 2, 90, 90,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.CrossChop,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 100, Accuracy = 80, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 1, 100, 80,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.CrossPoison,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybePoison, EffectParam = 10,
-                    PPTier = 4, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Physical, 0, 4, 70, 100,
+                    PBEMoveEffect.Hit__MaybePoison, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Crunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1, EffectParam = 20,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Physical, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.CrushClaw,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1, EffectParam = 50,
-                    PPTier = 2, Power = 75, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 2, 75, 95,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Curse,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Curse, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.Varies
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.Curse, 0, PBEMoveTarget.Varies,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.Cut,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 6, Power = 50, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 6, 50, 95,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.DarkPulse,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Special, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 20, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.DarkVoid,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Sleep, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 80, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Status, 0, 2, 0, 80,
+                    PBEMoveEffect.Sleep, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.DefendOrder,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_DEF_SPDEF_By1, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.RaiseUser_DEF_SPDEF_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.DefenseCurl,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_DEF, EffectParam = +1,
-                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 0,
+                    PBEMoveEffect.ChangeUser_DEF, +1, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Detect,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Protect, EffectParam = 0,
-                    PPTier = 1, Power = 0, Accuracy = 0, Priority = +4,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Status, +4, 1, 0, 0,
+                    PBEMoveEffect.Protect, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.Dig,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Dig, EffectParam = 0,
-                    PPTier = 2, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Physical, 0, 2, 80, 100,
+                    PBEMoveEffect.Dig, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Discharge,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Special, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit__MaybeParalyze, 30, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Dive,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Dive, EffectParam = 0,
-                    PPTier = 2, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Physical, 0, 2, 80, 100,
+                    PBEMoveEffect.Dive, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.DizzyPunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 20,
-                    PPTier = 2, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 2, 70, 100,
+                    PBEMoveEffect.Hit__MaybeConfuse, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.DoubleTeam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_EVA, EffectParam = +1,
-                    PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 3, 0, 0,
+                    PBEMoveEffect.ChangeUser_EVA, +1, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.DracoMeteor,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dragon, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2, EffectParam = 100,
-                    PPTier = 1, Power = 140, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dragon, PBEMoveCategory.Special, 0, 1, 140, 90,
+                    PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.DragonBreath,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dragon, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
-                    PPTier = 4, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dragon, PBEMoveCategory.Special, 0, 4, 60, 100,
+                    PBEMoveEffect.Hit__MaybeParalyze, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.DragonClaw,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dragon, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dragon, PBEMoveCategory.Physical, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.DragonDance,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dragon, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_ATK_SPE_By1, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Dragon, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.RaiseUser_ATK_SPE_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.DragonPulse,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dragon, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Dragon, PBEMoveCategory.Special, 0, 2, 90, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.DragonRush,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dragon, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
-                    PPTier = 2, Power = 100, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dragon, PBEMoveCategory.Physical, 0, 2, 100, 75,
+                    PBEMoveEffect.Hit__MaybeFlinch, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.DrillPeck,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Physical, 0, 4, 80, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.DrillRun,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 80, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Physical, 0, 2, 80, 95,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.DynamicPunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 100,
-                    PPTier = 1, Power = 100, Accuracy = 50, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 1, 100, 50,
+                    PBEMoveEffect.Hit__MaybeConfuse, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.EarthPower,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
-                    PPTier = 2, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Special, 0, 2, 90, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Earthquake,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 100, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HitsUnderground,
-                    Targets = PBEMoveTarget.AllSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Physical, 0, 2, 100, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsUnderground
+                )
             },
             {
                 PBEMove.EggBomb,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 100, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 2, 100, 75,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Electroweb,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 100,
-                    PPTier = 3, Power = 55, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Special, 0, 3, 55, 95,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 100, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Ember,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 10,
-                    PPTier = 5, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 5, 40, 100,
+                    PBEMoveEffect.Hit__MaybeBurn, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Endeavor,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Endeavor, EffectParam = 0,
-                    PPTier = 1, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 0, 100,
+                    PBEMoveEffect.Endeavor, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.EnergyBall,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
-                    PPTier = 2, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Special, 0, 2, 80, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Eruption,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 150, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 1, 150, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Extrasensory,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 10,
-                    PPTier = 6, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 6, 80, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.ExtremeSpeed,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 80, Accuracy = 100, Priority = +2,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, +2, 1, 80, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Facade,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 70, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.FaintAttack,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Physical, 0, 4, 60, 0,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.FakeTears,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_SPDEF, EffectParam = -2,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Status, 0, 4, 0, 100,
+                    PBEMoveEffect.ChangeTarget_SPDEF, -2, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.FeatherDance,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_ATK, EffectParam = -2,
-                    PPTier = 3, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Status, 0, 3, 0, 100,
+                    PBEMoveEffect.ChangeTarget_ATK, -2, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.FieryDance,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeRaiseUser_SPATK_By1, EffectParam = 50,
-                    PPTier = 2, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 2, 80, 100,
+                    PBEMoveEffect.Hit__MaybeRaiseUser_SPATK_By1, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.FireBlast,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 10,
-                    PPTier = 1, Power = 120, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 1, 120, 85,
+                    PBEMoveEffect.Hit__MaybeBurn, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.FirePunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 10,
-                    PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Physical, 0, 3, 75, 100,
+                    PBEMoveEffect.Hit__MaybeBurn, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.FlameCharge,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeRaiseUser_SPE_By1, EffectParam = 100,
-                    PPTier = 4, Power = 50, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Physical, 0, 4, 50, 100,
+                    PBEMoveEffect.Hit__MaybeRaiseUser_SPE_By1, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Flamethrower,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 10,
-                    PPTier = 3, Power = 95, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 3, 95, 100,
+                    PBEMoveEffect.Hit__MaybeBurn, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.FlameWheel,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 10,
-                    PPTier = 5, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.DefrostsUser,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Physical, 0, 5, 60, 100,
+                    PBEMoveEffect.Hit__MaybeBurn, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DefrostsUser | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Flash,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_ACC, EffectParam = -1,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 100,
+                    PBEMoveEffect.ChangeTarget_ACC, -1, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.FlashCannon,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
-                    PPTier = 2, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Special, 0, 2, 80, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Flatter,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Flatter, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Status, 0, 3, 0, 100,
+                    PBEMoveEffect.Flatter, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Fly,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Fly, EffectParam = 0,
-                    PPTier = 3, Power = 90, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Physical, 0, 3, 90, 95,
+                    PBEMoveEffect.Fly, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.FocusBlast,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
-                    PPTier = 1, Power = 120, Accuracy = 70, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Special, 0, 1, 120, 70,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.FocusEnergy,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.FocusEnergy, EffectParam = 0,
-                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.FocusEnergy, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.ForcePalm,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
-                    PPTier = 2, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 2, 60, 100,
+                    PBEMoveEffect.Hit__MaybeParalyze, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.FrostBreath,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 40, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AlwaysCrit,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Special, 0, 2, 40, 90,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AlwaysCrit
+                )
             },
             {
                 PBEMove.Frustration,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Glaciate,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 100,
-                    PPTier = 2, Power = 65, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Special, 0, 2, 65, 95,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 100, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Glare,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Paralyze, EffectParam = 0,
-                    PPTier = 6, Power = 0, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 90,
+                    PBEMoveEffect.Paralyze, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.GrassKnot,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Special, 0, 4, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.GrassWhistle,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Sleep, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 55, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 3, 0, 55,
+                    PBEMoveEffect.Sleep, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.Growl,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_ATK, EffectParam = -1,
-                    PPTier = 8, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 100,
+                    PBEMoveEffect.ChangeTarget_ATK, -1, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.Growth,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Growth, EffectParam = 0,
-                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 8, 0, 0,
+                    PBEMoveEffect.Growth, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.GunkShot,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybePoison, EffectParam = 30,
-                    PPTier = 1, Power = 120, Accuracy = 70, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Physical, 0, 1, 120, 70,
+                    PBEMoveEffect.Hit__MaybePoison, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Hail,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Hail, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.All
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.Hail, 0, PBEMoveTarget.All,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.HammerArm,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerUser_SPE_By1, EffectParam = 100,
-                    PPTier = 2, Power = 100, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 2, 100, 90,
+                    PBEMoveEffect.Hit__MaybeLowerUser_SPE_By1, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Harden,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_DEF, EffectParam = +1,
-                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.ChangeUser_DEF, +1, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Headbutt,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 3, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 3, 70, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.HealOrder,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RestoreUserHealth, EffectParam = 50,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.HeartStamp,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 5, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Physical, 0, 5, 60, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.HeatCrash,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Physical, 0, 2, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.HeatWave,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 10,
-                    PPTier = 2, Power = 100, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 2, 100, 90,
+                    PBEMoveEffect.Hit__MaybeBurn, 10, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.HeavySlam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Physical, 0, 2, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Hex,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 50, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Special, 0, 2, 50, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.HiddenPower,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 3, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.HoneClaws,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_ATK_ACC_By1, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Status, 0, 3, 0, 0,
+                    PBEMoveEffect.RaiseUser_ATK_ACC_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.HornAttack,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 5, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 5, 65, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Howl,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_ATK, EffectParam = +1,
-                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 0,
+                    PBEMoveEffect.ChangeUser_ATK, +1, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.HydroPump,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 120, Accuracy = 80, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 1, 120, 80,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.HyperFang,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 10,
-                    PPTier = 3, Power = 80, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 3, 80, 90,
+                    PBEMoveEffect.Hit__MaybeFlinch, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.HyperVoice,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 2, 90, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.Hypnosis,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Sleep, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 60, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 60,
+                    PBEMoveEffect.Sleep, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.IceBeam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
-                    PPTier = 2, Power = 95, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Special, 0, 2, 95, 100,
+                    PBEMoveEffect.Hit__MaybeFreeze, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.IcePunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
-                    PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Physical, 0, 3, 75, 100,
+                    PBEMoveEffect.Hit__MaybeFreeze, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.IceShard,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Physical, +1, 6, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.IcicleCrash,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 2, Power = 85, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Physical, 0, 2, 85, 90,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.IcyWind,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 100,
-                    PPTier = 3, Power = 55, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Special, 0, 3, 55, 95,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 100, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Inferno,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 100,
-                    PPTier = 1, Power = 10, Accuracy = 50, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 1, 10, 50,
+                    PBEMoveEffect.Hit__MaybeBurn, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.IronDefense,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_DEF, EffectParam = +2,
-                    PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Status, 0, 3, 0, 0,
+                    PBEMoveEffect.ChangeUser_DEF, +2, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.IronHead,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Physical, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.IronTail,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1, EffectParam = 30,
-                    PPTier = 3, Power = 100, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Physical, 0, 3, 100, 75,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.KarateChop,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 5, Power = 50, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 5, 50, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Kinesis,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_ACC, EffectParam = -1,
-                    PPTier = 3, Power = 0, Accuracy = 80, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 3, 0, 80,
+                    PBEMoveEffect.ChangeTarget_ACC, -1, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.LavaPlume,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 30,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit__MaybeBurn, 30, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.LeafBlade,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Physical, 0, 3, 90, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.LeafStorm,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2, EffectParam = 100,
-                    PPTier = 1, Power = 140, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Special, 0, 1, 140, 90,
+                    PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.LeafTornado,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 50,
-                    PPTier = 2, Power = 65, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Special, 0, 2, 65, 90,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.LeechSeed,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.LeechSeed, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 2, 0, 90,
+                    PBEMoveEffect.LeechSeed, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Leer,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_DEF, EffectParam = -1,
-                    PPTier = 6, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 100,
+                    PBEMoveEffect.ChangeTarget_DEF, -1, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Lick,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
-                    PPTier = 6, Power = 20, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Physical, 0, 6, 20, 100,
+                    PBEMoveEffect.Hit__MaybeParalyze, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.LightScreen,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.LightScreen, EffectParam = 0,
-                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.AllTeam
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.LightScreen, 0, PBEMoveTarget.AllTeam,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.LovelyKiss,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Sleep, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 75,
+                    PBEMoveEffect.Sleep, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.LowKick,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 4, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.LowSweep,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 100,
-                    PPTier = 4, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 4, 60, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.LuckyChant,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.LuckyChant, EffectParam = 0,
-                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.AllTeam
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.LuckyChant, 0, PBEMoveTarget.AllTeam,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.LusterPurge,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 50,
-                    PPTier = 1, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 1, 70, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.MachPunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, +1, 6, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.MagicalLeaf,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Special, 0, 4, 60, 0,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.MagnetBomb,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Physical, 0, 4, 60, 0,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Magnitude,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Magnitude, EffectParam = 0,
-                    PPTier = 6, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HitsUnderground,
-                    Targets = PBEMoveTarget.AllSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Physical, 0, 6, 0, 100,
+                    PBEMoveEffect.Magnitude, 0, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsUnderground
+                )
             },
             {
                 PBEMove.Meditate,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_ATK, EffectParam = +1,
-                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 8, 0, 0,
+                    PBEMoveEffect.ChangeUser_ATK, +1, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Megahorn,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 120, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Physical, 0, 2, 120, 85,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.MegaKick,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 120, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 120, 75,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.MegaPunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 80, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 80, 85,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.MetalClaw,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeRaiseUser_ATK_By1, EffectParam = 10,
-                    PPTier = 7, Power = 50, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Physical, 0, 7, 50, 95,
+                    PBEMoveEffect.Hit__MaybeRaiseUser_ATK_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.MetalSound,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_SPDEF, EffectParam = -2,
-                    PPTier = 8, Power = 0, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Status, 0, 8, 0, 85,
+                    PBEMoveEffect.ChangeTarget_SPDEF, -2, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.MeteorMash,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeRaiseUser_ATK_By1, EffectParam = 20,
-                    PPTier = 2, Power = 100, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Special, 0, 2, 100, 85,
+                    PBEMoveEffect.Hit__MaybeRaiseUser_ATK_By1, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.MilkDrink,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RestoreUserHealth, EffectParam = 50,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Minimize,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Minimize, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.Minimize, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.MirrorShot,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 30,
-                    PPTier = 2, Power = 65, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Special, 0, 2, 65, 85,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.MistBall,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1, EffectParam = 50,
-                    PPTier = 1, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 1, 70, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Moonlight,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Moonlight, EffectParam = 0,
-                    PPTier = 1, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 1, 0, 0,
+                    PBEMoveEffect.Moonlight, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.MorningSun,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Moonlight, EffectParam = 0,
-                    PPTier = 1, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 1, 0, 0,
+                    PBEMoveEffect.Moonlight, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.MudBomb,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 30,
-                    PPTier = 2, Power = 65, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Special, 0, 2, 65, 85,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.MuddyWater,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 30,
-                    PPTier = 2, Power = 95, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 2, 95, 85,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, 30, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.MudSlap,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 100,
-                    PPTier = 2, Power = 20, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Special, 0, 2, 20, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.MudShot,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 100,
-                    PPTier = 3, Power = 55, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Special, 0, 3, 55, 95,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.NastyPlot,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_SPATK, EffectParam = +2,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.ChangeUser_SPATK, +2, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.NeedleArm,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 3, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Physical, 0, 3, 60, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.NightDaze,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 40,
-                    PPTier = 2, Power = 85, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Special, 0, 2, 85, 95,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, 40, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.NightSlash,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Physical, 0, 3, 70, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Octazooka,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, EffectParam = 50,
-                    PPTier = 2, Power = 65, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 2, 65, 85,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.OminousWind,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1, EffectParam = 10,
-                    PPTier = 1, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Special, 0, 1, 60, 100,
+                    PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Overheat,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2, EffectParam = 100,
-                    PPTier = 1, Power = 140, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 1, 140, 90,
+                    PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.PainSplit,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.PainSplit, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.PainSplit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Peck,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 7, Power = 35, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Physical, 0, 7, 35, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.PoisonFang,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeToxic, EffectParam = 30,
-                    PPTier = 3, Power = 50, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Physical, 0, 3, 50, 100,
+                    PBEMoveEffect.Hit__MaybeToxic, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.PoisonGas,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Poison, EffectParam = 0,
-                    PPTier = 8, Power = 0, Accuracy = 80, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Status, 0, 8, 0, 80,
+                    PBEMoveEffect.Poison, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.PoisonJab,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybePoison, EffectParam = 30,
-                    PPTier = 4, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Physical, 0, 4, 80, 100,
+                    PBEMoveEffect.Hit__MaybePoison, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.PoisonPowder,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Poison, EffectParam = 0,
-                    PPTier = 7, Power = 0, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Status, 0, 7, 0, 75,
+                    PBEMoveEffect.Poison, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.PoisonSting,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybePoison, EffectParam = 30,
-                    PPTier = 7, Power = 15, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Physical, 0, 7, 15, 100,
+                    PBEMoveEffect.Hit__MaybePoison, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.PoisonTail,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybePoison, EffectParam = 10,
-                    PPTier = 5, Power = 50, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Physical, 0, 5, 50, 100,
+                    PBEMoveEffect.Hit__MaybePoison, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Pound,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 7, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 7, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.PowderSnow,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ice, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeFreeze, EffectParam = 10,
-                    PPTier = 5, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Ice, PBEMoveCategory.Special, 0, 5, 40, 100,
+                    PBEMoveEffect.Hit__MaybeFreeze, 10, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.PowerGem,
                 new PBEMoveData
-                {
-                    Type = PBEType.Rock, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Rock, PBEMoveCategory.Special, 0, 4, 70, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.PowerWhip,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 120, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Physical, 0, 2, 120, 85,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Protect,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Protect, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = +4,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, +4, 2, 0, 0,
+                    PBEMoveEffect.Protect, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.Psybeam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 10,
-                    PPTier = 4, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 4, 65, 100,
+                    PBEMoveEffect.Hit__MaybeConfuse, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Psychic,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 10,
-                    PPTier = 2, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 2, 90, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.PsychoBoost,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2, EffectParam = 0,
-                    PPTier = 1, Power = 140, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 1, 140, 90,
+                    PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.PsychoCut,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Physical, 0, 4, 70, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance
+                )
             },
             {
                 PBEMove.PsychUp,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.PsychUp, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.PsychUp, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.Psyshock,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 2, 80, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Psystrike,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 100, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 2, 100, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.QuickAttack,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, +1, 6, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.QuiverDance,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.RainDance,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RainDance, EffectParam = 0,
-                    PPTier = 1, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.All
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Status, 0, 1, 0, 0,
+                    PBEMoveEffect.RainDance, 0, PBEMoveTarget.All,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.RazorLeaf,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 5, Power = 55, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Physical, 0, 5, 55, 95,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance
+                )
             },
             {
                 PBEMove.RazorShell,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1, EffectParam = 50,
-                    PPTier = 2, Power = 75, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Physical, 0, 2, 75, 95,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Recover,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RestoreUserHealth, EffectParam = 50,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Reflect,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Reflect, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.AllTeam
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.Reflect, 0, PBEMoveTarget.AllTeam,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Retaliate,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 70, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Return,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Roar,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Whirlwind, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = -6,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, -6, 4, 0, 100,
+                    PBEMoveEffect.Whirlwind, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.RockClimb,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 20,
-                    PPTier = 4, Power = 90, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 90, 85,
+                    PBEMoveEffect.Hit__MaybeConfuse, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.RockPolish,
                 new PBEMoveData
-                {
-                    Type = PBEType.Rock, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_SPE, EffectParam = +2,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Rock, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.ChangeUser_SPE, +2, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.RockSlide,
                 new PBEMoveData
-                {
-                    Type = PBEType.Rock, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 2, Power = 75, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Rock, PBEMoveCategory.Physical, 0, 2, 75, 90,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.RockSmash,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 3, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.RockThrow,
                 new PBEMoveData
-                {
-                    Type = PBEType.Rock, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 50, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Rock, PBEMoveCategory.Physical, 0, 3, 50, 90,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.RockTomb,
                 new PBEMoveData
-                {
-                    Type = PBEType.Rock, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, EffectParam = 100,
-                    PPTier = 2, Power = 50, Accuracy = 80, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Rock, PBEMoveCategory.Physical, 0, 2, 50, 80,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SacredFire,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 50,
-                    PPTier = 1, Power = 100, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.DefrostsUser,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Physical, 0, 1, 100, 95,
+                    PBEMoveEffect.Hit__MaybeBurn, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DefrostsUser
+                )
             },
             {
                 PBEMove.SandAttack,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_ACC, EffectParam = -1,
-                    PPTier = 3, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Status, 0, 3, 0, 100,
+                    PBEMoveEffect.ChangeTarget_ACC, -1, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Sandstorm,
                 new PBEMoveData
-                {
-                    Type = PBEType.Rock, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Sandstorm, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.All
-                }
+                (
+                    PBEType.Rock, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.Sandstorm, 0, PBEMoveTarget.All,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.Scald,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 30,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.DefrostsUser,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit__MaybeBurn, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DefrostsUser
+                )
             },
             {
                 PBEMove.ScaryFace,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_SPE, EffectParam = -2,
-                    PPTier = 2, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 100,
+                    PBEMoveEffect.ChangeTarget_SPE, -2, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Scratch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 8, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 8, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Screech,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_DEF, EffectParam = -2,
-                    PPTier = 8, Power = 0, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 85,
+                    PBEMoveEffect.ChangeTarget_DEF, -2, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.SearingShot,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeBurn, EffectParam = 30,
-                    PPTier = 1, Power = 100, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 1, 100, 100,
+                    PBEMoveEffect.Hit__MaybeBurn, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SecretSword,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 85, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Special, 0, 2, 85, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SeedBomb,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Physical, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SeedFlare,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2, EffectParam = 40,
-                    PPTier = 1, Power = 120, Accuracy = 85, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Special, 0, 1, 120, 85,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2, 40, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.ShadowBall,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, EffectParam = 20,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Special, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.ShadowClaw,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Physical, 0, 3, 70, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.ShadowPunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Physical, 0, 4, 60, 0,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.ShadowSneak,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ghost, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Ghost, PBEMoveCategory.Physical, +1, 6, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Sharpen,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_ATK, EffectParam = +1,
-                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.ChangeUser_ATK, +1, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.ShellSmash,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 3, 0, 0,
+                    PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.ShiftGear,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.SignalBeam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 10,
-                    PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Special, 0, 3, 75, 100,
+                    PBEMoveEffect.Hit__MaybeConfuse, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SilverWind,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1, EffectParam = 10,
-                    PPTier = 1, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Special, 0, 1, 60, 100,
+                    PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Sing,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Sleep, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 55, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 3, 0, 55,
+                    PBEMoveEffect.Sleep, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.ShockWave,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Special, 0, 4, 60, 0,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SkyUppercut,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 85, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HitsAirborne | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 3, 85, 90,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.SlackOff,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RestoreUserHealth, EffectParam = 50,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Slam,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 80, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 80, 75,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Slash,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 70, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 70, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.SleepPowder,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Sleep, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 3, 0, 75,
+                    PBEMoveEffect.Sleep, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Sludge,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybePoison, EffectParam = 30,
-                    PPTier = 4, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Special, 0, 4, 65, 100,
+                    PBEMoveEffect.Hit__MaybePoison, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SludgeBomb,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybePoison, EffectParam = 30,
-                    PPTier = 2, Power = 90, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Special, 0, 2, 90, 100,
+                    PBEMoveEffect.Hit__MaybePoison, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SludgeWave,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybePoison, EffectParam = 10,
-                    PPTier = 2, Power = 95, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Special, 0, 2, 95, 100,
+                    PBEMoveEffect.Hit__MaybePoison, 10, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Smog,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybePoison, EffectParam = 40,
-                    PPTier = 4, Power = 20, Accuracy = 70, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Special, 0, 4, 20, 70,
+                    PBEMoveEffect.Hit__MaybePoison, 40, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SmokeScreen,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_ACC, EffectParam = -1,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 100,
+                    PBEMoveEffect.ChangeTarget_ACC, -1, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Snarl,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dark, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1, EffectParam = 100,
-                    PPTier = 3, Power = 55, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Dark, PBEMoveCategory.Special, 0, 3, 55, 95,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1, 100, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.Softboiled,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RestoreUserHealth, EffectParam = 50,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.SpacialRend,
                 new PBEMoveData
-                {
-                    Type = PBEType.Dragon, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 100, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Dragon, PBEMoveCategory.Special, 0, 1, 100, 95,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance
+                )
             },
             {
                 PBEMove.Spark,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
-                    PPTier = 4, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Physical, 0, 4, 65, 100,
+                    PBEMoveEffect.Hit__MaybeParalyze, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Spikes,
                 new PBEMoveData
-                {
-                    Type = PBEType.Ground, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Spikes, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByMagicCoat,
-                    Targets = PBEMoveTarget.AllFoes
-                }
+                (
+                    PBEType.Ground, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.Spikes, 0, PBEMoveTarget.AllFoes,
+                    PBEMoveFlag.AffectedByMagicCoat
+                )
             },
             {
                 PBEMove.Spore,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Sleep, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 3, 0, 100,
+                    PBEMoveEffect.Sleep, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.StealthRock,
                 new PBEMoveData
-                {
-                    Type = PBEType.Rock, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.StealthRock, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByMagicCoat,
-                    Targets = PBEMoveTarget.AllFoes
-                }
+                (
+                    PBEType.Rock, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.StealthRock, 0, PBEMoveTarget.AllFoes,
+                    PBEMoveFlag.AffectedByMagicCoat
+                )
             },
             {
                 PBEMove.Steamroller,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 30,
-                    PPTier = 4, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Physical, 0, 4, 65, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.SteelWing,
                 new PBEMoveData
-                {
-                    Type = PBEType.Steel, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeRaiseUser_DEF_By1, EffectParam = 10,
-                    PPTier = 5, Power = 70, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Steel, PBEMoveCategory.Physical, 0, 5, 70, 90,
+                    PBEMoveEffect.Hit__MaybeRaiseUser_DEF_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Stomp,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 65, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.StoneEdge,
                 new PBEMoveData
-                {
-                    Type = PBEType.Rock, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 100, Accuracy = 80, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HighCritChance,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Rock, PBEMoveCategory.Physical, 0, 1, 100, 80,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HighCritChance
+                )
             },
             {
                 PBEMove.StormThrow,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AlwaysCrit,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 2, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AlwaysCrit | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Strength,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 80, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 3, 80, 90,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.StringShot,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_SPE, EffectParam = -1,
-                    PPTier = 8, Power = 0, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Status, 0, 8, 0, 95,
+                    PBEMoveEffect.ChangeTarget_SPE, -1, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Struggle,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Struggle, EffectParam = 0,
-                    PPTier = 0, Power = 50, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.UnaffectedByGems,
-                    Targets = PBEMoveTarget.RandomFoeSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 0, 50, 0,
+                    PBEMoveEffect.Struggle, 0, PBEMoveTarget.RandomFoeSurrounding,
+                    PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact | PBEMoveFlag.UnaffectedByGems
+                )
             },
             {
                 PBEMove.StruggleBug,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1, EffectParam = 100,
-                    PPTier = 4, Power = 30, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Special, 0, 4, 30, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1, 100, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.StunSpore,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Paralyze, EffectParam = 0,
-                    PPTier = 6, Power = 0, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 6, 0, 75,
+                    PBEMoveEffect.Paralyze, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Substitute,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Substitute, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.Substitute, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.SunnyDay,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.SunnyDay, EffectParam = 0,
-                    PPTier = 1, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.All
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Status, 0, 1, 0, 0,
+                    PBEMoveEffect.SunnyDay, 0, PBEMoveTarget.All,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.Superpower,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerUser_ATK_DEF_By1, EffectParam = 100,
-                    PPTier = 1, Power = 120, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 1, 120, 100,
+                    PBEMoveEffect.Hit__MaybeLowerUser_ATK_DEF_By1, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Supersonic,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Confuse, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 55, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.SoundBased,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 55,
+                    PBEMoveEffect.Confuse, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
             },
             {
                 PBEMove.Surf,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 95, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HitsUnderwater,
-                    Targets = PBEMoveTarget.AllSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 3, 95, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsUnderwater
+                )
             },
             {
                 PBEMove.Swagger,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Swagger, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 3, 0, 90,
+                    PBEMoveEffect.Swagger, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SweetKiss,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Confuse, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 75,
+                    PBEMoveEffect.Confuse, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SweetScent,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_EVA, EffectParam = -1,
-                    PPTier = 5, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 5, 0, 100,
+                    PBEMoveEffect.ChangeTarget_EVA, -1, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Swift,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 4, Power = 60, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 4, 60, 0,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.SwordsDance,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_ATK, EffectParam = +2,
-                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.ChangeUser_ATK, +2, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Synthesis,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Moonlight, EffectParam = 0,
-                    PPTier = 1, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 1, 0, 0,
+                    PBEMoveEffect.Moonlight, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.Tackle,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 7, Power = 50, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 7, 50, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.TailGlow,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_SPATK, EffectParam = +3,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.ChangeUser_SPATK, +3, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.TailWhip,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeTarget_DEF, EffectParam = -1,
-                    PPTier = 6, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 100,
+                    PBEMoveEffect.ChangeTarget_DEF, -1, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.TechnoBlast,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 85, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 1, 85, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.TeeterDance,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Confuse, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 100,
+                    PBEMoveEffect.Confuse, 0, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Teleport,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Fail, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.Fail, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.Thunder,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 30,
-                    PPTier = 2, Power = 120, Accuracy = 70, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.HitsAirborne,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Special, 0, 2, 120, 70,
+                    PBEMoveEffect.Hit__MaybeParalyze, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne
+                )
             },
             {
                 PBEMove.Thunderbolt,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 10,
-                    PPTier = 3, Power = 95, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Special, 0, 3, 95, 100,
+                    PBEMoveEffect.Hit__MaybeParalyze, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.ThunderPunch,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 10,
-                    PPTier = 3, Power = 75, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByIronFist,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Physical, 0, 3, 75, 100,
+                    PBEMoveEffect.Hit__MaybeParalyze, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByIronFist | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.ThunderShock,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 10,
-                    PPTier = 6, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Special, 0, 6, 40, 100,
+                    PBEMoveEffect.Hit__MaybeParalyze, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.ThunderWave,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Paralyze, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Status, 0, 4, 0, 100,
+                    PBEMoveEffect.Paralyze, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Tickle,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.LowerTarget_ATK_DEF_By1, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 100,
+                    PBEMoveEffect.LowerTarget_ATK_DEF_By1, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Toxic,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Toxic, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Status, 0, 2, 0, 90,
+                    PBEMoveEffect.Toxic, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.ToxicSpikes,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ToxicSpikes, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByMagicCoat,
-                    Targets = PBEMoveTarget.AllFoes
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Status, 0, 4, 0, 0,
+                    PBEMoveEffect.ToxicSpikes, 0, PBEMoveTarget.AllFoes,
+                    PBEMoveFlag.AffectedByMagicCoat
+                )
             },
             {
                 PBEMove.Transform,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Transform, EffectParam = 0,
-                    PPTier = 2, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.None,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.Transform, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.None
+                )
             },
             {
                 PBEMove.VacuumWave,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 6, Power = 40, Accuracy = 100, Priority = +1,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Special, +1, 6, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.VCreate,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1, EffectParam = 100,
-                    PPTier = 1, Power = 180, Accuracy = 95, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Physical, 0, 1, 180, 95,
+                    PBEMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Venoshock,
                 new PBEMoveData
-                {
-                    Type = PBEType.Poison, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 65, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Poison, PBEMoveCategory.Special, 0, 2, 65, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.ViceGrip,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 6, Power = 55, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 6, 55, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.VineWhip,
                 new PBEMoveData
-                {
-                    Type = PBEType.Grass, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 35, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Grass, PBEMoveCategory.Physical, 0, 3, 35, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.VitalThrow,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fighting, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 70, Accuracy = 0, Priority = -1,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, -1, 2, 70, 0,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Waterfall,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Physical, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.WaterGun,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 5, Power = 40, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 5, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.WaterPulse,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeConfuse, EffectParam = 20,
-                    PPTier = 4, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 4, 60, 100,
+                    PBEMoveEffect.Hit__MaybeConfuse, 20, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.WaterSpout,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 1, Power = 150, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.AllFoesSurrounding
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Special, 0, 1, 150, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.WeatherBall,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 2, Power = 50, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 2, 50, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.Whirlwind,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Whirlwind, EffectParam = 0,
-                    PPTier = 4, Power = 0, Accuracy = 100, Priority = -6,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, -6, 4, 0, 100,
+                    PBEMoveEffect.Whirlwind, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.WillOWisp,
                 new PBEMoveData
-                {
-                    Type = PBEType.Fire, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.Burn, EffectParam = 0,
-                    PPTier = 3, Power = 0, Accuracy = 75, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Fire, PBEMoveCategory.Status, 0, 3, 0, 75,
+                    PBEMoveEffect.Burn, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.WingAttack,
                 new PBEMoveData
-                {
-                    Type = PBEType.Flying, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 7, Power = 60, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleNotSelf
-                }
+                (
+                    PBEType.Flying, PBEMoveCategory.Physical, 0, 7, 60, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.Withdraw,
                 new PBEMoveData
-                {
-                    Type = PBEType.Water, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.ChangeUser_DEF, EffectParam = +1,
-                    PPTier = 8, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Water, PBEMoveCategory.Status, 0, 8, 0, 0,
+                    PBEMoveEffect.ChangeUser_DEF, +1, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.WorkUp,
                 new PBEMoveData
-                {
-                    Type = PBEType.Normal, Category = PBEMoveCategory.Status,
-                    Effect = PBEMoveEffect.RaiseUser_ATK_SPATK_By1, EffectParam = 0,
-                    PPTier = 6, Power = 0, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedBySnatch,
-                    Targets = PBEMoveTarget.Self
-                }
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.RaiseUser_ATK_SPATK_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
             },
             {
                 PBEMove.XScissor,
                 new PBEMoveData
-                {
-                    Type = PBEType.Bug, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit, EffectParam = 0,
-                    PPTier = 3, Power = 80, Accuracy = 100, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Bug, PBEMoveCategory.Physical, 0, 3, 80, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
             },
             {
                 PBEMove.ZapCannon,
                 new PBEMoveData
-                {
-                    Type = PBEType.Electric, Category = PBEMoveCategory.Special,
-                    Effect = PBEMoveEffect.Hit__MaybeParalyze, EffectParam = 100,
-                    PPTier = 1, Power = 120, Accuracy = 50, Priority = 0,
-                    Flags = PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
+                (
+                    PBEType.Electric, PBEMoveCategory.Special, 0, 1, 120, 50,
+                    PBEMoveEffect.Hit__MaybeParalyze, 100, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
             },
             {
                 PBEMove.ZenHeadbutt,
                 new PBEMoveData
-                {
-                    Type = PBEType.Psychic, Category = PBEMoveCategory.Physical,
-                    Effect = PBEMoveEffect.Hit__MaybeFlinch, EffectParam = 20,
-                    PPTier = 3, Power = 80, Accuracy = 90, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.AffectedByMirrorMove,
-                    Targets = PBEMoveTarget.SingleSurrounding
-                }
-            },
+                (
+                    PBEType.Psychic, PBEMoveCategory.Physical, 0, 3, 80, 90,
+                    PBEMoveEffect.Hit__MaybeFlinch, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            }
         });
     }
 }
