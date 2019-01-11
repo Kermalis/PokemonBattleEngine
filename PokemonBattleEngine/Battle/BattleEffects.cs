@@ -130,6 +130,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// Does effects that take place after an attack is completely done such as recoil and life orb.
         /// </summary>
         /// <param name="user">The Pokémon who used the attack.</param>
+        /// <param name="ignoreLifeOrb">Whether <see cref="PBEItem.LifeOrb"/> should damage the user or not.</param>
         /// <param name="recoilDamage">The amount of recoil damage <paramref name="user"/> will take.</param>
         void DoPostAttackedEffects(PBEPokemon user, bool ignoreLifeOrb, ushort recoilDamage = 0)
         {

@@ -25,7 +25,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Specific place for event Pokémon shells
 * Better validation for Pokémon (programmatically deduce how the Pokémon was obtained, make MinLevel relevant)
 * Damage, effectiveness and critical packets should include a list of hit Pokémon
-* Switch-in effects and turn ended effects should go by speed (with speed ties and everything like turn order)
+* Switch-ins, switch-in effects, and turn ended effects should go by speed (with speed ties and everything like turn order)
 * Winning
 * Watchable replays
 * Change all ability/item boosts to settings instead of constants

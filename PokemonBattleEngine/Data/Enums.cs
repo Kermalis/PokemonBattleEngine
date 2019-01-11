@@ -1002,7 +1002,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         BridgeMailV = 147,
         BrightPowder = 213,
-        BugGem = 558, // TODO
+        BugGem = 558,
         BurnDrive = 118,
         /// <summary>
         /// No effect.
@@ -1064,7 +1064,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         DampMulch = 96,
         DampRock = 285,
-        DarkGem = 562, // TODO
+        DarkGem = 562,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1087,7 +1087,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DouseDrive = 116,
         DracoPlate = 311,
         DragonFang = 250,
-        DragonGem = 561, // TODO
+        DragonGem = 561,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1116,7 +1116,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         Electirizer = 322,
-        ElectricGem = 550, // TODO
+        ElectricGem = 550,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1156,9 +1156,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         FavoredMail = 138,
-        FightingGem = 553, // TODO
+        FightingGem = 553,
         FigyBerry = 159, // TODO
-        FireGem = 548, // TODO
+        FireGem = 548,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1174,7 +1174,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         FluffyTail = 64,
-        FlyingGem = 556, // TODO
+        FlyingGem = 556,
         FocusBand = 230, // TODO
         FocusSash = 275, // TODO
         /// <summary>
@@ -1199,12 +1199,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         GeniusWing = 568,
-        GhostGem = 560, // TODO
+        GhostGem = 560,
         /// <summary>
         /// No effect.
         /// </summary>
         GooeyMulch = 98,
-        GrassGem = 551, // TODO
+        GrassGem = 551,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1228,7 +1228,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         GrnApricorn = 488,
-        GroundGem = 555, // TODO
+        GroundGem = 555,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1278,7 +1278,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         HyperPotion = 25,
         IapapaBerry = 163, // TODO
-        IceGem = 552, // TODO
+        IceGem = 552,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1422,7 +1422,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         NetBall = 6,
         NeverMeltIce = 246,
         NomelBerry = 178, // TODO
-        NormalGem = 564, // TODO
+        NormalGem = 564,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1486,7 +1486,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         PnkApricorn = 489,
         PoisonBarb = 245,
-        PoisonGem = 554, // TODO
+        PoisonGem = 554,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1539,7 +1539,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         Protein = 46,
-        PsychicGem = 557, // TODO
+        PsychicGem = 557,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1643,7 +1643,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Revive = 28,
         RindoBerry = 187, // TODO
         RingTarget = 543, // TODO
-        RockGem = 559, // TODO
+        RockGem = 559,
         RockIncense = 315,
         RockyHelmet = 540, // TODO
         /// <summary>
@@ -1728,7 +1728,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         StarPiece = 91,
-        SteelGem = 563, // TODO
+        SteelGem = 563,
         Stick = 259,
         StickyBarb = 288, // TODO
         StonePlate = 309,
@@ -1783,7 +1783,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         UltraBall = 2,
         UpGrade = 252,
         WacanBerry = 186, // TODO
-        WaterGem = 549, // TODO
+        WaterGem = 549,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -2404,7 +2404,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The move is blocked by <see cref="PBEAbility.Soundproof"/>.
         /// </summary>
-        SoundBased = 1 << 12
+        SoundBased = 1 << 12,
+        /// <summary>
+        /// The move does not consume a held gem.
+        /// </summary>
+        UnaffectedByGems = 1 << 13
     }
     public enum PBEMoveEffect : byte
     {

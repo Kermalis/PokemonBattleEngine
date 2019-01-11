@@ -31,11 +31,11 @@ namespace Kermalis.PokemonBattleEngineClient
             }
         }
 
-        readonly IEnumerable<PBEAbility> allAbilities = PBEAbilityLocalization.Names.OrderBy(k => k.Value.English).Select(k => k.Key);
+        readonly IEnumerable<PBEAbility> allAbilities = PBEAbilityLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
         readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
-        readonly IEnumerable<PBEItem> allItems = PBEItemLocalization.Names.OrderBy(k => k.Value.English).Select(k => k.Key);
+        readonly IEnumerable<PBEItem> allItems = PBEItemLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
 
-        IEnumerable<PBESpecies> AvailableSpecies { get; } = PBEPokemonLocalization.Names.OrderBy(k => k.Value.English).Select(k => k.Key);
+        IEnumerable<PBESpecies> AvailableSpecies { get; } = PBEPokemonLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
         IEnumerable<PBEAbility> availableAbilities;
         IEnumerable<PBEAbility> AvailableAbilities
         {
@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 OnPropertyChanged(nameof(AvailableItems));
             }
         }
-        IEnumerable<PBEMove> AvailableMoves { get; } = PBEMoveLocalization.Names.OrderBy(k => k.Value.English).Select(k => k.Key);
+        IEnumerable<PBEMove> AvailableMoves { get; } = PBEMoveLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
 
         PBEPokemonShell shell;
         Tuple<string, ObservableCollection<PBEPokemonShell>> team;
@@ -245,7 +245,7 @@ namespace Kermalis.PokemonBattleEngineClient
             team.Item2.Add(new PBEPokemonShell
             {
                 Species = species,
-                Nickname = PBEPokemonLocalization.Names[species].English,
+                Nickname = PBEPokemonLocalization.Names[species].FromUICultureInfo(),
                 Level = PBEPokemonData.Data[species].MinLevel,
                 EVs = new byte[6],
                 IVs = new byte[6],
@@ -301,7 +301,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 return;
             }
 
-            string prevSpeciesName = PBEPokemonLocalization.Names[shell.Species].English;
+            string prevSpeciesName = PBEPokemonLocalization.Names[shell.Species].FromUICultureInfo();
 
             if (updateShell)
             {
@@ -312,7 +312,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
                 else if ((!illegal.IsChecked.Value && string.IsNullOrWhiteSpace(nickname.Text)) || prevSpeciesName.Equals(nickname.Text))
                 {
-                    nickname.Text = PBEPokemonLocalization.Names[shell.Species].English;
+                    nickname.Text = PBEPokemonLocalization.Names[shell.Species].FromUICultureInfo();
                 }
                 shell.Nickname = nickname.Text;
                 //shell.Level = (byte)level.Value;
@@ -398,7 +398,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
                 else
                 {
-                    AvailableAbilities = pData.Abilities.OrderBy(a => PBEAbilityLocalization.Names[a].English);
+                    AvailableAbilities = pData.Abilities.OrderBy(a => PBEAbilityLocalization.Names[a].FromUICultureInfo());
                 }
                 shell.Ability = availableAbilities.Contains(shell.Ability) ? shell.Ability : availableAbilities.First();
                 if (ability.SelectedItem != (object)shell.Ability)

@@ -2848,7 +2848,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Type = PBEType.Normal, Category = PBEMoveCategory.Physical,
                     Effect = PBEMoveEffect.Struggle, EffectParam = 0,
                     PPTier = 0, Power = 50, Accuracy = 0, Priority = 0,
-                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect,
+                    Flags = PBEMoveFlag.MakesContact | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.UnaffectedByGems,
                     Targets = PBEMoveTarget.RandomFoeSurrounding
                 }
             },

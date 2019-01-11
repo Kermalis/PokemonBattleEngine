@@ -246,55 +246,79 @@ namespace Kermalis.PokemonBattleEngineClient
                                 culprit.Item = ip.Item;
                                 break;
                         }
+                        bool culpritCaps = true;
                         string message;
                         switch (ip.Item)
                         {
+                            case PBEItem.BugGem:
+                            case PBEItem.DarkGem:
+                            case PBEItem.DragonGem:
+                            case PBEItem.ElectricGem:
+                            case PBEItem.FightingGem:
+                            case PBEItem.FireGem:
+                            case PBEItem.FlyingGem:
+                            case PBEItem.GhostGem:
+                            case PBEItem.GrassGem:
+                            case PBEItem.GroundGem:
+                            case PBEItem.IceGem:
+                            case PBEItem.NormalGem:
+                            case PBEItem.PoisonGem:
+                            case PBEItem.PsychicGem:
+                            case PBEItem.RockGem:
+                            case PBEItem.SteelGem:
+                            case PBEItem.WaterGem:
+                                switch (ip.ItemAction)
+                                {
+                                    case PBEItemAction.Consumed: message = "The {2} strengthened {0}'s power!"; culpritCaps = false; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                }
+                                break;
                             case PBEItem.BlackSludge:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.CausedDamage: message = "{0} is hurt by its Black Sludge!"; break;
-                                    case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its Black Sludge!"; break;
+                                    case PBEItemAction.CausedDamage: message = "{0} is hurt by its {2}!"; break;
+                                    case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
                             case PBEItem.FlameOrb:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.ChangedStatus: message = "{0} was burned by Flame Orb!"; break;
+                                    case PBEItemAction.ChangedStatus: message = "{0} was burned by {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
                             case PBEItem.Leftovers:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its Leftovers!"; break;
+                                    case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
                             case PBEItem.LifeOrb:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.CausedDamage: message = "{0} lost some of its HP!"; break;
+                                    case PBEItemAction.CausedDamage: message = "{0} is hurt by its {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
                             case PBEItem.PowerHerb:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.Consumed: message = "{0} became fully charged due to its Power Herb!"; break;
+                                    case PBEItemAction.Consumed: message = "{0} became fully charged due to its {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
                             case PBEItem.ToxicOrb:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.ChangedStatus: message = "{0} was badly poisoned by the Toxic Orb!"; break;
+                                    case PBEItemAction.ChangedStatus: message = "{0} was badly poisoned by the {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
                             default: throw new ArgumentOutOfRangeException(nameof(ip.Item), $"Invalid item: {ip.Item}");
                         }
-                        BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, true), NameForTrainer(victim, false)), true, true);
+                        BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, culpritCaps), NameForTrainer(victim, false), PBEItemLocalization.Names[ip.Item].FromUICultureInfo()), true, true);
                         break;
                     }
                 case PBEMoveCritPacket _:
@@ -354,7 +378,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             // Set the first unknown move to the used move
                             culprit.Moves[Array.IndexOf(culprit.Moves, PBEMove.MAX)] = mup.Move;
                         }
-                        BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(culprit, true), PBEMoveLocalization.Names[mup.Move].English), true, true);
+                        BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(culprit, true), PBEMoveLocalization.Names[mup.Move].FromUICultureInfo()), true, true);
                         break;
                     }
                 case PBEPkmnFaintedPacket pfap:
