@@ -111,7 +111,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        ushort CalculateBasePower(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
+        double CalculateBasePower(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, byte power = 0, bool ignoreReflectLightScreen = false, bool ignoreLifeOrb = false, bool criticalHit = false)
         {
             double basePower = power;
 
@@ -566,9 +566,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 basePower *= 0.5;
             }
 
-            return (ushort)basePower;
+            return basePower;
         }
-        ushort CalculateAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
+        double CalculateAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Negative Attack changes are ignored for critical hits
             double attack = user.Attack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
@@ -596,9 +596,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 attack *= 1.5;
             }
 
-            return (ushort)attack;
+            return attack;
         }
-        ushort CalculateDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
+        double CalculateDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Positive Defense changes are ignored for critical hits
             double defense = user.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
@@ -617,9 +617,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 defense *= 1.5;
             }
 
-            return (ushort)defense;
+            return defense;
         }
-        ushort CalculateSpAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
+        double CalculateSpAttack(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Negative SpAttack changes are ignored for critical hits
             double spAttack = user.SpAttack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
@@ -644,9 +644,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 spAttack *= 1.5;
             }
 
-            return (ushort)spAttack;
+            return spAttack;
         }
-        ushort CalculateSpDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
+        double CalculateSpDefense(PBEPokemon user, PBEPokemon target, bool criticalHit = false)
         {
             // Positive SpDefense changes are ignored for critical hits
             double spDefense = user.SpDefense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
@@ -671,7 +671,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 spDefense *= 1.5;
             }
 
-            return (ushort)spDefense;
+            return spDefense;
         }
 
         // If moveCategory is PBEMoveCategory.MAX, category is determined by the move
@@ -683,7 +683,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 moveCategory = PBEMoveData.Data[move].Category;
             }
             ushort damage;
-            ushort a = 0, d = 0,
+            double a = 0, d = 0,
                 p = CalculateBasePower(user, target, move, moveType, moveCategory, power, ignoreReflectLightScreen, ignoreLifeOrb, criticalHit);
 
             switch (move)
