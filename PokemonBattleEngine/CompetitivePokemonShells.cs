@@ -583,6 +583,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Scald, PBEMove.IcyWind, PBEMove.PsychUp, PBEMove.Protect }, // Scald, Icy Wind, Encore, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Gorebyss_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Gorebyss,
+            Nickname = "Googi",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.SwiftSwim,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 30, 30, 31, 30, 31 }, // Hidden Power: Bug/70
+            EVs = new byte[] { 28, 0, 0, 252, 0, 228 },
+            Moves = new PBEMove[] { PBEMove.MuddyWater, PBEMove.IceBeam, PBEMove.ShellSmash, PBEMove.HiddenPower },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Gothitelle_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Gothitelle,
