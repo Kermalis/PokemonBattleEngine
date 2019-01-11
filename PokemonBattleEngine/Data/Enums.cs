@@ -2237,6 +2237,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Glaceon = 471,
         Golbat = 42,
         Golduck = 55,
+        Gorebyss = 368,
         Gothita = 574,
         Gothitelle = 576,
         Gothorita = 575,
