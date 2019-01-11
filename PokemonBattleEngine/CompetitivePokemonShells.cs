@@ -615,6 +615,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.ThunderWave, PBEMove.StoneEdge, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Huntail_UU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Huntail,
+            Nickname = "Hoogi",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.WhiteHerb,
+            Ability = PBEAbility.WaterVeil,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 72, 0, 0, 184 },
+            Moves = new PBEMove[] { PBEMove.ShellSmash, PBEMove.Crunch, PBEMove.Substitute, PBEMove.Waterfall }, // Shell Smash, Baton Pass, Substitute, Waterfall
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Hydreigon_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Hydreigon,
