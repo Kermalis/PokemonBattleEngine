@@ -7166,12 +7166,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PBESpecies.Giratina_Origin,
                 new PBEPokemonData
                 (
-                    150, 100, 120, 100, 120, 90,
+                    150, 120, 100, 120, 100, 90,
                     PBEType.Ghost, PBEType.Dragon, PBEGenderRatio.M0_F0,
-                    1, false, 750.0,
+                    1, false, 650.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
-                    new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
+                    new PBEAbility[] { PBEAbility.Levitate },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                         Tuple.Create(PBEMove.AncientPower, 10, PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
