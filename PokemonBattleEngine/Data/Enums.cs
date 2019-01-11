@@ -2257,6 +2257,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Luxio = 404,
         Luxray = 405,
         Magikarp = 129,
+        Marill = 183,
         Marowak = 105,
         Mesprit = 481,
         Metapod = 11,

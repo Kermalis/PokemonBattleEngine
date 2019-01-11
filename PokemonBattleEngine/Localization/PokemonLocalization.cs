@@ -190,7 +190,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.180, new PBELocalizedString("モココ", "보송송", "Lainergie", "Waaty", "Flaaffy", "Flaaffy", "Flaaffy") },
             // { PBESpecies.181, new PBELocalizedString("デンリュウ", "전룡", "Pharamp", "Ampharos", "Ampharos", "Ampharos", "Ampharos") },
             // { PBESpecies.182, new PBELocalizedString("キレイハナ", "아르코", "Joliflor", "Blubella", "Bellossom", "Bellossom", "Bellossom") },
-            // { PBESpecies.183, new PBELocalizedString("マリル", "마릴", "Marill", "Marill", "Marill", "Marill", "Marill") },
+            { PBESpecies.Marill, new PBELocalizedString("マリル", "마릴", "Marill", "Marill", "Marill", "Marill", "Marill") },
             { PBESpecies.Azumarill, new PBELocalizedString("マリルリ", "마릴리", "Azumarill", "Azumarill", "Azumarill", "Azumarill", "Azumarill") },
             // { PBESpecies.185, new PBELocalizedString("ウソッキー", "꼬지모", "Simularbre", "Mogelbaum", "Sudowoodo", "Sudowoodo", "Sudowoodo") },
             // { PBESpecies.186, new PBELocalizedString("ニョロトノ", "왕구리", "Tarpaud", "Quaxo", "Politoed", "Politoed", "Politoed") },
