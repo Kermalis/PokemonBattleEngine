@@ -211,16 +211,22 @@ namespace Kermalis.PokemonBattleEngineServer
             switch (battle.BattleState)
             {
                 case PBEBattleState.ReadyToBegin:
-                    try
+                    foreach (Player player in battlers)
                     {
-                        PBEPokemonShell.ValidateMany(battlers.SelectMany(b => b.Party), battle.Settings);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Invalid Team data received!");
-                        Console.WriteLine(e.Message);
-                        CancelMatch();
-                        return;
+                        foreach (PBEPokemonShell shell in player.Party)
+                        {
+                            try
+                            {
+                                shell.ValidateShell(battle.Settings);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"Invalid team data received from {player.PlayerName}:");
+                                Console.WriteLine(e.Message);
+                                CancelMatch();
+                                return;
+                            }
+                        }
                     }
                     state = ServerState.StartingMatch;
                     Console.WriteLine("Battle starting!");
