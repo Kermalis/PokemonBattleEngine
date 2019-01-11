@@ -401,7 +401,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.364, new PBELocalizedString("トドグラー", "씨레오", "Phogleur", "Seejong", "Sealeo", "Sealeo", "Sealeo") },
             // { PBESpecies.365, new PBELocalizedString("トドゼルガ", "씨카이저", "Kaimorse", "Walraisa", "Walrein", "Walrein", "Walrein") },
             { PBESpecies.Clamperl, new PBELocalizedString("パールル", "진주몽", "Coquiperl", "Perlu", "Clamperl", "Clamperl", "Clamperl") },
-            // { PBESpecies.367, new PBELocalizedString("ハンテール", "헌테일", "Serpang", "Aalabyss", "Huntail", "Huntail", "Huntail") },
+            { PBESpecies.Huntail, new PBELocalizedString("ハンテール", "헌테일", "Serpang", "Aalabyss", "Huntail", "Huntail", "Huntail") },
             // { PBESpecies.368, new PBELocalizedString("サクラビス", "분홍장이", "Rosabyss", "Saganabyss", "Gorebyss", "Gorebyss", "Gorebyss") },
             // { PBESpecies.369, new PBELocalizedString("ジーランス", "시라칸", "Relicanth", "Relicanth", "Relicanth", "Relicanth", "Relicanth") },
             // { PBESpecies.370, new PBELocalizedString("ラブカス", "사랑동이", "Lovdisc", "Liebiskus", "Luvdisc", "Luvdisc", "Luvdisc") },

@@ -2242,6 +2242,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Gothorita = 575,
         Gyarados = 130,
         Happiny = 440,
+        Huntail = 367,
         Hydreigon = 635,
         Ivysaur = 2,
         Jirachi = 385,
