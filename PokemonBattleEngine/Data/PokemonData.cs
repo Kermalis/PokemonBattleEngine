@@ -3251,6 +3251,29 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBESpecies.Beldum,
+                new PBEPokemonData
+                (
+                    40, 55, 80, 35, 60, 30,
+                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0,
+                    1, false, 95.2,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Metang, PBESpecies.Metagross },
+                    new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.LightMetal },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PBEMove.TakeDown, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PBEMove.Headbutt, PBEMoveObtainMethod.MoveTutor_HGSS),
+                        Tuple.Create(PBEMove.IronDefense, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.IronHead, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
+                    }
+                )
+            },
+            {
                 PBESpecies.Blastoise,
                 new PBEPokemonData
                 (
@@ -10190,7 +10213,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     80, 135, 130, 95, 90, 70,
                     PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0,
                     1, false, 550.0,
-                    new PBESpecies[] { /*PBESpecies.Beldum,*/ PBESpecies.Metang },
+                    new PBESpecies[] { PBESpecies.Beldum, PBESpecies.Metang },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.LightMetal },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
@@ -10309,7 +10332,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     60, 75, 100, 55, 80, 50,
                     PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0,
                     1, false, 202.5,
-                    new PBESpecies[] { /*PBESpecies.Beldum*/ },
+                    new PBESpecies[] { PBESpecies.Beldum },
                     new PBESpecies[] { PBESpecies.Metagross },
                     new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.LightMetal },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]

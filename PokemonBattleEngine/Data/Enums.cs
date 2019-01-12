@@ -2192,6 +2192,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Azumarill = 184,
         Azurill = 298,
         Beedrill = 15,
+        Beldum = 374,
         Blastoise = 9,
         Blaziken = 257,
         Blissey = 242,
