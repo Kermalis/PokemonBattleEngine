@@ -69,7 +69,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.59, new PBELocalizedString("ウインディ", "윈디", "Arcanin", "Arkani", "Arcanine", "Arcanine", "Arcanine") },
             // { PBESpecies.60, new PBELocalizedString("ニョロモ", "발챙이", "Ptitard", "Quapsel", "Poliwag", "Poliwag", "Poliwag") },
             // { PBESpecies.61, new PBELocalizedString("ニョロゾ", "슈륙챙이", "Têtarte", "Quaputzi", "Poliwhirl", "Poliwhirl", "Poliwhirl") },
-            // { PBESpecies.62, new PBELocalizedString("ニョロボン", "강챙이", "Tartard", "Quappo", "Poliwrath", "Poliwrath", "Poliwrath") },
+            { PBESpecies.Poliwrath, new PBELocalizedString("ニョロボン", "강챙이", "Tartard", "Quappo", "Poliwrath", "Poliwrath", "Poliwrath") },
             // { PBESpecies.63, new PBELocalizedString("ケーシィ", "캐이시", "Abra", "Abra", "Abra", "Abra", "Abra") },
             // { PBESpecies.64, new PBELocalizedString("ユンゲラー", "윤겔라", "Kadabra", "Kadabra", "Kadabra", "Kadabra", "Kadabra") },
             // { PBESpecies.65, new PBELocalizedString("フーディン", "후딘", "Alakazam", "Simsala", "Alakazam", "Alakazam", "Alakazam") },

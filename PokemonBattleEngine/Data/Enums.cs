@@ -2276,6 +2276,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pikachu = 25,
         Plusle = 311,
         Politoed = 186,
+        Poliwrath = 62,
         Psyduck = 54,
         Raichu = 26,
         Regirock = 377,
