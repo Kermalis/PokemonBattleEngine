@@ -2264,6 +2264,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Marowak = 105,
         Mesprit = 481,
         Metagross = 376,
+        Metang = 375,
         Metapod = 11,
         Minun = 312,
         Misdreavus = 200,
