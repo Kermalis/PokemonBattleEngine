@@ -2263,6 +2263,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Marill = 183,
         Marowak = 105,
         Mesprit = 481,
+        Metagross = 376,
         Metapod = 11,
         Minun = 312,
         Misdreavus = 200,

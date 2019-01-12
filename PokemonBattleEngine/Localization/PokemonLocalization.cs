@@ -410,7 +410,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.373, new PBELocalizedString("ボーマンダ", "보만다", "Drattak", "Brutalanda", "Salamence", "Salamence", "Salamence") },
             // { PBESpecies.374, new PBELocalizedString("ダンバル", "메탕", "Terhal", "Tanhel", "Beldum", "Beldum", "Beldum") },
             // { PBESpecies.375, new PBELocalizedString("メタング", "메탕구", "Métang", "Metang", "Metang", "Metang", "Metang") },
-            // { PBESpecies.376, new PBELocalizedString("メタグロス", "메타그로스", "Métalosse", "Metagross", "Metagross", "Metagross", "Metagross") },
+            { PBESpecies.Metagross, new PBELocalizedString("メタグロス", "메타그로스", "Métalosse", "Metagross", "Metagross", "Metagross", "Metagross") },
             { PBESpecies.Regirock, new PBELocalizedString("レジロック", "레지락", "Regirock", "Regirock", "Regirock", "Regirock", "Regirock") },
             // { PBESpecies.378, new PBELocalizedString("レジアイス", "레지아이스", "Regice", "Regice", "Regice", "Regice", "Regice") },
             // { PBESpecies.379, new PBELocalizedString("レジスチル", "레지스틸", "Registeel", "Registeel", "Registeel", "Registeel", "Registeel") },
