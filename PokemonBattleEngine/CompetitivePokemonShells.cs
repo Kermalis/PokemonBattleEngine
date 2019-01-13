@@ -1076,7 +1076,7 @@ namespace Kermalis.PokemonBattleEngine
             Ability = PBEAbility.Torrent,
             Gender = PBEGender.Female,
             Nature = PBENature.Brave,
-            IVs = new byte[] { 31, 31, 11, 31, 31, 0 }, // Hidden Power: Ice/64
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
             Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.AquaJet, PBEMove.Megahorn, PBEMove.Detect },
             PPUps = new byte[] { 3, 3, 3, 3 }
@@ -1092,7 +1092,7 @@ namespace Kermalis.PokemonBattleEngine
             Ability = PBEAbility.Contrary,
             Gender = PBEGender.Female,
             Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 31, 11, 31, 31, 31 }, // Hidden Power: Dark/70
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 0, 4, 4, 4, 244 },
             Moves = new PBEMove[] { PBEMove.LightScreen, PBEMove.Reflect, PBEMove.EnergyBall, PBEMove.Glare }, // Light Screen, Reflect, Giga Drain, Taunt
             PPUps = new byte[] { 3, 3, 3, 3 }
