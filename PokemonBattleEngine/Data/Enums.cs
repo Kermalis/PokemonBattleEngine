@@ -2277,6 +2277,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pachirisu = 417,
         Palkia = 484,
         Pichu = 172,
+        Pignite = 499,
         Pikachu = 25,
         Plusle = 311,
         Politoed = 186,
