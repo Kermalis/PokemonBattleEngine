@@ -430,6 +430,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect }, // Dragon Claw, Sucker Punch, Superpower, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Emboar_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Emboar,
+            Nickname = "Brick",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.ExpertBelt,
+            Ability = PBEAbility.Blaze,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.FirePunch, PBEMove.HammerArm, PBEMove.RockSlide, PBEMove.Protect }, // Flare Blitz, Hammer Arm, Rock Slide, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Emolga_NU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Emolga,
