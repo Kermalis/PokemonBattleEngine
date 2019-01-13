@@ -969,6 +969,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Scald, PBEMove.IceBeam, PBEMove.Psychic, PBEMove.Protect }, // Scald, Ice Beam, Encore, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Poliwrath_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Poliwrath,
+            Nickname = "Peter",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.SitrusBerry,
+            Ability = PBEAbility.SwiftSwim,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 168, 252, 4, 0, 4, 80 },
+            Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.BrickBreak, PBEMove.Earthquake, PBEMove.Protect }, // Waterfall, Brick Break, Belly Drum, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Raichu_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Raichu,
