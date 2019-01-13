@@ -556,7 +556,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Serperior, new PBELocalizedString("ジャローダ", "샤로다", "Majaspic", "Serpiroyal", "Serperior", "Serperior", "Serperior") },
             // { PBESpecies.498, new PBELocalizedString("ポカブ", "뚜꾸리", "Gruikui", "Floink", "Tepig", "Tepig", "Tepig") },
             // { PBESpecies.499, new PBELocalizedString("チャオブー", "차오꿀", "Grotichon", "Ferkokel", "Pignite", "Pignite", "Pignite") },
-            // { PBESpecies.500, new PBELocalizedString("エンブオー", "염무왕", "Roitiflam", "Flambirex", "Emboar", "Emboar", "Emboar") },
+            { PBESpecies.Emboar, new PBELocalizedString("エンブオー", "염무왕", "Roitiflam", "Flambirex", "Emboar", "Emboar", "Emboar") },
             // { PBESpecies.501, new PBELocalizedString("ミジュマル", "수댕이", "Moustillon", "Ottaro", "Oshawott", "Oshawott", "Oshawott") },
             // { PBESpecies.502, new PBELocalizedString("フタチマル", "쌍검자비", "Mateloutre", "Zwottronin", "Dewott", "Dewott", "Dewott") },
             // { PBESpecies.503, new PBELocalizedString("ダイケンキ", "대검귀", "Clamiral", "Admurai", "Samurott", "Samurott", "Samurott") },

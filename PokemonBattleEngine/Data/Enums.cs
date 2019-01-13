@@ -2221,6 +2221,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Ditto = 132,
         Druddigon = 621,
         Eevee = 133,
+        Emboar = 500,
         Emolga = 587,
         Espeon = 196,
         Farfetchd = 83,
