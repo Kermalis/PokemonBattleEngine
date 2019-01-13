@@ -551,7 +551,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Arceus_Steel, new PBELocalizedString("アルセウス", "아르세우스", "Arceus", "Arceus", "Arceus", "Arceus", "Arceus") },
             { PBESpecies.Arceus_Water, new PBELocalizedString("アルセウス", "아르세우스", "Arceus", "Arceus", "Arceus", "Arceus", "Arceus") },
             { PBESpecies.Victini, new PBELocalizedString("ビクティニ", "비크티니", "Victini", "Victini", "Victini", "Victini", "Victini") },
-            // { PBESpecies.495, new PBELocalizedString("ツタージャ", "주리비얀", "Vipélierre", "Serpifeu", "Snivy", "Snivy", "Snivy") },
+            { PBESpecies.Snivy, new PBELocalizedString("ツタージャ", "주리비얀", "Vipélierre", "Serpifeu", "Snivy", "Snivy", "Snivy") },
             { PBESpecies.Servine, new PBELocalizedString("ジャノビー", "샤비", "Lianaja", "Efoserp", "Servine", "Servine", "Servine") },
             { PBESpecies.Serperior, new PBELocalizedString("ジャローダ", "샤로다", "Majaspic", "Serpiroyal", "Serperior", "Serperior", "Serperior") },
             // { PBESpecies.498, new PBELocalizedString("ポカブ", "뚜꾸리", "Gruikui", "Floink", "Tepig", "Tepig", "Tepig") },

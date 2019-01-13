@@ -2298,6 +2298,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Shinx = 403,
         Skitty = 300,
         Smeargle = 235,
+        Snivy = 495,
         Squirtle = 7,
         Tirtouga = 564,
         Torchic = 255,
