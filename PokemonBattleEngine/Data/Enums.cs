@@ -2294,6 +2294,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rotom_Heat = 479 | (3 << 0x10),
         Rotom_Mow = 479 | (4 << 0x10),
         Rotom_Wash = 479 | (5 << 0x10),
+        Samurott = 503,
         Serperior = 497,
         Servine = 496,
         Shedinja = 292,
