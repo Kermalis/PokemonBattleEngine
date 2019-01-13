@@ -953,6 +953,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Thunderbolt, PBEMove.HiddenPower, PBEMove.QuickAttack }, // Nasty Plot, Thunderbolt, Hidden Power Ice, Baton Pass
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Politoed_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Politoed,
+            Nickname = "Patrick",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.WaterGem,
+            Ability = PBEAbility.Drizzle,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 0, 180, 76, 0 },
+            Moves = new PBEMove[] { PBEMove.Scald, PBEMove.IceBeam, PBEMove.Psychic, PBEMove.Protect }, // Scald, Ice Beam, Encore, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Raichu_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Raichu,

@@ -2279,7 +2279,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pikachu = 25,
         Plusle = 311,
         Politoed = 186,
-        Poliwag = 60
+        Poliwag = 60,
         Poliwhirl = 61,
         Poliwrath = 62,
         Psyduck = 54,
