@@ -2302,6 +2302,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Smeargle = 235,
         Snivy = 495,
         Squirtle = 7,
+        Tepig = 498,
         Tirtouga = 564,
         Torchic = 255,
         Tropius = 357,
