@@ -807,6 +807,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.Thunderbolt, PBEMove.Psychic, PBEMove.HiddenPower }, // Thunderbolt, Trick Room, Psychic, U-turn
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Metagross_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Metagross,
+            Nickname = "Crizzy",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.OccaBerry, // Normal Gem with Explosion
+            Ability = PBEAbility.ClearBody,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
+            Moves = new PBEMove[] { PBEMove.MeteorMash, PBEMove.BulletPunch, PBEMove.Earthquake, PBEMove.Protect }, // Meteor Mash, Bullet Punch, Earthquake, Explosion
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Minun_NU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Minun,
