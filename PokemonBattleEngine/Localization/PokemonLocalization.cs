@@ -558,7 +558,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Pignite, new PBELocalizedString("チャオブー", "차오꿀", "Grotichon", "Ferkokel", "Pignite", "Pignite", "Pignite") },
             { PBESpecies.Emboar, new PBELocalizedString("エンブオー", "염무왕", "Roitiflam", "Flambirex", "Emboar", "Emboar", "Emboar") },
             // { PBESpecies.501, new PBELocalizedString("ミジュマル", "수댕이", "Moustillon", "Ottaro", "Oshawott", "Oshawott", "Oshawott") },
-            // { PBESpecies.502, new PBELocalizedString("フタチマル", "쌍검자비", "Mateloutre", "Zwottronin", "Dewott", "Dewott", "Dewott") },
+            { PBESpecies.Dewott, new PBELocalizedString("フタチマル", "쌍검자비", "Mateloutre", "Zwottronin", "Dewott", "Dewott", "Dewott") },
             { PBESpecies.Samurott, new PBELocalizedString("ダイケンキ", "대검귀", "Clamiral", "Admurai", "Samurott", "Samurott", "Samurott") },
             // { PBESpecies.504, new PBELocalizedString("ミネズミ", "보르쥐", "Ratentif", "Nagelotz", "Patrat", "Patrat", "Patrat") },
             // { PBESpecies.505, new PBELocalizedString("ミルホッグ", "보르그", "Miradar", "Kukmarda", "Watchog", "Watchog", "Watchog") },

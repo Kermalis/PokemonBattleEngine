@@ -2217,6 +2217,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Darkrai = 491,
         Deino = 633,
         Delcatty = 301,
+        Dewott = 502,
         Dialga = 483,
         Ditto = 132,
         Druddigon = 621,
