@@ -123,7 +123,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBEType.Dark      // 1.5625 %
         };
 
-        public static ReadOnlyDictionary<PBESpecies, PBEPokemonData> Data { get; } = new ReadOnlyDictionary<PBESpecies, PBEPokemonData>(new Dictionary<PBESpecies, PBEPokemonData>()
+        public static ReadOnlyDictionary<PBESpecies, PBEPokemonData> Data { get; } = new ReadOnlyDictionary<PBESpecies, PBEPokemonData>(new Dictionary<PBESpecies, PBEPokemonData>
         {
             {
                 PBESpecies.Absol,
@@ -9013,7 +9013,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Swift, PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Synchronoise, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Thunder, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
-                        //Tuple.Create(PBEMove.ThunderBolt, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Tickle, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),

@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             NaturalGiftType = naturalGiftType;
         }
 
-        public static ReadOnlyDictionary<PBEItem, PBEItemData> Data { get; } = new ReadOnlyDictionary<PBEItem, PBEItemData>(new Dictionary<PBEItem, PBEItemData>()
+        public static ReadOnlyDictionary<PBEItem, PBEItemData> Data { get; } = new ReadOnlyDictionary<PBEItem, PBEItemData>(new Dictionary<PBEItem, PBEItemData>
         {
             { PBEItem.AbsorbBulb, new PBEItemData(30) },
             { PBEItem.AdamantOrb, new PBEItemData(60) },

@@ -3,7 +3,6 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine
 {
