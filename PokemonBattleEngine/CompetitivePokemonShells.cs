@@ -1065,6 +1065,22 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HydroPump, PBEMove.HiddenPower, PBEMove.Discharge, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Samurott_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Samurott,
+            Nickname = "Slurp",
+            Level = 100,
+            Friendship = 255,
+            Shiny = false,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Torrent,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 11, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.AquaJet, PBEMove.Megahorn, PBEMove.Detect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Serperior_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Serperior,
