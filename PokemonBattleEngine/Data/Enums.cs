@@ -2275,6 +2275,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Nincada = 290,
         Ninetales = 38,
         Ninjask = 291,
+        Oshawott = 501,
         Pachirisu = 417,
         Palkia = 484,
         Pichu = 172,
