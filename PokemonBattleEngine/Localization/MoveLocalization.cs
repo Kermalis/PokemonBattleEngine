@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.HydroPump, new PBELocalizedString("ハイドロポンプ", "하이드로펌프", "Hydrocanon", "Hydropumpe", "Hidrobomba", "Idropompa", "Hydro Pump") },
             { PBEMove.Surf, new PBELocalizedString("なみのり", "파도타기", "Surf", "Surfer", "Surf", "Surf", "Surf") },
             { PBEMove.IceBeam, new PBELocalizedString("れいとうビーム", "냉동빔", "Laser Glace", "Eisstrahl", "Rayo Hielo", "Geloraggio", "Ice Beam") },
-            // { PBEMove.59, new PBELocalizedString("ふぶき", "눈보라", "Blizzard", "Blizzard", "Ventisca", "Bora", "Blizzard") },
+            { PBEMove.Blizzard, new PBELocalizedString("ふぶき", "눈보라", "Blizzard", "Blizzard", "Ventisca", "Bora", "Blizzard") },
             { PBEMove.Psybeam, new PBELocalizedString("サイケこうせん", "환상빔", "Rafale Psy", "Psystrahl", "Psicorrayo", "Psicoraggio", "Psybeam") },
             { PBEMove.BubbleBeam, new PBELocalizedString("バブルこうせん", "거품광선", "Bulles d’O", "Blubbstrahl", "Rayo Burbuja", "Bollaraggio", "BubbleBeam") },
             { PBEMove.AuroraBeam, new PBELocalizedString("オーロラビーム", "오로라빔", "Onde Boréale", "Aurorastrahl", "Rayo Aurora", "Raggiaurora", "Aurora Beam") },

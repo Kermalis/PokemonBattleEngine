@@ -356,7 +356,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                 case PBEMoveMissedPacket mmp:
                     {
-                        BattleView.AddMessage(string.Format("{0}'s attack missed!", NameForTrainer(Battle.TryGetPokemon(mmp.Culprit), true)), true, true);
+                        BattleView.AddMessage(string.Format("{0}'s attack missed {1}!", NameForTrainer(Battle.TryGetPokemon(mmp.Culprit), true), NameForTrainer(Battle.TryGetPokemon(mmp.Victim), false)), true, true);
                         break;
                     }
                 case PBEMovePPChangedPacket mpcp:

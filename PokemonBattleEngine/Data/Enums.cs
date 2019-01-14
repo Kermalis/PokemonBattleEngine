@@ -2545,6 +2545,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Barrier = 112,
         Bite = 44,
         BlazeKick = 299,
+        Blizzard = 59,
         BlueFlare = 551,
         BrickBreak = 280,
         Brine = 362,

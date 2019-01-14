@@ -547,7 +547,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Quiet,
             IVs = new byte[] { 31, 31, 31, 30, 30, 3 }, // Hidden Power: Ground/70
             EVs = new byte[] { 252, 0, 0, 248, 8, 0 },
-            Moves = new PBEMove[] { PBEMove.IceBeam, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Protect }, // Blizzard, Shadow Ball, Hidden Power Ground, Protect
+            Moves = new PBEMove[] { PBEMove.Blizzard, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Golduck_VGC { get; } = new PBEPokemonShell

@@ -219,6 +219,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Blizzard,
+                new PBEMoveData
+                (
+                    PBEType.Ice, PBEMoveCategory.Special, 0, 1, 120, 70,
+                    PBEMoveEffect.Hit__MaybeFreeze, 10, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.BlueFlare,
                 new PBEMoveData
                 (

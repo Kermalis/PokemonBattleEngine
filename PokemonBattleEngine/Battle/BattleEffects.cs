@@ -751,7 +751,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 goto miss;
             }
             // Moves that always hit
-            if (mData.Accuracy == 0 || (move == PBEMove.Thunder && Weather == PBEWeather.Rain))
+            if (mData.Accuracy == 0
+                || (move == PBEMove.Blizzard && Weather == PBEWeather.Hailstorm)
+                || (move == PBEMove.Thunder && Weather == PBEWeather.Rain)
+                )
             {
                 return false;
             }

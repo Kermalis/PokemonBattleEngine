@@ -282,7 +282,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEMoveMissedPacket mmp:
                     {
-                        Console.WriteLine("{0}'s attack missed!", NameForTrainer(battle.TryGetPokemon(mmp.Culprit)));
+                        Console.WriteLine("{0}'s attack missed {1}!", NameForTrainer(battle.TryGetPokemon(mmp.Culprit)), NameForTrainer(battle.TryGetPokemon(mmp.Victim)));
                         break;
                     }
                 case PBEMovePPChangedPacket mpcp:
