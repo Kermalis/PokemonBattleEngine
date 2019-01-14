@@ -22,7 +22,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Protect from corrupt packets (if they are even a problem)
 * Spectators
-* Specific place for event Pokémon shells
 * Make MinLevel relevant
 * Damage, effectiveness and critical packets should include a list of hit Pokémon
 * Switch-ins, switch-in effects, and turn ended effects should go by speed (with speed ties and everything like turn order)

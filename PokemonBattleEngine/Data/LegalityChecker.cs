@@ -6,6 +6,8 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public static class PBELegalityChecker
     {
+        // TODO: Include generation?
+        // TODO: Sketch
         public static IEnumerable<PBEMove> GetLegalMoves(PBESpecies species, byte level)
         {
             IEnumerable<PBESpecies> evolutionChain = PBEPokemonData.Data[species].PreEvolutions.Concat(new[] { species });
@@ -14,11 +16,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             foreach (PBESpecies pkmn in evolutionChain)
             {
                 PBEPokemonData pData = PBEPokemonData.Data[pkmn];
-                moves = moves.Union(pData.LevelUpMoves.Where(t => t.Item2 <= level).Select(t => t.Item1))
-                    .Union(pData.OtherMoves.Select(t => t.Item1));
+                moves = moves.Union(pData.LevelUpMoves.Where(t => t.Item2 <= level).Select(t => t.Item1)) // Add level-up moves
+                    .Union(pData.OtherMoves.Select(t => t.Item1)); // Add other moves
+                if (PBEEventPokemon.Events.ContainsKey(pkmn))
+                {
+                    moves = moves.Union(PBEEventPokemon.Events[pkmn].SelectMany(e => e.Moves)); // Add event Pokémons' moves (TODO)
+                }
             }
 
-            return moves;
+            return moves.Except(new[] { PBEMove.None });
         }
 
         public static void MoveLegalityCheck(PBESpecies species, byte level, IEnumerable<PBEMove> moves, PBESettings settings)
@@ -48,8 +54,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 levelUp = levelUp.Union(pData.LevelUpMoves.Where(t => t.Item2 <= level));
                 other = other.Union(pData.OtherMoves);
             }
-            // Same as GetLegalMoves() but will take less time to compute:
-            IEnumerable<PBEMove> allAsMoves = levelUp.Select(t => t.Item1).Union(other.Select(t => t.Item1));
+            // TODO:
+            IEnumerable<PBEMove> allAsMoves = GetLegalMoves(species, level);
 
             // Check if there's a move it cannot possibly learn
             foreach (PBEMove m in moves)
@@ -128,7 +134,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // TODO: Check where the species was born
-            // TODO: Check if moves make sense (example: learns a move in gen4 but was born in gen5/caught in dreamworld)
+            // TODO: Check if moves make sense (example: learns a move in gen4 but was born in gen5/caught in dreamworld/is gen5 event)
             // TODO: Check if HMs were transferred
             // TODO: Check events for moves
             ;
