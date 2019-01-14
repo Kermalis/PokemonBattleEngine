@@ -194,7 +194,6 @@ Defog
 Trick Room
 Rock Wrecker
 Captivate
-Judgment
 Bug Bite
 Wood Hammer
 Head Smash

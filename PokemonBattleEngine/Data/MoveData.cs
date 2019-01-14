@@ -1218,6 +1218,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Judgment,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 2, 100, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.KarateChop,
                 new PBEMoveData
                 (

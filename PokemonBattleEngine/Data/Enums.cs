@@ -2009,7 +2009,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The Pokémon will always hit and always get hit unless protection is used.
         /// </summary>
         NoGuard = 99,
-        Normalize = 96, // TODO: Main effect, ignore [weather ball, hidden power, natural gift, judgment, techno blast], separate thunder wave from other status force effects
+        Normalize = 96, // TODO: Main effect, ignore [weather ball, hidden power, natural gift, judgment, techno blast]
         Oblivious = 12, // TODO
         /// <summary>
         /// The Pokémon takes no damage from a hailstorm or sandstorm.
@@ -2659,6 +2659,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IronDefense = 334,
         IronHead = 442,
         IronTail = 231,
+        Judgment = 449,
         KarateChop = 2,
         Kinesis = 134,
         LavaPlume = 346,

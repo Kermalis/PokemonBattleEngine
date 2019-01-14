@@ -457,7 +457,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.StealthRock, new PBELocalizedString("ステルスロック", "스텔스록", "Piège de Roc", "Tarnsteine", "Trampa Rocas", "Levitoroccia", "Stealth Rock") },
             { PBEMove.GrassKnot, new PBELocalizedString("くさむすび", "풀묶기", "Nœud Herbe", "Strauchler", "Hierba Lazo", "Laccioerboso", "Grass Knot") },
             { PBEMove.Chatter, new PBELocalizedString("おしゃべり", "수다", "Babil", "Geschwätz", "Cháchara", "Schiamazzo", "Chatter") },
-            // { PBEMove.449, new PBELocalizedString("さばきのつぶて", "심판의뭉치", "Jugement", "Urteilskraft", "Sentencia", "Giudizio", "Judgment") },
+            { PBEMove.Judgment, new PBELocalizedString("さばきのつぶて", "심판의뭉치", "Jugement", "Urteilskraft", "Sentencia", "Giudizio", "Judgment") },
             // { PBEMove.450, new PBELocalizedString("むしくい", "벌레먹음", "Piqûre", "Käferbiss", "Picadura", "Coleomorso", "Bug Bite") },
             { PBEMove.ChargeBeam, new PBELocalizedString("チャージビーム", "차지빔", "Rayon Chargé", "Ladestrahl", "Rayo Carga", "Raggioscossa", "Charge Beam") },
             // { PBEMove.452, new PBELocalizedString("ウッドハンマー", "우드해머", "Martobois", "Holzhammer", "Mazazo", "Mazzuolegno", "Wood Hammer") },

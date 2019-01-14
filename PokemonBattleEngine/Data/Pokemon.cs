@@ -491,6 +491,27 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 case PBEMove.None: return PBEType.Normal;
                 case PBEMove.HiddenPower: return GetHiddenPowerType();
+                case PBEMove.Judgment:
+                    switch (Item)
+                    {
+                        case PBEItem.DracoPlate: return PBEType.Dragon;
+                        case PBEItem.DreadPlate: return PBEType.Dark;
+                        case PBEItem.EarthPlate: return PBEType.Ground;
+                        case PBEItem.FistPlate: return PBEType.Fighting;
+                        case PBEItem.FlamePlate: return PBEType.Fire;
+                        case PBEItem.IciclePlate: return PBEType.Ice;
+                        case PBEItem.InsectPlate: return PBEType.Bug;
+                        case PBEItem.IronPlate: return PBEType.Steel;
+                        case PBEItem.MeadowPlate: return PBEType.Grass;
+                        case PBEItem.MindPlate: return PBEType.Psychic;
+                        case PBEItem.SkyPlate: return PBEType.Flying;
+                        case PBEItem.SplashPlate: return PBEType.Water;
+                        case PBEItem.SpookyPlate: return PBEType.Ghost;
+                        case PBEItem.StonePlate: return PBEType.Rock;
+                        case PBEItem.ToxicPlate: return PBEType.Poison;
+                        case PBEItem.ZapPlate: return PBEType.Electric;
+                        default: return PBEMoveData.Data[PBEMove.Judgment].Type;
+                    }
                 case PBEMove.TechnoBlast:
                     switch (Item)
                     {
