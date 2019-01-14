@@ -2274,6 +2274,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Minun = 312,
         Misdreavus = 200,
         Mismagius = 429,
+        Monferno = 391,
         Nincada = 290,
         Ninetales = 38,
         Ninjask = 291,
