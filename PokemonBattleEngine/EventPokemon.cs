@@ -88,12 +88,12 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Jewel of Life promotion
                     (
                         new byte[] { 4 }, PBESpecies.Arceus, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Multitype }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Judgment, PBEMove.RoarOfTime, */PBEMove.SpacialRend/*, PBEMove.ShadowForce*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Judgment, /*PBEMove.RoarOfTime, */PBEMove.SpacialRend/*, PBEMove.ShadowForce*/ }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Arceus, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Multitype }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Recover/*, PBEMove.HyperBeam, PBEMove.PerishSong, PBEMove.Judgment*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Recover/*, PBEMove.HyperBeam, PBEMove.PerishSong*/, PBEMove.Judgment }
                     )
                 })
             },
