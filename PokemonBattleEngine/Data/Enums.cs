@@ -2317,6 +2317,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Torchic = 255,
         Torterra = 389,
         Tropius = 357,
+        Turtwig = 387,
         Umbreon = 197,
         Unown_A = 201 | (0 << 0x10),
         Unown_B = 201 | (1 << 0x10),
