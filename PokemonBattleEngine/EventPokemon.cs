@@ -238,6 +238,11 @@ namespace Kermalis.PokemonBattleEngine
                     (
                         new byte[] { 5 }, PBESpecies.Chimchar, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IronFist }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Leer, PBEMove.Ember/*, PBEMove.Taunt*/ }
+                    ),
+                    new PBEEventPokemon // Global Link promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Chimchar, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IronFist }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Leer, PBEMove.Ember/*, PBEMove.Taunt, PBEMove.FakeOut*/ }
                     )
                 })
             },
@@ -622,7 +627,7 @@ namespace Kermalis.PokemonBattleEngine
                         new byte[] { 5 }, PBESpecies.Lucario, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Justified }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Detect, PBEMove.MetalClaw/*, PBEMove.Counter*/, PBEMove.BulletPunch }
                     ),
-                    new PBEEventPokemon // World championships 2008
+                    new PBEEventPokemon // Powerful Tag
                     (
                         new byte[] { 5 }, PBESpecies.Lucario, 50, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Justified }, new PBENature[] { PBENature.Naughty },
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BulletPunch, PBEMove.CloseCombat, PBEMove.StoneEdge, PBEMove.ShadowClaw }
@@ -920,6 +925,32 @@ namespace Kermalis.PokemonBattleEngine
                     (
                         new byte[] { 5 }, PBESpecies.Pikachu, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Lightningrod }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ThunderShock, PBEMove.TailWhip, PBEMove.ThunderWave, PBEMove.Headbutt }
+                    )
+                })
+            },
+            {
+                PBESpecies.Piplup,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Pokémon Searcher BW promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Piplup, 15, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HydroPump, PBEMove.FeatherDance/*, PBEMove.WaterSport*/, PBEMove.Peck }
+                    ),
+                    new PBEEventPokemon // Dawn's Piplup
+                    (
+                        new byte[] { 5 }, PBESpecies.Piplup, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Torrent }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Sing/*, PBEMove.Round*/, PBEMove.FeatherDance, PBEMove.Peck }
+                    ),
+                    new PBEEventPokemon // Global Link promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Piplup, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Defiant }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Pound, PBEMove.Growl, PBEMove.Bubble, PBEMove.None }
+                    ),
+                    new PBEEventPokemon // Global Link promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Piplup, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Defiant }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Pound, PBEMove.Growl, PBEMove.Bubble, PBEMove.FeatherDance }
                     )
                 })
             },
