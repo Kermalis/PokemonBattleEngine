@@ -2206,6 +2206,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Charizard = 6,
         Charmander = 4,
         Charmeleon = 5,
+        Chimchar = 390,
         Clamperl = 366,
         Cofagrigus = 563,
         Combusken = 256,
