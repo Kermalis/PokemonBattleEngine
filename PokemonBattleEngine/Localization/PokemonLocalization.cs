@@ -429,7 +429,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.392, new PBELocalizedString("ゴウカザル", "초염몽", "Simiabraz", "Panferno", "Infernape", "Infernape", "Infernape") },
             // { PBESpecies.393, new PBELocalizedString("ポッチャマ", "팽도리", "Tiplouf", "Plinfa", "Piplup", "Piplup", "Piplup") },
             // { PBESpecies.394, new PBELocalizedString("ポッタイシ", "팽태자", "Prinplouf", "Pliprin", "Prinplup", "Prinplup", "Prinplup") },
-            // { PBESpecies.395, new PBELocalizedString("エンペルト", "엠페르트", "Pingoléon", "Impoleon", "Empoleon", "Empoleon", "Empoleon") },
+            { PBESpecies.Empoleon, new PBELocalizedString("エンペルト", "엠페르트", "Pingoléon", "Impoleon", "Empoleon", "Empoleon", "Empoleon") },
             // { PBESpecies.396, new PBELocalizedString("ムックル", "찌르꼬", "Étourmi", "Staralili", "Starly", "Starly", "Starly") },
             // { PBESpecies.397, new PBELocalizedString("ムクバード", "찌르버드", "Étourvol", "Staravia", "Staravia", "Staravia", "Staravia") },
             // { PBESpecies.398, new PBELocalizedString("ムクホーク", "찌르호크", "Étouraptor", "Staraptor", "Staraptor", "Staraptor", "Staraptor") },

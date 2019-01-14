@@ -2224,6 +2224,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Eevee = 133,
         Emboar = 500,
         Emolga = 587,
+        Empoleon = 395,
         Espeon = 196,
         Farfetchd = 83,
         Flareon = 136,
