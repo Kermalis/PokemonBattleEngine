@@ -436,6 +436,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Agility, PBEMove.LightScreen, PBEMove.SignalBeam, PBEMove.AirSlash }, // Tailwind, Encore, U-turn, Air Slash
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Empoleon_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Empoleon,
+            Nickname = "Eve",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChopleBerry,
+            Ability = PBEAbility.Torrent,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Calm,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 4, 252, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.Scald, PBEMove.IcyWind, PBEMove.GrassKnot, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Espeon_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Espeon,
