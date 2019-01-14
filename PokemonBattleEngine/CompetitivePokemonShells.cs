@@ -1093,6 +1093,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Spore, PBEMove.Reflect, PBEMove.Brine, PBEMove.Hex }, // Fake Out, Spore, Follow Me, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Torterra_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Torterra,
+            Nickname = "Sandy",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.Overgrow,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.SeedBomb, PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.Protect }, // Seed Bomb, Earthquake, Rock Slide, Wide Guard
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Tropius_NU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Tropius,
