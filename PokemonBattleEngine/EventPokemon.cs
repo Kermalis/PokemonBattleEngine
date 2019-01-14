@@ -497,6 +497,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Infernape,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Pokémon Center 15th anniversary
+                    (
+                        new byte[] { 5 }, PBESpecies.Infernape, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FireBlast, PBEMove.CloseCombat/*, PBEMove.Uturn*/, PBEMove.GrassKnot }
+                    )
+                })
+            },
+            {
                 PBESpecies.Jirachi,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
