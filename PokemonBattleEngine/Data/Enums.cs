@@ -2314,6 +2314,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tepig = 498,
         Tirtouga = 564,
         Torchic = 255,
+        Torterra = 389,
         Tropius = 357,
         Umbreon = 197,
         Unown_A = 201 | (0 << 0x10),
