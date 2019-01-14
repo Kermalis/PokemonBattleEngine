@@ -652,7 +652,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Careful,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.Protect, PBEMove.StealthRock, PBEMove.IronHead, PBEMove.Roar }, // Wish, Stealth Rock, Iron Head, Roar
+            Moves = new PBEMove[] { PBEMove.Protect, PBEMove.StealthRock, PBEMove.IronHead, PBEMove.Thunder }, // Wish, U-turn, Iron Head, Thunder
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Jolteon_VGC { get; } = new PBEPokemonShell
