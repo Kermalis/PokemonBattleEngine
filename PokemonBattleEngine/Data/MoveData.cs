@@ -732,6 +732,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Explosion,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 250, 100,
+                    PBEMoveEffect.Selfdestruct, 0, PBEMoveTarget.AllSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.Extrasensory,
                 new PBEMoveData
                 (
@@ -2051,6 +2060,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Grass, PBEMoveCategory.Special, 0, 1, 120, 85,
                     PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2, 40, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
+                PBEMove.Selfdestruct,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 200, 100,
+                    PBEMoveEffect.Selfdestruct, 0, PBEMoveTarget.AllSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },

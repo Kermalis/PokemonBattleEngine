@@ -66,7 +66,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.ZenHeadbutt, PBEMove.IcePunch, PBEMove.FirePunch, PBEMove.Detect }, // Zen Headbutt, Ice Punch, Explosion, Detect
+            Moves = new PBEMove[] { PBEMove.ZenHeadbutt, PBEMove.IcePunch, PBEMove.Explosion, PBEMove.Detect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Azumarill_VGC { get; } = new PBEPokemonShell
@@ -781,13 +781,13 @@ namespace Kermalis.PokemonBattleEngine
             Nickname = "Crizzy",
             Level = 100,
             Friendship = 255,
-            Item = PBEItem.OccaBerry, // Normal Gem with Explosion
+            Item = PBEItem.NormalGem,
             Ability = PBEAbility.ClearBody,
             Gender = PBEGender.Genderless,
             Nature = PBENature.Adamant,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 252, 0, 0, 0, 4 },
-            Moves = new PBEMove[] { PBEMove.MeteorMash, PBEMove.BulletPunch, PBEMove.Earthquake, PBEMove.Protect }, // Meteor Mash, Bullet Punch, Earthquake, Explosion
+            Moves = new PBEMove[] { PBEMove.MeteorMash, PBEMove.BulletPunch, PBEMove.Earthquake, PBEMove.Explosion },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Minun_NU { get; } = new PBEPokemonShell

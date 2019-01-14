@@ -134,6 +134,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="recoilDamage">The amount of recoil damage <paramref name="user"/> will take.</param>
         void DoPostAttackedEffects(PBEPokemon user, bool ignoreLifeOrb, ushort recoilDamage = 0)
         {
+            // Quietly return without announcing a faint
+            if (user.HP > 0)
+            {
+                return;
+            }
+
             if (recoilDamage > 0)
             {
                 BroadcastRecoil(user);
@@ -348,15 +354,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return;
             }
+            PBEMoveData mData = PBEMoveData.Data[move];
             PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, GetMoveTargetsForPokemon(user, move) == PBEMoveTarget.SingleNotSelf);
-            if (targets.Length == 0)
+            // Selfdestruct effect still causes the user to faint even if it has no targets
+            if (targets.Length == 0 && mData.Effect != PBEMoveEffect.Selfdestruct)
             {
                 BroadcastMoveUsed(user, move);
                 PPReduce(user, move);
                 BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
                 return;
             }
-            PBEMoveData mData = PBEMoveData.Data[move];
             switch (mData.Effect)
             {
                 case PBEMoveEffect.BrickBreak:
@@ -588,6 +595,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEMoveEffect.Sandstorm:
                     TryForceWeather(user, move, PBEWeather.Sandstorm);
+                    break;
+                case PBEMoveEffect.Selfdestruct:
+                    Ef_Selfdestruct(user, targets, move);
                     break;
                 case PBEMoveEffect.Sleep:
                     TryForceStatus1(user, targets, move, PBEStatus1.Asleep);
@@ -1926,6 +1936,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             SwitchTwoPokemon(target, possibleSwitcheroonies.Sample(), true);
+        }
+        void Ef_Selfdestruct(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            // TODO: Damp, ignore sturdy
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            DealDamage(user, user, user.MaxHP, true);
+            FaintCheck(user);
+            BasicHitEffect(user, targets, move);
         }
     }
 }
