@@ -422,7 +422,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Jirachi, new PBELocalizedString("ジラーチ", "지라치", "Jirachi", "Jirachi", "Jirachi", "Jirachi", "Jirachi") },
             // { PBESpecies.386, new PBELocalizedString("デオキシス", "테오키스", "Deoxys", "Deoxys", "Deoxys", "Deoxys", "Deoxys") },
             // { PBESpecies.387, new PBELocalizedString("ナエトル", "모부기", "Tortipouss", "Chelast", "Turtwig", "Turtwig", "Turtwig") },
-            // { PBESpecies.388, new PBELocalizedString("ハヤシガメ", "수풀부기", "Boskara", "Chelcarain", "Grotle", "Grotle", "Grotle") },
+            { PBESpecies.Grotle, new PBELocalizedString("ハヤシガメ", "수풀부기", "Boskara", "Chelcarain", "Grotle", "Grotle", "Grotle") },
             { PBESpecies.Torterra, new PBELocalizedString("ドダイトス", "토대부기", "Torterra", "Chelterrar", "Torterra", "Torterra", "Torterra") },
             { PBESpecies.Chimchar, new PBELocalizedString("ヒコザル", "불꽃숭이", "Ouisticram", "Panflam", "Chimchar", "Chimchar", "Chimchar") },
             { PBESpecies.Monferno, new PBELocalizedString("モウカザル", "파이숭이", "Chimpenfeu", "Panpyro", "Monferno", "Monferno", "Monferno") },
