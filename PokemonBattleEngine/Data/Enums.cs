@@ -2287,6 +2287,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Poliwag = 60,
         Poliwhirl = 61,
         Poliwrath = 62,
+        Prinplup = 394,
         Psyduck = 54,
         Raichu = 26,
         Regirock = 377,
