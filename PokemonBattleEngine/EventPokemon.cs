@@ -361,6 +361,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Empoleon,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Pokémon Center 15th anniversary
+                    (
+                        new byte[] { 5 }, PBESpecies.Empoleon, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Torrent }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HydroPump, PBEMove.IceBeam, PBEMove.AquaJet, PBEMove.GrassKnot }
+                    )
+                })
+            },
+            {
                 PBESpecies.Espeon,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
