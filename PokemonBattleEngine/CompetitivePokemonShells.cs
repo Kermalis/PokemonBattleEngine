@@ -655,6 +655,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.DracoMeteor, PBEMove.DarkPulse, PBEMove.Flamethrower, PBEMove.Surf },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Infernape_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Infernape,
+            Nickname = "Harmony",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.Blaze,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Naive,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 116, 0, 140, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.HiddenPower, PBEMove.CloseCombat, PBEMove.Overheat, PBEMove.Protect }, // Fake Out, Close Combat, Overheat, Encore
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Jirachi_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Jirachi,
