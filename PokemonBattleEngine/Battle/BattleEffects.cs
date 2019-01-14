@@ -670,7 +670,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEStatus1.Frozen:
                     // Some moves always defrost the user, but if they don't, there is a 20% chance to thaw out
-                    if (mData.Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.ApplyChance(20, 100))
+                    if (mData.Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.RNG.ApplyChance(20, 100))
                     {
                         user.Status1 = PBEStatus1.None;
                         BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Ended);
@@ -683,7 +683,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEStatus1.Paralyzed:
                     // 25% chance to be unable to move
-                    if (PBEUtils.ApplyChance(25, 100))
+                    if (PBEUtils.RNG.ApplyChance(25, 100))
                     {
                         BroadcastStatus1(user, user, PBEStatus1.Paralyzed, PBEStatusAction.Activated);
                         return true;
@@ -705,7 +705,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Activated);
                     // 50% chance to hit itself
-                    if (PBEUtils.ApplyChance(50, 100))
+                    if (PBEUtils.RNG.ApplyChance(50, 100))
                     {
                         ushort damage = CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, true, true);
                         DealDamage(user, user, damage, true);
@@ -788,7 +788,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 chance *= 1.1;
             }
             // Try to hit
-            if (PBEUtils.ApplyChance((int)chance, 100))
+            if (PBEUtils.RNG.ApplyChance((int)chance, 100))
             {
                 return false;
             }
@@ -847,7 +847,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             // Try to score a critical hit
             if (mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit)
-                || PBEUtils.ApplyChance((int)(chance * 100), 100 * 100))
+                || PBEUtils.RNG.ApplyChance((int)(chance * 100), 100 * 100))
             {
                 damageMultiplier *= Settings.CritMultiplier;
                 if (user.Ability == PBEAbility.Sniper)
@@ -1130,7 +1130,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             chance /= 2;
                         }
 
-                        if (PBEUtils.ApplyChance(chance, ushort.MaxValue))
+                        if (PBEUtils.RNG.ApplyChance(chance, ushort.MaxValue))
                         {
                             user.Status2 |= PBEStatus2.Protected;
                             user.ProtectCounter++;
@@ -1427,7 +1427,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             void BeforePostHit(PBEPokemon target)
             {
-                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.ApplyChance(chanceToInflict, 100))
+                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToInflict, 100))
                 {
                     ApplyStatus1IfPossible(user, target, status, false);
                 }
@@ -1442,7 +1442,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             void BeforePostHit(PBEPokemon target)
             {
-                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.ApplyChance(chanceToInflict, 100))
+                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToInflict, 100))
                 {
                     ApplyStatus2IfPossible(user, target, status, false);
                 }
@@ -1493,7 +1493,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             void BeforePostHit(PBEPokemon target)
             {
-                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.ApplyChance(chanceToChangeStats, 100))
+                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToChangeStats, 100))
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
@@ -1511,7 +1511,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             void BeforeTargetsFaint()
             {
-                if (PBEUtils.ApplyChance(chanceToChangeStats, 100))
+                if (PBEUtils.RNG.ApplyChance(chanceToChangeStats, 100))
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {

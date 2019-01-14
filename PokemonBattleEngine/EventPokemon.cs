@@ -32,10 +32,10 @@ namespace Kermalis.PokemonBattleEngine
             {
                 Species = Species,
                 Level = Level,
-                Shiny = Shiny == null ? PBEUtils.RNG.NextBoolean() : Shiny.Value,
+                Shiny = Shiny == null ? PBEUtils.RNG.NextShiny(Species) : Shiny.Value,
                 Ability = PossibleAbilities.Sample(),
                 Nature = PossibleNatures.Sample(),
-                Gender = Gender >= PBEGender.MAX ? PBEUtils.RNG.NextBoolean() ? PBEGender.Male : PBEGender.Female : Gender,
+                Gender = Gender >= PBEGender.MAX ? PBEUtils.RNG.NextGender(Species) : Gender,
                 IVs = IVs.Select(i => (byte)(i == null ? PBEUtils.RNG.Next(0, PBESettings.DefaultSettings.MaxIVs + 1) : i.Value)).ToArray(),
                 Moves = Moves.Concat(new PBEMove[PBESettings.DefaultSettings.NumMoves - Moves.Count]).ToArray(), // Fills the empty slots with PBEMove.None
 

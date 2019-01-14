@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine
         /// <summary>
         /// An ordinary pseudo-random number generator.
         /// </summary>
-        public static readonly Random RNG = new Random();
+        public static Random RNG { get; } = new Random();
 
         /// <summary>
         /// Generates a random boolean from a chance.
@@ -22,9 +23,45 @@ namespace Kermalis.PokemonBattleEngine
         /// <example><paramref name="chanceNumerator"/> is 30, <paramref name="chanceDenominator"/> is 100, there is a 30% chance to return True and a 70% chance to return False.</example>
         /// <param name="chanceNumerator">The numerator of the chance.</param>
         /// <param name="chanceDenominator">The denominator of the chance.</param>
-        public static bool ApplyChance(int chanceNumerator, int chanceDenominator)
+        public static bool ApplyChance(this Random rand, int chanceNumerator, int chanceDenominator)
         {
-            return RNG.Next(0, chanceDenominator) < chanceNumerator;
+            return rand.Next(0, chanceDenominator) < chanceNumerator;
+        }
+        /// <summary>
+        /// Returns a random boolean.
+        /// </summary>
+        /// <param name="rand"></param>
+        /// <returns>A random boolean.</returns>
+        public static bool NextBoolean(this Random rand)
+        {
+            return rand.NextDouble() >= 0.5;
+        }
+
+        public static bool NextShiny(this Random rand, PBESpecies species)
+        {
+            if (PBEPokemonData.Data[species].ShinyLocked)
+            {
+                return false;
+            }
+            else
+            {
+                return rand.Next(0, ushort.MaxValue + 1) < 8;
+            }
+        }
+        public static PBEGender NextGender(this Random rand, PBESpecies species)
+        {
+            switch (PBEPokemonData.Data[species].GenderRatio)
+            {
+                case PBEGenderRatio.M7_F1: return rand.ApplyChance(875, 1000) ? PBEGender.Male : PBEGender.Female;
+                case PBEGenderRatio.M3_F1: return rand.ApplyChance(750, 1000) ? PBEGender.Male : PBEGender.Female;
+                case PBEGenderRatio.M1_F1: return rand.ApplyChance(500, 1000) ? PBEGender.Male : PBEGender.Female;
+                case PBEGenderRatio.M1_F3: return rand.ApplyChance(250, 1000) ? PBEGender.Male : PBEGender.Female;
+                case PBEGenderRatio.M1_F7: return rand.ApplyChance(125, 1000) ? PBEGender.Male : PBEGender.Female;
+                case PBEGenderRatio.M0_F1: return PBEGender.Female;
+                case PBEGenderRatio.M0_F0: return PBEGender.Genderless;
+                case PBEGenderRatio.M1_F0: return PBEGender.Male;
+                default: throw new ArgumentOutOfRangeException();
+            }
         }
 
         public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
@@ -82,15 +119,6 @@ namespace Kermalis.PokemonBattleEngine
                 source[a] = source[b];
                 source[b] = value;
             }
-        }
-        /// <summary>
-        /// Returns a random boolean.
-        /// </summary>
-        /// <param name="rand"></param>
-        /// <returns>A random boolean.</returns>
-        public static bool NextBoolean(this Random rand)
-        {
-            return rand.NextDouble() >= 0.5;
         }
 
         internal static byte[] StringToBytes(string str)
