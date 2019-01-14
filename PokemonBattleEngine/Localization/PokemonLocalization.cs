@@ -426,7 +426,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.389, new PBELocalizedString("ドダイトス", "토대부기", "Torterra", "Chelterrar", "Torterra", "Torterra", "Torterra") },
             // { PBESpecies.390, new PBELocalizedString("ヒコザル", "불꽃숭이", "Ouisticram", "Panflam", "Chimchar", "Chimchar", "Chimchar") },
             // { PBESpecies.391, new PBELocalizedString("モウカザル", "파이숭이", "Chimpenfeu", "Panpyro", "Monferno", "Monferno", "Monferno") },
-            // { PBESpecies.392, new PBELocalizedString("ゴウカザル", "초염몽", "Simiabraz", "Panferno", "Infernape", "Infernape", "Infernape") },
+            { PBESpecies.Infernape, new PBELocalizedString("ゴウカザル", "초염몽", "Simiabraz", "Panferno", "Infernape", "Infernape", "Infernape") },
             { PBESpecies.Piplup, new PBELocalizedString("ポッチャマ", "팽도리", "Tiplouf", "Plinfa", "Piplup", "Piplup", "Piplup") },
             { PBESpecies.Prinplup, new PBELocalizedString("ポッタイシ", "팽태자", "Prinplouf", "Pliprin", "Prinplup", "Prinplup", "Prinplup") },
             { PBESpecies.Empoleon, new PBELocalizedString("エンペルト", "엠페르트", "Pingoléon", "Impoleon", "Empoleon", "Empoleon", "Empoleon") },

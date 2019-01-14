@@ -2249,6 +2249,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Happiny = 440,
         Huntail = 367,
         Hydreigon = 635,
+        Infernape = 392,
         Ivysaur = 2,
         Jirachi = 385,
         Jolteon = 135,
