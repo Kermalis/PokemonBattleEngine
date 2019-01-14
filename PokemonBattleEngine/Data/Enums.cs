@@ -2282,6 +2282,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pichu = 172,
         Pignite = 499,
         Pikachu = 25,
+        Piplup = 393,
         Plusle = 311,
         Politoed = 186,
         Poliwag = 60,
