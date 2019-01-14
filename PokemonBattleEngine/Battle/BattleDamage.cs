@@ -214,6 +214,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         basePower *= 2.0;
                     }
                     break;
+                case PBEMove.Gust:
+                    // Gust gets a 100% power boost if the target is Airborne
+                    if (target.Status2.HasFlag(PBEStatus2.Airborne))
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
                 case PBEMove.Hex:
                     // Hex gets a 100% power boost if the target is afflicted with a status
                     if (target.Status1 != PBEStatus1.None)

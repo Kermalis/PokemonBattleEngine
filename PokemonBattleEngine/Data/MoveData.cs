@@ -975,6 +975,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Gust,
+                new PBEMoveData
+                (
+                    PBEType.Flying, PBEMoveCategory.Special, 0, 7, 40, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne
+                )
+            },
+            {
                 PBEMove.Hail,
                 new PBEMoveData
                 (

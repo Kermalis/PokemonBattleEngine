@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.13, new PBELocalizedString("かまいたち", "칼바람", "Coupe-Vent", "Klingensturm", "V. Cortante", "Ventagliente", "Razor Wind") },
             { PBEMove.SwordsDance, new PBELocalizedString("つるぎのまい", "칼춤", "Danse-Lames", "Schwerttanz", "Danza Espada", "Danzaspada", "Swords Dance") },
             { PBEMove.Cut, new PBELocalizedString("いあいぎり", "풀베기", "Coupe", "Zerschneider", "Corte", "Taglio", "Cut") },
-            // { PBEMove.16, new PBELocalizedString("かぜおこし", "바람일으키기", "Tornade", "Windstoß", "Tornado", "Raffica", "Gust") },
+            { PBEMove.Gust, new PBELocalizedString("かぜおこし", "바람일으키기", "Tornade", "Windstoß", "Tornado", "Raffica", "Gust") },
             { PBEMove.WingAttack, new PBELocalizedString("つばさでうつ", "날개치기", "Cru-Aile", "Flügelschlag", "Ataque Ala", "Att. d'Ala", "Wing Attack") },
             { PBEMove.Whirlwind, new PBELocalizedString("ふきとばし", "날려버리기", "Cyclone", "Wirbelwind", "Remolino", "Turbine", "Whirlwind") },
             { PBEMove.Fly, new PBELocalizedString("そらをとぶ", "공중날기", "Vol", "Fliegen", "Vuelo", "Volo", "Fly") },

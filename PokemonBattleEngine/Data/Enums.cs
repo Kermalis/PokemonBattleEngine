@@ -2632,6 +2632,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Growl = 45,
         Growth = 74,
         GunkShot = 441,
+        Gust = 16,
         Hail = 258,
         HammerArm = 359,
         Harden = 106,
