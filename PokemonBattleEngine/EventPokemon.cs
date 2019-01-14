@@ -103,7 +103,7 @@ namespace Kermalis.PokemonBattleEngine
                 {
                     new PBEEventPokemon // PCNY
                     (
-                        new byte[] { 3 }, PBESpecies.Azurill, 5, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.ThickFat, PBEAbility.HugePower }, allNatures,
+                        new byte[] { 3 }, PBESpecies.Azurill, 5, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.HugePower, PBEAbility.ThickFat }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Splash, */PBEMove.Charm, PBEMove.None, PBEMove.None }
                     )
                 })
@@ -210,7 +210,7 @@ namespace Kermalis.PokemonBattleEngine
                     ),
                     new PBEEventPokemon // 2007 birthday | 2008 birthday | 2009 birthday | 2010 birthday
                     (
-                        new byte[] { 4 }, PBESpecies.Charmander, 40, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, new PBENature[] { PBENature.Mild, PBENature.Naive, PBENature.Naughty, PBENature.Hardy },
+                        new byte[] { 4 }, PBESpecies.Charmander, 40, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, new PBENature[] { PBENature.Hardy, PBENature.Mild, PBENature.Naive, PBENature.Naughty },
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Return, PBEMove.HiddenPower, PBEMove.QuickAttack, PBEMove.Howl }
                     ),
                     new PBEEventPokemon // Kanto starter eggs
@@ -222,6 +222,22 @@ namespace Kermalis.PokemonBattleEngine
                     (
                         new byte[] { 5 }, PBESpecies.Charmander, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SolarPower }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Growl, PBEMove.Ember, PBEMove.SmokeScreen }
+                    )
+                })
+            },
+            {
+                PBESpecies.Chimchar,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // 2009 birthday | 2010 birthday
+                    (
+                        new byte[] { 4 }, PBESpecies.Chimchar, 40, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, new PBENature[] { PBENature.Hardy, PBENature.Mild },
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Flamethrower, PBEMove.ThunderPunch, PBEMove.GrassKnot/*, PBEMove.HelpingHand*/ }
+                    ),
+                    new PBEEventPokemon // Global Link promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Chimchar, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IronFist }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Leer, PBEMove.Ember/*, PBEMove.Taunt*/ }
                     )
                 })
             },
@@ -366,7 +382,7 @@ namespace Kermalis.PokemonBattleEngine
                 {
                     new PBEEventPokemon // PCNY
                     (
-                        new byte[] { 3 }, PBESpecies.Farfetchd, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.KeenEye, PBEAbility.InnerFocus }, allNatures,
+                        new byte[] { 3 }, PBESpecies.Farfetchd, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.KeenEye }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Yawn, PBEMove.Wish, */PBEMove.None, PBEMove.None }
                     )
                 })
@@ -808,20 +824,15 @@ namespace Kermalis.PokemonBattleEngine
                         new byte[] { 4 }, PBESpecies.Pikachu, 50, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Hardy },
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Surf, PBEMove.Thunderbolt, PBEMove.LightScreen, PBEMove.QuickAttack }
                     ),
-                    new PBEEventPokemon // Nintendo Spot promotion
+                    new PBEEventPokemon // Nintendo Spot promotion | Nintendo Zone promotion | 7-Eleven Pikachu
                     (
-                        new byte[] { 4 }, PBESpecies.Pikachu, 20, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Bashful },
+                        new byte[] { 4 }, PBESpecies.Pikachu, 20, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Bashful, PBENature.Docile },
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.QuickAttack, PBEMove.ThunderShock, PBEMove.TailWhip/*, PBEMove.Present*/ }
                     ),
                     new PBEEventPokemon // Yokohama Pokémon Center reopening | 2008 birthday | 2009 birthday
                     (
-                        new byte[] { 4 }, PBESpecies.Pikachu, 40, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Modest, PBENature.Mild },
+                        new byte[] { 4 }, PBESpecies.Pikachu, 40, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Mild, PBENature.Modest },
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Surf, PBEMove.Thunder, PBEMove.Protect, PBEMove.None }
-                    ),
-                    new PBEEventPokemon // Nintendo Zone promotion | 7-Eleven Pikachu
-                    (
-                        new byte[] { 4 }, PBESpecies.Pikachu, 20, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Bashful, PBENature.Docile },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Present, */PBEMove.QuickAttack, PBEMove.ThunderShock, PBEMove.TailWhip }
                     ),
                     new PBEEventPokemon // Sleeping Pikachu Collection promotion
                     (
@@ -923,7 +934,7 @@ namespace Kermalis.PokemonBattleEngine
                 {
                     new PBEEventPokemon // Egg Pokémon Present
                     (
-                        new byte[] { 3 }, PBESpecies.Poliwag, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.Damp }, allNatures,
+                        new byte[] { 3 }, PBESpecies.Poliwag, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Damp, PBEAbility.WaterAbsorb }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Bubble, PBEMove.SweetKiss, PBEMove.None, PBEMove.None }
                     )
                 })
@@ -939,12 +950,12 @@ namespace Kermalis.PokemonBattleEngine
                     ),
                     new PBEEventPokemon // PokéPark Psyduck
                     (
-                        new byte[] { 3 }, PBESpecies.Psyduck, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Damp, PBEAbility.CloudNine }, allNatures,
+                        new byte[] { 3 }, PBESpecies.Psyduck, 5, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.CloudNine, PBEAbility.Damp }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.WaterSport, */PBEMove.Scratch, PBEMove.TailWhip/*, PBEMove.MudSport*/ }
                     ),
                     new PBEEventPokemon // GTS Psyducks
                     (
-                        new byte[] { 4 }, PBESpecies.Psyduck, 1, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Damp, PBEAbility.CloudNine }, allNatures,
+                        new byte[] { 4 }, PBESpecies.Psyduck, 1, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.CloudNine, PBEAbility.Damp }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Psychic, PBEMove.ConfuseRay/*, PBEMove.Yawn*/, PBEMove.MudBomb }
                     )
                 })
