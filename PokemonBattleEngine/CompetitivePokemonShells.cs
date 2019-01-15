@@ -1078,6 +1078,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.XScissor, PBEMove.ShadowClaw, PBEMove.Protect, PBEMove.SwordsDance },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Sigilyph_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Sigilyph,
+            Nickname = "Tora",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.MagicGuard,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 31, 11, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 36, 0, 252, 220, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.Protect, PBEMove.IceBeam, PBEMove.Psychic, PBEMove.ShadowBall }, // Tailwind, Ice Beam, Psychic, Shadow Ball
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Smeargle_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Smeargle,
