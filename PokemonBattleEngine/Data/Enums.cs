@@ -2308,6 +2308,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Servine = 496,
         Shedinja = 292,
         Shinx = 403,
+        Sigilyph = 561,
         Skitty = 300,
         Smeargle = 235,
         Snivy = 495,
