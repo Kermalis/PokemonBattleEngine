@@ -135,7 +135,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void DoPostAttackedEffects(PBEPokemon user, bool ignoreLifeOrb, ushort recoilDamage = 0)
         {
             // Quietly return without announcing a faint
-            if (user.HP > 0)
+            if (user.HP == 0)
             {
                 return;
             }
@@ -533,9 +533,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.LuckyChant:
                     TryForceTeamStatus(user, move, PBETeamStatus.LuckyChant);
                     break;
-                case PBEMoveEffect.Magnitude:
-                    Ef_Magnitude(user, targets, move);
-                    break;
                 case PBEMoveEffect.Minimize:
                     TryForceStatus2(user, targets, move, PBEStatus2.Minimized);
                     break;
@@ -609,7 +606,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     TryForceTeamStatus(user, move, PBETeamStatus.StealthRock);
                     break;
                 case PBEMoveEffect.Struggle:
-                    Ef_Struggle(user, targets[0]);
+                    Ef_Struggle(user, targets, move);
                     break;
                 case PBEMoveEffect.Substitute:
                     TryForceStatus2(user, targets, move, PBEStatus2.Substitute);
@@ -717,7 +714,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // 50% chance to hit itself
                     if (PBEUtils.RNG.ApplyChance(50, 100))
                     {
-                        ushort damage = CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, true, true);
+                        ushort damage = CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, false);
                         DealDamage(user, user, damage, true);
                         BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         FaintCheck(user);
@@ -1230,14 +1227,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         void BasicHitEffect(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
-            byte overridingBasePower = 0,
+            PBEType? overridingMoveType = null,
+            ushort recoilDamage = 0,
             Action beforeMissCheck = null,
             Action<PBEPokemon> beforeDoingDamage = null,
             Action<PBEPokemon> beforePostHit = null,
             Action beforeTargetsFaint = null)
         {
             byte hit = 0;
-            bool lifeOrb = false;
+            bool lifeOrbDamage = false;
+            PBEType moveType = overridingMoveType == null ? user.GetMoveType(move) : overridingMoveType.Value;
+            double basePower = CalculateBasePower(user, targets, move, moveType, false);
             foreach (PBEPokemon target in targets)
             {
                 beforeMissCheck?.Invoke();
@@ -1248,8 +1248,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
 
                 double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
-                if (effectiveness == PBEEffectiveness.Ineffective)
+                TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref damageMultiplier, false);
+                if (moveEffectiveness == PBEEffectiveness.Ineffective)
                 {
                     BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                     continue;
@@ -1257,11 +1257,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                 beforeDoingDamage?.Invoke(target);
 
-                bool crit = CritCheck(user, target, move, ref damageMultiplier);
-                ushort damage = CalculateDamage(user, target, move, moveType, criticalHit: crit, power: overridingBasePower);
+                bool criticalHit = CritCheck(user, target, move, ref damageMultiplier);
+                damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, moveEffectiveness, criticalHit);
+                ushort damage = CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, criticalHit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
-                BroadcastEffectiveness(target, effectiveness);
-                if (crit)
+                BroadcastEffectiveness(target, moveEffectiveness);
+                if (criticalHit)
                 {
                     BroadcastMoveCrit();
                 }
@@ -1269,7 +1270,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 hit++;
                 if (!target.Status2.HasFlag(PBEStatus2.Substitute))
                 {
-                    lifeOrb = true;
+                    lifeOrbDamage = true;
                 }
                 beforePostHit?.Invoke(target);
                 DoPostHitEffects(user, target, move);
@@ -1283,7 +1284,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     FaintCheck(target);
                 }
             }
-            DoPostAttackedEffects(user, !lifeOrb);
+            DoPostAttackedEffects(user, !lifeOrbDamage, recoilDamage);
         }
 
         void TryForceStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
@@ -1299,10 +1300,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
 
                 double d = 1.0;
-                TypeCheck(user, target, move, out PBEType moveType, out PBEEffectiveness effectiveness, ref d, true);
-                if (effectiveness == PBEEffectiveness.Ineffective) // Paralysis, Normalize
+                PBEType moveType = user.GetMoveType(move);
+                TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref d, true);
+                if (moveEffectiveness == PBEEffectiveness.Ineffective) // Paralysis, Normalize
                 {
-                    BroadcastEffectiveness(target, effectiveness);
+                    BroadcastEffectiveness(target, moveEffectiveness);
                 }
                 else
                 {
@@ -1770,53 +1772,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        void Ef_Magnitude(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-
-            int val = PBEUtils.RNG.Next(0, 100);
-            byte magnitude, basePower;
-            if (val < 5) // Magnitude 4 - 5%
-            {
-                magnitude = 4;
-                basePower = 10;
-            }
-            else if (val < 15) // Magnitude 5 - 10%
-            {
-                magnitude = 5;
-                basePower = 30;
-            }
-            else if (val < 35) // Magnitude 6 - 20%
-            {
-                magnitude = 6;
-                basePower = 50;
-            }
-            else if (val < 65) // Magnitude 7 - 30%
-            {
-                magnitude = 7;
-                basePower = 70;
-            }
-            else if (val < 85) // Magnitude 8 - 20%
-            {
-                magnitude = 8;
-                basePower = 90;
-            }
-            else if (val < 95) // Magnitude 9 - 10%
-            {
-                magnitude = 9;
-                basePower = 110;
-            }
-            else // Magnitude 10 - 5%
-            {
-                magnitude = 10;
-                basePower = 150;
-            }
-            BroadcastMagnitude(magnitude);
-
-            BasicHitEffect(user, targets, move, overridingBasePower: basePower);
-        }
-        void Ef_Endeavor(PBEPokemon user, PBEPokemon target)
+        void Ef_Endeavor(PBEPokemon user, PBEPokemon target) // Fixed damage
         {
             BroadcastMoveUsed(user, PBEMove.Endeavor);
             PPReduce(user, PBEMove.Endeavor);
@@ -1831,11 +1787,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
 
-            double damageMultiplier = 1.0;
-            TypeCheck(user, target, PBEMove.Endeavor, out PBEType moveType, out PBEEffectiveness effectiveness, ref damageMultiplier);
-            if (effectiveness == PBEEffectiveness.Ineffective)
+            double d = 1.0;
+            PBEType moveType = user.GetMoveType(PBEMove.Endeavor);
+            TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref d, false);
+            if (moveEffectiveness == PBEEffectiveness.Ineffective)
             {
-                BroadcastEffectiveness(target, effectiveness);
+                BroadcastEffectiveness(target, moveEffectiveness);
                 return;
             }
 
@@ -1895,28 +1852,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             user.EvasionChange = target.EvasionChange;
             BroadcastPsychUp(user, target);
         }
-        void Ef_Struggle(PBEPokemon user, PBEPokemon target)
+        void Ef_Struggle(PBEPokemon user, PBEPokemon[] targets, PBEMove move) // Recoil damage
         {
             BroadcastStruggle(user);
-            BroadcastMoveUsed(user, PBEMove.Struggle);
+            BroadcastMoveUsed(user, move);
 
-            if (MissCheck(user, target, PBEMove.Struggle))
-            {
-                return;
-            }
-
-            double damageMultiplier = 1.0;
-            bool crit = CritCheck(user, target, PBEMove.Struggle, ref damageMultiplier);
-            ushort damage = CalculateDamage(user, target, PBEMove.Struggle, PBEType.None, criticalHit: crit);
-            DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
-            if (crit)
-            {
-                BroadcastMoveCrit();
-            }
-
-            bool ignoreLifeOrb = target.Status2.HasFlag(PBEStatus2.Substitute);
-            DoPostHitEffects(user, target, PBEMove.Struggle);
-            DoPostAttackedEffects(user, ignoreLifeOrb, (ushort)(user.MaxHP / 4));
+            BasicHitEffect(user, targets, move, overridingMoveType: PBEType.None, recoilDamage: (ushort)(user.MaxHP / 4));
         }
         void Ef_Whirlwind(PBEPokemon user, PBEPokemon target, PBEMove move)
         {

@@ -1420,7 +1420,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Ground, PBEMoveCategory.Physical, 0, 6, 0, 100,
-                    PBEMoveEffect.Magnitude, 0, PBEMoveTarget.AllSurrounding,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.AllSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsUnderground
                 )
             },
