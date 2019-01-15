@@ -489,8 +489,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             switch (move)
             {
-                case PBEMove.None: return PBEType.Normal;
-                case PBEMove.HiddenPower: return GetHiddenPowerType();
+                case PBEMove.HiddenPower:
+                    return GetHiddenPowerType();
                 case PBEMove.Judgment:
                     switch (Item)
                     {
@@ -530,7 +530,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                         case PBEWeather.Sandstorm: return PBEType.Rock;
                         default: return PBEMoveData.Data[PBEMove.WeatherBall].Type;
                     }
-                default: return PBEMoveData.Data[move].Type;
+                default:
+                    if (Ability == PBEAbility.Normalize)
+                    {
+                        return PBEType.Normal;
+                    }
+                    else
+                    {
+                        return PBEMoveData.Data[move].Type;
+                    }
             }
         }
         /// <summary>

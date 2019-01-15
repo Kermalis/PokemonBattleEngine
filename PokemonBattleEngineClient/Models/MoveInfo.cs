@@ -48,7 +48,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         {
             bool forcedToStruggle = pkmn.IsForcedToStruggle();
             PBEMove move = forcedToStruggle ? PBEMove.Struggle : pkmn.Moves[i];
-            var ttb = typeToBrush[pkmn.GetMoveType(move)];
+            var ttb = move == PBEMove.None ? typeToBrush[PBEType.Normal] : typeToBrush[pkmn.GetMoveType(move)];
 
             bool enabled;
             if (forcedToStruggle)

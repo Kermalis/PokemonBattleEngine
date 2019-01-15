@@ -2009,7 +2009,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The Pokémon will always hit and always get hit unless protection is used.
         /// </summary>
         NoGuard = 99,
-        Normalize = 96, // TODO: Main effect, ignore [weather ball, hidden power, natural gift, judgment, techno blast]
+        Normalize = 96,
         Oblivious = 12, // TODO
         /// <summary>
         /// The Pokémon takes no damage from a hailstorm or sandstorm.
