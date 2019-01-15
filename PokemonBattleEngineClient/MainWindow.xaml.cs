@@ -203,19 +203,20 @@ namespace Kermalis.PokemonBattleEngineClient
             base.Show();
             if (shows++ == 1)
             {
-                string[] files = Directory.GetFiles("Teams");
-                if (files.Length > 0)
-                {
-                    foreach (string f in files)
-                    {
-                        Teams.Add(Tuple.Create(Path.GetFileNameWithoutExtension(f), new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromTextFile(f))));
-                    }
-                    savedTeams.SelectedIndex = 0;
-                }
-                else
-                {
-                    AddTeam();
-                }
+                //string[] files = Directory.GetFiles("Teams");
+                //if (files.Length > 0)
+                //{
+                //    foreach (string f in files)
+                //    {
+                //        Teams.Add(Tuple.Create(Path.GetFileNameWithoutExtension(f), new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromTextFile(f))));
+                //    }
+                //    savedTeams.SelectedIndex = 0;
+                //}
+                //else
+                //{
+                //    AddTeam();
+                //}
+                AddTeam();
             }
         }
 
