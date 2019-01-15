@@ -98,7 +98,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        double CalculateBasePower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEType moveType, bool ignoreLifeOrb)
+        double CalculateBasePower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEType moveType)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
             double basePower = mData.Power;
@@ -141,19 +141,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.HeatCrash:
                 case PBEMove.HeavySlam:
                     double relative = targets[0].Weight / user.Weight;
-                    if (relative <= 1 / 5D)
+                    if (relative <= 1.0 / 5.0)
                     {
                         basePower = 120;
                     }
-                    else if (relative <= 1 / 4D)
+                    else if (relative <= 1.0 / 4.0)
                     {
                         basePower = 100;
                     }
-                    else if (relative <= 1 / 3D)
+                    else if (relative <= 1.0 / 3.0)
                     {
                         basePower = 80;
                     }
-                    else if (relative <= 1 / 2D)
+                    else if (relative <= 1.0 / 2.0)
                     {
                         basePower = 60;
                     }
@@ -283,9 +283,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
             }
 
-            if (!ignoreLifeOrb && user.Item == PBEItem.LifeOrb)
+            if (user.Item == PBEItem.LifeOrb)
             {
-                basePower = basePower * 5324 / 4096;
+                basePower *= 1.3;
             }
             if (user.Ability == PBEAbility.IronFist && move != PBEMove.None && PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.AffectedByIronFist))
             {
@@ -673,8 +673,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
             }
 
-            // Reflect & Light Screen reduce damage by 50% if there is one active battler or by 33% if there is more than one
-            if (!criticalHit)
+            if (criticalHit)
+            {
+                damageMultiplier *= Settings.CritMultiplier;
+                if (user.Ability == PBEAbility.Sniper)
+                {
+                    damageMultiplier *= 1.5;
+                }
+            }
+            else
             {
                 if ((target.Team.Status.HasFlag(PBETeamStatus.Reflect) && mData.Category == PBEMoveCategory.Physical)
                     || (target.Team.Status.HasFlag(PBETeamStatus.LightScreen) && mData.Category == PBEMoveCategory.Special))
@@ -740,7 +747,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 2.0;
             }
-            // A Cubone or Marowak holding a Thick Club gets a 100% Attack boost
             if (user.Item == PBEItem.ThickClub && (user.Shell.Species == PBESpecies.Cubone || user.Shell.Species == PBESpecies.Marowak))
             {
                 attack *= 2.0;
@@ -769,7 +775,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 1.5;
             }
-            // A Pokémon holding a Choice Band gets a 50% Attack boost
             if (user.Item == PBEItem.ChoiceBand)
             {
                 attack *= 1.5;
@@ -785,7 +790,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             double defense = target.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
 
-            // A Ditto holding a Metal Powder gets a 100% Defense boost
             if (target.Item == PBEItem.MetalPowder && target.Species == PBESpecies.Ditto)
             {
                 defense *= 2.0;
@@ -805,7 +809,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             double spAttack = user.SpAttack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
 
-            // A Clamperl holding a Deep Sea Tooth gets a 100% SpAttack boost
             if (user.Item == PBEItem.DeepSeaTooth && user.Shell.Species == PBESpecies.Clamperl)
             {
                 spAttack *= 2.0;
@@ -830,12 +833,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spAttack *= 1.5;
             }
-            // A Latios or Latias holding a Soul Dew gets a 50% SpAttack boost
             if (user.Item == PBEItem.SoulDew && (user.Shell.Species == PBESpecies.Latias || user.Shell.Species == PBESpecies.Latios))
             {
                 spAttack *= 1.5;
             }
-            // A Pokémon holding a Choice Specs gets a 50% SpAttack boost
             if (user.Item == PBEItem.ChoiceSpecs)
             {
                 spAttack *= 1.5;
@@ -851,17 +852,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             double spDefense = target.SpDefense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
 
-            // A Clamperl holding a Deep Sea Scale gets a 100% SpDefense boost
             if (target.Item == PBEItem.DeepSeaScale && target.Shell.Species == PBESpecies.Clamperl)
             {
                 spDefense *= 2.0;
             }
-            // A Latios or Latias holding a Soul Dew gets a 50% SpDefense boost
             if (target.Item == PBEItem.SoulDew && (target.Shell.Species == PBESpecies.Latias || target.Shell.Species == PBESpecies.Latios))
             {
                 spDefense *= 1.5;
             }
-            // A Rock-type Pokémon in a Sandstorm gets a 50% SpDefense boost
             if (Weather == PBEWeather.Sandstorm && target.HasType(PBEType.Rock))
             {
                 spDefense *= 1.5;

@@ -808,7 +808,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // Returns true if a critical hit was determined
-        bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move, ref double damageMultiplier)
+        bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
             if (target.Ability == PBEAbility.BattleArmor
                 || target.Ability == PBEAbility.ShellArmor
@@ -855,18 +855,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 default: chance = 50; break;
             }
 
-            // Try to score a critical hit
-            if (mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit)
-                || PBEUtils.RNG.ApplyChance((int)(chance * 100), 100 * 100))
-            {
-                damageMultiplier *= Settings.CritMultiplier;
-                if (user.Ability == PBEAbility.Sniper)
-                {
-                    damageMultiplier *= 1.5;
-                }
-                return true;
-            }
-            return false;
+            return mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit) || PBEUtils.RNG.ApplyChance((int)(chance * 100), 100 * 100);
         }
 
         // Will cure Paralysis if the Pokémon has Limber
@@ -1229,7 +1218,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BasicHitEffect(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
             PBEType? overridingMoveType = null,
             ushort recoilDamage = 0,
-            Action beforeMissCheck = null,
             Action<PBEPokemon> beforeDoingDamage = null,
             Action<PBEPokemon> beforePostHit = null,
             Action beforeTargetsFaint = null)
@@ -1237,12 +1225,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             byte hit = 0;
             bool lifeOrbDamage = false;
             PBEType moveType = overridingMoveType == null ? user.GetMoveType(move) : overridingMoveType.Value;
-            double basePower = CalculateBasePower(user, targets, move, moveType, false);
+            double basePower = CalculateBasePower(user, targets, move, moveType);
             foreach (PBEPokemon target in targets)
             {
-                beforeMissCheck?.Invoke();
-
-                if (target.HP < 1 || MissCheck(user, target, move))
+                if (target.HP == 0 || MissCheck(user, target, move))
                 {
                     continue;
                 }
@@ -1257,7 +1243,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                 beforeDoingDamage?.Invoke(target);
 
-                bool criticalHit = CritCheck(user, target, move, ref damageMultiplier);
+                bool criticalHit = CritCheck(user, target, move);
                 damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, moveEffectiveness, criticalHit);
                 ushort damage = CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, criticalHit);
                 DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
@@ -1575,15 +1561,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underground))
             {
-                void BeforeMissCheck()
-                {
-                    user.TempLockedMove = PBEMove.None;
-                    user.TempLockedTargets = PBETarget.None;
-                    user.Status2 &= ~PBEStatus2.Underground;
-                    BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
-                }
+                user.TempLockedMove = PBEMove.None;
+                user.TempLockedTargets = PBETarget.None;
+                user.Status2 &= ~PBEStatus2.Underground;
+                BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
 
-                BasicHitEffect(user, targets, move, beforeMissCheck: BeforeMissCheck);
+                BasicHitEffect(user, targets, move);
             }
             else
             {
@@ -1606,15 +1589,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underwater))
             {
-                void BeforeMissCheck()
-                {
-                    user.TempLockedMove = PBEMove.None;
-                    user.TempLockedTargets = PBETarget.None;
-                    user.Status2 &= ~PBEStatus2.Underwater;
-                    BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
-                }
+                user.TempLockedMove = PBEMove.None;
+                user.TempLockedTargets = PBETarget.None;
+                user.Status2 &= ~PBEStatus2.Underwater;
+                BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
 
-                BasicHitEffect(user, targets, move, beforeMissCheck: BeforeMissCheck);
+                BasicHitEffect(user, targets, move);
             }
             else
             {
@@ -1637,15 +1617,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         top:
             if (user.Status2.HasFlag(PBEStatus2.Airborne))
             {
-                void BeforeMissCheck()
-                {
-                    user.TempLockedMove = PBEMove.None;
-                    user.TempLockedTargets = PBETarget.None;
-                    user.Status2 &= ~PBEStatus2.Airborne;
-                    BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
-                }
+                user.TempLockedMove = PBEMove.None;
+                user.TempLockedTargets = PBETarget.None;
+                user.Status2 &= ~PBEStatus2.Airborne;
+                BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
 
-                BasicHitEffect(user, targets, move, beforeMissCheck: BeforeMissCheck);
+                BasicHitEffect(user, targets, move);
             }
             else
             {
