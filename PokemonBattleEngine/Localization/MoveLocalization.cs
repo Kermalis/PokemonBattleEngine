@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.ThunderPunch, new PBELocalizedString("かみなりパンチ", "번개펀치", "Poing-Éclair", "Donnerschlag", "Puño Trueno", "Tuonopugno", "ThunderPunch") },
             { PBEMove.Scratch, new PBELocalizedString("ひっかく", "할퀴기", "Griffe", "Kratzer", "Arañazo", "Graffio", "Scratch") },
             { PBEMove.ViceGrip, new PBELocalizedString("はさむ", "찝기", "Force Poigne", "Klammer", "Agarre", "Presa", "ViceGrip") },
-            // { PBEMove.12, new PBELocalizedString("ハサミギロチン", "가위자르기", "Guillotine", "Guillotine", "Guillotina", "Ghigliottina", "Guillotine") },
+            { PBEMove.Guillotine, new PBELocalizedString("ハサミギロチン", "가위자르기", "Guillotine", "Guillotine", "Guillotina", "Ghigliottina", "Guillotine") },
             // { PBEMove.13, new PBELocalizedString("かまいたち", "칼바람", "Coupe-Vent", "Klingensturm", "V. Cortante", "Ventagliente", "Razor Wind") },
             { PBEMove.SwordsDance, new PBELocalizedString("つるぎのまい", "칼춤", "Danse-Lames", "Schwerttanz", "Danza Espada", "Danzaspada", "Swords Dance") },
             { PBEMove.Cut, new PBELocalizedString("いあいぎり", "풀베기", "Coupe", "Zerschneider", "Corte", "Taglio", "Cut") },

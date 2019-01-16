@@ -780,10 +780,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        chance = mData.Accuracy;
+                        chance = mData.Accuracy * GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
                     }
                     break;
                 case PBEMove.Fissure:
+                case PBEMove.Guillotine:
                     chance = user.Shell.Level - target.Shell.Level + 30;
                     break;
                 case PBEMove.Thunder:
@@ -798,6 +799,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             chance = 50.0;
                         }
+                        chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
                     }
                     break;
                 default:
@@ -807,11 +809,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        chance = mData.Accuracy;
+                        chance = mData.Accuracy * GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
                     }
                     break;
             }
-            chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
             if (user.Ability == PBEAbility.Compoundeyes)
             {
                 chance *= 1.3;
@@ -1323,7 +1324,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             byte hit = 0;
             PBEType moveType = user.GetMoveType(move);
-            double basePower = CalculateBasePower(user, targets, move, moveType);
             foreach (PBEPokemon target in targets)
             {
                 if (target.HP == 0 || MissCheck(user, target, move))

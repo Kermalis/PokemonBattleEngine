@@ -2650,6 +2650,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         GrassWhistle = 320,
         Growl = 45,
         Growth = 74,
+        Guillotine = 12,
         GunkShot = 441,
         Gust = 16,
         Hail = 258,
