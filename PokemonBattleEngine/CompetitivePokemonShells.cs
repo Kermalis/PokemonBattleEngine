@@ -313,7 +313,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
             EVs = new byte[] { 4, 252, 0, 0, 0, 252, },
-            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.NastyPlot, PBEMove.AirSlash, PBEMove.Protect }, // Acrobatics, Taunt, Super Fang, Protect
+            Moves = new PBEMove[] { PBEMove.AirSlash, PBEMove.NastyPlot, PBEMove.SuperFang, PBEMove.Protect }, // Acrobatics, Taunt, Super Fang, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Cryogonal_VGC { get; } = new PBEPokemonShell
@@ -901,7 +901,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Timid,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 156, 0, 0, 56, 44, 252 },
-            Moves = new PBEMove[] { PBEMove.GrassKnot, PBEMove.ThunderWave, PBEMove.Thunderbolt, PBEMove.HyperFang }, // Fling, Covet, Volt Switch, Super Fang
+            Moves = new PBEMove[] { PBEMove.GrassKnot, PBEMove.ThunderWave, PBEMove.Thunderbolt, PBEMove.SuperFang }, // Fling, Covet, Volt Switch, Super Fang
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Palkia_Uber { get; } = new PBEPokemonShell

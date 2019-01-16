@@ -275,7 +275,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // World championships 2010
                     (
                         new byte[] { 4 }, PBESpecies.Crobat, 30, false, PBEGender.Male, new PBEAbility[] { PBEAbility.InnerFocus }, new PBENature[] { PBENature.Timid },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HeatWave, PBEMove.AirSlash, PBEMove.SludgeBomb/*, PBEMove.SuperFang*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HeatWave, PBEMove.AirSlash, PBEMove.SludgeBomb, PBEMove.SuperFang }
                     )
                 })
             },

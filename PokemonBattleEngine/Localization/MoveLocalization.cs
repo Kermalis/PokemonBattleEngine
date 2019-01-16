@@ -170,7 +170,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Sharpen, new PBELocalizedString("かくばる", "각지기", "Affûtage", "Schärfer", "Afilar", "Affilatore", "Sharpen") },
             // { PBEMove.160, new PBELocalizedString("テクスチャー", "텍스처", "Adaptation", "Umwandlung", "Conversión", "Conversione", "Conversion") },
             // { PBEMove.161, new PBELocalizedString("トライアタック", "트라이어택", "Triplattaque", "Triplette", "Triataque", "Tripletta", "Tri Attack") },
-            // { PBEMove.162, new PBELocalizedString("いかりのまえば", "분노의앞니", "Croc Fatal", "Superzahn", "Superdiente", "Superzanna", "Super Fang") },
+            { PBEMove.SuperFang, new PBELocalizedString("いかりのまえば", "분노의앞니", "Croc Fatal", "Superzahn", "Superdiente", "Superzanna", "Super Fang") },
             { PBEMove.Slash, new PBELocalizedString("きりさく", "베어가르기", "Tranche", "Schlitzer", "Cuchillada", "Lacerazione", "Slash") },
             { PBEMove.Substitute, new PBELocalizedString("みがわり", "대타출동", "Clonage", "Delegator", "Sustituto", "Sostituto", "Substitute") },
             { PBEMove.Struggle, new PBELocalizedString("わるあがき", "발버둥", "Lutte", "Verzweifler", "Combate", "Scontro", "Struggle") },

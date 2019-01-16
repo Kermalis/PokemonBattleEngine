@@ -620,6 +620,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.SunnyDay:
                     TryForceWeather(user, move, PBEWeather.HarshSunlight);
                     break;
+                case PBEMoveEffect.SuperFang:
+                    Ef_SuperFang(user, targets, move);
+                    break;
                 case PBEMoveEffect.Swagger:
                     Ef_Swagger(user, targets[0]);
                     break;
@@ -1742,6 +1745,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort DamageFunc(PBEPokemon target)
             {
                 return user.Shell.Level;
+            }
+
+            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+        }
+        void Ef_SuperFang(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            ushort DamageFunc(PBEPokemon target)
+            {
+                return (ushort)(target.HP / 2);
             }
 
             FixedDamageHit(user, targets, move, damageFunc: DamageFunc);

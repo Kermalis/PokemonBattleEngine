@@ -2460,6 +2460,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.SuperFang,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 2, 0, 90,
+                    PBEMoveEffect.SuperFang, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.Superpower,
                 new PBEMoveData
                 (
