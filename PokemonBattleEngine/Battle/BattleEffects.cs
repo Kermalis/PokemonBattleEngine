@@ -785,6 +785,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEMove.Fissure:
                 case PBEMove.Guillotine:
+                case PBEMove.HornDrill:
                     chance = user.Shell.Level - target.Shell.Level + 30;
                     break;
                 case PBEMove.Thunder:

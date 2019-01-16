@@ -1146,6 +1146,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.HornDrill,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 0, 0,
+                    PBEMoveEffect.OneHitKnockout, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.Howl,
                 new PBEMoveData
                 (

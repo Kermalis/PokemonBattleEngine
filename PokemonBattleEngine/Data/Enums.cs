@@ -2666,6 +2666,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HiddenPower = 237,
         HoneClaws = 468,
         HornAttack = 30,
+        HornDrill = 32,
         Howl = 336,
         HydroPump = 56,
         HyperFang = 158,

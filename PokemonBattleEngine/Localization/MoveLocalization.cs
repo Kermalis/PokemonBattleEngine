@@ -40,7 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Headbutt, new PBELocalizedString("ずつき", "박치기", "Coup d’Boule", "Kopfnuss", "Golpe Cabeza", "Bottintesta", "Headbutt") },
             { PBEMove.HornAttack, new PBELocalizedString("つのでつく", "뿔찌르기", "Koud’Korne", "Hornattacke", "Cornada", "Incornata", "Horn Attack") },
             // { PBEMove.31, new PBELocalizedString("みだれづき", "마구찌르기", "Furie", "Furienschlag", "Ataque Furia", "Furia", "Fury Attack") },
-            // { PBEMove.32, new PBELocalizedString("つのドリル", "뿔드릴", "Empal’Korne", "Hornbohrer", "Perforador", "Perforcorno", "Horn Drill") },
+            { PBEMove.HornDrill, new PBELocalizedString("つのドリル", "뿔드릴", "Empal’Korne", "Hornbohrer", "Perforador", "Perforcorno", "Horn Drill") },
             { PBEMove.Tackle, new PBELocalizedString("たいあたり", "몸통박치기", "Charge", "Tackle", "Placaje", "Azione", "Tackle") },
             { PBEMove.BodySlam, new PBELocalizedString("のしかかり", "누르기", "Plaquage", "Bodyslam", "Golpe Cuerpo", "Corposcontro", "Body Slam") },
             // { PBEMove.35, new PBELocalizedString("まきつく", "김밥말이", "Ligotage", "Wickel", "Repetición", "Avvolgibotta", "Wrap") },
