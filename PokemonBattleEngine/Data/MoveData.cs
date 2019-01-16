@@ -804,6 +804,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.FinalGambit,
+                new PBEMoveData
+                (
+                    PBEType.Fighting, PBEMoveCategory.Special, 0, 1, 0, 100,
+                    PBEMoveEffect.FinalGambit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.FireBlast,
                 new PBEMoveData
                 (

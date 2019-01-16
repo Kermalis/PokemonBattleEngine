@@ -426,6 +426,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Fail:
                     Ef_Fail(user, move);
                     break;
+                case PBEMoveEffect.FinalGambit:
+                    Ef_FinalGambit(user, targets, move);
+                    break;
                 case PBEMoveEffect.Flatter:
                     Ef_Flatter(user, targets[0]);
                     break;
@@ -1314,6 +1317,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     continue;
                 }
 
+                // Damage func is run and the output is dealt to target
                 DealDamage(user, target, damageFunc.Invoke(target), false);
 
                 hit++;
@@ -1724,6 +1728,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             FixedDamageHit(user, targets, move, damageFunc: DamageFunc, afterMissCheck: AfterMissCheck);
+        }
+        void Ef_FinalGambit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            ushort DamageFunc(PBEPokemon target)
+            {
+                ushort oldHP = user.HP;
+                DealDamage(user, user, oldHP, true);
+                FaintCheck(user);
+                return oldHP;
+            }
+
+            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
         }
         void Ef_Psywave(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {

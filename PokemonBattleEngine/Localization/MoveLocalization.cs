@@ -523,7 +523,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.512, new PBELocalizedString("アクロバット", "애크러뱃", "Acrobatie", "Akrobatik", "Acróbata", "Acrobazia", "Acrobatics") },
             // { PBEMove.513, new PBELocalizedString("ミラータイプ", "미러타입", "Copie Type", "Typenspiegel", "Clonatipo", "Riflettipo", "Reflect Type") },
             { PBEMove.Retaliate, new PBELocalizedString("かたきうち", "원수갚기", "Vengeance", "Heimzahlung", "Represalia", "Nemesi", "Retaliate") },
-            // { PBEMove.515, new PBELocalizedString("いのちがけ", "목숨걸기", "Tout ou Rien", "Wagemut", "Sacrificio", "Azzardo", "Final Gambit") },
+            { PBEMove.FinalGambit, new PBELocalizedString("いのちがけ", "목숨걸기", "Tout ou Rien", "Wagemut", "Sacrificio", "Azzardo", "Final Gambit") },
             // { PBEMove.516, new PBELocalizedString("ギフトパス", "기프트패스", "Passe-Cadeau", "Offerte", "Ofrenda", "Cediregalo", "Bestow") },
             { PBEMove.Inferno, new PBELocalizedString("れんごく", "연옥", "Feu d’Enfer", "Inferno", "Infierno", "Marchiatura", "Inferno") },
             // { PBEMove.518, new PBELocalizedString("みずのちかい", "물의맹세", "Aire d’Eau", "Wassersäulen", "Voto Agua", "Acquapatto", "Water Pledge") },
