@@ -14247,7 +14247,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     1, 90, 45, 30, 30, 40,
                     PBEType.Bug, PBEType.Ghost, PBEGenderRatio.M0_F0,
                     1, false, 1.2,
-                    new PBESpecies[] { PBESpecies.Nincada },
+                    new PBESpecies[] { PBESpecies.Nincada, PBESpecies.Ninjask },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.WonderGuard },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
