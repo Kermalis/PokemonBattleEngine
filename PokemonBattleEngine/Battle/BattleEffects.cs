@@ -542,6 +542,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Moonlight:
                     Ef_Moonlight(user, move);
                     break;
+                case PBEMoveEffect.OneHitKnockout:
+                    Ef_OneHitKnockout(user, targets, move);
+                    break;
                 case PBEMoveEffect.PainSplit:
                     Ef_PainSplit(user, targets[0]);
                     break;
@@ -754,33 +757,59 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return false;
             }
-            // Hitting airborne opponents
             if (target.Status2.HasFlag(PBEStatus2.Airborne) && !mData.Flags.HasFlag(PBEMoveFlag.HitsAirborne))
             {
                 goto miss;
             }
-            // Hitting underground opponents
             if (target.Status2.HasFlag(PBEStatus2.Underground) && !mData.Flags.HasFlag(PBEMoveFlag.HitsUnderground))
             {
                 goto miss;
             }
-            // Hitting underwater opponents
             if (target.Status2.HasFlag(PBEStatus2.Underwater) && !mData.Flags.HasFlag(PBEMoveFlag.HitsUnderwater))
             {
                 goto miss;
             }
-            // Moves that always hit
-            if (mData.Accuracy == 0
-                || (move == PBEMove.Blizzard && Weather == PBEWeather.Hailstorm)
-                || (move == PBEMove.Thunder && Weather == PBEWeather.Rain)
-                )
+
+            double chance;
+            switch (move)
             {
-                return false;
-            }
-            double chance = mData.Accuracy;
-            if (move == PBEMove.Thunder && Weather == PBEWeather.HarshSunlight)
-            {
-                chance = 50.0;
+                case PBEMove.Blizzard:
+                    if (Weather == PBEWeather.Hailstorm)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        chance = mData.Accuracy;
+                    }
+                    break;
+                case PBEMove.Fissure:
+                    chance = user.Shell.Level - target.Shell.Level + 30;
+                    break;
+                case PBEMove.Thunder:
+                    if (Weather == PBEWeather.Rain)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        chance = mData.Accuracy;
+                        if (Weather == PBEWeather.HarshSunlight)
+                        {
+                            chance = 50.0;
+                        }
+                    }
+                    break;
+                default:
+                    if (mData.Accuracy == 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        chance = mData.Accuracy;
+                    }
+                    break;
             }
             chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
             if (user.Ability == PBEAbility.Compoundeyes)
@@ -1741,6 +1770,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 DealDamage(user, user, oldHP, true);
                 FaintCheck(user);
                 return oldHP;
+            }
+
+            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+        }
+        void Ef_OneHitKnockout(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            ushort DamageFunc(PBEPokemon target)
+            {
+                return target.HP;
             }
 
             FixedDamageHit(user, targets, move, damageFunc: DamageFunc);

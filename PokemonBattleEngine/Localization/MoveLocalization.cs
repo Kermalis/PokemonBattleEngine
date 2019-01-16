@@ -98,7 +98,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Thunder, new PBELocalizedString("かみなり", "번개", "Fatal-Foudre", "Donner", "Trueno", "Tuono", "Thunder") },
             { PBEMove.RockThrow, new PBELocalizedString("いわおとし", "돌떨구기", "Jet-Pierres", "Steinwurf", "Lanzarrocas", "Sassata", "Rock Throw") },
             { PBEMove.Earthquake, new PBELocalizedString("じしん", "지진", "Séisme", "Erdbeben", "Terremoto", "Terremoto", "Earthquake") },
-            // { PBEMove.90, new PBELocalizedString("じわれ", "땅가르기", "Abîme", "Geofissur", "Fisura", "Abisso", "Fissure") },
+            { PBEMove.Fissure, new PBELocalizedString("じわれ", "땅가르기", "Abîme", "Geofissur", "Fisura", "Abisso", "Fissure") },
             { PBEMove.Dig, new PBELocalizedString("あなをほる", "구멍파기", "Tunnel", "Schaufler", "Excavar", "Fossa", "Dig") },
             { PBEMove.Toxic, new PBELocalizedString("どくどく", "맹독", "Toxik", "Toxin", "Tóxico", "Tossina", "Toxic") },
             { PBEMove.Confusion, new PBELocalizedString("ねんりき", "염동력", "Choc Mental", "Konfusion", "Confusión", "Confusione", "Confusion") },

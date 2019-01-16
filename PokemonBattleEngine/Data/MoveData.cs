@@ -831,6 +831,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Fissure,
+                new PBEMoveData
+                (
+                    PBEType.Ground, PBEMoveCategory.Physical, 0, 1, 0, 0,
+                    PBEMoveEffect.OneHitKnockout, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsUnderground
+                )
+            },
+            {
                 PBEMove.FlameCharge,
                 new PBEMoveData
                 (
