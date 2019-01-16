@@ -2352,6 +2352,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.SonicBoom,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 4, 0, 90,
+                    PBEMoveEffect.SetDamage, 20, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.SpacialRend,
                 new PBEMoveData
                 (

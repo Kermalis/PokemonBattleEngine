@@ -57,7 +57,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Roar, new PBELocalizedString("ほえる", "울부짖기", "Hurlement", "Brüller", "Rugido", "Boato", "Roar") },
             { PBEMove.Sing, new PBELocalizedString("うたう", "노래하기", "Berceuse", "Gesang", "Canto", "Canto", "Sing") },
             { PBEMove.Supersonic, new PBELocalizedString("ちょうおんぱ", "초음파", "Ultrason", "Superschall", "Supersónico", "Supersuono", "Supersonic") },
-            // { PBEMove.49, new PBELocalizedString("ソニックブーム", "소닉붐", "Sonicboom", "Ultraschall", "Bomba Sónica", "Sonicboom", "SonicBoom") },
+            { PBEMove.SonicBoom, new PBELocalizedString("ソニックブーム", "소닉붐", "Sonicboom", "Ultraschall", "Bomba Sónica", "Sonicboom", "SonicBoom") },
             // { PBEMove.50, new PBELocalizedString("かなしばり", "사슬묶기", "Entrave", "Aussetzer", "Anulación", "Inibitore", "Disable") },
             { PBEMove.Acid, new PBELocalizedString("ようかいえき", "용해액", "Acide", "Säure", "Ácido", "Acido", "Acid") },
             { PBEMove.Ember, new PBELocalizedString("ひのこ", "불꽃세례", "Flammèche", "Glut", "Ascuas", "Braciere", "Ember") },

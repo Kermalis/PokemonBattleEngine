@@ -608,6 +608,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Selfdestruct:
                     Ef_Selfdestruct(user, targets, move);
                     break;
+                case PBEMoveEffect.SetDamage:
+                    Ef_SetDamage(user, targets, move, mData.EffectParam);
+                    break;
                 case PBEMoveEffect.Sleep:
                     TryForceStatus1(user, targets, move, PBEStatus1.Asleep);
                     break;
@@ -1809,6 +1812,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort DamageFunc(PBEPokemon target)
             {
                 return user.Shell.Level;
+            }
+
+            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+        }
+        void Ef_SetDamage(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int damage)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            ushort DamageFunc(PBEPokemon target)
+            {
+                return (ushort)damage;
             }
 
             FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
