@@ -157,7 +157,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.DizzyPunch, new PBELocalizedString("ピヨピヨパンチ", "잼잼펀치", "Uppercut", "Irrschlag", "Puño Mareo", "Stordipugno", "Dizzy Punch") },
             { PBEMove.Spore, new PBELocalizedString("キノコのほうし", "버섯포자", "Spore", "Pilzspore", "Espora", "Spora", "Spore") },
             { PBEMove.Flash, new PBELocalizedString("フラッシュ", "플래시", "Flash", "Blitz", "Destello", "Flash", "Flash") },
-            // { PBEMove.149, new PBELocalizedString("サイコウェーブ", "사이코웨이브", "Vague Psy", "Psywelle", "Psicoonda", "Psiconda", "Psywave") },
+            { PBEMove.Psywave, new PBELocalizedString("サイコウェーブ", "사이코웨이브", "Vague Psy", "Psywelle", "Psicoonda", "Psiconda", "Psywave") },
             // { PBEMove.150, new PBELocalizedString("はねる", "튀어오르기", "Trempette", "Platscher", "Salpicadura", "Splash", "Splash") },
             { PBEMove.AcidArmor, new PBELocalizedString("とける", "녹기", "Acidarmure", "Säurepanzer", "Armad. Ácida", "Scudo Acido", "Acid Armor") },
             { PBEMove.Crabhammer, new PBELocalizedString("クラブハンマー", "찝게햄머", "Pince-Masse", "Krabbhammer", "Martillazo", "Martellata", "Crabhammer") },

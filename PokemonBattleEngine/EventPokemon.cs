@@ -740,7 +740,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Gather more Pokémon
                     (
                         new byte[] { 3 }, PBESpecies.Misdreavus, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Levitate }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl/*, PBEMove.Psywave, PBEMove.Spite*/, PBEMove.None }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.Psywave/*, PBEMove.Spite*/, PBEMove.None }
                     )
                 })
             },

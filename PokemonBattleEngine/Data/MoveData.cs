@@ -1830,6 +1830,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Psywave,
+                new PBEMoveData
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 3, 0, 80,
+                    PBEMoveEffect.Psywave, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.QuickAttack,
                 new PBEMoveData
                 (

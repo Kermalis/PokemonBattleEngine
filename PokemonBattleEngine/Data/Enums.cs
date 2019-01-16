@@ -2507,6 +2507,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Poison,
         Protect, // TODO: If the user goes last, fail
         PsychUp,
+        Psywave,
         RainDance,
         RaiseUser_ATK_ACC_By1,
         RaiseUser_ATK_DEF_By1,
@@ -2738,6 +2739,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PsychUp = 244,
         Psyshock = 473,
         Psystrike = 540,
+        Psywave = 149,
         QuickAttack = 98,
         QuiverDance = 483,
         RainDance = 240,

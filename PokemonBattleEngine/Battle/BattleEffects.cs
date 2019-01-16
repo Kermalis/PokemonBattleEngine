@@ -554,6 +554,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.PsychUp:
                     Ef_PsychUp(user, targets[0]);
                     break;
+                case PBEMoveEffect.Psywave:
+                    Ef_Psywave(user, targets, move);
+                    break;
                 case PBEMoveEffect.RainDance:
                     TryForceWeather(user, move, PBEWeather.Rain);
                     break;
@@ -1718,6 +1721,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             FixedDamageHit(user, targets, move, damageFunc: DamageFunc, afterMissCheck: AfterMissCheck);
+        }
+        void Ef_Psywave(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            ushort DamageFunc(PBEPokemon target)
+            {
+                return (ushort)(user.Shell.Level * (PBEUtils.RNG.Next(0, Settings.MaxLevel + 1) + (Settings.MaxLevel / 2)) / Settings.MaxLevel);
+            }
+
+            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
         }
         void Ef_SeismicToss(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
