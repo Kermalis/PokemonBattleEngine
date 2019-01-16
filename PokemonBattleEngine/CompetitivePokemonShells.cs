@@ -490,6 +490,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.Return, PBEMove.AirSlash, PBEMove.SteelWing }, // Swords Dance, Return, Brave Bird, Revenge
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Ferrothorn_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Ferrothorn,
+            Nickname = "Spike",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.IronBarbs,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Relaxed,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 148, 0, 108, 0 },
+            Moves = new PBEMove[] { PBEMove.LeechSeed, PBEMove.Protect, PBEMove.PowerWhip, PBEMove.ThunderWave }, // Leech Seed, Protect, Power Whip, Gyro Ball
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Flareon_RU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Flareon,
