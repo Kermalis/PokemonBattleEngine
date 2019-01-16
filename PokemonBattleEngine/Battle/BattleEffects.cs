@@ -791,25 +791,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 0.8;
             }
-            if (Weather == PBEWeather.Sandstorm && user.Ability == PBEAbility.SandVeil)
+            if (Weather == PBEWeather.Sandstorm && target.Ability == PBEAbility.SandVeil)
             {
                 chance *= 0.8;
             }
-            if (Weather == PBEWeather.Hailstorm && user.Ability == PBEAbility.SnowCloak)
+            if (Weather == PBEWeather.Hailstorm && target.Ability == PBEAbility.SnowCloak)
             {
                 chance *= 0.8;
             }
-            // Pokémon holding a BrightPowder or Lax Incense get a 10% Evasion boost
             if (target.Item == PBEItem.BrightPowder)
             {
                 chance *= 0.9;
             }
-            // Pokémon holding a Wide Lens get a 10% Accuracy boost
+            if (target.Item == PBEItem.LaxIncense)
+            {
+                chance *= 0.9;
+            }
             if (user.Item == PBEItem.WideLens)
             {
                 chance *= 1.1;
             }
-            // Try to hit
             if (PBEUtils.RNG.ApplyChance((int)chance, 100))
             {
                 return false;
