@@ -65,7 +65,9 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                 case PBEPartyRequestPacket _:
                     {
-                        Send(new PBEPartyResponsePacket(partyShells));
+                        //Send(new PBEPartyResponsePacket(partyShells));
+                        PBEPokemonShell[] team = PBECompetitivePokemonShells.CreateRandomTeam(Battle.Settings.MaxPartySize).ToArray();
+                        Send(new PBEPartyResponsePacket(team));
                         break;
                     }
                 case PBESetPartyPacket spp:

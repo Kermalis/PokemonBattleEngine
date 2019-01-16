@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:gif="clr-namespace:AvaloniaGif;assembly=AvaloniaGif"
         xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
-        Width="912" Height="588" CanResize="False" WindowStartupLocation="CenterScreen"
+        Width="896" Height="566" CanResize="False" WindowStartupLocation="CenterScreen"
         Title="Pokémon Battle Engine">
   <Window.Styles>
     <Style Selector="DropDown">
@@ -70,11 +70,11 @@
                 <DropDown Grid.Row="8" Grid.Column="1" Name="Item" Items="{Binding AvailableItems}" ItemTemplate="{StaticResource MenuBlack}"/>
               </Grid>
               <Panel Width="192" Height="192">
-                <gif:GifImage Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" Source="{Binding Source}">
-                  <gif:GifImage.RenderTransform>
+                <!--<Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceUri="{Binding Source}">
+                  <Image.RenderTransform>
                     <ScaleTransform ScaleX="2" ScaleY="2"/>
-                  </gif:GifImage.RenderTransform>
-                </gif:GifImage>
+                  </Image.RenderTransform>
+                </Image>-->
               </Panel>
             </StackPanel>
             <Grid>
