@@ -13204,7 +13204,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     60, 90, 55, 90, 80, 110,
                     PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
                     1, false, 30.0,
-                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Pichu, PBESpecies.Pikachu },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
