@@ -109,7 +109,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.QuickAttack, new PBELocalizedString("でんこうせっか", "전광석화", "Vive-Attaque", "Ruckzuckhieb", "At. Rápido", "Attacco Rapido", "Quick Attack") },
             // { PBEMove.99, new PBELocalizedString("いかり", "분노", "Frénésie", "Raserei", "Furia", "Ira", "Rage") },
             { PBEMove.Teleport, new PBELocalizedString("テレポート", "순간이동", "Téléport", "Teleport", "Teletransp", "Teletrasporto", "Teleport") },
-            // { PBEMove.101, new PBELocalizedString("ナイトヘッド", "나이트헤드", "Ténèbres", "Nachtnebel", "Tinieblas", "Ombra Nott.", "Night Shade") },
+            { PBEMove.NightShade, new PBELocalizedString("ナイトヘッド", "나이트헤드", "Ténèbres", "Nachtnebel", "Tinieblas", "Ombra Nott.", "Night Shade") },
             // { PBEMove.102, new PBELocalizedString("ものまね", "흉내내기", "Copie", "Mimikry", "Mimético", "Mimica", "Mimic") },
             { PBEMove.Screech, new PBELocalizedString("いやなおと", "싫은소리", "Grincement", "Kreideschrei", "Chirrido", "Stridio", "Screech") },
             { PBEMove.DoubleTeam, new PBELocalizedString("かげぶんしん", "그림자분신", "Reflet", "Doppelteam", "Doble Equipo", "Doppioteam", "Double Team") },

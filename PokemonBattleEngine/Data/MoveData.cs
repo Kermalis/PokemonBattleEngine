@@ -1605,6 +1605,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.NightShade,
+                new PBEMoveData
+                (
+                    PBEType.Ghost, PBEMoveCategory.Special, 0, 3, 0, 100,
+                    PBEMoveEffect.SeismicToss, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.NightSlash,
                 new PBEMoveData
                 (

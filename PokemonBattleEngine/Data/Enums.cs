@@ -2713,6 +2713,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         NastyPlot = 417,
         NeedleArm = 302,
         NightDaze = 539,
+        NightShade = 101,
         NightSlash = 400,
         Octazooka = 190,
         OminousWind = 466,
