@@ -90,7 +90,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.SleepPowder, new PBELocalizedString("ねむりごな", "수면가루", "Poudre Dodo", "Schlafpuder", "Somnífero", "Sonnifero", "Sleep Powder") },
             // { PBEMove.80, new PBELocalizedString("はなびらのまい", "꽃잎댄스", "Danse-Fleur", "Blättertanz", "Danza Pétalo", "Petalodanza", "Petal Dance") },
             { PBEMove.StringShot, new PBELocalizedString("いとをはく", "실뿜기", "Sécrétion", "Fadenschuss", "Disp. Demora", "Millebave", "String Shot") },
-            // { PBEMove.82, new PBELocalizedString("りゅうのいかり", "용의분노", "Draco-Rage", "Drachenwut", "Furia Dragón", "Ira di Drago", "Dragon Rage") },
+            { PBEMove.DragonRage, new PBELocalizedString("りゅうのいかり", "용의분노", "Draco-Rage", "Drachenwut", "Furia Dragón", "Ira di Drago", "Dragon Rage") },
             // { PBEMove.83, new PBELocalizedString("ほのおのうず", "회오리불꽃", "Danseflamme", "Feuerwirbel", "Giro Fuego", "Turbofuoco", "Fire Spin") },
             { PBEMove.ThunderShock, new PBELocalizedString("でんきショック", "전기쇼크", "Éclair", "Donnerschock", "Impactrueno", "Tuonoshock", "ThunderShock") },
             { PBEMove.Thunderbolt, new PBELocalizedString("１０まんボルト", "10만볼트", "Tonnerre", "Donnerblitz", "Rayo", "Fulmine", "Thunderbolt") },

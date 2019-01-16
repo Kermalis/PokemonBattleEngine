@@ -624,6 +624,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.DragonRage,
+                new PBEMoveData
+                (
+                    PBEType.Dragon, PBEMoveCategory.Special, 0, 2, 0, 100,
+                    PBEMoveEffect.SetDamage, 40, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.DragonRush,
                 new PBEMoveData
                 (

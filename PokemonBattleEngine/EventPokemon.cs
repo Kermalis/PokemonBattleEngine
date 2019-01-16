@@ -195,7 +195,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Journey across America | Top 10 distribution | Party of the decade
                     (
                         new byte[] { 3 }, PBESpecies.Charizard, 70, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.WingAttack, PBEMove.Slash/*, PBEMove.DragonRage, PBEMove.FireSpin*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.WingAttack, PBEMove.Slash, PBEMove.DragonRage/*, PBEMove.FireSpin*/ }
                     )
                 })
             },
@@ -307,7 +307,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Year of the dragon
                     (
                         new byte[] { 5 }, PBESpecies.Deino, 1, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.Hustle }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Tackle/*, PBEMove.DragonRage*/, PBEMove.None, PBEMove.None }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Tackle, PBEMove.DragonRage, PBEMove.None, PBEMove.None }
                     )
                 })
             },

@@ -2607,6 +2607,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DragonClaw = 337,
         DragonDance = 349,
         DragonPulse = 406,
+        DragonRage = 82,
         DragonRush = 407,
         //DrainPunch = 409, // TODO: Iron Fist
         DrillPeck = 65,
