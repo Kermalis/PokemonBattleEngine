@@ -2781,6 +2781,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShadowPunch = 325,
         ShadowSneak = 425,
         Sharpen = 159,
+        SheerCold = 329,
         ShellSmash = 504,
         ShiftGear = 508,
         SignalBeam = 324,

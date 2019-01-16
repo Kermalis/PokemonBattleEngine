@@ -780,14 +780,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        chance = mData.Accuracy * GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
+                        chance = mData.Accuracy;
                     }
                     break;
                 case PBEMove.Fissure:
                 case PBEMove.Guillotine:
                 case PBEMove.HornDrill:
+                case PBEMove.SheerCold:
                     chance = user.Shell.Level - target.Shell.Level + 30;
-                    break;
+                    goto roll; // Skip all modifiers
                 case PBEMove.Thunder:
                     if (Weather == PBEWeather.Rain)
                     {
@@ -800,7 +801,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             chance = 50.0;
                         }
-                        chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
                     }
                     break;
                 default:
@@ -810,10 +810,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        chance = mData.Accuracy * GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
+                        chance = mData.Accuracy;
                     }
                     break;
             }
+            chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
             if (user.Ability == PBEAbility.Compoundeyes)
             {
                 chance *= 1.3;
@@ -842,6 +843,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 1.1;
             }
+        roll:
             if (PBEUtils.RNG.ApplyChance((int)chance, 100))
             {
                 return false;

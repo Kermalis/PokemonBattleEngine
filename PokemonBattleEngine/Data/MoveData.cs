@@ -2181,6 +2181,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.SheerCold,
+                new PBEMoveData
+                (
+                    PBEType.Ice, PBEMoveCategory.Special, 0, 1, 0, 0,
+                    PBEMoveEffect.OneHitKnockout, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.ShellSmash,
                 new PBEMoveData
                 (

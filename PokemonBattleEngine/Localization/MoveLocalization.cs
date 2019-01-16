@@ -337,7 +337,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Extrasensory, new PBELocalizedString("じんつうりき", "신통력", "Extrasenseur", "Sondersensor", "Paranormal", "Extrasenso", "Extrasensory") },
             { PBEMove.SkyUppercut, new PBELocalizedString("スカイアッパー", "스카이업퍼", "Stratopercut", "Himmelhieb", "Gancho Alto", "Stramontante", "Sky Uppercut") },
             // { PBEMove.328, new PBELocalizedString("すなじごく", "모래지옥", "Tourbi-Sable", "Sandgrab", "Bucle Arena", "Sabbiotomba", "Sand Tomb") },
-            // { PBEMove.329, new PBELocalizedString("ぜったいれいど", "절대영도", "Glaciation", "Eiseskälte", "Frío Polar", "Purogelo", "Sheer Cold") },
+            { PBEMove.SheerCold, new PBELocalizedString("ぜったいれいど", "절대영도", "Glaciation", "Eiseskälte", "Frío Polar", "Purogelo", "Sheer Cold") },
             { PBEMove.MuddyWater, new PBELocalizedString("だくりゅう", "탁류", "Ocroupi", "Lehmbrühe", "Agua Lodosa", "Fanghiglia", "Muddy Water") },
             // { PBEMove.331, new PBELocalizedString("タネマシンガン", "기관총", "Balle Graine", "Kugelsaat", "Recurrente", "Semitraglia", "Bullet Seed") },
             { PBEMove.AerialAce, new PBELocalizedString("つばめがえし", "제비반환", "Aéropique", "Aero-Ass", "Golpe Aéreo", "Aeroassalto", "Aerial Ace") },
