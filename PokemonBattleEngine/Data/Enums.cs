@@ -1645,7 +1645,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RingTarget = 543, // TODO
         RockGem = 559,
         RockIncense = 315,
-        RockyHelmet = 540, // TODO
+        RockyHelmet = 540,
         /// <summary>
         /// No effect.
         /// </summary>
@@ -1965,7 +1965,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         InnerFocus = 39, // TODO
         Insomnia = 15, // TODO
         Intimidate = 22, // TODO
-        IronBarbs = 160, // TODO
+        IronBarbs = 160,
         /// <summary>
         /// The power of moves with <see cref="PBEMoveFlag.AffectedByIronFist"/> is increased.
         /// </summary>
@@ -2042,7 +2042,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Regenerator = 144, // TODO
         Rivalry = 79, // TODO
         RockHead = 69, // TODO
-        RoughSkin = 24, // TODO
+        RoughSkin = 24,
         /// <summary>
         /// No effect in battle.
         /// </summary>

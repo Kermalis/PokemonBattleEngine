@@ -120,11 +120,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="move">The move <paramref name="user"/> used.</param>
         void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move)
         {
-            if (victim.Status2.HasFlag(PBEStatus2.Substitute) && victim.SubstituteHP == 0)
+            if (victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
-                victim.Status2 &= ~PBEStatus2.Substitute;
-                BroadcastStatus2(user, victim, PBEStatus2.Substitute, PBEStatusAction.Ended);
+                if (victim.SubstituteHP == 0)
+                {
+                    victim.Status2 &= ~PBEStatus2.Substitute;
+                    BroadcastStatus2(user, victim, PBEStatus2.Substitute, PBEStatusAction.Ended);
+                }
             }
+            else
+            {
+                if (PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.MakesContact))
+                {
+                    if (user.HP > 0 && (victim.Ability == PBEAbility.IronBarbs || victim.Ability == PBEAbility.RoughSkin))
+                    {
+                        BroadcastAbility(victim, user, victim.Ability, PBEAbilityAction.Damage);
+                        DealDamage(victim, user, (ushort)(user.MaxHP / 8), true);
+                        FaintCheck(user);
+                    }
+                    if (user.HP > 0 && victim.Item == PBEItem.RockyHelmet)
+                    {
+                        BroadcastItem(victim, user, PBEItem.RockyHelmet, PBEItemAction.CausedDamage);
+                        DealDamage(victim, user, (ushort)(user.MaxHP / 6), true);
+                        FaintCheck(user);
+                    }
+                }
+            }
+
+            // TODO: Weak Armor, Justified, Stench, Effect Spore
+            // TODO?: Cell Battery
         }
         /// <summary>
         /// Does effects that take place after an attack is completely done such as recoil and life orb.
@@ -134,30 +158,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="recoilDamage">The amount of recoil damage <paramref name="user"/> will take.</param>
         void DoPostAttackedEffects(PBEPokemon user, bool ignoreLifeOrb, ushort recoilDamage = 0)
         {
-            // Quietly return without announcing a faint
-            if (user.HP == 0)
-            {
-                return;
-            }
+            // TODO: Color Change
 
-            if (recoilDamage > 0)
+            if (user.HP > 0 && recoilDamage > 0)
             {
                 BroadcastRecoil(user);
                 DealDamage(user, user, recoilDamage, true);
-                if (FaintCheck(user))
-                {
-                    return;
-                }
+                FaintCheck(user);
             }
 
-            if (!ignoreLifeOrb && user.Item == PBEItem.LifeOrb)
+            if (user.HP > 0 && !ignoreLifeOrb && user.Item == PBEItem.LifeOrb)
             {
                 BroadcastItem(user, user, PBEItem.LifeOrb, PBEItemAction.CausedDamage);
                 DealDamage(user, user, (ushort)(user.MaxHP / 10), true);
-                if (FaintCheck(user))
-                {
-                    return;
-                }
+                FaintCheck(user);
             }
         }
         void DoTurnEndedEffects(PBEPokemon pkmn)
@@ -1278,7 +1292,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double basePower = CalculateBasePower(user, targets, move, moveType);
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP == 0 || MissCheck(user, target, move))
+                if (user.HP == 0 || target.HP == 0 || MissCheck(user, target, move))
                 {
                     continue;
                 }
@@ -1332,7 +1346,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEType moveType = user.GetMoveType(move);
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP == 0 || MissCheck(user, target, move))
+                if (user.HP == 0 || target.HP == 0 || MissCheck(user, target, move))
                 {
                     continue;
                 }
@@ -1609,7 +1623,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             void BeforeTargetsFaint()
             {
-                if (PBEUtils.RNG.ApplyChance(chanceToChangeStats, 100))
+                if (user.HP > 0 && PBEUtils.RNG.ApplyChance(chanceToChangeStats, 100))
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {

@@ -151,37 +151,44 @@ namespace Kermalis.PokemonBattleEngineClient
                         switch (ap.Ability)
                         {
                             case PBEAbility.Drizzle:
-                                switch (ap.AbilityAction)
-                                {
-                                    case PBEAbilityAction.Weather: message = "{0}'s Drizzle activated!"; break; // Message is displayed from a weather packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
-                                }
-                                break;
                             case PBEAbility.Drought:
+                            case PBEAbility.SandStream:
+                            case PBEAbility.SnowWarning:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Weather: message = "{0}'s Drought activated!"; break; // Message is displayed from a weather packet
+                                    case PBEAbilityAction.Weather: message = "{0}'s {2} activated!"; break; // Message is displayed from a weather packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
                             case PBEAbility.IceBody:
+                            case PBEAbility.RainDish:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.RestoredHP: message = "{0}'s Ice Body activated!"; break; // Message is displayed from a hp changed packet
+                                    case PBEAbilityAction.RestoredHP: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
                             case PBEAbility.Imposter:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.ChangedAppearance: message = "{0}'s Imposter activated!"; break; // Message is displayed from a status2 packet
+                                    case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a status2 packet
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
+                            case PBEAbility.IronBarbs:
+                            case PBEAbility.RoughSkin:
+                            case PBEAbility.SolarPower:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
                             case PBEAbility.Levitate:
+                            case PBEAbility.WonderGuard:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Damage: message = "{0}'s Levitate activated!"; break; // Message is displayed from an effectiveness packet
+                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
@@ -189,48 +196,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.CuredStatus: // Message is displayed from a status1 packet
-                                    case PBEAbilityAction.PreventedStatus: message = "{0}'s Limber activated!"; break; // Message is displayed from an effectiveness packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
-                                }
-                                break;
-                            case PBEAbility.RainDish:
-                                switch (ap.AbilityAction)
-                                {
-                                    case PBEAbilityAction.RestoredHP: message = "{0}'s Rain Dish activated!"; break; // Message is displayed from a hp changed packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
-                                }
-                                break;
-                            case PBEAbility.SandStream:
-                                switch (ap.AbilityAction)
-                                {
-                                    case PBEAbilityAction.Weather: message = "{0}'s Sand Stream activated!"; break; // Message is displayed from a weather packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
-                                }
-                                break;
-                            case PBEAbility.SnowWarning:
-                                switch (ap.AbilityAction)
-                                {
-                                    case PBEAbilityAction.Weather: message = "{0}'s Snow Warning activated!"; break; // Message is displayed from a weather packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
-                                }
-                                break;
-                            case PBEAbility.SolarPower:
-                                switch (ap.AbilityAction)
-                                {
-                                    case PBEAbilityAction.Damage: message = "{0}'s Solar Power activated!"; break; // Message is displayed from a hp changed packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
-                                }
-                                break;
-                            case PBEAbility.WonderGuard:
-                                switch (ap.AbilityAction)
-                                {
-                                    case PBEAbilityAction.Damage: message = "{0}'s Wonder Guard activated!"; break; // Message is displayed from an effectiveness packet
+                                    case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
                             default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");
                         }
-                        BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, true), NameForTrainer(victim, false)), true, true);
+                        BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, true), NameForTrainer(victim, false), PBEAbilityLocalization.Names[ap.Ability].FromUICultureInfo()), true, true);
                         break;
                     }
                 case PBEItemPacket ip:
@@ -246,7 +218,8 @@ namespace Kermalis.PokemonBattleEngineClient
                                 culprit.Item = ip.Item;
                                 break;
                         }
-                        bool culpritCaps = true;
+                        bool culpritCaps = true,
+                            victimCaps = false;
                         string message;
                         switch (ip.Item)
                         {
@@ -309,6 +282,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
+                            case PBEItem.RockyHelmet:
+                                switch (ip.ItemAction)
+                                {
+                                    case PBEItemAction.CausedDamage: message = "{1} was hurt by the {2}!"; victimCaps = true; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                }
+                                break;
                             case PBEItem.ToxicOrb:
                                 switch (ip.ItemAction)
                                 {
@@ -318,7 +298,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 break;
                             default: throw new ArgumentOutOfRangeException(nameof(ip.Item), $"Invalid item: {ip.Item}");
                         }
-                        BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, culpritCaps), NameForTrainer(victim, false), PBEItemLocalization.Names[ip.Item].FromUICultureInfo()), true, true);
+                        BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, culpritCaps), NameForTrainer(victim, victimCaps), PBEItemLocalization.Names[ip.Item].FromUICultureInfo()), true, true);
                         break;
                     }
                 case PBEMoveCritPacket _:

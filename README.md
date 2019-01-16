@@ -21,9 +21,9 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Add lots of items and most moves, Pokémon, and secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Protect from corrupt packets (if they are even a problem)
-* Spectators
+* Allow spectators to join mid-game instead of having to be present when the game begins
 * Make MinLevel relevant
-* Damage, effectiveness and critical packets should include a list of hit Pokémon
+* Damage, effectiveness, and critical packets should include a list of affected Pokémon
 * Switch-ins, switch-in effects, and turn ended effects should go by speed (with speed ties and everything like turn order)
 * Winning
 * Watchable replays
