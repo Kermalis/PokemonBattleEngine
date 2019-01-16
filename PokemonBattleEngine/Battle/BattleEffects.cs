@@ -1292,7 +1292,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double basePower = CalculateBasePower(user, targets, move, moveType);
             foreach (PBEPokemon target in targets)
             {
-                if (user.HP == 0 || target.HP == 0 || MissCheck(user, target, move))
+                if (target.HP == 0 || MissCheck(user, target, move))
                 {
                     continue;
                 }
@@ -1346,7 +1346,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEType moveType = user.GetMoveType(move);
             foreach (PBEPokemon target in targets)
             {
-                if (user.HP == 0 || target.HP == 0 || MissCheck(user, target, move))
+                if (target.HP == 0 || MissCheck(user, target, move))
                 {
                     continue;
                 }
