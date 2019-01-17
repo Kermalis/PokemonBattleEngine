@@ -2214,6 +2214,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Clamperl = 366,
         Cofagrigus = 563,
         Combusken = 256,
+        Cottonee = 546,
         Cradily = 346,
         Cresselia = 488,
         Crobat = 169,
@@ -2377,6 +2378,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Vulpix = 37,
         Wartortle = 8,
         Weedle = 13,
+        Whimsicott = 547,
         Yamask = 562,
         Zubat = 41,
         Zweilous = 634
