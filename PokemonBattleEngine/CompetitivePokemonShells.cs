@@ -1123,6 +1123,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Spore, PBEMove.Reflect, PBEMove.Brine, PBEMove.Hex }, // Fake Out, Spore, Follow Me, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Thundurus_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Thundurus,
+            Nickname = "Tundr",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.YacheBerry,
+            Ability = PBEAbility.Prankster,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 30, 30, 30 }, // Hidden Power: Flying/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Thunder, PBEMove.RainDance, PBEMove.HiddenPower, PBEMove.Substitute },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Tornadus_Therian_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Tornadus_Therian,
