@@ -460,7 +460,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Judgment, new PBELocalizedString("さばきのつぶて", "심판의뭉치", "Jugement", "Urteilskraft", "Sentencia", "Giudizio", "Judgment") },
             // { PBEMove.450, new PBELocalizedString("むしくい", "벌레먹음", "Piqûre", "Käferbiss", "Picadura", "Coleomorso", "Bug Bite") },
             { PBEMove.ChargeBeam, new PBELocalizedString("チャージビーム", "차지빔", "Rayon Chargé", "Ladestrahl", "Rayo Carga", "Raggioscossa", "Charge Beam") },
-            // { PBEMove.452, new PBELocalizedString("ウッドハンマー", "우드해머", "Martobois", "Holzhammer", "Mazazo", "Mazzuolegno", "Wood Hammer") },
+            { PBEMove.WoodHammer, new PBELocalizedString("ウッドハンマー", "우드해머", "Martobois", "Holzhammer", "Mazazo", "Mazzuolegno", "Wood Hammer") },
             { PBEMove.AquaJet, new PBELocalizedString("アクアジェット", "아쿠아제트", "Aqua-Jet", "Wasserdüse", "Acua Jet", "Acquagetto", "Aqua Jet") },
             { PBEMove.AttackOrder, new PBELocalizedString("こうげきしれい", "공격지령", "Appel Attak", "Schlagbefehl", "Al Ataque", "Comandourto", "Attack Order") },
             { PBEMove.DefendOrder, new PBELocalizedString("ぼうぎょしれい", "방어지령", "Appel Défens", "Blockbefehl", "A Defender", "Comandoscudo", "Defend Order") },

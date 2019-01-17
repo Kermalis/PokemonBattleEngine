@@ -2877,6 +2877,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WillOWisp = 261,
         WingAttack = 17,
         Withdraw = 110,
+        WoodHammer = 452,
         WorkUp = 526,
         XScissor = 404,
         ZapCannon = 192,

@@ -2919,6 +2919,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.WoodHammer,
+                new PBEMoveData
+                (
+                    PBEType.Grass, PBEMoveCategory.Physical, 0, 3, 120, 100,
+                    PBEMoveEffect.Recoil, 3, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.WorkUp,
                 new PBEMoveData
                 (

@@ -1204,7 +1204,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
                         new byte[] { 5 }, PBESpecies.Torterra, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Overgrow }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.WoodHammer, */PBEMove.Earthquake/*, PBEMove.Outrage*/, PBEMove.StoneEdge }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.WoodHammer, PBEMove.Earthquake/*, PBEMove.Outrage*/, PBEMove.StoneEdge }
                     )
                 })
             },
