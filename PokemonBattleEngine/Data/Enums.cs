@@ -2231,6 +2231,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Emolga = 587,
         Empoleon = 395,
         Espeon = 196,
+        Excadrill = 530,
         Farfetchd = 83,
         Ferroseed = 597,
         Ferrothorn = 598,
