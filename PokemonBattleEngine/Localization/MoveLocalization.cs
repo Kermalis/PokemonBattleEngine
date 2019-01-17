@@ -536,7 +536,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.525, new PBELocalizedString("ドラゴンテール", "드래곤테일", "Draco-Queue", "Drachenrute", "Cola Dragón", "Codadrago", "Dragon Tail") },
             { PBEMove.WorkUp, new PBELocalizedString("ふるいたてる", "분발", "Rengorgement", "Kraftschub", "Avivar", "Cuordileone", "Work Up") },
             { PBEMove.Electroweb, new PBELocalizedString("エレキネット", "일렉트릭네트", "Toile Élek", "Elektronetz", "Electrotela", "Elettrotela", "Electroweb") },
-            // { PBEMove.528, new PBELocalizedString("ワイルドボルト", "와일드볼트", "Éclair Fou", "Stromstoß", "Voltio Cruel", "Sprizzalampo", "Wild Charge") },
+            { PBEMove.WildCharge, new PBELocalizedString("ワイルドボルト", "와일드볼트", "Éclair Fou", "Stromstoß", "Voltio Cruel", "Sprizzalampo", "Wild Charge") },
             { PBEMove.DrillRun, new PBELocalizedString("ドリルライナー", "드릴라이너", "Tunnelier", "Schlagbohrer", "Taladradora", "Giravvita", "Drill Run") },
             // { PBEMove.530, new PBELocalizedString("ダブルチョップ", "더블촙", "Double Baffe", "Doppelhieb", "Golpe Bis", "Doppiocolpo", "Dual Chop") },
             { PBEMove.HeartStamp, new PBELocalizedString("ハートスタンプ", "하트스탬프", "Crève-Cœur", "Herzstempel", "Arrumaco", "Cuorestampo", "Heart Stamp") },

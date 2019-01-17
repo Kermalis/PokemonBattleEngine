@@ -2875,6 +2875,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WaterSpout = 323,
         WeatherBall = 311,
         Whirlwind = 18, // TODO: Suction Cups, Ingrain
+        WildCharge = 528,
         WillOWisp = 261,
         WingAttack = 17,
         Withdraw = 110,

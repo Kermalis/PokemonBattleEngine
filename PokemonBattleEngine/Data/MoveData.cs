@@ -2901,6 +2901,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.WildCharge,
+                new PBEMoveData
+                (
+                    PBEType.Electric, PBEMoveCategory.Physical, 0, 3, 90, 100,
+                    PBEMoveEffect.Recoil, 4, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.WillOWisp,
                 new PBEMoveData
                 (

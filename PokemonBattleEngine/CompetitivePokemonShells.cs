@@ -175,7 +175,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Brave,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.Headbutt, PBEMove.ZenHeadbutt, PBEMove.Earthquake, PBEMove.Protect }, // Head Charge, Wild Charge, Earthquake, Protect
+            Moves = new PBEMove[] { PBEMove.Headbutt, PBEMove.WildCharge, PBEMove.Earthquake, PBEMove.Protect }, // Head Charge, Wild Charge, Earthquake, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
@@ -802,7 +802,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Spark, PBEMove.Superpower, PBEMove.Facade, PBEMove.Crunch }, // Wild Charge, Superpower, Facade, Crunch
+            Moves = new PBEMove[] { PBEMove.WildCharge, PBEMove.Superpower, PBEMove.Facade, PBEMove.Crunch },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Marowak_VGC { get; } = new PBEPokemonShell
