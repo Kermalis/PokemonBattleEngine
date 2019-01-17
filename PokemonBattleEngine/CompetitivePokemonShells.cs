@@ -820,6 +820,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.FirePunch, PBEMove.SwordsDance },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Meloetta_OU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Meloetta,
+            Nickname = "Melody",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ExpertBelt,
+            Ability = PBEAbility.SereneGrace,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Naive,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 0, 64, 0, 252, 0, 192 },
+            Moves = new PBEMove[] { PBEMove.TeeterDance, PBEMove.CloseCombat, PBEMove.ShadowBall, PBEMove.HiddenPower }, // Relic Song, Close Combat, Shadow Ball, Hidden Power
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Mesprit_UU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Mesprit,
