@@ -2259,6 +2259,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Jolteon = 135,
         Kakuna = 14,
         Lampent = 608,
+        Landorus = 645 | (0 << 0x10),
+        Landorus_Therian = 645 | (1 << 0x10),
         Larvesta = 636,
         Latias = 380,
         Latios = 381,
