@@ -407,6 +407,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
                     case PBESpecies.Landorus: numForms = 2; break;
                     case PBESpecies.Rotom: numForms = 6; break;
                     case PBESpecies.Thundurus: numForms = 2; break;
+                    case PBESpecies.Tornadus: numForms = 2; break;
                     case PBESpecies.Unown_A: numForms = 28; break;
                     default: numForms = 1; break;
                 }

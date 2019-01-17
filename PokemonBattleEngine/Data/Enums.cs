@@ -2322,6 +2322,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Thundurus_Therian = 642 | (1 < 0x10),
         Tirtouga = 564,
         Torchic = 255,
+        Tornadus = 641 | (0 << 0x10),
+        Tornadus_Therian = 641 | (1 << 0x10),
         Torterra = 389,
         Tropius = 357,
         Turtwig = 387,
