@@ -1123,6 +1123,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Spore, PBEMove.Reflect, PBEMove.Brine, PBEMove.Hex }, // Fake Out, Spore, Follow Me, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Tornadus_Therian_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Tornadus_Therian,
+            Nickname = "Winston",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Regenerator,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Naive,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 4, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.AerialAce, PBEMove.Superpower, PBEMove.GrassKnot, PBEMove.Protect }, // Hurricane, Superpower, U-Turn, Taunt
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Torterra_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Torterra,
