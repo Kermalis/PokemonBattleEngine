@@ -3278,7 +3278,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.LightMetal },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.TakeDown, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                        Tuple.Create(PBEMove.TakeDown, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
@@ -3590,7 +3590,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Softboiled, 16, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 4, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.TailWhip, 5, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 27, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                        Tuple.Create(PBEMove.TakeDown, 27, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
@@ -3804,7 +3804,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Synthesis, 33, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Synthesis, 39, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.VineWhip, 9, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.VineWhip, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         //Tuple.Create(PBEMove.WorrySeed, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
@@ -4203,7 +4203,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Softboiled, 13, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.Softboiled, 16, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 5, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 27, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                        Tuple.Create(PBEMove.TakeDown, 27, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
@@ -6163,9 +6163,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.SandAttack, 8, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 25, PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 42, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
-                        //Tuple.Create(PBEMove.TakeDown, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PBEMove.TakeDown, 25, PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.TakeDown, 42, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
+                        Tuple.Create(PBEMove.TakeDown, 43, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         //Tuple.Create(PBEMove.TrumpCard, 45, PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.TrumpCard, 57, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW)
                     },
@@ -6252,7 +6252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 3, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 28, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                        Tuple.Create(PBEMove.TakeDown, 28, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
@@ -7036,7 +7036,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.SandTomb, 19, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Slash, 28, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                        Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
@@ -7130,7 +7130,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.SandTomb, 19, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Slash, 28, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                        Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
@@ -7679,7 +7679,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.SandTomb, 19, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Slash, 25, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                        Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
@@ -9344,7 +9344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Synthesis, 39, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Synthesis, 47, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.VineWhip, 9, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.VineWhip, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         //Tuple.Create(PBEMove.WorrySeed, 36, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
@@ -9938,7 +9938,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.FlareBlitz, 100, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.LeechLife, 10, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.StringShot, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 20, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.TakeDown, 20, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Thrash, 90, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
@@ -10708,7 +10708,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Substitute, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Swift, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
-                        //Tuple.Create(PBEMove.TakeDown, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.TakeDown, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Thunder, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -10795,7 +10795,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Superpower, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS| PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Swift, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
-                        //Tuple.Create(PBEMove.TakeDown, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.TakeDown, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Thunder, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -11217,7 +11217,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ScaryFace, 24, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.ScaryFace, 26, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.ScaryFace, 35, PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.TakeDown, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, 29, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, 62, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW)
                     },
@@ -11334,7 +11334,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ScaryFace, 24, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.ScaryFace, 26, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.ScaryFace, 35, PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.TakeDown, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, 29, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, 52, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW)
                     },
@@ -12519,7 +12519,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 3, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 28, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                        Tuple.Create(PBEMove.TakeDown, 28, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
@@ -14725,7 +14725,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Substitute, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Swift, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
-                        //Tuple.Create(PBEMove.TakeDown, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.TakeDown, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Thunder, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
@@ -15193,7 +15193,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Smog, 19, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.TailWhip, 3, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 25, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                        Tuple.Create(PBEMove.TakeDown, 25, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
@@ -16973,7 +16973,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Synthesis, 45, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Synthesis, 53, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.TakeDown, 15, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.VineWhip, 1, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD | PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.VineWhip, 9, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.VineWhip, 10, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),

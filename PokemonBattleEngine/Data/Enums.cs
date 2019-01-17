@@ -2847,6 +2847,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tackle = 33,
         TailGlow = 294,
         TailWhip = 39,
+        TakeDown = 36,
         TechnoBlast = 546,
         TeeterDance = 298,
         Teleport = 100,

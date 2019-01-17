@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Tackle, new PBELocalizedString("たいあたり", "몸통박치기", "Charge", "Tackle", "Placaje", "Azione", "Tackle") },
             { PBEMove.BodySlam, new PBELocalizedString("のしかかり", "누르기", "Plaquage", "Bodyslam", "Golpe Cuerpo", "Corposcontro", "Body Slam") },
             // { PBEMove.35, new PBELocalizedString("まきつく", "김밥말이", "Ligotage", "Wickel", "Repetición", "Avvolgibotta", "Wrap") },
-            // { PBEMove.36, new PBELocalizedString("とっしん", "돌진", "Bélier", "Bodycheck", "Derribo", "Riduttore", "Take Down") },
+            { PBEMove.TakeDown, new PBELocalizedString("とっしん", "돌진", "Bélier", "Bodycheck", "Derribo", "Riduttore", "Take Down") },
             // { PBEMove.37, new PBELocalizedString("あばれる", "난동부리기", "Mania", "Fuchtler", "Golpe", "Colpo", "Thrash") },
             { PBEMove.DoubleEdge, new PBELocalizedString("すてみタックル", "이판사판태클", "Damoclès", "Risikotackle", "Doble Filo", "Sdoppiatore", "Double-Edge") },
             { PBEMove.TailWhip, new PBELocalizedString("しっぽをふる", "꼬리흔들기", "Mimi-Queue", "Rutenschlag", "Látigo", "Colpocoda", "Tail Whip") },

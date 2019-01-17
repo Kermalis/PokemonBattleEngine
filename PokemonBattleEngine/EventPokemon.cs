@@ -713,7 +713,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Gale of Darkness demo promotion
                     (
                         new byte[] { 3 }, PBESpecies.Metang, 30, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.ClearBody }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.TakeDown, */PBEMove.Confusion, PBEMove.MetalClaw/*, PBEMove.Refresh*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TakeDown, PBEMove.Confusion, PBEMove.MetalClaw/*, PBEMove.Refresh*/ }
                     )
                 })
             },
