@@ -1149,6 +1149,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Thundurus,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Milos Island Pokémon
+                    (
+                        new byte[] { 5 }, PBESpecies.Thundurus, 70, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Prankster }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Thunder, PBEMove.HammerArm, PBEMove.FocusBlast/*, PBEMove.WildCharge*/ }
+                    )
+                })
+            },
+            {
                 PBESpecies.Tirtouga,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
@@ -1172,6 +1183,17 @@ namespace Kermalis.PokemonBattleEngine
                     (
                         new byte[] { 5 }, PBESpecies.Torchic, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SpeedBoost }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Scratch, PBEMove.Growl, PBEMove.FocusEnergy, PBEMove.Ember }
+                    )
+                })
+            },
+            {
+                PBESpecies.Tornadus,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Milos Island Pokémon
+                    (
+                        new byte[] { 5 }, PBESpecies.Tornadus, 70, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Prankster }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Hurricane, */PBEMove.HammerArm, PBEMove.AirSlash, PBEMove.HiddenPower }
                     )
                 })
             },
