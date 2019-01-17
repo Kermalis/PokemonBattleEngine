@@ -74,7 +74,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.63, new PBELocalizedString("はかいこうせん", "파괴광선", "Ultralaser", "Hyperstrahl", "Hiperrayo", "Iper Raggio", "Hyper Beam") },
             { PBEMove.Peck, new PBELocalizedString("つつく", "쪼기", "Picpic", "Schnabel", "Picotazo", "Beccata", "Peck") },
             { PBEMove.DrillPeck, new PBELocalizedString("ドリルくちばし", "회전부리", "Bec Vrille", "Bohrschnabel", "Pico Taladro", "Perforbecco", "Drill Peck") },
-            // { PBEMove.66, new PBELocalizedString("じごくぐるま", "지옥의바퀴", "Sacrifice", "Überroller", "Sumisión", "Sottomissione", "Submission") },
+            { PBEMove.Submission, new PBELocalizedString("じごくぐるま", "지옥의바퀴", "Sacrifice", "Überroller", "Sumisión", "Sottomissione", "Submission") },
             { PBEMove.LowKick, new PBELocalizedString("けたぐり", "안다리걸기", "Balayage", "Fußkick", "Patada Baja", "Colpo Basso", "Low Kick") },
             // { PBEMove.68, new PBELocalizedString("カウンター", "카운터", "Riposte", "Konter", "Contador", "Contatore", "Counter") },
             { PBEMove.SeismicToss, new PBELocalizedString("ちきゅうなげ", "지구던지기", "Frappe Atlas", "Geowurf", "Mov. Sísmico", "Mov. Sismico", "Seismic Toss") },

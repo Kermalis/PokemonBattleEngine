@@ -2832,6 +2832,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Struggle = 165,
         StruggleBug = 522,
         StunSpore = 78,
+        Submission = 66,
         Substitute = 164,
         SunnyDay = 241,
         SuperFang = 162,

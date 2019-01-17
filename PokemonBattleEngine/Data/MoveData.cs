@@ -2514,6 +2514,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Submission,
+                new PBEMoveData
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 5, 80, 80,
+                    PBEMoveEffect.Recoil, 4, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.Substitute,
                 new PBEMoveData
                 (
