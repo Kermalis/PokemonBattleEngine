@@ -406,6 +406,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect }, // Dragon Claw, Sucker Punch, Superpower, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Eelektross_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Eelektross,
+            Nickname = "Evan",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.SitrusBerry,
+            Ability = PBEAbility.Levitate,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 252, 0, 0, 252, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.Discharge, PBEMove.Flamethrower, PBEMove.HiddenPower, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Emboar_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Emboar,
