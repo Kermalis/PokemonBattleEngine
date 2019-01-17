@@ -708,7 +708,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.646, new PBELocalizedString("キュレム", "큐레무", "Kyurem", "Kyurem", "Kyurem", "Kyurem", "Kyurem") },
             // { PBESpecies.647, new PBELocalizedString("ケルディオ", "케르디오", "Keldeo", "Keldeo", "Keldeo", "Keldeo", "Keldeo") },
             { PBESpecies.Meloetta, new PBELocalizedString("メロエッタ", "메로엣타", "Meloetta", "Meloetta", "Meloetta", "Meloetta", "Meloetta") },
-            { PBESpecies.Meloetta_Pirouette new PBELocalizedString("メロエッタ", "메로엣타", "Meloetta", "Meloetta", "Meloetta", "Meloetta", "Meloetta") },
+            { PBESpecies.Meloetta_Pirouette, new PBELocalizedString("メロエッタ", "메로엣타", "Meloetta", "Meloetta", "Meloetta", "Meloetta", "Meloetta") },
             { PBESpecies.Genesect, new PBELocalizedString("ゲノセクト", "게노세크트", "Genesect", "Genesect", "Genesect", "Genesect", "Genesect") },
             { PBESpecies.Genesect_Burn, new PBELocalizedString("ゲノセクト", "게노세크트", "Genesect", "Genesect", "Genesect", "Genesect", "Genesect") },
             { PBESpecies.Genesect_Chill, new PBELocalizedString("ゲノセクト", "게노세크트", "Genesect", "Genesect", "Genesect", "Genesect", "Genesect") },

@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             return new Bitmap(assets.Open(uri));
         }
 
-        public static Bitmap GetMinisprite(PBESpecies species, bool shiny)
+        public static Bitmap GetMinisprite(PBESpecies species, PBEGender gender, bool shiny)
         {
             if (!PBEPokemonData.Data.ContainsKey(species))
             {
@@ -33,7 +33,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
             uint speciesID = (uint)species & 0xFFFF;
             uint formeID = (uint)species >> 0x10;
-            return UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{speciesID}{(formeID > 0 ? $"-{formeID}" : string.Empty)}{(shiny ? "-S" : string.Empty)}.png?assembly=PokemonBattleEngineClient"));
+            string sss = $"{speciesID}{(formeID > 0 ? $"-{formeID}" : string.Empty)}{(shiny ? "-S" : string.Empty)}";
+            // Following will be false if the species sprites are sss-M.gif and sss-F.gif
+            bool spriteIsGenderNeutral = DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}.png");
+            string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "-F" : "-M";
+            return UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}{genderStr}.png?assembly=PokemonBattleEngineClient"));
         }
         public static Uri GetPokemonSpriteUri(PBEPokemon pokemon, bool backSprite)
         {

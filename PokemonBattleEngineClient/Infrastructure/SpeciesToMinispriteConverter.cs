@@ -12,11 +12,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             if (value is PBESpecies species)
             {
-                return Utils.GetMinisprite(species, false);
+                return Utils.GetMinisprite(species, PBEGender.Male, false);
             }
             else if (value is PBEPokemonShell shell)
             {
-                return Utils.GetMinisprite(shell.Species, shell.Shiny);
+                return Utils.GetMinisprite(shell.Species, shell.Gender, shell.Shiny);
             }
             else
             {
