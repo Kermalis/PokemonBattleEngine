@@ -2277,6 +2277,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Magikarp = 129,
         Marill = 183,
         Marowak = 105,
+        Meloetta = 648 | (0 << 0x10),
+        Meloetta_Pirouette = 648 | (1 << 0x10),
         Mesprit = 481,
         Metagross = 376,
         Metang = 375,
