@@ -715,6 +715,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Thunderbolt, PBEMove.ThunderWave, PBEMove.HiddenPower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Landorus_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Landorus,
+            Nickname = "Leandro",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.YacheBerry,
+            Ability = PBEAbility.SandForce,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.Explosion, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Latias_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Latias,
