@@ -481,6 +481,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Psyshock, PBEMove.GrassKnot, PBEMove.HiddenPower }, // Shadow Ball, Yawn, Grass Knot, Hidden Power Fire
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Excadrill_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Excadrill,
+            Nickname = "Enda",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChopleBerry,
+            Ability = PBEAbility.SandRush,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 60, 252, 0, 0, 0, 196 },
+            Moves = new PBEMove[] { PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.XScissor, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         /// <summary>
         /// <para>Farfetch'd OU</para>
         /// <para>Item: Stick</para>
