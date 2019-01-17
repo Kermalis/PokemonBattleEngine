@@ -144,13 +144,20 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             // Validate Species
             PBEPokemonData pData;
-            try
+            switch (shell.Species)
             {
-                pData = PBEPokemonData.Data[shell.Species];
-            }
-            catch
-            {
-                throw new ArgumentOutOfRangeException(nameof(shell.Species), "Invalid species.");
+                case PBESpecies.Meloetta_Pirouette:
+                    throw new ArgumentOutOfRangeException(nameof(shell.Species), "Meloetta cannot retain its Pirouette forme in a Poké Ball.");
+                default:
+                    try
+                    {
+                        pData = PBEPokemonData.Data[shell.Species];
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(shell.Species), "Invalid species.");
+                    }
+                    break;
             }
 
             // Validate Shininess
