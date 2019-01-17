@@ -2377,6 +2377,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Vulpix = 37,
         Wartortle = 8,
         Weedle = 13,
+        Whimsicott = 547,
         Yamask = 562,
         Zubat = 41,
         Zweilous = 634

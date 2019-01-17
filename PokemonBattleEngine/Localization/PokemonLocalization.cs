@@ -603,7 +603,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.544, new PBELocalizedString("ホイーガ", "휠구", "Scobolide", "Rollum", "Whirlipede", "Whirlipede", "Whirlipede") },
             // { PBESpecies.545, new PBELocalizedString("ペンドラー", "펜드라", "Brutapode", "Cerapendra", "Scolipede", "Scolipede", "Scolipede") },
             // { PBESpecies.546, new PBELocalizedString("モンメン", "소미안", "Doudouvet", "Waumboll", "Cottonee", "Cottonee", "Cottonee") },
-            // { PBESpecies.547, new PBELocalizedString("エルフーン", "엘풍", "Farfaduvet", "Elfun", "Whimsicott", "Whimsicott", "Whimsicott") },
+            { PBESpecies.Whimsicott, new PBELocalizedString("エルフーン", "엘풍", "Farfaduvet", "Elfun", "Whimsicott", "Whimsicott", "Whimsicott") },
             // { PBESpecies.548, new PBELocalizedString("チュリネ", "치릴리", "Chlorobule", "Lilminip", "Petilil", "Petilil", "Petilil") },
             // { PBESpecies.549, new PBELocalizedString("ドレディア", "드레디어", "Fragilady", "Dressella", "Lilligant", "Lilligant", "Lilligant") },
             // { PBESpecies.550, new PBELocalizedString("バスラオ", "배쓰나이", "Bargantua", "Barschuft", "Basculin", "Basculin", "Basculin") },
