@@ -493,7 +493,7 @@ namespace Kermalis.PokemonBattleEngine
         public static PBEPokemonShell Ferrothorn_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Ferrothorn,
-            Nickname = "Spike",
+            Nickname = "Pointy",
             Level = 100,
             Friendship = 255,
             Item = PBEItem.Leftovers,

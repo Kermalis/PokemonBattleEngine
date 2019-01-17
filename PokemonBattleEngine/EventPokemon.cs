@@ -692,12 +692,12 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Metagross, 45, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.LightMetal }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.IronDefense, PBEMove.Agility, PBEMove.HammerArm/*, PBEMove.DoubleEdge*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.IronDefense, PBEMove.Agility, PBEMove.HammerArm, PBEMove.DoubleEdge }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Metagross, 45, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.LightMetal }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Psychic, PBEMove.MeteorMash, PBEMove.HammerArm/*, PBEMove.DoubleEdge*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Psychic, PBEMove.MeteorMash, PBEMove.HammerArm, PBEMove.DoubleEdge }
                     ),
                     new PBEEventPokemon // Steven's Metagross
                     (
