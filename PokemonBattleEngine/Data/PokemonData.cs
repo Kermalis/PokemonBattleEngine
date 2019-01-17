@@ -6206,13 +6206,82 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBESpecies.Eelektrik,
+                new PBEPokemonData
+                (
+                    65, 85, 70, 75, 70, 40,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 22.0,
+                    new PBESpecies[] { /*PBESpecies.Tynamo*/ },
+                    new PBESpecies[] { PBESpecies.Eelektross },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PBEMove.Acid, 19, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.AcidSpray, 49, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Bind, 9, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ChargeBeam, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Coil, 54, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Crunch, 39, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Discharge, 29, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.GastroAcid, 64, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Headbutt, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Spark, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Thrash, 74, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Thunderbolt, 44, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ThunderWave, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.WildCharge, 59, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ZapCannon, 59, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Bind, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Bounce, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Facade, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Flash, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.FlashCannon, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.GastroAcid, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.GigaDrain, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.IronTail, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.KnockOff, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.LightScreen, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.MagnetRise, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.Protect, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RainDance, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Return, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.SignalBeam, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.Substitute, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.SuperFang, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Thunder, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2)
+                    }
+                )
+            },
+            {
                 PBESpecies.Eelektross,
                 new PBEPokemonData
                 (
                     85, 115, 80, 105, 80, 50,
-                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M1_F1,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
                     1, false, 80.5,
-                    new PBESpecies[] { /*Eelektrik*/},
+                    new PBESpecies[] { /*PBESpecies.Tynamo,*/ PBESpecies.Eelektrik },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
