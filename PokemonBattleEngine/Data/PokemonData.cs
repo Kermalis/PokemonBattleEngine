@@ -6212,7 +6212,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     65, 85, 70, 75, 70, 40,
                     PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
                     1, false, 22.0,
-                    new PBESpecies[] { /*PBESpecies.Tynamo*/ },
+                    new PBESpecies[] { PBESpecies.Tynamo },
                     new PBESpecies[] { PBESpecies.Eelektross },
                     new PBEAbility[] { PBEAbility.Levitate },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
@@ -6281,7 +6281,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     85, 115, 80, 105, 80, 50,
                     PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
                     1, false, 80.5,
-                    new PBESpecies[] { /*PBESpecies.Tynamo,*/ PBESpecies.Eelektrik },
+                    new PBESpecies[] { PBESpecies.Tynamo, PBESpecies.Eelektrik },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
@@ -16570,6 +16570,29 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.WideGuard, PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
+                    }
+                )
+            },
+            {
+                PBESpecies.Tynamo,
+                new PBEPokemonData
+                (
+                    35, 55, 40, 45, 40, 60,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, false, 0.3,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Eelektrik, PBESpecies.Eelektross },
+                    new PBEAbility[] { PBEAbility.Levitate },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PBEMove.ChargeBeam, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Spark, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ThunderWave, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                    },
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PBEMove.MagnetRise, PBEMoveObtainMethod.MoveTutor_B2W2),
                     }
                 )
             },
