@@ -1872,8 +1872,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             int RecoilFunc(int totalDamageDealt)
             {
-                // TODO: Rock Head
-                return totalDamageDealt / denominator;
+                return user.Ability == PBEAbility.RockHead ? 0 : totalDamageDealt / denominator;
             }
 
             BasicHit(user, targets, move, recoilFunc: RecoilFunc);

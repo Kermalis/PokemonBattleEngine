@@ -2045,7 +2045,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reckless = 120, // TODO
         Regenerator = 144, // TODO
         Rivalry = 79, // TODO
-        RockHead = 69, // TODO
+        RockHead = 69,
         RoughSkin = 24,
         /// <summary>
         /// No effect in battle.
