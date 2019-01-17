@@ -16750,11 +16750,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ChargeBeam, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Spark, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Tackle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        Tuple.Create(PBEMove.ThunderWave, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ThunderWave, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.MagnetRise, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.MagnetRise, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
                 )
             },
