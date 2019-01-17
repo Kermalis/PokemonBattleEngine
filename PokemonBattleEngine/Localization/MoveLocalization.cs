@@ -465,7 +465,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.AttackOrder, new PBELocalizedString("こうげきしれい", "공격지령", "Appel Attak", "Schlagbefehl", "Al Ataque", "Comandourto", "Attack Order") },
             { PBEMove.DefendOrder, new PBELocalizedString("ぼうぎょしれい", "방어지령", "Appel Défens", "Blockbefehl", "A Defender", "Comandoscudo", "Defend Order") },
             { PBEMove.HealOrder, new PBELocalizedString("かいふくしれい", "회복지령", "Appel Soins", "Heilbefehl", "Auxilio", "Comandocura", "Heal Order") },
-            // { PBEMove.457, new PBELocalizedString("もろはのずつき", "양날박치기", "Fracass’Tête", "Kopfstoß", "Testarazo", "Zuccata", "Head Smash") },
+            { PBEMove.HeadSmash, new PBELocalizedString("もろはのずつき", "양날박치기", "Fracass’Tête", "Kopfstoß", "Testarazo", "Zuccata", "Head Smash") },
             // { PBEMove.458, new PBELocalizedString("ダブルアタック", "더블어택", "Coup Double", "Doppelschlag", "Doble Golpe", "Doppiosmash", "Double Hit") },
             // { PBEMove.459, new PBELocalizedString("ときのほうこう", "시간의포효", "Hurle-Temps", "Zeitenlärm", "Distorsión", "Fragortempo", "Roar of Time") },
             { PBEMove.SpacialRend, new PBELocalizedString("あくうせつだん", "공간절단", "Spatio-Rift", "Raumschlag", "Corte Vacío", "Fendispazio", "Spacial Rend") },

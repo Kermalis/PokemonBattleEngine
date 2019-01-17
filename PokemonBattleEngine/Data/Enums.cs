@@ -2674,6 +2674,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HammerArm = 359,
         Harden = 106,
         Headbutt = 29,
+        HeadSmash = 457,
         HealOrder = 456,
         HeartStamp = 531,
         HeatCrash = 535,

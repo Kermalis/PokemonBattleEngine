@@ -361,7 +361,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
                         new byte[] { 5 }, PBESpecies.Emboar, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.FlareBlitz, */PBEMove.HammerArm/*, PBEMove.WildCharge, PBEMove.HeadSmash*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.FlareBlitz, */PBEMove.HammerArm/*, PBEMove.WildCharge*/, PBEMove.HeadSmash }
                     )
                 })
             },

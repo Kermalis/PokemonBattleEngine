@@ -1092,6 +1092,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.HeadSmash,
+                new PBEMoveData
+                (
+                    PBEType.Rock, PBEMoveCategory.Physical, 0, 1, 150, 80,
+                    PBEMoveEffect.Recoil, 2, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.HealOrder,
                 new PBEMoveData
                 (
