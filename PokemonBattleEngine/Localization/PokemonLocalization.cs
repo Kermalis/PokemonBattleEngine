@@ -660,7 +660,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.601, new PBELocalizedString("ギギギアル", "기기기어르", "Cliticlic", "Klikdiklak", "Klinklang", "Klinklang", "Klinklang") },
             // { PBESpecies.602, new PBELocalizedString("シビシラス", "저리어", "Anchwatt", "Zapplardin", "Tynamo", "Tynamo", "Tynamo") },
             // { PBESpecies.603, new PBELocalizedString("シビビール", "저리릴", "Lampéroie", "Zapplalek", "Eelektrik", "Eelektrik", "Eelektrik") },
-            // { PBESpecies.604, new PBELocalizedString("シビルドン", "저리더프", "Ohmassacre", "Zapplarang", "Eelektross", "Eelektross", "Eelektross") },
+            { PBESpecies.Eelektross, new PBELocalizedString("シビルドン", "저리더프", "Ohmassacre", "Zapplarang", "Eelektross", "Eelektross", "Eelektross") },
             // { PBESpecies.605, new PBELocalizedString("リグレー", "리그레", "Lewsor", "Pygraulon", "Elgyem", "Elgyem", "Elgyem") },
             // { PBESpecies.606, new PBELocalizedString("オーベム", "벰크", "Neitram", "Megalon", "Beheeyem", "Beheeyem", "Beheeyem") },
             { PBESpecies.Litwick, new PBELocalizedString("ヒトモシ", "불켜미", "Funécire", "Lichtel", "Litwick", "Litwick", "Litwick") },
