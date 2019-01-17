@@ -1176,6 +1176,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Tornadus,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Milos Island Pokémon
+                    (
+                        new byte[] { 5 }, PBESpecies.Tornadus, 70, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Prankster }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Hurricane, */PBEMove.HammerArm, PBEMove.AirSlash, PBEMove.HiddenPower }
+                    )
+                })
+            },
+            {
                 PBESpecies.Torterra,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
