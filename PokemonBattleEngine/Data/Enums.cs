@@ -601,6 +601,10 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEAbilityAction : byte
     {
         /// <summary>
+        /// The ability was changed.
+        /// </summary>
+        Changed,
+        /// <summary>
         /// The ability caused a Pokémon to change its appearance.
         /// </summary>
         ChangedAppearance,
@@ -2003,7 +2007,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect in battle.
         /// </summary>
         Multitype = 121,
-        Mummy = 152, // TODO
+        Mummy = 152,
         NaturalCure = 30, // TODO
         /// <summary>
         /// The Pokémon will always hit and always get hit unless protection is used.

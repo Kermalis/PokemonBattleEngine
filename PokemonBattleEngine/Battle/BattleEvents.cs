@@ -94,8 +94,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         PBEPokemon culprit = battle.TryGetPokemon(ap.Culprit),
                             victim = battle.TryGetPokemon(ap.Victim);
-                        string nameForCulprit = NameForTrainer(culprit);
-                        Console.WriteLine("{0}'s {1} activated!", nameForCulprit, PBEAbilityLocalization.Names[ap.Ability].English);
                         string message;
                         switch (ap.Ability)
                         {
@@ -105,47 +103,60 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             case PBEAbility.SnowWarning:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Weather: return; // Message is displayed from a weather packet
+                                    case PBEAbilityAction.Weather: message = "{0}'s {2} activated!"; break; // Message is displayed from a weather packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
+                                break;
                             case PBEAbility.IceBody:
                             case PBEAbility.RainDish:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.RestoredHP: return; // Message is displayed from a hp changed packet
+                                    case PBEAbilityAction.RestoredHP: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
+                                break;
                             case PBEAbility.Imposter:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.ChangedAppearance: return; // Message is displayed from a status2 packet
+                                    case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a status2 packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
+                                break;
                             case PBEAbility.IronBarbs:
                             case PBEAbility.RoughSkin:
                             case PBEAbility.SolarPower:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Damage: return; // Message is displayed from a hp changed packet
+                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
+                                break;
                             case PBEAbility.Levitate:
                             case PBEAbility.WonderGuard:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Damage: return; // Message is displayed from an effectiveness packet
+                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
+                                break;
                             case PBEAbility.Limber:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.CuredStatus: return; // Message is displayed from a status1 packet
-                                    case PBEAbilityAction.PreventedStatus: return; // Message is displayed from an effectiveness packet
+                                    case PBEAbilityAction.CuredStatus: // Message is displayed from a status1 packet
+                                    case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
+                                break;
+                            case PBEAbility.Mummy:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.Changed: message = "{1}'s Ability became {2}!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");
                         }
-                        Console.WriteLine(message, nameForCulprit, NameForTrainer(victim));
+                        Console.WriteLine(message, NameForTrainer(culprit), NameForTrainer(victim), PBEAbilityLocalization.Names[ap.Ability].English);
                         break;
                     }
                 case PBEItemPacket ip:

@@ -132,6 +132,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.MakesContact))
                 {
+                    if (user.HP > 0 && victim.Ability == PBEAbility.Mummy && user.Ability != PBEAbility.Multitype && user.Ability != PBEAbility.Mummy && user.Ability != PBEAbility.ZenMode)
+                    {
+                        BroadcastAbility(victim, user, PBEAbility.Mummy, PBEAbilityAction.Changed);
+                    }
                     if (user.HP > 0 && (victim.Ability == PBEAbility.IronBarbs || victim.Ability == PBEAbility.RoughSkin))
                     {
                         BroadcastAbility(victim, user, victim.Ability, PBEAbilityAction.Damage);
