@@ -2263,6 +2263,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hydreigon = 635,
         Infernape = 392,
         Ivysaur = 2,
+        Jellicent = 593,
         Jirachi = 385,
         Jolteon = 135,
         Kakuna = 14,
