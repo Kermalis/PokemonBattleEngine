@@ -421,7 +421,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.VacuumWave, new PBELocalizedString("しんくうは", "진공파", "Onde Vide", "Vakuumwelle", "Onda Vacío", "Vuotonda", "Vacuum Wave") },
             { PBEMove.FocusBlast, new PBELocalizedString("きあいだま", "기합구슬", "Exploforce", "Fokusstoß", "Onda Certera", "Focalcolpo", "Focus Blast") },
             { PBEMove.EnergyBall, new PBELocalizedString("エナジーボール", "에너지볼", "Éco-Sphère", "Energieball", "Energibola", "Energipalla", "Energy Ball") },
-            // { PBEMove.413, new PBELocalizedString("ブレイブバード", "브레이브버드", "Rapace", "Sturzflug", "Pájaro Osado", "Baldeali", "Brave Bird") },
+            { PBEMove.BraveBird, new PBELocalizedString("ブレイブバード", "브레이브버드", "Rapace", "Sturzflug", "Pájaro Osado", "Baldeali", "Brave Bird") },
             { PBEMove.EarthPower, new PBELocalizedString("だいちのちから", "대지의힘", "Telluriforce", "Erdkräfte", "Tierra Viva", "Geoforza", "Earth Power") },
             // { PBEMove.415, new PBELocalizedString("すりかえ", "바꿔치기", "Passe-Passe", "Wechseldich", "Trapicheo", "Rapidscambio", "Switcheroo") },
             // { PBEMove.416, new PBELocalizedString("ギガインパクト", "기가임팩트", "Giga Impact", "Gigastoß", "Giga Impacto", "Gigaimpatto", "Giga Impact") },

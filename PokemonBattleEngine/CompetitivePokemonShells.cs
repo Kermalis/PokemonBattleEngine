@@ -487,7 +487,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Adamant,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 },
             EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.Return, PBEMove.AirSlash, PBEMove.SteelWing }, // Swords Dance, Return, Brave Bird, Revenge
+            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.Return, PBEMove.BraveBird, PBEMove.SteelWing }, // Swords Dance, Return, Brave Bird, Revenge
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Ferrothorn_VGC { get; } = new PBEPokemonShell

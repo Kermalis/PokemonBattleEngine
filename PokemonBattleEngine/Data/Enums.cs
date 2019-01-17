@@ -2581,6 +2581,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         BodySlam = 34,
         BoltStrike = 550,
         BoneClub = 125,
+        BraveBird = 413,
         Bubble = 145,
         BubbleBeam = 61,
         BugBuzz = 405,

@@ -282,6 +282,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.BraveBird,
+                new PBEMoveData
+                (
+                    PBEType.Flying, PBEMoveCategory.Physical, 0, 3, 120, 100,
+                    PBEMoveEffect.Recoil, 3, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.Bubble,
                 new PBEMoveData
                 (
