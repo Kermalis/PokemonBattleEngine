@@ -484,7 +484,7 @@ namespace Kermalis.PokemonBattleEngine
         public static PBEPokemonShell Excadrill_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Excadrill,
-            Nickname = "Enda",
+            Nickname = "Edna",
             Level = 100,
             Friendship = 255,
             Item = PBEItem.ChopleBerry,
