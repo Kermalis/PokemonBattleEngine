@@ -715,6 +715,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HiddenPower, PBEMove.CloseCombat, PBEMove.Overheat, PBEMove.Protect }, // Fake Out, Close Combat, Overheat, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Jellicent_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Jellicent,
+            Nickname = "Juice",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.SitrusBerry,
+            Ability = PBEAbility.WaterAbsorb,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Quiet,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 0, 4, 252, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.Recover, PBEMove.WaterSpout, PBEMove.ShadowBall, PBEMove.WillOWisp }, // Trick Room, Water Spout, Shadow Ball, Will-O-Wisp
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Jirachi_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Jirachi,
