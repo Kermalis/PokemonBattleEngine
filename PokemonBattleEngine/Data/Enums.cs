@@ -2232,6 +2232,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Empoleon = 395,
         Espeon = 196,
         Farfetchd = 83,
+        Ferroseed = 597,
+        Ferrothorn = 598,
         Flareon = 136,
         Gabite = 444,
         Garchomp = 445,
