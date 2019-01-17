@@ -6028,6 +6028,81 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBESpecies.Drilbur,
+                new PBEPokemonData
+                (
+                    60, 85, 40, 30, 45, 68,
+                    PBEType.Ground, PBEType.None, PBEGenderRatio.M1_F1,
+                    1, true, 8.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Excadrill },
+                    new PBEAbility[] { PBEAbility.SandRush, PBEAbility.SandForce, PBEAbility.MoldBreaker },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PBEMove.Dig, 19, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.DrillRun, 43, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Earthquake, 33, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Fissure, 47, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.FurySwipes, 12, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.HoneClaws, 22, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.MetalClaw, 15, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.MudSlap, 8, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.MudSport, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.RapidSpin, 5, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.RockSlide, 29, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Sandstorm, 40, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Scratch, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Slash, 26, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.SwordsDance, 36, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.BrickBreak, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Bulldoze, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.CrushClaw, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Cut, PBEMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PBEMove.Dig, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.DrillRun, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.EarthPower, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Earthquake, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Facade, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Fling, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.HoneClaws, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.IronDefense, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.MetalSound, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.PoisonJab, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Protect, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.RapidSpin, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Return, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RockClimb, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.RockSlide, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RockSmash, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RockTomb, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Sandstorm, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.ShadowClaw, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.SkullBash, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.SludgeBomb, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.StealthRock, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.Strength, PBEMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PBEMove.Submission, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Substitute, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.SwordsDance, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.XScissor, PBEMoveObtainMethod.TM_BWB2W2)
+                    }
+                )
+            },
+            {
                 PBESpecies.Druddigon,
                 new PBEPokemonData
                 (
@@ -6637,7 +6712,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     110, 135, 60, 50, 65, 88,
                     PBEType.Ground, PBEType.Steel, PBEGenderRatio.M1_F1,
                     1, true, 40.4,
-                    new PBESpecies[] { /*PBESpecies.Drilbur*/ },
+                    new PBESpecies[] { PBESpecies.Drilbur },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SandRush, PBEAbility.SandForce, PBEAbility.MoldBreaker },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
