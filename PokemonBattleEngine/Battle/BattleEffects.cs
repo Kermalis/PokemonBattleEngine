@@ -447,6 +447,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.FinalGambit:
                     Ef_FinalGambit(user, targets, move);
                     break;
+                case PBEMoveEffect.FlareBlitz:
+                    Ef_Recoil3__MaybeInflictStatus1With10PercentChance(user, targets, move, PBEStatus1.Burned);
+                    break;
                 case PBEMoveEffect.Flatter:
                     Ef_Flatter(user, targets[0]);
                     break;

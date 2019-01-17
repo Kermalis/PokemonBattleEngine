@@ -894,6 +894,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.FlareBlitz,
+                new PBEMoveData
+                (
+                    PBEType.Fire, PBEMoveCategory.Physical, 0, 3, 120, 100,
+                    PBEMoveEffect.FlareBlitz, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.DefrostsUser | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.Flash,
                 new PBEMoveData
                 (

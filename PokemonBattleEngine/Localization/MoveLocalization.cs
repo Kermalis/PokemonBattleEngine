@@ -402,7 +402,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.391, new PBELocalizedString("ハートスワップ", "하트스웹", "Permucœur", "Statustausch", "Cambia Almas", "Cuorbaratto", "Heart Swap") },
             // { PBEMove.392, new PBELocalizedString("アクアリング", "아쿠아링", "Anneau Hydro", "Wasserring", "Acua Aro", "Acquanello", "Aqua Ring") },
             // { PBEMove.393, new PBELocalizedString("でんじふゆう", "전자부유", "Vol Magnétik", "Magnetflug", "Levitón", "Magnetascesa", "Magnet Rise") },
-            // { PBEMove.394, new PBELocalizedString("フレアドライブ", "플레어드라이브", "Boutefeu", "Flammenblitz", "Envite Ígneo", "Fuococarica", "Flare Blitz") },
+            { PBEMove.FlareBlitz, new PBELocalizedString("フレアドライブ", "플레어드라이브", "Boutefeu", "Flammenblitz", "Envite Ígneo", "Fuococarica", "Flare Blitz") },
             { PBEMove.ForcePalm, new PBELocalizedString("はっけい", "발경", "Forte-Paume", "Kraftwelle", "Palmeo", "Palmoforza", "Force Palm") },
             { PBEMove.AuraSphere, new PBELocalizedString("はどうだん", "파동탄", "Aurasphère", "Aurasphäre", "Esfera Aural", "Forzasfera", "Aura Sphere") },
             { PBEMove.RockPolish, new PBELocalizedString("ロックカット", "록커트", "Poliroche", "Steinpolitur", "Pulimento", "Lucidatura", "Rock Polish") },
