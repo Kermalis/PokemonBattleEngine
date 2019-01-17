@@ -2239,6 +2239,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Ferroseed = 597,
         Ferrothorn = 598,
         Flareon = 136,
+        Frillish = 592,
         Gabite = 444,
         Garchomp = 445,
         Genesect = 649 | (0 << 0x10),
