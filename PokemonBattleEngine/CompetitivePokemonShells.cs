@@ -175,7 +175,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Brave,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.Headbutt, PBEMove.WildCharge, PBEMove.Earthquake, PBEMove.Protect }, // Head Charge, Wild Charge, Earthquake, Protect
+            Moves = new PBEMove[] { PBEMove.HeadCharge, PBEMove.WildCharge, PBEMove.Earthquake, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>

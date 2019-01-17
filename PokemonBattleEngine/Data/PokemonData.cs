@@ -3709,7 +3709,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                        Tuple.Create(PBEMove.FocusEnergy, 36, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        //Tuple.Create(PBEMove.FuryAttack, 11, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        //Tuple.Create(PBEMove.GigaImpact, 61, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                       //Tuple.Create(PBEMove.HeadCharge, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                       Tuple.Create(PBEMove.HeadCharge, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.HornAttack, 16, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.Leer, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                        Tuple.Create(PBEMove.Megahorn, 41, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),

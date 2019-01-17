@@ -551,7 +551,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Psystrike, new PBELocalizedString("サイコブレイク", "사이코브레이크", "Frappe Psy", "Psychostoß", "Onda Mental", "Psicobotta", "Psystrike") },
             // { PBEMove.541, new PBELocalizedString("スイープビンタ", "스위프뺨치기", "Plumo-Queue", "Kehrschelle", "Plumerazo", "Spazzasberla", "Tail Slap") },
             // { PBEMove.542, new PBELocalizedString("ぼうふう", "폭풍", "Vent Violent", "Orkan", "Vendaval", "Tifone", "Hurricane") },
-            // { PBEMove.543, new PBELocalizedString("アフロブレイク", "아프로브레이크", "Peignée", "Steinschädel", "Ariete", "Ricciolata", "Head Charge") },
+            { PBEMove.HeadCharge, new PBELocalizedString("アフロブレイク", "아프로브레이크", "Peignée", "Steinschädel", "Ariete", "Ricciolata", "Head Charge") },
             // { PBEMove.544, new PBELocalizedString("ギアソーサー", "기어소서", "Lancécrou", "Klikkdiskus", "Rueda Doble", "Ingracolpo", "Gear Grind") },
             { PBEMove.SearingShot, new PBELocalizedString("かえんだん", "화염탄", "Incendie", "Flammenball", "Bomba Ígnea", "Sparafuoco", "Searing Shot") },
             { PBEMove.TechnoBlast, new PBELocalizedString("テクノバスター", "테크노버스터", "TechnoBuster", "Techblaster", "Tecno Shock", "Tecnobotto", "Techno Blast") },
