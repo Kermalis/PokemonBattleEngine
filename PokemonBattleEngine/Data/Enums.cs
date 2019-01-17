@@ -2550,6 +2550,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Toxic,
         ToxicSpikes,
         Transform,
+        VoltTackle,
         Whirlwind
     }
     public enum PBEMove : ushort
@@ -2870,6 +2871,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ViceGrip = 11,
         VineWhip = 22,
         VitalThrow = 233,
+        VoltTackle = 344,
         Waterfall = 127,
         WaterGun = 55,
         WaterPulse = 352,

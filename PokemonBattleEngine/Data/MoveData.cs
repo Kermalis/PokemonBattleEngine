@@ -2856,6 +2856,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.VoltTackle,
+                new PBEMoveData
+                (
+                    PBEType.Electric, PBEMoveCategory.Physical, 0, 3, 120, 100,
+                    PBEMoveEffect.VoltTackle, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.Waterfall,
                 new PBEMoveData
                 (

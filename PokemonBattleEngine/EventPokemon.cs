@@ -793,12 +793,12 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Red and Green 12th anniversary
                     (
                         new byte[] { 4 }, PBESpecies.Pichu, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Static }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.VoltTackle, */PBEMove.Thunderbolt, PBEMove.GrassKnot, PBEMove.Return }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.VoltTackle, PBEMove.Thunderbolt, PBEMove.GrassKnot, PBEMove.Return }
                     ),
                     new PBEEventPokemon // Jewel of Life promotion
                     (
                         new byte[] { 4 }, PBESpecies.Pichu, 30, true, PBEGender.Male, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Jolly },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Charge, PBEMove.VoltTackle, */PBEMove.Endeavor/*, PBEMove.Endure*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Charge, */PBEMove.VoltTackle, PBEMove.Endeavor/*, PBEMove.Endure*/ }
                     )
                 })
             },
@@ -844,7 +844,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Battle Revolution Pikachu
                     (
                         new byte[] { 4 }, PBESpecies.Pikachu, 10, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Hardy },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.VoltTackle, */PBEMove.Surf, PBEMove.TailWhip, PBEMove.ThunderWave }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.VoltTackle, PBEMove.Surf, PBEMove.TailWhip, PBEMove.ThunderWave }
                     ),
                     new PBEEventPokemon // TCG world championships 2007
                     (
@@ -869,7 +869,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Character Fair Pikachu
                     (
                         new byte[] { 4 }, PBESpecies.Pikachu, 30, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Brave },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.VoltTackle, */PBEMove.QuickAttack, PBEMove.Thunderbolt, PBEMove.IronTail }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.VoltTackle, PBEMove.QuickAttack, PBEMove.Thunderbolt, PBEMove.IronTail }
                     ),
                     new PBEEventPokemon // Kyoto Cross Media Experience Pikachu
                     (
@@ -884,7 +884,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Ash's Pikachu
                     (
                         new byte[] { 4 }, PBESpecies.Pikachu, 50, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Naughty },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.VoltTackle, */PBEMove.IronTail, PBEMove.QuickAttack, PBEMove.Thunderbolt }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.VoltTackle, PBEMove.IronTail, PBEMove.QuickAttack, PBEMove.Thunderbolt }
                     ),
                     new PBEEventPokemon // All Nippon Airways Pikachu (Gen 5)
                     (
@@ -904,7 +904,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Pikachu Festival | Pika Pika Carnival | Summer 2012 Pikachu | Strongest class
                     (
                         new byte[] { 5 }, PBESpecies.Pikachu, 100, null, PBEGender.Female, new PBEAbility[] { PBEAbility.Static }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Thunder/*, PBEMove.VoltTackle*/, PBEMove.GrassKnot, PBEMove.QuickAttack }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Thunder, PBEMove.VoltTackle, PBEMove.GrassKnot, PBEMove.QuickAttack }
                     ),
                     new PBEEventPokemon // World championships 2012
                     (
@@ -914,7 +914,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
                         new byte[] { 5 }, PBESpecies.Pikachu, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Lightningrod }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.VoltTackle, */PBEMove.QuickAttack/*, PBEMove.Feint, PBEMove.VoltSwitch*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.VoltTackle, PBEMove.QuickAttack/*, PBEMove.Feint, PBEMove.VoltSwitch*/ }
                     ),
                     new PBEEventPokemon // Best Wishes Ash's Pikachu
                     (

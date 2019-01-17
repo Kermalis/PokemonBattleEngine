@@ -352,7 +352,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.MudShot, new PBELocalizedString("マッドショット", "머드숏", "Tir de Boue", "Lehmschuss", "Disp. Lodo", "Colpodifango", "Mud Shot") },
             { PBEMove.PoisonTail, new PBELocalizedString("ポイズンテール", "포이즌테일", "Queue-Poison", "Giftschweif", "Cola Veneno", "Velenocoda", "Poison Tail") },
             // { PBEMove.343, new PBELocalizedString("ほしがる", "탐내다", "Implore", "Bezirzer", "Antojo", "Supplica", "Covet") },
-            // { PBEMove.344, new PBELocalizedString("ボルテッカー", "볼트태클", "Électacle", "Volttackle", "Placaje Eléc", "Locomovolt", "Volt Tackle") },
+            { PBEMove.VoltTackle, new PBELocalizedString("ボルテッカー", "볼트태클", "Électacle", "Volttackle", "Placaje Eléc", "Locomovolt", "Volt Tackle") },
             { PBEMove.MagicalLeaf, new PBELocalizedString("マジカルリーフ", "메지컬리프", "Feuille Magik", "Zauberblatt", "Hoja Mágica", "Fogliamagica", "Magical Leaf") },
             // { PBEMove.346, new PBELocalizedString("みずあそび", "물놀이", "Tourniquet", "Nassmacher", "Hidrochorro", "Docciascudo", "Water Sport") },
             { PBEMove.CalmMind, new PBELocalizedString("めいそう", "명상", "Plénitude", "Gedankengut", "Paz Mental", "Calmamente", "Calm Mind") },
