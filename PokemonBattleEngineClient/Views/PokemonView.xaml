@@ -6,9 +6,9 @@
   <UserControl.RenderTransform>
     <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
   </UserControl.RenderTransform>
-  <gif:GifImage Stretch="None" Opacity="{Binding SpriteOpacity}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Source="{Binding Source}">
+  <Image Stretch="None" Opacity="{Binding SpriteOpacity}" HorizontalAlignment="Center" VerticalAlignment="Bottom" gif:GifImage.SourceUri="{Binding Source}">
     <ToolTip.Tip>
       <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
     </ToolTip.Tip>
-  </gif:GifImage>
+  </Image>
 </UserControl>
