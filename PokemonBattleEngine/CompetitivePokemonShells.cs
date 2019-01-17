@@ -406,6 +406,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect }, // Dragon Claw, Sucker Punch, Superpower, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Eelektross_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Eelektross,
+            Nickname = "Evan",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.SitrusBerry,
+            Ability = PBEAbility.Levitate,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 252, 0, 0, 252, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.Discharge, PBEMove.Flamethrower, PBEMove.HiddenPower, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Emboar_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Emboar,
@@ -464,6 +479,21 @@ namespace Kermalis.PokemonBattleEngine
             IVs = new byte[] { 31, 31, 30, 30, 31, 30 }, // Hidden Power: Fire/70
             EVs = new byte[] { 0, 0, 4, 252, 0, 252 },
             Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Psyshock, PBEMove.GrassKnot, PBEMove.HiddenPower }, // Shadow Ball, Yawn, Grass Knot, Hidden Power Fire
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Excadrill_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Excadrill,
+            Nickname = "Edna",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChopleBerry,
+            Ability = PBEAbility.SandRush,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 60, 252, 0, 0, 0, 196 },
+            Moves = new PBEMove[] { PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.XScissor, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
@@ -685,6 +715,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HiddenPower, PBEMove.CloseCombat, PBEMove.Overheat, PBEMove.Protect }, // Fake Out, Close Combat, Overheat, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Jellicent_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Jellicent,
+            Nickname = "Juice",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.SitrusBerry,
+            Ability = PBEAbility.WaterAbsorb,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Quiet,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 0, 4, 252, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.Recover, PBEMove.WaterSpout, PBEMove.ShadowBall, PBEMove.WillOWisp }, // Trick Room, Water Spout, Shadow Ball, Will-O-Wisp
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Jirachi_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Jirachi,
@@ -818,6 +863,21 @@ namespace Kermalis.PokemonBattleEngine
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
             Moves = new PBEMove[] { PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.FirePunch, PBEMove.SwordsDance },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Meloetta_OU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Meloetta,
+            Nickname = "Melody",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ExpertBelt,
+            Ability = PBEAbility.SereneGrace,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Naive,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 0, 64, 0, 252, 0, 192 },
+            Moves = new PBEMove[] { PBEMove.TeeterDance, PBEMove.CloseCombat, PBEMove.ShadowBall, PBEMove.HiddenPower }, // Relic Song, Close Combat, Shadow Ball, Hidden Power
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Mesprit_UU { get; } = new PBEPokemonShell
