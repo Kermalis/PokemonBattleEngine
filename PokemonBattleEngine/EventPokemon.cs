@@ -671,6 +671,22 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Meloetta,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Kyruem VS. The Sword of Justice promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Meloetta, 15, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Round, */PBEMove.QuickAttack, PBEMove.Confusion, PBEMove.None }
+                    ),
+                    new PBEEventPokemon // Summer 2013
+                    (
+                        new byte[] { 5 }, PBESpecies.Meloetta, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Round, */PBEMove.TeeterDance, PBEMove.Psychic, PBEMove.CloseCombat }
+                    )
+                })
+            },
+            {
                 PBESpecies.Metagross,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
