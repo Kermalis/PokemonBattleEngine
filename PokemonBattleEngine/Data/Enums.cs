@@ -601,6 +601,10 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEAbilityAction : byte
     {
         /// <summary>
+        /// The ability was changed.
+        /// </summary>
+        Changed,
+        /// <summary>
         /// The ability caused a Pokémon to change its appearance.
         /// </summary>
         ChangedAppearance,
@@ -2003,7 +2007,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect in battle.
         /// </summary>
         Multitype = 121,
-        Mummy = 152, // TODO
+        Mummy = 152,
         NaturalCure = 30, // TODO
         /// <summary>
         /// The Pokémon will always hit and always get hit unless protection is used.
@@ -2041,7 +2045,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reckless = 120, // TODO
         Regenerator = 144, // TODO
         Rivalry = 79, // TODO
-        RockHead = 69, // TODO
+        RockHead = 69,
         RoughSkin = 24,
         /// <summary>
         /// No effect in battle.
@@ -2528,6 +2532,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_SPATK_SPDEF_By1,
         RaiseUser_SPATK_SPDEF_SPE_By1,
         RaiseUser_SPE_By2_ATK_By1,
+        Recoil,
         Reflect,
         RestoreUserHealth,
         Sandstorm,
@@ -2609,6 +2614,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Discharge = 435,
         Dive = 291,
         DizzyPunch = 146,
+        DoubleEdge = 38,
         DoubleTeam = 104,
         DracoMeteor = 434,
         DragonBreath = 225,

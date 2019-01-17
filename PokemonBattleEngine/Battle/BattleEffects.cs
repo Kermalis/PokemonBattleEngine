@@ -132,6 +132,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.MakesContact))
                 {
+                    if (user.HP > 0 && victim.Ability == PBEAbility.Mummy && user.Ability != PBEAbility.Multitype && user.Ability != PBEAbility.Mummy && user.Ability != PBEAbility.ZenMode)
+                    {
+                        BroadcastAbility(victim, user, PBEAbility.Mummy, PBEAbilityAction.Changed);
+                    }
                     if (user.HP > 0 && (victim.Ability == PBEAbility.IronBarbs || victim.Ability == PBEAbility.RoughSkin))
                     {
                         BroadcastAbility(victim, user, victim.Ability, PBEAbilityAction.Damage);
@@ -606,6 +610,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1:
                     ChangeUserStats(user, move, new PBEStat[] { PBEStat.Speed, PBEStat.Attack }, new short[] { +2, +1 });
+                    break;
+                case PBEMoveEffect.Recoil:
+                    Ef_Recoil(user, targets, move, mData.EffectParam);
                     break;
                 case PBEMoveEffect.Reflect:
                     TryForceTeamStatus(user, move, PBETeamStatus.Reflect);
@@ -1280,12 +1287,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
             PBEType? overridingMoveType = null,
-            ushort recoilDamage = 0,
+            Func<int, int> recoilFunc = null,
             Action<PBEPokemon> beforeDoingDamage = null,
             Action<PBEPokemon> beforePostHit = null,
             Action beforeTargetsFaint = null)
         {
             byte hit = 0;
+            int totalDamageDealt = 0;
             bool lifeOrbDamage = false;
             // Struggle sets overridingMoveType to PBEType.None
             PBEType moveType = overridingMoveType == null ? user.GetMoveType(move) : overridingMoveType.Value;
@@ -1310,8 +1318,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                 bool criticalHit = CritCheck(user, target, move);
                 damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, moveEffectiveness, criticalHit);
-                ushort damage = CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, criticalHit);
-                DealDamage(user, target, (ushort)(damage * damageMultiplier), false);
+                ushort damage = (ushort)(damageMultiplier * CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, criticalHit));
+                totalDamageDealt += DealDamage(user, target, damage, false);
+
                 BroadcastEffectiveness(target, moveEffectiveness);
                 if (criticalHit)
                 {
@@ -1336,6 +1345,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     FaintCheck(target);
                 }
+                ushort recoilDamage = (ushort)(recoilFunc == null ? 0 : recoilFunc.Invoke(totalDamageDealt));
                 DoPostAttackedEffects(user, !lifeOrbDamage, recoilDamage);
             }
         }
@@ -1391,7 +1401,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1 || MissCheck(user, target, move))
+                if (target.HP == 0 || MissCheck(user, target, move))
                 {
                     continue;
                 }
@@ -1416,7 +1426,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1 || MissCheck(user, target, move))
+                if (target.HP == 0 || MissCheck(user, target, move))
                 {
                     continue;
                 }
@@ -1570,7 +1580,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP < 1 || MissCheck(user, target, move))
+                if (target.HP == 0 || MissCheck(user, target, move))
                 {
                     continue;
                 }
@@ -1854,12 +1864,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
         }
-        void Ef_Struggle(PBEPokemon user, PBEPokemon[] targets, PBEMove move) // Recoil damage
+
+        void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            int RecoilFunc(int totalDamageDealt)
+            {
+                return user.Ability == PBEAbility.RockHead ? 0 : totalDamageDealt / denominator;
+            }
+
+            BasicHit(user, targets, move, recoilFunc: RecoilFunc);
+        }
+        void Ef_Struggle(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastStruggle(user);
             BroadcastMoveUsed(user, move);
 
-            BasicHit(user, targets, move, overridingMoveType: PBEType.None, recoilDamage: (ushort)(user.MaxHP / 4));
+            int RecoilFunc(int totalDamageDealt)
+            {
+                return user.MaxHP / 4;
+            }
+
+            BasicHit(user, targets, move, overridingMoveType: PBEType.None, recoilFunc: RecoilFunc);
         }
 
         void Ef_Flatter(PBEPokemon user, PBEPokemon target)

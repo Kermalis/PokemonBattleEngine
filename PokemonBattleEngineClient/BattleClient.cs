@@ -202,9 +202,19 @@ namespace Kermalis.PokemonBattleEngineClient
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
+                            case PBEAbility.Mummy:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.Changed:
+                                        victim.Ability = PBEAbility.Mummy;
+                                        message = "{1}'s Ability became {2}!";
+                                        break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");
                         }
-                        BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, true), NameForTrainer(victim, false), PBEAbilityLocalization.Names[ap.Ability].FromUICultureInfo()), true, true);
+                        BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, true), NameForTrainer(victim, true), PBEAbilityLocalization.Names[ap.Ability].FromUICultureInfo()), true, true);
                         break;
                     }
                 case PBEItemPacket ip:
