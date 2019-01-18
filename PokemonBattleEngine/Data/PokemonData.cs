@@ -14746,7 +14746,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     }
                 )
             },
-			{
+            {
                 PBESpecies.Reshiram,
                 new PBEPokemonData
                 (
@@ -18771,6 +18771,95 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BWB2W2),
 						//Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2)
+                    }
+                )
+            },
+            {
+                PBESpecies.Zekrom,
+                new PBEPokemonData
+                (
+                    100, 150, 120, 120, 100, 90,
+                    PBEType.Dragon, PBEType.Electric, PBEGenderRatio.M0_F0,
+                    1, false, 345.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.Teravolt },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PBEMove.AncientPower, 15, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.BoltStrike, 100, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Crunch, 71, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.DragonBreath, 29, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.DragonClaw, 54, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.DragonRage, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.FusionBolt, 50, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.HyperVoice, 92, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Imprison, 8, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Imprison, 64, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Outrage, 85, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Slash, 36, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Thunder, 78, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Thunderbolt, 22, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.ThunderFang, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ZenHeadbutt, 43, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    {
+                        Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Cut, PBEMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.DracoMeteor, PBEMoveObtainMethod.MoveTutor_BW | PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.DragonClaw, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.DragonPulse, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.DragonTail, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.EarthPower, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.EchoedVoice, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Facade, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Flash, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.FlashCannon, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Fling, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Fly, PBEMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PBEMove.FocusBlast, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.GigaImpact, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.HoneClaw, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.HyperBeam, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.HyperVoice, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.LightScreen, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.MagnetRise, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Outrage, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Payback, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Protect, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Psychic, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RainDance, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Reflect, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Return, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RockSlide, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RockSmash, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RockTomb, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Roost, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Safeguard, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.ShadowBall, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.ShadowClaw, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.SignalBeam, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.StoneEdge, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Strength, PBEMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PBEMove.Substitute, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.Tailwind, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.Thunder, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.ThunderPunch, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BWB2W2),
+                        //Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
                 )
             },

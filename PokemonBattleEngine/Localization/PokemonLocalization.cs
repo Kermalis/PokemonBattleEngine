@@ -702,7 +702,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Thundurus, new PBELocalizedString("ボルトロス", "볼트로스", "Fulguris", "Voltolos", "Thundurus", "Thundurus", "Thundurus") },
             { PBESpecies.Thundurus_Therian, new PBELocalizedString("ボルトロス", "볼트로스", "Fulguris", "Voltolos", "Thundurus", "Thundurus", "Thundurus") },
             { PBESpecies.Reshiram, new PBELocalizedString("レシラム", "레시라무", "Reshiram", "Reshiram", "Reshiram", "Reshiram", "Reshiram") },
-            // { PBESpecies.644, new PBELocalizedString("ゼクロム", "제크로무", "Zekrom", "Zekrom", "Zekrom", "Zekrom", "Zekrom") },
+            { PBESpecies.Zekrom, new PBELocalizedString("ゼクロム", "제크로무", "Zekrom", "Zekrom", "Zekrom", "Zekrom", "Zekrom") },
             { PBESpecies.Landorus, new PBELocalizedString("ランドロス", "랜드로스", "Démétéros", "Demeteros", "Landorus", "Landorus", "Landorus") },
             { PBESpecies.Landorus_Therian, new PBELocalizedString("ランドロス", "랜드로스", "Démétéros", "Demeteros", "Landorus", "Landorus", "Landorus") },
             // { PBESpecies.646, new PBELocalizedString("キュレム", "큐레무", "Kyurem", "Kyurem", "Kyurem", "Kyurem", "Kyurem") },
