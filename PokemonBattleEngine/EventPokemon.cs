@@ -1073,6 +1073,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Reshiram,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Victini movies promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Reshiram, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Turboblaze }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BlueFlare/*, PBEMove.FusionFlare, PBEMove.Mist*/, PBEMove.DracoMeteor }
+                    )
+                })
+            },
+            {
                 PBESpecies.Riolu,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
