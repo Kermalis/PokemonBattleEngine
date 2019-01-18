@@ -2317,6 +2317,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Psyduck = 54,
         Raichu = 26,
         Regirock = 377,
+        Reshiram = 643,
         Riolu = 447,
         Rotom = 479 | (0 << 0x10),
         Rotom_Fan = 479 | (1 << 0x10),
