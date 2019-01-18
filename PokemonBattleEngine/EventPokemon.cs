@@ -1363,6 +1363,17 @@ namespace Kermalis.PokemonBattleEngine
                         new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { PBEMove.Swagger/*, PBEMove.GigaDrain, PBEMove.BeatUp, PBEMove.HelpingHand*/ }
                     )
                 })
+            },
+            {
+                PBESpecies.Zekrom,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Victini movies promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Zekrom, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Teravolt }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BoltStrike/*, PBEMove.FusionBolt, PBEMove.Haze, PBEMove.Outrage*/ }
+                    )
+                })
             }
         });
     }
