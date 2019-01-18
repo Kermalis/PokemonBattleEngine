@@ -1417,6 +1417,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.FakeTears, PBEMove.Endeavor, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Endeavor, Encore, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Zekrom_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Zekrom,
+            Nickname = "Zuko",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Teravolt,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Naughty,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 104, 148, 0, 252, 0, 4 },
+            Moves = new PBEMove[] { PBEMove.BoltStrike, PBEMove.DracoMeteor, PBEMove.DragonClaw, PBEMove.Thunderbolt }, // Bolt Strike, Draco Meteor, Outrage, Volt Switch
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
 
         /// <summary>
         /// Creates a random team with pre-defined competitive Pokémon shells.
