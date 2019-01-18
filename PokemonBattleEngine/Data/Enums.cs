@@ -2043,7 +2043,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         RainDish = 44,
         Rattled = 155, // TODO
-        Reckless = 120, // TODO
+        Reckless = 120,
         Regenerator = 144, // TODO
         Rivalry = 79, // TODO
         RockHead = 69,
@@ -2427,45 +2427,49 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         AffectedByProtect = 1 << 3,
         /// <summary>
+        /// The move's power is boosted by <see cref="PBEAbility.Reckless"/>.
+        /// </summary>
+        AffectedByReckless = 1 << 4,
+        /// <summary>
         /// The move can be stolen by <see cref="PBEMove.Snatch"/>.
         /// </summary>
-        AffectedBySnatch = 1 << 4,
+        AffectedBySnatch = 1 << 5,
         /// <summary>
         /// The move always lands a critical hit.
         /// </summary>
-        AlwaysCrit = 1 << 5,
+        AlwaysCrit = 1 << 6,
         /// <summary>
         /// The move removes <see cref="PBEStatus1.Frozen"/> from the user.
         /// </summary>
-        DefrostsUser = 1 << 6,
+        DefrostsUser = 1 << 7,
         /// <summary>
         /// The move has a higher chance of landing a critical hit.
         /// </summary>
-        HighCritChance = 1 << 7,
+        HighCritChance = 1 << 8,
         /// <summary>
         /// The move can hit <see cref="PBEStatus2.Airborne"/> targets.
         /// </summary>
-        HitsAirborne = 1 << 8,
+        HitsAirborne = 1 << 9,
         /// <summary>
         /// The move can hit <see cref="PBEStatus2.Underground"/> targets.
         /// </summary>
-        HitsUnderground = 1 << 9,
+        HitsUnderground = 1 << 10,
         /// <summary>
         /// The move can hit <see cref="PBEStatus2.Underwater"/> targets.
         /// </summary>
-        HitsUnderwater = 1 << 10,
+        HitsUnderwater = 1 << 11,
         /// <summary>
         /// The user makes contact with the target, causing it to take damage from the target's <see cref="PBEAbility.IronBarbs"/>, <see cref="PBEAbility.RoughSkin"/>, and <see cref="PBEItem.RockyHelmet"/>.
         /// </summary>
-        MakesContact = 1 << 11,
+        MakesContact = 1 << 12,
         /// <summary>
         /// The move is blocked by <see cref="PBEAbility.Soundproof"/>.
         /// </summary>
-        SoundBased = 1 << 12,
+        SoundBased = 1 << 13,
         /// <summary>
         /// The move does not consume a held gem.
         /// </summary>
-        UnaffectedByGems = 1 << 13
+        UnaffectedByGems = 1 << 14
     }
     public enum PBEMoveEffect : byte
     {
@@ -2698,6 +2702,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HeavySlam = 484,
         Hex = 506,
         HiddenPower = 237,
+        //HiJumpKick = 136, // TODO: Reckless
         HoneClaws = 468,
         HornAttack = 30,
         HornDrill = 32,
@@ -2716,6 +2721,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         IronHead = 442,
         IronTail = 231,
         Judgment = 449,
+        //JumpKick = 26, // TODO: Reckless
         KarateChop = 2,
         Kinesis = 134,
         LavaPlume = 436,

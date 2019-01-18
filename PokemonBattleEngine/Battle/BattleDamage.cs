@@ -322,7 +322,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 basePower *= 1.3;
             }
-            if (user.Ability == PBEAbility.IronFist && move != PBEMove.None && PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.AffectedByIronFist))
+            if (user.Ability == PBEAbility.IronFist && mData.Flags.HasFlag(PBEMoveFlag.AffectedByIronFist))
+            {
+                basePower *= 1.2;
+            }
+            if (user.Ability == PBEAbility.Reckless && mData.Flags.HasFlag(PBEMoveFlag.AffectedByReckless))
             {
                 basePower *= 1.2;
             }
@@ -335,7 +339,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 basePower *= 1.1;
             }
 
-            bool canUseGems = move != PBEMove.None && !PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.UnaffectedByGems);
+            bool canUseGems = move != PBEMove.None && !mData.Flags.HasFlag(PBEMoveFlag.UnaffectedByGems);
             switch (moveType)
             {
                 case PBEType.Bug:
