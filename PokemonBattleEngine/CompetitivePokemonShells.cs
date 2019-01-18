@@ -1138,6 +1138,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.StoneEdge, PBEMove.Superpower, PBEMove.Earthquake, PBEMove.Curse }, // Stone Edge, Rest, Sleep Talk, Curse
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Reshiram_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Reshiram,
+            Nickname = "Rubber",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Turboblaze,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Hasty,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 4, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.BlueFlare, PBEMove.DragonPulse, PBEMove.Earthquake, PBEMove.StoneEdge }, // Blue Flare, Dragon Pulse, Roost, Stone Edge
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Rotom_Wash_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Rotom_Wash,
