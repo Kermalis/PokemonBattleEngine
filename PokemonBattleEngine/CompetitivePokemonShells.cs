@@ -775,6 +775,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Thunderbolt, PBEMove.ThunderWave, PBEMove.HiddenPower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Kyurem_White_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Kyurem_White,
+            Nickname = "Keke",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.HabanBerry,
+            Ability = PBEAbility.Turboblaze,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
+            Moves = new PBEMove[] { PBEMove.DracoMeteor, PBEMove.IceBeam, PBEMove.EarthPower, PBEMove.Substitute }, // Draco Meteor, Ice Beam, Earth Power, Roost
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Landorus_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Landorus,
