@@ -1309,6 +1309,17 @@ namespace Kermalis.PokemonBattleEngine
                         new byte?[] { 15, 6, 3, 25, 13, 22 }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Roar, PBEMove.QuickAttack, PBEMove.WillOWisp }
                     )
                 })
+            },
+            {
+                PBESpecies.Whimsicott,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Powerful Tag
+                    (
+                        new byte[] { 5 }, PBESpecies.Whimsicott, 50, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Prankster }, new PBENature[] { PBENature.Timid },
+                        new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { PBEMove.Swagger/*, PBEMove.GigaDrain, PBEMove.BeatUp, PBEMove.HelpingHand*/ }
+                    )
+                })
             }
         });
     }
