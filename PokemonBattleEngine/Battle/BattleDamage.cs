@@ -537,6 +537,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                     }
                     break;
+                case PBEType.Ice:
                     switch (user.Item)
                     {
                         case PBEItem.IciclePlate:
