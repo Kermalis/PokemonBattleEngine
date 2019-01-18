@@ -501,6 +501,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Haxorus,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Iris's Haxorus
+                    (
+                        new byte[] { 5 }, PBESpecies.Haxorus, 59, false, PBEGender.Female, new PBEAbility[] { PBEAbility.MoldBreaker }, new PBENature[] { PBENature.Naive },
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Earthquake/*, PBEMove.DualChop*/, PBEMove.XScissor, PBEMove.DragonDance }
+                    )
+                })
+            },
+            {
                 PBESpecies.Huntail,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
