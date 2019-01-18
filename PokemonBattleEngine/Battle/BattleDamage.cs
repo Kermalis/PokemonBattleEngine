@@ -339,7 +339,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 basePower *= 1.1;
             }
 
-            bool canUseGems = move != PBEMove.None && !mData.Flags.HasFlag(PBEMoveFlag.UnaffectedByGems);
+            bool canUseGems = !mData.Flags.HasFlag(PBEMoveFlag.UnaffectedByGems);
             switch (moveType)
             {
                 case PBEType.Bug:

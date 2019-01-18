@@ -670,6 +670,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.ThunderWave, PBEMove.StoneEdge, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Haxorus_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Haxorus,
+            Nickname = "Andrew",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LumBerry,
+            Ability = PBEAbility.MoldBreaker,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 76, 252, 0, 0, 0, 180 },
+            Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.BrickBreak, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Huntail_UU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Huntail,
