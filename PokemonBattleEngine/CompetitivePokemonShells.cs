@@ -1357,6 +1357,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.BugBuzz, PBEMove.HiddenPower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Whimsicott_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Whimsicott,
+            Nickname = "Lucas",
+            Level = 1,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.Prankster,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Sassy,
+            IVs = new byte[] { 0, 0, 29, 0, 0, 0 }, // Hidden Power: Fighting/30
+            EVs = new byte[] { 0, 0, 0, 0, 80, 0 },
+            Moves = new PBEMove[] { PBEMove.FakeTears, PBEMove.Endeavor, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Endeavor, Encore, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
 
         /// <summary>
         /// Creates a random team with pre-defined competitive Pokémon shells.
