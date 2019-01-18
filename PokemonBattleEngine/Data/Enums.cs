@@ -2193,6 +2193,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Arceus_Rock = 493 | (14 << 0x10),
         Arceus_Steel = 493 | (15 << 0x10),
         Arceus_Water = 493 | (16 << 0x10),
+        Axew = 610,
         Azelf = 482,
         Azumarill = 184,
         Azurill = 298,
