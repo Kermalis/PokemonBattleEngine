@@ -2715,6 +2715,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HornAttack = 30,
         HornDrill = 32,
         Howl = 336,
+        Hurricane = 542,
         HydroPump = 56,
         HyperFang = 158,
         HyperVoice = 304,

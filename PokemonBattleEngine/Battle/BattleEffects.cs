@@ -819,18 +819,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.SheerCold:
                     chance = user.Shell.Level - target.Shell.Level + 30;
                     goto roll; // Skip all modifiers
+                case PBEMove.Hurricane:
                 case PBEMove.Thunder:
                     if (Weather == PBEWeather.Rain)
                     {
                         return false;
                     }
+                    else if (Weather == PBEWeather.HarshSunlight)
+                    {
+                        chance = 50.0;
+                    }
                     else
                     {
                         chance = mData.Accuracy;
-                        if (Weather == PBEWeather.HarshSunlight)
-                        {
-                            chance = 50.0;
-                        }
                     }
                     break;
                 default:

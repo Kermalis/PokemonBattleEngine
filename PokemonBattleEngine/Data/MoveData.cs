@@ -1218,6 +1218,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Hurricane,
+                new PBEMoveData
+                (
+                    PBEType.Flying, PBEMoveCategory.Special, 0, 2, 120, 70,
+                    PBEMoveEffect.Hit__MaybeConfuse, 30, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne
+                )
+            },
+            {
                 PBEMove.HydroPump,
                 new PBEMoveData
                 (

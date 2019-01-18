@@ -1270,7 +1270,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Naive,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 0, 4, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.AerialAce, PBEMove.Superpower, PBEMove.GrassKnot, PBEMove.Protect }, // Hurricane, Superpower, U-Turn, Taunt
+            Moves = new PBEMove[] { PBEMove.Hurricane, PBEMove.Superpower, PBEMove.GrassKnot, PBEMove.Protect }, // Hurricane, Superpower, U-Turn, Taunt
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Torterra_VGC { get; } = new PBEPokemonShell
