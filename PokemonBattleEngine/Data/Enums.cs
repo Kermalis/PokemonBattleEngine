@@ -635,10 +635,6 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEItemAction : byte
     {
         /// <summary>
-        /// The item caused a Pokémon to take damage.
-        /// </summary>
-        CausedDamage,
-        /// <summary>
         /// The item caused a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/> to change.
         /// </summary>
         ChangedStatus,
@@ -646,6 +642,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The item was consumed by a Pokémon.
         /// </summary>
         Consumed,
+        /// <summary>
+        /// The item was involved with damage.
+        /// </summary>
+        Damage,
         /// <summary>
         /// The item restored HP to a Pokémon.
         /// </summary>
@@ -1180,7 +1180,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FluffyTail = 64,
         FlyingGem = 556,
         FocusBand = 230, // TODO
-        FocusSash = 275, // TODO
+        FocusSash = 275,
         /// <summary>
         /// No effect.
         /// </summary>

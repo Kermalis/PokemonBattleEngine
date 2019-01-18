@@ -261,7 +261,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEItem.BlackSludge:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.CausedDamage: message = "{0} is hurt by its {2}!"; break;
+                                    case PBEItemAction.Damage: message = "{0} is hurt by its {2}!"; break;
                                     case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
@@ -269,7 +269,14 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEItem.FlameOrb:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.ChangedStatus: message = "{0} was burned by {2}!"; break;
+                                    case PBEItemAction.ChangedStatus: message = "{0} was burned by its {2}!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                }
+                                break;
+                            case PBEItem.FocusSash:
+                                switch (ip.ItemAction)
+                                {
+                                    case PBEItemAction.Consumed: message = "{0} hung on using its {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
@@ -283,7 +290,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEItem.LifeOrb:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.CausedDamage: message = "{0} is hurt by its {2}!"; break;
+                                    case PBEItemAction.Damage: message = "{0} is hurt by its {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
@@ -297,14 +304,14 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEItem.RockyHelmet:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.CausedDamage: message = "{1} was hurt by the {2}!"; victimCaps = true; break;
+                                    case PBEItemAction.Damage: message = "{1} was hurt by the {2}!"; victimCaps = true; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
                             case PBEItem.ToxicOrb:
                                 switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.ChangedStatus: message = "{0} was badly poisoned by the {2}!"; break;
+                                    case PBEItemAction.ChangedStatus: message = "{0} was badly poisoned by its {2}!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;

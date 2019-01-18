@@ -25,8 +25,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="victim">The Pokémon receiving the damage.</param>
         /// <param name="hp">The amount of HP <paramref name="victim"/> will try to lose.</param>
         /// <param name="ignoreSubstitute">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEStatus2.Substitute"/>.</param>
+        /// <param name="ignoreSturdy">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEAbility.Sturdy"/>, <see cref="PBEItem.FocusBand"/>, or <see cref="PBEItem.FocusSash"/>.</param>
         /// <returns>The amount of damage dealt.</returns>
-        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute)
+        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute, bool ignoreSturdy = false)
         {
             if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -40,8 +41,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 ushort oldHP = victim.HP;
                 victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
+                bool focusSashHappened = false;
+                if (!ignoreSturdy && oldHP == victim.MaxHP && victim.HP == 0)
+                {
+                    // TODO: Focus Band, Sturdy, Endure (sturdy goes before Focus Sash)
+                    if (victim.Item == PBEItem.FocusSash)
+                    {
+                        focusSashHappened = true;
+                        victim.HP = 1;
+                    }
+                }
                 ushort damageAmt = (ushort)(oldHP - victim.HP);
                 BroadcastPkmnHPChanged(victim, -damageAmt);
+                if (focusSashHappened)
+                {
+                    victim.Item = PBEItem.None;
+                    BroadcastItem(victim, culprit, PBEItem.FocusSash, PBEItemAction.Consumed);
+                }
                 return damageAmt;
             }
         }
