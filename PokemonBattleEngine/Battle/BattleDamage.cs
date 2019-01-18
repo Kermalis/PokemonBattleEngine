@@ -41,16 +41,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 ushort oldHP = victim.HP;
                 victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
-                bool sturdyHappened = false, focusSashHappened = false;
-                if (!ignoreSturdy && oldHP == victim.MaxHP && victim.HP == 0)
+                bool sturdyHappened = false, focusBandHappened = false, focusSashHappened = false;
+                if (!ignoreSturdy && victim.HP == 0)
                 {
-                    // TODO: Focus Band, Endure
-                    if (victim.Ability == PBEAbility.Sturdy) // TODO: Mold Breaker
+                    // TODO: Endure
+                    if (oldHP == victim.MaxHP && victim.Ability == PBEAbility.Sturdy) // TODO: Mold Breaker
                     {
                         sturdyHappened = true;
                         victim.HP = 1;
                     }
-                    else if (victim.Item == PBEItem.FocusSash)
+                    else if (victim.Item == PBEItem.FocusBand && PBEUtils.RNG.ApplyChance(10, 100))
+                    {
+                        focusBandHappened = true;
+                        victim.HP = 1;
+                    }
+                    else if (oldHP == victim.MaxHP && victim.Item == PBEItem.FocusSash)
                     {
                         focusSashHappened = true;
                         victim.HP = 1;
@@ -62,6 +67,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     BroadcastAbility(victim, culprit, PBEAbility.Sturdy, PBEAbilityAction.Damage);
                     BroadcastEndure(victim);
+                }
+                else if (focusBandHappened)
+                {
+                    BroadcastItem(victim, culprit, PBEItem.FocusBand, PBEItemAction.Damage);
                 }
                 else if (focusSashHappened)
                 {

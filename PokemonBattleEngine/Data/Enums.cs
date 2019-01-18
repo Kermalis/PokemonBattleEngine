@@ -1180,7 +1180,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         FluffyTail = 64,
         FlyingGem = 556,
-        FocusBand = 230, // TODO
+        FocusBand = 230,
         FocusSash = 275,
         /// <summary>
         /// No effect.

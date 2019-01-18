@@ -211,6 +211,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
                                 }
                                 break;
+                            case PBEItem.FocusBand:
+                                switch (ip.ItemAction)
+                                {
+                                    case PBEItemAction.Damage: message = "{0} hung on using its {2}!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                }
+                                break;
                             case PBEItem.FocusSash:
                                 switch (ip.ItemAction)
                                 {
