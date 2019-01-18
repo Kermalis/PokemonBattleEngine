@@ -212,6 +212,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
+                            case PBEAbility.Sturdy:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a special message packet
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, true), NameForTrainer(victim, true), PBEAbilityLocalization.Names[ap.Ability].FromUICultureInfo()), true, true);
@@ -490,6 +497,9 @@ namespace Kermalis.PokemonBattleEngineClient
                         {
                             case PBESpecialMessage.DraggedOut:
                                 message = string.Format("{0} was dragged out!", NameForTrainer(Battle.TryGetPokemon((byte)smp.Params[0]), true));
+                                break;
+                            case PBESpecialMessage.Endure:
+                                message = string.Format("{0} endured the hit!", NameForTrainer(Battle.TryGetPokemon((byte)smp.Params[0]), true));
                                 break;
                             case PBESpecialMessage.Magnitude:
                                 message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);

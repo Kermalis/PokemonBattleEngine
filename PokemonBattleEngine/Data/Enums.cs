@@ -769,6 +769,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBESpecialMessage : byte
     {
         DraggedOut,
+        Endure,
         Magnitude,
         PainSplit,
         Recoil,
@@ -2112,7 +2113,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Stench = 1, // TODO
         StickyHold = 60, // TODO
         StormDrain = 114, // TODO
-        Sturdy = 5, // TODO
+        Sturdy = 5,
         SuctionCups = 21, // TODO
         /// <summary>
         /// The Pokémon is more likely to land critical hits.

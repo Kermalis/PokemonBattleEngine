@@ -44,6 +44,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void BroadcastDraggedOut(PBEPokemon victim)
             => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, victim.Id));
+        void BroadcastEndure(PBEPokemon victim)
+            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Endure, victim.Id));
         void BroadcastMagnitude(byte magnitude)
             => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude));
         void BroadcastPainSplit(PBEPokemon user, PBEPokemon target)
@@ -151,6 +153,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.Changed: message = "{1}'s Ability became {2}!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
+                            case PBEAbility.Sturdy:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a special message packet
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
@@ -372,6 +381,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             case PBESpecialMessage.DraggedOut:
                                 Console.WriteLine("{0} was dragged out!", NameForTrainer(battle.TryGetPokemon((byte)smp.Params[0])));
+                                break;
+                            case PBESpecialMessage.Endure:
+                                Console.WriteLine("{0} endured the hit!", NameForTrainer(battle.TryGetPokemon((byte)smp.Params[0])));
                                 break;
                             case PBESpecialMessage.Magnitude:
                                 Console.WriteLine("Magnitude {0}!", (byte)smp.Params[0]);

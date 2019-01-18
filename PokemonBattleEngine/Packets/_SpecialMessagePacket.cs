@@ -26,6 +26,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             switch (Message)
             {
                 case PBESpecialMessage.DraggedOut:
+                case PBESpecialMessage.Endure:
                 case PBESpecialMessage.Magnitude:
                 case PBESpecialMessage.Recoil:
                 case PBESpecialMessage.Struggle:
@@ -48,6 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 switch (Message)
                 {
                     case PBESpecialMessage.DraggedOut:
+                    case PBESpecialMessage.Endure:
                     case PBESpecialMessage.Magnitude:
                     case PBESpecialMessage.Recoil:
                     case PBESpecialMessage.Struggle:
