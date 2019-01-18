@@ -25,8 +25,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="victim">The Pokémon receiving the damage.</param>
         /// <param name="hp">The amount of HP <paramref name="victim"/> will try to lose.</param>
         /// <param name="ignoreSubstitute">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEStatus2.Substitute"/>.</param>
+        /// <param name="ignoreSturdy">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEAbility.Sturdy"/>, <see cref="PBEItem.FocusBand"/>, or <see cref="PBEItem.FocusSash"/>.</param>
         /// <returns>The amount of damage dealt.</returns>
-        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute)
+        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute, bool ignoreSturdy = false)
         {
             if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -40,8 +41,42 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 ushort oldHP = victim.HP;
                 victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
+                bool sturdyHappened = false, focusBandHappened = false, focusSashHappened = false;
+                if (!ignoreSturdy && victim.HP == 0)
+                {
+                    // TODO: Endure
+                    if (oldHP == victim.MaxHP && victim.Ability == PBEAbility.Sturdy) // TODO: Mold Breaker
+                    {
+                        sturdyHappened = true;
+                        victim.HP = 1;
+                    }
+                    else if (victim.Item == PBEItem.FocusBand && PBEUtils.RNG.ApplyChance(10, 100))
+                    {
+                        focusBandHappened = true;
+                        victim.HP = 1;
+                    }
+                    else if (oldHP == victim.MaxHP && victim.Item == PBEItem.FocusSash)
+                    {
+                        focusSashHappened = true;
+                        victim.HP = 1;
+                    }
+                }
                 ushort damageAmt = (ushort)(oldHP - victim.HP);
                 BroadcastPkmnHPChanged(victim, -damageAmt);
+                if (sturdyHappened)
+                {
+                    BroadcastAbility(victim, culprit, PBEAbility.Sturdy, PBEAbilityAction.Damage);
+                    BroadcastEndure(victim);
+                }
+                else if (focusBandHappened)
+                {
+                    BroadcastItem(victim, culprit, PBEItem.FocusBand, PBEItemAction.Damage);
+                }
+                else if (focusSashHappened)
+                {
+                    victim.Item = PBEItem.None;
+                    BroadcastItem(victim, culprit, PBEItem.FocusSash, PBEItemAction.Consumed);
+                }
                 return damageAmt;
             }
         }
@@ -287,7 +322,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 basePower *= 1.3;
             }
-            if (user.Ability == PBEAbility.IronFist && move != PBEMove.None && PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.AffectedByIronFist))
+            if (user.Ability == PBEAbility.IronFist && mData.Flags.HasFlag(PBEMoveFlag.AffectedByIronFist))
+            {
+                basePower *= 1.2;
+            }
+            if (user.Ability == PBEAbility.Reckless && mData.Flags.HasFlag(PBEMoveFlag.AffectedByReckless))
             {
                 basePower *= 1.2;
             }
@@ -300,7 +339,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 basePower *= 1.1;
             }
 
-            bool canUseGems = move != PBEMove.None && !PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.UnaffectedByGems);
+            bool canUseGems = move != PBEMove.None && !mData.Flags.HasFlag(PBEMoveFlag.UnaffectedByGems);
             switch (moveType)
             {
                 case PBEType.Bug:
@@ -502,6 +541,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                     }
                     break;
+                case PBEType.Ice:
                     switch (user.Item)
                     {
                         case PBEItem.IciclePlate:

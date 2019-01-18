@@ -144,7 +144,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     if (user.HP > 0 && victim.Item == PBEItem.RockyHelmet)
                     {
-                        BroadcastItem(victim, user, PBEItem.RockyHelmet, PBEItemAction.CausedDamage);
+                        BroadcastItem(victim, user, PBEItem.RockyHelmet, PBEItemAction.Damage);
                         DealDamage(victim, user, (ushort)(user.MaxHP / 6), true);
                         FaintCheck(user);
                     }
@@ -173,7 +173,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (user.HP > 0 && !ignoreLifeOrb && user.Item == PBEItem.LifeOrb)
             {
-                BroadcastItem(user, user, PBEItem.LifeOrb, PBEItemAction.CausedDamage);
+                BroadcastItem(user, user, PBEItem.LifeOrb, PBEItemAction.Damage);
                 DealDamage(user, user, (ushort)(user.MaxHP / 10), true);
                 FaintCheck(user);
             }
@@ -262,7 +262,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.CausedDamage);
+                        BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.Damage);
                         DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), true);
                         if (FaintCheck(pkmn))
                         {
@@ -1767,10 +1767,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void Ef_Selfdestruct(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            // TODO: Damp, ignore sturdy
+            // TODO: Damp
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            DealDamage(user, user, user.MaxHP, true);
+            DealDamage(user, user, user.MaxHP, true, ignoreSturdy: true);
             FaintCheck(user);
             BasicHit(user, targets, move);
         }
