@@ -668,7 +668,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Chandelure, new PBELocalizedString("シャンデラ", "샹델라", "Lugulabre", "Skelabra", "Chandelure", "Chandelure", "Chandelure") },
             // { PBESpecies.610, new PBELocalizedString("キバゴ", "터검니", "Coupenotte", "Milza", "Axew", "Axew", "Axew") },
             // { PBESpecies.611, new PBELocalizedString("オノンド", "액슨도", "Incisache", "Sharfax", "Fraxure", "Fraxure", "Fraxure") },
-            // { PBESpecies.612, new PBELocalizedString("オノノクス", "액스라이즈", "Tranchodon", "Maxax", "Haxorus", "Haxorus", "Haxorus") },
+            { PBESpecies.Haxorus, new PBELocalizedString("オノノクス", "액스라이즈", "Tranchodon", "Maxax", "Haxorus", "Haxorus", "Haxorus") },
             // { PBESpecies.613, new PBELocalizedString("クマシュン", "코고미", "Polarhume", "Petznief", "Cubchoo", "Cubchoo", "Cubchoo") },
             // { PBESpecies.614, new PBELocalizedString("ツンベアー", "툰베어", "Polagriffe", "Siberio", "Beartic", "Beartic", "Beartic") },
             { PBESpecies.Cryogonal, new PBELocalizedString("フリージオ", "프리지오", "Hexagel", "Frigometri", "Cryogonal", "Cryogonal", "Cryogonal") },

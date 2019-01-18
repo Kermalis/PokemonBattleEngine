@@ -2262,6 +2262,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Grotle = 388,
         Gyarados = 130,
         Happiny = 440,
+        Haxorus = 612,
         Huntail = 367,
         Hydreigon = 635,
         Infernape = 392,
