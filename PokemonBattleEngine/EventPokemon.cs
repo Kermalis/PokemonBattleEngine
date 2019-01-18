@@ -98,6 +98,27 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Axew,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Iris's Axew
+                    (
+                        new byte[] { 5 }, PBESpecies.Axew, 1, null, PBEGender.Male, new PBEAbility[] { PBEAbility.MoldBreaker }, new PBENature[] { PBENature.Naive },
+                        new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { PBEMove.Scratch, PBEMove.DragonRage, PBEMove.None, PBEMove.None }
+                    ),
+                    new PBEEventPokemon // Pokémon Searcher BW promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Axew, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.MoldBreaker }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DragonRage, PBEMove.Return/*, PBEMove.Endure*/, PBEMove.DragonClaw }
+                    ),
+                    new PBEEventPokemon // Best Wishes Iris's Axew
+                    (
+                        new byte[] { 5 }, PBESpecies.Axew, 30, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Rivalry }, new PBENature[] { PBENature.Naive },
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.DragonRage, PBEMove.Scratch/*, PBEMove.Outrage, PBEMove.GigaImpact*/ }
+                    )
+                })
+            },
+            {
                 PBESpecies.Azurill,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
