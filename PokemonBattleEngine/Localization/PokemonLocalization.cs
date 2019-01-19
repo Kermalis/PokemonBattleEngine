@@ -695,7 +695,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Larvesta, new PBELocalizedString("メラルバ", "활화르바", "Pyronille", "Ignivor", "Larvesta", "Larvesta", "Larvesta") },
             { PBESpecies.Volcarona, new PBELocalizedString("ウルガモス", "불카모스", "Pyrax", "Ramoth", "Volcarona", "Volcarona", "Volcarona") },
             { PBESpecies.Cobalion, new PBELocalizedString("コバルオン", "코바르온", "Cobaltium", "Kobalium", "Cobalion", "Cobalion", "Cobalion") },
-            // { PBESpecies.639, new PBELocalizedString("テラキオン", "테라키온", "Terrakium", "Terrakium", "Terrakion", "Terrakion", "Terrakion") },
+            { PBESpecies.Terrakion, new PBELocalizedString("テラキオン", "테라키온", "Terrakium", "Terrakium", "Terrakion", "Terrakion", "Terrakion") },
             // { PBESpecies.640, new PBELocalizedString("ビリジオン", "비리디온", "Viridium", "Viridium", "Virizion", "Virizion", "Virizion") },
             { PBESpecies.Tornadus, new PBELocalizedString("トルネロス", "토네로스", "Boréas", "Boreos", "Tornadus", "Tornadus", "Tornadus") },
             { PBESpecies.Tornadus_Therian, new PBELocalizedString("トルネロス", "토네로스", "Boréas", "Boreos", "Tornadus", "Tornadus", "Tornadus") },
