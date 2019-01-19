@@ -2335,6 +2335,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Samurott = 503,
         Sawk = 539,
         Scrafty = 560,
+        Scraggy = 559,
         Serperior = 497,
         Servine = 496,
         Shedinja = 292,
