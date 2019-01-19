@@ -2345,6 +2345,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tepig = 498,
         Thundurus = 642 | (0 << 0x10),
         Thundurus_Therian = 642 | (1 << 0x10),
+        Timburr = 532,
         Tirtouga = 564,
         Torchic = 255,
         Tornadus = 641 | (0 << 0x10),
