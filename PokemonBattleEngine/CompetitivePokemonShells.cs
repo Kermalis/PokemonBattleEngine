@@ -805,6 +805,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Thunderbolt, PBEMove.ThunderWave, PBEMove.HiddenPower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Keldeo_Resolute_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Keldeo_Resolute,
+            Nickname = "Blueberry",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.Justified,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 0, 0, 252, 4, 252 },
+            Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.HydroPump, PBEMove.SecretSword, PBEMove.IcyWind },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Kyurem_White_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Kyurem_White,
