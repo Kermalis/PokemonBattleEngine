@@ -57,9 +57,9 @@
                 <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nickname:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
                 <TextBox Grid.Row="2" Grid.Column="1" Name="Nickname"/>
                 <Image Grid.Row="3" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Level:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-                <NumericUpDown Grid.Row="3" Grid.Column="1" Name="Level"/>
+                <NumericUpDown Grid.Row="3" Grid.Column="1" Name="Level" ClipValueToMinMax="true"/>
                 <Image Grid.Row="4" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Friendship:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-                <NumericUpDown Grid.Row="4" Grid.Column="1" Name="Friendship" Minimum="0" Maximum="255"/>
+                <NumericUpDown Grid.Row="4" Grid.Column="1" Name="Friendship" Minimum="0" Maximum="255" ClipValueToMinMax="true"/>
                 <Image Grid.Row="5" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Ability:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
                 <DropDown Grid.Row="5" Grid.Column="1" Name="Ability" Items="{Binding AvailableAbilities}" ItemTemplate="{StaticResource MenuBlack}"/>
                 <Image Grid.Row="6" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nature:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
@@ -90,21 +90,21 @@
               </Grid.ColumnDefinitions>
               <Image Grid.Row="0" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='EVs:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
               <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                <NumericUpDown Name="HPEV" Minimum="0" Maximum="255"/>
-                <NumericUpDown Name="ATKEV" Minimum="0" Maximum="255"/>
-                <NumericUpDown Name="DEFEV" Minimum="0" Maximum="255"/>
-                <NumericUpDown Name="SPATKEV" Minimum="0" Maximum="255"/>
-                <NumericUpDown Name="SPDEFEV" Minimum="0" Maximum="255"/>
-                <NumericUpDown Name="SPEEV" Minimum="0" Maximum="255"/>
+                <NumericUpDown Name="HPEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="ATKEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="DEFEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="SPATKEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="SPDEFEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="SPEEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
               </StackPanel>
               <Image Grid.Row="1" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='IVs:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
               <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                <NumericUpDown Name="HPIV" Minimum="0"/>
-                <NumericUpDown Name="ATKIV" Minimum="0"/>
-                <NumericUpDown Name="DEFIV" Minimum="0"/>
-                <NumericUpDown Name="SPATKIV" Minimum="0"/>
-                <NumericUpDown Name="SPDEFIV" Minimum="0"/>
-                <NumericUpDown Name="SPEIV" Minimum="0"/>
+                <NumericUpDown Name="HPIV" Minimum="0" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="ATKIV" Minimum="0" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="DEFIV" Minimum="0" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="SPATKIV" Minimum="0" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="SPDEFIV" Minimum="0" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="SPEIV" Minimum="0" Width="60" ClipValueToMinMax="true"/>
               </StackPanel>
               <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Moves:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
               <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
@@ -115,10 +115,10 @@
               </StackPanel>
               <Image Grid.Row="3" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='PP-Ups:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
               <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
-                <NumericUpDown Name="PPUps0" Minimum="0"/>
-                <NumericUpDown Name="PPUps1" Minimum="0"/>
-                <NumericUpDown Name="PPUps2" Minimum="0"/>
-                <NumericUpDown Name="PPUps3" Minimum="0"/>
+                <NumericUpDown Name="PPUps0" Minimum="0" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="PPUps1" Minimum="0" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="PPUps2" Minimum="0" Width="60" ClipValueToMinMax="true"/>
+                <NumericUpDown Name="PPUps3" Minimum="0" Width="60" ClipValueToMinMax="true"/>
               </StackPanel>
             </Grid>
           </StackPanel>

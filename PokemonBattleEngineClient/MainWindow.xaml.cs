@@ -135,6 +135,11 @@ namespace Kermalis.PokemonBattleEngineClient
             illegal.Command = ReactiveCommand.Create(IllegalChanged);
 
             void shellOnly(object s, EventArgs e) => UpdateEditor(true, false, false);
+            void WaitingForAvaloniaPR2254(object s, EventArgs e)
+            {
+                var n = (NumericUpDown)s;
+                n.Text = n.Value.ToString();
+            };
 
             species = this.FindControl<DropDown>("Species");
             species.SelectionChanged += (s, e) => UpdateEditor(true, true, true);
@@ -142,8 +147,10 @@ namespace Kermalis.PokemonBattleEngineClient
             nickname.LostFocus += (s, e) => UpdateEditor(true, false, true);
             level = this.FindControl<NumericUpDown>("Level");
             level.ValueChanged += shellOnly;
+            level.LostFocus += WaitingForAvaloniaPR2254;
             friendship = this.FindControl<NumericUpDown>("Friendship");
             friendship.ValueChanged += shellOnly;
+            friendship.LostFocus += WaitingForAvaloniaPR2254;
             shiny = this.FindControl<CheckBox>("Shiny");
             shiny.Command = ReactiveCommand.Create(() => UpdateEditor(true, false, true));
             ability = this.FindControl<DropDown>("Ability");
@@ -175,7 +182,9 @@ namespace Kermalis.PokemonBattleEngineClient
             for (int i = 0; i < 6; i++)
             {
                 evs[i].ValueChanged += shellOnly;
+                evs[i].LostFocus += WaitingForAvaloniaPR2254;
                 ivs[i].ValueChanged += shellOnly;
+                ivs[i].LostFocus += WaitingForAvaloniaPR2254;
             }
             moves = new[]
             {
@@ -195,6 +204,7 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 moves[i].SelectionChanged += shellOnly;
                 ppups[i].ValueChanged += shellOnly;
+                ppups[i].LostFocus += WaitingForAvaloniaPR2254;
             }
         }
         byte shows = 0;
@@ -203,19 +213,24 @@ namespace Kermalis.PokemonBattleEngineClient
             base.Show();
             if (shows++ == 1)
             {
-                //string[] files = Directory.GetFiles("Teams");
-                //if (files.Length > 0)
-                //{
-                //    foreach (string f in files)
-                //    {
-                //        Teams.Add(Tuple.Create(Path.GetFileNameWithoutExtension(f), new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromTextFile(f))));
-                //    }
-                //    savedTeams.SelectedIndex = 0;
-                //}
-                //else
-                //{
-                //    AddTeam();
-                //}
+                if (Directory.Exists("Teams"))
+                {
+                    string[] files = Directory.GetFiles("Teams");
+                    if (files.Length > 0)
+                    {
+                        foreach (string f in files)
+                        {
+                            Teams.Add(Tuple.Create(Path.GetFileNameWithoutExtension(f), new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromTextFile(f))));
+                        }
+                        savedTeams.SelectedIndex = 0;
+                        return;
+                    }
+                }
+                else
+                {
+                    Directory.CreateDirectory("Teams");
+                }
+
                 AddTeam();
             }
         }
@@ -316,8 +331,8 @@ namespace Kermalis.PokemonBattleEngineClient
                     nickname.Text = PBEPokemonLocalization.Names[shell.Species].FromUICultureInfo();
                 }
                 shell.Nickname = nickname.Text;
-                //shell.Level = (byte)level.Value;
-                //shell.Friendship = (byte)friendship.Value;
+                shell.Level = (byte)level.Value;
+                shell.Friendship = (byte)friendship.Value;
                 shell.Shiny = shiny.IsChecked.Value;
                 if (ability.SelectedItem != null)
                 {
@@ -332,18 +347,18 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     shell.Item = (PBEItem)item.SelectedItem;
                 }
-                //for (int i = 0; i < 6; i++)
-                //{
-                //    shell.EVs[i] = (byte)EVs[i].Value;
-                //    shell.IVs[i] = (byte)IVs[i].Value;
-                //}
+                for (int i = 0; i < 6; i++)
+                {
+                    shell.EVs[i] = (byte)evs[i].Value;
+                    shell.IVs[i] = (byte)ivs[i].Value;
+                }
                 for (int i = 0; i < moves.Length; i++)
                 {
                     if (moves[i].SelectedItem != null)
                     {
                         shell.Moves[i] = (PBEMove)moves[i].SelectedItem;
                     }
-                    //shell.PPUps[i] = (byte)ppups[i].Value;
+                    shell.PPUps[i] = (byte)ppups[i].Value;
                 }
 
                 //PBEPokemonShell.TeamToTextFile($"Teams\\{team.Item1}.txt", team.Item2);
@@ -372,15 +387,15 @@ namespace Kermalis.PokemonBattleEngineClient
 
                 level.Maximum = illegal.IsChecked.Value ? byte.MaxValue : settings.MaxLevel;
                 level.Minimum = illegal.IsChecked.Value ? byte.MinValue : pData.MinLevel;
-                shell.Level = (byte)level.Value.Clamp(level.Minimum, level.Maximum);
+                shell.Level = (byte)PBEUtils.Clamp(shell.Level, level.Minimum, level.Maximum);
                 if (level.Value != shell.Level)
                 {
-                    //level.Value = shell.Level // Crashing
+                    level.Value = shell.Level;
                 }
 
                 if (friendship.Value != shell.Friendship)
                 {
-                    //friendship.Value = shell.Friendship; // Crashing
+                    friendship.Value = shell.Friendship;
                 }
 
                 if (!(shiny.IsEnabled = illegal.IsChecked.Value || !pData.ShinyLocked))
@@ -485,13 +500,13 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     if (evs[i].Value != shell.EVs[i])
                     {
-                        //EVs[i].Value = shell.EVs[i]; // Crashing
+                        evs[i].Value = shell.EVs[i];
                     }
                     ivs[i].Maximum = maxIVs;
-                    shell.IVs[i] = (byte)ivs[i].Value.Clamp(0, maxIVs);
+                    shell.IVs[i] = shell.IVs[i].Clamp(byte.MinValue, maxIVs);
                     if (ivs[i].Value != shell.IVs[i])
                     {
-                        //IVs[i].Value = shell.IVs[i]; // Crashing
+                        ivs[i].Value = shell.IVs[i];
                     }
                 }
 
@@ -503,10 +518,10 @@ namespace Kermalis.PokemonBattleEngineClient
                         moves[i].SelectedItem = shell.Moves[i];
                     }
                     ppups[i].Maximum = maxPPUps;
-                    shell.PPUps[i] = (byte)ppups[i].Value.Clamp(0, maxPPUps);
+                    shell.PPUps[i] = shell.PPUps[i].Clamp(byte.MinValue, maxPPUps);
                     if (ppups[i].Value != shell.PPUps[i])
                     {
-                        //ppups[i].Value = shell.PPUps[i]; // Crashing
+                        ppups[i].Value = shell.PPUps[i];
                     }
                 }
             }
