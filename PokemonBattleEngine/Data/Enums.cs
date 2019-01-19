@@ -2334,6 +2334,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rotom_Wash = 479 | (5 << 0x10),
         Samurott = 503,
         Sawk = 539,
+        Scrafty = 560,
         Serperior = 497,
         Servine = 496,
         Shedinja = 292,
