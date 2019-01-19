@@ -1243,6 +1243,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.AquaJet, PBEMove.Megahorn, PBEMove.Detect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Sawk_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Sawk,
+            Nickname = "Miles",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FightingGem,
+            Ability = PBEAbility.Sturdy,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 20, 252, 0, 0, 0, 236 },
+            Moves = new PBEMove[] { PBEMove.CloseCombat, PBEMove.RockSlide, PBEMove.Earthquake, PBEMove.Protect }, // Close Combat, Rock Slide, Payback, Quick Guard
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Serperior_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Serperior,
