@@ -2214,6 +2214,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Charmeleon = 5,
         Chimchar = 390,
         Clamperl = 366,
+        Cobalion = 638,
         Cofagrigus = 563,
         Combusken = 256,
         Conkeldurr = 534,
