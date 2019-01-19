@@ -212,6 +212,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
+                            case PBEAbility.None:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
                             case PBEAbility.Sturdy:
                                 switch (ap.AbilityAction)
                                 {

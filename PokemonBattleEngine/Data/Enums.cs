@@ -1862,7 +1862,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEAbility : byte
     {
         /// <summary>
-        /// The Pokémon's ability was removed.
+        /// The Pokémon's ability was suppressed with <see cref="PBEMove.GastroAcid"/>.
         /// </summary>
         None = 0,
         /// <summary>
@@ -2506,6 +2506,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Flatter,
         Fly,
         FocusEnergy,
+        GastroAcid,
         Growth,
         Hail,
         Hit,
@@ -2688,6 +2689,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ForcePalm = 395,
         FrostBreath = 524,
         Frustration = 218,
+        GastroAcid = 380, // TODO: Magic Bounce, Magic Coat
         Glaciate = 549,
         Glare = 137,
         GrassKnot = 447,

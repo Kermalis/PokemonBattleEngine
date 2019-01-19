@@ -388,7 +388,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.377, new PBELocalizedString("かいふくふうじ", "회복봉인", "Anti-Soin", "Heilblockade", "Anticura", "Anticura", "Heal Block") },
             // { PBEMove.378, new PBELocalizedString("しぼりとる", "쥐어짜기", "Essorage", "Auswringen", "Estrujón", "Strizzata", "Wring Out") },
             // { PBEMove.379, new PBELocalizedString("パワートリック", "파워트릭", "Astuce Force", "Krafttrick", "Truco Fuerza", "Ingannoforza", "Power Trick") },
-            // { PBEMove.380, new PBELocalizedString("いえき", "위액", "Suc Digestif", "Magensäfte", "Bilis", "Gastroacido", "Gastro Acid") },
+            { PBEMove.GastroAcid, new PBELocalizedString("いえき", "위액", "Suc Digestif", "Magensäfte", "Bilis", "Gastroacido", "Gastro Acid") },
             { PBEMove.LuckyChant, new PBELocalizedString("おまじない", "주술", "Air Veinard", "Beschwörung", "Conjuro", "Fortuncanto", "Lucky Chant") },
             // { PBEMove.382, new PBELocalizedString("さきどり", "선취", "Moi d’Abord", "Egotrip", "Yo Primero", "Precedenza", "Me First") },
             // { PBEMove.383, new PBELocalizedString("まねっこ", "흉내쟁이", "Photocopie", "Imitator", "Copión", "Copione", "Copycat") },

@@ -984,6 +984,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.GastroAcid,
+                new PBEMoveData
+                (
+                    PBEType.Poison, PBEMoveCategory.Status, 0, 2, 0, 100,
+                    PBEMoveEffect.GastroAcid, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.Glaciate,
                 new PBEMoveData
                 (
