@@ -256,6 +256,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.FireBlast, PBEMove.AirSlash, PBEMove.FocusBlast, PBEMove.HiddenPower },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Cobalion_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Cobalion,
+            Nickname = "Kobe",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FightingGem,
+            Ability = PBEAbility.Justified,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.CloseCombat, PBEMove.IronHead, PBEMove.StoneEdge, PBEMove.Protect }, // Sacred Sword, Iron Head, Stone Edge, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Cofagrigus_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Cofagrigus,
