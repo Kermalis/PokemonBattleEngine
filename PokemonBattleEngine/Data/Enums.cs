@@ -2263,6 +2263,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Gothitelle = 576,
         Gothorita = 575,
         Grotle = 388,
+        Gurdurr = 533,
         Gyarados = 130,
         Happiny = 440,
         Haxorus = 612,
