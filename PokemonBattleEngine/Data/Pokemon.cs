@@ -384,6 +384,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         public void ClearForSwitch()
         {
+            if (Ability == PBEAbility.Regenerator)
+            {
+                HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
+            }
             FieldPosition = PBEFieldPosition.None;
             Species = Shell.Species;
             Ability = Shell.Ability;

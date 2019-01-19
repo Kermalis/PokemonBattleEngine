@@ -2044,7 +2044,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RainDish = 44,
         Rattled = 155, // TODO
         Reckless = 120,
-        Regenerator = 144, // TODO
+        Regenerator = 144,
         Rivalry = 79, // TODO
         RockHead = 69,
         RoughSkin = 24,
