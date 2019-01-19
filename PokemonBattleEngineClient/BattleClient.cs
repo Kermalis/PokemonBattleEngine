@@ -515,6 +515,9 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBESpecialMessage.Endure:
                                 message = string.Format("{0} endured the hit!", NameForTrainer(Battle.TryGetPokemon((byte)smp.Params[0]), true));
                                 break;
+                            case PBESpecialMessage.HPDrained:
+                                message = string.Format("{0} had its energy drained!", NameForTrainer(Battle.TryGetPokemon((byte)smp.Params[0]), true));
+                                break;
                             case PBESpecialMessage.Magnitude:
                                 message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
                                 break;

@@ -27,6 +27,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 case PBESpecialMessage.DraggedOut:
                 case PBESpecialMessage.Endure:
+                case PBESpecialMessage.HPDrained:
                 case PBESpecialMessage.Magnitude:
                 case PBESpecialMessage.Recoil:
                 case PBESpecialMessage.Struggle:
@@ -50,6 +51,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 {
                     case PBESpecialMessage.DraggedOut:
                     case PBESpecialMessage.Endure:
+                    case PBESpecialMessage.HPDrained:
                     case PBESpecialMessage.Magnitude:
                     case PBESpecialMessage.Recoil:
                     case PBESpecialMessage.Struggle:

@@ -210,7 +210,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.199, new PBELocalizedString("ロックオン", "록온", "Verrouillage", "Zielschuss", "Fijar Blanco", "Localizza", "Lock-On") },
             // { PBEMove.200, new PBELocalizedString("げきりん", "역린", "Colère", "Wutanfall", "Enfado", "Oltraggio", "Outrage") },
             { PBEMove.Sandstorm, new PBELocalizedString("すなあらし", "모래바람", "Tempêtesable", "Sandsturm", "Torm. Arena", "Terrempesta", "Sandstorm") },
-            // { PBEMove.202, new PBELocalizedString("ギガドレイン", "기가드레인", "Giga-Sangsue", "Gigasauger", "Gigadrenado", "Gigassorbim.", "Giga Drain") },
+            { PBEMove.GigaDrain, new PBELocalizedString("ギガドレイン", "기가드레인", "Giga-Sangsue", "Gigasauger", "Gigadrenado", "Gigassorbim.", "Giga Drain") },
             // { PBEMove.203, new PBELocalizedString("こらえる", "버티기", "Ténacité", "Ausdauer", "Aguante", "Resistenza", "Endure") },
             { PBEMove.Charm, new PBELocalizedString("あまえる", "애교부리기", "Charme", "Charme", "Encanto", "Fascino", "Charm") },
             // { PBEMove.205, new PBELocalizedString("ころがる", "구르기", "Roulade", "Walzer", "Desenrollar", "Rotolamento", "Rollout") },

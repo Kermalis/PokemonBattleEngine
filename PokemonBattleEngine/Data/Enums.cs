@@ -770,6 +770,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         DraggedOut,
         Endure,
+        HPDrained,
         Magnitude,
         PainSplit,
         Recoil,
@@ -2534,6 +2535,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeRaiseUser_SPATK_By1,
         Hit__MaybeRaiseUser_SPE_By1,
         Hit__MaybeToxic,
+        HPDrain,
         LeechSeed,
         LightScreen,
         LowerTarget_ATK_DEF_By1,
@@ -2690,6 +2692,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FrostBreath = 524,
         Frustration = 218,
         GastroAcid = 380, // TODO: Magic Bounce, Magic Coat
+        GigaDrain = 202,
         Glaciate = 549,
         Glare = 137,
         GrassKnot = 447,

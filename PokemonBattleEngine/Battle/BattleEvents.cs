@@ -46,6 +46,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, victim.Id));
         void BroadcastEndure(PBEPokemon victim)
             => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Endure, victim.Id));
+        void BroadcastHPDrained(PBEPokemon victim)
+            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.HPDrained, victim.Id));
         void BroadcastMagnitude(byte magnitude)
             => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude));
         void BroadcastPainSplit(PBEPokemon user, PBEPokemon target)
@@ -399,6 +401,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             case PBESpecialMessage.Endure:
                                 Console.WriteLine("{0} endured the hit!", NameForTrainer(battle.TryGetPokemon((byte)smp.Params[0])));
                                 break;
+                            case PBESpecialMessage.HPDrained:
+                                Console.WriteLine("{0} had its energy drained!", NameForTrainer(battle.TryGetPokemon((byte)smp.Params[0])));
+                                break;
                             case PBESpecialMessage.Magnitude:
                                 Console.WriteLine("Magnitude {0}!", (byte)smp.Params[0]);
                                 break;
@@ -604,7 +609,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             case PBETeamStatus.Reflect:
                                 switch (tsp.TeamStatusAction)
                                 {
-                                    case PBETeamStatusAction.Added: message = "Reflect raised {0}' team's Defense!"; break;
+                                    case PBETeamStatusAction.Added: message = "Reflect raised {0}'s team's Defense!"; break;
                                     case PBETeamStatusAction.Cleared:
                                     case PBETeamStatusAction.Ended: message = "{0}'s team's Reflect wore off!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");

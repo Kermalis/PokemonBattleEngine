@@ -1123,7 +1123,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Pokémon Center 15th anniversary
                     (
                         new byte[] { 5 }, PBESpecies.Serperior, 100, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Torrent }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.LeafStorm, PBEMove.Substitute/*, PBEMove.GigaDrain*/, PBEMove.LeechSeed }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.LeafStorm, PBEMove.Substitute, PBEMove.GigaDrain, PBEMove.LeechSeed }
                     )
                 })
             },
@@ -1360,7 +1360,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Powerful Tag
                     (
                         new byte[] { 5 }, PBESpecies.Whimsicott, 50, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Prankster }, new PBENature[] { PBENature.Timid },
-                        new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { PBEMove.Swagger/*, PBEMove.GigaDrain, PBEMove.BeatUp, PBEMove.HelpingHand*/ }
+                        new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { PBEMove.Swagger, PBEMove.GigaDrain/*, PBEMove.BeatUp, PBEMove.HelpingHand*/ }
                     )
                 })
             },

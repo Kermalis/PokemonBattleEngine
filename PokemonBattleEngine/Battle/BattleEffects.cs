@@ -545,6 +545,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Hit__MaybeToxic:
                     Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.BadlyPoisoned, mData.EffectParam);
                     break;
+                case PBEMoveEffect.HPDrain:
+                    Ef_HPDrain(user, targets, move, mData.EffectParam);
+                    break;
                 case PBEMoveEffect.LeechSeed:
                     Ef_TryForceStatus2(user, targets, move, PBEStatus2.LeechSeed);
                     break;
@@ -1300,6 +1303,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Func<int, int> recoilFunc = null,
             Action<PBEPokemon> beforeDoingDamage = null,
             Action<PBEPokemon> beforePostHit = null,
+            Action<PBEPokemon, ushort> afterPostHit = null,
             Action beforeTargetsFaint = null)
         {
             byte hit = 0;
@@ -1329,7 +1333,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 bool criticalHit = CritCheck(user, target, move);
                 damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, moveEffectiveness, criticalHit);
                 ushort damage = (ushort)(damageMultiplier * CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, criticalHit));
-                totalDamageDealt += DealDamage(user, target, damage, false);
+                ushort damageDealt = DealDamage(user, target, damage, false);
+                totalDamageDealt += damageDealt;
 
                 BroadcastEffectiveness(target, moveEffectiveness);
                 if (criticalHit)
@@ -1342,9 +1347,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     lifeOrbDamage = true;
                 }
-                // Target's statuses are assigned and stats are changed before post-hit effects
+                // Target's statuses are assigned and target's stats are changed before post-hit effects
                 beforePostHit?.Invoke(target);
                 DoPostHitEffects(user, target, move);
+                // HP-draining moves restore HP after post-hit effects
+                afterPostHit?.Invoke(target, damageDealt);
             }
 
             if (hit > 0)
@@ -1778,6 +1785,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             FaintCheck(user);
             BasicHit(user, targets, move);
         }
+
         void Ef_Endeavor(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
@@ -1873,6 +1881,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+        }
+
+        void Ef_HPDrain(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            void AfterPostHit(PBEPokemon target, ushort damageDealt)
+            {
+                // TODO: Big Root, Liquid Ooze
+                ushort restoreAmt = (ushort)(damageDealt * (percentRestored / 100.0));
+                HealDamage(user, restoreAmt);
+                BroadcastHPDrained(target);
+            }
+
+            BasicHit(user, targets, move, afterPostHit: AfterPostHit);
         }
 
         void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator)

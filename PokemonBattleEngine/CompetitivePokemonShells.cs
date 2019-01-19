@@ -1195,7 +1195,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Timid,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 0, 4, 4, 4, 244 },
-            Moves = new PBEMove[] { PBEMove.LightScreen, PBEMove.Reflect, PBEMove.EnergyBall, PBEMove.Glare }, // Light Screen, Reflect, Giga Drain, Taunt
+            Moves = new PBEMove[] { PBEMove.LightScreen, PBEMove.Reflect, PBEMove.GigaDrain, PBEMove.Glare }, // Light Screen, Reflect, Giga Drain, Taunt
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Shedinja_VGC { get; } = new PBEPokemonShell
