@@ -985,6 +985,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.MeteorMash, PBEMove.BulletPunch, PBEMove.Earthquake, PBEMove.Explosion },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Mienshao_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Mienshao,
+            Nickname = "Miranda",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FlyingGem,
+            Ability = PBEAbility.InnerFocus,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.LowKick, PBEMove.AerialAce, PBEMove.Detect }, // Fake Out, Drain Punch, Acrobatics, Wide Guard
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Minun_NU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Minun,
