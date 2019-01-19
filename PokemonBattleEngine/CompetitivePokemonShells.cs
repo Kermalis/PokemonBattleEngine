@@ -286,6 +286,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Protect, PBEMove.WillOWisp, PBEMove.Curse }, // Shadow Ball, Will-O-Wisp, Protect, Trick Room
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Conkeldurr_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Conkeldurr,
+            Nickname = "Cream",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FlameOrb,
+            Ability = PBEAbility.Guts,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 212, 252, 44, 0, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.HammerArm, PBEMove.RockSlide, PBEMove.MachPunch, PBEMove.Detect }, // Drain Punch, Rock Slide, Mach Punch, Detect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Cradily_OU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Cradily,
