@@ -1258,6 +1258,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.CloseCombat, PBEMove.RockSlide, PBEMove.Earthquake, PBEMove.Protect }, // Close Combat, Rock Slide, Payback, Quick Guard
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Scrafty_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Scrafty,
+            Nickname = "Scooby",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChopleBerry,
+            Ability = PBEAbility.Moxie,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 6, 0, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.HeadSmash, PBEMove.BrickBreak, PBEMove.Crunch, PBEMove.Detect }, // Fake Out, Drain Punch, Crunch, Detect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Serperior_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Serperior,
