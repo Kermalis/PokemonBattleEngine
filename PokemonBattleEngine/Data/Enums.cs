@@ -2297,6 +2297,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Metagross = 376,
         Metang = 375,
         Metapod = 11,
+        Mienshao = 620,
         Minun = 312,
         Misdreavus = 200,
         Mismagius = 429,

@@ -676,7 +676,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.617, new PBELocalizedString("アギルダー", "어지리더", "Limaspeed", "Hydragil", "Accelgor", "Accelgor", "Accelgor") },
             // { PBESpecies.618, new PBELocalizedString("マッギョ", "메더", "Limonde", "Flunschlik", "Stunfisk", "Stunfisk", "Stunfisk") },
             // { PBESpecies.619, new PBELocalizedString("コジョフー", "비조푸", "Kungfouine", "Lin-Fu", "Mienfoo", "Mienfoo", "Mienfoo") },
-            // { PBESpecies.620, new PBELocalizedString("コジョンド", "비조도", "Shaofouine", "Wie-Shu", "Mienshao", "Mienshao", "Mienshao") },
+            { PBESpecies.Mienshao, new PBELocalizedString("コジョンド", "비조도", "Shaofouine", "Wie-Shu", "Mienshao", "Mienshao", "Mienshao") },
             { PBESpecies.Druddigon, new PBELocalizedString("クリムガン", "크리만", "Drakkarmin", "Shardrago", "Druddigon", "Druddigon", "Druddigon") },
             // { PBESpecies.622, new PBELocalizedString("ゴビット", "골비람", "Gringolem", "Golbit", "Golett", "Golett", "Golett") },
             // { PBESpecies.623, new PBELocalizedString("ゴルーグ", "골루그", "Golemastoc", "Golgantes", "Golurk", "Golurk", "Golurk") },
