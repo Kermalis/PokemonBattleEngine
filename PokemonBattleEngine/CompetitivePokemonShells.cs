@@ -1210,7 +1210,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Hasty,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 0, 4, 0, 252, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.BlueFlare, PBEMove.DragonPulse, PBEMove.Earthquake, PBEMove.StoneEdge }, // Blue Flare, Dragon Pulse, Roost, Stone Edge
+            Moves = new PBEMove[] { PBEMove.BlueFlare, PBEMove.DragonPulse, PBEMove.EarthPower, PBEMove.StoneEdge }, // Blue Flare, Dragon Pulse, Roost, Stone Edge
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Rotom_Wash_VGC { get; } = new PBEPokemonShell
