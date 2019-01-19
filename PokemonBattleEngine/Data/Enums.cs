@@ -2393,6 +2393,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Vaporeon = 134,
         Venusaur = 3,
         Victini = 494,
+        Virizion = 640,
         Volcarona = 637,
         Vulpix = 37,
         Wartortle = 8,
