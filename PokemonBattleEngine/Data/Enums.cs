@@ -1990,7 +1990,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The Pokémon cannot be paralyzed.
         /// </summary>
         Limber = 7,
-        LiquidOoze = 64, // TODO
+        LiquidOoze = 64,
         MagicBounce = 156, // TODO
         MagicGuard = 98, // TODO
         MagmaArmor = 40, // TODO

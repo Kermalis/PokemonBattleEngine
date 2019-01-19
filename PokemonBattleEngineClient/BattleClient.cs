@@ -202,6 +202,13 @@ namespace Kermalis.PokemonBattleEngineClient
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
+                            case PBEAbility.LiquidOoze:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.Damage: message = "{1} sucked up the liquid ooze!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
                             case PBEAbility.Mummy:
                                 switch (ap.AbilityAction)
                                 {
