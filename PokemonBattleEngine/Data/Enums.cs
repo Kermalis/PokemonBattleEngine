@@ -2216,6 +2216,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Clamperl = 366,
         Cofagrigus = 563,
         Combusken = 256,
+        Conkeldurr = 534,
         Cottonee = 546,
         Cradily = 346,
         Cresselia = 488,
