@@ -1333,6 +1333,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Spore, PBEMove.Reflect, PBEMove.Brine, PBEMove.Hex }, // Fake Out, Spore, Follow Me, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Terrakion_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Terrakion,
+            Nickname = "Josh",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.Justified,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 244, 4, 0, 4, 252 },
+            Moves = new PBEMove[] { PBEMove.CloseCombat, PBEMove.RockSlide, PBEMove.QuickAttack, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Thundurus_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Thundurus,
