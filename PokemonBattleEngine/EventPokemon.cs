@@ -301,6 +301,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Cubchoo,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Pokémon Smash! Cubchoo
+                    (
+                        new byte[] { 5 }, PBESpecies.Cubchoo, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SnowCloak }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.PowderSnow, PBEMove.Growl/*, PBEMove.Bide*/, PBEMove.IcyWind }
+                    )
+                })
+            },
+            {
                 PBESpecies.Darkrai,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
