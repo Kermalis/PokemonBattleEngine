@@ -42,6 +42,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(moves), $"A Pokémon must have at least one move other than {PBEMove.None}.");
             }
+            if (species == PBESpecies.Keldeo_Resolute && !moves.Contains(PBEMove.SecretSword))
+            {
+                throw new ArgumentOutOfRangeException(nameof(moves), $"{species} must have {PBEMove.SecretSword}.");
+            }
 
             // Combine all moves from pre-evolutions
             IEnumerable<PBESpecies> evolutionChain = PBEPokemonData.Data[species].PreEvolutions.Concat(new[] { species });
