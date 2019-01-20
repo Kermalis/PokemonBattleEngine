@@ -2406,6 +2406,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Vanillite = 582,
         Vanilluxe = 584,
         Vaporeon = 134,
+        Venipede = 543,
         Venusaur = 3,
         Victini = 494,
         Virizion = 640,
