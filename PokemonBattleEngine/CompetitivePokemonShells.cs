@@ -1348,6 +1348,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.CloseCombat, PBEMove.RockSlide, PBEMove.QuickAttack, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Throh_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Throh,
+            Nickname = "Morales",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FlameOrb,
+            Ability = PBEAbility.Guts,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.StormThrow, PBEMove.RockSlide, PBEMove.Facade, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Thundurus_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Thundurus,
