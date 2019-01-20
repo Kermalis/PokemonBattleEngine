@@ -1507,6 +1507,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.VCreate, PBEMove.BoltStrike, PBEMove.GrassKnot, PBEMove.HiddenPower }, // V-create, Bolt Strike, U-turn, Hidden Power Ice
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Virizion_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Virizion,
+            Nickname = "Vinni",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Justified,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.LeafBlade, PBEMove.CloseCombat, PBEMove.StoneEdge, PBEMove.Protect }, // Leaf Blade, Sacred Sword, Stone Edge, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Volcarona_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Volcarona,
