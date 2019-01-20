@@ -597,6 +597,22 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Keldeo,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Kyurem VS. The Sword of Justice promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Keldeo, 15, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Justified }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.AquaJet, PBEMove.Leer/*, PBEMove.DoubleKick*/, PBEMove.BubbleBeam }
+                    ),
+                    new PBEEventPokemon // Winter 2013
+                    (
+                        new byte[] { 5 }, PBESpecies.Keldeo, 50, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Justified }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.SacredSword, */PBEMove.HydroPump, PBEMove.AquaJet, PBEMove.SwordsDance }
+                    )
+                })
+            },
+            {
                 PBESpecies.Latias,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
