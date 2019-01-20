@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.SeismicToss, new PBELocalizedString("ちきゅうなげ", "지구던지기", "Frappe Atlas", "Geowurf", "Mov. Sísmico", "Mov. Sismico", "Seismic Toss") },
             { PBEMove.Strength, new PBELocalizedString("かいりき", "괴력", "Force", "Stärke", "Fuerza", "Forza", "Strength") },
             { PBEMove.Absorb, new PBELocalizedString("すいとる", "흡수", "Vol-Vie", "Absorber", "Absorber", "Assorbimento", "Absorb") },
-            // { PBEMove.72, new PBELocalizedString("メガドレイン", "메가드레인", "Méga-Sangsue", "Megasauger", "Megaagotar", "Megassorbim.", "Mega Drain") },
+            { PBEMove.MegaDrain, new PBELocalizedString("メガドレイン", "메가드레인", "Méga-Sangsue", "Megasauger", "Megaagotar", "Megassorbim.", "Mega Drain") },
             { PBEMove.LeechSeed, new PBELocalizedString("やどりぎのタネ", "씨뿌리기", "Vampigraine", "Egelsamen", "Drenadoras", "Parassiseme", "Leech Seed") },
             { PBEMove.Growth, new PBELocalizedString("せいちょう", "성장", "Croissance", "Wachstum", "Desarrollo", "Crescita", "Growth") },
             { PBEMove.RazorLeaf, new PBELocalizedString("はっぱカッター", "잎날가르기", "Tranch’Herbe", "Rasierblatt", "Hoja Afilada", "Foglielama", "Razor Leaf") },

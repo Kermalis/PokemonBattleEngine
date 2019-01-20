@@ -2788,6 +2788,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MagnetBomb = 443,
         Magnitude = 222,
         Meditate = 96,
+        MegaDrain = 72,
         Megahorn = 224,
         MegaKick = 25,
         MegaPunch = 5,

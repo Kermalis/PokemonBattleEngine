@@ -1596,6 +1596,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.MegaDrain,
+                new PBEMoveData
+                (
+                    PBEType.Grass, PBEMoveCategory.Special, 0, 3, 40, 100,
+                    PBEMoveEffect.HPDrain, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.Megahorn,
                 new PBEMoveData
                 (
