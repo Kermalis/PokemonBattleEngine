@@ -638,7 +638,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.579, new PBELocalizedString("ランクルス", "란쿨루스", "Symbios", "Zytomega", "Reuniclus", "Reuniclus", "Reuniclus") },
             // { PBESpecies.580, new PBELocalizedString("コアルヒー", "꼬지보리", "Couaneton", "Piccolente", "Ducklett", "Ducklett", "Ducklett") },
             // { PBESpecies.581, new PBELocalizedString("スワンナ", "스완나", "Lakmécygne", "Swaroness", "Swanna", "Swanna", "Swanna") },
-            // { PBESpecies.582, new PBELocalizedString("バニプッチ", "바닐프티", "Sorbébé", "Gelatini", "Vanillite", "Vanillite", "Vanillite") },
+            { PBESpecies.Vanillite, new PBELocalizedString("バニプッチ", "바닐프티", "Sorbébé", "Gelatini", "Vanillite", "Vanillite", "Vanillite") },
             { PBESpecies.Vanillish, new PBELocalizedString("バニリッチ", "바닐리치", "Sorboul", "Gelatroppo", "Vanillish", "Vanillish", "Vanillish") },
             { PBESpecies.Vanilluxe, new PBELocalizedString("バイバニラ", "배바닐라", "Sorbouboul", "Gelatwino", "Vanilluxe", "Vanilluxe", "Vanilluxe") },
             // { PBESpecies.585, new PBELocalizedString("シキジカ", "사철록", "Vivaldaim", "Sesokitz", "Deerling", "Deerling", "Deerling") },

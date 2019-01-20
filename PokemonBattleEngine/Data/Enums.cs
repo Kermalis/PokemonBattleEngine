@@ -2396,6 +2396,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unown_Z = 201 | (27 << 0x10),
         Uxie = 480,
         Vanillish = 583,
+        Vanillite = 582,
         Vanilluxe = 584,
         Vaporeon = 134,
         Venusaur = 3,
