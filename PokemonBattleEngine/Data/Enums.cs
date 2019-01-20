@@ -2248,6 +2248,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Ferroseed = 597,
         Ferrothorn = 598,
         Flareon = 136,
+        Foongus = 590,
         Fraxure = 611,
         Frillish = 592,
         Gabite = 444,
