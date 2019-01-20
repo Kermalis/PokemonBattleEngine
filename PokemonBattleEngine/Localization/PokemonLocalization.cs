@@ -601,7 +601,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.542, new PBELocalizedString("ハハコモリ", "모아머", "Manternel", "Matrifol", "Leavanny", "Leavanny", "Leavanny") },
             // { PBESpecies.543, new PBELocalizedString("フシデ", "마디네", "Venipatte", "Toxiped", "Venipede", "Venipede", "Venipede") },
             // { PBESpecies.544, new PBELocalizedString("ホイーガ", "휠구", "Scobolide", "Rollum", "Whirlipede", "Whirlipede", "Whirlipede") },
-            // { PBESpecies.545, new PBELocalizedString("ペンドラー", "펜드라", "Brutapode", "Cerapendra", "Scolipede", "Scolipede", "Scolipede") },
+            { PBESpecies.Scolipede, new PBELocalizedString("ペンドラー", "펜드라", "Brutapode", "Cerapendra", "Scolipede", "Scolipede", "Scolipede") },
             { PBESpecies.Cottonee, new PBELocalizedString("モンメン", "소미안", "Doudouvet", "Waumboll", "Cottonee", "Cottonee", "Cottonee") },
             { PBESpecies.Whimsicott, new PBELocalizedString("エルフーン", "엘풍", "Farfaduvet", "Elfun", "Whimsicott", "Whimsicott", "Whimsicott") },
             // { PBESpecies.548, new PBELocalizedString("チュリネ", "치릴리", "Chlorobule", "Lilminip", "Petilil", "Petilil", "Petilil") },
