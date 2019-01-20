@@ -48,6 +48,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         public static ReadOnlyDictionary<PBEMove, PBEMoveData> Data { get; } = new ReadOnlyDictionary<PBEMove, PBEMoveData>(new Dictionary<PBEMove, PBEMoveData>
         {
             {
+                PBEMove.Absorb,
+                new PBEMoveData
+                (
+                    PBEType.Grass, PBEMoveCategory.Special, 0, 5, 20, 100,
+                    PBEMoveEffect.HPDrain, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.Acid,
                 new PBEMoveData
                 (

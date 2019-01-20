@@ -79,7 +79,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.68, new PBELocalizedString("カウンター", "카운터", "Riposte", "Konter", "Contador", "Contatore", "Counter") },
             { PBEMove.SeismicToss, new PBELocalizedString("ちきゅうなげ", "지구던지기", "Frappe Atlas", "Geowurf", "Mov. Sísmico", "Mov. Sismico", "Seismic Toss") },
             { PBEMove.Strength, new PBELocalizedString("かいりき", "괴력", "Force", "Stärke", "Fuerza", "Forza", "Strength") },
-            // { PBEMove.71, new PBELocalizedString("すいとる", "흡수", "Vol-Vie", "Absorber", "Absorber", "Assorbimento", "Absorb") },
+            { PBEMove.Absorb, new PBELocalizedString("すいとる", "흡수", "Vol-Vie", "Absorber", "Absorber", "Assorbimento", "Absorb") },
             // { PBEMove.72, new PBELocalizedString("メガドレイン", "메가드레인", "Méga-Sangsue", "Megasauger", "Megaagotar", "Megassorbim.", "Mega Drain") },
             { PBEMove.LeechSeed, new PBELocalizedString("やどりぎのタネ", "씨뿌리기", "Vampigraine", "Egelsamen", "Drenadoras", "Parassiseme", "Leech Seed") },
             { PBEMove.Growth, new PBELocalizedString("せいちょう", "성장", "Croissance", "Wachstum", "Desarrollo", "Crescita", "Growth") },

@@ -2598,6 +2598,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEMove : ushort
     {
         None = 0,
+        Absorb = 71,
         Acid = 51,
         AcidArmor = 151,
         AcidSpray = 491,
