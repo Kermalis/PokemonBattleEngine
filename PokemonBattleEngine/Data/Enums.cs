@@ -2198,6 +2198,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Azelf = 482,
         Azumarill = 184,
         Azurill = 298,
+        Beartic = 614,
         Beedrill = 15,
         Beldum = 374,
         Blastoise = 9,
