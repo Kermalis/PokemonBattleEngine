@@ -490,6 +490,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Golurk,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Victini movies promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Golurk, 70, true, PBEGender.Genderless, new PBEAbility[] { PBEAbility.IronFist }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.ShadowPunch/*, PBEMove.HyperBeam, PBEMove.GyroBall*/, PBEMove.HammerArm }
+                    )
+                })
+            },
+            {
                 PBESpecies.Gorebyss,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
@@ -526,7 +537,7 @@ namespace Kermalis.PokemonBattleEngine
                 PBESpecies.Hydreigon,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
-                    new PBEEventPokemon // Victini movie promotions
+                    new PBEEventPokemon // Victini movies promotion
                     (
                         new byte[] { 5 }, PBESpecies.Hydreigon, 70, true, PBEGender.Male, new PBEAbility[] { PBEAbility.Levitate }, allNatures,
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HyperVoice, PBEMove.DragonBreath, PBEMove.Flamethrower, PBEMove.FocusBlast }
