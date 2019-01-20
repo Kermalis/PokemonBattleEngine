@@ -2225,6 +2225,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Cresselia = 488,
         Crobat = 169,
         Cryogonal = 615,
+        Cubchoo = 613,
         Cubone = 104,
         Darkrai = 491,
         Deino = 633,
