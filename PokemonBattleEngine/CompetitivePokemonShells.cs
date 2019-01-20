@@ -39,6 +39,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.Facade, PBEMove.Waterfall, PBEMove.Protect }, // Helping Hand, Heal Pulse, Waterfall, Wide Guard
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Amoonguss_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Amoonguss,
+            Nickname = "Blasto",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.SitrusBerry,
+            Ability = PBEAbility.EffectSpore,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Careful,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.Spore, PBEMove.SludgeBomb, PBEMove.GigaDrain, PBEMove.Protect }, // Spore, Rage Powder, Giga Drain, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Arceus_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Arceus,
