@@ -1106,7 +1106,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Pokémon Ranger
                     (
                         new byte[] { 4 }, PBESpecies.Riolu, 40, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Steadfast }, new PBENature[] { PBENature.Serious },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.AuraSphere, PBEMove.ShadowClaw, PBEMove.BulletPunch/*, PBEMove.DrainPunch*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.AuraSphere, PBEMove.ShadowClaw, PBEMove.BulletPunch, PBEMove.DrainPunch }
                     )
                 })
             },
@@ -1139,7 +1139,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // World championships 2011
                     (
                         new byte[] { 5 }, PBESpecies.Scrafty, 50, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Moxie }, new PBENature[] { PBENature.Brave },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FirePunch/*, PBEMove.Payback, PBEMove.DrainPunch*/, PBEMove.Substitute }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FirePunch/*, PBEMove.Payback*/, PBEMove.DrainPunch, PBEMove.Substitute }
                     )
                 })
             },

@@ -298,7 +298,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Brave,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 212, 252, 44, 0, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.HammerArm, PBEMove.RockSlide, PBEMove.MachPunch, PBEMove.Detect }, // Drain Punch, Rock Slide, Mach Punch, Detect
+            Moves = new PBEMove[] { PBEMove.DrainPunch, PBEMove.RockSlide, PBEMove.MachPunch, PBEMove.Detect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Cradily_OU { get; } = new PBEPokemonShell
@@ -997,7 +997,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.LowKick, PBEMove.AerialAce, PBEMove.Detect }, // Fake Out, Drain Punch, Acrobatics, Wide Guard
+            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.DrainPunch, PBEMove.AerialAce, PBEMove.Detect }, // Fake Out, Drain Punch, Acrobatics, Wide Guard
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Minun_NU { get; } = new PBEPokemonShell
@@ -1270,7 +1270,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Brave,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 252, 6, 0, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.HeadSmash, PBEMove.BrickBreak, PBEMove.Crunch, PBEMove.Detect }, // Fake Out, Drain Punch, Crunch, Detect
+            Moves = new PBEMove[] { PBEMove.HeadSmash, PBEMove.DrainPunch, PBEMove.Crunch, PBEMove.Detect }, // Fake Out, Drain Punch, Crunch, Detect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Serperior_VGC { get; } = new PBEPokemonShell

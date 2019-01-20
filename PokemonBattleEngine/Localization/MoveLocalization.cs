@@ -417,7 +417,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.DragonPulse, new PBELocalizedString("りゅうのはどう", "용의파동", "Dracochoc", "Drachenpuls", "Pulso Dragón", "Dragopulsar", "Dragon Pulse") },
             { PBEMove.DragonRush, new PBELocalizedString("ドラゴンダイブ", "드래곤다이브", "Dracocharge", "Drachenstoß", "Carga Dragón", "Dragofuria", "Dragon Rush") },
             { PBEMove.PowerGem, new PBELocalizedString("パワージェム", "파워젬", "Rayon Gemme", "Juwelenkraft", "Joya de Luz", "Gemmoforza", "Power Gem") },
-            // { PBEMove.409, new PBELocalizedString("ドレインパンチ", "드레인펀치", "Vampipoing", "Ableithieb", "Puño Drenaje", "Assorbipugno", "Drain Punch") },
+            { PBEMove.DrainPunch, new PBELocalizedString("ドレインパンチ", "드레인펀치", "Vampipoing", "Ableithieb", "Puño Drenaje", "Assorbipugno", "Drain Punch") },
             { PBEMove.VacuumWave, new PBELocalizedString("しんくうは", "진공파", "Onde Vide", "Vakuumwelle", "Onda Vacío", "Vuotonda", "Vacuum Wave") },
             { PBEMove.FocusBlast, new PBELocalizedString("きあいだま", "기합구슬", "Exploforce", "Fokusstoß", "Onda Certera", "Focalcolpo", "Focus Blast") },
             { PBEMove.EnergyBall, new PBELocalizedString("エナジーボール", "에너지볼", "Éco-Sphère", "Energieball", "Energibola", "Energipalla", "Energy Ball") },
