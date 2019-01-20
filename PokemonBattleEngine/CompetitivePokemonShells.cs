@@ -1468,6 +1468,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.LightScreen, PBEMove.Psychic, PBEMove.Protect }, // Imprison, Trick Room, Psychic, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Vanilluxe_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Vanilluxe,
+            Nickname = "Vanessa",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChoiceScarf,
+            Ability = PBEAbility.IceBody,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 148, 0, 0, 164, 0, 196 },
+            Moves = new PBEMove[] { PBEMove.Blizzard, PBEMove.IceBeam, PBEMove.HiddenPower, PBEMove.FlashCannon },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Vaporeon_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Vaporeon,
