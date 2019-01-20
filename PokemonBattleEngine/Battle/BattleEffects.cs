@@ -1301,7 +1301,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
             PBEType? overridingMoveType = null,
             Func<int, int> recoilFunc = null,
-            Action<PBEPokemon> beforeDoingDamage = null,
+            Func<PBEPokemon, bool> beforeDoingDamage = null,
             Action<PBEPokemon> beforePostHit = null,
             Action<PBEPokemon, ushort> afterPostHit = null,
             Action beforeTargetsFaint = null)
@@ -1328,7 +1328,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
 
                 // Brick Break destroys Light Screen and Reflect before doing damage
-                beforeDoingDamage?.Invoke(target);
+                // Dream Eater checks for sleep before doing damage
+                if (beforeDoingDamage != null && beforeDoingDamage.Invoke(target))
+                {
+                    continue;
+                }
 
                 bool criticalHit = CritCheck(user, target, move);
                 damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, moveEffectiveness, criticalHit);
@@ -1674,7 +1678,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
 
-            void BeforeDoingDamage(PBEPokemon target)
+            bool BeforeDoingDamage(PBEPokemon target)
             {
                 if (target.Team.Status.HasFlag(PBETeamStatus.Reflect))
                 {
@@ -1688,6 +1692,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     target.Team.LightScreenCount = 0;
                     BroadcastTeamStatus(target.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
                 }
+                return false;
             }
 
             BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage);
@@ -1888,6 +1893,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
 
+            bool BeforeDoingDamage(PBEPokemon target)
+            {
+                if (move == PBEMove.DreamEater && target.Status1 != PBEStatus1.Asleep)
+                {
+                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
             void AfterPostHit(PBEPokemon target, ushort damageDealt)
             {
                 ushort restoreAmt = (ushort)(damageDealt * (percentRestored / 100.0));
@@ -1908,7 +1926,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            BasicHit(user, targets, move, afterPostHit: AfterPostHit);
+            BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage, afterPostHit: AfterPostHit);
         }
 
         void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator)

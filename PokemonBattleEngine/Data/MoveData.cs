@@ -678,6 +678,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.DreamEater,
+                new PBEMoveData
+                (
+                    PBEType.Psychic, PBEMoveCategory.Special, 0, 3, 100, 100,
+                    PBEMoveEffect.HPDrain, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.DrillPeck,
                 new PBEMoveData
                 (

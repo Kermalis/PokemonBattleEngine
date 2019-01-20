@@ -2669,6 +2669,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DragonRage = 82,
         DragonRush = 407,
         DrainPunch = 409,
+        DreamEater = 138,
         DrillPeck = 65,
         DrillRun = 529,
         DynamicPunch = 223,
