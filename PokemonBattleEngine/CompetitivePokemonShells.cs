@@ -610,6 +610,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HyperVoice, PBEMove.Protect, PBEMove.LavaPlume, PBEMove.Toxic }, // Wish, Protect, Lava Plume, Toxic
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Garbodor_OU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Garbodor,
+            Nickname = "Zuck",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.WeakArmor,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 248, 0, 8, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.ToxicSpikes, PBEMove.Spikes, PBEMove.Explosion, PBEMove.PainSplit }, // Toxic Spikes, Spikes, Explosion, Clear Smog
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Garchomp_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Garchomp,
