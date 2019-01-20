@@ -1133,6 +1133,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Scrafty,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // World championships 2011
+                    (
+                        new byte[] { 5 }, PBESpecies.Scrafty, 50, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Moxie }, new PBENature[] { PBENature.Brave },
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.FirePunch/*, PBEMove.Payback, PBEMove.DrainPunch*/, PBEMove.Substitute }
+                    )
+                })
+            },
+            {
                 PBESpecies.Serperior,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
