@@ -957,7 +957,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect.
         /// </summary>
         BigPearl = 89,
-        BigRoot = 296, // TODO
+        BigRoot = 296,
         BindingBand = 544, // TODO
         BlackBelt = 241,
         /// <summary>

@@ -1890,12 +1890,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             void AfterPostHit(PBEPokemon target, ushort damageDealt)
             {
-                // TODO: Big Root
                 ushort restoreAmt = (ushort)(damageDealt * (percentRestored / 100.0));
+                if (user.Item == PBEItem.BigRoot)
+                {
+                    restoreAmt += (ushort)(restoreAmt * 0.3);
+                }
                 if (target.Ability == PBEAbility.LiquidOoze)
                 {
                     DealDamage(target, user, restoreAmt, true, ignoreSturdy: true); // Tested; it does ignore sturdy.
                     BroadcastAbility(target, user, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
+                    FaintCheck(user);
                 }
                 else
                 {
