@@ -540,7 +540,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.DrillRun, new PBELocalizedString("ドリルライナー", "드릴라이너", "Tunnelier", "Schlagbohrer", "Taladradora", "Giravvita", "Drill Run") },
             // { PBEMove.530, new PBELocalizedString("ダブルチョップ", "더블촙", "Double Baffe", "Doppelhieb", "Golpe Bis", "Doppiocolpo", "Dual Chop") },
             { PBEMove.HeartStamp, new PBELocalizedString("ハートスタンプ", "하트스탬프", "Crève-Cœur", "Herzstempel", "Arrumaco", "Cuorestampo", "Heart Stamp") },
-            // { PBEMove.532, new PBELocalizedString("ウッドホーン", "우드호른", "Encornebois", "Holzgeweih", "Astadrenaje", "Legnicorno", "Horn Leech") },
+            { PBEMove.HornLeech, new PBELocalizedString("ウッドホーン", "우드호른", "Encornebois", "Holzgeweih", "Astadrenaje", "Legnicorno", "Horn Leech") },
             // { PBEMove.533, new PBELocalizedString("せいなるつるぎ", "성스러운칼", "Lame Sainte", "Sanctoklinge", "Espadasanta", "Spadasolenne", "Sacred Sword") },
             { PBEMove.RazorShell, new PBELocalizedString("シェルブレード", "셸블레이드", "Coquilame", "Kalkklinge", "Concha Filo", "Conchilama", "Razor Shell") },
             { PBEMove.HeatCrash, new PBELocalizedString("ヒートスタンプ", "히트스탬프", "Tacle Feu", "Brandstempel", "Golpe Calor", "Marchiafuoco", "Heat Crash") },

@@ -2733,6 +2733,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HoneClaws = 468,
         HornAttack = 30,
         HornDrill = 32,
+        HornLeech = 532,
         Howl = 336,
         Hurricane = 542,
         HydroPump = 56,

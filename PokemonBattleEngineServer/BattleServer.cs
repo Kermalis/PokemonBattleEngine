@@ -217,7 +217,7 @@ namespace Kermalis.PokemonBattleEngineServer
                         {
                             try
                             {
-                                //shell.ValidateShell(battle.Settings);
+                                shell.ValidateShell(battle.Settings);
                             }
                             catch (Exception e)
                             {
