@@ -1144,6 +1144,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Scraggy,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Ash's Scraggy
+                    (
+                        new byte[] { 5 }, PBESpecies.Scraggy, 1, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Moxie }, new PBENature[] { PBENature.Adamant },
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Leer, PBEMove.LowKick, PBEMove.Headbutt/*, PBEMove.HiJumpKick*/ }
+                    )
+                })
+            },
+            {
                 PBESpecies.Serperior,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
