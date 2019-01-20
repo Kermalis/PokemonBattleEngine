@@ -84,6 +84,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.AquaJet, PBEMove.Superpower, PBEMove.IcePunch },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Beartic_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Beartic,
+            Nickname = "Momma",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChartiBerry,
+            Ability = PBEAbility.SnowCloak,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 100, 252, 0, 0, 0, 156 },
+            Moves = new PBEMove[] { PBEMove.IcicleCrash, PBEMove.ShadowClaw, PBEMove.Roar, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         /// <summary>
         /// <para>Beedrill NU</para>
         /// <para>Item: Choice Scarf</para>
