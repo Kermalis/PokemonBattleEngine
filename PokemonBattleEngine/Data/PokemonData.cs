@@ -19671,7 +19671,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         Tuple.Create(PBEMove.CloseCombat, 73, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.DoubleKick, 7, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.GigaDrain, 37, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.GigaDrain, 37, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.HelpingHand, 25, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.LeafBlade, 67, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Leer, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -19698,7 +19698,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Flash, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.FocusBlast, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_BWB2W2),
-                        //Tuple.Create(PBEMove.GigaDrain, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.GigaDrain, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.GigaImpact, PBEMoveObtainMethod.TM_BWB2W2),
                         Tuple.Create(PBEMove.GrassKnot, PBEMoveObtainMethod.TM_BWB2W2),
                         //Tuple.Create(PBEMove.HelpingHand, PBEMoveObtainMethod.MoveTutor_B2W2),
