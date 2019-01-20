@@ -149,7 +149,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.DreamEater, new PBELocalizedString("ゆめくい", "꿈먹기", "Dévorêve", "Traumfresser", "Come Sueños", "Mangiasogni", "Dream Eater") },
             { PBEMove.PoisonGas, new PBELocalizedString("どくガス", "독가스", "Gaz Toxik", "Giftwolke", "Gas Venenoso", "Velenogas", "Poison Gas") },
             // { PBEMove.140, new PBELocalizedString("たまなげ", "구슬던지기", "Pilonnage", "Stakkato", "Presa", "Attacco Pioggia", "Barrage") },
-            // { PBEMove.141, new PBELocalizedString("きゅうけつ", "흡혈", "Vampirisme", "Blutsauger", "Chupavidas", "Sanguisuga", "Leech Life") },
+            { PBEMove.LeechLife, new PBELocalizedString("きゅうけつ", "흡혈", "Vampirisme", "Blutsauger", "Chupavidas", "Sanguisuga", "Leech Life") },
             { PBEMove.LovelyKiss, new PBELocalizedString("あくまのキッス", "악마의키스", "Grobisou", "Todeskuss", "Beso Amoroso", "Demonbacio", "Lovely Kiss") },
             // { PBEMove.143, new PBELocalizedString("ゴッドバード", "불새", "Piqué", "Himmelsfeger", "Ataque Aéreo", "Aeroattacco", "Sky Attack") },
             { PBEMove.Transform, new PBELocalizedString("へんしん", "변신", "Morphing", "Wandler", "Transform", "Trasformazione", "Transform") },

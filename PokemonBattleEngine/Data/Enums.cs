@@ -2773,6 +2773,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LeafBlade = 348,
         LeafStorm = 437,
         LeafTornado = 536,
+        LeechLife = 141,
         LeechSeed = 73,
         Leer = 43,
         Lick = 122,

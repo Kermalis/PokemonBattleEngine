@@ -1461,6 +1461,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.LeechLife,
+                new PBEMoveData
+                (
+                    PBEType.Bug, PBEMoveCategory.Physical, 0, 3, 20, 100,
+                    PBEMoveEffect.HPDrain, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.LeechSeed,
                 new PBEMoveData
                 (
