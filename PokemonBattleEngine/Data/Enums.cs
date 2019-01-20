@@ -2177,6 +2177,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         Absol = 359,
         Alomomola = 594,
+        Amoonguss = 591,
         Arceus = 493 | (0 << 0x10),
         Arceus_Bug = 493 | (1 << 0x10),
         Arceus_Dark = 493 | (2 << 0x10),
