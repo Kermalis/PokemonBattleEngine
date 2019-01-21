@@ -371,85 +371,89 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         TM_DPPtHGSS = 1u << 12,
         /// <summary>
-        /// The move can be learned by using a technical machine on a Pokémon in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2 and Pokémon White Version 2.
+        /// The move can be learned by using a technical machine on a Pokémon in Pokémon Black Version and Pokémon White Version.
         /// </summary>
-        TM_BWB2W2 = 1u << 13,
+        TM_BW = 1u << 13,
+        /// <summary>
+        /// The move can be learned by using a technical machine on a Pokémon in Pokémon Black Version 2 and Pokémon White Version 2.
+        /// </summary>
+        TM_B2W2 = 1u << 14,
         /// <summary>
         /// The move can be learned by using a hidden machine on a Pokémon in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version and Pokémon Emerald Version.
         /// </summary>
-        HM_RSFRLGE = 1u << 14,
+        HM_RSFRLGE = 1u << 15,
         /// <summary>
         /// The move can be learned by using a hidden machine on a Pokémon in Pokémon Diamond Version, Pokémon Pearl Version and Pokémon Platinum Version.
         /// </summary>
-        HM_DPPt = 1u << 15,
+        HM_DPPt = 1u << 16,
         /// <summary>
         /// The move can be learned by using a hidden machine on a Pokémon in Pokémon HeartGold Version and Pokémon SoulSilver Version.
         /// </summary>
-        HM_HGSS = 1u << 16,
+        HM_HGSS = 1u << 17,
         /// <summary>
         /// The move can be learned by using a hidden machine on a Pokémon in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2 and Pokémon White Version 2.
         /// </summary>
-        HM_BWB2W2 = 1u << 17,
+        HM_BWB2W2 = 1u << 18,
         /// <summary>
         /// The move can be taught to a Pokémon by a move tutor in Pokémon Fire Red Version and Pokémon Leaf Green Version.
         /// </summary>
-        MoveTutor_FRLG = 1u << 18,
+        MoveTutor_FRLG = 1u << 19,
         /// <summary>
         /// The move can be taught to a Pokémon by a move tutor in Pokémon Emerald Version.
         /// </summary>
-        MoveTutor_E = 1u << 19,
+        MoveTutor_E = 1u << 20,
         /// <summary>
         /// The move can be taught to a Pokémon by a move tutor in Pokémon XD: Gale of Darkness.
         /// </summary>
-        MoveTutor_XD = 1u << 20,
+        MoveTutor_XD = 1u << 21,
         /// <summary>
         /// The move can be taught to a Pokémon by a move tutor in Pokémon Diamond Version and Pokémon Pearl Version.
         /// </summary>
-        MoveTutor_DP = 1u << 21,
+        MoveTutor_DP = 1u << 22,
         /// <summary>
         /// The move can be taught to a Pokémon by a move tutor in Pokémon Platinum Version.
         /// </summary>
-        MoveTutor_Pt = 1u << 22,
+        MoveTutor_Pt = 1u << 23,
         /// <summary>
         /// The move can be taught to a Pokémon by a move tutor in Pokémon HeartGold Version and Pokémon SoulSilver Version.
         /// </summary>
-        MoveTutor_HGSS = 1u << 23,
+        MoveTutor_HGSS = 1u << 24,
         /// <summary>
         /// The move can be taught to a Pokémon by a move tutor in Pokémon Black Version and Pokémon White Version.
         /// </summary>
-        MoveTutor_BW = 1u << 24,
+        MoveTutor_BW = 1u << 25,
         /// <summary>
         /// The move can be taught to a Pokémon by a move tutor in Pokémon Black Version 2 and Pokémon White Version 2.
         /// </summary>
-        MoveTutor_B2W2 = 1u << 25,
+        MoveTutor_B2W2 = 1u << 26,
         /// <summary>
         /// The move can be learned by hatching a Pokémon egg in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version and Pokémon Leaf Green Version.
         /// </summary>
-        EggMove_RSFRLG = 1u << 26,
+        EggMove_RSFRLG = 1u << 27,
         /// <summary>
         /// The move can be learned by hatching a Pokémon egg in Pokémon Emerald Version.
         /// </summary>
-        EggMove_E = 1u << 27,
+        EggMove_E = 1u << 28,
         /// <summary>
         /// The move can be learned by hatching a Pokémon egg in Pokémon Diamond Version, Pokémon Pearl Version and Pokémon Platinum Version.
         /// </summary>
-        EggMove_DPPt = 1u << 28,
+        EggMove_DPPt = 1u << 29,
         /// <summary>
         /// The move can be learned by hatching a Pokémon egg in Pokémon HeartGold Version and Pokémon SoulSilver Version.
         /// </summary>
-        EggMove_HGSS = 1u << 29,
+        EggMove_HGSS = 1u << 30,
         /// <summary>
         /// The move can be learned by hatching a Pokémon egg in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2 and Pokémon White Version 2.
         /// </summary>
-        EggMove_BWB2W2 = 1u << 30,
+        EggMove_BWB2W2 = 1u << 31,
         /// <summary>
         /// The move is known by a Pokémon when found in the Dream World.
         /// </summary>
-        DreamWorld = 1u << 31,
+        DreamWorld = 1u << 32,
         /// <summary>
         /// The move is learned by a Pokémon when changing formes.
         /// </summary>
-        Forme = 1u << 32
+        Forme = 1u << 33
     }
     /// <summary>
     /// Represents a specific Pokémon's non-volatile status.
