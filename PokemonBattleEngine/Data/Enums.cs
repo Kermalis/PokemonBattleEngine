@@ -2286,6 +2286,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Kakuna = 14,
         Keldeo = 647 | (0 << 0x10),
         Keldeo_Resolute = 647 | (1 << 0x10),
+        Klinklang = 601,
         Kyurem = 646 | (0 << 0x10),
         Kyurem_Black = 646 | (1 << 0x10),
         Kyurem_White = 646 | (2 << 0x10),
