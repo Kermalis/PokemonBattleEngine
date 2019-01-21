@@ -2242,6 +2242,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Emboar = 500,
         Emolga = 587,
         Empoleon = 395,
+        Escavalier = 589,
         Espeon = 196,
         Excadrill = 530,
         Farfetchd = 83,
