@@ -38,12 +38,23 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Command("challenge")]
             public async Task Challenge(SocketUser battler1)
             {
-                var team0 = new[] { PBECompetitivePokemonShells.Palkia_Uber };
-                var team1 = new[] { PBECompetitivePokemonShells.Dialga_Uber };
-                PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0, team1);
-                battle.Teams[0].TrainerName = Context.User.Username;
-                battle.Teams[1].TrainerName = battler1.Username;
-                var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);
+                if (BattleContext.ActiveBattles.Any(b => b.Battlers.Contains(battler1)))
+                {
+                    await Context.Channel.SendMessageAsync($"{battler1.Username} is already participating in a battle.");
+                }
+                else if (BattleContext.ActiveBattles.Any(b => b.Battlers.Contains(Context.User)))
+                {
+                    await Context.Channel.SendMessageAsync($"{Context.User.Username} is already participating in a battle.");
+                }
+                else
+                {
+                    var team0 = PBECompetitivePokemonShells.CreateRandomTeam(PBESettings.DefaultSettings.MaxPartySize);
+                    var team1 = PBECompetitivePokemonShells.CreateRandomTeam(PBESettings.DefaultSettings.MaxPartySize);
+                    PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0, team1);
+                    battle.Teams[0].TrainerName = Context.User.Username;
+                    battle.Teams[1].TrainerName = battler1.Username;
+                    var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);
+                }
             }
         }
 

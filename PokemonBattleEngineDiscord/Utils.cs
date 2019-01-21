@@ -78,6 +78,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             return result;
         }
+        public static string GetPokemonSprite(PBEPokemon pokemon)
+        {
+            return GetPokemonSprite(pokemon.Species, pokemon.Shiny, pokemon.Shell.Gender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), false);
+        }
         public static string GetPokemonSprite(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {
             string orientation = backSprite ? "-B" : "-F";

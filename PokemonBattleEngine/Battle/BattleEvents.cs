@@ -82,14 +82,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             string NameForTrainer(PBEPokemon pkmn)
             {
-                if (pkmn == null)
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    return $"{pkmn.Team.TrainerName}'s {pkmn.Shell.Nickname}";
-                }
+                return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.Shell.Nickname}";
             }
 
             switch (packet)

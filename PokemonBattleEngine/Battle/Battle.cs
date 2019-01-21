@@ -282,10 +282,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 team.ActionsRequired.Clear();
                 team.ActionsRequired.AddRange(team.ActiveBattlers);
-                BroadcastActionsRequest(team);
             }
             BattleState = PBEBattleState.WaitingForActions;
             OnStateChanged?.Invoke(this);
+            foreach (PBETeam team in Teams)
+            {
+                BroadcastActionsRequest(team);
+            }
         }
         void DetermineTurnOrder()
         {
@@ -498,7 +501,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             team.SwitchInsRequired = 1;
                             nextState = PBEBattleState.WaitingForSwitchIns;
-                            BroadcastSwitchInRequest(team);
                         }
                         break;
                     case PBEBattleFormat.Double:
@@ -514,7 +516,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (team.SwitchInsRequired > 0)
                         {
                             nextState = PBEBattleState.WaitingForSwitchIns;
-                            BroadcastSwitchInRequest(team);
                         }
                         break;
                     case PBEBattleFormat.Rotation:
@@ -536,21 +537,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (team.SwitchInsRequired > 0)
                         {
                             nextState = PBEBattleState.WaitingForSwitchIns;
-                            BroadcastSwitchInRequest(team);
                         }
                         break;
                     default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
                 }
             }
 
-            if (nextState == PBEBattleState.WaitingForActions)
+            if (nextState == PBEBattleState.WaitingForSwitchIns)
+            {
+                BattleState = PBEBattleState.WaitingForSwitchIns;
+                OnStateChanged?.Invoke(this);
+                foreach (PBETeam team in Teams)
+                {
+                    BroadcastSwitchInRequest(team);
+                }
+            }
+            else // PBEBattleState.WaitingForActions
             {
                 RequestActions();
-            }
-            else // PBEBattleState.WaitingForSwitchIns
-            {
-                BattleState = nextState;
-                OnStateChanged?.Invoke(this);
             }
         }
     }
