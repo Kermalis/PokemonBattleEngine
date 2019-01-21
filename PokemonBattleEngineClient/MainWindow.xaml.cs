@@ -135,11 +135,6 @@ namespace Kermalis.PokemonBattleEngineClient
             illegal.Command = ReactiveCommand.Create(IllegalChanged);
 
             void shellOnly(object s, EventArgs e) => UpdateEditor(true, false, false);
-            void WaitingForAvaloniaPR2254(object s, EventArgs e)
-            {
-                var n = (NumericUpDown)s;
-                n.Text = n.Value.ToString();
-            };
 
             species = this.FindControl<DropDown>("Species");
             species.SelectionChanged += (s, e) => UpdateEditor(true, true, true);
@@ -147,10 +142,8 @@ namespace Kermalis.PokemonBattleEngineClient
             nickname.LostFocus += (s, e) => UpdateEditor(true, false, true);
             level = this.FindControl<NumericUpDown>("Level");
             level.ValueChanged += shellOnly;
-            level.LostFocus += WaitingForAvaloniaPR2254;
             friendship = this.FindControl<NumericUpDown>("Friendship");
             friendship.ValueChanged += shellOnly;
-            friendship.LostFocus += WaitingForAvaloniaPR2254;
             shiny = this.FindControl<CheckBox>("Shiny");
             shiny.Command = ReactiveCommand.Create(() => UpdateEditor(true, false, true));
             ability = this.FindControl<DropDown>("Ability");
@@ -182,9 +175,7 @@ namespace Kermalis.PokemonBattleEngineClient
             for (int i = 0; i < 6; i++)
             {
                 evs[i].ValueChanged += shellOnly;
-                evs[i].LostFocus += WaitingForAvaloniaPR2254;
                 ivs[i].ValueChanged += shellOnly;
-                ivs[i].LostFocus += WaitingForAvaloniaPR2254;
             }
             moves = new[]
             {
@@ -204,7 +195,6 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 moves[i].SelectionChanged += shellOnly;
                 ppups[i].ValueChanged += shellOnly;
-                ppups[i].LostFocus += WaitingForAvaloniaPR2254;
             }
         }
         byte shows = 0;
