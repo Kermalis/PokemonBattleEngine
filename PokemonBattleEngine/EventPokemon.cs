@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine
             {
                 Species = Species,
                 Level = Level,
-                Shiny = Shiny == null ? PBEUtils.RNG.NextShiny(Species) : Shiny.Value,
+                Shiny = Shiny == null ? PBEUtils.RNG.NextShiny() : Shiny.Value,
                 Ability = PossibleAbilities.Sample(),
                 Nature = PossibleNatures.Sample(),
                 Gender = Gender >= PBEGender.MAX ? PBEUtils.RNG.NextGender(Species) : Gender,

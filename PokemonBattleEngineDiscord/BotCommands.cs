@@ -136,6 +136,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
                         .WithTitle(PBEPokemonLocalization.Names[species].English)
                         .WithAuthor(Context.User)
+                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEGender.Male, false, false))
                         .AddField("Types", types, true)
                         .AddField("Gender Ratio", ratio, true)
                         .AddField("Weight", $"{pData.Weight:N1} kg", true)

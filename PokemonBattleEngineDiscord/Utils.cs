@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
@@ -52,6 +53,48 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public static Color GetColor(PBEPokemon pkmn)
         {
             return GetColor(pkmn.Type1, pkmn.Type2);
+        }
+
+        // https://stackoverflow.com/questions/1979915/can-i-check-if-a-file-exists-at-a-url
+        public static bool URLExists(string url)
+        {
+            bool result = false;
+            WebRequest webRequest = WebRequest.Create(url);
+            webRequest.Timeout = 2000;
+            webRequest.Method = "HEAD";
+            HttpWebResponse response = null;
+            try
+            {
+                response = (HttpWebResponse)webRequest.GetResponse();
+                result = true;
+            }
+            catch { }
+            finally
+            {
+                if (response != null)
+                {
+                    response.Close();
+                }
+            }
+            return result;
+        }
+        public static string GetPokemonSprite(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
+        {
+            string orientation = backSprite ? "-B" : "-F";
+            if (behindSubstitute)
+            {
+                return $"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/PokemonBattleEngineClient/Assets/Pokemon_Sprites/Substitute{orientation}.gif";
+            }
+            else
+            {
+                uint speciesID = (uint)species & 0xFFFF;
+                uint formeID = (uint)species >> 0x10;
+                string sss = $"{speciesID}{(formeID > 0 ? $"-{formeID}" : string.Empty)}{orientation}{(shiny ? "-S" : string.Empty)}";
+                // Following will be false if the species sprites are sss-M.gif and sss-F.gif
+                bool spriteIsGenderNeutral = URLExists($"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/PokemonBattleEngineClient/Assets/Pokemon_Sprites/{sss}.gif");
+                string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "-F" : "-M";
+                return $"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/PokemonBattleEngineClient/Assets/Pokemon_Sprites/{sss}{genderStr}.gif";
+            }
         }
     }
 }

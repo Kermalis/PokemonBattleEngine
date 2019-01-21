@@ -1669,7 +1669,7 @@ namespace Kermalis.PokemonBattleEngine
             IEnumerable<PBEPokemonShell> team = possiblePokemon.Take(numPkmn);
             foreach (PBEPokemonShell pkmn in team)
             {
-                pkmn.Shiny = PBEUtils.RNG.NextShiny(pkmn.Species);
+                pkmn.Shiny = PBEUtils.RNG.NextShiny();
             }
             return team;
         }

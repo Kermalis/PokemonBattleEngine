@@ -37,7 +37,7 @@ namespace Kermalis.PokemonBattleEngine
             return rand.NextDouble() >= 0.5;
         }
 
-        public static bool NextShiny(this Random rand, PBESpecies species)
+        public static bool NextShiny(this Random rand)
         {
             return rand.Next(0, ushort.MaxValue + 1) < 8;
         }
