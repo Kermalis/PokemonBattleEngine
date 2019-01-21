@@ -105,7 +105,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 return method.HasFlag(PBEMoveObtainMethod.LevelUp_BW)
                     || method.HasFlag(PBEMoveObtainMethod.LevelUp_B2W2)
-                    || method.HasFlag(PBEMoveObtainMethod.TM_BWB2W2)
+                    || method.HasFlag(PBEMoveObtainMethod.TM_BW)
+                    || method.HasFlag(PBEMoveObtainMethod.TM_B2W2)
                     || method.HasFlag(PBEMoveObtainMethod.HM_BWB2W2)
                     || method.HasFlag(PBEMoveObtainMethod.MoveTutor_BW)
                     || method.HasFlag(PBEMoveObtainMethod.MoveTutor_B2W2)
