@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 
 namespace Kermalis.PokemonBattleEngine.AI
 {
@@ -7,7 +6,7 @@ namespace Kermalis.PokemonBattleEngine.AI
     {
         static PBETarget DecideTargets(PBEPokemon pkmn, PBEMove move)
         {
-            PBEMoveTarget possibleTargets = PBEBattle.GetMoveTargetsForPokemon(pkmn, move);
+            PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(move);
             switch (pkmn.Team.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:

@@ -111,6 +111,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
                                 }
                                 break;
+                            case PBEAbility.Healer:
+                                switch (ap.AbilityAction)
+                                {
+                                    case PBEAbilityAction.CuredStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                }
+                                break;
                             case PBEAbility.IceBody:
                             case PBEAbility.RainDish:
                                 switch (ap.AbilityAction)
@@ -436,6 +443,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     case PBEStatusAction.Activated: message = "{0} is fast asleep."; break;
                                     case PBEStatusAction.Added: message = "{0} fell asleep!"; break;
+                                    case PBEStatusAction.Cured:
                                     case PBEStatusAction.Ended: message = "{0} woke up!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                                 }
@@ -444,6 +452,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 switch (s1p.StatusAction)
                                 {
                                     case PBEStatusAction.Added: message = "{0} was badly poisoned!"; break;
+                                    case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
                                     case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                                 }
@@ -452,6 +461,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 switch (s1p.StatusAction)
                                 {
                                     case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
+                                    case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
                                     case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                                 }
@@ -460,6 +470,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 switch (s1p.StatusAction)
                                 {
                                     case PBEStatusAction.Added: message = "{0} was burned!"; break;
+                                    case PBEStatusAction.Cured: message = "{0}'s burn was healed."; break;
                                     case PBEStatusAction.Damage: message = "{0} was hurt by its burn!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                                 }
@@ -469,6 +480,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     case PBEStatusAction.Activated: message = "{0} is frozen solid!"; break;
                                     case PBEStatusAction.Added: message = "{0} was frozen solid!"; break;
+                                    case PBEStatusAction.Cured:
                                     case PBEStatusAction.Ended: message = "{0} thawed out!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
                                 }

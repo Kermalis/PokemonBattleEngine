@@ -23,12 +23,8 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Protect from corrupt packets (if they are even a problem)
 * Allow spectators to join mid-game instead of having to be present when the game begins
 * Make MinLevel relevant
-* Damage, effectiveness, and critical packets should include a list of affected Pokémon
-* Switch-ins, switch-in effects, and turn ended effects should go by speed (with speed ties and everything like turn order)
 * Winning
 * Watchable replays
-* Change all ability/item boosts to settings instead of constants
-* Remove "Minimized" status and make it behave like rollout/defensecurl
 
 ----
 # PokemonBattleEngine Uses:

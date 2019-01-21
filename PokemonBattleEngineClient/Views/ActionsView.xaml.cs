@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Models;
 using ReactiveUI;
@@ -425,7 +424,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         void DisplayTargets(MoveInfo moveInfo)
         {
-            PBEMoveTarget possibleTargets = PBEBattle.GetMoveTargetsForPokemon(Pokemon, moveInfo.Move);
+            PBEMoveTarget possibleTargets = Pokemon.GetMoveTargets(moveInfo.Move);
 
             if (BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Single || BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Rotation)
             {

@@ -1929,11 +1929,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         Frisk = 119, // TODO
         Gluttony = 82, // TODO
         /// <summary>
-        /// The Pokémon's attack is boosted when it is afflicted with a <see cref="PBEStatus1"/>, and the damage reduction from <see cref="PBEStatus1.Burned"/> is not applied.
+        /// The Pokémon's attack is boosted when it is afflicted with a <see cref="PBEStatus1"/> and the damage reduction from <see cref="PBEStatus1.Burned"/> is not applied.
         /// </summary>
         Guts = 62,
         Harvest = 139, // TODO
-        Healer = 131, // TODO
+        Healer = 131,
         /// <summary>
         /// The Pokémon takes less damage from Fire-type moves and from a burn.
         /// </summary>

@@ -534,6 +534,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         case PBEWeather.Sandstorm: return PBEType.Rock;
                         default: return PBEMoveData.Data[PBEMove.WeatherBall].Type;
                     }
+                case PBEMove.None: throw new ArgumentOutOfRangeException(nameof(move));
                 default:
                     if (Ability == PBEAbility.Normalize)
                     {
@@ -543,6 +544,27 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         return PBEMoveData.Data[move].Type;
                     }
+            }
+        }
+        /// <summary>
+        /// Gets the possible targets that a move can target when used by this Pokémon.
+        /// </summary>
+        /// <param name="move">The move to check.</param>
+        public PBEMoveTarget GetMoveTargets(PBEMove move)
+        {
+            switch (move)
+            {
+                case PBEMove.Curse:
+                    if (HasType(PBEType.Ghost))
+                    {
+                        return PBEMoveTarget.SingleSurrounding;
+                    }
+                    else
+                    {
+                        return PBEMoveTarget.Self;
+                    }
+                case PBEMove.None: throw new ArgumentOutOfRangeException(nameof(move));
+                default: return PBEMoveData.Data[move].Targets;
             }
         }
         /// <summary>

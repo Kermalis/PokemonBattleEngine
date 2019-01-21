@@ -217,6 +217,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             Teams[1].SwitchInQueue.Add(Teams[1].Party[2]);
                         }
                         break;
+                    default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
                 }
 
                 BattleState = PBEBattleState.ReadyToBegin;
@@ -341,7 +342,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         speed *= 2.0;
                     }
-                    // Paralyzed Pokémon get a 75% speed decrease
                     if (pkmn.Status1 == PBEStatus1.Paralyzed)
                     {
                         speed *= 0.25;
@@ -539,6 +539,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastSwitchInRequest(team);
                         }
                         break;
+                    default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
                 }
             }
 

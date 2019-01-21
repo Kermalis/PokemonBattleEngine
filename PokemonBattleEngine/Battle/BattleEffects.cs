@@ -248,6 +248,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
             }
 
+            // Healer happens before status damage and leftovers
+            IEnumerable<PBEPokemon> surroundingAllies = GetRuntimeSurrounding(pkmn, true, false);
+            foreach (PBEPokemon ally in surroundingAllies)
+            {
+                if (pkmn.Status1 != PBEStatus1.None && ally.Ability == PBEAbility.Healer && PBEUtils.RNG.ApplyChance(30, 100))
+                {
+                    BroadcastAbility(ally, pkmn, PBEAbility.Healer, PBEAbilityAction.CuredStatus);
+                    BroadcastStatus1(ally, pkmn, pkmn.Status1, PBEStatusAction.Cured);
+                }
+            }
+
             // These items happen before taking damage from statuses
             switch (pkmn.Item)
             {
@@ -373,7 +384,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
             PBEMoveData mData = PBEMoveData.Data[move];
-            PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, GetMoveTargetsForPokemon(user, move) == PBEMoveTarget.SingleNotSelf);
+            PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, user.GetMoveTargets(move) == PBEMoveTarget.SingleNotSelf);
             // Selfdestruct effect still causes the user to faint even if it has no targets
             if (targets.Length == 0 && mData.Effect != PBEMoveEffect.Selfdestruct)
             {

@@ -162,7 +162,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 pkmn.ChoiceLockedMove = pkmn.SelectedAction.FightMove;
                             }
-                            switch (GetMoveTargetsForPokemon(pkmn, pkmn.SelectedAction.FightMove))
+                            switch (pkmn.GetMoveTargets(pkmn.SelectedAction.FightMove))
                             {
                                 case PBEMoveTarget.RandomFoeSurrounding:
                                     switch (team.Battle.BattleFormat)

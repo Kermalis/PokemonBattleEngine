@@ -8,29 +8,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
     public sealed partial class PBEBattle
     {
         /// <summary>
-        /// Gets a move's possible targets for a specific Pokémon.
-        /// </summary>
-        /// <param name="pkmn">The Pokémon using the move.</param>
-        /// <param name="move">The move the Pokémon will use.</param>
-        public static PBEMoveTarget GetMoveTargetsForPokemon(PBEPokemon pkmn, PBEMove move)
-        {
-            switch (move)
-            {
-                case PBEMove.Curse:
-                    if (pkmn.HasType(PBEType.Ghost))
-                    {
-                        return PBEMoveTarget.SingleSurrounding;
-                    }
-                    else
-                    {
-                        return PBEMoveTarget.Self;
-                    }
-                case PBEMove.None: throw new ArgumentOutOfRangeException(nameof(move), $"Invalid move: {move}");
-                default: return PBEMoveData.Data[move].Targets;
-            }
-        }
-
-        /// <summary>
         /// Gets the position across from the inputted position for a specific battle format.
         /// </summary>
         /// <param name="battleFormat">The battle format.</param>
@@ -45,7 +22,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         return PBEFieldPosition.Center;
                     }
-                    break;
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(position));
+                    }
                 case PBEBattleFormat.Double:
                     if (position == PBEFieldPosition.Left)
                     {
@@ -55,7 +35,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         return PBEFieldPosition.Left;
                     }
-                    break;
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(position));
+                    }
                 case PBEBattleFormat.Triple:
                     if (position == PBEFieldPosition.Left)
                     {
@@ -69,9 +52,112 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         return PBEFieldPosition.Left;
                     }
-                    break;
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(position));
+                    }
+                default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
             }
-            return PBEFieldPosition.None;
+        }
+
+        public static IEnumerable<PBEPokemon> GetRuntimeSurrounding(PBEPokemon pkmn, bool includeAllies, bool includeFoes)
+        {
+            IEnumerable<PBEPokemon> allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn);
+            IEnumerable<PBEPokemon> foes = (pkmn.Team == pkmn.Team.Battle.Teams[0] ? pkmn.Team.Battle.Teams[1] : pkmn.Team.Battle.Teams[0]).ActiveBattlers;
+            switch (pkmn.Team.Battle.BattleFormat)
+            {
+                case PBEBattleFormat.Single:
+                    if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                    {
+                        var ret = new List<PBEPokemon>();
+                        if (includeFoes)
+                        {
+                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Center));
+                        }
+                        return ret;
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                    }
+                case PBEBattleFormat.Double:
+                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                    {
+                        var ret = new List<PBEPokemon>();
+                        if (includeAllies)
+                        {
+                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Right));
+                        }
+                        if (includeFoes)
+                        {
+                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right));
+                        }
+                        return ret;
+                    }
+                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                    {
+                        var ret = new List<PBEPokemon>();
+                        if (includeAllies)
+                        {
+                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Left));
+                        }
+                        if (includeFoes)
+                        {
+                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right));
+                        }
+                        return ret;
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                    }
+                case PBEBattleFormat.Triple:
+                case PBEBattleFormat.Rotation:
+                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                    {
+                        var ret = new List<PBEPokemon>();
+                        if (includeAllies)
+                        {
+                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Center));
+                        }
+                        if (includeFoes)
+                        {
+                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Center || p.FieldPosition == PBEFieldPosition.Right));
+                        }
+                        return ret;
+                    }
+                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                    {
+                        var ret = new List<PBEPokemon>();
+                        if (includeAllies)
+                        {
+                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Right));
+                        }
+                        if (includeFoes)
+                        {
+                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Left || p.FieldPosition == PBEFieldPosition.Center || p.FieldPosition == PBEFieldPosition.Right));
+                        }
+                        return ret;
+                    }
+                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                    {
+                        var ret = new List<PBEPokemon>();
+                        if (includeAllies)
+                        {
+                            ret.AddRange(allies.Where(p => p.FieldPosition == PBEFieldPosition.Center));
+                        }
+                        if (includeFoes)
+                        {
+                            ret.AddRange(foes.Where(p => p.FieldPosition == PBEFieldPosition.Center || p.FieldPosition == PBEFieldPosition.Left));
+                        }
+                        return ret;
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                    }
+                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));
+            }
         }
 
         /// <summary>
@@ -205,7 +291,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="targets">The targets bitfield to validate.</param>
         public bool AreTargetsValid(PBEPokemon pkmn, PBEMove move, PBETarget targets)
         {
-            PBEMoveTarget possibleTargets = GetMoveTargetsForPokemon(pkmn, move);
+            PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(move);
             switch (BattleFormat)
             {
                 case PBEBattleFormat.Single:
@@ -547,6 +633,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                     }
                     break;
+                default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
             }
             return true;
         }
