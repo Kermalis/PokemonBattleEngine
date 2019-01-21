@@ -11347,7 +11347,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     60, 80, 95, 70, 85, 50,
                     PBEType.Steel, PBEType.None, PBEGenderRatio.M0_F0, 51.0,
-                    new PBESpecies[] { /*PBESpecies.Klink*/ },
+                    new PBESpecies[] { PBESpecies.Klink },
                     new PBESpecies[] { PBESpecies.Klinklang },
                     new PBEAbility[] { PBEAbility.Plus, PBEAbility.Minus, PBEAbility.ClearBody },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
@@ -11408,12 +11408,75 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBESpecies.Klink,
+                new PBEPokemonData
+                (
+                    40, 55, 70, 45, 60, 30,
+                    PBEType.Steel, PBEType.None, PBEGenderRatio.M0_F0, 21.0,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Klang, PBESpecies.Klinklang },
+                    new PBEAbility[] { PBEAbility.Plus, PBEAbility.Minus, PBEAbility.ClearBody },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                    {
+						//Tuple.Create(PBEMove.Autotomize, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+						//Tuple.Create(PBEMove.Bind, 21, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+						//Tuple.Create(PBEMove.Charge, 6, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+						Tuple.Create(PBEMove.ChargeBeam, 26, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Discharge, 42, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+						//Tuple.Create(PBEMove.GearGrind, 16, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+						//Tuple.Create(PBEMove.HyperBeam, 57, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+						//Tuple.Create(PBEMove.LockOn, 51, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+						Tuple.Create(PBEMove.MetalSound, 45, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.MirrorShot, 36, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Screech, 39, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ShiftGear, 48, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ThunderShock, 11, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ViceGrip, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.ZapCannon, 54, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    {
+						//Tuple.Create(PBEMove.Bind, PBEMoveObtainMethod.MoveTutor_B2W2),
+						Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Facade, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.FlashCannon, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_BWB2W2),
+						//Tuple.Create(PBEMove.Gravity, PBEMoveObtainMethod.MoveTutor_B2W2),
+						Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_BWB2W2),
+						//Tuple.Create(PBEMove.HyperBeam, PBEMoveObtainMethod.TM_BWB2W2),
+						Tuple.Create(PBEMove.IronDefense, PBEMoveObtainMethod.MoveTutor_B2W2),
+						//Tuple.Create(PBEMove.MagicCoat, PBEMoveObtainMethod.MoveTutor_B2W2),
+						//Tuple.Create(PBEMove.MagnetRise, PBEMoveObtainMethod.MoveTutor_B2W2),
+						Tuple.Create(PBEMove.Protect, PBEMoveObtainMethod.TM_BWB2W2),
+						//Tuple.Create(PBEMove.Recycle, PBEMoveObtainMethod.MoveTutor_B2W2),
+						//Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_BWB2W2),
+						Tuple.Create(PBEMove.Return, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RockPolish, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.RockSmash, PBEMoveObtainMethod.TM_BWB2W2),
+						//Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BWB2W2),
+						Tuple.Create(PBEMove.Sandstorm, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.SignalBeam, PBEMoveObtainMethod.MoveTutor_B2W2),
+						//Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.MoveTutor_B2W2),
+						//Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_B2W2),
+						Tuple.Create(PBEMove.Substitute, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BWB2W2),
+                        Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BWB2W2),
+						//Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.TM_BWB2W2),
+						//Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BWB2W2),
+						Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BWB2W2)
+                    }
+                )
+            },
+            {
                 PBESpecies.Klinklang,
                 new PBEPokemonData
                 (
                     60, 100, 115, 70, 85, 90,
                     PBEType.Steel, PBEType.None, PBEGenderRatio.M0_F0, 81.0,
-                    new PBESpecies[] { /*PBESpecies.Klink,*/ PBESpecies.Klang },
+                    new PBESpecies[] { PBESpecies.Klink, PBESpecies.Klang },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Plus, PBEAbility.Minus, PBEAbility.ClearBody },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]

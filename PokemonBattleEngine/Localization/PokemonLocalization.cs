@@ -655,7 +655,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.596, new PBELocalizedString("デンチュラ", "전툴라", "Mygavolt", "Voltula", "Galvantula", "Galvantula", "Galvantula") },
             { PBESpecies.Ferroseed, new PBELocalizedString("テッシード", "철시드", "Grindur", "Kastadur", "Ferroseed", "Ferroseed", "Ferroseed") },
             { PBESpecies.Ferrothorn, new PBELocalizedString("ナットレイ", "너트령", "Noacier", "Tentantel", "Ferrothorn", "Ferrothorn", "Ferrothorn") },
-            // { PBESpecies.599, new PBELocalizedString("ギアル", "기어르", "Tic", "Klikk", "Klink", "Klink", "Klink") },
+            { PBESpecies.Klink, new PBELocalizedString("ギアル", "기어르", "Tic", "Klikk", "Klink", "Klink", "Klink") },
             { PBESpecies.Klang, new PBELocalizedString("ギギアル", "기기어르", "Clic", "Kliklak", "Klang", "Klang", "Klang") },
             { PBESpecies.Klinklang, new PBELocalizedString("ギギギアル", "기기기어르", "Cliticlic", "Klikdiklak", "Klinklang", "Klinklang", "Klinklang") },
             { PBESpecies.Tynamo, new PBELocalizedString("シビシラス", "저리어", "Anchwatt", "Zapplardin", "Tynamo", "Tynamo", "Tynamo") },
