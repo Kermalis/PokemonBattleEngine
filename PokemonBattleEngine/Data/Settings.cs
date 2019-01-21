@@ -15,6 +15,10 @@
         /// </summary>
         public byte MaxLevel = 100;
         /// <summary>
+        /// The minimum level a Pokémon can be.
+        /// </summary>
+        public byte MinLevel = 1;
+        /// <summary>
         /// The maximum amount of Pokémon each team can bring into a battle.
         /// </summary>
         public sbyte MaxPartySize = 6;

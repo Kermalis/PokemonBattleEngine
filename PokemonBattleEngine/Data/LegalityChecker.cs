@@ -164,12 +164,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     break;
             }
 
-            // Validate Shininess
-            if (shell.Shiny && pData.ShinyLocked)
-            {
-                throw new ArgumentOutOfRangeException(nameof(shell.Shiny), $"{shell.Species} cannot be shiny.");
-            }
-
             // Validate Nickname
             if (string.IsNullOrWhiteSpace(shell.Nickname))
             {
@@ -181,9 +175,9 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate Level
-            if (shell.Level < pData.MinLevel || shell.Level > settings.MaxLevel)
+            if (shell.Level < settings.MinLevel || shell.Level > settings.MaxLevel)
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.Level), $"A {shell.Species}'s level must be at least {pData.MinLevel} and cannot exceed {settings.MaxLevel}.");
+                throw new ArgumentOutOfRangeException(nameof(shell.Level), $"A {shell.Species}'s level must be at least {settings.MinLevel} and cannot exceed {settings.MaxLevel}.");
             }
 
             // Validate Ability

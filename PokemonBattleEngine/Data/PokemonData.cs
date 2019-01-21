@@ -16,8 +16,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEType Type1 { get; }
         public PBEType Type2 { get; }
         public PBEGenderRatio GenderRatio { get; }
-        public byte MinLevel { get; }
-        public bool ShinyLocked { get; }
         public double Weight { get; } // Kilograms
         public ReadOnlyCollection<PBESpecies> PreEvolutions { get; }
         public ReadOnlyCollection<PBESpecies> Evolutions { get; }
@@ -26,8 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ReadOnlyCollection<Tuple<PBEMove, PBEMoveObtainMethod>> OtherMoves { get; }
 
         private PBEPokemonData(byte hp, byte attack, byte defense, byte spAttack, byte spDefense, byte speed,
-            PBEType type1, PBEType type2, PBEGenderRatio genderRatio,
-            byte minLevel, bool shinyLocked, double weight,
+            PBEType type1, PBEType type2, PBEGenderRatio genderRatio, double weight,
             IList<PBESpecies> preEvolutions,
             IList<PBESpecies> evolutions,
             IList<PBEAbility> abilities,
@@ -35,8 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             IList<Tuple<PBEMove, PBEMoveObtainMethod>> otherMoves)
         {
             HP = hp; Attack = attack; Defense = defense; SpAttack = spAttack; SpDefense = spDefense; Speed = speed;
-            Type1 = type1; Type2 = type2; GenderRatio = genderRatio;
-            MinLevel = minLevel; ShinyLocked = shinyLocked; Weight = weight;
+            Type1 = type1; Type2 = type2; GenderRatio = genderRatio; Weight = weight;
             PreEvolutions = new ReadOnlyCollection<PBESpecies>(preEvolutions);
             Evolutions = new ReadOnlyCollection<PBESpecies>(evolutions);
             Abilities = new ReadOnlyCollection<PBEAbility>(abilities);
@@ -130,8 +126,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 130, 60, 75, 60, 75,
-                    PBEType.Dark, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 47.0,
+                    PBEType.Dark, PBEType.None, PBEGenderRatio.M1_F1, 47.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Pressure, PBEAbility.SuperLuck, PBEAbility.Justified },
@@ -279,8 +274,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     165, 75, 80, 40, 45, 65,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 31.6,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 31.6,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Healer, PBEAbility.Hydration, PBEAbility.Regenerator },
@@ -353,8 +347,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     114, 85, 70, 85, 80, 30,
-                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M1_F1,
-                    1, false, 10.5,
+                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M1_F1, 10.5,
                     new PBESpecies[] { PBESpecies.Foongus },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.EffectSpore, PBEAbility.Regenerator },
@@ -428,8 +421,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -575,8 +567,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Bug, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Bug, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -722,8 +713,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Dark, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Dark, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -869,8 +859,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -1016,8 +1005,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -1163,8 +1151,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -1310,8 +1297,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Fire, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -1457,8 +1443,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Flying, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Flying, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -1604,8 +1589,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -1751,8 +1735,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Grass, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -1898,8 +1881,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Ground, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Ground, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -2045,8 +2027,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Ice, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -2192,8 +2173,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Poison, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Poison, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -2339,8 +2319,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -2486,8 +2465,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Rock, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Rock, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -2633,8 +2611,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Steel, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Steel, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -2780,8 +2757,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 120, 120, 120, 120, 120,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 320.0,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M0_F0, 320.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Multitype },
@@ -2927,8 +2903,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     46, 87, 60, 30, 40, 57,
-                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 18.0,
+                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M1_F1, 18.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Fraxure, PBESpecies.Haxorus },
                     new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.MoldBreaker, PBEAbility.Unnerve },
@@ -3010,8 +2985,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     75, 125, 70, 125, 70, 115,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 0.3,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -3113,8 +3087,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 50, 80, 50, 80, 50,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 28.5,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 28.5,
                     new PBESpecies[] { PBESpecies.Azurill, PBESpecies.Marill },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.ThickFat, PBEAbility.HugePower, PBEAbility.SapSipper },
@@ -3245,8 +3218,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 20, 40, 20, 40, 20,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F3,
-                    1, false, 2.0,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F3, 2.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Marill, PBESpecies.Azumarill },
                     new PBEAbility[] { PBEAbility.ThickFat, PBEAbility.HugePower, PBEAbility.SapSipper },
@@ -3337,8 +3309,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     95, 110, 80, 70, 80, 50,
-                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 260.0,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1, 260.0,
                     new PBESpecies[] { PBESpecies.Cubchoo },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SnowCloak, PBEAbility.SwiftSwim },
@@ -3430,8 +3401,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 80, 40, 45, 80, 75,
-                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1,
-                    1, false, 29.5,
+                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1, 29.5,
                     new PBESpecies[] { PBESpecies.Weedle, PBESpecies.Kakuna },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Swarm, PBEAbility.Sniper },
@@ -3522,8 +3492,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     40, 55, 80, 35, 60, 30,
-                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0,
-                    1, false, 95.2,
+                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0, 95.2,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Metang, PBESpecies.Metagross },
                     new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.LightMetal },
@@ -3545,8 +3514,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     79, 83, 100, 85, 105, 78,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 85.5,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1, 85.5,
                     new PBESpecies[] { PBESpecies.Squirtle, PBESpecies.Wartortle },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Torrent, PBEAbility.RainDish },
@@ -3673,8 +3641,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 120, 70, 110, 70, 80,
-                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1,
-                    1, false, 52.0,
+                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1, 52.0,
                     new PBESpecies[] { PBESpecies.Torchic, PBESpecies.Combusken },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SpeedBoost },
@@ -3799,8 +3766,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     255, 10, 10, 75, 135, 55,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F1,
-                    1, false, 46.8,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F1, 46.8,
                     new PBESpecies[] { PBESpecies.Happiny, PBESpecies.Chansey },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace, PBEAbility.Healer },
@@ -3950,8 +3916,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     95, 110, 95, 40, 95, 55,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 94.5,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F1, 94.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Reckless, PBEAbility.SapSipper, PBEAbility.Soundproof },
@@ -4029,8 +3994,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     45, 49, 49, 65, 65, 45,
-                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M7_F1,
-                    1, false, 6.9,
+                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M7_F1, 6.9,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Ivysaur, PBESpecies.Venusaur },
                     new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Chlorophyll },
@@ -4130,8 +4094,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 45, 50, 80, 80, 70,
-                    PBEType.Bug, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 32.0,
+                    PBEType.Bug, PBEType.Flying, PBEGenderRatio.M1_F1, 32.0,
                     new PBESpecies[] { PBESpecies.Caterpie, PBESpecies.Metapod },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Compoundeyes, PBEAbility.TintedLens },
@@ -4228,8 +4191,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     74, 108, 133, 83, 65, 32,
-                    PBEType.Water, PBEType.Rock, PBEGenderRatio.M7_F1,
-                    1, false, 81.0,
+                    PBEType.Water, PBEType.Rock, PBEGenderRatio.M7_F1, 81.0,
                     new PBESpecies[] { PBESpecies.Tirtouga },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SolidRock, PBEAbility.Sturdy, PBEAbility.SwiftSwim },
@@ -4318,8 +4280,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     45, 30, 35, 20, 20, 45,
-                    PBEType.Bug, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 2.9,
+                    PBEType.Bug, PBEType.None, PBEGenderRatio.M1_F1, 2.9,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Metapod, PBESpecies.Butterfree },
                     new PBEAbility[] { PBEAbility.ShieldDust, PBEAbility.RunAway },
@@ -4343,8 +4304,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 55, 90, 145, 90, 80,
-                    PBEType.Ghost, PBEType.Fire, PBEGenderRatio.M1_F1,
-                    1, false, 34.3,
+                    PBEType.Ghost, PBEType.Fire, PBEGenderRatio.M1_F1, 34.3,
                     new PBESpecies[] { PBESpecies.Litwick, PBESpecies.Lampent },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.FlameBody, PBEAbility.ShadowTag },
@@ -4414,8 +4374,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     250, 5, 5, 35, 105, 50,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F1,
-                    1, false, 34.6,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F1, 34.6,
                     new PBESpecies[] { PBESpecies.Happiny },
                     new PBESpecies[] { PBESpecies.Blissey },
                     new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace, PBEAbility.Healer },
@@ -4560,8 +4519,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     78, 84, 78, 109, 85, 100,
-                    PBEType.Fire, PBEType.Flying, PBEGenderRatio.M7_F1,
-                    1, false, 90.5,
+                    PBEType.Fire, PBEType.Flying, PBEGenderRatio.M7_F1, 90.5,
                     new PBESpecies[] { PBESpecies.Charmander, PBESpecies.Charmeleon },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SolarPower },
@@ -4701,8 +4659,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     39, 52, 43, 60, 50, 65,
-                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 8.5,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1, 8.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Charmeleon, PBESpecies.Charizard },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SolarPower },
@@ -4812,8 +4769,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     58, 64, 58, 80, 65, 80,
-                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 19.0,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1, 19.0,
                     new PBESpecies[] { PBESpecies.Charmander },
                     new PBESpecies[] { PBESpecies.Charizard },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SolarPower },
@@ -4924,8 +4880,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     44, 58, 44, 58, 44, 61,
-                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 6.2,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1, 6.2,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Monferno, PBESpecies.Infernape },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.IronFist },
@@ -5029,8 +4984,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     35, 64, 85, 74, 55, 32,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 52.5,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 52.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Huntail, PBESpecies.Gorebyss },
                     new PBEAbility[] { PBEAbility.ShellArmor, PBEAbility.Rattled },
@@ -5092,8 +5046,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     91, 90, 129, 90, 72, 108,
-                    PBEType.Steel, PBEType.Fighting, PBEGenderRatio.M0_F0,
-                    1, false, 250.0,
+                    PBEType.Steel, PBEType.Fighting, PBEGenderRatio.M0_F0, 250.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Justified },
@@ -5172,8 +5125,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     58, 50, 145, 95, 105, 30,
-                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 76.5,
+                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1, 76.5,
                     new PBESpecies[] { PBESpecies.Yamask },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Mummy },
@@ -5261,8 +5213,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 85, 60, 85, 60, 55,
-                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1,
-                    1, false, 19.5,
+                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1, 19.5,
                     new PBESpecies[] { PBESpecies.Torchic },
                     new PBESpecies[] { PBESpecies.Blaziken },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SpeedBoost },
@@ -5370,8 +5321,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     105, 140, 95, 55, 65, 45,
-                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M3_F1,
-                    1, false, 87.0,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M3_F1, 87.0,
                     new PBESpecies[] { PBESpecies.Timburr, PBESpecies.Gurdurr },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Guts, PBEAbility.SheerForce, PBEAbility.IronFist },
@@ -5463,8 +5413,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     40, 27, 60, 37, 50, 66,
-                    PBEType.Grass, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 0.6,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M1_F1, 0.6,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Whimsicott },
                     new PBEAbility[] { PBEAbility.Prankster, PBEAbility.Infiltrator, PBEAbility.Chlorophyll },
@@ -5535,8 +5484,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     86, 81, 97, 81, 107, 43,
-                    PBEType.Rock, PBEType.Grass, PBEGenderRatio.M7_F1,
-                    1, false, 60.4,
+                    PBEType.Rock, PBEType.Grass, PBEGenderRatio.M7_F1, 60.4,
                     new PBESpecies[] { PBESpecies.Lileep },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SuctionCups, PBEAbility.StormDrain },
@@ -5641,8 +5589,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 70, 120, 75, 130, 85,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F1,
-                    1, false, 85.6,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F1, 85.6,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -5724,8 +5671,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     85, 90, 80, 70, 80, 130,
-                    PBEType.Poison, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 75.0,
+                    PBEType.Poison, PBEType.Flying, PBEGenderRatio.M1_F1, 75.0,
                     new PBESpecies[] { PBESpecies.Zubat, PBESpecies.Golbat },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Infiltrator },
@@ -5847,8 +5793,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     70, 50, 30, 95, 135, 105,
-                    PBEType.Ice, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 148.0,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M0_F0, 148.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -5916,8 +5861,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 70, 40, 60, 40, 40,
-                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 8.5,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1, 8.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Beartic },
                     new PBEAbility[] { PBEAbility.SnowCloak, PBEAbility.Rattled },
@@ -5991,8 +5935,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 50, 95, 40, 50, 35,
-                    PBEType.Ground, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 6.5,
+                    PBEType.Ground, PBEType.None, PBEGenderRatio.M1_F1, 6.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Marowak },
                     new PBEAbility[] { PBEAbility.RockHead, PBEAbility.Lightningrod, PBEAbility.BattleArmor },
@@ -6109,8 +6052,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     70, 90, 90, 135, 90, 125,
-                    PBEType.Dark, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 50.5,
+                    PBEType.Dark, PBEType.None, PBEGenderRatio.M0_F0, 50.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.BadDreams },
@@ -6215,8 +6157,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     52, 65, 50, 45, 50, 38,
-                    PBEType.Dark, PBEType.Dragon, PBEGenderRatio.M1_F1,
-                    1, false, 17.3,
+                    PBEType.Dark, PBEType.Dragon, PBEGenderRatio.M1_F1, 17.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Zweilous, PBESpecies.Hydreigon },
                     new PBEAbility[] { PBEAbility.Hustle },
@@ -6295,8 +6236,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     70, 65, 65, 55, 55, 70,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F3,
-                    1, false, 32.6,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F3, 32.6,
                     new PBESpecies[] { PBESpecies.Skitty },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.CuteCharm, PBEAbility.Normalize, PBEAbility.WonderSkin },
@@ -6389,8 +6329,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     75, 75, 60, 83, 60, 60,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 24.5,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1, 24.5,
                     new PBESpecies[] { PBESpecies.Oshawott },
                     new PBESpecies[] { PBESpecies.Samurott },
                     new PBEAbility[] { PBEAbility.Torrent, PBEAbility.ShellArmor },
@@ -6472,8 +6411,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 120, 120, 150, 100, 90,
-                    PBEType.Steel, PBEType.Dragon, PBEGenderRatio.M0_F0,
-                    1, false, 683.0,
+                    PBEType.Steel, PBEType.Dragon, PBEGenderRatio.M0_F0, 683.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
@@ -6583,8 +6521,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 48, 48, 48, 48, 48,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 4.0,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F0, 4.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Limber, PBEAbility.Imposter },
@@ -6603,8 +6540,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 85, 40, 30, 45, 68,
-                    PBEType.Ground, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, true, 8.5,
+                    PBEType.Ground, PBEType.None, PBEGenderRatio.M1_F1, 8.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Excadrill },
                     new PBEAbility[] { PBEAbility.SandRush, PBEAbility.SandForce, PBEAbility.MoldBreaker },
@@ -6678,8 +6614,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     77, 120, 90, 60, 90, 48,
-                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 139.0,
+                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M1_F1, 139.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.RoughSkin, PBEAbility.SheerForce, PBEAbility.MoldBreaker },
@@ -6781,8 +6716,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 85, 70, 75, 70, 40,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 22.0,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 22.0,
                     new PBESpecies[] { PBESpecies.Tynamo },
                     new PBESpecies[] { PBESpecies.Eelektross },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -6850,8 +6784,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     85, 115, 80, 105, 80, 50,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 80.5,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 80.5,
                     new PBESpecies[] { PBESpecies.Tynamo, PBESpecies.Eelektrik },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -6927,8 +6860,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 55, 50, 45, 65, 55,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 6.5,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M7_F1, 6.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Vaporeon, PBESpecies.Jolteon, PBESpecies.Flareon, PBESpecies.Espeon, PBESpecies.Umbreon, PBESpecies.Leafeon, PBESpecies.Glaceon },
                     new PBEAbility[] { PBEAbility.RunAway, PBEAbility.Adaptability, PBEAbility.Anticipation },
@@ -7018,8 +6950,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     110, 123, 65, 100, 65, 65,
-                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1,
-                    1, false, 150.0,
+                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1, 150.0,
                     new PBESpecies[] { PBESpecies.Tepig, PBESpecies.Pignite },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.Reckless },
@@ -7121,8 +7052,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 75, 60, 75, 60, 103,
-                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 5.0,
+                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M1_F1, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Static, PBEAbility.MotorDrive },
@@ -7197,8 +7127,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     84, 86, 88, 111, 101, 60,
-                    PBEType.Water, PBEType.Steel, PBEGenderRatio.M7_F1,
-                    1, false, 84.5,
+                    PBEType.Water, PBEType.Steel, PBEGenderRatio.M7_F1, 84.5,
                     new PBESpecies[] { PBESpecies.Piplup, PBESpecies.Prinplup },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Torrent, PBEAbility.Defiant },
@@ -7310,8 +7239,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 65, 60, 130, 95, 110,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 26.5,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M7_F1, 26.5,
                     new PBESpecies[] { PBESpecies.Eevee },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Synchronize, PBEAbility.MagicBounce },
@@ -7427,8 +7355,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     110, 135, 60, 50, 65, 88,
-                    PBEType.Ground, PBEType.Steel, PBEGenderRatio.M1_F1,
-                    1, true, 40.4,
+                    PBEType.Ground, PBEType.Steel, PBEGenderRatio.M1_F1, 40.4,
                     new PBESpecies[] { PBESpecies.Drilbur },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SandRush, PBEAbility.SandForce, PBEAbility.MoldBreaker },
@@ -7510,8 +7437,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     52, 65, 55, 58, 62, 60,
-                    PBEType.Normal, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 15.0,
+                    PBEType.Normal, PBEType.Flying, PBEGenderRatio.M1_F1, 15.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.KeenEye, PBEAbility.InnerFocus, PBEAbility.Defiant },
@@ -7622,8 +7548,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     44, 50, 91, 24, 86, 10,
-                    PBEType.Grass, PBEType.Steel, PBEGenderRatio.M1_F1,
-                    1, true, 18.8,
+                    PBEType.Grass, PBEType.Steel, PBEGenderRatio.M1_F1, 18.8,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Ferrothorn },
                     new PBEAbility[] { PBEAbility.IronBarbs },
@@ -7695,8 +7620,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     74, 94, 131, 54, 116, 20,
-                    PBEType.Grass, PBEType.Steel, PBEGenderRatio.M1_F1,
-                    1, true, 110.0,
+                    PBEType.Grass, PBEType.Steel, PBEGenderRatio.M1_F1, 110.0,
                     new PBESpecies[] { PBESpecies.Ferroseed },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.IronBarbs },
@@ -7784,8 +7708,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 130, 60, 95, 110, 65,
-                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 25.0,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1, 25.0,
                     new PBESpecies[] { PBESpecies.Eevee },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.Guts },
@@ -7893,8 +7816,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     69, 55, 45, 55, 55, 15,
-                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M1_F1,
-                    1, false, 1.0,
+                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M1_F1, 1.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Amoonguss },
                     new PBEAbility[] { PBEAbility.EffectSpore, PBEAbility.Regenerator },
@@ -7963,8 +7885,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     66, 117, 70, 40, 50, 67,
-                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 36.0,
+                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M1_F1, 36.0,
                     new PBESpecies[] { PBESpecies.Axew },
                     new PBESpecies[] { PBESpecies.Haxorus },
                     new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.MoldBreaker, PBEAbility.Unnerve },
@@ -8052,8 +7973,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 40, 50, 65, 85, 40,
-                    PBEType.Water, PBEType.Ghost, PBEGenderRatio.M1_F1,
-                    1, false, 33.0,
+                    PBEType.Water, PBEType.Ghost, PBEGenderRatio.M1_F1, 33.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Jellicent },
                     new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.CursedBody, PBEAbility.Damp },
@@ -8131,8 +8051,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     68, 90, 65, 50, 55, 82,
-                    PBEType.Dragon, PBEType.Ground, PBEGenderRatio.M1_F1,
-                    1, false, 56.0,
+                    PBEType.Dragon, PBEType.Ground, PBEGenderRatio.M1_F1, 56.0,
                     new PBESpecies[] { PBESpecies.Gible },
                     new PBESpecies[] { PBESpecies.Garchomp },
                     new PBEAbility[] { PBEAbility.SandVeil, PBEAbility.RoughSkin },
@@ -8221,8 +8140,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 95, 82, 60, 82, 75,
-                    PBEType.Poison, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 107.3,
+                    PBEType.Poison, PBEType.None, PBEGenderRatio.M1_F1, 107.3,
                     new PBESpecies[] { PBESpecies.Trubbish },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Stench, PBEAbility.WeakArmor, PBEAbility.Aftermath },
@@ -8304,8 +8222,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     108, 130, 95, 80, 85, 102,
-                    PBEType.Dragon, PBEType.Ground, PBEGenderRatio.M1_F1,
-                    1, false, 95.0,
+                    PBEType.Dragon, PBEType.Ground, PBEGenderRatio.M1_F1, 95.0,
                     new PBESpecies[] { PBESpecies.Gible, PBESpecies.Gabite },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SandVeil, PBEAbility.RoughSkin },
@@ -8409,8 +8326,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     71, 120, 95, 120, 95, 99,
-                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
-                    1, false, 82.5,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0, 82.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Download },
@@ -8499,8 +8415,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     71, 120, 95, 120, 95, 99,
-                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
-                    1, false, 82.5,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0, 82.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Download },
@@ -8589,8 +8504,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     71, 120, 95, 120, 95, 99,
-                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
-                    1, false, 82.5,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0, 82.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Download },
@@ -8679,8 +8593,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     71, 120, 95, 120, 95, 99,
-                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
-                    1, false, 82.5,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0, 82.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Download },
@@ -8769,8 +8682,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     71, 120, 95, 120, 95, 99,
-                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0,
-                    1, false, 82.5,
+                    PBEType.Bug, PBEType.Steel, PBEGenderRatio.M0_F0, 82.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Download },
@@ -8859,8 +8771,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     58, 70, 45, 40, 45, 42,
-                    PBEType.Dragon, PBEType.Ground, PBEGenderRatio.M1_F1,
-                    1, false, 20.5,
+                    PBEType.Dragon, PBEType.Ground, PBEGenderRatio.M1_F1, 20.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Gabite, PBESpecies.Garchomp },
                     new PBEAbility[] { PBEAbility.SandVeil, PBEAbility.RoughSkin },
@@ -8946,8 +8857,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     150, 100, 120, 100, 120, 90,
-                    PBEType.Ghost, PBEType.Dragon, PBEGenderRatio.M0_F0,
-                    1, false, 750.0,
+                    PBEType.Ghost, PBEType.Dragon, PBEGenderRatio.M0_F0, 750.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
@@ -9062,8 +8972,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     150, 120, 100, 120, 100, 90,
-                    PBEType.Ghost, PBEType.Dragon, PBEGenderRatio.M0_F0,
-                    1, false, 650.0,
+                    PBEType.Ghost, PBEType.Dragon, PBEGenderRatio.M0_F0, 650.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -9178,8 +9087,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 60, 110, 130, 95, 65,
-                    PBEType.Ice, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 25.9,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M7_F1, 25.9,
                     new PBESpecies[] { PBESpecies.Eevee },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SnowCloak, PBEAbility.IceBody },
@@ -9279,8 +9187,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     75, 80, 70, 65, 75, 90,
-                    PBEType.Poison, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 55.0,
+                    PBEType.Poison, PBEType.Flying, PBEGenderRatio.M1_F1, 55.0,
                     new PBESpecies[] { PBESpecies.Zubat },
                     new PBESpecies[] { PBESpecies.Crobat },
                     new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Infiltrator },
@@ -9398,8 +9305,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 82, 78, 95, 80, 85,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 76.6,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 76.6,
                     new PBESpecies[] { PBESpecies.Psyduck },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Damp, PBEAbility.CloudNine, PBEAbility.SwiftSwim },
@@ -9542,8 +9448,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     59, 74, 50, 35, 50, 35,
-                    PBEType.Ground, PBEType.Ghost, PBEGenderRatio.M0_F0,
-                    1, false, 92.0,
+                    PBEType.Ground, PBEType.Ghost, PBEGenderRatio.M0_F0, 92.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Golurk },
                     new PBEAbility[] { PBEAbility.IronFist, PBEAbility.Klutz, PBEAbility.NoGuard },
@@ -9623,8 +9528,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     89, 124, 80, 55, 80, 55,
-                    PBEType.Ground, PBEType.Ghost, PBEGenderRatio.M0_F0,
-                    1, false, 330.0,
+                    PBEType.Ground, PBEType.Ghost, PBEGenderRatio.M0_F0, 330.0,
                     new PBESpecies[] { PBESpecies.Golett },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.IronFist, PBEAbility.Klutz, PBEAbility.NoGuard },
@@ -9715,8 +9619,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 84, 105, 114, 75, 52,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 22.6,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 22.6,
                     new PBESpecies[] { PBESpecies.Clamperl },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SwiftSwim, PBEAbility.Hydration },
@@ -9804,8 +9707,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     45, 30, 50, 55, 65, 45,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M1_F3,
-                    1, false, 5.8,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M1_F3, 5.8,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Gothorita, PBESpecies.Gothitelle },
                     new PBEAbility[] { PBEAbility.Frisk, PBEAbility.ShadowTag },
@@ -9898,8 +9800,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     70, 55, 95, 95, 110, 65,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M1_F3,
-                    1, false, 44.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M1_F3, 44.0,
                     new PBESpecies[] { PBESpecies.Gothita, PBESpecies.Gothorita },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Frisk, PBEAbility.ShadowTag },
@@ -9999,8 +9900,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 45, 70, 75, 85, 55,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M1_F3,
-                    1, false, 18.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M1_F3, 18.0,
                     new PBESpecies[] { PBESpecies.Gothita },
                     new PBESpecies[] { PBESpecies.Gothitelle },
                     new PBEAbility[] { PBEAbility.Frisk, PBEAbility.ShadowTag },
@@ -10096,8 +9996,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     75, 89, 85, 55, 65, 36,
-                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 97.0,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1, 97.0,
                     new PBESpecies[] { PBESpecies.Turtwig },
                     new PBESpecies[] { PBESpecies.Torterra },
                     new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.ShellArmor },
@@ -10181,8 +10080,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     85, 105, 85, 40, 50, 40,
-                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M3_F1,
-                    1, false, 40.0,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M3_F1, 40.0,
                     new PBESpecies[] { PBESpecies.Timburr },
                     new PBESpecies[] { PBESpecies.Conkeldurr },
                     new PBEAbility[] { PBEAbility.Guts, PBEAbility.SheerForce, PBEAbility.IronFist },
@@ -10270,8 +10168,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     95, 125, 79, 60, 100, 81,
-                    PBEType.Water, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 235.0,
+                    PBEType.Water, PBEType.Flying, PBEGenderRatio.M1_F1, 235.0,
                     new PBESpecies[] { PBESpecies.Magikarp },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Intimidate, PBEAbility.Moxie },
@@ -10369,8 +10266,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 5, 5, 15, 65, 30,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F1,
-                    1, false, 24.4,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M0_F1, 24.4,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Chansey, PBESpecies.Blissey },
                     new PBEAbility[] { PBEAbility.NaturalCure, PBEAbility.SereneGrace, PBEAbility.FriendGuard },
@@ -10451,8 +10347,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     76, 147, 90, 60, 70, 97,
-                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 105.5,
+                    PBEType.Dragon, PBEType.None, PBEGenderRatio.M1_F1, 105.5,
                     new PBESpecies[] { PBESpecies.Axew, PBESpecies.Fraxure },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.MoldBreaker, PBEAbility.Unnerve },
@@ -10548,8 +10443,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 104, 105, 94, 75, 52,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 27.0,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 27.0,
                     new PBESpecies[] { PBESpecies.Clamperl },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SwiftSwim, PBEAbility.WaterVeil },
@@ -10636,8 +10530,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     92, 105, 90, 125, 90, 98,
-                    PBEType.Dark, PBEType.Dragon, PBEGenderRatio.M1_F1,
-                    1, false, 160.0,
+                    PBEType.Dark, PBEType.Dragon, PBEGenderRatio.M1_F1, 160.0,
                     new PBESpecies[] { PBESpecies.Deino, PBESpecies.Zweilous },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -10742,8 +10635,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     76, 104, 71, 104, 71, 108,
-                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1,
-                    1, false, 55.0,
+                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1, 55.0,
                     new PBESpecies[] { PBESpecies.Chimchar, PBESpecies.Monferno },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.IronFist },
@@ -10871,8 +10763,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 62, 63, 80, 80, 60,
-                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M7_F1,
-                    1, false, 13.0,
+                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M7_F1, 13.0,
                     new PBESpecies[] { PBESpecies.Bulbasaur },
                     new PBESpecies[] { PBESpecies.Venusaur },
                     new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Chlorophyll },
@@ -10974,8 +10865,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 60, 70, 85, 105, 60,
-                    PBEType.Water, PBEType.Ghost, PBEGenderRatio.M1_F1,
-                    1, false, 135.0,
+                    PBEType.Water, PBEType.Ghost, PBEGenderRatio.M1_F1, 135.0,
                     new PBESpecies[] { PBESpecies.Frillish },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.CursedBody, PBEAbility.Damp },
@@ -11057,8 +10947,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 100, 100, 100, 100, 100,
-                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0,
-                    1, false, 1.1,
+                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0, 1.1,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SereneGrace },
@@ -11169,8 +11058,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 65, 60, 110, 95, 130,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 24.5,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M7_F1, 24.5,
                     new PBESpecies[] { PBESpecies.Eevee },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.VoltAbsorb, PBEAbility.QuickFeet },
@@ -11281,8 +11169,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     45, 25, 50, 25, 25, 35,
-                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1,
-                    1, false, 10.0,
+                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1, 10.0,
                     new PBESpecies[] { PBESpecies.Weedle },
                     new PBESpecies[] { PBESpecies.Beedrill },
                     new PBEAbility[] { PBEAbility.ShedSkin },
@@ -11305,8 +11192,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     91, 72, 90, 129, 90, 108,
-                    PBEType.Water, PBEType.Fighting, PBEGenderRatio.M0_F0,
-                    1, false, 48.5,
+                    PBEType.Water, PBEType.Fighting, PBEGenderRatio.M0_F0, 48.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Justified },
@@ -11383,8 +11269,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     91, 72, 90, 129, 90, 108,
-                    PBEType.Water, PBEType.Fighting, PBEGenderRatio.M0_F0,
-                    1, false, 48.5,
+                    PBEType.Water, PBEType.Fighting, PBEGenderRatio.M0_F0, 48.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Justified },
@@ -11461,8 +11346,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     125, 130, 90, 130, 90, 95,
-                    PBEType.Dragon, PBEType.Ice, PBEGenderRatio.M0_F0,
-                    1, false, 325.0,
+                    PBEType.Dragon, PBEType.Ice, PBEGenderRatio.M0_F0, 325.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Pressure },
@@ -11546,8 +11430,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     125, 170, 100, 120, 90, 95,
-                    PBEType.Dragon, PBEType.Ice, PBEGenderRatio.M0_F0,
-                    1, false, 325.0,
+                    PBEType.Dragon, PBEType.Ice, PBEGenderRatio.M0_F0, 325.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Teravolt },
@@ -11631,8 +11514,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     125, 120, 90, 170, 100, 95,
-                    PBEType.Dragon, PBEType.Ice, PBEGenderRatio.M0_F0,
-                    1, false, 325.0,
+                    PBEType.Dragon, PBEType.Ice, PBEGenderRatio.M0_F0, 325.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Turboblaze },
@@ -11716,8 +11598,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 40, 60, 95, 60, 55,
-                    PBEType.Ghost, PBEType.Fire, PBEGenderRatio.M1_F1,
-                    1, false, 13.0,
+                    PBEType.Ghost, PBEType.Fire, PBEGenderRatio.M1_F1, 13.0,
                     new PBESpecies[] { PBESpecies.Litwick },
                     new PBESpecies[] { PBESpecies.Chandelure },
                     new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.FlameBody, PBEAbility.ShadowTag },
@@ -11800,8 +11681,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     89, 125, 90, 115, 80, 101,
-                    PBEType.Ground, PBEType.Flying, PBEGenderRatio.M1_F0,
-                    1, false, 68.0,
+                    PBEType.Ground, PBEType.Flying, PBEGenderRatio.M1_F0, 68.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SandForce, PBEAbility.SheerForce },
@@ -11885,8 +11765,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     89, 145, 90, 105, 80, 91,
-                    PBEType.Ground, PBEType.Flying, PBEGenderRatio.M1_F0,
-                    1, false, 68.0,
+                    PBEType.Ground, PBEType.Flying, PBEGenderRatio.M1_F0, 68.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Intimidate },
@@ -11970,8 +11849,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 85, 55, 50, 55, 60,
-                    PBEType.Bug, PBEType.Fire, PBEGenderRatio.M1_F1,
-                    1, false, 28.8,
+                    PBEType.Bug, PBEType.Fire, PBEGenderRatio.M1_F1, 28.8,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Volcarona },
                     new PBEAbility[] { PBEAbility.FlameBody, PBEAbility.Swarm },
@@ -12040,8 +11918,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 80, 90, 110, 130, 110,
-                    PBEType.Dragon, PBEType.Psychic, PBEGenderRatio.M0_F1,
-                    1, false, 40.0,
+                    PBEType.Dragon, PBEType.Psychic, PBEGenderRatio.M0_F1, 40.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -12163,8 +12040,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 90, 80, 130, 110, 110,
-                    PBEType.Dragon, PBEType.Psychic, PBEGenderRatio.M1_F0,
-                    1, false, 60.0,
+                    PBEType.Dragon, PBEType.Psychic, PBEGenderRatio.M1_F0, 60.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -12284,8 +12160,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 110, 130, 60, 65, 95,
-                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 25.5,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1, 25.5,
                     new PBESpecies[] { PBESpecies.Eevee },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.LeafGuard, PBEAbility.Chlorophyll },
@@ -12390,8 +12265,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     66, 41, 77, 61, 87, 23,
-                    PBEType.Rock, PBEType.Grass, PBEGenderRatio.M7_F1,
-                    1, false, 23.8,
+                    PBEType.Rock, PBEType.Grass, PBEGenderRatio.M7_F1, 23.8,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Cradily },
                     new PBEAbility[] { PBEAbility.SuctionCups, PBEAbility.StormDrain },
@@ -12483,8 +12357,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 30, 55, 65, 55, 20,
-                    PBEType.Ghost, PBEType.Fire, PBEGenderRatio.M1_F1,
-                    1, false, 3.1,
+                    PBEType.Ghost, PBEType.Fire, PBEGenderRatio.M1_F1, 3.1,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Lampent, PBESpecies.Chandelure },
                     new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.FlameBody, PBEAbility.ShadowTag },
@@ -12565,8 +12438,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     70, 110, 70, 115, 70, 90,
-                    PBEType.Fighting, PBEType.Steel, PBEGenderRatio.M7_F1,
-                    1, false, 54.0,
+                    PBEType.Fighting, PBEType.Steel, PBEGenderRatio.M7_F1, 54.0,
                     new PBESpecies[] { PBESpecies.Riolu },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Steadfast, PBEAbility.InnerFocus, PBEAbility.Justified },
@@ -12691,8 +12563,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 85, 49, 60, 49, 60,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 30.5,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 30.5,
                     new PBESpecies[] { PBESpecies.Shinx },
                     new PBESpecies[] { PBESpecies.Luxray },
                     new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.Intimidate, PBEAbility.Guts },
@@ -12774,8 +12645,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 120, 79, 95, 79, 70,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 42.0,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 42.0,
                     new PBESpecies[] { PBESpecies.Shinx, PBESpecies.Luxio },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.Intimidate, PBEAbility.Guts },
@@ -12861,8 +12731,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     20, 10, 55, 15, 20, 80,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 10.0,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 10.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Gyarados },
                     new PBEAbility[] { PBEAbility.SwiftSwim, PBEAbility.Rattled },
@@ -12883,8 +12752,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     70, 20, 50, 20, 50, 40,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 8.5,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 8.5,
                     new PBESpecies[] { PBESpecies.Azurill },
                     new PBESpecies[] { PBESpecies.Azumarill },
                     new PBEAbility[] { PBEAbility.ThickFat, PBEAbility.HugePower, PBEAbility.SapSipper },
@@ -13007,8 +12875,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 80, 110, 50, 80, 45,
-                    PBEType.Ground, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 45.0,
+                    PBEType.Ground, PBEType.None, PBEGenderRatio.M1_F1, 45.0,
                     new PBESpecies[] { PBESpecies.Cubone },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.RockHead, PBEAbility.Lightningrod, PBEAbility.BattleArmor },
@@ -13133,8 +13000,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 77, 77, 128, 128, 90,
-                    PBEType.Normal, PBEType.Psychic, PBEGenderRatio.M0_F0,
-                    1, true, 6.5,
+                    PBEType.Normal, PBEType.Psychic, PBEGenderRatio.M0_F0, 6.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SereneGrace },
@@ -13241,8 +13107,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 128, 90, 77, 77, 128,
-                    PBEType.Normal, PBEType.Fighting, PBEGenderRatio.M0_F0,
-                    1, true, 6.5,
+                    PBEType.Normal, PBEType.Fighting, PBEGenderRatio.M0_F0, 6.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SereneGrace },
@@ -13349,8 +13214,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 105, 105, 105, 105, 80,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 0.3,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -13445,8 +13309,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 135, 130, 95, 90, 70,
-                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0,
-                    1, false, 550.0,
+                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0, 550.0,
                     new PBESpecies[] { PBESpecies.Beldum, PBESpecies.Metang },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.LightMetal },
@@ -13564,8 +13427,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 75, 100, 55, 80, 50,
-                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0,
-                    1, false, 202.5,
+                    PBEType.Steel, PBEType.Psychic, PBEGenderRatio.M0_F0, 202.5,
                     new PBESpecies[] { PBESpecies.Beldum },
                     new PBESpecies[] { PBESpecies.Metagross },
                     new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.LightMetal },
@@ -13679,8 +13541,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 20, 55, 25, 25, 30,
-                    PBEType.Bug, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 9.9,
+                    PBEType.Bug, PBEType.None, PBEGenderRatio.M1_F1, 9.9,
                     new PBESpecies[] { PBESpecies.Caterpie },
                     new PBESpecies[] { PBESpecies.Butterfree },
                     new PBEAbility[] { PBEAbility.ShedSkin },
@@ -13703,8 +13564,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     45, 85, 50, 55, 50, 65,
-                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 20.0,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M1_F1, 20.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Mienshao },
                     new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Regenerator, PBEAbility.Reckless },
@@ -13790,8 +13650,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 125, 60, 95, 60, 105,
-                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 35.5,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M1_F1, 35.5,
                     new PBESpecies[] { PBESpecies.Mienfoo },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Regenerator, PBEAbility.Reckless },
@@ -13882,8 +13741,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 40, 50, 75, 85, 95,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 4.2,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 4.2,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Minus },
@@ -13993,8 +13851,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 60, 60, 85, 85, 85,
-                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 1.0,
+                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1, 1.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Mismagius },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -14110,8 +13967,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 60, 60, 105, 105, 105,
-                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 4.4,
+                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1, 4.4,
                     new PBESpecies[] { PBESpecies.Misdreavus },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -14203,8 +14059,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     64, 78, 52, 78, 52, 81,
-                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1,
-                    1, false, 22.0,
+                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1, 22.0,
                     new PBESpecies[] { PBESpecies.Chimchar, },
                     new PBESpecies[] { PBESpecies.Infernape },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.IronFist },
@@ -14316,8 +14171,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     31, 45, 90, 30, 30, 40,
-                    PBEType.Bug, PBEType.Ground, PBEGenderRatio.M1_F1,
-                    1, false, 5.5,
+                    PBEType.Bug, PBEType.Ground, PBEGenderRatio.M1_F1, 5.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Ninjask, PBESpecies.Shedinja },
                     new PBEAbility[] { PBEAbility.Compoundeyes, PBEAbility.RunAway },
@@ -14386,8 +14240,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     73, 76, 75, 81, 100, 100,
-                    PBEType.Fire, PBEType.None, PBEGenderRatio.M1_F3,
-                    1, false, 19.9,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M1_F3, 19.9,
                     new PBESpecies[] { PBESpecies.Vulpix },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.Drought },
@@ -14472,8 +14325,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     61, 90, 45, 50, 50, 160,
-                    PBEType.Bug, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 12.0,
+                    PBEType.Bug, PBEType.Flying, PBEGenderRatio.M1_F1, 12.0,
                     new PBESpecies[] { PBESpecies.Nincada },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SpeedBoost, PBEAbility.Infiltrator },
@@ -14562,8 +14414,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 55, 45, 63, 45, 45,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 5.9,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1, 5.9,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Dewott, PBESpecies.Samurott },
                     new PBEAbility[] { PBEAbility.Torrent, PBEAbility.ShellArmor },
@@ -14642,8 +14493,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 45, 70, 45, 90, 95,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 3.9,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 3.9,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.RunAway, PBEAbility.Pickup, PBEAbility.VoltAbsorb },
@@ -14734,8 +14584,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     90, 120, 100, 150, 120, 100,
-                    PBEType.Water, PBEType.Dragon, PBEGenderRatio.M0_F0,
-                    1, false, 336.0,
+                    PBEType.Water, PBEType.Dragon, PBEGenderRatio.M0_F0, 336.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Pressure, PBEAbility.Telepathy },
@@ -14848,8 +14697,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     20, 40, 15, 35, 35, 60,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 2.0,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 2.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Pikachu, PBESpecies.Raichu },
                     new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
@@ -14938,8 +14786,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     90, 93, 55, 70, 55, 55,
-                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1,
-                    1, false, 55.5,
+                    PBEType.Fire, PBEType.Fighting, PBEGenderRatio.M7_F1, 55.5,
                     new PBESpecies[] { PBESpecies.Tepig },
                     new PBESpecies[] { PBESpecies.Emboar },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.ThickFat },
@@ -15031,8 +14878,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     35, 55, 30, 50, 40, 90,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 6.0,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 6.0,
                     new PBESpecies[] { PBESpecies.Pichu },
                     new PBESpecies[] { PBESpecies.Raichu },
                     new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
@@ -15147,8 +14993,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     53, 51, 53, 61, 56, 40,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 5.2,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1, 5.2,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Prinplup, PBESpecies.Empoleon },
                     new PBEAbility[] { PBEAbility.Torrent, PBEAbility.Defiant },
@@ -15238,8 +15083,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 50, 40, 85, 75, 95,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 4.2,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 4.2,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Plus },
@@ -15349,8 +15193,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     90, 75, 75, 90, 100, 70,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 33.9,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 33.9,
                     new PBESpecies[] { PBESpecies.Poliwag, PBESpecies.Poliwhirl },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.Damp, PBEAbility.Drizzle },
@@ -15450,8 +15293,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     40, 50, 40, 40, 40, 90,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 12.4,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 12.4,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Poliwhirl, PBESpecies.Poliwrath, PBESpecies.Politoed },
                     new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.Damp, PBEAbility.SwiftSwim },
@@ -15538,8 +15380,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 65, 65, 50, 50, 90,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 20.0,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 20.0,
                     new PBESpecies[] { PBESpecies.Poliwag },
                     new PBESpecies[] { PBESpecies.Poliwrath, PBESpecies.Politoed },
                     new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.Damp, PBEAbility.SwiftSwim },
@@ -15642,8 +15483,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     90, 85, 95, 70, 90, 70,
-                    PBEType.Water, PBEType.Fighting, PBEGenderRatio.M1_F1,
-                    1, false, 54.0,
+                    PBEType.Water, PBEType.Fighting, PBEGenderRatio.M1_F1, 54.0,
                     new PBESpecies[] { PBESpecies.Poliwag, PBESpecies.Poliwhirl },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.Damp, PBEAbility.SwiftSwim },
@@ -15748,8 +15588,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     64, 66, 68, 81, 76, 50,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 23.0,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1, 23.0,
                     new PBESpecies[] { PBESpecies.Piplup },
                     new PBESpecies[] { PBESpecies.Empoleon },
                     new PBEAbility[] { PBEAbility.Torrent, PBEAbility.Defiant },
@@ -15845,8 +15684,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 52, 48, 65, 50, 55,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 19.6,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 19.6,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Golduck },
                     new PBEAbility[] { PBEAbility.Damp, PBEAbility.CloudNine, PBEAbility.SwiftSwim },
@@ -15978,8 +15816,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 90, 55, 90, 80, 110,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 30.0,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 30.0,
                     new PBESpecies[] { PBESpecies.Pichu, PBESpecies.Pikachu },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Static, PBEAbility.Lightningrod },
@@ -16072,8 +15909,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 100, 200, 50, 100, 50,
-                    PBEType.Rock, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 230.0,
+                    PBEType.Rock, PBEType.None, PBEGenderRatio.M0_F0, 230.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.ClearBody, PBEAbility.Sturdy },
@@ -16172,8 +16008,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 120, 100, 150, 120, 90,
-                    PBEType.Dragon, PBEType.Fire, PBEGenderRatio.M0_F0,
-                    1, false, 330.0,
+                    PBEType.Dragon, PBEType.Fire, PBEGenderRatio.M0_F0, 330.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Turboblaze },
@@ -16258,8 +16093,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     40, 70, 40, 35, 40, 60,
-                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 20.2,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M7_F1, 20.2,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Lucario },
                     new PBEAbility[] { PBEAbility.Steadfast, PBEAbility.InnerFocus, PBEAbility.Prankster },
@@ -16359,8 +16193,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 50, 77, 95, 77, 91,
-                    PBEType.Electric, PBEType.Ghost, PBEGenderRatio.M0_F0,
-                    1, false, 0.3,
+                    PBEType.Electric, PBEType.Ghost, PBEGenderRatio.M0_F0, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -16438,8 +16271,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 65, 107, 105, 107, 86,
-                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M0_F0,
-                    1, false, 0.3,
+                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M0_F0, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -16518,8 +16350,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 65, 107, 105, 107, 86,
-                    PBEType.Electric, PBEType.Ice, PBEGenderRatio.M0_F0,
-                    1, false, 0.3,
+                    PBEType.Electric, PBEType.Ice, PBEGenderRatio.M0_F0, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -16598,8 +16429,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 65, 107, 105, 107, 86,
-                    PBEType.Electric, PBEType.Fire, PBEGenderRatio.M0_F0,
-                    1, false, 0.3,
+                    PBEType.Electric, PBEType.Fire, PBEGenderRatio.M0_F0, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -16678,8 +16508,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 65, 107, 105, 107, 86,
-                    PBEType.Electric, PBEType.Grass, PBEGenderRatio.M0_F0,
-                    1, false, 0.3,
+                    PBEType.Electric, PBEType.Grass, PBEGenderRatio.M0_F0, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -16758,8 +16587,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 65, 107, 105, 107, 86,
-                    PBEType.Electric, PBEType.Water, PBEGenderRatio.M0_F0,
-                    1, false, 0.3,
+                    PBEType.Electric, PBEType.Water, PBEGenderRatio.M0_F0, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -16838,8 +16666,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     95, 100, 85, 108, 70, 70,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 94.6,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1, 94.6,
                     new PBESpecies[] { PBESpecies.Oshawott, PBESpecies.Dewott },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Torrent, PBEAbility.ShellArmor },
@@ -16931,8 +16758,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     75, 125, 75, 30, 75, 85,
-                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M1_F0,
-                    1, false, 51.0,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M1_F0, 51.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Sturdy, PBEAbility.InnerFocus, PBEAbility.MoldBreaker },
@@ -17010,8 +16836,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 90, 89, 55, 69, 112,
-                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1,
-                    1, false, 200.5,
+                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1, 200.5,
                     new PBESpecies[] { PBESpecies.Venipede, PBESpecies.Whirlipede },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.PoisonPoint, PBEAbility.Swarm, PBEAbility.QuickFeet },
@@ -17093,8 +16918,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 90, 115, 45, 115, 58,
-                    PBEType.Dark, PBEType.Fighting, PBEGenderRatio.M1_F1,
-                    1, false, 30.0,
+                    PBEType.Dark, PBEType.Fighting, PBEGenderRatio.M1_F1, 30.0,
                     new PBESpecies[] { PBESpecies.Scraggy },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Moxie, PBEAbility.Intimidate },
@@ -17197,8 +17021,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 75, 70, 35, 70, 48,
-                    PBEType.Dark, PBEType.Fighting, PBEGenderRatio.M1_F1,
-                    1, false, 11.8,
+                    PBEType.Dark, PBEType.Fighting, PBEGenderRatio.M1_F1, 11.8,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Scrafty },
                     new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Moxie, PBEAbility.Intimidate },
@@ -17295,8 +17118,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     75, 75, 95, 75, 95, 113,
-                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 63.0,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1, 63.0,
                     new PBESpecies[] { PBESpecies.Snivy, PBESpecies.Servine },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Contrary },
@@ -17387,8 +17209,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 60, 75, 60, 75, 83,
-                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 16.0,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1, 16.0,
                     new PBESpecies[] { PBESpecies.Snivy },
                     new PBESpecies[] { PBESpecies.Serperior },
                     new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Contrary },
@@ -17471,8 +17292,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     1, 90, 45, 30, 30, 40,
-                    PBEType.Bug, PBEType.Ghost, PBEGenderRatio.M0_F0,
-                    1, false, 1.2,
+                    PBEType.Bug, PBEType.Ghost, PBEGenderRatio.M0_F0, 1.2,
                     new PBESpecies[] { PBESpecies.Nincada, PBESpecies.Ninjask },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.WonderGuard },
@@ -17554,8 +17374,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     45, 65, 34, 40, 34, 45,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 9.5,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 9.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Luxio, PBESpecies.Luxray },
                     new PBEAbility[] { PBEAbility.Rivalry, PBEAbility.Intimidate, PBEAbility.Guts },
@@ -17636,8 +17455,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     72, 58, 80, 103, 80, 97,
-                    PBEType.Psychic, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 14.0,
+                    PBEType.Psychic, PBEType.Flying, PBEGenderRatio.M1_F1, 14.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.WonderSkin, PBEAbility.MagicGuard, PBEAbility.TintedLens },
@@ -17727,8 +17545,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 45, 45, 35, 35, 50,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F3,
-                    1, false, 11.0,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F3, 11.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Delcatty },
                     new PBEAbility[] { PBEAbility.CuteCharm, PBEAbility.Normalize, PBEAbility.WonderSkin },
@@ -17847,8 +17664,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     45, 45, 55, 45, 55, 63,
-                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 8.1,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1, 8.1,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Servine, PBESpecies.Serperior },
                     new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Contrary },
@@ -17928,8 +17744,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 20, 35, 20, 45, 75,
-                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 58.0,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F1, 58.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.OwnTempo, PBEAbility.Technician, PBEAbility.Moody },
@@ -17957,8 +17772,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     44, 48, 65, 50, 64, 43,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 9.0,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1, 9.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Wartortle, PBESpecies.Blastoise },
                     new PBEAbility[] { PBEAbility.Torrent, PBEAbility.RainDish },
@@ -18066,8 +17880,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     65, 63, 45, 45, 45, 45,
-                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 9.9,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1, 9.9,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Pignite, PBESpecies.Emboar },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.ThickFat },
@@ -18143,8 +17956,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     91, 129, 90, 72, 90, 108,
-                    PBEType.Rock, PBEType.Fighting, PBEGenderRatio.M0_F0,
-                    1, false, 260.0,
+                    PBEType.Rock, PBEType.Fighting, PBEGenderRatio.M0_F0, 260.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Justified },
@@ -18222,8 +18034,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     120, 100, 85, 30, 85, 45,
-                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M1_F0,
-                    1, false, 55.5,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M1_F0, 55.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Guts, PBEAbility.InnerFocus, PBEAbility.MoldBreaker },
@@ -18300,8 +18111,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     79, 115, 70, 125, 80, 111,
-                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M1_F0,
-                    1, false, 61.0,
+                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M1_F0, 61.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Prankster, PBEAbility.Defiant },
@@ -18387,8 +18197,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     79, 105, 70, 145, 80, 101,
-                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M1_F0,
-                    1, false, 61.0,
+                    PBEType.Electric, PBEType.Flying, PBEGenderRatio.M1_F0, 61.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.VoltAbsorb },
@@ -18474,8 +18283,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     75, 80, 55, 25, 35, 35,
-                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M3_F1,
-                    1, false, 12.5,
+                    PBEType.Fighting, PBEType.None, PBEGenderRatio.M3_F1, 12.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Gurdurr, PBESpecies.Conkeldurr },
                     new PBEAbility[] { PBEAbility.Guts, PBEAbility.SheerForce, PBEAbility.IronFist },
@@ -18561,8 +18369,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     54, 78, 103, 53, 45, 22,
-                    PBEType.Water, PBEType.Rock, PBEGenderRatio.M7_F1,
-                    1, false, 16.5,
+                    PBEType.Water, PBEType.Rock, PBEGenderRatio.M7_F1, 16.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Carracosta },
                     new PBEAbility[] { PBEAbility.SolidRock, PBEAbility.Sturdy, PBEAbility.SwiftSwim },
@@ -18644,8 +18451,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     45, 60, 40, 70, 50, 45,
-                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 2.5,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M7_F1, 2.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Combusken, PBESpecies.Blaziken },
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.SpeedBoost },
@@ -18736,8 +18542,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     79, 115, 70, 125, 80, 111,
-                    PBEType.Flying, PBEType.None, PBEGenderRatio.M1_F0,
-                    1, false, 63.0,
+                    PBEType.Flying, PBEType.None, PBEGenderRatio.M1_F0, 63.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Prankster, PBEAbility.Defiant },
@@ -18820,8 +18625,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     79, 100, 80, 110, 90, 121,
-                    PBEType.Flying, PBEType.None, PBEGenderRatio.M1_F0,
-                    1, false, 63.0,
+                    PBEType.Flying, PBEType.None, PBEGenderRatio.M1_F0, 63.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Regenerator },
@@ -18904,8 +18708,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     95, 109, 105, 75, 85, 56,
-                    PBEType.Grass, PBEType.Ground, PBEGenderRatio.M7_F1,
-                    1, false, 310.0,
+                    PBEType.Grass, PBEType.Ground, PBEGenderRatio.M7_F1, 310.0,
                     new PBESpecies[] { PBESpecies.Turtwig, PBESpecies.Grotle },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.ShellArmor },
@@ -19007,8 +18810,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     99, 68, 83, 72, 87, 51,
-                    PBEType.Grass, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 100.0,
+                    PBEType.Grass, PBEType.Flying, PBEGenderRatio.M1_F1, 100.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SolarPower, PBEAbility.Chlorophyll, PBEAbility.Harvest },
@@ -19112,8 +18914,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     50, 50, 62, 40, 62, 65,
-                    PBEType.Poison, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 31.0,
+                    PBEType.Poison, PBEType.None, PBEGenderRatio.M1_F1, 31.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Garbodor },
                     new PBEAbility[] { PBEAbility.Stench, PBEAbility.StickyHold, PBEAbility.Aftermath },
@@ -19184,8 +18985,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     55, 68, 64, 45, 55, 31,
-                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 10.2,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M7_F1, 10.2,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Grotle, PBESpecies.Torterra },
                     new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.ShellArmor },
@@ -19268,8 +19068,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     35, 55, 40, 45, 40, 60,
-                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 0.3,
+                    PBEType.Electric, PBEType.None, PBEGenderRatio.M1_F1, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Eelektrik, PBESpecies.Eelektross },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19291,8 +19090,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     95, 65, 110, 60, 130, 65,
-                    PBEType.Dark, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 27.0,
+                    PBEType.Dark, PBEType.None, PBEGenderRatio.M7_F1, 27.0,
                     new PBESpecies[] { PBESpecies.Eevee },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Synchronize, PBEAbility.InnerFocus },
@@ -19405,8 +19203,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19425,8 +19222,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19445,8 +19241,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19465,8 +19260,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19485,8 +19279,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19505,8 +19298,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19525,8 +19317,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19545,8 +19336,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19565,8 +19355,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19585,8 +19374,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19605,8 +19393,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19625,8 +19412,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19645,8 +19431,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19665,8 +19450,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19685,8 +19469,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19705,8 +19488,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19725,8 +19507,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19745,8 +19526,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19765,8 +19545,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19785,8 +19564,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19805,8 +19583,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19825,8 +19602,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19845,8 +19621,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19865,8 +19640,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19885,8 +19659,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19905,8 +19678,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19925,8 +19697,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19945,8 +19716,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     48, 72, 48, 72, 48, 48,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 5.0,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 5.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -19965,8 +19735,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     75, 75, 130, 75, 130, 95,
-                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0,
-                    1, false, 0.3,
+                    PBEType.Psychic, PBEType.None, PBEGenderRatio.M0_F0, 0.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Levitate },
@@ -20063,8 +19832,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     51, 65, 65, 80, 75, 59,
-                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 41.0,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1, 41.0,
                     new PBESpecies[] { PBESpecies.Vanillite },
                     new PBESpecies[] { PBESpecies.Vanilluxe },
                     new PBEAbility[] { PBEAbility.IceBody, PBEAbility.WeakArmor },
@@ -20134,8 +19902,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     36, 50, 50, 65, 60, 44,
-                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 5.7,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1, 5.7,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Vanillish, PBESpecies.Vanilluxe },
                     new PBEAbility[] { PBEAbility.IceBody, PBEAbility.WeakArmor },
@@ -20202,8 +19969,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     71, 95, 85, 110, 95, 79,
-                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 57.5,
+                    PBEType.Ice, PBEType.None, PBEGenderRatio.M1_F1, 57.5,
                     new PBESpecies[] { PBESpecies.Vanillite, PBESpecies.Vanillish },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.IceBody, PBEAbility.WeakArmor },
@@ -20276,8 +20042,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     130, 65, 60, 110, 95, 65,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 29.0,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1, 29.0,
                     new PBESpecies[] { PBESpecies.Eevee },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.WaterAbsorb, PBEAbility.Hydration },
@@ -20390,8 +20155,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     30, 45, 59, 30, 39, 57,
-                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1,
-                    1, false, 5.3,
+                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1, 5.3,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Whirlipede, PBESpecies.Scolipede },
                     new PBEAbility[] { PBEAbility.PoisonPoint, PBEAbility.Swarm, PBEAbility.QuickFeet },
@@ -20454,8 +20218,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     80, 82, 83, 100, 100, 80,
-                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M7_F1,
-                    1, false, 100.0,
+                    PBEType.Grass, PBEType.Poison, PBEGenderRatio.M7_F1, 100.0,
                     new PBESpecies[] { PBESpecies.Bulbasaur, PBESpecies.Ivysaur },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Overgrow, PBEAbility.Chlorophyll },
@@ -20568,8 +20331,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 100, 100, 100, 100, 100,
-                    PBEType.Psychic, PBEType.Fire, PBEGenderRatio.M0_F0,
-                    1, true, 4.0,
+                    PBEType.Psychic, PBEType.Fire, PBEGenderRatio.M0_F0, 4.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.VictoryStar },
@@ -20663,8 +20425,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     91, 90, 72, 90, 129, 108,
-                    PBEType.Grass, PBEType.Fighting, PBEGenderRatio.M0_F0,
-                    1, false, 200.0,
+                    PBEType.Grass, PBEType.Fighting, PBEGenderRatio.M0_F0, 200.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Justified },
@@ -20742,8 +20503,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     85, 60, 65, 135, 105, 100,
-                    PBEType.Bug, PBEType.Fire, PBEGenderRatio.M1_F1,
-                    1, false, 46.0,
+                    PBEType.Bug, PBEType.Fire, PBEGenderRatio.M1_F1, 46.0,
                     new PBESpecies[] { PBESpecies.Larvesta },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.FlameBody, PBEAbility.Swarm },
@@ -20822,8 +20582,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     39, 41, 40, 50, 65, 65,
-                    PBEType.Fire, PBEType.None, PBEGenderRatio.M1_F3,
-                    1, false, 9.9,
+                    PBEType.Fire, PBEType.None, PBEGenderRatio.M1_F3, 9.9,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Ninetales },
                     new PBEAbility[] { PBEAbility.FlashFire, PBEAbility.Drought },
@@ -20946,8 +20705,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     59, 63, 80, 65, 80, 58,
-                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1,
-                    1, false, 22.5,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M7_F1, 22.5,
                     new PBESpecies[] { PBESpecies.Squirtle },
                     new PBESpecies[] { PBESpecies.Blastoise },
                     new PBEAbility[] { PBEAbility.Torrent, PBEAbility.RainDish },
@@ -21057,8 +20815,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     40, 35, 30, 20, 20, 50,
-                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1,
-                    1, false, 3.2,
+                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1, 3.2,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Kakuna, PBESpecies.Beedrill },
                     new PBEAbility[] { PBEAbility.ShieldDust, PBEAbility.RunAway },
@@ -21081,8 +20838,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     60, 67, 85, 77, 75, 116,
-                    PBEType.Grass, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 6.6,
+                    PBEType.Grass, PBEType.None, PBEGenderRatio.M1_F1, 6.6,
                     new PBESpecies[] { PBESpecies.Cottonee },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Prankster, PBEAbility.Infiltrator, PBEAbility.Chlorophyll },
@@ -21153,8 +20909,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     40, 55, 99, 40, 79, 47,
-                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1,
-                    1, false, 58.5,
+                    PBEType.Bug, PBEType.Poison, PBEGenderRatio.M1_F1, 58.5,
                     new PBESpecies[] { PBESpecies.Venipede },
                     new PBESpecies[] { PBESpecies.Scolipede },
                     new PBEAbility[] { PBEAbility.PoisonPoint, PBEAbility.Swarm, PBEAbility.QuickFeet },
@@ -21220,8 +20975,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     38, 30, 85, 55, 65, 30,
-                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1,
-                    1, false, 1.5,
+                    PBEType.Ghost, PBEType.None, PBEGenderRatio.M1_F1, 1.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Cofagrigus },
                     new PBEAbility[] { PBEAbility.Mummy },
@@ -21303,8 +21057,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     100, 150, 120, 120, 100, 90,
-                    PBEType.Dragon, PBEType.Electric, PBEGenderRatio.M0_F0,
-                    1, false, 345.0,
+                    PBEType.Dragon, PBEType.Electric, PBEGenderRatio.M0_F0, 345.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.Teravolt },
@@ -21392,8 +21145,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     40, 45, 35, 30, 40, 55,
-                    PBEType.Poison, PBEType.Flying, PBEGenderRatio.M1_F1,
-                    1, false, 7.5,
+                    PBEType.Poison, PBEType.Flying, PBEGenderRatio.M1_F1, 7.5,
                     new PBESpecies[] { },
                     new PBESpecies[] { PBESpecies.Golbat, PBESpecies.Crobat },
                     new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Infiltrator },
@@ -21503,8 +21255,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEPokemonData
                 (
                     72, 85, 70, 65, 70, 58,
-                    PBEType.Dark, PBEType.Dragon, PBEGenderRatio.M1_F1,
-                    1, false, 50.0,
+                    PBEType.Dark, PBEType.Dragon, PBEGenderRatio.M1_F1, 50.0,
                     new PBESpecies[] { PBESpecies.Deino },
                     new PBESpecies[] { PBESpecies.Hydreigon },
                     new PBEAbility[] { PBEAbility.Hustle },

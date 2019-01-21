@@ -262,7 +262,7 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 Species = species,
                 Nickname = PBEPokemonLocalization.Names[species].FromUICultureInfo(),
-                Level = PBEPokemonData.Data[species].MinLevel,
+                Level = settings.MinLevel,
                 EVs = new byte[6],
                 IVs = new byte[6],
                 Moves = new PBEMove[moves.Length],
@@ -386,7 +386,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
 
                 level.Maximum = illegal.IsChecked.Value ? byte.MaxValue : settings.MaxLevel;
-                level.Minimum = illegal.IsChecked.Value ? byte.MinValue : pData.MinLevel;
+                level.Minimum = illegal.IsChecked.Value ? byte.MinValue : settings.MinLevel;
                 shell.Level = (byte)PBEUtils.Clamp(shell.Level, level.Minimum, level.Maximum);
                 if (level.Value != shell.Level)
                 {
@@ -398,10 +398,6 @@ namespace Kermalis.PokemonBattleEngineClient
                     friendship.Value = shell.Friendship;
                 }
 
-                if (!(shiny.IsEnabled = illegal.IsChecked.Value || !pData.ShinyLocked))
-                {
-                    shell.Shiny = false;
-                }
                 if (shiny.IsChecked != shell.Shiny)
                 {
                     shiny.IsChecked = shell.Shiny;

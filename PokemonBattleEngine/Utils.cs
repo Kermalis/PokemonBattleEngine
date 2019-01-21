@@ -39,14 +39,7 @@ namespace Kermalis.PokemonBattleEngine
 
         public static bool NextShiny(this Random rand, PBESpecies species)
         {
-            if (PBEPokemonData.Data[species].ShinyLocked)
-            {
-                return false;
-            }
-            else
-            {
-                return rand.Next(0, ushort.MaxValue + 1) < 8;
-            }
+            return rand.Next(0, ushort.MaxValue + 1) < 8;
         }
         public static PBEGender NextGender(this Random rand, PBESpecies species)
         {
