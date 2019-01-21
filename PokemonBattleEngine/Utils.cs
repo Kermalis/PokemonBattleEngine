@@ -43,7 +43,8 @@ namespace Kermalis.PokemonBattleEngine
         }
         public static PBEGender NextGender(this Random rand, PBESpecies species)
         {
-            switch (PBEPokemonData.Data[species].GenderRatio)
+            PBEPokemonData pData = PBEPokemonData.Data[species];
+            switch (pData.GenderRatio)
             {
                 case PBEGenderRatio.M7_F1: return rand.ApplyChance(875, 1000) ? PBEGender.Male : PBEGender.Female;
                 case PBEGenderRatio.M3_F1: return rand.ApplyChance(750, 1000) ? PBEGender.Male : PBEGender.Female;
@@ -53,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine
                 case PBEGenderRatio.M0_F1: return PBEGender.Female;
                 case PBEGenderRatio.M0_F0: return PBEGender.Genderless;
                 case PBEGenderRatio.M1_F0: return PBEGender.Male;
-                default: throw new ArgumentOutOfRangeException();
+                default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio));
             }
         }
 

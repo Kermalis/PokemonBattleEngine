@@ -128,7 +128,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         case PBEGenderRatio.M0_F1: ratio = "0% Male, 100% Female"; break;
                         case PBEGenderRatio.M1_F0: ratio = "100% Male, 0% Female"; break;
                         case PBEGenderRatio.M0_F0: ratio = "Genderless Species"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio), $"Invalid gender ratio: {pData.GenderRatio}");
+                        default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio));
                     }
 
                     var embed = new EmbedBuilder()
@@ -136,7 +136,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
                         .WithTitle(PBEPokemonLocalization.Names[species].English)
                         .WithAuthor(Context.User)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEGender.Male, false, false))
+                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEUtils.RNG.NextGender(species), false, false))
                         .AddField("Types", types, true)
                         .AddField("Gender Ratio", ratio, true)
                         .AddField("Weight", $"{pData.Weight:N1} kg", true)
