@@ -681,7 +681,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Golett, new PBELocalizedString("ゴビット", "골비람", "Gringolem", "Golbit", "Golett", "Golett", "Golett") },
             { PBESpecies.Golurk, new PBELocalizedString("ゴルーグ", "골루그", "Golemastoc", "Golgantes", "Golurk", "Golurk", "Golurk") },
             // { PBESpecies.624, new PBELocalizedString("コマタナ", "자망칼", "Scalpion", "Gladiantri", "Pawniard", "Pawniard", "Pawniard") },
-            // { PBESpecies.625, new PBELocalizedString("キリキザン", "절각참", "Scalproie", "Caesurio", "Bisharp", "Bisharp", "Bisharp") },
+            { PBESpecies.Bisharp, new PBELocalizedString("キリキザン", "절각참", "Scalproie", "Caesurio", "Bisharp", "Bisharp", "Bisharp") },
             { PBESpecies.Bouffalant, new PBELocalizedString("バッフロン", "버프론", "Frison", "Bisofank", "Bouffalant", "Bouffalant", "Bouffalant") },
             // { PBESpecies.627, new PBELocalizedString("ワシボン", "수리둥보", "Furaiglon", "Geronimatz", "Rufflet", "Rufflet", "Rufflet") },
             // { PBESpecies.628, new PBELocalizedString("ウォーグル", "워글", "Gueriaigle", "Washakwil", "Braviary", "Braviary", "Braviary") },
