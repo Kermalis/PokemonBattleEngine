@@ -644,7 +644,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.585, new PBELocalizedString("シキジカ", "사철록", "Vivaldaim", "Sesokitz", "Deerling", "Deerling", "Deerling") },
             // { PBESpecies.586, new PBELocalizedString("メブキジカ", "바라철록", "Haydaim", "Kronjuwild", "Sawsbuck", "Sawsbuck", "Sawsbuck") },
             { PBESpecies.Emolga, new PBELocalizedString("エモンガ", "에몽가", "Emolga", "Emolga", "Emolga", "Emolga", "Emolga") },
-            // { PBESpecies.588, new PBELocalizedString("カブルモ", "딱정곤", "Carabing", "Laukaps", "Karrablast", "Karrablast", "Karrablast") },
+            { PBESpecies.Karrablast, new PBELocalizedString("カブルモ", "딱정곤", "Carabing", "Laukaps", "Karrablast", "Karrablast", "Karrablast") },
             { PBESpecies.Escavalier, new PBELocalizedString("シュバルゴ", "슈바르고", "Lançargot", "Cavalanzas", "Escavalier", "Escavalier", "Escavalier") },
             { PBESpecies.Foongus, new PBELocalizedString("タマゲタケ", "깜놀버슬", "Trompignon", "Tarnpignon", "Foongus", "Foongus", "Foongus") },
             { PBESpecies.Amoonguss, new PBELocalizedString("モロバレル", "뽀록나", "Gaulet", "Hutsassa", "Amoonguss", "Amoonguss", "Amoonguss") },
