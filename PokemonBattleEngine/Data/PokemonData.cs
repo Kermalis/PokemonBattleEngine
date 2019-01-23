@@ -15917,7 +15917,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     75, 65, 55, 65, 55, 69,
                     PBEType.Water, PBEType.Ground, PBEGenderRatio.M1_F1, 17.0,
-                    new PBESpecies[] { /*PBESpecies.Tympole*/ },
+                    new PBESpecies[] { PBESpecies.Tympole },
                     new PBESpecies[] { PBESpecies.Seismitoad },
                     new PBEAbility[] { PBEAbility.SwiftSwim, PBEAbility.Hydration, PBEAbility.WaterAbsorb },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
@@ -18565,7 +18565,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     105, 85, 75, 85, 75, 74,
                     PBEType.Water, PBEType.Ground, PBEGenderRatio.M1_F1, 62.0,
-                    new PBESpecies[] { /*PBESpecies.Tympole,*/ PBESpecies.Palpitoad },
+                    new PBESpecies[] { PBESpecies.Tympole, PBESpecies.Palpitoad },
                     new PBESpecies[] { },
                     new PBEAbility[] { PBEAbility.SwiftSwim, PBEAbility.PoisonTouch, PBEAbility.WaterAbsorb },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
@@ -20674,6 +20674,69 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WideGuard, PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2)
+                    }
+                )
+            },
+            {
+                PBESpecies.Tympole,
+                new PBEPokemonData
+                (
+                    50, 50, 40, 50, 40, 64,
+                    PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 4.5,
+                    new PBESpecies[] { },
+                    new PBESpecies[] { PBESpecies.Palpitoad, PBESpecies.Seismitoad },
+                    new PBEAbility[] { PBEAbility.SwiftSwim, PBEAbility.Hydration, PBEAbility.WaterAbsorb },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PBEMove.AquaRing, 20, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Bubble, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.BubbleBeam, 12, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.EchoedVoice, 38, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Flail, 34, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Growl, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.HydroPump, 42, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.HyperVoice, 45, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.MuddyWater, 27, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.MudShot, 16, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.RainDance, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Round, 9, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Supersonic, 5, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.Uproar, 23, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Bounce, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.EarthPower, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.EchoedVoice, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Endeavor, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.Facade, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Hail, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.HyperVoice, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.IcyWind, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.Mist, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.MudBomb, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.MudSport, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Protect, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.RainDance, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Refresh, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Return, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Scald, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.SludgeBomb, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.SludgeWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Substitute, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Surf, PBEMoveObtainMethod.HM_BWB2W2),
+                        Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
                 )
             },

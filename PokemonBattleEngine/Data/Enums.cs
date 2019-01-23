@@ -2396,6 +2396,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tropius = 357,
         Trubbish = 568,
         Turtwig = 387,
+        Tympole = 535,
         Tynamo = 602,
         Umbreon = 197,
         Unown_A = 201 | (0 << 0x10),
