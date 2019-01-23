@@ -2297,6 +2297,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Jellicent = 593,
         Jirachi = 385,
         Jolteon = 135,
+        Joltik = 595,
         Kakuna = 14,
         Karrablast = 588,
         Keldeo = 647 | (0 << 0x10),
