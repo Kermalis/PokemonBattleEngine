@@ -2212,6 +2212,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Blastoise = 9,
         Blaziken = 257,
         Blissey = 242,
+        Blitzle = 522,
         Boldore = 525,
         Bouffalant = 626,
         Bulbasaur = 1,

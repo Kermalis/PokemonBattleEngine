@@ -578,7 +578,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.519, new PBELocalizedString("マメパト", "콩둘기", "Poichigeon", "Dusselgurr", "Pidove", "Pidove", "Pidove") },
             // { PBESpecies.520, new PBELocalizedString("ハトーボー", "유토브", "Colombeau", "Navitaub", "Tranquill", "Tranquill", "Tranquill") },
             // { PBESpecies.521, new PBELocalizedString("ケンホロウ", "켄호로우", "Déflaisan", "Fasasnob", "Unfezant", "Unfezant", "Unfezant") },
-            // { PBESpecies.522, new PBELocalizedString("シママ", "줄뮤마", "Zébibron", "Elezeba", "Blitzle", "Blitzle", "Blitzle") },
+            { PBESpecies.Blitzle, new PBELocalizedString("シママ", "줄뮤마", "Zébibron", "Elezeba", "Blitzle", "Blitzle", "Blitzle") },
             { PBESpecies.Zebstrika, new PBELocalizedString("ゼブライカ", "제브라이카", "Zéblitz", "Zebritz", "Zebstrika", "Zebstrika", "Zebstrika") },
             { PBESpecies.Roggenrola, new PBELocalizedString("ダンゴロ", "단굴", "Nodulithe", "Kiesling", "Roggenrola", "Roggenrola", "Roggenrola") },
             { PBESpecies.Boldore, new PBELocalizedString("ガントル", "암트르", "Géolithe", "Sedimantur", "Boldore", "Boldore", "Boldore") },
