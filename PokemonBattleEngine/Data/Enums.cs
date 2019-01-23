@@ -2342,6 +2342,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Oshawott = 501,
         Pachirisu = 417,
         Palkia = 484,
+        Palpitoad = 536,
         Pawniard = 624,
         Pichu = 172,
         Pignite = 499,

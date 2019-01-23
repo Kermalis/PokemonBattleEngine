@@ -592,7 +592,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Gurdurr, new PBELocalizedString("ドテッコツ", "토쇠골", "Ouvrifier", "Strepoli", "Gurdurr", "Gurdurr", "Gurdurr") },
             { PBESpecies.Conkeldurr, new PBELocalizedString("ローブシン", "노보청", "Bétochef", "Meistagrif", "Conkeldurr", "Conkeldurr", "Conkeldurr") },
             // { PBESpecies.535, new PBELocalizedString("オタマロ", "동챙이", "Tritonde", "Schallquap", "Tympole", "Tympole", "Tympole") },
-            // { PBESpecies.536, new PBELocalizedString("ガマガル", "두까비", "Batracné", "Mebrana", "Palpitoad", "Palpitoad", "Palpitoad") },
+            { PBESpecies.Palpitoad, new PBELocalizedString("ガマガル", "두까비", "Batracné", "Mebrana", "Palpitoad", "Palpitoad", "Palpitoad") },
             { PBESpecies.Seismitoad, new PBELocalizedString("ガマゲロゲ", "두빅굴", "Crapustule", "Branawarz", "Seismitoad", "Seismitoad", "Seismitoad") },
             { PBESpecies.Throh, new PBELocalizedString("ナゲキ", "던지미", "Judokrak", "Jiutesto", "Throh", "Throh", "Throh") },
             { PBESpecies.Sawk, new PBELocalizedString("ダゲキ", "타격귀", "Karaclée", "Karadonis", "Sawk", "Sawk", "Sawk") },
