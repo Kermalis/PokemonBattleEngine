@@ -2369,6 +2369,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rotom_Mow = 479 | (4 << 0x10),
         Rotom_Wash = 479 | (5 << 0x10),
         Samurott = 503,
+        Sandile = 551,
         Sawk = 539,
         Scolipede = 545,
         Scrafty = 560,
