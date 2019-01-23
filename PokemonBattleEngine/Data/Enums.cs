@@ -2264,6 +2264,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Fraxure = 611,
         Frillish = 592,
         Gabite = 444,
+        Galvantula = 596,
         Garbodor = 569,
         Garchomp = 445,
         Genesect = 649 | (0 << 0x10),
