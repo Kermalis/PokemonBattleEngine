@@ -608,7 +608,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.549, new PBELocalizedString("ドレディア", "드레디어", "Fragilady", "Dressella", "Lilligant", "Lilligant", "Lilligant") },
             // { PBESpecies.550, new PBELocalizedString("バスラオ", "배쓰나이", "Bargantua", "Barschuft", "Basculin", "Basculin", "Basculin") },
             // { PBESpecies.551, new PBELocalizedString("メグロコ", "깜눈크", "Mascaïman", "Ganovil", "Sandile", "Sandile", "Sandile") },
-            // { PBESpecies.552, new PBELocalizedString("ワルビル", "악비르", "Escroco", "Rokkaiman", "Krokorok", "Krokorok", "Krokorok") },
+            { PBESpecies.Krokorok, new PBELocalizedString("ワルビル", "악비르", "Escroco", "Rokkaiman", "Krokorok", "Krokorok", "Krokorok") },
             { PBESpecies.Krookodile, new PBELocalizedString("ワルビアル", "악비아르", "Crocorible", "Rabigator", "Krookodile", "Krookodile", "Krookodile") },
             // { PBESpecies.554, new PBELocalizedString("ダルマッカ", "달막화", "Darumarond", "Flampion", "Darumaka", "Darumaka", "Darumaka") },
             // { PBESpecies.555, new PBELocalizedString("ヒヒダルマ", "불비달마", "Darumacho", "Flampivian", "Darmanitan", "Darmanitan", "Darmanitan") },
