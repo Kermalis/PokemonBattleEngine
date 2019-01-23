@@ -2231,6 +2231,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Cradily = 346,
         Cresselia = 488,
         Crobat = 169,
+        Crustle = 558,
         Cryogonal = 615,
         Cubchoo = 613,
         Cubone = 104,
