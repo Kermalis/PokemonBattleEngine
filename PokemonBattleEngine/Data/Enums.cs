@@ -2244,6 +2244,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Drilbur = 529,
         Druddigon = 621,
         Durant = 632,
+        Dwebble = 557,
         Eelektrik = 603,
         Eelektross = 604,
         Eevee = 133,
