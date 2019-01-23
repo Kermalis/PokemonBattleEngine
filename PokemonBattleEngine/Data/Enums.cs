@@ -2370,6 +2370,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Scolipede = 545,
         Scrafty = 560,
         Scraggy = 559,
+        Seismitoad = 537,
         Serperior = 497,
         Servine = 496,
         Shedinja = 292,
