@@ -2267,6 +2267,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Genesect_Douse = 649 | (3 << 0x10),
         Genesect_Shock = 649 | (4 << 0x10),
         Gible = 443,
+        Gigalith = 526,
         Giratina = 487 | (0 << 0x10),
         Giratina_Origin = 487 | (1 << 0x10),
         Glaceon = 471,
