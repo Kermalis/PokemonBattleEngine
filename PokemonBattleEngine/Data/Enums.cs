@@ -2439,6 +2439,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Whimsicott = 547,
         Whirlipede = 544,
         Yamask = 562,
+        Zebstrika = 523,
         Zekrom = 644,
         Zubat = 41,
         Zweilous = 634
