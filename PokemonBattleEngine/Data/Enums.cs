@@ -2306,6 +2306,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Klang = 600,
         Klink = 599,
         Klinklang = 601,
+        Krookodile = 553,
         Kyurem = 646 | (0 << 0x10),
         Kyurem_Black = 646 | (1 << 0x10),
         Kyurem_White = 646 | (2 << 0x10),
