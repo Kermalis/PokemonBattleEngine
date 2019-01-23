@@ -2376,6 +2376,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Smeargle = 235,
         Snivy = 495,
         Squirtle = 7,
+        Stunfisk = 618,
         Tepig = 498,
         Terrakion = 639,
         Throh = 538,
