@@ -622,7 +622,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Cofagrigus, new PBELocalizedString("デスカーン", "데스니칸", "Tutankafer", "Echnatoll", "Cofagrigus", "Cofagrigus", "Cofagrigus") },
             { PBESpecies.Tirtouga, new PBELocalizedString("プロトーガ", "프로토가", "Carapagos", "Galapaflos", "Tirtouga", "Tirtouga", "Tirtouga") },
             { PBESpecies.Carracosta, new PBELocalizedString("アバゴーラ", "늑골라", "Mégapagos", "Karippas", "Carracosta", "Carracosta", "Carracosta") },
-            // { PBESpecies.566, new PBELocalizedString("アーケン", "아켄", "Arkéapti", "Flapteryx", "Archen", "Archen", "Archen") },
+            { PBESpecies.Archen, new PBELocalizedString("アーケン", "아켄", "Arkéapti", "Flapteryx", "Archen", "Archen", "Archen") },
             { PBESpecies.Archeops, new PBELocalizedString("アーケオス", "아케오스", "Aéroptéryx", "Aeropteryx", "Archeops", "Archeops", "Archeops") },
             { PBESpecies.Trubbish, new PBELocalizedString("ヤブクロン", "깨봉이", "Miamiasme", "Unratütox", "Trubbish", "Trubbish", "Trubbish") },
             { PBESpecies.Garbodor, new PBELocalizedString("ダストダス", "더스트나", "Miasmax", "Deponitox", "Garbodor", "Garbodor", "Garbodor") },
