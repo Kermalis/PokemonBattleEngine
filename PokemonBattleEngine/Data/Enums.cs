@@ -2241,6 +2241,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Darkrai = 491,
         Darmanitan = 555 | (0 << 0x10),
         Darmanitan_Zen = 555 | (1 << 0x10),
+        Darumaka = 554,
         Deino = 633,
         Delcatty = 301,
         Dewott = 502,
