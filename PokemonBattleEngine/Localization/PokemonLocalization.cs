@@ -674,7 +674,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Cubchoo, new PBELocalizedString("クマシュン", "코고미", "Polarhume", "Petznief", "Cubchoo", "Cubchoo", "Cubchoo") },
             { PBESpecies.Beartic, new PBELocalizedString("ツンベアー", "툰베어", "Polagriffe", "Siberio", "Beartic", "Beartic", "Beartic") },
             { PBESpecies.Cryogonal, new PBELocalizedString("フリージオ", "프리지오", "Hexagel", "Frigometri", "Cryogonal", "Cryogonal", "Cryogonal") },
-            // { PBESpecies.616, new PBELocalizedString("チョボマキ", "쪼마리", "Escargaume", "Schnuthelm", "Shelmet", "Shelmet", "Shelmet") },
+            { PBESpecies.Shelmet, new PBELocalizedString("チョボマキ", "쪼마리", "Escargaume", "Schnuthelm", "Shelmet", "Shelmet", "Shelmet") },
             { PBESpecies.Accelgor, new PBELocalizedString("アギルダー", "어지리더", "Limaspeed", "Hydragil", "Accelgor", "Accelgor", "Accelgor") },
             { PBESpecies.Stunfisk, new PBELocalizedString("マッギョ", "메더", "Limonde", "Flunschlik", "Stunfisk", "Stunfisk", "Stunfisk") },
             { PBESpecies.Mienfoo, new PBELocalizedString("コジョフー", "비조푸", "Kungfouine", "Lin-Fu", "Mienfoo", "Mienfoo", "Mienfoo") },

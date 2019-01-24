@@ -2397,6 +2397,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Serperior = 497,
         Servine = 496,
         Shedinja = 292,
+        Shelmet = 616,
         Shinx = 403,
         Sigilyph = 561,
         Simipour = 516,
