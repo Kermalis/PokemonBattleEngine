@@ -2394,6 +2394,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Skitty = 300,
         Smeargle = 235,
         Snivy = 495,
+        Solosis = 577,
         Squirtle = 7,
         Stunfisk = 618,
         Tepig = 498,

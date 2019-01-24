@@ -634,7 +634,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Gothita, new PBELocalizedString("ゴチム", "고디탱", "Scrutella", "Mollimorba", "Gothita", "Gothita", "Gothita") },
             { PBESpecies.Gothorita, new PBELocalizedString("ゴチミル", "고디보미", "Mesmérella", "Hypnomorba", "Gothorita", "Gothorita", "Gothorita") },
             { PBESpecies.Gothitelle, new PBELocalizedString("ゴチルゼル", "고디모아젤", "Sidérella", "Morbitesse", "Gothitelle", "Gothitelle", "Gothitelle") },
-            // { PBESpecies.577, new PBELocalizedString("ユニラン", "유니란", "Nucléos", "Monozyto", "Solosis", "Solosis", "Solosis") },
+            { PBESpecies.Solosis, new PBELocalizedString("ユニラン", "유니란", "Nucléos", "Monozyto", "Solosis", "Solosis", "Solosis") },
             { PBESpecies.Duosion, new PBELocalizedString("ダブラン", "듀란", "Méios", "Mitodos", "Duosion", "Duosion", "Duosion") },
             { PBESpecies.Reuniclus, new PBELocalizedString("ランクルス", "란쿨루스", "Symbios", "Zytomega", "Reuniclus", "Reuniclus", "Reuniclus") },
             // { PBESpecies.580, new PBELocalizedString("コアルヒー", "꼬지보리", "Couaneton", "Piccolente", "Ducklett", "Ducklett", "Ducklett") },
