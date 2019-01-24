@@ -2454,6 +2454,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Yamask = 562,
         Zebstrika = 523,
         Zekrom = 644,
+        Zoroark = 571,
         Zubat = 41,
         Zweilous = 634
     }
