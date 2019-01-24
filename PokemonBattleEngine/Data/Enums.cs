@@ -2180,6 +2180,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBESpecies : uint
     {
         Absol = 359,
+        Accelgor = 617,
         Alomomola = 594,
         Amoonguss = 591,
         Arceus = 493 | (0 << 0x10),
@@ -2328,6 +2329,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Latias = 380,
         Latios = 381,
         Leafeon = 470,
+        Leavanny = 542,
         Liepard = 510,
         Lileep = 345,
         Litwick = 607,
@@ -2395,7 +2397,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         Seismitoad = 537,
         Serperior = 497,
         Servine = 496,
+        Sewaddle = 540,
         Shedinja = 292,
+        Shelmet = 616,
         Shinx = 403,
         Sigilyph = 561,
         Simipour = 516,
@@ -2406,6 +2410,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Solosis = 577,
         Squirtle = 7,
         Stunfisk = 618,
+        Swadloon = 541,
         Swanna = 581,
         Swoobat = 528,
         Tepig = 498,
