@@ -2180,6 +2180,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBESpecies : uint
     {
         Absol = 359,
+        Accelgor = 617,
         Alomomola = 594,
         Amoonguss = 591,
         Arceus = 493 | (0 << 0x10),
