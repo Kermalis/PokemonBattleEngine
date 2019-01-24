@@ -2329,6 +2329,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Latias = 380,
         Latios = 381,
         Leafeon = 470,
+        Leavanny = 542,
         Liepard = 510,
         Lileep = 345,
         Litwick = 607,
