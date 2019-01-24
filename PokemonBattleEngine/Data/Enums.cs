@@ -2249,6 +2249,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Ditto = 132,
         Drilbur = 529,
         Druddigon = 621,
+        Duosion = 578,
         Durant = 632,
         Dwebble = 557,
         Eelektrik = 603,
