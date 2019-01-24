@@ -2347,6 +2347,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Misdreavus = 200,
         Mismagius = 429,
         Monferno = 391,
+        Munna = 517,
         Musharna = 518,
         Nincada = 290,
         Ninetales = 38,
