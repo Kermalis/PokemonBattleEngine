@@ -2463,6 +2463,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Weedle = 13,
         Whimsicott = 547,
         Whirlipede = 544,
+        Woobat = 527,
         Yamask = 562,
         Zebstrika = 523,
         Zekrom = 644,
