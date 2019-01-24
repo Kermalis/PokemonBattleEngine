@@ -2207,6 +2207,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Azurill = 298,
         Beartic = 614,
         Beedrill = 15,
+        Beheeyem = 606,
         Beldum = 374,
         Bisharp = 625,
         Blastoise = 9,

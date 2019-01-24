@@ -663,7 +663,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Eelektrik, new PBELocalizedString("シビビール", "저리릴", "Lampéroie", "Zapplalek", "Eelektrik", "Eelektrik", "Eelektrik") },
             { PBESpecies.Eelektross, new PBELocalizedString("シビルドン", "저리더프", "Ohmassacre", "Zapplarang", "Eelektross", "Eelektross", "Eelektross") },
             // { PBESpecies.605, new PBELocalizedString("リグレー", "리그레", "Lewsor", "Pygraulon", "Elgyem", "Elgyem", "Elgyem") },
-            // { PBESpecies.606, new PBELocalizedString("オーベム", "벰크", "Neitram", "Megalon", "Beheeyem", "Beheeyem", "Beheeyem") },
+            { PBESpecies.Beheeyem, new PBELocalizedString("オーベム", "벰크", "Neitram", "Megalon", "Beheeyem", "Beheeyem", "Beheeyem") },
             { PBESpecies.Litwick, new PBELocalizedString("ヒトモシ", "불켜미", "Funécire", "Lichtel", "Litwick", "Litwick", "Litwick") },
             { PBESpecies.Lampent, new PBELocalizedString("ランプラー", "램프라", "Mélancolux", "Laternecto", "Lampent", "Lampent", "Lampent") },
             { PBESpecies.Chandelure, new PBELocalizedString("シャンデラ", "샹델라", "Lugulabre", "Skelabra", "Chandelure", "Chandelure", "Chandelure") },
