@@ -2397,6 +2397,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Seismitoad = 537,
         Serperior = 497,
         Servine = 496,
+        Sewaddle = 540,
         Shedinja = 292,
         Shelmet = 616,
         Shinx = 403,
