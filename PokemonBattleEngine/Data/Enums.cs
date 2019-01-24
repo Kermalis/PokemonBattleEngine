@@ -2409,6 +2409,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Solosis = 577,
         Squirtle = 7,
         Stunfisk = 618,
+        Swadloon = 541,
         Swanna = 581,
         Swoobat = 528,
         Tepig = 498,

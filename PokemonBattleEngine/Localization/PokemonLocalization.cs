@@ -597,7 +597,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Throh, new PBELocalizedString("ナゲキ", "던지미", "Judokrak", "Jiutesto", "Throh", "Throh", "Throh") },
             { PBESpecies.Sawk, new PBELocalizedString("ダゲキ", "타격귀", "Karaclée", "Karadonis", "Sawk", "Sawk", "Sawk") },
             // { PBESpecies.540, new PBELocalizedString("クルミル", "두르보", "Larveyette", "Strawickl", "Sewaddle", "Sewaddle", "Sewaddle") },
-            // { PBESpecies.541, new PBELocalizedString("クルマユ", "두르쿤", "Couverdure", "Folikon", "Swadloon", "Swadloon", "Swadloon") },
+            { PBESpecies.Swadloon, new PBELocalizedString("クルマユ", "두르쿤", "Couverdure", "Folikon", "Swadloon", "Swadloon", "Swadloon") },
             { PBESpecies.Leavanny, new PBELocalizedString("ハハコモリ", "모아머", "Manternel", "Matrifol", "Leavanny", "Leavanny", "Leavanny") },
             { PBESpecies.Venipede, new PBELocalizedString("フシデ", "마디네", "Venipatte", "Toxiped", "Venipede", "Venipede", "Venipede") },
             { PBESpecies.Whirlipede, new PBELocalizedString("ホイーガ", "휠구", "Scobolide", "Rollum", "Whirlipede", "Whirlipede", "Whirlipede") },
