@@ -566,7 +566,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBESpecies.507, new PBELocalizedString("ハーデリア", "하데리어", "Ponchien", "Terribark", "Herdier", "Herdier", "Herdier") },
             // { PBESpecies.508, new PBELocalizedString("ムーランド", "바랜드", "Mastouffe", "Bissbark", "Stoutland", "Stoutland", "Stoutland") },
             // { PBESpecies.509, new PBELocalizedString("チョロネコ", "쌔비냥", "Chacripan", "Felilou", "Purrloin", "Purrloin", "Purrloin") },
-            // { PBESpecies.510, new PBELocalizedString("レパルダス", "레파르다스", "Léopardus", "Kleoparda", "Liepard", "Liepard", "Liepard") },
+            { PBESpecies.Liepard, new PBELocalizedString("レパルダス", "레파르다스", "Léopardus", "Kleoparda", "Liepard", "Liepard", "Liepard") },
             // { PBESpecies.511, new PBELocalizedString("ヤナップ", "야나프", "Feuillajou", "Vegimak", "Pansage", "Pansage", "Pansage") },
             // { PBESpecies.512, new PBELocalizedString("ヤナッキー", "야나키", "Feuiloutan", "Vegichita", "Simisage", "Simisage", "Simisage") },
             { PBESpecies.Pansear, new PBELocalizedString("バオップ", "바오프", "Flamajou", "Grillmak", "Pansear", "Pansear", "Pansear") },
