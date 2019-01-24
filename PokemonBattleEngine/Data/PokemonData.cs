@@ -3487,7 +3487,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
-                PBESpecies.Basculin,
+                PBESpecies.Basculin_Red,
                 new PBEPokemonData
                 (
                     70, 92, 65, 80, 55, 98,
@@ -3566,7 +3566,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEType.Water, PBEType.None, PBEGenderRatio.M1_F1, 18.0,
                     new PBESpecies[] { },
                     new PBESpecies[] { },
-                    new PBEAbility[] { PBEAbility.RockHead, PBEAbility.Adaptability, PBEAbility.MoldBreaker },
+                    new PBEAbility[] { PBEAbility.Reckless, PBEAbility.RockHead, PBEAbility.Adaptability, PBEAbility.MoldBreaker },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
                        Tuple.Create(PBEMove.AquaJet, 13, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),

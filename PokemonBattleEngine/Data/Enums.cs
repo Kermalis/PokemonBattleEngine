@@ -2205,7 +2205,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Azelf = 482,
         Azumarill = 184,
         Azurill = 298,
-        Basculin = 550 | (0 << 0x10),
+        Basculin_Red = 550 | (0 << 0x10),
         Basculin_Blue = 550 | (1 << 0x10),
         Beartic = 614,
         Beedrill = 15,
