@@ -2430,6 +2430,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tympole = 535,
         Tynamo = 602,
         Umbreon = 197,
+        Unfezant = 521,
         Unown_A = 201 | (0 << 0x10),
         Unown_B = 201 | (1 << 0x10),
         Unown_C = 201 | (2 << 0x10),
