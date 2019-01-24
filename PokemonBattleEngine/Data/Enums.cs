@@ -2329,6 +2329,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Luxio = 404,
         Luxray = 405,
         Magikarp = 129,
+        Mandibuzz = 630,
         Marill = 183,
         Marowak = 105,
         Meloetta = 648 | (0 << 0x10),
