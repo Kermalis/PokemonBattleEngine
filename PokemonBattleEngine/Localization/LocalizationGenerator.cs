@@ -402,7 +402,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
                 switch ((PBESpecies)i)
                 {
                     case PBESpecies.Arceus: numForms = 17; break;
-                    case PBESpecies.Basculin_Red: numForms = 2; break;
+                    case PBESpecies.Basculin_Blue: numForms = 2; break;
                     case PBESpecies.Darmanitan: numForms = 2; break;
                     case PBESpecies.Genesect: numForms = 5; break;
                     case PBESpecies.Giratina: numForms = 2; break;
