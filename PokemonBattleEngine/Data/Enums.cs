@@ -2368,6 +2368,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Raichu = 26,
         Regirock = 377,
         Reshiram = 643,
+        Reuniclus = 579,
         Riolu = 447,
         Roggenrola = 524,
         Rotom = 479 | (0 << 0x10),
