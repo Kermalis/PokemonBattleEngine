@@ -638,7 +638,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Solosis, new PBELocalizedString("ユニラン", "유니란", "Nucléos", "Monozyto", "Solosis", "Solosis", "Solosis") },
             { PBESpecies.Duosion, new PBELocalizedString("ダブラン", "듀란", "Méios", "Mitodos", "Duosion", "Duosion", "Duosion") },
             { PBESpecies.Reuniclus, new PBELocalizedString("ランクルス", "란쿨루스", "Symbios", "Zytomega", "Reuniclus", "Reuniclus", "Reuniclus") },
-            // { PBESpecies.580, new PBELocalizedString("コアルヒー", "꼬지보리", "Couaneton", "Piccolente", "Ducklett", "Ducklett", "Ducklett") },
+            { PBESpecies.Ducklett, new PBELocalizedString("コアルヒー", "꼬지보리", "Couaneton", "Piccolente", "Ducklett", "Ducklett", "Ducklett") },
             { PBESpecies.Swanna, new PBELocalizedString("スワンナ", "스완나", "Lakmécygne", "Swaroness", "Swanna", "Swanna", "Swanna") },
             { PBESpecies.Vanillite, new PBELocalizedString("バニプッチ", "바닐프티", "Sorbébé", "Gelatini", "Vanillite", "Vanillite", "Vanillite") },
             { PBESpecies.Vanillish, new PBELocalizedString("バニリッチ", "바닐리치", "Sorboul", "Gelatroppo", "Vanillish", "Vanillish", "Vanillish") },
