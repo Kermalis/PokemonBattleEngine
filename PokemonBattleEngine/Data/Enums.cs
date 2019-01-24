@@ -2356,6 +2356,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pachirisu = 417,
         Palkia = 484,
         Palpitoad = 536,
+        Panpour = 515,
         Pansear = 513,
         Pawniard = 624,
         Pichu = 172,
