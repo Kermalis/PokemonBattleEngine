@@ -2401,6 +2401,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Solosis = 577,
         Squirtle = 7,
         Stunfisk = 618,
+        Swoobat = 528,
         Tepig = 498,
         Terrakion = 639,
         Throh = 538,
