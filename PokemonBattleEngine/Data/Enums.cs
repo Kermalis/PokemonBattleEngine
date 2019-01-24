@@ -2256,6 +2256,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Eelektrik = 603,
         Eelektross = 604,
         Eevee = 133,
+        Elgyem = 605,
         Emboar = 500,
         Emolga = 587,
         Empoleon = 395,
