@@ -2449,6 +2449,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Victini = 494,
         Virizion = 640,
         Volcarona = 637,
+        Vullaby = 629,
         Vulpix = 37,
         Wartortle = 8,
         Weedle = 13,
