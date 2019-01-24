@@ -572,7 +572,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Pansear, new PBELocalizedString("バオップ", "바오프", "Flamajou", "Grillmak", "Pansear", "Pansear", "Pansear") },
             { PBESpecies.Simisear, new PBELocalizedString("バオッキー", "바오키", "Flamoutan", "Grillchita", "Simisear", "Simisear", "Simisear") },
             // { PBESpecies.515, new PBELocalizedString("ヒヤップ", "앗차프", "Flotajou", "Sodamak", "Panpour", "Panpour", "Panpour") },
-            // { PBESpecies.516, new PBELocalizedString("ヒヤッキー", "앗차키", "Flotoutan", "Sodachita", "Simipour", "Simipour", "Simipour") },
+            { PBESpecies.Simipour, new PBELocalizedString("ヒヤッキー", "앗차키", "Flotoutan", "Sodachita", "Simipour", "Simipour", "Simipour") },
             { PBESpecies.Munna, new PBELocalizedString("ムンナ", "몽나", "Munna", "Somniam", "Munna", "Munna", "Munna") },
             { PBESpecies.Musharna, new PBELocalizedString("ムシャーナ", "몽얌나", "Mushana", "Somnivora", "Musharna", "Musharna", "Musharna") },
             // { PBESpecies.519, new PBELocalizedString("マメパト", "콩둘기", "Poichigeon", "Dusselgurr", "Pidove", "Pidove", "Pidove") },
