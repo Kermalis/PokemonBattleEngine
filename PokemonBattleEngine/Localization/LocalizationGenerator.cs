@@ -404,6 +404,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
                     case PBESpecies.Arceus: numForms = 17; break;
                     case PBESpecies.Basculin_Blue: numForms = 2; break;
                     case PBESpecies.Darmanitan: numForms = 2; break;
+                    case PBESpecies.Deerling_Autumn: numForms = 4; break;
                     case PBESpecies.Genesect: numForms = 5; break;
                     case PBESpecies.Giratina: numForms = 2; break;
                     case PBESpecies.Keldeo: numForms = 2; break;
