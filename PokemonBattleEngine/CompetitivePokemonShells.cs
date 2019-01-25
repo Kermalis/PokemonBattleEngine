@@ -139,6 +139,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.ToxicSpikes, PBEMove.Endeavor, PBEMove.XScissor, PBEMove.Agility }, // Toxic Spikes, Endeavor, U-Turn, Tailwind
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Bisharp_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Bisharp,
+            Nickname = "Bitter",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.DarkGem,
+            Ability = PBEAbility.Defiant,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.AerialAce, PBEMove.NightSlash, PBEMove.IronHead, PBEMove.Protect }, // Sucker Punch, Night Slash, Iron Head, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         /// <summary>
         /// <para>Blastoise UU</para>
         /// <para>Item: Leftovers</para>
