@@ -685,6 +685,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HyperVoice, PBEMove.Protect, PBEMove.LavaPlume, PBEMove.Toxic }, // Wish, Protect, Lava Plume, Toxic
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Galvantula_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Galvantula,
+            Nickname = "Linda",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ElectricGem,
+            Ability = PBEAbility.Compoundeyes,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Thunder, PBEMove.BugBuzz, PBEMove.HiddenPower, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Garbodor_OU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Garbodor,
