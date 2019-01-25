@@ -562,7 +562,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Samurott, new PBELocalizedString("ダイケンキ", "대검귀", "Clamiral", "Admurai", "Samurott", "Samurott", "Samurott") },
             { PBESpecies.Patrat, new PBELocalizedString("ミネズミ", "보르쥐", "Ratentif", "Nagelotz", "Patrat", "Patrat", "Patrat") },
             { PBESpecies.Watchog, new PBELocalizedString("ミルホッグ", "보르그", "Miradar", "Kukmarda", "Watchog", "Watchog", "Watchog") },
-            // { PBESpecies.506, new PBELocalizedString("ヨーテリー", "요테리", "Ponchiot", "Yorkleff", "Lillipup", "Lillipup", "Lillipup") },
+            { PBESpecies.Lillipup, new PBELocalizedString("ヨーテリー", "요테리", "Ponchiot", "Yorkleff", "Lillipup", "Lillipup", "Lillipup") },
             { PBESpecies.Herdier, new PBELocalizedString("ハーデリア", "하데리어", "Ponchien", "Terribark", "Herdier", "Herdier", "Herdier") },
             { PBESpecies.Stoutland, new PBELocalizedString("ムーランド", "바랜드", "Mastouffe", "Bissbark", "Stoutland", "Stoutland", "Stoutland") },
             { PBESpecies.Purrloin, new PBELocalizedString("チョロネコ", "쌔비냥", "Chacripan", "Felilou", "Purrloin", "Purrloin", "Purrloin") },
