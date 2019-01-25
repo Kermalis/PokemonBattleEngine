@@ -1000,6 +1000,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.ShiftGear, PBEMove.FlashCannon, PBEMove.Return, PBEMove.WildCharge }, // Shift Gear, Gear Grind, Return, Volt Switch
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Krookodile_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Krookodile,
+            Nickname = "Drake",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChopleBerry,
+            Ability = PBEAbility.Intimidate,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 12, 252, 0, 0, 0, 244 },
+            Moves = new PBEMove[] { PBEMove.Crunch, PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Kyurem_White_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Kyurem_White,
