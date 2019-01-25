@@ -69,6 +69,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.ExtremeSpeed, PBEMove.ShadowClaw, PBEMove.BrickBreak },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Archeops_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Archeops,
+            Nickname = "Raul",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FlyingGem,
+            Ability = PBEAbility.Defeatist,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Fly, PBEMove.RockSlide, PBEMove.Endeavor, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Azelf_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Azelf,
