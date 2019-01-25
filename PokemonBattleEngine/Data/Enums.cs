@@ -2368,6 +2368,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pansage = 511,
         Pansear = 513,
         Pawniard = 624,
+        Petilil = 548,
         Pichu = 172,
         Pidove = 519,
         Pignite = 499,
