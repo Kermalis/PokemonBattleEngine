@@ -1165,6 +1165,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.XScissor, PBEMove.LeafBlade, PBEMove.Synthesis }, // Swords Dance, Baton Pass, Leaf Blade, Synthesis
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Leavanny_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Leavanny,
+            Nickname = "Karma",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.Chlorophyll,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 104, 252, 0, 0, 0, 152 },
+            Moves = new PBEMove[] { PBEMove.LeafBlade, PBEMove.XScissor, PBEMove.ShadowClaw, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Liepard_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Liepard,
