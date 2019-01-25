@@ -895,6 +895,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.HydroPump, PBEMove.SecretSword, PBEMove.IcyWind },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Klinklang_OU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Klinklang,
+            Nickname = "Gigigear",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.ClearBody,
+            Gender = PBEGender.Genderless,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 132, 252, 0, 0, 0, 124 },
+            Moves = new PBEMove[] { PBEMove.ShiftGear, PBEMove.FlashCannon, PBEMove.Return, PBEMove.WildCharge }, // Shift Gear, Gear Grind, Return, Volt Switch
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Kyurem_White_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Kyurem_White,
