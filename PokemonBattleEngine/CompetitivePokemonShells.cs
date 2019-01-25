@@ -99,6 +99,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Fly, PBEMove.RockSlide, PBEMove.Endeavor, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Audino_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Audino,
+            Nickname = "Alison",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChopleBerry,
+            Ability = PBEAbility.Healer,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Sassy,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.LuckyChant, PBEMove.Reflect, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Heal Pulse, Helping Hand, Safeguard
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Azelf_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Azelf,
