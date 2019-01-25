@@ -406,6 +406,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.AirSlash, PBEMove.NastyPlot, PBEMove.SuperFang, PBEMove.Protect }, // Acrobatics, Taunt, Super Fang, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Crustle_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Crustle,
+            Nickname = "Candy",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LumBerry,
+            Ability = PBEAbility.Sturdy,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power Ice/64
+            EVs = new byte[] { 252, 252, 0, 0, 4, 0, },
+            Moves = new PBEMove[] { PBEMove.RockSlide, PBEMove.XScissor, PBEMove.SwordsDance, PBEMove.Protect }, // Rock Blast, X-Scissor, Swords Dance, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Cryogonal_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Cryogonal,
