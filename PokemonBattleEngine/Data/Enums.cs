@@ -2424,6 +2424,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Tornadus = 641 | (0 << 0x10),
         Tornadus_Therian = 641 | (1 << 0x10),
         Torterra = 389,
+        Tranquill = 520,
         Tropius = 357,
         Trubbish = 568,
         Turtwig = 387,
