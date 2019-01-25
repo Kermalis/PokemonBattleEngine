@@ -5788,6 +5788,78 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBESpecies.Cinccino,
+                new PBEPokemonData
+                (
+                    75, 95, 60, 65, 60, 115,
+                    PBEType.Normal, PBEType.None, PBEGenderRatio.M1_F3, 7.5,
+                    new PBESpecies[] { /*PBESpecies.Minccino*/ },
+                    new PBESpecies[] { },
+                    new PBEAbility[] { PBEAbility.CuteCharm, PBEAbility.Technician, PBEAbility.SkillLink },
+                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PBEMove.BulletSeed, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.HelpingHand, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.RockBlast, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Sing, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        //Tuple.Create(PBEMove.TailSlap, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Tickle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2)
+                    },
+                    new Tuple<PBEMove, PBEMoveObtainMethod>[]
+                    {
+                        //Tuple.Create(PBEMove.AfterYou, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Covet, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.Dig, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.EchoedVoice, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Endure, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Facade, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.FakeTears, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.Flail, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.Fling, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.FocusBlast, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Frustration, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.GigaImpact, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.GrassKnot, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.GunkShot, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.HelpingHand, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.HiddenPower, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.HyperBeam, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.HyperVoice, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.IronTail, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.KnockOff, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.LastResort, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.LightScreen, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.MudSlap, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        Tuple.Create(PBEMove.Protect, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.RainDance, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Rest, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Retaliate, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Return, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Round, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Safeguard, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.SeedBomb, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.SleepTalk, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.Snore, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        Tuple.Create(PBEMove.Substitute, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.SunnyDay, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Swagger, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TailWhip, PBEMoveObtainMethod.EggMove_BWB2W2),
+                        //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Thunder, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
+                        //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2)
+                    }
+                )
+            },
+            {
                 PBESpecies.Clamperl,
                 new PBEPokemonData
                 (
@@ -21332,7 +21404,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
-                PBESpecies.Sawsbuck_Winter,      
+                PBESpecies.Sawsbuck_Winter,
                 new PBEPokemonData
                 (
                     80, 100, 70, 60, 70, 95,

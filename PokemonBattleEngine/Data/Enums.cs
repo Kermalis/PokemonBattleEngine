@@ -2230,6 +2230,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Charmander = 4,
         Charmeleon = 5,
         Chimchar = 390,
+        Cinccino = 573,
         Clamperl = 366,
         Cobalion = 638,
         Cofagrigus = 563,
