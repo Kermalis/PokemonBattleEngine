@@ -1528,6 +1528,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Spore, PBEMove.Reflect, PBEMove.Brine, PBEMove.Hex }, // Fake Out, Spore, Follow Me, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Stunfisk_Uber { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Stunfisk,
+            Nickname = "Flap",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.SandVeil,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Calm,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 248, 0, 8, 0, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.StealthRock, PBEMove.Toxic, PBEMove.Discharge, PBEMove.Protect }, // Stealth Rock, Toxic, Discharge, Yawn
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Terrakion_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Terrakion,
