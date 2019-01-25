@@ -1573,6 +1573,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Protect, PBEMove.IceBeam, PBEMove.Psychic, PBEMove.ShadowBall }, // Tailwind, Ice Beam, Psychic, Shadow Ball
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Simisear_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Simisear,
+            Nickname = "Spencer",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.SalacBerry,
+            Ability = PBEAbility.Gluttony,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 11, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Substitute, PBEMove.Flamethrower, PBEMove.FocusBlast },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Smeargle_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Smeargle,
