@@ -1210,6 +1210,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Return, PBEMove.NightSlash, PBEMove.AerialAce, PBEMove.Protect }, // Fake Out, Sucker Punch, Snatch, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Lilligant_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Lilligant,
+            Nickname = "Lexi",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Chlorophyll,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.LeafStorm, PBEMove.HiddenPower, PBEMove.SleepPowder, PBEMove.QuiverDance }, // Solar Beam, Hidden Power Rock, Sleep Powder, Quiver Dance
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Lucario_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Lucario,
