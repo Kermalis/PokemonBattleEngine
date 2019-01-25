@@ -391,6 +391,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.FireBlast, PBEMove.AirSlash, PBEMove.FocusBlast, PBEMove.HiddenPower },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Cinccino_UU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Cinccino,
+            Nickname = "Cassidy",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChoiceBand,
+            Ability = PBEAbility.SkillLink,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 252, 0, 0, 4, 252 },
+            Moves = new PBEMove[] { PBEMove.IronTail, PBEMove.Return, PBEMove.SeedBomb, PBEMove.Protect }, // Tail Slap, Rock Blast, Bullet Seed, U-turn
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Cobalion_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Cobalion,
