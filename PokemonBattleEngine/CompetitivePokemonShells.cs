@@ -1498,6 +1498,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.BlueFlare, PBEMove.DragonPulse, PBEMove.EarthPower, PBEMove.StoneEdge }, // Blue Flare, Dragon Pulse, Roost, Stone Edge
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Reuniclus_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Reuniclus,
+            Nickname = "Nicholas",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.MagicGuard,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Quiet,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 172, 0, 28, 252, 56, 0 },
+            Moves = new PBEMove[] { PBEMove.Recover, PBEMove.Psyshock, PBEMove.FocusBlast, PBEMove.ShadowBall }, // Trick Room, Psyshock, Focus Blast, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Rotom_Wash_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Rotom_Wash,
