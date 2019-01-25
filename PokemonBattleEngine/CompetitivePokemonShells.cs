@@ -1658,9 +1658,24 @@ namespace Kermalis.PokemonBattleEngine
             Ability = PBEAbility.MagicGuard,
             Gender = PBEGender.Female,
             Nature = PBENature.Modest,
-            IVs = new byte[] { 31, 31, 11, 31, 31, 31 }, // Hidden Power: Dark/70
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 36, 0, 252, 220, 0, 0 },
             Moves = new PBEMove[] { PBEMove.Protect, PBEMove.IceBeam, PBEMove.Psychic, PBEMove.ShadowBall }, // Tailwind, Ice Beam, Psychic, Shadow Ball
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
+        public static PBEPokemonShell Simipour_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Simipour,
+            Nickname = "Cici",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.Torrent,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Scald, PBEMove.IceBeam, PBEMove.GrassKnot, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Simisear_NU { get; } = new PBEPokemonShell
@@ -1673,7 +1688,7 @@ namespace Kermalis.PokemonBattleEngine
             Ability = PBEAbility.Gluttony,
             Gender = PBEGender.Male,
             Nature = PBENature.Timid,
-            IVs = new byte[] { 31, 31, 11, 31, 31, 31 }, // Hidden Power: Dark/70
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
             Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.Substitute, PBEMove.Flamethrower, PBEMove.FocusBlast },
             PPUps = new byte[] { 3, 3, 3, 3 }
