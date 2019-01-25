@@ -526,6 +526,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Scald, PBEMove.IcyWind, PBEMove.GrassKnot, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Escavalier_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Escavalier,
+            Nickname = "Dingo",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.OccaBerry,
+            Ability = PBEAbility.Swarm,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.Megahorn, PBEMove.IronHead, PBEMove.DoubleEdge, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Espeon_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Espeon,
