@@ -2356,6 +2356,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Metapod = 11,
         Mienfoo = 619,
         Mienshao = 620,
+        Minccino = 572,
         Minun = 312,
         Misdreavus = 200,
         Mismagius = 429,

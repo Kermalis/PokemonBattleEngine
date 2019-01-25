@@ -630,7 +630,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Garbodor, new PBELocalizedString("ダストダス", "더스트나", "Miasmax", "Deponitox", "Garbodor", "Garbodor", "Garbodor") },
             { PBESpecies.Zorua, new PBELocalizedString("ゾロア", "조로아", "Zorua", "Zorua", "Zorua", "Zorua", "Zorua") },
             { PBESpecies.Zoroark, new PBELocalizedString("ゾロアーク", "조로아크", "Zoroark", "Zoroark", "Zoroark", "Zoroark", "Zoroark") },
-            // { PBESpecies.572, new PBELocalizedString("チラーミィ", "치라미", "Chinchidou", "Picochilla", "Minccino", "Minccino", "Minccino") },
+            { PBESpecies.Minccino, new PBELocalizedString("チラーミィ", "치라미", "Chinchidou", "Picochilla", "Minccino", "Minccino", "Minccino") },
             { PBESpecies.Cinccino, new PBELocalizedString("チラチーノ", "치라치노", "Pashmilla", "Chillabell", "Cinccino", "Cinccino", "Cinccino") },
             { PBESpecies.Gothita, new PBELocalizedString("ゴチム", "고디탱", "Scrutella", "Mollimorba", "Gothita", "Gothita", "Gothita") },
             { PBESpecies.Gothorita, new PBELocalizedString("ゴチミル", "고디보미", "Mesmérella", "Hypnomorba", "Gothorita", "Gothorita", "Gothorita") },
