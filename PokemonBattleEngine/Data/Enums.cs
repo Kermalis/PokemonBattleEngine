@@ -2374,6 +2374,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Panpour = 515,
         Pansage = 511,
         Pansear = 513,
+        Patrat = 504,
         Pawniard = 624,
         Petilil = 548,
         Pichu = 172,
