@@ -2429,6 +2429,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Snivy = 495,
         Solosis = 577,
         Squirtle = 7,
+        Stoutland = 508,
         Stunfisk = 618,
         Swadloon = 541,
         Swanna = 581,
