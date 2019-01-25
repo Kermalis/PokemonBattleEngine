@@ -451,6 +451,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.DarkVoid, PBEMove.DarkPulse, PBEMove.NastyPlot, PBEMove.Substitute },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Darmanitan_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Darmanitan,
+            Nickname = "Brodi",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChoiceScarf,
+            Ability = PBEAbility.SheerForce,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.FlareBlitz, PBEMove.Superpower, PBEMove.RockSlide, PBEMove.Earthquake },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Delcatty_NU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Delcatty,
