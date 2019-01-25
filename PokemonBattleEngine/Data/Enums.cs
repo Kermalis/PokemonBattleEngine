@@ -2333,6 +2333,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Leavanny = 542,
         Liepard = 510,
         Lileep = 345,
+        Lilligant = 549,
         Litwick = 607,
         Lucario = 448,
         Luxio = 404,
