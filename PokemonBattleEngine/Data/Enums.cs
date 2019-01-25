@@ -2309,6 +2309,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Happiny = 440,
         Haxorus = 612,
         Heatmor = 631,
+        Herdier = 507,
         Huntail = 367,
         Hydreigon = 635,
         Infernape = 392,
