@@ -1483,6 +1483,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HeadSmash, PBEMove.DrainPunch, PBEMove.Crunch, PBEMove.Detect }, // Fake Out, Drain Punch, Crunch, Detect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Seismitoad_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Seismitoad,
+            Nickname = "Stanley",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.SwiftSwim,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Mild,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 132, 0, 164, 0, 212 },
+            Moves = new PBEMove[] { PBEMove.Surf, PBEMove.Earthquake, PBEMove.GrassKnot, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Serperior_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Serperior,
