@@ -283,6 +283,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HeadCharge, PBEMove.WildCharge, PBEMove.Earthquake, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Braviary_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Braviary,
+            Nickname = "Billy",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.SheerForce,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 196, 252, 28, 0, 28, 4 },
+            Moves = new PBEMove[] { PBEMove.BraveBird, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         /// <summary>
         /// <para>Butterfree RU</para>
         /// <para>Item: Leftovers</para>
