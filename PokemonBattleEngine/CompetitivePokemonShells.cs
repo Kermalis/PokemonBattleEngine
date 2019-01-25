@@ -1648,6 +1648,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.CloseCombat, PBEMove.RockSlide, PBEMove.Earthquake, PBEMove.Protect }, // Close Combat, Rock Slide, Payback, Quick Guard
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Sawsbuck_Spring_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Sawsbuck_Spring,
+            Nickname = "Sterling",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.SapSipper,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.HornLeech, PBEMove.Return, PBEMove.DoubleEdge, PBEMove.Protect }, // Horn Leech, Return, Nature Power, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Scolipede_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Scolipede,
