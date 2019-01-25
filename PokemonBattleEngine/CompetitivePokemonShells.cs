@@ -154,6 +154,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.ToxicSpikes, PBEMove.Endeavor, PBEMove.XScissor, PBEMove.Agility }, // Toxic Spikes, Endeavor, U-Turn, Tailwind
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Beheeyem_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Beheeyem,
+            Nickname = "Nitrus",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.SitrusBerry,
+            Ability = PBEAbility.Telepathy,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Quiet,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 0, 0, 52, 204, 0 },
+            Moves = new PBEMove[] { PBEMove.LightScreen, PBEMove.Psyshock, PBEMove.DarkPulse, PBEMove.Protect }, // Trick Room, Psyshock, Ally Switch, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Bisharp_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Bisharp,
