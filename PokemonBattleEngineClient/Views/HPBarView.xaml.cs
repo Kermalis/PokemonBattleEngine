@@ -97,6 +97,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         readonly SolidColorBrush green, yellow, red;
+
         public HPBarView()
         {
             AvaloniaXamlLoader.Load(this);
@@ -118,9 +119,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 Level = $"{(pkmn.Shell.Gender == PBEGender.Genderless ? " " : pkmn.GenderSymbol)}[LV]{pkmn.Shell.Level}";
                 HP = pkmn.HP;
-                Status = pkmn.Status1 == PBEStatus1.None ? null : Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Misc.{pkmn.Status1}.png?assembly=PokemonBattleEngineClient"));
+                Status = pkmn.Status1 == PBEStatus1.None ? null : Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.STATUS1_{pkmn.Status1}.png?assembly=PokemonBattleEngineClient"));
 
-                const byte lineX = 49, lineY = 14, lineW = 49;
                 double hpLeft = (double)pkmn.HP / pkmn.MaxHP;
                 if (hpLeft <= 0.20)
                 {
@@ -134,6 +134,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 {
                     HPColor = green;
                 }
+                const byte lineX = 49, lineY = 14, lineW = 49;
                 HPEndLocation = new Point(hpLeft * lineW + lineX, lineY);
 
                 Visible = true;

@@ -26,18 +26,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
         public static Bitmap GetMinisprite(PBESpecies species, PBEGender gender, bool shiny)
         {
-            if (!PBEPokemonData.Data.ContainsKey(species))
-            {
-                return null;
-            }
-
             uint speciesID = (uint)species & 0xFFFF;
             uint formeID = (uint)species >> 0x10;
-            string sss = $"{speciesID}{(formeID > 0 ? $"-{formeID}" : string.Empty)}{(shiny ? "-S" : string.Empty)}";
-            // Following will be false if the species sprites are sss-M.gif and sss-F.gif
-            bool spriteIsGenderNeutral = DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}.png");
-            string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "-F" : "-M";
-            return UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}{genderStr}.png?assembly=PokemonBattleEngineClient"));
+            string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{(shiny ? "_S" : string.Empty)}";
+            bool spriteIsGenderNeutral = DoesResourceExist($"Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}.png");
+            string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "_F" : "_M";
+            return UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}{genderStr}.png?assembly=PokemonBattleEngineClient"));
         }
         public static Uri GetPokemonSpriteUri(PBEPokemon pokemon, bool backSprite)
         {
@@ -49,25 +43,19 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         }
         public static Uri GetPokemonSpriteUri(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {
-            if (!PBEPokemonData.Data.ContainsKey(species))
-            {
-                return null;
-            }
-
-            string orientation = backSprite ? "-B" : "-F";
+            string orientation = backSprite ? "_B" : "_F";
             if (behindSubstitute)
             {
-                return new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.Substitute{orientation}.gif?assembly=PokemonBattleEngineClient");
+                return new Uri($"resm:Kermalis.PokemonBattleEngineClient.PKMN.STATUS2_Substitute{orientation}.gif?assembly=PokemonBattleEngineClient");
             }
             else
             {
                 uint speciesID = (uint)species & 0xFFFF;
                 uint formeID = (uint)species >> 0x10;
-                string sss = $"{speciesID}{(formeID > 0 ? $"-{formeID}" : string.Empty)}{orientation}{(shiny ? "-S" : string.Empty)}";
-                // Following will be false if the species sprites are sss-M.gif and sss-F.gif
-                bool spriteIsGenderNeutral = DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}.gif");
-                string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "-F" : "-M";
-                return new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Pokemon_Sprites.{sss}{genderStr}.gif?assembly=PokemonBattleEngineClient");
+                string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{orientation}{(shiny ? "_S" : string.Empty)}";
+                bool spriteIsGenderNeutral = DoesResourceExist($"Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}.gif");
+                string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "_F" : "_M";
+                return new Uri($"resm:Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}{genderStr}.gif?assembly=PokemonBattleEngineClient");
             }
         }
 
@@ -88,17 +76,13 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public WbFb(WriteableBitmap bmp) => _bitmap = bmp;
             public ILockedFramebuffer Lock() => _bitmap.Lock();
         }
-        static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, Bitmap>> loadedBitmaps = new ConcurrentDictionary<string, ConcurrentDictionary<string, Bitmap>>();
+        static readonly ConcurrentDictionary<string, Bitmap> loadedBitmaps = new ConcurrentDictionary<string, Bitmap>();
         public static Bitmap RenderString(string str, StringRenderStyle style)
         {
             // Return null for bad strings
             if (string.IsNullOrWhiteSpace(str))
             {
                 return null;
-            }
-            if (style >= StringRenderStyle.MAX)
-            {
-                throw new ArgumentOutOfRangeException(nameof(style), "Invalid style.");
             }
 
             string path; int charHeight, spaceWidth;
@@ -113,24 +97,24 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             int index;
             string GetCharKey()
             {
-                string key;
+                string key = $"FONT_{path}_";
                 if (index + 6 <= str.Length && str.Substring(index, 6) == "[PKMN]")
                 {
-                    key = "PKMN";
+                    key += "PKMN";
                     index += 6;
                 }
                 else if (index + 4 <= str.Length && str.Substring(index, 4) == "[LV]")
                 {
-                    key = "LV";
+                    key += "LV";
                     index += 4;
                 }
                 else
                 {
-                    key = ((int)str[index]).ToString("X");
+                    key += ((int)str[index]).ToString("X");
                     index++;
                 }
-                const string questionMark = "3F";
-                return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png") ? key : questionMark;
+                const string questionMark = "FONT_Default_3F";
+                return DoesResourceExist($"Kermalis.PokemonBattleEngineClient.FONT.{path}.{key}.png") ? key : questionMark;
             }
 
             // Measure how large the string will end up
@@ -161,15 +145,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 else
                 {
                     string key = GetCharKey();
-                    if (!loadedBitmaps.ContainsKey(path))
+                    if (!loadedBitmaps.ContainsKey(key))
                     {
-                        loadedBitmaps.TryAdd(path, new ConcurrentDictionary<string, Bitmap>());
+                        loadedBitmaps.TryAdd(key, UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.FONT.{path}.{key}.png?assembly=PokemonBattleEngineClient")));
                     }
-                    if (!loadedBitmaps[path].ContainsKey(key))
-                    {
-                        loadedBitmaps[path].TryAdd(key, UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Fonts.{path}.{key}.png?assembly=PokemonBattleEngineClient")));
-                    }
-                    curLineWidth += loadedBitmaps[path][key].PixelSize.Width;
+                    curLineWidth += loadedBitmaps[key].PixelSize.Width;
                 }
             }
             if (curLineWidth > stringWidth)
@@ -205,7 +185,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         }
                         else
                         {
-                            Bitmap bmp = loadedBitmaps[path][GetCharKey()];
+                            Bitmap bmp = loadedBitmaps[GetCharKey()];
                             ctx.DrawImage(bmp.PlatformImpl, 1, new Rect(0, 0, bmp.PixelSize.Width, charHeight), new Rect(x, y, bmp.PixelSize.Width, charHeight));
                             x += bmp.PixelSize.Width;
                         }

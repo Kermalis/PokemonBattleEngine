@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineMobile.Infrastructure"
+             x:Class="Kermalis.PokemonBattleEngineMobile.Views.ActionsView"
+             WidthRequest="512" HeightRequest="128" BackgroundColor="#313131" VerticalOptions="Start" x:Name="shit">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="moveTemplate">
+                <Button Command="{Binding SelectMoveCommand}" BackgroundColor="{Binding Color}" BorderColor="{Binding BorderColor}" BorderWidth="4" Text="{Binding Move}" TextColor="White" FontSize="Micro" />
+            </DataTemplate>
+            <DataTemplate x:Key="pokemonTemplate">
+                <Button Command="{Binding SelectPokemonCommand}" BackgroundColor="White" BorderColor="#A2A2A2" BorderWidth="4" Text="{Binding Pokemon.NameWithGender}" TextColor="Black" FontSize="Micro" />
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <StackLayout Orientation="Vertical">
+        <infrastructure:Canvas IntendedWidth="512" IntendedHeight="128" IsVisible="{Binding MovesVisible}">
+            <infrastructure:ItemsControl infrastructure:Canvas.Size="512,64" ItemsSource="{Binding Moves}" ItemTemplate="{StaticResource moveTemplate}">
+                <infrastructure:ItemsControl.ItemsPanel>
+                    <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceEvenly" VerticalOptions="Center"/>
+                </infrastructure:ItemsControl.ItemsPanel>
+            </infrastructure:ItemsControl>
+            <infrastructure:ItemsControl infrastructure:Canvas.Size="512,64" infrastructure:Canvas.Location="0,64" ItemsSource="{Binding Party}" ItemTemplate="{StaticResource pokemonTemplate}">
+                <infrastructure:ItemsControl.ItemsPanel>
+                    <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceEvenly" VerticalOptions="Center"/>
+                </infrastructure:ItemsControl.ItemsPanel>
+            </infrastructure:ItemsControl>
+        </infrastructure:Canvas>
+        <infrastructure:Canvas IntendedWidth="512" IntendedHeight="128" IsVisible="{Binding TargetsVisible}">
+            <BoxView IsVisible="{Binding TargetLineFoeRightAllyLeftEnabled}" infrastructure:Canvas.Size="12,26" infrastructure:Canvas.Location="{Binding TargetLineFoeRightAllyLeftLocation}" Color="#9CADF7"/>
+            <BoxView IsVisible="{Binding TargetLineFoeRightFoeCenterEnabled}" infrastructure:Canvas.Size="32,12" infrastructure:Canvas.Location="{Binding TargetLineFoeRightFoeCenterLocation}" Color="#9CADF7"/>
+            <BoxView IsVisible="{Binding TargetLineAllyLeftAllyCenterEnabled}" infrastructure:Canvas.Size="32,12" infrastructure:Canvas.Location="{Binding TargetLineAllyLeftAllyCenterLocation}" Color="#9CADF7"/>
+            <BoxView IsVisible="{Binding TargetLineFoeLeftFoeCenterEnabled}" infrastructure:Canvas.Size="32,12" infrastructure:Canvas.Location="304,32" Color="#9CADF7"/>
+            <BoxView IsVisible="{Binding TargetLineFoeCenterAllyCenterEnabled}" infrastructure:Canvas.Size="12,26" infrastructure:Canvas.Location="251,51" Color="#9CADF7"/>
+            <BoxView IsVisible="{Binding TargetLineAllyRightAllyCenterEnabled}" infrastructure:Canvas.Size="32,12" infrastructure:Canvas.Location="304,84" Color="#9CADF7"/>
+            <BoxView IsVisible="{Binding TargetLineFoeLeftAllyRightEnabled}" infrastructure:Canvas.Size="12,26" infrastructure:Canvas.Location="{Binding TargetLineFoeLeftAllyRightLocation}" Color="#9CADF7"/>
+            <Button infrastructure:Canvas.Size="100,30" infrastructure:Canvas.Location="{Binding TargetFoeRightLocation}" IsEnabled="{Binding TargetFoeRightEnabled}"
+              BackgroundColor="#F75231" BorderColor="#732108" BorderWidth="4" Command="{Binding BindingContext.SelectTargetCommand, Source={x:Reference shit}}" CommandParameter="FoeRight" Text="{Binding TargetFoeRight.NameWithGender}" TextColor="White" FontSize="Micro" />
+            <Button infrastructure:Canvas.Size="100,30" infrastructure:Canvas.Location="206,23" IsEnabled="{Binding TargetFoeCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
+              BackgroundColor="#F75231" BorderColor="#732108" BorderWidth="4" Command="{Binding BindingContext.SelectTargetCommand, Source={x:Reference shit}}" CommandParameter="FoeCenter" Text="{Binding TargetFoeCenter.NameWithGender}" TextColor="White" FontSize="Micro" />
+            <Button infrastructure:Canvas.Size="100,30" infrastructure:Canvas.Location="{Binding TargetFoeLeftLocation}" IsEnabled="{Binding TargetFoeLeftEnabled}"
+              BackgroundColor="#F75231" BorderColor="#732108" BorderWidth="4" Command="{Binding BindingContext.SelectTargetCommand, Source={x:Reference shit}}" CommandParameter="FoeLeft" Text="{Binding TargetFoeLeft.NameWithGender}" TextColor="White" FontSize="Micro" />
+            <Button infrastructure:Canvas.Size="100,30" infrastructure:Canvas.Location="{Binding TargetAllyLeftLocation}" IsEnabled="{Binding TargetAllyLeftEnabled}"
+              BackgroundColor="#7B63E7" BorderColor="#4A3994" BorderWidth="4" Command="{Binding BindingContext.SelectTargetCommand, Source={x:Reference shit}}" CommandParameter="AllyLeft" Text="{Binding TargetAllyLeft.NameWithGender}" TextColor="White" FontSize="Micro" />
+            <Button infrastructure:Canvas.Size="100,30" infrastructure:Canvas.Location="206,75"  IsEnabled="{Binding TargetAllyCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
+              BackgroundColor="#7B63E7" BorderColor="#4A3994" BorderWidth="4" Command="{Binding BindingContext.SelectTargetCommand, Source={x:Reference shit}}" CommandParameter="AllyCenter" Text="{Binding TargetAllyCenter.NameWithGender}" TextColor="White" FontSize="Micro" />
+            <Button infrastructure:Canvas.Size="100,30" infrastructure:Canvas.Location="{Binding TargetAllyRightLocation}" IsEnabled="{Binding TargetAllyRightEnabled}"
+              BackgroundColor="#7B63E7" BorderColor="#4A3994" BorderWidth="4" Command="{Binding BindingContext.SelectTargetCommand, Source={x:Reference shit}}" CommandParameter="AllyRight" Text="{Binding TargetAllyRight.NameWithGender}" TextColor="White" FontSize="Micro" />
+        </infrastructure:Canvas>
+        <infrastructure:Canvas IntendedWidth="512" IntendedHeight="128" IsVisible="{Binding SwitchesVisible}">
+            <infrastructure:ItemsControl ItemsSource="{Binding Party}" ItemTemplate="{StaticResource pokemonTemplate}">
+                <infrastructure:ItemsControl.ItemsPanel>
+                    <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceEvenly" VerticalOptions="Center"/>
+                </infrastructure:ItemsControl.ItemsPanel>
+            </infrastructure:ItemsControl>
+        </infrastructure:Canvas>
+        <infrastructure:Canvas IntendedWidth="512" IntendedHeight="128" IsVisible="{Binding PositionsVisible}">
+            <Button infrastructure:Canvas.Size="100,30" infrastructure:Canvas.Location="{Binding LeftPositionLocation}" IsEnabled="{Binding LeftPositionEnabled}"
+              BackgroundColor="White" BorderColor="#A2A2A2" BorderWidth="4" Command="{Binding BindingContext.SelectPositionCommand, Source={x:Reference shit}}" CommandParameter="Left" Text="Left" TextColor="Black" FontSize="Micro" />
+            <Button infrastructure:Canvas.Size="100,30" infrastructure:Canvas.Location="206,49" IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterTargetsVisible}"
+              BackgroundColor="White" BorderColor="#A2A2A2" BorderWidth="4" Command="{Binding BindingContext.SelectPositionCommand, Source={x:Reference shit}}" CommandParameter="Center" Text="Center" TextColor="Black" FontSize="Micro" />
+            <Button infrastructure:Canvas.Size="100,30" infrastructure:Canvas.Location="{Binding RightPositionLocation}" IsEnabled="{Binding RightPositionEnabled}"
+              BackgroundColor="White" BorderColor="#A2A2A2" BorderWidth="4" Command="{Binding BindingContext.SelectPositionCommand, Source={x:Reference shit}}" CommandParameter="Right" Text="Right" TextColor="Black" FontSize="Micro" />
+        </infrastructure:Canvas>
+    </StackLayout>
+</ContentView>

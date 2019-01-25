@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineMobile.Infrastructure"
+             xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineMobile.Views"
+             x:Class="Kermalis.PokemonBattleEngineMobile.Views.FieldView"
+             BackgroundColor="Black">
+    <infrastructure:Canvas IntendedWidth="512" IntendedHeight="384" VerticalOptions="Center" HorizontalOptions="Center">
+        <Image x:Name="BG" infrastructure:Canvas.Size="512,384" />
+
+        <views:PokemonView x:Name="Battler1_Right" />
+        <views:PokemonView x:Name="Battler1_Left" />
+        <views:PokemonView x:Name="Battler1_Center" />
+        <views:PokemonView x:Name="Battler0_Center" />
+        <views:PokemonView x:Name="Battler0_Left" />
+        <views:PokemonView x:Name="Battler0_Right" />
+
+        <ff:CachedImage x:Name="WeatherGif" infrastructure:Canvas.Size="512,384" />
+
+        <views:HPBarView x:Name="Bar0_Left" />
+        <views:HPBarView x:Name="Bar0_Center" />
+        <views:HPBarView x:Name="Bar0_Right" />
+        <views:HPBarView x:Name="Bar1_Left" />
+        <views:HPBarView x:Name="Bar1_Center" />
+        <views:HPBarView x:Name="Bar1_Right" />
+
+        <BoxView Color="#C3000000" infrastructure:Canvas.Location="0,334" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#35000000" infrastructure:Canvas.Location="0,335" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#7C000000" infrastructure:Canvas.Location="0,336" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#83000000" infrastructure:Canvas.Location="0,338" infrastructure:Canvas.Size="512,36" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#7C000000" infrastructure:Canvas.Location="0,375" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#35000000" infrastructure:Canvas.Location="0,376" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#C3000000" infrastructure:Canvas.Location="0,377" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <Label x:Name="Message" TextColor="White" infrastructure:Canvas.Location="16,340" infrastructure:Canvas.Size="512,44" IsVisible="{Binding MessageBoxVisible}" />
+    </infrastructure:Canvas>
+</ContentView>

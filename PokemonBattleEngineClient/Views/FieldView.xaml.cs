@@ -97,13 +97,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             string s;
             switch (battleView.Client.Battle.BattleFormat)
             {
-                case PBEBattleFormat.Single: s = PBEUtils.Sample(new string[] { "1-s", "2-s", "3-s", "4-s", "5-s", "6-s", "8-s" }); break;
-                case PBEBattleFormat.Double: s = PBEUtils.Sample(new string[] { "1-d", "7-d" }); break;
-                case PBEBattleFormat.Triple: s = PBEUtils.Sample(new string[] { "1-t", "4-t", "5-t", "8-t" }); break;
-                case PBEBattleFormat.Rotation: s = PBEUtils.Sample(new string[] { "1-r", "2-r" }); break;
+                case PBEBattleFormat.Single: s = PBEUtils.Sample(new string[] { "1_S", "2_S", "3_S", "4_S", "5_S", "6_S", "8_S" }); break;
+                case PBEBattleFormat.Double: s = PBEUtils.Sample(new string[] { "1_D", "7_D" }); break;
+                case PBEBattleFormat.Triple: s = PBEUtils.Sample(new string[] { "1_T", "4_T", "5_T", "8_T" }); break;
+                case PBEBattleFormat.Rotation: s = PBEUtils.Sample(new string[] { "1_R", "2_R" }); break;
                 default: throw new ArgumentOutOfRangeException(nameof(battleView.Client.Battle.BattleFormat));
             }
-            BGSource = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Backgrounds.{s}.png?assembly=PokemonBattleEngineClient"));
+            BGSource = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.BG.BG_{s}.png?assembly=PokemonBattleEngineClient"));
             OnPropertyChanged(nameof(BGSource));
         }
 
@@ -117,7 +117,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void UpdateWeather()
         {
-            Uri uri = new Uri($"resm:Kermalis.PokemonBattleEngineClient.Assets.Misc.{battleView.Client.Battle.Weather}.gif?assembly=PokemonBattleEngineClient");
+            Uri uri = new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.WEATHER_{battleView.Client.Battle.Weather}.gif?assembly=PokemonBattleEngineClient");
             switch (battleView.Client.Battle.Weather)
             {
                 case PBEWeather.Hailstorm:

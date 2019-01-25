@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:gif="clr-namespace:AvaloniaGif;assembly=AvaloniaGif"
         xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
-        Width="896" Height="566" CanResize="False" WindowStartupLocation="CenterScreen"
+        Width="896" Height="554" CanResize="False" WindowStartupLocation="CenterScreen"
         Title="Pokémon Battle Engine">
   <Window.Styles>
     <Style Selector="DropDown">

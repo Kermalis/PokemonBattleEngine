@@ -4,9 +4,9 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <RootNamespace>Kermalis.PokemonBattleEngineDiscord</RootNamespace>
-    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
+    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +14,7 @@
     <PackageReference Include="Discord.Net.Providers.WS4Net" Version="2.0.0-beta" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
     <Reference Include="Ether.Network">
-      <HintPath>..\Shared Assets\Ether.Network.dll</HintPath>
+      <HintPath>..\Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>
   </ItemGroup>
 

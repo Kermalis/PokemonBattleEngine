@@ -4,9 +4,9 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <OutputType>Exe</OutputType>
     <RootNamespace>Kermalis.PokemonBattleEngineClient</RootNamespace>
-    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
+    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +16,7 @@
     <EmbeddedResource Include="**\*.xaml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Assets\**" />
+    <EmbeddedResource Include="../Shared Assets\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,7 +43,7 @@
       <HintPath>Dependencies\AvaloniaGif.dll</HintPath>
     </Reference>
     <Reference Include="Ether.Network">
-      <HintPath>../Shared Assets\Ether.Network.dll</HintPath>
+      <HintPath>../Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>
   </ItemGroup>
 

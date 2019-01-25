@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Kermalis.PokemonBattleEngineMobile.MainPage">
+    <NavigationPage Title="Home">
+        <x:Arguments>
+            <ContentPage>
+                <StackLayout Orientation="Horizontal" Spacing="5" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Entry x:Name="IP" WidthRequest="100" HeightRequest="50" Text="127.0.0.1"/>
+                    <Button WidthRequest="100" HeightRequest="50" Text="Connect" Clicked="Connect" />
+                </StackLayout>
+            </ContentPage>
+        </x:Arguments>
+    </NavigationPage>
+</TabbedPage>

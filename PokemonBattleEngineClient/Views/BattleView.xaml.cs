@@ -14,7 +14,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public BattleView(BattleClient client)
         {
             AvaloniaXamlLoader.Load(this);
-            DataContext = this;
             Client = client;
             Client.BattleView = this;
             Field = this.FindControl<FieldView>("Field");

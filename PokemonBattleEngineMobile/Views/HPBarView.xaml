@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineMobile.Infrastructure"
+             x:Class="Kermalis.PokemonBattleEngineMobile.Views.HPBarView"
+             WidthRequest="114" HeightRequest="27">
+    <infrastructure:Canvas IntendedWidth="114" IntendedHeight="27">
+        <BoxView Color="White" infrastructure:Canvas.Location="50,13" infrastructure:Canvas.Size="48,3" />
+        <BoxView x:Name="HP" infrastructure:Canvas.Location="50,13" />
+        <Image x:Name="Bar" infrastructure:Canvas.Location="0,11" infrastructure:Canvas.Size="114,16" />
+        <Image x:Name="Status1" infrastructure:Canvas.Location="13,11" infrastructure:Canvas.Size="19,6" />
+    </infrastructure:Canvas>
+</ContentView>

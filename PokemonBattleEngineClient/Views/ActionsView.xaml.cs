@@ -880,6 +880,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                     else
                     {
+                        BattleView.AddMessage($"Send {Pokemon.Shell.Nickname} where?", true, false);
                         PositionsVisible = true;
                     }
                     break;

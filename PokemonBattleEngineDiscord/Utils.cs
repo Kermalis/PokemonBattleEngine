@@ -84,20 +84,19 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static string GetPokemonSprite(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {
-            string orientation = backSprite ? "-B" : "-F";
+            string orientation = backSprite ? "_B" : "_F";
             if (behindSubstitute)
             {
-                return $"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/PokemonBattleEngineClient/Assets/Pokemon_Sprites/Substitute{orientation}.gif";
+                return $"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/STATUS2_Substitute{orientation}.gif";
             }
             else
             {
                 uint speciesID = (uint)species & 0xFFFF;
                 uint formeID = (uint)species >> 0x10;
-                string sss = $"{speciesID}{(formeID > 0 ? $"-{formeID}" : string.Empty)}{orientation}{(shiny ? "-S" : string.Empty)}";
-                // Following will be false if the species sprites are sss-M.gif and sss-F.gif
-                bool spriteIsGenderNeutral = URLExists($"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/PokemonBattleEngineClient/Assets/Pokemon_Sprites/{sss}.gif");
-                string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "-F" : "-M";
-                return $"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/PokemonBattleEngineClient/Assets/Pokemon_Sprites/{sss}{genderStr}.gif";
+                string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{orientation}{(shiny ? "_S" : string.Empty)}";
+                bool spriteIsGenderNeutral = URLExists($"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/PKMN_{sss}.gif");
+                string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "_F" : "_M";
+                return $"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/PKMN_{sss}{genderStr}.gif";
             }
         }
     }
