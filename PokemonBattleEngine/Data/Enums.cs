@@ -2202,6 +2202,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Arceus_Water = 493 | (16 << 0x10),
         Archen = 566,
         Archeops = 567,
+        Audino = 531,
         Axew = 610,
         Azelf = 482,
         Azumarill = 184,

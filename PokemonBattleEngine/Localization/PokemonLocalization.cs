@@ -587,7 +587,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Swoobat, new PBELocalizedString("ココロモリ", "맘박쥐", "Rhinolove", "Fletiamo", "Swoobat", "Swoobat", "Swoobat") },
             { PBESpecies.Drilbur, new PBELocalizedString("モグリュー", "두더류", "Rototaupe", "Rotomurf", "Drilbur", "Drilbur", "Drilbur") },
             { PBESpecies.Excadrill, new PBELocalizedString("ドリュウズ", "몰드류", "Minotaupe", "Stalobor", "Excadrill", "Excadrill", "Excadrill") },
-            // { PBESpecies.531, new PBELocalizedString("タブンネ", "다부니", "Nanméouïe", "Ohrdoch", "Audino", "Audino", "Audino") },
+            { PBESpecies.Audino, new PBELocalizedString("タブンネ", "다부니", "Nanméouïe", "Ohrdoch", "Audino", "Audino", "Audino") },
             { PBESpecies.Timburr, new PBELocalizedString("ドッコラー", "으랏차", "Charpenti", "Praktibalk", "Timburr", "Timburr", "Timburr") },
             { PBESpecies.Gurdurr, new PBELocalizedString("ドテッコツ", "토쇠골", "Ouvrifier", "Strepoli", "Gurdurr", "Gurdurr", "Gurdurr") },
             { PBESpecies.Conkeldurr, new PBELocalizedString("ローブシン", "노보청", "Bétochef", "Meistagrif", "Conkeldurr", "Conkeldurr", "Conkeldurr") },
