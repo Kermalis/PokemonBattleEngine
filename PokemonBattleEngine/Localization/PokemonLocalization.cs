@@ -686,7 +686,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Bisharp, new PBELocalizedString("キリキザン", "절각참", "Scalproie", "Caesurio", "Bisharp", "Bisharp", "Bisharp") },
             { PBESpecies.Bouffalant, new PBELocalizedString("バッフロン", "버프론", "Frison", "Bisofank", "Bouffalant", "Bouffalant", "Bouffalant") },
             // { PBESpecies.627, new PBELocalizedString("ワシボン", "수리둥보", "Furaiglon", "Geronimatz", "Rufflet", "Rufflet", "Rufflet") },
-            // { PBESpecies.628, new PBELocalizedString("ウォーグル", "워글", "Gueriaigle", "Washakwil", "Braviary", "Braviary", "Braviary") },
+            { PBESpecies.Braviary, new PBELocalizedString("ウォーグル", "워글", "Gueriaigle", "Washakwil", "Braviary", "Braviary", "Braviary") },
             { PBESpecies.Vullaby, new PBELocalizedString("バルチャイ", "벌차이", "Vostourno", "Skallyk", "Vullaby", "Vullaby", "Vullaby") },
             { PBESpecies.Mandibuzz, new PBELocalizedString("バルジーナ", "버랜지나", "Vaututrice", "Grypheldis", "Mandibuzz", "Mandibuzz", "Mandibuzz") },
             { PBESpecies.Heatmor, new PBELocalizedString("クイタラン", "앤티골", "Aflamanoir", "Furnifraß", "Heatmor", "Heatmor", "Heatmor") },

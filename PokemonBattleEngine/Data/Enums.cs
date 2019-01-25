@@ -2219,6 +2219,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Blitzle = 522,
         Boldore = 525,
         Bouffalant = 626,
+        Braviary = 628,
         Bulbasaur = 1,
         Butterfree = 12,
         Carracosta = 565,
