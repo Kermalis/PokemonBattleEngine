@@ -2492,6 +2492,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Vullaby = 629,
         Vulpix = 37,
         Wartortle = 8,
+        Watchog = 505,
         Weedle = 13,
         Whimsicott = 547,
         Whirlipede = 544,
