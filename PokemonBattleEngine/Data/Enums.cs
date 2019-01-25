@@ -2390,6 +2390,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rotom_Heat = 479 | (3 << 0x10),
         Rotom_Mow = 479 | (4 << 0x10),
         Rotom_Wash = 479 | (5 << 0x10),
+        Rufflet = 627,
         Samurott = 503,
         Sandile = 551,
         Sawk = 539,
