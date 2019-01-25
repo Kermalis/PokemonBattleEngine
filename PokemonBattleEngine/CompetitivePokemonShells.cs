@@ -1723,6 +1723,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.StealthRock, PBEMove.Toxic, PBEMove.Discharge, PBEMove.Protect }, // Stealth Rock, Toxic, Discharge, Yawn
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Swanna_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Swanna,
+            Nickname = "Dawn",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.BigPecks,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 0, 4, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.RainDance, PBEMove.Scald, PBEMove.IceBeam, PBEMove.Hurricane }, // Tailwind, Scald, Ice Beam, Air Slash
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Swoobat_NU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Swoobat,
