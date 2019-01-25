@@ -730,6 +730,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.BugBuzz, PBEMove.IceBeam, PBEMove.Flamethrower, PBEMove.IronHead }, // U-Turn, Ice Beam, Flamethrower, Iron Head
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Gigalith_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Gigalith,
+            Nickname = "Geeka",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.NormalGem,
+            Ability = PBEAbility.Sturdy,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Brave,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.RockSlide, PBEMove.Earthquake, PBEMove.Explosion, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Giratina_Origin_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Giratina_Origin,
