@@ -1270,6 +1270,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.Toxic, PBEMove.BraveBird, PBEMove.Whirlwind }, // Roost, Toxic, Brave Bird, Taunt
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Maractus_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Maractus,
+            Nickname = "Marcus",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.StormDrain,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Naughty,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 0, 252, 0, 48, 0, 208 },
+            Moves = new PBEMove[] { PBEMove.Spikes, PBEMove.NeedleArm, PBEMove.GrassKnot, PBEMove.Endeavor }, // Spikes, Bullet Seed, Grass Knot, Sucker Punch
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Marowak_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Marowak,
