@@ -614,7 +614,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBESpecies.Darumaka, new PBELocalizedString("ダルマッカ", "달막화", "Darumarond", "Flampion", "Darumaka", "Darumaka", "Darumaka") },
             { PBESpecies.Darmanitan, new PBELocalizedString("ヒヒダルマ", "불비달마", "Darumacho", "Flampivian", "Darmanitan", "Darmanitan", "Darmanitan") },
             { PBESpecies.Darmanitan_Zen, new PBELocalizedString("ヒヒダルマ", "불비달마", "Darumacho", "Flampivian", "Darmanitan", "Darmanitan", "Darmanitan") },
-            // { PBESpecies.556, new PBELocalizedString("マラカッチ", "마라카치", "Maracachi", "Maracamba", "Maractus", "Maractus", "Maractus") },
+            { PBESpecies.Maractus, new PBELocalizedString("マラカッチ", "마라카치", "Maracachi", "Maracamba", "Maractus", "Maractus", "Maractus") },
             { PBESpecies.Dwebble, new PBELocalizedString("イシズマイ", "돌살이", "Crabicoque", "Lithomith", "Dwebble", "Dwebble", "Dwebble") },
             { PBESpecies.Crustle, new PBELocalizedString("イワパレス", "암팰리스", "Crabaraque", "Castellith", "Crustle", "Crustle", "Crustle") },
             { PBESpecies.Scraggy, new PBELocalizedString("ズルッグ", "곤율랭", "Baggiguane", "Zurrokex", "Scraggy", "Scraggy", "Scraggy") },
