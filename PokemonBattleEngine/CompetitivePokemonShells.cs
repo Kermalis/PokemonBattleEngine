@@ -1120,6 +1120,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.XScissor, PBEMove.LeafBlade, PBEMove.Synthesis }, // Swords Dance, Baton Pass, Leaf Blade, Synthesis
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Liepard_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Liepard,
+            Nickname = "Lilith",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.Limber,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Return, PBEMove.NightSlash, PBEMove.AerialAce, PBEMove.Protect }, // Fake Out, Sucker Punch, Snatch, Encore
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Lucario_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Lucario,
