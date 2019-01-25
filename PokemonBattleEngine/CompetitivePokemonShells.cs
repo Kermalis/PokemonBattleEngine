@@ -1777,6 +1777,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.FakeTears, PBEMove.Endeavor, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Endeavor, Encore, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Zebstrika_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Zebstrika,
+            Nickname = "Izzy",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Lightningrod,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Thunderbolt, PBEMove.Overheat, PBEMove.HiddenPower, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Zekrom_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Zekrom,
