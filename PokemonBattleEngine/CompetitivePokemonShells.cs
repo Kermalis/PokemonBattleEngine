@@ -1165,6 +1165,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.WildCharge, PBEMove.Superpower, PBEMove.Facade, PBEMove.Crunch },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Mandibuzz_OU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Mandibuzz,
+            Nickname = "Mandy",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.Leftovers,
+            Ability = PBEAbility.Overcoat,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Careful,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.Toxic, PBEMove.BraveBird, PBEMove.Whirlwind }, // Roost, Toxic, Brave Bird, Taunt
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Marowak_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Marowak,
