@@ -895,6 +895,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.BrickBreak, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Heatmor_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Heatmor,
+            Nickname = "Taylor",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.DarkGem,
+            Ability = PBEAbility.FlashFire,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Rash,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 30 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 44, 212, 0, 252, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.NightSlash, PBEMove.HiddenPower, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Huntail_UU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Huntail,
