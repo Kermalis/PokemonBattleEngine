@@ -1768,6 +1768,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Scald, PBEMove.IceBeam, PBEMove.GrassKnot, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Simisage_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Simisage,
+            Nickname = "Sudas",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.FocusSash,
+            Ability = PBEAbility.Overgrow,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Modest,
+            IVs = new byte[] { 31, 30, 30, 31, 31, 31 }, // Hidden Power: Ice/70
+            EVs = new byte[] { 4, 0, 0, 252, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.LeafStorm, PBEMove.HiddenPower, PBEMove.FocusBlast, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Simisear_NU { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Simisear,
