@@ -1693,6 +1693,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.StealthRock, PBEMove.Toxic, PBEMove.Discharge, PBEMove.Protect }, // Stealth Rock, Toxic, Discharge, Yawn
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Swoobat_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Swoobat,
+            Nickname = "Courtney",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.SalacBerry,
+            Ability = PBEAbility.Simple,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.CalmMind, PBEMove.Psychic, PBEMove.HeatWave }, // Substitute, Calm Mind, Stored Power, Heat Wave
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Terrakion_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Terrakion,
