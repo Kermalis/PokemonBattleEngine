@@ -1300,6 +1300,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.NastyPlot, PBEMove.ShadowBall, PBEMove.HiddenPower, PBEMove.Thunderbolt },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Musharna_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Musharna,
+            Nickname = "Shawna",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.SitrusBerry,
+            Ability = PBEAbility.Telepathy,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Sassy,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 0, 0, 4, 252, 0 },
+            Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.Psychic, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Psychic, Helping Hand, Imprison
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         /// <summary>
         /// <para>Ninetales VGC</para>
         /// <para>Item: Flame Plate</para>
