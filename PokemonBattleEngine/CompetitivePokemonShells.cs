@@ -114,6 +114,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.AquaJet, PBEMove.Superpower, PBEMove.IcePunch },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Basculin_RU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Basculin_Blue,
+            Nickname = "Imbo",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChoiceBand,
+            Ability = PBEAbility.Adaptability,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Jolly,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
+            Moves = new PBEMove[] { PBEMove.Waterfall, PBEMove.AquaJet, PBEMove.ZenHeadbutt, PBEMove.Crunch },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Beartic_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Beartic,
