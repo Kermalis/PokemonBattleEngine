@@ -24,6 +24,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.RockSlide, PBEMove.NightSlash, PBEMove.Superpower }, // Sucker Punch, Superpower, Night Slash, Pursuit
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Accelgor_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Accelgor,
+            Nickname = "Sheba",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.BugGem,
+            Ability = PBEAbility.Unburden,
+            Gender = PBEGender.Female,
+            Nature = PBENature.Timid,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 0, 0, 220, 0, 36 },
+            Moves = new PBEMove[] { PBEMove.FinalGambit, PBEMove.BugBuzz, PBEMove.AcidSpray, PBEMove.Protect },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Alomomola_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Alomomola,
