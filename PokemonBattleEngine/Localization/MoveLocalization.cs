@@ -513,7 +513,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.502, new PBELocalizedString("サイドチェンジ", "사이드체인지", "Interversion", "Seitentausch", "Cambio Banda", "Cambiaposto", "Ally Switch") },
             { PBEMove.Scald, new PBELocalizedString("ねっとう", "열탕", "Ébullition", "Siedewasser", "Escaldar", "Idrovampata", "Scald") },
             { PBEMove.ShellSmash, new PBELocalizedString("からをやぶる", "껍질깨기", "Exuviation", "Hausbruch", "Rompecoraza", "Gettaguscio", "Shell Smash") },
-            // { PBEMove.505, new PBELocalizedString("いやしのはどう", "치유파동", "Vibra Soin", "Heilwoge", "Pulso Cura", "Ondasana", "Heal Pulse") },
+            { PBEMove.HealPulse, new PBELocalizedString("いやしのはどう", "치유파동", "Vibra Soin", "Heilwoge", "Pulso Cura", "Ondasana", "Heal Pulse") },
             { PBEMove.Hex, new PBELocalizedString("たたりめ", "병상첨병", "Châtiment", "Bürde", "Infortunio", "Sciagura", "Hex") },
             // { PBEMove.507, new PBELocalizedString("フリーフォール", "프리폴", "Chute Libre", "Freier Fall", "Caída Libre", "Cadutalibera", "Sky Drop") },
             { PBEMove.ShiftGear, new PBELocalizedString("ギアチェンジ", "기어체인지", "Chgt Vitesse", "Gangwechsel", "Cambiomarcha", "Cambiomarcia", "Shift Gear") },

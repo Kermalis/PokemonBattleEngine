@@ -1195,8 +1195,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Bug, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
+                PBEMove.HealPulse,
+                new PBEMoveData
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.RestoreTargetHP, 50, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByProtect
                 )
             },
             {
@@ -1690,7 +1699,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2086,7 +2095,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2428,7 +2437,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2518,7 +2527,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHealth, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },

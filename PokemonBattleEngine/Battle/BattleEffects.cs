@@ -637,8 +637,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Reflect:
                     Ef_TryForceTeamStatus(user, move, PBETeamStatus.Reflect);
                     break;
-                case PBEMoveEffect.RestoreUserHealth:
-                    Ef_RestoreUserHealth(user, move, mData.EffectParam);
+                case PBEMoveEffect.RestoreTargetHP:
+                    Ef_RestoreTargetHP(user, targets, move, mData.EffectParam);
+                    break;
+                case PBEMoveEffect.RestoreUserHP:
+                    Ef_RestoreUserHP(user, move, mData.EffectParam);
                     break;
                 case PBEMoveEffect.Sandstorm:
                     Ef_TryForceWeather(user, move, PBEWeather.Sandstorm);
@@ -702,8 +705,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts status ending events & status causing immobility events
         bool PreMoveStatusCheck(PBEPokemon user, PBEMove move)
         {
-            PBEMoveData mData = PBEMoveData.Data[move];
-
             // Increment counters first
             if (user.Status2.HasFlag(PBEStatus2.Confused))
             {
@@ -714,8 +715,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.Status1Counter++;
             }
 
-            // Flinch happens before statuses
-            // TODO: Put it under sleep
+            // TODO: https://github.com/Kermalis/PokemonBattleEngine/issues/94
             if (user.Status2.HasFlag(PBEStatus2.Flinching))
             {
                 BroadcastStatus2(user, user, PBEStatus2.Flinching, PBEStatusAction.Activated);
@@ -741,7 +741,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEStatus1.Frozen:
                     // Some moves always defrost the user, but if they don't, there is a 20% chance to thaw out
-                    if (mData.Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.RNG.ApplyChance(20, 100))
+                    if (PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.RNG.ApplyChance(20, 100))
                     {
                         user.Status1 = PBEStatus1.None;
                         BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Ended);
@@ -1961,6 +1961,88 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage, afterPostHit: AfterPostHit);
         }
+        void Ef_Moonlight(PBEPokemon user, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            double percentage;
+            switch (Weather)
+            {
+                case PBEWeather.None: percentage = 0.50; break;
+                case PBEWeather.HarshSunlight: percentage = 0.66; break;
+                default: percentage = 0.25; break;
+            }
+            if (HealDamage(user, (ushort)(user.MaxHP * percentage)) == 0)
+            {
+                BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
+            }
+        }
+        void Ef_PainSplit(PBEPokemon user, PBEPokemon target, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            if (target.Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                return;
+            }
+            if (MissCheck(user, target, move))
+            {
+                return;
+            }
+
+            ushort total = (ushort)(user.HP + target.HP);
+            ushort hp = (ushort)(total / 2);
+            foreach (PBEPokemon pkmn in new PBEPokemon[] { user, target })
+            {
+                if (hp >= pkmn.HP)
+                {
+                    HealDamage(pkmn, (ushort)(hp - pkmn.HP));
+                }
+                else
+                {
+                    DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), true);
+                    DoPostHitEffects(user, pkmn, move);
+                }
+            }
+
+            BroadcastPainSplit(user, target);
+            DoPostAttackedEffects(user, true);
+        }
+        void Ef_RestoreTargetHP(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            foreach (PBEPokemon target in targets)
+            {
+                if (target.HP == 0 || MissCheck(user, target, move))
+                {
+                    continue;
+                }
+
+                if (target.Status2.HasFlag(PBEStatus2.Substitute))
+                {
+                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                }
+                else if (HealDamage(target, (ushort)(target.MaxHP * (percentRestored / 100.0))) == 0)
+                {
+                    BroadcastMoveFailed(user, target, PBEFailReason.HPFull);
+                }
+            }
+        }
+        void Ef_RestoreUserHP(PBEPokemon user, PBEMove move, int percentRestored)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            if (HealDamage(user, (ushort)(user.MaxHP * (percentRestored / 100.0))) == 0)
+            {
+                BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
+            }
+        }
 
         void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator)
         {
@@ -2103,56 +2185,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             short change = (short)(Weather == PBEWeather.HarshSunlight ? +2 : +1);
             Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { change, change });
         }
-        void Ef_Moonlight(PBEPokemon user, PBEMove move)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-
-            double percentage;
-            switch (Weather)
-            {
-                case PBEWeather.None: percentage = 0.5; break;
-                case PBEWeather.HarshSunlight: percentage = 0.66; break;
-                default: percentage = 0.25; break;
-            }
-            if (HealDamage(user, (ushort)(user.MaxHP * percentage)) == 0)
-            {
-                BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
-            }
-        }
-        void Ef_PainSplit(PBEPokemon user, PBEPokemon target, PBEMove move)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-
-            if (target.Status2.HasFlag(PBEStatus2.Substitute))
-            {
-                BroadcastMoveFailed(user, target, PBEFailReason.Default);
-                return;
-            }
-            if (MissCheck(user, target, move))
-            {
-                return;
-            }
-
-            ushort total = (ushort)(user.HP + target.HP);
-            ushort hp = (ushort)(total / 2);
-            foreach (PBEPokemon pkmn in new PBEPokemon[] { user, target })
-            {
-                if (hp >= pkmn.HP)
-                {
-                    HealDamage(pkmn, (ushort)(hp - pkmn.HP));
-                }
-                else
-                {
-                    DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), true);
-                    DoPostHitEffects(user, pkmn, move);
-                }
-            }
-
-            BroadcastPainSplit(user, target);
-            DoPostAttackedEffects(user, true);
-        }
         void Ef_PsychUp(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
@@ -2171,16 +2203,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             user.AccuracyChange = target.AccuracyChange;
             user.EvasionChange = target.EvasionChange;
             BroadcastPsychUp(user, target);
-        }
-        void Ef_RestoreUserHealth(PBEPokemon user, PBEMove move, int percent)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-
-            if (HealDamage(user, (ushort)(user.MaxHP * (percent / 100.0))) == 0)
-            {
-                BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
-            }
         }
         void Ef_Swagger(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {

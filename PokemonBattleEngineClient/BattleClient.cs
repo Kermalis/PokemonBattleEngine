@@ -400,7 +400,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         {
                             case PBEFailReason.AlreadyConfused: message = "{1} is already confused!"; break;
                             case PBEFailReason.Default: message = "But it failed!"; break;
-                            case PBEFailReason.HPFull: message = "{0}'s HP is full!"; break;
+                            case PBEFailReason.HPFull: message = "{1}'s HP is full!"; break;
                             case PBEFailReason.NoTarget: message = "There was no target..."; break;
                             default: throw new ArgumentOutOfRangeException(nameof(mfp.FailReason));
                         }
