@@ -1281,15 +1281,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BattleState = PBEBattleState.Processing;
             OnStateChanged?.Invoke(this);
-            foreach (PBETeam team in Teams)
+            foreach (PBETeam team in Teams.Where(t => t.SwitchInQueue.Count > 0))
             {
-                if (team.SwitchInQueue.Count > 0)
-                {
-                    ActiveBattlers.AddRange(team.SwitchInQueue);
-                    BroadcastPkmnSwitchIn(team, team.SwitchInQueue, false);
-                }
+                ActiveBattlers.AddRange(team.SwitchInQueue);
+                BroadcastPkmnSwitchIn(team, team.SwitchInQueue, false);
             }
-            foreach (PBEPokemon pkmn in Teams.SelectMany(t => t.SwitchInQueue))
+            foreach (PBEPokemon pkmn in GetActingOrder(Teams.SelectMany(t => t.SwitchInQueue), true))
             {
                 DoSwitchInEffects(pkmn);
             }

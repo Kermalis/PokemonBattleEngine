@@ -292,109 +292,111 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastActionsRequest(team);
             }
         }
+        IEnumerable<PBEPokemon> GetActingOrder(IEnumerable<PBEPokemon> pokemon, bool ignoreItemsThatActivate)
+        {
+            var evaluated = new List<Tuple<PBEPokemon, double>>(); // TODO: Full Incense, Lagging Tail, Stall, Quick Claw
+            foreach (PBEPokemon pkmn in pokemon)
+            {
+                double speed = pkmn.Speed * GetStatChangeModifier(pkmn.SpeedChange, false);
+
+                switch (pkmn.Item)
+                {
+                    case PBEItem.ChoiceScarf:
+                        speed *= 1.5;
+                        break;
+                    case PBEItem.MachoBrace:
+                    case PBEItem.PowerAnklet:
+                    case PBEItem.PowerBand:
+                    case PBEItem.PowerBelt:
+                    case PBEItem.PowerBracer:
+                    case PBEItem.PowerLens:
+                    case PBEItem.PowerWeight:
+                        speed *= 0.5;
+                        break;
+                    case PBEItem.QuickPowder:
+                        if (pkmn.Species == PBESpecies.Ditto)
+                        {
+                            speed *= 2.0;
+                        }
+                        break;
+                }
+                if (Weather == PBEWeather.HarshSunlight && pkmn.Ability == PBEAbility.Chlorophyll)
+                {
+                    speed *= 2.0;
+                }
+                if (Weather == PBEWeather.Rain && pkmn.Ability == PBEAbility.SwiftSwim)
+                {
+                    speed *= 2.0;
+                }
+                if (Weather == PBEWeather.Sandstorm && pkmn.Ability == PBEAbility.SandRush)
+                {
+                    speed *= 2.0;
+                }
+                if (pkmn.Status1 == PBEStatus1.Paralyzed)
+                {
+                    speed *= 0.25;
+                }
+
+                Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Shell.Nickname, speed);
+                Tuple<PBEPokemon, double> tup = Tuple.Create(pkmn, speed);
+                if (evaluated.Count == 0)
+                {
+                    evaluated.Add(tup);
+                }
+                else
+                {
+                    int pkmnTiedWith = evaluated.FindIndex(t => t.Item2 == speed);
+                    if (pkmnTiedWith != -1) // Speed tie - randomly go before or after the Pokémon it tied with
+                    {
+                        if (PBEUtils.RNG.NextBoolean())
+                        {
+                            if (pkmnTiedWith == evaluated.Count - 1)
+                            {
+                                evaluated.Add(tup);
+                            }
+                            else
+                            {
+                                evaluated.Insert(pkmnTiedWith + 1, tup);
+                            }
+                        }
+                        else
+                        {
+                            evaluated.Insert(pkmnTiedWith, tup);
+                        }
+                    }
+                    else
+                    {
+                        int pkmnToGoBefore = evaluated.FindIndex(t => BattleStatus.HasFlag(PBEBattleStatus.TrickRoom) ? t.Item2 > speed : t.Item2 < speed);
+                        if (pkmnToGoBefore == -1)
+                        {
+                            evaluated.Add(tup);
+                        }
+                        else
+                        {
+                            evaluated.Insert(pkmnToGoBefore, tup);
+                        }
+                    }
+                }
+                Debug.WriteLine(evaluated.Select(t => $"{t.Item1.Team.Id} {t.Item1.Shell.Nickname} {t.Item2}").Print());
+            }
+            return evaluated.Select(t => t.Item1);
+        }
         void DetermineTurnOrder()
         {
             turnOrder.Clear();
             IEnumerable<PBEPokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.SelectedAction.Decision == PBEDecision.SwitchOut);
             IEnumerable<PBEPokemon> pkmnFighting = ActiveBattlers.Where(p => p.SelectedAction.Decision == PBEDecision.Fight);
             // Switching happens first:
-            turnOrder.AddRange(pkmnSwitchingOut);
+            turnOrder.AddRange(GetActingOrder(pkmnSwitchingOut, true));
             // Moves:
-            IEnumerable<sbyte> uniquePriorities = pkmnFighting.Select(p => PBEMoveData.Data[p.SelectedAction.FightMove].Priority).Distinct().OrderByDescending(p => p);
-            foreach (sbyte priority in uniquePriorities)
+            foreach (sbyte priority in pkmnFighting.Select(p => PBEMoveData.Data[p.SelectedAction.FightMove].Priority).Distinct().OrderByDescending(p => p))
             {
                 IEnumerable<PBEPokemon> pkmnWithThisPriority = pkmnFighting.Where(p => PBEMoveData.Data[p.SelectedAction.FightMove].Priority == priority);
-                if (pkmnWithThisPriority.Count() == 0)
+                if (pkmnWithThisPriority.Count() > 0)
                 {
-                    continue;
+                    Debug.WriteLine("Priority {0} bracket...", priority);
+                    turnOrder.AddRange(GetActingOrder(pkmnWithThisPriority, false));
                 }
-                Debug.WriteLine("Priority {0} bracket...", priority);
-                var evaluated = new List<Tuple<PBEPokemon, double>>(); // TODO: two bools for wanting to go first or last
-                foreach (PBEPokemon pkmn in pkmnWithThisPriority)
-                {
-                    double speed = pkmn.Speed * GetStatChangeModifier(pkmn.SpeedChange, false);
-
-                    switch (pkmn.Item)
-                    {
-                        case PBEItem.ChoiceScarf:
-                            speed *= 1.5;
-                            break;
-                        case PBEItem.MachoBrace:
-                        case PBEItem.PowerAnklet:
-                        case PBEItem.PowerBand:
-                        case PBEItem.PowerBelt:
-                        case PBEItem.PowerBracer:
-                        case PBEItem.PowerLens:
-                        case PBEItem.PowerWeight:
-                            speed *= 0.5;
-                            break;
-                        case PBEItem.QuickPowder:
-                            if (pkmn.Species == PBESpecies.Ditto)
-                            {
-                                speed *= 2.0;
-                            }
-                            break;
-                    }
-                    if (Weather == PBEWeather.HarshSunlight && pkmn.Ability == PBEAbility.Chlorophyll)
-                    {
-                        speed *= 2.0;
-                    }
-                    if (Weather == PBEWeather.Rain && pkmn.Ability == PBEAbility.SwiftSwim)
-                    {
-                        speed *= 2.0;
-                    }
-                    if (Weather == PBEWeather.Sandstorm && pkmn.Ability == PBEAbility.SandRush)
-                    {
-                        speed *= 2.0;
-                    }
-                    if (pkmn.Status1 == PBEStatus1.Paralyzed)
-                    {
-                        speed *= 0.25;
-                    }
-
-                    Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Shell.Nickname, speed);
-                    Tuple<PBEPokemon, double> tup = Tuple.Create(pkmn, speed);
-                    if (evaluated.Count == 0)
-                    {
-                        evaluated.Add(tup);
-                    }
-                    else
-                    {
-                        int pkmnTiedWith = evaluated.FindIndex(t => t.Item2 == speed);
-                        if (pkmnTiedWith != -1)
-                        {
-                            if (PBEUtils.RNG.NextBoolean()) // Randomly go before or after the Pokémon it tied with
-                            {
-                                if (pkmnTiedWith == evaluated.Count - 1)
-                                {
-                                    evaluated.Add(tup);
-                                }
-                                else
-                                {
-                                    evaluated.Insert(pkmnTiedWith + 1, tup);
-                                }
-                            }
-                            else
-                            {
-                                evaluated.Insert(pkmnTiedWith, tup);
-                            }
-                        }
-                        else
-                        {
-                            int pkmnToGoBefore = evaluated.FindIndex(t => BattleStatus.HasFlag(PBEBattleStatus.TrickRoom) ? t.Item2 > speed : t.Item2 < speed);
-                            if (pkmnToGoBefore == -1)
-                            {
-                                evaluated.Add(tup); // All evaluated Pokémon are faster (slower in trick room) than this one
-                            }
-                            else
-                            {
-                                evaluated.Insert(pkmnToGoBefore, tup);
-                            }
-                        }
-                    }
-                    Debug.WriteLine(evaluated.Select(t => $"{t.Item1.Team.Id} {t.Item1.Shell.Nickname} {t.Item2}").Print());
-                }
-                turnOrder.AddRange(evaluated.Select(t => t.Item1));
             }
         }
         void RunActionsInOrder()
@@ -435,20 +437,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Pokémon
-            foreach (PBEPokemon pkmn in ActiveBattlers.ToArray()) // Copy the list so a faint or ejection does not cause a collection modified exception
+            foreach (PBEPokemon pkmn in GetActingOrder(ActiveBattlers, true))
             {
-                if (!ActiveBattlers.Contains(pkmn))
+                if (ActiveBattlers.Contains(pkmn))
                 {
-                    continue;
+                    pkmn.SelectedAction.Decision = PBEDecision.None; // No longer necessary
+                    pkmn.Status2 &= ~PBEStatus2.Flinching;
+                    pkmn.Status2 &= ~PBEStatus2.Protected;
+                    if (pkmn.PreviousAction.Decision == PBEDecision.Fight && pkmn.PreviousAction.FightMove != PBEMove.Protect && pkmn.PreviousAction.FightMove != PBEMove.Detect)
+                    {
+                        pkmn.ProtectCounter = 0;
+                    }
+                    DoTurnEndedEffects(pkmn);
                 }
-                pkmn.SelectedAction.Decision = PBEDecision.None; // No longer necessary
-                pkmn.Status2 &= ~PBEStatus2.Flinching;
-                pkmn.Status2 &= ~PBEStatus2.Protected;
-                if (pkmn.PreviousAction.Decision == PBEDecision.Fight && pkmn.PreviousAction.FightMove != PBEMove.Protect && pkmn.PreviousAction.FightMove != PBEMove.Detect)
-                {
-                    pkmn.ProtectCounter = 0;
-                }
-                DoTurnEndedEffects(pkmn);
             }
 
             // Teams
@@ -560,12 +561,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BattleState = PBEBattleState.WaitingForSwitchIns;
                 OnStateChanged?.Invoke(this);
-                foreach (PBETeam team in Teams)
+                foreach (PBETeam team in Teams.Where(t => t.SwitchInsRequired > 0))
                 {
-                    if (team.SwitchInsRequired > 0)
-                    {
-                        BroadcastSwitchInRequest(team);
-                    }
+                    BroadcastSwitchInRequest(team);
                 }
             }
             else // PBEBattleState.WaitingForActions
