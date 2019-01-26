@@ -894,6 +894,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Flail,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 3, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.FlameCharge,
                 new PBEMoveData
                 (
@@ -2088,6 +2097,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 4, 0, 100,
                     PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
+                PBEMove.Reversal,
+                new PBEMoveData
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 3, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
             {

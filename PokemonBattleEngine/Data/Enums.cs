@@ -2795,6 +2795,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FireBlast = 126,
         FirePunch = 7,
         Fissure = 90,
+        Flail = 175,
         FlameCharge = 488,
         Flamethrower = 53,
         FlameWheel = 172,
@@ -2931,6 +2932,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reflect = 115,
         Retaliate = 514, // TODO
         Return = 216,
+        Reversal = 179,
         Roar = 46, // TODO: Suction Cups, Soundproof, Ingrain
         RockClimb = 431,
         RockPolish = 397,

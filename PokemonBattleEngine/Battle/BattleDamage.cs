@@ -141,108 +141,152 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEMove.Eruption:
                 case PBEMove.WaterSpout:
-                    basePower = Math.Min(1, 150 * user.HP / user.MaxHP);
-                    break;
+                    {
+                        basePower = Math.Min(1, 150 * user.HP / user.MaxHP);
+                        break;
+                    }
+                case PBEMove.Flail:
+                case PBEMove.Reversal:
+                    {
+                        int val = 48 * user.HP / user.MaxHP;
+                        if (val < 2)
+                        {
+                            basePower = 200;
+                        }
+                        else if (val < 4)
+                        {
+                            basePower = 150;
+                        }
+                        else if (val < 9)
+                        {
+                            basePower = 100;
+                        }
+                        else if (val < 16)
+                        {
+                            basePower = 80;
+                        }
+                        else if (val < 32)
+                        {
+                            basePower = 40;
+                        }
+                        else
+                        {
+                            basePower = 20;
+                        }
+                        break;
+                    }
                 case PBEMove.Frustration:
-                    basePower = Math.Max(1, (byte.MaxValue - user.Shell.Friendship) / 2.5);
-                    break;
+                    {
+                        basePower = (int)Math.Max(1, (byte.MaxValue - user.Shell.Friendship) / 2.5);
+                        break;
+                    }
                 case PBEMove.GrassKnot:
                 case PBEMove.LowKick:
-                    if (targets[0].Weight >= 200.0)
                     {
-                        basePower = 120;
+                        if (targets[0].Weight >= 200.0)
+                        {
+                            basePower = 120;
+                        }
+                        else if (targets[0].Weight >= 100.0)
+                        {
+                            basePower = 100;
+                        }
+                        else if (targets[0].Weight >= 50.0)
+                        {
+                            basePower = 80;
+                        }
+                        else if (targets[0].Weight >= 25.0)
+                        {
+                            basePower = 60;
+                        }
+                        else if (targets[0].Weight >= 10.0)
+                        {
+                            basePower = 40;
+                        }
+                        else
+                        {
+                            basePower = 20;
+                        }
+                        break;
                     }
-                    else if (targets[0].Weight >= 100.0)
-                    {
-                        basePower = 100;
-                    }
-                    else if (targets[0].Weight >= 50.0)
-                    {
-                        basePower = 80;
-                    }
-                    else if (targets[0].Weight >= 25.0)
-                    {
-                        basePower = 60;
-                    }
-                    else if (targets[0].Weight >= 10.0)
-                    {
-                        basePower = 40;
-                    }
-                    else
-                    {
-                        basePower = 20;
-                    }
-                    break;
                 case PBEMove.HeatCrash:
                 case PBEMove.HeavySlam:
-                    double relative = targets[0].Weight / user.Weight;
-                    if (relative <= 1.0 / 5.0)
                     {
-                        basePower = 120;
+                        double relative = user.Weight / targets[0].Weight;
+                        if (relative < 2)
+                        {
+                            basePower = 40;
+                        }
+                        else if (relative < 3)
+                        {
+                            basePower = 60;
+                        }
+                        else if (relative < 4)
+                        {
+                            basePower = 80;
+                        }
+                        else if (relative < 5)
+                        {
+                            basePower = 100;
+                        }
+                        else
+                        {
+                            basePower = 120;
+                        }
+                        break;
                     }
-                    else if (relative <= 1.0 / 4.0)
-                    {
-                        basePower = 100;
-                    }
-                    else if (relative <= 1.0 / 3.0)
-                    {
-                        basePower = 80;
-                    }
-                    else if (relative <= 1.0 / 2.0)
-                    {
-                        basePower = 60;
-                    }
-                    else
-                    {
-                        basePower = 40;
-                    }
-                    break;
                 case PBEMove.HiddenPower:
-                    basePower = user.GetHiddenPowerBasePower();
-                    break;
+                    {
+                        basePower = user.GetHiddenPowerBasePower();
+                        break;
+                    }
                 case PBEMove.Magnitude:
-                    int val = PBEUtils.RNG.Next(0, 100);
-                    byte magnitude;
-                    if (val < 5) // Magnitude 4 - 5%
                     {
-                        magnitude = 4;
-                        basePower = 10;
+                        int val = PBEUtils.RNG.Next(0, 100);
+                        byte magnitude;
+                        if (val < 5) // Magnitude 4 - 5%
+                        {
+                            magnitude = 4;
+                            basePower = 10;
+                        }
+                        else if (val < 15) // Magnitude 5 - 10%
+                        {
+                            magnitude = 5;
+                            basePower = 30;
+                        }
+                        else if (val < 35) // Magnitude 6 - 20%
+                        {
+                            magnitude = 6;
+                            basePower = 50;
+                        }
+                        else if (val < 65) // Magnitude 7 - 30%
+                        {
+                            magnitude = 7;
+                            basePower = 70;
+                        }
+                        else if (val < 85) // Magnitude 8 - 20%
+                        {
+                            magnitude = 8;
+                            basePower = 90;
+                        }
+                        else if (val < 95) // Magnitude 9 - 10%
+                        {
+                            magnitude = 9;
+                            basePower = 110;
+                        }
+                        else // Magnitude 10 - 5%
+                        {
+                            magnitude = 10;
+                            basePower = 150;
+                        }
+                        BroadcastMagnitude(magnitude);
+                        break;
                     }
-                    else if (val < 15) // Magnitude 5 - 10%
-                    {
-                        magnitude = 5;
-                        basePower = 30;
-                    }
-                    else if (val < 35) // Magnitude 6 - 20%
-                    {
-                        magnitude = 6;
-                        basePower = 50;
-                    }
-                    else if (val < 65) // Magnitude 7 - 30%
-                    {
-                        magnitude = 7;
-                        basePower = 70;
-                    }
-                    else if (val < 85) // Magnitude 8 - 20%
-                    {
-                        magnitude = 8;
-                        basePower = 90;
-                    }
-                    else if (val < 95) // Magnitude 9 - 10%
-                    {
-                        magnitude = 9;
-                        basePower = 110;
-                    }
-                    else // Magnitude 10 - 5%
-                    {
-                        magnitude = 10;
-                        basePower = 150;
-                    }
-                    BroadcastMagnitude(magnitude);
-                    break;
                 case PBEMove.Return:
-                    basePower = Math.Max(1, user.Shell.Friendship / 2.5);
-                    break;
+                    {
+                        basePower = (int)Math.Max(1, user.Shell.Friendship / 2.5);
+                        break;
+                    }
             }
             switch (move)
             {

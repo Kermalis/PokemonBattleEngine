@@ -393,7 +393,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // World championships 2010
                     (
                         new byte[] { 4 }, PBESpecies.Eevee, 50, true, PBEGender.Male, new PBEAbility[] { PBEAbility.Adaptability }, new PBENature[] { PBENature.Hardy },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.IronTail/*, PBEMove.TrumpCard, PBEMove.Flail*/, PBEMove.QuickAttack }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.IronTail/*, PBEMove.TrumpCard*/, PBEMove.Flail, PBEMove.QuickAttack }
                     ),
                     new PBEEventPokemon // Ikimono-gakari promotion
                     (
@@ -646,7 +646,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Summer 2011
                     (
                         new byte[] { 5 }, PBESpecies.Karrablast, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Swarm }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Megahorn, PBEMove.TakeDown, PBEMove.XScissor/*, PBEMove.Flail*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Megahorn, PBEMove.TakeDown, PBEMove.XScissor, PBEMove.Flail }
                     )
                 })
             },
@@ -779,7 +779,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Pokémon Center relocation
                     (
                         new byte[] { 5 }, PBESpecies.Magikarp, 99, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.SwiftSwim }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Flail, */PBEMove.HydroPump/*, PBEMove.Bounce, PBEMove.Splash*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Flail, PBEMove.HydroPump/*, PBEMove.Bounce, PBEMove.Splash*/ }
                     )
                 })
             },
