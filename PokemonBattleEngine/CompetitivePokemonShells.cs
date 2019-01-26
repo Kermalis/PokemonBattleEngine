@@ -2137,6 +2137,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.BugBuzz, PBEMove.HiddenPower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Watchog_NU { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Watchog,
+            Nickname = "Wesley",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.LifeOrb,
+            Ability = PBEAbility.Analytic,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
+            Moves = new PBEMove[] { PBEMove.Return, PBEMove.Hypnosis, PBEMove.SuperFang, PBEMove.ThunderWave },
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Whimsicott_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Whimsicott,
