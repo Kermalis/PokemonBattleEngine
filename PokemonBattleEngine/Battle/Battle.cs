@@ -549,7 +549,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 OnStateChanged?.Invoke(this);
                 foreach (PBETeam team in Teams)
                 {
-                    BroadcastSwitchInRequest(team);
+                    if (team.SwitchInsRequired > 0)
+                    {
+                        BroadcastSwitchInRequest(team);
+                    }
                 }
             }
             else // PBEBattleState.WaitingForActions
