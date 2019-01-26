@@ -151,8 +151,9 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBEPokemonData pData;
             switch (shell.Species)
             {
+                case PBESpecies.Darmanitan_Zen:
                 case PBESpecies.Meloetta_Pirouette:
-                    throw new ArgumentOutOfRangeException(nameof(shell.Species), "Meloetta cannot retain its Pirouette forme in a Poké Ball.");
+                    throw new ArgumentOutOfRangeException(nameof(shell.Species), $"{shell.Species} must be in its base forme.");
                 default:
                     try
                     {
