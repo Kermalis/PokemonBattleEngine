@@ -159,14 +159,14 @@ namespace Kermalis.PokemonBattleEngineClient
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.Weather: message = "{0}'s {2} activated!"; break; // Message is displayed from a weather packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.Healer:
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.CuredStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.IceBody:
@@ -174,14 +174,14 @@ namespace Kermalis.PokemonBattleEngineClient
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.RestoredHP: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.Imposter:
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a status2 packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.IronBarbs:
@@ -190,7 +190,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.Levitate:
@@ -198,7 +198,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.Limber:
@@ -206,14 +206,14 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEAbilityAction.CuredStatus: // Message is displayed from a status1 packet
                                     case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.LiquidOoze:
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.Damage: message = "{1} sucked up the liquid ooze!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.Mummy:
@@ -223,26 +223,45 @@ namespace Kermalis.PokemonBattleEngineClient
                                         victim.Ability = PBEAbility.Mummy;
                                         message = "{1}'s Ability became {2}!";
                                         break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.None:
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
                             case PBEAbility.Sturdy:
                                 switch (ap.AbilityAction)
                                 {
                                     case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a special message packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction), $"Invalid {ap.Ability} action: {ap.AbilityAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
-                            default: throw new ArgumentOutOfRangeException(nameof(ap.Ability), $"Invalid ability: {ap.Ability}");
+                            default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, true), NameForTrainer(victim, true), PBEAbilityLocalization.Names[ap.Ability].FromUICultureInfo()), true, true);
+                        break;
+                    }
+                case PBEBattleStatusPacket bsp:
+                    {
+                        string message;
+                        switch (bsp.BattleStatus)
+                        {
+                            case PBEBattleStatus.TrickRoom:
+                                switch (bsp.BattleStatusAction)
+                                {
+                                    case PBEBattleStatusAction.Added: message = "The dimensions were twisted!"; break;
+                                    case PBEBattleStatusAction.Cleared:
+                                    case PBEBattleStatusAction.Ended: message = "The twisted dimensions returned to normal!"; break;
+                                    default: throw new ArgumentOutOfRangeException(nameof(bsp.BattleStatusAction));
+                                }
+                                break;
+                            default: throw new ArgumentOutOfRangeException(nameof(bsp.BattleStatus));
+                        }
+                        BattleView.AddMessage(message, true, true);
                         break;
                     }
                 case PBEItemPacket ip:
@@ -283,7 +302,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 switch (ip.ItemAction)
                                 {
                                     case PBEItemAction.Consumed: message = "The {2} strengthened {0}'s power!"; culpritCaps = false; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
                             case PBEItem.BlackSludge:
@@ -291,66 +310,66 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEItemAction.Damage: message = "{0} is hurt by its {2}!"; break;
                                     case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
                             case PBEItem.FlameOrb:
                                 switch (ip.ItemAction)
                                 {
                                     case PBEItemAction.ChangedStatus: message = "{0} was burned by its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
                             case PBEItem.FocusBand:
                                 switch (ip.ItemAction)
                                 {
                                     case PBEItemAction.Damage: message = "{0} hung on using its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
                             case PBEItem.FocusSash:
                                 switch (ip.ItemAction)
                                 {
                                     case PBEItemAction.Consumed: message = "{0} hung on using its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
                             case PBEItem.Leftovers:
                                 switch (ip.ItemAction)
                                 {
                                     case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
                             case PBEItem.LifeOrb:
                                 switch (ip.ItemAction)
                                 {
                                     case PBEItemAction.Damage: message = "{0} is hurt by its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
                             case PBEItem.PowerHerb:
                                 switch (ip.ItemAction)
                                 {
                                     case PBEItemAction.Consumed: message = "{0} became fully charged due to its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
                             case PBEItem.RockyHelmet:
                                 switch (ip.ItemAction)
                                 {
                                     case PBEItemAction.Damage: message = "{1} was hurt by the {2}!"; victimCaps = true; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
                             case PBEItem.ToxicOrb:
                                 switch (ip.ItemAction)
                                 {
                                     case PBEItemAction.ChangedStatus: message = "{0} was badly poisoned by its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction), $"Invalid {ip.Item} action: {ip.ItemAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
                                 }
                                 break;
-                            default: throw new ArgumentOutOfRangeException(nameof(ip.Item), $"Invalid item: {ip.Item}");
+                            default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(culprit, culpritCaps), NameForTrainer(victim, victimCaps), PBEItemLocalization.Names[ip.Item].FromUICultureInfo()), true, true);
                         break;
@@ -369,7 +388,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEEffectiveness.NotVeryEffective: message = "It's not very effective..."; break;
                             case PBEEffectiveness.Normal: return true;
                             case PBEEffectiveness.SuperEffective: message = "It's super effective!"; break;
-                            default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness), $"Invalid effectiveness: {mep.Effectiveness}");
+                            default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(Battle.TryGetPokemon(mep.Victim), false)), true, true);
                         break;
@@ -383,7 +402,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEFailReason.Default: message = "But it failed!"; break;
                             case PBEFailReason.HPFull: message = "{0}'s HP is full!"; break;
                             case PBEFailReason.NoTarget: message = "There was no target..."; break;
-                            default: throw new ArgumentOutOfRangeException(nameof(mfp.FailReason), $"Invalid fail reason: {mfp.FailReason}");
+                            default: throw new ArgumentOutOfRangeException(nameof(mfp.FailReason));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(Battle.TryGetPokemon(mfp.Culprit), true), NameForTrainer(Battle.TryGetPokemon(mfp.Victim), true)), true, true);
                         break;
@@ -462,9 +481,9 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     message = "rose drastically";
                                 }
-                                else
+                                else // +0
                                 {
-                                    throw new ArgumentOutOfRangeException(nameof(pscp.Change), $"Invalid stat change: {pscp.Change}"); // +0
+                                    throw new ArgumentOutOfRangeException(nameof(pscp.Change));
                                 }
                                 break;
                         }
@@ -544,7 +563,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBESpecialMessage.Struggle:
                                 message = string.Format("{0} has no moves left!", NameForTrainer(Battle.TryGetPokemon((byte)smp.Params[0]), true));
                                 break;
-                            default: throw new ArgumentOutOfRangeException(nameof(smp.Message), $"Invalid {smp.Message}: {smp.Message}");
+                            default: throw new ArgumentOutOfRangeException(nameof(smp.Message));
                         }
                         BattleView.AddMessage(message, true, true);
                         break;
@@ -574,7 +593,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEStatusAction.Added: message = "{0} fell asleep!"; break;
                                     case PBEStatusAction.Cured:
                                     case PBEStatusAction.Ended: message = "{0} woke up!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                                 }
                                 break;
                             case PBEStatus1.BadlyPoisoned:
@@ -583,7 +602,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEStatusAction.Added: message = "{0} was badly poisoned!"; break;
                                     case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
                                     case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                                 }
                                 break;
                             case PBEStatus1.Poisoned:
@@ -592,7 +611,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
                                     case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
                                     case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                                 }
                                 break;
                             case PBEStatus1.Burned:
@@ -601,7 +620,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEStatusAction.Added: message = "{0} was burned!"; break;
                                     case PBEStatusAction.Cured: message = "{0}'s burn was healed."; break;
                                     case PBEStatusAction.Damage: message = "{0} was hurt by its burn!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                                 }
                                 break;
                             case PBEStatus1.Frozen:
@@ -611,7 +630,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEStatusAction.Added: message = "{0} was frozen solid!"; break;
                                     case PBEStatusAction.Cured:
                                     case PBEStatusAction.Ended: message = "{0} thawed out!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                                 }
                                 break;
                             case PBEStatus1.Paralyzed:
@@ -620,10 +639,10 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEStatusAction.Activated: message = "{0} is paralyzed! It can't move!"; break;
                                     case PBEStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
                                     case PBEStatusAction.Cured: message = "{0} was cured of paralysis."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction), $"Invalid {s1p.Status1} action: {s1p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                                 }
                                 break;
-                            default: throw new ArgumentOutOfRangeException(nameof(s1p.Status1), $"Invalid status1: {s1p.Status1}");
+                            default: throw new ArgumentOutOfRangeException(nameof(s1p.Status1));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(victim, true)), true, true);
                         break;
@@ -664,7 +683,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                             victim.TempLockedTargets = PBETarget.None;
                                         }
                                         return true;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.Confused:
@@ -674,7 +693,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEStatusAction.Added: message = "{0} became confused!"; break;
                                     case PBEStatusAction.Damage: message = "It hurt itself in its confusion!"; break;
                                     case PBEStatusAction.Ended: message = "{0} snapped out of its confusion."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.Cursed:
@@ -682,14 +701,14 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEStatusAction.Added: message = "{1} cut its own HP and laid a curse on {0}!"; culpritCaps = true; victimCaps = false; break;
                                     case PBEStatusAction.Damage: message = "{0} is afflicted by the curse!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.Flinching:
                                 switch (s2p.StatusAction)
                                 {
                                     case PBEStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.LeechSeed:
@@ -697,28 +716,28 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEStatusAction.Added: message = "{0} was seeded!"; break;
                                     case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.Minimized:
                                 switch (s2p.StatusAction)
                                 {
                                     case PBEStatusAction.Added: return true;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                             case PBEStatus2.Protected:
                                 switch (s2p.StatusAction)
                                 {
                                     case PBEStatusAction.Activated:
                                     case PBEStatusAction.Added: message = "{0} protected itself!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.Pumped:
                                 switch (s2p.StatusAction)
                                 {
                                     case PBEStatusAction.Added: message = "{0} is getting pumped!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.Substitute:
@@ -728,7 +747,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEStatusAction.Added: message = "{0} put in a substitute!"; break;
                                     case PBEStatusAction.Damage: message = "The substitute took damage for {0}!"; victimCaps = false; break;
                                     case PBEStatusAction.Ended: message = "{0}'s substitute faded!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.Transformed: // Victim is the user, culprit is the target (victim receives the transformed flag)
@@ -737,7 +756,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 switch (s2p.StatusAction)
                                 {
                                     case PBEStatusAction.Added: message = "{0} transformed into {1}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.Underground:
@@ -759,7 +778,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                             victim.TempLockedTargets = PBETarget.None;
                                         }
                                         return true;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
                             case PBEStatus2.Underwater:
@@ -781,10 +800,10 @@ namespace Kermalis.PokemonBattleEngineClient
                                             victim.TempLockedTargets = PBETarget.None;
                                         }
                                         return true;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction), $"Invalid {s2p.Status2} action: {s2p.StatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                 }
                                 break;
-                            default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2), $"Invalid status2: {s2p.Status2}");
+                            default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(victim, victimCaps), NameForTrainer(culprit, culpritCaps)), true, true);
                         break;
@@ -794,11 +813,11 @@ namespace Kermalis.PokemonBattleEngineClient
                         switch (tsp.TeamStatusAction)
                         {
                             case PBETeamStatusAction.Added:
-                                tsp.Team.Status |= tsp.TeamStatus;
+                                tsp.Team.TeamStatus |= tsp.TeamStatus;
                                 break;
                             case PBETeamStatusAction.Cleared:
                             case PBETeamStatusAction.Ended:
-                                tsp.Team.Status &= ~tsp.TeamStatus;
+                                tsp.Team.TeamStatus &= ~tsp.TeamStatus;
                                 break;
                         }
                         string message;
@@ -811,7 +830,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBETeamStatusAction.Added: message = "Light Screen raised {0} team's Special Defense!"; break;
                                     case PBETeamStatusAction.Cleared:
                                     case PBETeamStatusAction.Ended: message = "{1} team's Light Screen wore off!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                                 }
                                 break;
                             case PBETeamStatus.LuckyChant:
@@ -819,7 +838,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBETeamStatusAction.Added: message = "The Lucky Chant shielded {0} team from critical hits!"; break;
                                     case PBETeamStatusAction.Ended: message = "{1} team's Lucky Chant wore off!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                                 }
                                 break;
                             case PBETeamStatus.Reflect:
@@ -828,7 +847,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBETeamStatusAction.Added: message = "Reflect raised {0} team's Defense!"; break;
                                     case PBETeamStatusAction.Cleared:
                                     case PBETeamStatusAction.Ended: message = "{1} team's Reflect wore off!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                                 }
                                 break;
                             case PBETeamStatus.Spikes:
@@ -843,7 +862,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                         message = "The spikes disappeared from around {2} team's feet!";
                                         break;
                                     case PBETeamStatusAction.Damage: message = "{4} is hurt by the spikes!"; victimCaps = true; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                                 }
                                 break;
                             case PBETeamStatus.StealthRock:
@@ -852,7 +871,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBETeamStatusAction.Added: message = "Pointed stones float in the air around {3} team!"; break;
                                     case PBETeamStatusAction.Cleared: message = "The pointed stones disappeared from around {2} team!"; break;
                                     case PBETeamStatusAction.Damage: message = "Pointed stones dug into {4}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                                 }
                                 break;
                             case PBETeamStatus.ToxicSpikes:
@@ -866,10 +885,10 @@ namespace Kermalis.PokemonBattleEngineClient
                                         tsp.Team.ToxicSpikeCount = 0;
                                         message = "The poison spikes disappeared from around {2} team's feet!";
                                         break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction), $"Invalid {tsp.TeamStatus} action: {tsp.TeamStatusAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                                 }
                                 break;
-                            default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatus), $"Invalid team status: {tsp.TeamStatus}");
+                            default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatus));
                         }
                         BattleView.AddMessage(string.Format(message,
                             Index >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == Index ? "your" : "the opposing",
@@ -925,7 +944,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEWeatherAction.Added: message = "It started to hail!"; break;
                                     case PBEWeatherAction.CausedDamage: message = "{0} is buffeted by the hail!"; break;
                                     case PBEWeatherAction.Ended: message = "The hail stopped."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
                                 }
                                 break;
                             case PBEWeather.HarshSunlight:
@@ -933,7 +952,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEWeatherAction.Added: message = "The sunlight turned harsh!"; break;
                                     case PBEWeatherAction.Ended: message = "The sunlight faded."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
                                 }
                                 break;
                             case PBEWeather.Rain:
@@ -941,7 +960,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     case PBEWeatherAction.Added: message = "It started to rain!"; break;
                                     case PBEWeatherAction.Ended: message = "The rain stopped."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
                                 }
                                 break;
                             case PBEWeather.Sandstorm:
@@ -950,10 +969,10 @@ namespace Kermalis.PokemonBattleEngineClient
                                     case PBEWeatherAction.Added: message = "A sandstorm kicked up!"; break;
                                     case PBEWeatherAction.CausedDamage: message = "{0} is buffeted by the sandstorm!"; break;
                                     case PBEWeatherAction.Ended: message = "The sandstorm subsided."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction), $"Invalid {wp.Weather} action: {wp.WeatherAction}");
+                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
                                 }
                                 break;
-                            default: throw new ArgumentOutOfRangeException(nameof(wp.Weather), $"Invalid weather: {wp.Weather}");
+                            default: throw new ArgumentOutOfRangeException(nameof(wp.Weather));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(Battle.TryGetPokemon(wp.Victim), true)), true, true);
                         break;

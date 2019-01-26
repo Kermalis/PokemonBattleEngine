@@ -441,7 +441,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.FlashCannon, new PBELocalizedString("ラスターカノン", "러스터캐논", "Luminocanon", "Lichtkanone", "Foco Respl.", "Cannonflash", "Flash Cannon") },
             { PBEMove.RockClimb, new PBELocalizedString("ロッククライム", "락클라임", "Escalade", "Kraxler", "Treparrocas", "Scalaroccia", "Rock Climb") },
             // { PBEMove.432, new PBELocalizedString("きりばらい", "안개제거", "Anti-Brume", "Auflockern", "Despejar", "Scacciabruma", "Defog") },
-            // { PBEMove.433, new PBELocalizedString("トリックルーム", "트릭룸", "Distorsion", "Bizarroraum", "Espacio Raro", "Distortozona", "Trick Room") },
+            { PBEMove.TrickRoom, new PBELocalizedString("トリックルーム", "트릭룸", "Distorsion", "Bizarroraum", "Espacio Raro", "Distortozona", "Trick Room") },
             { PBEMove.DracoMeteor, new PBELocalizedString("りゅうせいぐん", "용성군", "Draco Météor", "Draco Meteor", "Cometa Draco", "Dragobolide", "Draco Meteor") },
             { PBEMove.Discharge, new PBELocalizedString("ほうでん", "방전", "Coup d’Jus", "Ladungsstoß", "Chispazo", "Scarica", "Discharge") },
             { PBEMove.LavaPlume, new PBELocalizedString("ふんえん", "분연", "Ébullilave", "Flammensturm", "Humareda", "Lavasbuffo", "Lava Plume") },

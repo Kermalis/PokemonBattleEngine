@@ -562,6 +562,21 @@ namespace Kermalis.PokemonBattleEngine.Data
         Underwater = 1 << 13
     }
     /// <summary>
+    /// Represents a specific <see cref="PBEBattle"/>'s status.
+    /// </summary>
+    [Flags]
+    public enum PBEBattleStatus : byte
+    {
+        /// <summary>
+        /// The battle has no status.
+        /// </summary>
+        None,
+        /// <summary>
+        /// The acting order of Pokémon in this battle is reversed.
+        /// </summary>
+        TrickRoom = 1 << 0 // TODO: Full Incense, Lagging Tail, Stall, Quick Claw
+    }
+    /// <summary>
     /// Represents a specific <see cref="PBETeam"/>'s status.
     /// </summary>
     [Flags]
@@ -694,6 +709,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <example>
         /// A Pokémon with <see cref="PBEStatus2.Confused"/> regained its senses.
         /// </example>
+        Ended
+    }
+    public enum PBEBattleStatusAction : byte
+    {
+        Added,
+        Cleared,
         Ended
     }
     /// <summary>
@@ -2694,6 +2715,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Toxic,
         ToxicSpikes,
         Transform,
+        TrickRoom,
         VoltTackle,
         Whirlwind
     }
@@ -3023,6 +3045,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Toxic = 92,
         ToxicSpikes = 390,
         Transform = 144,
+        TrickRoom = 433,
         VacuumWave = 410,
         VCreate = 557,
         Venoshock = 474,

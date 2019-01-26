@@ -2919,6 +2919,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.TrickRoom,
+                new PBEMoveData
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, -7, 1, 0, 0,
+                    PBEMoveEffect.TrickRoom, 0, PBEMoveTarget.All,
+                    PBEMoveFlag.AffectedByMirrorMove
+                )
+            },
+            {
                 PBEMove.VacuumWave,
                 new PBEMoveData
                 (

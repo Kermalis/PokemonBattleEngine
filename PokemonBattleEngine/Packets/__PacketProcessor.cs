@@ -49,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PBETransformPacket.Code: packet = new PBETransformPacket(buffer, battle); break;
                 case PBEAbilityPacket.Code: packet = new PBEAbilityPacket(buffer, battle); break;
                 case PBESpecialMessagePacket.Code: packet = new PBESpecialMessagePacket(buffer, battle); break;
-                //case PBEPainSplitPacket.Code: packet = new PBEPainSplitPacket(buffer, battle); break;
+                case PBEBattleStatusPacket.Code: packet = new PBEBattleStatusPacket(buffer, battle); break;
                 case PBEPsychUpPacket.Code: packet = new PBEPsychUpPacket(buffer, battle); break;
                 case PBESwitchInRequestPacket.Code: packet = new PBESwitchInRequestPacket(buffer, battle); break;
                 case PBESwitchInResponsePacket.Code: packet = new PBESwitchInResponsePacket(buffer, battle); break;

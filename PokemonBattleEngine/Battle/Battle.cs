@@ -29,10 +29,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte SwitchInsRequired { get; set; } // PBEBattleState.WaitingForSwitchIns
         public List<PBEPokemon> SwitchInQueue { get; } = new List<PBEPokemon>(3); // PBEBattleState.WaitingForSwitchIns
 
-        public PBETeamStatus Status { get; set; }
-        public byte ReflectCount { get; set; }
+        public PBETeamStatus TeamStatus { get; set; }
         public byte LightScreenCount { get; set; }
         public byte LuckyChantCount { get; set; }
+        public byte ReflectCount { get; set; }
         public byte SpikeCount { get; set; }
         public byte ToxicSpikeCount { get; set; }
         public bool MonFaintedLastTurn { get; set; }
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             var sb = new StringBuilder();
             sb.AppendLine($"{TrainerName}'s team:");
-            sb.AppendLine($"Status: {Status}");
+            sb.AppendLine($"TeamStatus: {TeamStatus}");
             sb.AppendLine($"NumPkmn: {Party.Count}");
             sb.AppendLine($"NumPkmnAlive: {NumPkmnAlive}");
             sb.AppendLine($"NumPkmnOnField: {NumPkmnOnField}");
@@ -105,6 +105,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public PBEWeather Weather { get; set; }
         public byte WeatherCounter { get; set; }
+        public PBEBattleStatus BattleStatus { get; set; }
+        public byte TrickRoomCount { get; set; }
 
         /// <summary>
         /// Gets a specific Pokémon participating in this battle by its ID.
@@ -298,15 +300,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Switching happens first:
             turnOrder.AddRange(pkmnSwitchingOut);
             // Moves:
-            // Highest priority is +5, lowest is -7
-            for (int i = +5; i >= -7; i--)
+            IEnumerable<sbyte> uniquePriorities = pkmnFighting.Select(p => PBEMoveData.Data[p.SelectedAction.FightMove].Priority).Distinct().OrderByDescending(p => p);
+            foreach (sbyte priority in uniquePriorities)
             {
-                IEnumerable<PBEPokemon> pkmnWithThisPriority = pkmnFighting.Where(p => PBEMoveData.Data[p.SelectedAction.FightMove].Priority == i);
+                IEnumerable<PBEPokemon> pkmnWithThisPriority = pkmnFighting.Where(p => PBEMoveData.Data[p.SelectedAction.FightMove].Priority == priority);
                 if (pkmnWithThisPriority.Count() == 0)
                 {
                     continue;
                 }
-                Debug.WriteLine("Priority {0} bracket...", i);
+                Debug.WriteLine("Priority {0} bracket...", priority);
                 var evaluated = new List<Tuple<PBEPokemon, double>>(); // TODO: two bools for wanting to go first or last
                 foreach (PBEPokemon pkmn in pkmnWithThisPriority)
                 {
@@ -351,7 +353,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
 
                     Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Shell.Nickname, speed);
-                    var tup = Tuple.Create(pkmn, speed);
+                    Tuple<PBEPokemon, double> tup = Tuple.Create(pkmn, speed);
                     if (evaluated.Count == 0)
                     {
                         evaluated.Add(tup);
@@ -379,10 +381,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            int pkmnToGoBefore = evaluated.FindIndex(t => t.Item2 < speed);
+                            int pkmnToGoBefore = evaluated.FindIndex(t => BattleStatus.HasFlag(PBEBattleStatus.TrickRoom) ? t.Item2 > speed : t.Item2 < speed);
                             if (pkmnToGoBefore == -1)
                             {
-                                evaluated.Add(tup); // All evaluated Pokémon are faster than this one
+                                evaluated.Add(tup); // All evaluated Pokémon are faster (slower in trick room) than this one
                             }
                             else
                             {
@@ -458,32 +460,43 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     OnStateChanged?.Invoke(this);
                     return;
                 }
-                if (team.Status.HasFlag(PBETeamStatus.Reflect))
+                if (team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
                 {
                     team.ReflectCount--;
                     if (team.ReflectCount == 0)
                     {
-                        team.Status &= ~PBETeamStatus.Reflect;
+                        team.TeamStatus &= ~PBETeamStatus.Reflect;
                         BroadcastTeamStatus(team, PBETeamStatus.Reflect, PBETeamStatusAction.Ended);
                     }
                 }
-                if (team.Status.HasFlag(PBETeamStatus.LightScreen))
+                if (team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
                 {
                     team.LightScreenCount--;
                     if (team.LightScreenCount == 0)
                     {
-                        team.Status &= ~PBETeamStatus.LightScreen;
+                        team.TeamStatus &= ~PBETeamStatus.LightScreen;
                         BroadcastTeamStatus(team, PBETeamStatus.LightScreen, PBETeamStatusAction.Ended);
                     }
                 }
-                if (team.Status.HasFlag(PBETeamStatus.LuckyChant))
+                if (team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
                 {
                     team.LuckyChantCount--;
                     if (team.LuckyChantCount == 0)
                     {
-                        team.Status &= ~PBETeamStatus.LuckyChant;
+                        team.TeamStatus &= ~PBETeamStatus.LuckyChant;
                         BroadcastTeamStatus(team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Ended);
                     }
+                }
+            }
+
+            // Battle Statuses
+            if (BattleStatus.HasFlag(PBEBattleStatus.TrickRoom))
+            {
+                TrickRoomCount--;
+                if (TrickRoomCount == 0)
+                {
+                    BattleStatus &= ~PBEBattleStatus.TrickRoom;
+                    BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Ended);
                 }
             }
 

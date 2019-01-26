@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
 
             // Entry Hazards
-            if (pkmn.Team.Status.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
+            if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
             {
                 DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))), true);
                 BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn);
@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return;
                 }
             }
-            if (pkmn.Team.Status.HasFlag(PBETeamStatus.StealthRock))
+            if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
             {
                 double effectiveness = 0.125;
                 effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type1];
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return;
                 }
             }
-            if (pkmn.Team.Status.HasFlag(PBETeamStatus.ToxicSpikes))
+            if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
             {
                 // Grounded Poison types remove the Toxic Spikes
                 if (pkmn.HasType(PBEType.Poison) && pkmn.Ability != PBEAbility.Levitate && !pkmn.HasType(PBEType.Flying))
@@ -378,7 +378,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void UseMove(PBEPokemon user)
         {
-            PBEMove move = user.SelectedAction.FightMove; // bMoveType gets set in BattleDamage.cs->TypeCheck()
+            PBEMove move = user.SelectedAction.FightMove;
             if (PreMoveStatusCheck(user, move))
             {
                 return;
@@ -685,14 +685,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.Transform:
                     Ef_TryForceStatus2(user, targets, move, PBEStatus2.Transformed);
                     break;
+                case PBEMoveEffect.TrickRoom:
+                    Ef_TryForceBattleStatus(user, move, PBEBattleStatus.TrickRoom);
+                    break;
                 case PBEMoveEffect.VoltTackle:
                     Ef_Recoil3__MaybeInflictStatus1With10PercentChance(user, targets, move, PBEStatus1.Paralyzed);
                     break;
                 case PBEMoveEffect.Whirlwind:
                     Ef_Whirlwind(user, targets[0], move);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(mData.Effect), $"Invalid move effect: {mData.Effect}");
+                default: throw new ArgumentOutOfRangeException(nameof(mData.Effect));
             }
         }
 
@@ -906,7 +908,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (target.Ability == PBEAbility.BattleArmor
                 || target.Ability == PBEAbility.ShellArmor
-                || target.Team.Status.HasFlag(PBETeamStatus.LuckyChant))
+                || target.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
             {
                 return false;
             }
@@ -1466,6 +1468,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ApplyStatus2IfPossible(user, target, status, true);
             }
         }
+        void Ef_TryForceBattleStatus(PBEPokemon user, PBEMove move, PBEBattleStatus status)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            switch (status)
+            {
+                case PBEBattleStatus.TrickRoom:
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
+                    {
+                        BattleStatus |= PBEBattleStatus.TrickRoom;
+                        TrickRoomCount = 5;
+                        BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Added);
+                    }
+                    else
+                    {
+                        BattleStatus &= ~PBEBattleStatus.TrickRoom;
+                        TrickRoomCount = 0;
+                        BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Cleared);
+                    }
+                    break;
+            }
+        }
         void Ef_TryForceTeamStatus(PBEPokemon user, PBEMove move, PBETeamStatus status)
         {
             BroadcastMoveUsed(user, move);
@@ -1475,27 +1500,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (status)
             {
                 case PBETeamStatus.LightScreen:
-                    if (!user.Team.Status.HasFlag(PBETeamStatus.LightScreen))
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
                     {
-                        user.Team.Status |= PBETeamStatus.LightScreen;
+                        user.Team.TeamStatus |= PBETeamStatus.LightScreen;
                         user.Team.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
                         BroadcastTeamStatus(user.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
                 case PBETeamStatus.LuckyChant:
-                    if (!user.Team.Status.HasFlag(PBETeamStatus.LuckyChant))
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
                     {
-                        user.Team.Status |= PBETeamStatus.LuckyChant;
+                        user.Team.TeamStatus |= PBETeamStatus.LuckyChant;
                         user.Team.LuckyChantCount = 5;
                         BroadcastTeamStatus(user.Team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
                 case PBETeamStatus.Reflect:
-                    if (!user.Team.Status.HasFlag(PBETeamStatus.Reflect))
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
                     {
-                        user.Team.Status |= PBETeamStatus.Reflect;
+                        user.Team.TeamStatus |= PBETeamStatus.Reflect;
                         user.Team.ReflectCount = (byte)(Settings.ReflectTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
                         BroadcastTeamStatus(user.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
                         return;
@@ -1504,16 +1529,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBETeamStatus.Spikes:
                     if (opposingTeam.SpikeCount < 3)
                     {
-                        opposingTeam.Status |= PBETeamStatus.Spikes;
+                        opposingTeam.TeamStatus |= PBETeamStatus.Spikes;
                         opposingTeam.SpikeCount++;
                         BroadcastTeamStatus(opposingTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
                         return;
                     }
                     break;
                 case PBETeamStatus.StealthRock:
-                    if (!opposingTeam.Status.HasFlag(PBETeamStatus.StealthRock))
+                    if (!opposingTeam.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                     {
-                        opposingTeam.Status |= PBETeamStatus.StealthRock;
+                        opposingTeam.TeamStatus |= PBETeamStatus.StealthRock;
                         BroadcastTeamStatus(opposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
                         return;
                     }
@@ -1521,7 +1546,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBETeamStatus.ToxicSpikes:
                     if (opposingTeam.ToxicSpikeCount < 2)
                     {
-                        opposingTeam.Status |= PBETeamStatus.ToxicSpikes;
+                        opposingTeam.TeamStatus |= PBETeamStatus.ToxicSpikes;
                         opposingTeam.ToxicSpikeCount++;
                         BroadcastTeamStatus(opposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
                         return;
@@ -1691,15 +1716,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             bool BeforeDoingDamage(PBEPokemon target)
             {
-                if (target.Team.Status.HasFlag(PBETeamStatus.Reflect))
+                if (target.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
                 {
-                    target.Team.Status &= ~PBETeamStatus.Reflect;
+                    target.Team.TeamStatus &= ~PBETeamStatus.Reflect;
                     target.Team.ReflectCount = 0;
                     BroadcastTeamStatus(target.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
                 }
-                if (target.Team.Status.HasFlag(PBETeamStatus.LightScreen))
+                if (target.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
                 {
-                    target.Team.Status &= ~PBETeamStatus.LightScreen;
+                    target.Team.TeamStatus &= ~PBETeamStatus.LightScreen;
                     target.Team.LightScreenCount = 0;
                     BroadcastTeamStatus(target.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
                 }

@@ -774,8 +774,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                if ((target.Team.Status.HasFlag(PBETeamStatus.Reflect) && mData.Category == PBEMoveCategory.Physical)
-                    || (target.Team.Status.HasFlag(PBETeamStatus.LightScreen) && mData.Category == PBEMoveCategory.Special))
+                if ((target.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect) && mData.Category == PBEMoveCategory.Physical)
+                    || (target.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen) && mData.Category == PBEMoveCategory.Special))
                 {
                     if (target.Team.NumPkmnOnField == 1)
                     {

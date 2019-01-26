@@ -111,7 +111,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Sassy,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.LuckyChant, PBEMove.Reflect, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Heal Pulse, Helping Hand, Safeguard
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.Reflect, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Heal Pulse, Helping Hand, Safeguard
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Azelf_VGC { get; } = new PBEPokemonShell
@@ -211,7 +211,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Quiet,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 0, 52, 204, 0 },
-            Moves = new PBEMove[] { PBEMove.LightScreen, PBEMove.Psyshock, PBEMove.DarkPulse, PBEMove.Protect }, // Trick Room, Psyshock, Ally Switch, Protect
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.Psyshock, PBEMove.DarkPulse, PBEMove.Protect }, // Trick Room, Psyshock, Ally Switch, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Bisharp_VGC { get; } = new PBEPokemonShell
@@ -364,7 +364,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Quiet,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 0, 252, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.ShadowBall, PBEMove.EnergyBall, PBEMove.Protect }, // Heat Wave, Shadow Ball, Trick Room, Protect
+            Moves = new PBEMove[] { PBEMove.HeatWave, PBEMove.ShadowBall, PBEMove.TrickRoom, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
@@ -433,7 +433,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Sassy,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 248, 0, 8, 252, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.Protect, PBEMove.WillOWisp, PBEMove.Curse }, // Shadow Ball, Will-O-Wisp, Protect, Trick Room
+            Moves = new PBEMove[] { PBEMove.ShadowBall, PBEMove.TrickRoom, PBEMove.WillOWisp, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Conkeldurr_VGC { get; } = new PBEPokemonShell
@@ -476,9 +476,9 @@ namespace Kermalis.PokemonBattleEngine
             Ability = PBEAbility.Levitate,
             Gender = PBEGender.Female,
             Nature = PBENature.Relaxed,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 60, 0, 196, 0 },
-            Moves = new PBEMove[] { PBEMove.Psychic, PBEMove.LightScreen, PBEMove.IcyWind, PBEMove.Toxic }, // Psychic, Trick Room, Icy Wind, Safeguard
+            Moves = new PBEMove[] { PBEMove.Psychic, PBEMove.TrickRoom, PBEMove.Reflect, PBEMove.LightScreen }, // Psychic, Trick Room, Reflect, Helping Hand
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Crobat_VGC { get; } = new PBEPokemonShell
@@ -952,7 +952,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Quiet,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 92, 164, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.Flatter, PBEMove.Psychic, PBEMove.ShadowBall, PBEMove.Protect }, // Trick Room, Psychic, Shadow Ball, Protect
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.Psychic, PBEMove.ShadowBall, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Gyarados_VGC { get; } = new PBEPokemonShell
@@ -1057,7 +1057,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Quiet,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 4, 252, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.Recover, PBEMove.WaterSpout, PBEMove.ShadowBall, PBEMove.WillOWisp }, // Trick Room, Water Spout, Shadow Ball, Will-O-Wisp
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.WaterSpout, PBEMove.ShadowBall, PBEMove.WillOWisp },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Jirachi_Uber { get; } = new PBEPokemonShell
@@ -1355,9 +1355,9 @@ namespace Kermalis.PokemonBattleEngine
             Ability = PBEAbility.Levitate,
             Gender = PBEGender.Genderless,
             Nature = PBENature.Quiet,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 4, 252, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.Thunderbolt, PBEMove.Psychic, PBEMove.HiddenPower }, // Thunderbolt, Trick Room, Psychic, U-turn
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.Thunderbolt, PBEMove.Psychic, PBEMove.SignalBeam }, // Thunderbolt, Trick Room, Psychic, U-turn
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Metagross_VGC { get; } = new PBEPokemonShell
@@ -1432,7 +1432,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Sassy,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 0, 4, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.Psychic, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Psychic, Helping Hand, Imprison
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.Psychic, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Psychic, Helping Hand, Imprison
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
@@ -1630,7 +1630,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Quiet,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 172, 0, 28, 252, 56, 0 },
-            Moves = new PBEMove[] { PBEMove.Recover, PBEMove.Psyshock, PBEMove.FocusBlast, PBEMove.ShadowBall }, // Trick Room, Psyshock, Focus Blast, Protect
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.Psyshock, PBEMove.FocusBlast, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Rotom_Wash_VGC { get; } = new PBEPokemonShell
@@ -2033,9 +2033,9 @@ namespace Kermalis.PokemonBattleEngine
             Ability = PBEAbility.Levitate,
             Gender = PBEGender.Genderless,
             Nature = PBENature.Calm,
-            IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 0, 4, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.LightScreen, PBEMove.Psychic, PBEMove.Protect }, // Imprison, Trick Room, Psychic, Protect
+            Moves = new PBEMove[] { PBEMove.CalmMind, PBEMove.TrickRoom, PBEMove.Psychic, PBEMove.Protect }, // Imprison, Trick Room, Psychic, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Vanilluxe_VGC { get; } = new PBEPokemonShell
@@ -2164,7 +2164,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Sassy,
             IVs = new byte[] { 0, 0, 29, 0, 0, 0 }, // Hidden Power: Fighting/30
             EVs = new byte[] { 0, 0, 0, 0, 80, 0 },
-            Moves = new PBEMove[] { PBEMove.FakeTears, PBEMove.Endeavor, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Endeavor, Encore, Protect
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.Endeavor, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Endeavor, Encore, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Zebstrika_VGC { get; } = new PBEPokemonShell

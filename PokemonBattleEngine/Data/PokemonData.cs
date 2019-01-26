@@ -624,7 +624,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -770,7 +770,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -916,7 +916,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -1062,7 +1062,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -1208,7 +1208,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -1354,7 +1354,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -1500,7 +1500,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -1646,7 +1646,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -1792,7 +1792,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -1938,7 +1938,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -2084,7 +2084,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -2230,7 +2230,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -2376,7 +2376,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -2522,7 +2522,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -2668,7 +2668,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -2814,7 +2814,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -2960,7 +2960,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_DPPt | PBEMoveObtainMethod.HM_HGSS | PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -3252,7 +3252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderPunch, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Wish, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -3437,7 +3437,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -4086,7 +4086,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
@@ -5280,7 +5280,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2)
                     }
                 )
@@ -6190,7 +6190,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						//Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						//Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
@@ -6649,7 +6649,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						//Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
                 )
@@ -8148,7 +8148,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS)
                     }
                 )
@@ -8498,7 +8498,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
@@ -8977,7 +8977,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
@@ -9454,7 +9454,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Tickle, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Wish, PBEMoveObtainMethod.EggMove_RSFRLG | PBEMoveObtainMethod.EggMove_E | PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.WorkUp, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Yawn, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -10152,7 +10152,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Taunt, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2)
                     }
@@ -12056,7 +12056,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
@@ -12156,7 +12156,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
@@ -12252,7 +12252,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
@@ -13371,7 +13371,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Taunt, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Waterfall, PBEMoveObtainMethod.HM_BWB2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2)
                     }
@@ -13480,7 +13480,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.MoveTutor_FRLG | PBEMoveObtainMethod.MoveTutor_E | PBEMoveObtainMethod.MoveTutor_XD | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS),
@@ -14107,7 +14107,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
-						//Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+						Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						//Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						//Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_B2W2)
@@ -14648,7 +14648,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2)
                     }
                 )
@@ -15729,7 +15729,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2)
                     }
                 )
@@ -16553,7 +16553,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -16660,7 +16660,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -16756,7 +16756,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -17493,7 +17493,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.EggMove_BWB2W2 | PBEMoveObtainMethod.MoveTutor_B2W2)
@@ -17585,7 +17585,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2)
@@ -17783,7 +17783,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
@@ -17858,7 +17858,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
@@ -18384,7 +18384,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Twister, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
                         //Tuple.Create(PBEMove.Whirlpool, PBEMoveObtainMethod.HM_HGSS)
@@ -20602,7 +20602,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
@@ -22833,7 +22833,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
                 )
@@ -23389,7 +23389,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
@@ -23902,7 +23902,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
@@ -26057,7 +26057,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS | PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WaterPulse, PBEMoveObtainMethod.TM_DPPtHGSS),
                         //Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -26648,7 +26648,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -27314,7 +27314,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Tickle, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.WorrySeed, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2)
                     }
@@ -27471,7 +27471,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Torment, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.UTurn, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ZenHeadbutt, PBEMoveObtainMethod.MoveTutor_B2W2)
@@ -27554,7 +27554,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         //Tuple.Create(PBEMove.Thief, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						//Tuple.Create(PBEMove.Trick, PBEMoveObtainMethod.MoveTutor_B2W2),
-                        //Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.WillOWisp, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						//Tuple.Create(PBEMove.WonderRoom, PBEMoveObtainMethod.MoveTutor_B2W2)
                     }
