@@ -684,6 +684,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Liepard,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Se Jun's Liepard
+                    (
+                        new byte[] { 5 }, PBESpecies.Liepard, 20, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Prankster }, new PBENature[] { PBENature.Jolly },
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.FakeOut, PBEMove.FoulPlay, PBEMove.Encore, */PBEMove.Swagger }
+                    )
+                })
+            },
+            {
                 PBESpecies.Lileep,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
