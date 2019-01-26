@@ -1905,7 +1905,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         CursedBody = 130, // TODO
         CuteCharm = 56, // TODO
         Damp = 6, // TODO
-        Defeatist = 129, // TODO
+        Defeatist = 129,
         Defiant = 128, // TODO
         Download = 88, // TODO
         /// <summary>

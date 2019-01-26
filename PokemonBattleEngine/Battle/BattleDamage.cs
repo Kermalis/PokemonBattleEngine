@@ -867,6 +867,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 0.5;
             }
+            if (user.Ability == PBEAbility.Defeatist && user.HP <= user.MaxHP / 2)
+            {
+                attack *= 0.5;
+            }
 
             return attack;
         }
@@ -926,6 +930,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 spAttack *= 1.5;
             }
             if ((moveType == PBEType.Fire || moveType == PBEType.Ice) && target.Ability == PBEAbility.ThickFat)
+            {
+                spAttack *= 0.5;
+            }
+            if (user.Ability == PBEAbility.Defeatist && user.HP <= user.MaxHP / 2)
             {
                 spAttack *= 0.5;
             }
