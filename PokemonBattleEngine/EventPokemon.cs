@@ -1226,6 +1226,22 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Shelmet,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Trade for Evolution!
+                    (
+                        new byte[] { 5 }, PBESpecies.Shelmet, 30, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Hydration, PBEAbility.ShellArmor }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.StruggleBug, PBEMove.MegaDrain/*, PBEMove.Yawn*/, PBEMove.Protect }
+                    ),
+                    new PBEEventPokemon // Summer 2011
+                    (
+                        new byte[] { 5 }, PBESpecies.Shelmet, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.Hydration, PBEAbility.ShellArmor }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Encore, */PBEMove.GigaDrain, PBEMove.BodySlam, PBEMove.BugBuzz }
+                    )
+                })
+            },
+            {
                 PBESpecies.Skitty,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
