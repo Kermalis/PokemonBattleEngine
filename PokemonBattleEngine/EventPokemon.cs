@@ -916,6 +916,17 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Pidove,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Ash's Pidove
+                    (
+                        new byte[] { 5 }, PBESpecies.Pidove, 1, null, PBEGender.Female, new PBEAbility[] { PBEAbility.SuperLuck }, new PBENature[] { PBENature.Hardy },
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Gust, PBEMove.QuickAttack, PBEMove.AirCutter, PBEMove.None }
+                    )
+                })
+            },
+            {
                 PBESpecies.Pikachu,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
