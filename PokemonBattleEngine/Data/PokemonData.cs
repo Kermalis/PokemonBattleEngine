@@ -2983,7 +2983,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.Defeatist },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 28, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 28, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Agility, 21, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AncientPower, 18, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Crunch, 35, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -3004,7 +3004,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -3070,7 +3070,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.Defeatist },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 28, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 28, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Agility, 21, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AncientPower, 18, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Crunch, 35, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -3092,7 +3092,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -3371,7 +3371,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -3937,7 +3937,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -4374,7 +4374,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Agility, PBEMoveObtainMethod.EggMove_DPPt | PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -5046,7 +5046,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -5802,7 +5802,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.IronFist },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 39, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 39, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Ember, 7, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Facade, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.FireSpin, 33, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -5820,7 +5820,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Assist, PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -6665,8 +6665,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Infiltrator },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 33, PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.Acrobatics, 39, PBEMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PBEMove.Acrobatics, 33, PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 39, PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.AirCutter, 27, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.AirCutter, 28, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AirCutter, 35, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -6710,7 +6710,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -6890,7 +6890,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Bind, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -8686,7 +8686,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Bind, PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -8744,7 +8744,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Bind, PBEMoveObtainMethod.MoveTutor_B2W2),
@@ -9097,7 +9097,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.Static, PBEAbility.MotorDrive },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 30, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 30, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Agility, 46, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Charge, 10, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Discharge, 50, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -9115,7 +9115,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AirSlash, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Astonish, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -9555,7 +9555,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.KeenEye, PBEAbility.InnerFocus, PBEAbility.Defiant },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 37, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 37, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AerialAce, 13, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Agility, 31, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Agility, 36, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -9587,7 +9587,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -11460,8 +11460,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Infiltrator },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 33, PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.Acrobatics, 39, PBEMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PBEMove.Acrobatics, 33, PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 39, PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.AirCutter, 27, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.AirCutter, 28, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AirCutter, 35, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -11504,7 +11504,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -12992,7 +12992,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Assurance, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Astonish, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -13076,7 +13076,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.IronFist },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 52, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 52, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.CalmMind, 53, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS),
                         Tuple.Create(PBEMove.CalmMind, 58, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.CloseCombat, 36, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -13103,7 +13103,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Assist, PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -14847,7 +14847,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -16466,7 +16466,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.SereneGrace },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 26, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 26, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.CloseCombat, 78, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 11, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.EchoedVoice, 36, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -16484,7 +16484,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.BrickBreak, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -16573,7 +16573,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.SereneGrace },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 26, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 26, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.CloseCombat, 78, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Confusion, 11, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.EchoedVoice, 36, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -16591,7 +16591,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.BrickBreak, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -16696,7 +16696,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Blizzard, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -17049,7 +17049,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.BatonPass, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -17138,7 +17138,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.BatonPass, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -17603,7 +17603,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.Blaze, PBEAbility.IronFist },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 46, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 46, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.CloseCombat, 36, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Ember, 1, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Ember, 7, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -17623,7 +17623,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Assist, PBEMoveObtainMethod.EggMove_HGSS | PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -18471,7 +18471,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.Gluttony, PBEAbility.Torrent },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Bite, 19, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Brine, 34, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Crunch, 43, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -18489,7 +18489,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.AquaRing, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Astonish, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -18559,7 +18559,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.Gluttony, PBEAbility.Overgrow },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Bite, 19, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Crunch, 43, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         //Tuple.Create(PBEMove.Fling, 28, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -18577,7 +18577,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Astonish, PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.BulletSeed, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -18645,7 +18645,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.Gluttony, PBEAbility.Blaze },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 31, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Amnesia, 25, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Bite, 19, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.Crunch, 43, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -18663,7 +18663,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Astonish, PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Covet, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -22856,7 +22856,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.AquaRing, PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.AquaTail, PBEMoveObtainMethod.MoveTutor_B2W2 | PBEMoveObtainMethod.EggMove_BWB2W2),
                         Tuple.Create(PBEMove.Astonish, PBEMoveObtainMethod.EggMove_BWB2W2),
@@ -22939,7 +22939,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Astonish, PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.BrickBreak, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -23020,7 +23020,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Astonish, PBEMoveObtainMethod.EggMove_BWB2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.BrickBreak, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -23842,7 +23842,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.AfterYou, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -24602,7 +24602,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.BrickBreak, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -24685,7 +24685,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.BrickBreak, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -25995,7 +25995,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ChargeBeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.DoubleTeam, PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -26765,7 +26765,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.BugBite, PBEMoveObtainMethod.MoveTutor_B2W2),
                         Tuple.Create(PBEMove.CalmMind, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -27414,7 +27414,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         //Tuple.Create(PBEMove.AfterYou, PBEMoveObtainMethod.MoveTutor_B2W2),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
@@ -27912,8 +27912,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEAbility[] { PBEAbility.InnerFocus, PBEAbility.Infiltrator },
                     new Tuple<PBEMove, int, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, 30, PBEMoveObtainMethod.LevelUp_B2W2),
-                        //Tuple.Create(PBEMove.Acrobatics, 33, PBEMoveObtainMethod.LevelUp_BW),
+                        Tuple.Create(PBEMove.Acrobatics, 30, PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, 33, PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.AirCutter, 25, PBEMoveObtainMethod.LevelUp_DP | PBEMoveObtainMethod.LevelUp_Pt | PBEMoveObtainMethod.LevelUp_HGSS | PBEMoveObtainMethod.LevelUp_BW),
                         Tuple.Create(PBEMove.AirCutter, 26, PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.AirCutter, 31, PBEMoveObtainMethod.LevelUp_RS | PBEMoveObtainMethod.LevelUp_FR | PBEMoveObtainMethod.LevelUp_LG | PBEMoveObtainMethod.LevelUp_E | PBEMoveObtainMethod.LevelUp_Colo | PBEMoveObtainMethod.LevelUp_XD),
@@ -27950,7 +27950,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     },
                     new Tuple<PBEMove, PBEMoveObtainMethod>[]
                     {
-                        //Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.Acrobatics, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AerialAce, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.AirCutter, PBEMoveObtainMethod.MoveTutor_Pt | PBEMoveObtainMethod.MoveTutor_HGSS),
                         //Tuple.Create(PBEMove.Attract, PBEMoveObtainMethod.TM_RSFRLGE | PBEMoveObtainMethod.TM_DPPtHGSS | PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),

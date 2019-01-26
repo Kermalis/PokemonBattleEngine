@@ -137,6 +137,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             PBEMoveData mData = PBEMoveData.Data[move];
             double basePower = mData.Power;
+
+            // Moves with variable base power
             switch (move)
             {
                 case PBEMove.Eruption:
@@ -288,101 +290,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     }
             }
-            switch (move)
-            {
-                case PBEMove.Brine:
-                    // Brine gets a 100% power boost if the target is at or below 50% health
-                    if (targets[0].HP <= targets[0].HP / 2)
-                    {
-                        basePower *= 2.0;
-                    }
-                    break;
-                case PBEMove.Facade:
-                    // Facade gets a 100% power boost if the user is Burned, Paralyzed, Poisoned, or Badly Poisoned
-                    if (user.Status1 == PBEStatus1.Burned || user.Status1 == PBEStatus1.Paralyzed || user.Status1 == PBEStatus1.Poisoned || user.Status1 == PBEStatus1.BadlyPoisoned)
-                    {
-                        basePower *= 2.0;
-                    }
-                    break;
-                case PBEMove.Hex:
-                    // Hex gets a 100% power boost if the target is afflicted with a status
-                    if (targets[0].Status1 != PBEStatus1.None)
-                    {
-                        basePower *= 2.0;
-                    }
-                    break;
-                case PBEMove.Retaliate:
-                    // Retaliate gets a 100% power boost if the user's team has a Pokémon that fainted during the previous turn
-                    if (user.Team.MonFaintedLastTurn)
-                    {
-                        basePower *= 2.0;
-                    }
-                    break;
-                case PBEMove.Venoshock:
-                    // Venoshock gets a 100% power boost if the target is Poisoned
-                    if (targets[0].Status1 == PBEStatus1.Poisoned || targets[0].Status1 == PBEStatus1.BadlyPoisoned)
-                    {
-                        basePower *= 2.0;
-                    }
-                    break;
-                case PBEMove.WeatherBall:
-                    if (Weather != PBEWeather.None)
-                    {
-                        basePower *= 2.0;
-                    }
-                    break;
-            }
-            switch (Weather)
-            {
-                case PBEWeather.HarshSunlight:
-                    if (moveType == PBEType.Fire)
-                    {
-                        basePower *= 1.5;
-                    }
-                    else if (moveType == PBEType.Water)
-                    {
-                        basePower *= 0.5;
-                    }
-                    break;
-                case PBEWeather.Rain:
-                    if (moveType == PBEType.Water)
-                    {
-                        basePower *= 1.5;
-                    }
-                    else if (moveType == PBEType.Fire)
-                    {
-                        basePower *= 0.5;
-                    }
-                    break;
-                case PBEWeather.Sandstorm:
-                    if (user.Ability == PBEAbility.SandForce && (user.HasType(PBEType.Rock) || user.HasType(PBEType.Ground) || user.HasType(PBEType.Steel)))
-                    {
-                        basePower *= 1.3;
-                    }
-                    break;
-            }
 
-            if (user.Item == PBEItem.LifeOrb)
-            {
-                basePower *= 1.3;
-            }
-            if (user.Ability == PBEAbility.IronFist && mData.Flags.HasFlag(PBEMoveFlag.AffectedByIronFist))
-            {
-                basePower *= 1.2;
-            }
-            if (user.Ability == PBEAbility.Reckless && mData.Flags.HasFlag(PBEMoveFlag.AffectedByReckless))
-            {
-                basePower *= 1.2;
-            }
-            if (mData.Category == PBEMoveCategory.Physical && user.Item == PBEItem.MuscleBand)
-            {
-                basePower *= 1.1;
-            }
-            if (mData.Category == PBEMoveCategory.Special && user.Item == PBEItem.WiseGlasses)
-            {
-                basePower *= 1.1;
-            }
-
+            // Item-specific power boosts
             bool canUseGems = !mData.Flags.HasFlag(PBEMoveFlag.UnaffectedByGems);
             switch (moveType)
             {
@@ -719,6 +628,104 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                     }
                     break;
+            }
+
+            // Move-specific power boosts
+            switch (move)
+            {
+                case PBEMove.Acrobatics:
+                    if (user.Item == PBEItem.None)
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+                case PBEMove.Brine:
+                    if (targets[0].HP <= targets[0].HP / 2)
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+                case PBEMove.Facade:
+                    if (user.Status1 == PBEStatus1.Burned || user.Status1 == PBEStatus1.Paralyzed || user.Status1 == PBEStatus1.Poisoned || user.Status1 == PBEStatus1.BadlyPoisoned)
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+                case PBEMove.Hex:
+                    if (targets[0].Status1 != PBEStatus1.None)
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+                case PBEMove.Retaliate:
+                    if (user.Team.MonFaintedLastTurn)
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+                case PBEMove.Venoshock:
+                    if (targets[0].Status1 == PBEStatus1.Poisoned || targets[0].Status1 == PBEStatus1.BadlyPoisoned)
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+                case PBEMove.WeatherBall:
+                    if (Weather != PBEWeather.None)
+                    {
+                        basePower *= 2.0;
+                    }
+                    break;
+            }
+
+            switch (Weather)
+            {
+                case PBEWeather.HarshSunlight:
+                    if (moveType == PBEType.Fire)
+                    {
+                        basePower *= 1.5;
+                    }
+                    else if (moveType == PBEType.Water)
+                    {
+                        basePower *= 0.5;
+                    }
+                    break;
+                case PBEWeather.Rain:
+                    if (moveType == PBEType.Water)
+                    {
+                        basePower *= 1.5;
+                    }
+                    else if (moveType == PBEType.Fire)
+                    {
+                        basePower *= 0.5;
+                    }
+                    break;
+                case PBEWeather.Sandstorm:
+                    if (user.Ability == PBEAbility.SandForce && (user.HasType(PBEType.Rock) || user.HasType(PBEType.Ground) || user.HasType(PBEType.Steel)))
+                    {
+                        basePower *= 1.3;
+                    }
+                    break;
+            }
+
+            if (user.Item == PBEItem.LifeOrb)
+            {
+                basePower *= 1.3;
+            }
+            if (user.Ability == PBEAbility.IronFist && mData.Flags.HasFlag(PBEMoveFlag.AffectedByIronFist))
+            {
+                basePower *= 1.2;
+            }
+            if (user.Ability == PBEAbility.Reckless && mData.Flags.HasFlag(PBEMoveFlag.AffectedByReckless))
+            {
+                basePower *= 1.2;
+            }
+            if (mData.Category == PBEMoveCategory.Physical && user.Item == PBEItem.MuscleBand)
+            {
+                basePower *= 1.1;
+            }
+            if (mData.Category == PBEMoveCategory.Special && user.Item == PBEItem.WiseGlasses)
+            {
+                basePower *= 1.1;
             }
 
             return basePower;

@@ -253,7 +253,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Kanto starter eggs
                     (
                         new byte[] { 5 }, PBESpecies.Charmander, 1, null, PBEGender.MAX, new PBEAbility[] { PBEAbility.Blaze }, allNatures,
-                        new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { /*PBEMove.FalseSwipe, PBEMove.Block, PBEMove.BlastBurn, PBEMove.Acrobatics*/ }
+                        new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { /*PBEMove.FalseSwipe, PBEMove.Block, PBEMove.BlastBurn, */PBEMove.Acrobatics }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (

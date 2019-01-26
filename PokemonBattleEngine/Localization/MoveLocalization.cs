@@ -520,7 +520,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.509, new PBELocalizedString("ともえなげ", "배대뒤치기", "Projection", "Überkopfwurf", "Llave Giro", "Ribaltiro", "Circle Throw") },
             // { PBEMove.510, new PBELocalizedString("やきつくす", "불태우기", "Calcination", "Einäschern", "Calcinación", "Bruciatutto", "Incinerate") },
             // { PBEMove.511, new PBELocalizedString("さきおくり", "순서미루기", "À la Queue", "Verzögerung", "Último Lugar", "Spintone", "Quash") },
-            // { PBEMove.512, new PBELocalizedString("アクロバット", "애크러뱃", "Acrobatie", "Akrobatik", "Acróbata", "Acrobazia", "Acrobatics") },
+            { PBEMove.Acrobatics, new PBELocalizedString("アクロバット", "애크러뱃", "Acrobatie", "Akrobatik", "Acróbata", "Acrobazia", "Acrobatics") },
             // { PBEMove.513, new PBELocalizedString("ミラータイプ", "미러타입", "Copie Type", "Typenspiegel", "Clonatipo", "Riflettipo", "Reflect Type") },
             { PBEMove.Retaliate, new PBELocalizedString("かたきうち", "원수갚기", "Vengeance", "Heimzahlung", "Represalia", "Nemesi", "Retaliate") },
             { PBEMove.FinalGambit, new PBELocalizedString("いのちがけ", "목숨걸기", "Tout ou Rien", "Wagemut", "Sacrificio", "Azzardo", "Final Gambit") },

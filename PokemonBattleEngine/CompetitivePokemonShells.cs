@@ -96,7 +96,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Fly, PBEMove.RockSlide, PBEMove.Endeavor, PBEMove.Protect },
+            Moves = new PBEMove[] { PBEMove.Acrobatics, PBEMove.RockSlide, PBEMove.Endeavor, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Audino_VGC { get; } = new PBEPokemonShell
@@ -493,7 +493,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power Dark/70
             EVs = new byte[] { 4, 252, 0, 0, 0, 252, },
-            Moves = new PBEMove[] { PBEMove.AirSlash, PBEMove.NastyPlot, PBEMove.SuperFang, PBEMove.Protect }, // Acrobatics, Taunt, Super Fang, Protect
+            Moves = new PBEMove[] { PBEMove.Acrobatics, PBEMove.NastyPlot, PBEMove.SuperFang, PBEMove.Protect }, // Acrobatics, Taunt, Super Fang, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Crustle_VGC { get; } = new PBEPokemonShell
@@ -1387,7 +1387,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.DrainPunch, PBEMove.AerialAce, PBEMove.Detect }, // Fake Out, Drain Punch, Acrobatics, Wide Guard
+            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.DrainPunch, PBEMove.Acrobatics, PBEMove.Detect }, // Fake Out, Drain Punch, Acrobatics, Wide Guard
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Minun_NU { get; } = new PBEPokemonShell

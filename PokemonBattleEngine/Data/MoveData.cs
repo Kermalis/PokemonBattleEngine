@@ -84,6 +84,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Acrobatics,
+                new PBEMoveData
+                (
+                    PBEType.Flying, PBEMoveCategory.Physical, 0, 3, 55, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleNotSelf,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.AerialAce,
                 new PBEMoveData
                 (

@@ -2704,6 +2704,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Acid = 51,
         AcidArmor = 151,
         AcidSpray = 491,
+        Acrobatics = 512,
         AerialAce = 332,
         Aeroblast = 177,
         Agility = 97,
