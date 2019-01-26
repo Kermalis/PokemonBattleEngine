@@ -149,7 +149,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <remarks>
         /// Team rotation does not take up a turn and can be done once per turn.
         /// </remarks>
-        Rotation
+        Rotation,
+        /// <summary>
+        /// Invalid battle format.
+        /// </summary>
+        MAX
     }
     /// <summary>
     /// Represents the current state of a specific battle.

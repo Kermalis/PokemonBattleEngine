@@ -44,62 +44,60 @@ namespace Kermalis.PokemonBattleEngine.Data
         public bool HasType(PBEType type) => Type1 == type || Type2 == type;
 
         // First is attacker, second is defender
-        // Cast PBEType to an int for the indices
-        // [1,2] = bug attacker, dark defender
-        public static readonly double[,] TypeEffectiveness = new double[,]
+        // TypeEffectiveness[(int)PBEType.Bug][(int)PBEType.Dark] = TypeEffectiveness[1][2] = Bug attacker, Dark defender
+        public static ReadOnlyCollection<ReadOnlyCollection<double>> TypeEffectiveness { get; } = new ReadOnlyCollection<ReadOnlyCollection<double>>(new ReadOnlyCollection<double>[]
         {
-            // Defender
-            //   None      Bug     Dark   Dragon Electric Fighting     Fire   Flying    Ghost    Grass   Ground      Ice   Normal   Poison  Psychic     Rock    Steel    Water
-            {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0}, // None
-            {     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     0.5,     0.5,     0.5,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     1.0,     0.5,     1.0}, // Bug
-            {     1.0,     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5,     1.0}, // Dark
-            {     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}, // Dragon
-            {     1.0,     1.0,     1.0,     0.5,     0.5,     1.0,     1.0,     2.0,     1.0,     0.5,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0}, // Electric
-            {     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.0,     1.0,     1.0,     2.0,     2.0,     0.5,     0.5,     2.0,     2.0,     1.0}, // Fighting
-            {     1.0,     2.0,     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5}, // Fire
-            {     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}, // Flying
-            {     1.0,     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.0,     1.0,     2.0,     1.0,     0.5,     1.0}, // Ghost
-            {     1.0,     0.5,     1.0,     0.5,     1.0,     1.0,     0.5,     0.5,     1.0,     0.5,     2.0,     1.0,     1.0,     0.5,     1.0,     2.0,     0.5,     2.0}, // Grass
-            {     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     0.0,     1.0,     0.5,     1.0,     1.0,     1.0,     2.0,     1.0,     2.0,     2.0,     1.0}, // Ground
-            {     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     2.0,     2.0,     0.5,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5}, // Ice
-            {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}, // Normal
-            {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5,     1.0,     1.0,     0.5,     1.0,     0.5,     0.0,     1.0}, // Poison
-            {     1.0,     1.0,     0.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     0.5,     1.0,     0.5,     1.0}, // Psychic
-            {     1.0,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}, // Rock
-            {     1.0,     1.0,     1.0,     1.0,     0.5,     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     2.0,     0.5,     0.5}, // Steel
-            {     1.0,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5}, // Water
-                                                                                                                                                                                 // Attacker
-        };
-        public static readonly Dictionary<PBENature, sbyte[]> NatureBoosts = new Dictionary<PBENature, sbyte[]>
+            //                                  Defender     None      Bug     Dark   Dragon Electric Fighting     Fire   Flying    Ghost    Grass   Ground      Ice   Normal   Poison  Psychic     Rock    Steel    Water
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0}), // None
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     0.5,     0.5,     0.5,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     1.0,     0.5,     1.0}), // Bug
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5,     1.0}), // Dark
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}), // Dragon
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     0.5,     0.5,     1.0,     1.0,     2.0,     1.0,     0.5,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0}), // Electric
+            new ReadOnlyCollection<double>(new double[] {     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.0,     1.0,     1.0,     2.0,     2.0,     0.5,     0.5,     2.0,     2.0,     1.0}), // Fighting
+            new ReadOnlyCollection<double>(new double[] {     1.0,     2.0,     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5}), // Fire
+            new ReadOnlyCollection<double>(new double[] {     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}), // Flying
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.0,     1.0,     2.0,     1.0,     0.5,     1.0}), // Ghost
+            new ReadOnlyCollection<double>(new double[] {     1.0,     0.5,     1.0,     0.5,     1.0,     1.0,     0.5,     0.5,     1.0,     0.5,     2.0,     1.0,     1.0,     0.5,     1.0,     2.0,     0.5,     2.0}), // Grass
+            new ReadOnlyCollection<double>(new double[] {     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     0.0,     1.0,     0.5,     1.0,     1.0,     1.0,     2.0,     1.0,     2.0,     2.0,     1.0}), // Ground
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     2.0,     2.0,     0.5,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5}), // Ice
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}), // Normal
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5,     1.0,     1.0,     0.5,     1.0,     0.5,     0.0,     1.0}), // Poison
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     0.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     0.5,     1.0,     0.5,     1.0}), // Psychic
+            new ReadOnlyCollection<double>(new double[] {     1.0,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}), // Rock
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     1.0,     0.5,     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     2.0,     0.5,     0.5}), // Steel
+            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5})  // Water
+                                                                                                                                                                                                                              // Attacker
+        });
+        public static ReadOnlyDictionary<PBENature, ReadOnlyCollection<sbyte>> NatureBoosts { get; } = new ReadOnlyDictionary<PBENature, ReadOnlyCollection<sbyte>>(new Dictionary<PBENature, ReadOnlyCollection<sbyte>>
         {
-            //                                Atk   Def SpAtk SpDef   Spd
-            { PBENature.Adamant, new sbyte[] {   +1,    0,   -1,    0,    0} },
-            { PBENature.Bashful, new sbyte[] {    0,    0,    0,    0,    0} },
-            { PBENature.Bold,    new sbyte[] {   -1,   +1,    0,    0,    0} },
-            { PBENature.Brave,   new sbyte[] {   +1,    0,    0,    0,   -1} },
-            { PBENature.Calm,    new sbyte[] {   -1,    0,    0,   +1,    0} },
-            { PBENature.Careful, new sbyte[] {    0,    0,   -1,   +1,    0} },
-            { PBENature.Docile,  new sbyte[] {    0,    0,    0,    0,    0} },
-            { PBENature.Gentle,  new sbyte[] {    0,   -1,    0,   +1,    0} },
-            { PBENature.Hardy,   new sbyte[] {    0,    0,    0,    0,    0} },
-            { PBENature.Hasty,   new sbyte[] {    0,   -1,    0,    0,   +1} },
-            { PBENature.Impish,  new sbyte[] {    0,   +1,   -1,    0,    0} },
-            { PBENature.Jolly,   new sbyte[] {    0,    0,   -1,    0,   +1} },
-            { PBENature.Lax,     new sbyte[] {    0,   +1,    0,   -1,    0} },
-            { PBENature.Lonely,  new sbyte[] {   +1,   -1,    0,    0,    0} },
-            { PBENature.Mild,    new sbyte[] {    0,   -1,   +1,    0,    0} },
-            { PBENature.Modest,  new sbyte[] {   -1,    0,   +1,    0,    0} },
-            { PBENature.Naive,   new sbyte[] {    0,    0,    0,   -1,   +1} },
-            { PBENature.Naughty, new sbyte[] {   +1,    0,    0,   -1,    0} },
-            { PBENature.Quiet,   new sbyte[] {    0,    0,   +1,    0,   -1} },
-            { PBENature.Quirky,  new sbyte[] {    0,    0,    0,    0,    0} },
-            { PBENature.Rash,    new sbyte[] {    0,    0,   +1,   -1,    0} },
-            { PBENature.Relaxed, new sbyte[] {    0,   +1,    0,    0,   -1} },
-            { PBENature.Sassy,   new sbyte[] {    0,    0,    0,   +1,   -1} },
-            { PBENature.Serious, new sbyte[] {    0,    0,    0,    0,    0} },
-            { PBENature.Timid,   new sbyte[] {   -1,    0,    0,    0,   +1} },
-        };
-        public static readonly PBEType[] HiddenPowerTypes = new PBEType[]
+            //                                                                Atk   Def SpAtk SpDef   Spd
+            { PBENature.Adamant, new ReadOnlyCollection<sbyte>(new sbyte[] {   +1,    0,   -1,    0,    0}) },
+            { PBENature.Bashful, new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,    0,    0,    0}) },
+            { PBENature.Bold,    new ReadOnlyCollection<sbyte>(new sbyte[] {   -1,   +1,    0,    0,    0}) },
+            { PBENature.Brave,   new ReadOnlyCollection<sbyte>(new sbyte[] {   +1,    0,    0,    0,   -1}) },
+            { PBENature.Calm,    new ReadOnlyCollection<sbyte>(new sbyte[] {   -1,    0,    0,   +1,    0}) },
+            { PBENature.Careful, new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,   -1,   +1,    0}) },
+            { PBENature.Docile,  new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,    0,    0,    0}) },
+            { PBENature.Gentle,  new ReadOnlyCollection<sbyte>(new sbyte[] {    0,   -1,    0,   +1,    0}) },
+            { PBENature.Hardy,   new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,    0,    0,    0}) },
+            { PBENature.Hasty,   new ReadOnlyCollection<sbyte>(new sbyte[] {    0,   -1,    0,    0,   +1}) },
+            { PBENature.Impish,  new ReadOnlyCollection<sbyte>(new sbyte[] {    0,   +1,   -1,    0,    0}) },
+            { PBENature.Jolly,   new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,   -1,    0,   +1}) },
+            { PBENature.Lax,     new ReadOnlyCollection<sbyte>(new sbyte[] {    0,   +1,    0,   -1,    0}) },
+            { PBENature.Lonely,  new ReadOnlyCollection<sbyte>(new sbyte[] {   +1,   -1,    0,    0,    0}) },
+            { PBENature.Mild,    new ReadOnlyCollection<sbyte>(new sbyte[] {    0,   -1,   +1,    0,    0}) },
+            { PBENature.Modest,  new ReadOnlyCollection<sbyte>(new sbyte[] {   -1,    0,   +1,    0,    0}) },
+            { PBENature.Naive,   new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,    0,   -1,   +1}) },
+            { PBENature.Naughty, new ReadOnlyCollection<sbyte>(new sbyte[] {   +1,    0,    0,   -1,    0}) },
+            { PBENature.Quiet,   new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,   +1,    0,   -1}) },
+            { PBENature.Quirky,  new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,    0,    0,    0}) },
+            { PBENature.Rash,    new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,   +1,   -1,    0}) },
+            { PBENature.Relaxed, new ReadOnlyCollection<sbyte>(new sbyte[] {    0,   +1,    0,    0,   -1}) },
+            { PBENature.Sassy,   new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,    0,   +1,   -1}) },
+            { PBENature.Serious, new ReadOnlyCollection<sbyte>(new sbyte[] {    0,    0,    0,    0,    0}) },
+            { PBENature.Timid,   new ReadOnlyCollection<sbyte>(new sbyte[] {   -1,    0,    0,    0,   +1}) }
+        });
+        public static ReadOnlyCollection<PBEType> HiddenPowerTypes { get; } = new ReadOnlyCollection<PBEType>(new PBEType[]
         {
             PBEType.Fighting, // 7.8125 %
             PBEType.Flying,   // 6.2500 %
@@ -117,7 +115,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBEType.Ice,      // 6.2500 %
             PBEType.Dragon,   // 6.2500 %
             PBEType.Dark      // 1.5625 %
-        };
+        });
 
         public static ReadOnlyDictionary<PBESpecies, PBEPokemonData> Data { get; } = new ReadOnlyDictionary<PBESpecies, PBEPokemonData>(new Dictionary<PBESpecies, PBEPokemonData>
         {
@@ -9297,7 +9295,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 						//Tuple.Create(PBEMove.QuickGuard, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
 						//Tuple.Create(PBEMove.QuickGuard, 8, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
 						Tuple.Create(PBEMove.Reversal, 49, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
-						Tuple.Create(PBEMove.Slash, 32, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
+                        Tuple.Create(PBEMove.Slash, 32, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
                         Tuple.Create(PBEMove.SwordsDance, 52, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
 						//Tuple.Create(PBEMove.Twineedle, 1, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
 						//Tuple.Create(PBEMove.Twineedle, 13, PBEMoveObtainMethod.LevelUp_BW | PBEMoveObtainMethod.LevelUp_B2W2),
@@ -14107,7 +14105,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         Tuple.Create(PBEMove.Thunderbolt, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.ThunderWave, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
                         Tuple.Create(PBEMove.Toxic, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
-						Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
+                        Tuple.Create(PBEMove.TrickRoom, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						//Tuple.Create(PBEMove.Uproar, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						//Tuple.Create(PBEMove.VoltSwitch, PBEMoveObtainMethod.TM_BW | PBEMoveObtainMethod.TM_B2W2),
 						Tuple.Create(PBEMove.WildCharge, PBEMoveObtainMethod.TM_B2W2)

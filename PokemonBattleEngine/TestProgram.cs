@@ -3,6 +3,7 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine
 {
@@ -68,12 +69,9 @@ namespace Kermalis.PokemonBattleEngine
                         }
                         break;
                     case PBEBattleState.WaitingForSwitchIns:
-                        foreach (PBETeam team in battle.Teams)
+                        foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
                         {
-                            if (team.SwitchInsRequired > 0)
-                            {
-                                PBEBattle.SelectSwitchesIfValid(team, AIManager.CreateSwitches(team));
-                            }
+                            PBEBattle.SelectSwitchesIfValid(team, AIManager.CreateSwitches(team));
                         }
                         break;
                 }

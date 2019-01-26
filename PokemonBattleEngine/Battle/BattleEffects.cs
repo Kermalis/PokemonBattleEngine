@@ -24,8 +24,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
             {
                 double effectiveness = 0.125;
-                effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type1];
-                effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock, (int)pkmn.Type2];
+                effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type1];
+                effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type2];
                 DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * effectiveness), true);
                 BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn);
                 if (FaintCheck(pkmn))
@@ -992,7 +992,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts the event if it fainted
         bool FaintCheck(PBEPokemon pkmn)
         {
-            if (pkmn.HP < 1)
+            if (pkmn.HP == 0)
             {
                 ActiveBattlers.Remove(pkmn);
                 pkmn.FieldPosition = PBEFieldPosition.None;
@@ -1092,7 +1092,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.EvasionChange = (sbyte)PBEUtils.Clamp(pkmn.EvasionChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
                     }
                     break;
-                default: throw new ArgumentOutOfRangeException(nameof(stat), "Invalid stat.");
+                default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
             if (broadcast)
             {
@@ -1588,7 +1588,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         extensionItem = PBEItem.SmoothRock;
                         itemTurnExtension = Settings.SmoothRockTurnExtension;
                         break;
-                    default: throw new ArgumentOutOfRangeException(nameof(weather), $"Invalid weather: {weather}");
+                    default: throw new ArgumentOutOfRangeException(nameof(weather));
                 }
 
                 Weather = weather;

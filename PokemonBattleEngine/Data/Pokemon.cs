@@ -301,8 +301,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 if (move != PBEMove.None)
                 {
                     byte tier = PBEMoveData.Data[move].PPTier;
-                    int movePP = Math.Max(1, (tier * Team.Battle.Settings.PPMultiplier) + (tier * Shell.PPUps[i]));
-                    PP[i] = MaxPP[i] = (byte)movePP;
+                    PP[i] = MaxPP[i] = (byte)Math.Max(1, (tier * Team.Battle.Settings.PPMultiplier) + (tier * Shell.PPUps[i]));
                 }
             }
             PBEPokemonData pData = PBEPokemonData.Data[Species];
@@ -318,29 +317,25 @@ namespace Kermalis.PokemonBattleEngine.Data
             Id = info.PokemonId;
             Shell = new PBEPokemonShell
             {
-                Species = info.Species,
-                Shiny = info.Shiny,
+                Species = Species = info.Species,
+                Shiny = Shiny = info.Shiny,
                 Nickname = info.Nickname,
                 Level = info.Level,
                 Gender = info.Gender,
-                Ability = PBEAbility.MAX,
-                Item = (PBEItem)ushort.MaxValue,
+                Ability = Ability = PBEAbility.MAX,
+                Item = Item = (PBEItem)ushort.MaxValue,
                 Nature = PBENature.MAX,
                 Moves = new PBEMove[Team.Battle.Settings.NumMoves],
                 PPUps = new byte[Team.Battle.Settings.NumMoves],
                 EVs = new byte[6],
                 IVs = new byte[6]
             };
-            Species = info.Species;
-            Shiny = info.Shiny;
-            Ability = PBEAbility.MAX;
-            Item = (PBEItem)ushort.MaxValue;
             Moves = new PBEMove[Team.Battle.Settings.NumMoves];
             PP = new byte[Moves.Length];
             MaxPP = new byte[Moves.Length];
             for (int i = 0; i < Moves.Length; i++)
             {
-                Moves[i] = PBEMove.MAX;
+                Shell.Moves[i] = Moves[i] = PBEMove.MAX;
             }
             PBEPokemonData pData = PBEPokemonData.Data[Species];
             Type1 = pData.Type1;
@@ -353,7 +348,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// Returns True if the Pokémon has <paramref name="type"/>, False otherwise.
         /// </summary>
         /// <param name="type">The type to check.</param>
-        public bool HasType(PBEType type) => Type1 == type || Type2 == type;
+        public bool HasType(PBEType type)
+        {
+            return Type1 == type || Type2 == type;
+        }
 
         /// <summary>
         /// Calculates and sets the Pokémon's stats based on its level, IVs, EVs, nature, and species.
@@ -367,7 +365,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             int i = 0;
             ushort OtherStat(byte baseVal)
             {
-                double natureMultiplier = 1 + (PBEPokemonData.NatureBoosts[Shell.Nature][i] * Team.Battle.Settings.NatureStatBoost);
+                double natureMultiplier = 1.0 + (PBEPokemonData.NatureBoosts[Shell.Nature][i] * Team.Battle.Settings.NatureStatBoost);
                 ushort val = (ushort)((((2 * baseVal + Shell.IVs[i + 1] + (Shell.EVs[i + 1] / 4)) * Shell.Level / Team.Battle.Settings.MaxLevel) + 5) * natureMultiplier);
                 i++;
                 return val;
@@ -469,80 +467,95 @@ namespace Kermalis.PokemonBattleEngine.Data
                 d = Shell.IVs[5] & 1,
                 e = Shell.IVs[3] & 1,
                 f = Shell.IVs[4] & 1;
-            return PBEPokemonData.HiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (PBEPokemonData.HiddenPowerTypes.Length - 1) / ((1 << 6) - 1)];
+            return PBEPokemonData.HiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (PBEPokemonData.HiddenPowerTypes.Count - 1) / ((1 << 6) - 1)];
         }
         /// <summary>
         /// Gets the base power that <see cref="PBEMove.HiddenPower"/> will have when used by this Pokémon.
         /// </summary>
-        public int GetHiddenPowerBasePower()
+        public byte GetHiddenPowerBasePower()
         {
+            const byte mininumBasePower = 30,
+                maximumBasePower = 70;
             int a = (Shell.IVs[0] & 2) == 2 ? 1 : 0,
                 b = (Shell.IVs[1] & 2) == 2 ? 1 : 0,
                 c = (Shell.IVs[2] & 2) == 2 ? 1 : 0,
                 d = (Shell.IVs[5] & 2) == 2 ? 1 : 0,
                 e = (Shell.IVs[3] & 2) == 2 ? 1 : 0,
                 f = (Shell.IVs[4] & 2) == 2 ? 1 : 0;
-            // 30 is minimum, 30+40 is maximum
-            return (((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * 40 / ((1 << 6) - 1)) + 30;
+            return (byte)((((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (maximumBasePower - mininumBasePower) / ((1 << 6) - 1)) + mininumBasePower);
         }
         /// <summary>
         /// Gets the type that a move will become when used by this Pokémon.
         /// </summary>
         /// <param name="move">The move to check.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="move"/> is invalid.</exception>
         public PBEType GetMoveType(PBEMove move)
         {
+            if (move == PBEMove.None || move >= PBEMove.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(move));
+            }
             switch (move)
             {
                 case PBEMove.HiddenPower:
-                    return GetHiddenPowerType();
-                case PBEMove.Judgment:
-                    switch (Item)
                     {
-                        case PBEItem.DracoPlate: return PBEType.Dragon;
-                        case PBEItem.DreadPlate: return PBEType.Dark;
-                        case PBEItem.EarthPlate: return PBEType.Ground;
-                        case PBEItem.FistPlate: return PBEType.Fighting;
-                        case PBEItem.FlamePlate: return PBEType.Fire;
-                        case PBEItem.IciclePlate: return PBEType.Ice;
-                        case PBEItem.InsectPlate: return PBEType.Bug;
-                        case PBEItem.IronPlate: return PBEType.Steel;
-                        case PBEItem.MeadowPlate: return PBEType.Grass;
-                        case PBEItem.MindPlate: return PBEType.Psychic;
-                        case PBEItem.SkyPlate: return PBEType.Flying;
-                        case PBEItem.SplashPlate: return PBEType.Water;
-                        case PBEItem.SpookyPlate: return PBEType.Ghost;
-                        case PBEItem.StonePlate: return PBEType.Rock;
-                        case PBEItem.ToxicPlate: return PBEType.Poison;
-                        case PBEItem.ZapPlate: return PBEType.Electric;
-                        default: return PBEMoveData.Data[PBEMove.Judgment].Type;
+                        return GetHiddenPowerType();
+                    }
+                case PBEMove.Judgment:
+                    {
+                        switch (Item)
+                        {
+                            case PBEItem.DracoPlate: return PBEType.Dragon;
+                            case PBEItem.DreadPlate: return PBEType.Dark;
+                            case PBEItem.EarthPlate: return PBEType.Ground;
+                            case PBEItem.FistPlate: return PBEType.Fighting;
+                            case PBEItem.FlamePlate: return PBEType.Fire;
+                            case PBEItem.IciclePlate: return PBEType.Ice;
+                            case PBEItem.InsectPlate: return PBEType.Bug;
+                            case PBEItem.IronPlate: return PBEType.Steel;
+                            case PBEItem.MeadowPlate: return PBEType.Grass;
+                            case PBEItem.MindPlate: return PBEType.Psychic;
+                            case PBEItem.SkyPlate: return PBEType.Flying;
+                            case PBEItem.SplashPlate: return PBEType.Water;
+                            case PBEItem.SpookyPlate: return PBEType.Ghost;
+                            case PBEItem.StonePlate: return PBEType.Rock;
+                            case PBEItem.ToxicPlate: return PBEType.Poison;
+                            case PBEItem.ZapPlate: return PBEType.Electric;
+                            default: return PBEMoveData.Data[PBEMove.Judgment].Type;
+                        }
                     }
                 case PBEMove.TechnoBlast:
-                    switch (Item)
                     {
-                        case PBEItem.BurnDrive: return PBEType.Fire;
-                        case PBEItem.ChillDrive: return PBEType.Ice;
-                        case PBEItem.DouseDrive: return PBEType.Water;
-                        case PBEItem.ShockDrive: return PBEType.Electric;
-                        default: return PBEMoveData.Data[PBEMove.TechnoBlast].Type;
+                        switch (Item)
+                        {
+                            case PBEItem.BurnDrive: return PBEType.Fire;
+                            case PBEItem.ChillDrive: return PBEType.Ice;
+                            case PBEItem.DouseDrive: return PBEType.Water;
+                            case PBEItem.ShockDrive: return PBEType.Electric;
+                            default: return PBEMoveData.Data[PBEMove.TechnoBlast].Type;
+                        }
                     }
                 case PBEMove.WeatherBall:
-                    switch (Team.Battle.Weather)
                     {
-                        case PBEWeather.Hailstorm: return PBEType.Ice;
-                        case PBEWeather.HarshSunlight: return PBEType.Fire;
-                        case PBEWeather.Rain: return PBEType.Water;
-                        case PBEWeather.Sandstorm: return PBEType.Rock;
-                        default: return PBEMoveData.Data[PBEMove.WeatherBall].Type;
+                        switch (Team.Battle.Weather)
+                        {
+                            case PBEWeather.Hailstorm: return PBEType.Ice;
+                            case PBEWeather.HarshSunlight: return PBEType.Fire;
+                            case PBEWeather.Rain: return PBEType.Water;
+                            case PBEWeather.Sandstorm: return PBEType.Rock;
+                            default: return PBEMoveData.Data[PBEMove.WeatherBall].Type;
+                        }
                     }
-                case PBEMove.None: throw new ArgumentOutOfRangeException(nameof(move));
                 default:
-                    if (Ability == PBEAbility.Normalize)
                     {
-                        return PBEType.Normal;
-                    }
-                    else
-                    {
-                        return PBEMoveData.Data[move].Type;
+                        if (Ability == PBEAbility.Normalize)
+                        {
+                            return PBEType.Normal;
+                        }
+                        else
+                        {
+                            return PBEMoveData.Data[move].Type;
+                        }
                     }
             }
         }
@@ -550,27 +563,32 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// Gets the possible targets that a move can target when used by this Pokémon.
         /// </summary>
         /// <param name="move">The move to check.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="move"/> is invalid.</exception>
         public PBEMoveTarget GetMoveTargets(PBEMove move)
         {
-            switch (move)
+            if (move == PBEMove.None || move >= PBEMove.MAX)
             {
-                case PBEMove.Curse:
-                    if (HasType(PBEType.Ghost))
-                    {
-                        return PBEMoveTarget.SingleSurrounding;
-                    }
-                    else
-                    {
-                        return PBEMoveTarget.Self;
-                    }
-                case PBEMove.None: throw new ArgumentOutOfRangeException(nameof(move));
-                default: return PBEMoveData.Data[move].Targets;
+                throw new ArgumentOutOfRangeException(nameof(move));
+            }
+            else if (move == PBEMove.Curse)
+            {
+                if (HasType(PBEType.Ghost))
+                {
+                    return PBEMoveTarget.SingleSurrounding;
+                }
+                else
+                {
+                    return PBEMoveTarget.Self;
+                }
+            }
+            else
+            {
+                return PBEMoveData.Data[move].Targets;
             }
         }
         /// <summary>
         /// Returns True if the Pokémon is only able to use <see cref="PBEMove.Struggle"/>, False otherwise.
         /// </summary>
-        /// <returns></returns>
         public bool IsForcedToStruggle()
         {
             return

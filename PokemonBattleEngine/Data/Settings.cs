@@ -1,14 +1,17 @@
-﻿namespace Kermalis.PokemonBattleEngine.Data
+﻿using System;
+
+namespace Kermalis.PokemonBattleEngine.Data
 {
+    // TODO: .Equals, Constructor
     /// <summary>
     /// The various engine settings.
     /// </summary>
-    public class PBESettings
+    public sealed class PBESettings
     {
         /// <summary>
         /// The default settings used in official games.
         /// </summary>
-        public static PBESettings DefaultSettings = new PBESettings();
+        public static PBESettings DefaultSettings { get; } = new PBESettings();
 
         /// <summary>
         /// The maximum level a Pokémon can be. Used in stat calculation.
@@ -29,7 +32,7 @@
         /// <summary>
         /// The maximum amount of characters a trainer's name can have.
         /// </summary>
-        [System.Obsolete]
+        [Obsolete]
         public byte MaxTrainerNameLength = 7;
         /// <summary>
         /// The maximum sum of a Pokémon's EVs.

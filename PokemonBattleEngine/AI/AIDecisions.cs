@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// Creates valid actions for a battle turn for a specific team.
         /// </summary>
         /// <param name="team">The team to create actions for.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when the battle format is invalid.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the AI tries to use a move with invalid targets or <paramref name="team"/>'s <see cref="PBETeam.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
         public static IEnumerable<PBEAction> CreateActions(PBETeam team)
         {
             PBEPokemon[] active = team.ActiveBattlers.ToArray();
@@ -41,7 +41,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// Creates valid switches for a battle for a specific team.
         /// </summary>
         /// <param name="team">The team to create switches for.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when the battle format is invalid.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="team"/>'s <see cref="PBETeam.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
         public static IEnumerable<Tuple<byte, PBEFieldPosition>> CreateSwitches(PBETeam team)
         {
             var switches = new List<Tuple<byte, PBEFieldPosition>>(team.SwitchInsRequired);
@@ -78,6 +78,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                         availablePositions.Add(PBEFieldPosition.Right);
                     }
                     break;
+                default: throw new ArgumentOutOfRangeException(nameof(team.Battle.BattleFormat));
             }
             for (int i = 0; i < team.SwitchInsRequired; i++)
             {

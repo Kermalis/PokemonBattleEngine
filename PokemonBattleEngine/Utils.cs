@@ -15,12 +15,13 @@ namespace Kermalis.PokemonBattleEngine
         /// <summary>
         /// An ordinary pseudo-random number generator.
         /// </summary>
-        public static Random RNG { get; } = new Random();
+        public static Random RNG { get; } = new Random(); // TODO: Think about the RNG prediction that comes with public RNG
 
         /// <summary>
-        /// Generates a random boolean from a chance.
+        /// Returns a random boolean from a chance.
         /// </summary>
         /// <example><paramref name="chanceNumerator"/> is 30, <paramref name="chanceDenominator"/> is 100, there is a 30% chance to return True and a 70% chance to return False.</example>
+        /// <param name="rand">The number generator to use.</param>
         /// <param name="chanceNumerator">The numerator of the chance.</param>
         /// <param name="chanceDenominator">The denominator of the chance.</param>
         public static bool ApplyChance(this Random rand, int chanceNumerator, int chanceDenominator)
@@ -30,8 +31,7 @@ namespace Kermalis.PokemonBattleEngine
         /// <summary>
         /// Returns a random boolean.
         /// </summary>
-        /// <param name="rand"></param>
-        /// <returns>A random boolean.</returns>
+        /// <param name="rand">The number generator to use.</param>
         public static bool NextBoolean(this Random rand)
         {
             return rand.NextDouble() >= 0.5;

@@ -426,7 +426,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                         if (mup.OwnsMove && !culprit.Moves.Contains(mup.Move))
                         {
                             // Set the first unknown move to the used move
-                            culprit.Moves[Array.IndexOf(culprit.Moves, PBEMove.MAX)] = mup.Move;
+                            int index = Array.IndexOf(culprit.Moves, PBEMove.MAX);
+                            culprit.Shell.Moves[index] = culprit.Moves[index] = mup.Move;
                         }
                         BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(culprit, true), PBEMoveLocalization.Names[mup.Move].FromUICultureInfo()), true, true);
                         break;
