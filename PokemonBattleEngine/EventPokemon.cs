@@ -1461,6 +1461,17 @@ namespace Kermalis.PokemonBattleEngine
                         new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BoltStrike/*, PBEMove.FusionBolt, PBEMove.Haze, PBEMove.Outrage*/ }
                     )
                 })
+            },
+            {
+                PBESpecies.Zoroark,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // 2011
+                    (
+                        new byte[] { 5 }, PBESpecies.Zoroark, 50, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Illusion }, new PBENature[] { PBENature.Quirky },
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Agility/*, PBEMove.Embargo, PBEMove.Punishment*/, PBEMove.Snarl }
+                    )
+                })
             }
         });
     }
