@@ -1843,6 +1843,21 @@ namespace Kermalis.PokemonBattleEngine
             Moves = new PBEMove[] { PBEMove.Spore, PBEMove.Reflect, PBEMove.Brine, PBEMove.Hex }, // Fake Out, Spore, Follow Me, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
+        public static PBEPokemonShell Stoutland_VGC { get; } = new PBEPokemonShell
+        {
+            Species = PBESpecies.Stoutland,
+            Nickname = "Selik",
+            Level = 100,
+            Friendship = 255,
+            Item = PBEItem.ChopleBerry,
+            Ability = PBEAbility.Intimidate,
+            Gender = PBEGender.Male,
+            Nature = PBENature.Adamant,
+            IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
+            EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
+            Moves = new PBEMove[] { PBEMove.Return, PBEMove.Crunch, PBEMove.ThunderWave, PBEMove.Protect }, // Return, Crunch, Helping Hand, Protect
+            PPUps = new byte[] { 3, 3, 3, 3 }
+        };
         public static PBEPokemonShell Stunfisk_Uber { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Stunfisk,
