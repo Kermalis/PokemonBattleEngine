@@ -880,6 +880,27 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Pansage,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Cilan's Pansage
+                    (
+                        new byte[] { 5 }, PBESpecies.Pansage, 1, null, PBEGender.Male, new PBEAbility[] { PBEAbility.Gluttony }, new PBENature[] { PBENature.Brave },
+                        new byte?[] { null, 31, null, null, null, null }, new PBEMove[] { /*PBEMove.BulletSeed, */PBEMove.Bite/*, PBEMove.SolarBeam*/, PBEMove.Dig }
+                    ),
+                    new PBEEventPokemon // Best Wishes Cilan's Pansage
+                    (
+                        new byte[] { 5 }, PBESpecies.Pansage, 30, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Gluttony }, new PBENature[] { PBENature.Serious },
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.BulletSeed, PBEMove.SolarBeam, */PBEMove.RockTomb, PBEMove.Dig }
+                    ),
+                    new PBEEventPokemon // Global Link promotion
+                    (
+                        new byte[] { 5 }, PBESpecies.Pansage, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Overgrow }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Leer, PBEMove.Lick, PBEMove.VineWhip, PBEMove.LeafStorm }
+                    )
+                })
+            },
+            {
                 PBESpecies.Pichu,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {
@@ -922,7 +943,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Ash's Pidove
                     (
                         new byte[] { 5 }, PBESpecies.Pidove, 1, null, PBEGender.Female, new PBEAbility[] { PBEAbility.SuperLuck }, new PBENature[] { PBENature.Hardy },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Gust, PBEMove.QuickAttack, PBEMove.AirCutter, PBEMove.None }
+                        new byte?[] { null, 31, null, null, null, null }, new PBEMove[] { PBEMove.Gust, PBEMove.QuickAttack, PBEMove.AirCutter, PBEMove.None }
                     )
                 })
             },
