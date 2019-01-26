@@ -619,6 +619,22 @@ namespace Kermalis.PokemonBattleEngine
                 })
             },
             {
+                PBESpecies.Karrablast,
+                new ReadOnlyCollection<PBEEventPokemon>(new[]
+                {
+                    new PBEEventPokemon // Trade for Evolution!
+                    (
+                        new byte[] { 5 }, PBESpecies.Karrablast, 30, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Swarm }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.FuryAttack, */PBEMove.Headbutt/*, PBEMove.FalseSwipe*/, PBEMove.BugBuzz }
+                    ),
+                    new PBEEventPokemon // Summer 2011
+                    (
+                        new byte[] { 5 }, PBESpecies.Karrablast, 50, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.ShedSkin, PBEAbility.Swarm }, allNatures,
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Megahorn, PBEMove.TakeDown, PBEMove.XScissor/*, PBEMove.Flail*/ }
+                    )
+                })
+            },
+            {
                 PBESpecies.Keldeo,
                 new ReadOnlyCollection<PBEEventPokemon>(new[]
                 {

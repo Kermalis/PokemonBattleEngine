@@ -87,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine
         public static PBEPokemonShell Archeops_VGC { get; } = new PBEPokemonShell
         {
             Species = PBESpecies.Archeops,
-            Nickname = "Raul",
+            Nickname = "Zeki",
             Level = 100,
             Friendship = 255,
             Item = PBEItem.FlyingGem,
