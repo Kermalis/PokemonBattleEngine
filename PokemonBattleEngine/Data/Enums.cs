@@ -2835,6 +2835,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FocusEnergy = 116,
         //FocusPunch = 264, // TODO: Iron Fist
         ForcePalm = 395,
+        FoulPlay = 492,
         FrostBreath = 524,
         Frustration = 218,
         GastroAcid = 380, // TODO: Magic Bounce, Magic Coat

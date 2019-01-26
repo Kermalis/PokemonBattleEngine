@@ -830,9 +830,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return damageMultiplier;
         }
 
-        double CalculateAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, bool criticalHit)
+        double CalculateAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, double initialAttack)
         {
-            double attack = user.Attack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
+            double attack = initialAttack;
 
             if (user.Ability == PBEAbility.HugePower || user.Ability == PBEAbility.PurePower)
             {
@@ -881,9 +881,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return attack;
         }
-        double CalculateDefense(PBEPokemon user, PBEPokemon target, bool criticalHit)
+        double CalculateDefense(PBEPokemon user, PBEPokemon target, double initialDefense)
         {
-            double defense = target.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+            double defense = initialDefense;
 
             if (target.Item == PBEItem.MetalPowder && target.Species == PBESpecies.Ditto)
             {
@@ -900,9 +900,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return defense;
         }
-        double CalculateSpAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, bool criticalHit)
+        double CalculateSpAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, double initialSpAttack)
         {
-            double spAttack = user.SpAttack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
+            double spAttack = initialSpAttack;
 
             if (user.Item == PBEItem.DeepSeaTooth && user.Shell.Species == PBESpecies.Clamperl)
             {
@@ -947,9 +947,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return spAttack;
         }
-        double CalculateSpDefense(PBEPokemon user, PBEPokemon target, bool criticalHit)
+        double CalculateSpDefense(PBEPokemon user, PBEPokemon target, double initialSpDefense)
         {
-            double spDefense = target.SpDefense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
+            double spDefense = initialSpDefense;
 
             if (target.Item == PBEItem.DeepSeaScale && target.Shell.Species == PBESpecies.Clamperl)
             {
@@ -978,24 +978,34 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             switch (move)
             {
-                case PBEMove.Psyshock: // These moves inflict physical damage despite being special attacks
+                case PBEMove.FoulPlay:
+                    {
+                        a = CalculateAttack(user, target, moveType, target.Attack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, target.AttackChange) : target.AttackChange, false));
+                        d = CalculateDefense(user, target, target.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false));
+                        break;
+                    }
+                case PBEMove.Psyshock:
                 case PBEMove.Psystrike:
                 case PBEMove.SecretSword:
-                    a = CalculateSpAttack(user, target, moveType, criticalHit);
-                    d = CalculateDefense(user, target, criticalHit);
-                    break;
+                    {
+                        a = CalculateSpAttack(user, target, moveType, user.SpAttack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false));
+                        d = CalculateDefense(user, target, target.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false));
+                        break;
+                    }
                 default:
-                    if (moveCategory == PBEMoveCategory.Physical)
                     {
-                        a = CalculateAttack(user, target, moveType, criticalHit);
-                        d = CalculateDefense(user, target, criticalHit);
+                        if (moveCategory == PBEMoveCategory.Physical)
+                        {
+                            a = CalculateAttack(user, target, moveType, user.Attack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false));
+                            d = CalculateDefense(user, target, target.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false));
+                        }
+                        else if (moveCategory == PBEMoveCategory.Special)
+                        {
+                            a = CalculateSpAttack(user, target, moveType, user.SpAttack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false));
+                            d = CalculateSpDefense(user, target, target.SpDefense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false));
+                        }
+                        break;
                     }
-                    else if (moveCategory == PBEMoveCategory.Special)
-                    {
-                        a = CalculateSpAttack(user, target, moveType, criticalHit);
-                        d = CalculateSpDefense(user, target, criticalHit);
-                    }
-                    break;
             }
 
             damage = (ushort)(2 * user.Shell.Level / 5 + 2);

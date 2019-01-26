@@ -500,7 +500,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Coil, new PBELocalizedString("とぐろをまく", "똬리틀기", "Enroulement", "Einrollen", "Enrosque", "Arrotola", "Coil") },
             { PBEMove.LowSweep, new PBELocalizedString("ローキック", "로킥", "Balayette", "Fußtritt", "Puntapié", "Calciobasso", "Low Sweep") },
             { PBEMove.AcidSpray, new PBELocalizedString("アシッドボム", "애시드봄", "Bombe Acide", "Säurespeier", "Bomba Ácida", "Acidobomba", "Acid Spray") },
-            // { PBEMove.492, new PBELocalizedString("イカサマ", "속임수", "Tricherie", "Schmarotzer", "Juego Sucio", "Ripicca", "Foul Play") },
+            { PBEMove.FoulPlay, new PBELocalizedString("イカサマ", "속임수", "Tricherie", "Schmarotzer", "Juego Sucio", "Ripicca", "Foul Play") },
             // { PBEMove.493, new PBELocalizedString("シンプルビーム", "심플빔", "Rayon Simple", "Wankelstrahl", "Onda Simple", "Ondisinvolta", "Simple Beam") },
             // { PBEMove.494, new PBELocalizedString("なかまづくり", "동료만들기", "Ten-danse", "Zwango", "Danza Amiga", "Saltamicizia", "Entrainment") },
             // { PBEMove.495, new PBELocalizedString("おさきにどうぞ", "당신먼저", "Après Vous", "Galanterie", "Cede Paso", "Cortesia", "After You") },

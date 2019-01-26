@@ -2005,7 +2005,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Calm,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.Snarl, PBEMove.DarkPulse, PBEMove.Moonlight, PBEMove.Protect }, // Wish, Foul Play, Heal Bell, Protect
+            Moves = new PBEMove[] { PBEMove.Snarl, PBEMove.FoulPlay, PBEMove.Moonlight, PBEMove.Protect }, // Wish, Foul Play, Heal Bell, Protect
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Unfezant_VGC { get; } = new PBEPokemonShell

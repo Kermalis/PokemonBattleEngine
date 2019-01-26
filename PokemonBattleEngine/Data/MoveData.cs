@@ -1011,6 +1011,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.FoulPlay,
+                new PBEMoveData
+                (
+                    PBEType.Dark, PBEMoveCategory.Physical, 0, 3, 95, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.FrostBreath,
                 new PBEMoveData
                 (
