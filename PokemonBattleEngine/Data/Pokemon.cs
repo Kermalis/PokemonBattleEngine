@@ -447,10 +447,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             AccuracyChange = target.AccuracyChange;
             EvasionChange = target.EvasionChange;
             Moves = (PBEMove[])target.Moves.Clone();
-            for (int i = 0; i < Moves.Length; i++)
+            if (Shell.Nature != PBENature.MAX) // If the nature is unset, the program is not the host and does not own the Pokémon
             {
-                int pp = Moves[i] == PBEMove.None ? 0 : PBEMoveData.Data[Moves[i]].PPTier == 0 ? 1 : Team.Battle.Settings.PPMultiplier;
-                PP[i] = MaxPP[i] = (byte)pp;
+                for (int i = 0; i < Moves.Length; i++)
+                {
+                    PP[i] = MaxPP[i] = (byte)(Moves[i] == PBEMove.None ? 0 : PBEMoveData.Data[Moves[i]].PPTier == 0 ? 1 : Team.Battle.Settings.PPMultiplier);
+                }
             }
             ChoiceLockedMove = PBEMove.None;
             Status2 |= PBEStatus2.Transformed;
