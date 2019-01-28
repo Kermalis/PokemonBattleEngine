@@ -99,9 +99,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void TypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEEffectiveness moveEffectiveness, ref double moveEffectivenessMultiplier, bool ignoreWonderGuard)
         {
-            PBEPokemonData targetPData = PBEPokemonData.Data[target.Species];
-            double m = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)targetPData.Type1];
-            m *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)targetPData.Type2];
+            double m = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.Type1];
+            m *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.Type2];
 
             if (m <= 0) // (-infinity, 0]
             {
@@ -885,7 +884,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             double defense = initialDefense;
 
-            if (target.Item == PBEItem.MetalPowder && target.Species == PBESpecies.Ditto)
+            if (target.Item == PBEItem.MetalPowder && target.Shell.Species == PBESpecies.Ditto && !target.Status2.HasFlag(PBEStatus2.Transformed))
             {
                 defense *= 2.0;
             }

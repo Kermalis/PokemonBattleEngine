@@ -100,7 +100,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEBattleFormat BattleFormat { get; }
         public PBESettings Settings { get; }
         public PBETeam[] Teams { get; } = new PBETeam[2];
-        public List<PBEPokemon> ActiveBattlers { get; }
+        public List<PBEPokemon> ActiveBattlers { get; } = new List<PBEPokemon>(6);
         readonly List<PBEPokemon> turnOrder = new List<PBEPokemon>();
 
         public PBEWeather Weather { get; set; }
@@ -140,7 +140,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             BattleFormat = battleFormat;
             Settings = settings;
-            ActiveBattlers = new List<PBEPokemon>(3);
             Teams[0] = new PBETeam(this, 0, team0Party, ref pkmnIdCounter);
             Teams[1] = new PBETeam(this, 1, team1Party, ref pkmnIdCounter);
             CheckForReadiness();
@@ -153,7 +152,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             BattleFormat = battleFormat;
             Settings = settings;
-            ActiveBattlers = new List<PBEPokemon>(3);
 
             Teams[0] = new PBETeam(this, 0);
             Teams[1] = new PBETeam(this, 1);
@@ -255,11 +253,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         // For clients
         // Does not update ActiveBattlers
-        public void RemotePokemonSwitchedIn(PBEPkmnSwitchInPacket psip)
+        public static void RemotePokemonSwitchedIn(PBEPkmnSwitchInPacket psip)
         {
             foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
             {
-                PBEPokemon pkmn = TryGetPokemon(info.PokemonId);
+                PBEPokemon pkmn = psip.Team.Battle.TryGetPokemon(info.PokemonId);
                 if (pkmn == null)
                 {
                     pkmn = new PBEPokemon(psip.Team, info);
@@ -331,7 +329,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         speed *= 0.5;
                         break;
                     case PBEItem.QuickPowder:
-                        if (pkmn.Species == PBESpecies.Ditto)
+                        if (pkmn.Shell.Species == PBESpecies.Ditto && !pkmn.Status2.HasFlag(PBEStatus2.Transformed))
                         {
                             speed *= 2.0;
                         }
