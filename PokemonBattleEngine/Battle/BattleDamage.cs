@@ -893,7 +893,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 defense *= 1.5;
             }
-            if (user.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.Shell.Species].Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.Shell.Species].Evolutions.Count > 0)
             {
                 defense *= 1.5;
             }
@@ -963,7 +963,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spDefense *= 1.5;
             }
-            if (user.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.Shell.Species].Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.Shell.Species].Evolutions.Count > 0)
             {
                 spDefense *= 1.5;
             }
