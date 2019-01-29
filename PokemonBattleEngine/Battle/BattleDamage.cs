@@ -143,7 +143,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.Eruption:
                 case PBEMove.WaterSpout:
                     {
-                        basePower = Math.Min(1, 150 * user.HP / user.MaxHP);
+                        basePower = Math.Max(1, 150 * user.HP / user.MaxHP);
                         break;
                     }
                 case PBEMove.Flail:
