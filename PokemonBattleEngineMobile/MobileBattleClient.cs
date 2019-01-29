@@ -453,7 +453,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                 case PBEMoveUsedPacket mup:
                     {
                         PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
-                        if (moveUser.Team.Id == Index && mup.OwnsMove && !moveUser.Moves.Contains(mup.Move))
+                        if (moveUser.Team.Id != Index && mup.OwnsMove && !moveUser.Moves.Contains(mup.Move))
                         {
                             moveUser.Moves[Array.IndexOf(moveUser.Moves, PBEMove.MAX)] = mup.Move;
                         }
