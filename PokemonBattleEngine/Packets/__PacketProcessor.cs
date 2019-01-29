@@ -53,6 +53,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PBEPsychUpPacket.Code: packet = new PBEPsychUpPacket(buffer, battle); break;
                 case PBESwitchInRequestPacket.Code: packet = new PBESwitchInRequestPacket(buffer, battle); break;
                 case PBESwitchInResponsePacket.Code: packet = new PBESwitchInResponsePacket(buffer, battle); break;
+                case PBEIllusionPacket.Code: packet = new PBEIllusionPacket(buffer, battle); break;
                 default: throw new ArgumentException($"Invalid packet code: {code}");
             }
             return packet;

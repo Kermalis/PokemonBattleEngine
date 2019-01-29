@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -65,17 +64,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// </summary>
         /// <param name="pos">The position of the Pokémon you want to get.</param>
         /// <returns>null if no Pokémon was found was found at <paramref name="pos"/>; otherwise the <see cref="PBEPokemon"/>.</returns>
-        public PBEPokemon TryGetPokemonAtPosition(PBEFieldPosition pos) => ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
+        public PBEPokemon TryGetPokemon(PBEFieldPosition pos) => ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
 
-        public override bool Equals(object obj)
-        {
-            if (obj is PBETeam other)
-            {
-                return other.Id.Equals(Id) && other.Battle.Equals(Battle);
-            }
-            return base.Equals(obj);
-        }
-        public override int GetHashCode() => Id.GetHashCode() ^ Battle.GetHashCode();
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -251,22 +241,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             team.CreateParty(party, ref team.Battle.pkmnIdCounter);
             team.Battle.CheckForReadiness();
         }
-        // For clients
-        // Does not update ActiveBattlers
-        public static void RemotePokemonSwitchedIn(PBEPkmnSwitchInPacket psip)
-        {
-            foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
-            {
-                PBEPokemon pkmn = psip.Team.Battle.TryGetPokemon(info.PokemonId);
-                if (pkmn == null)
-                {
-                    pkmn = new PBEPokemon(psip.Team, info);
-                }
-                pkmn.HP = info.HP;
-                pkmn.MaxHP = info.MaxHP;
-                pkmn.FieldPosition = info.FieldPosition;
-            }
-        }
         // Starts the battle
         // Sets BattleState to PBEBattleState.Processing, then PBEBattleState.WaitingForActions
         public void Begin()
@@ -317,8 +291,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (pkmn.Item)
                 {
                     case PBEItem.ChoiceScarf:
-                        speed *= 1.5;
-                        break;
+                        {
+                            speed *= 1.5;
+                            break;
+                        }
                     case PBEItem.MachoBrace:
                     case PBEItem.PowerAnklet:
                     case PBEItem.PowerBand:
@@ -326,14 +302,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEItem.PowerBracer:
                     case PBEItem.PowerLens:
                     case PBEItem.PowerWeight:
-                        speed *= 0.5;
-                        break;
-                    case PBEItem.QuickPowder:
-                        if (pkmn.Shell.Species == PBESpecies.Ditto && !pkmn.Status2.HasFlag(PBEStatus2.Transformed))
                         {
-                            speed *= 2.0;
+                            speed *= 0.5;
+                            break;
                         }
-                        break;
+                    case PBEItem.QuickPowder:
+                        {
+                            if (pkmn.Shell.Species == PBESpecies.Ditto && !pkmn.Status2.HasFlag(PBEStatus2.Transformed))
+                            {
+                                speed *= 2.0;
+                            }
+                            break;
+                        }
                 }
                 if (Weather == PBEWeather.HarshSunlight && pkmn.Ability == PBEAbility.Chlorophyll)
                 {
@@ -423,13 +403,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (pkmn.SelectedAction.Decision)
                     {
                         case PBEDecision.Fight:
-                            DoPreMoveEffects(pkmn);
-                            UseMove(pkmn);
-                            break;
+                            {
+                                DoPreMoveEffects(pkmn);
+                                UseMove(pkmn);
+                                break;
+                            }
                         case PBEDecision.SwitchOut:
-                            SwitchTwoPokemon(pkmn, TryGetPokemon(pkmn.SelectedAction.SwitchPokemonId), false);
-                            break;
-                        default: throw new ArgumentOutOfRangeException(nameof(pkmn.SelectedAction.Decision), $"Invalid decision: {pkmn.SelectedAction.Decision}");
+                            {
+                                SwitchTwoPokemon(pkmn, TryGetPokemon(pkmn.SelectedAction.SwitchPokemonId), false);
+                                break;
+                            }
+                        default: throw new ArgumentOutOfRangeException(nameof(pkmn.SelectedAction.Decision));
                     }
                     pkmn.PreviousAction = pkmn.SelectedAction;
                 }
@@ -525,19 +509,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (BattleFormat)
                 {
                     case PBEBattleFormat.Single:
-                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Center) == null)
+                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
                         {
                             team.SwitchInsRequired = 1;
                             nextState = PBEBattleState.WaitingForSwitchIns;
                         }
                         break;
                     case PBEBattleFormat.Double:
-                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Left) == null)
+                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
                         {
                             available--;
                             team.SwitchInsRequired++;
                         }
-                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Right) == null)
+                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
                         {
                             team.SwitchInsRequired++;
                         }
@@ -548,17 +532,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     case PBEBattleFormat.Rotation:
                     case PBEBattleFormat.Triple:
-                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Left) == null)
+                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
                         {
                             available--;
                             team.SwitchInsRequired++;
                         }
-                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Center) == null)
+                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
                         {
                             available--;
                             team.SwitchInsRequired++;
                         }
-                        if (available > 0 && team.TryGetPokemonAtPosition(PBEFieldPosition.Right) == null)
+                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
                         {
                             team.SwitchInsRequired++;
                         }

@@ -17,37 +17,29 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public class PBESwitchInInfo
         {
             public byte PokemonId { get; }
+            public byte DisguisedAsId { get; }
             public PBESpecies Species { get; }
             public string Nickname { get; }
             public byte Level { get; }
             public bool Shiny { get; }
+            public PBEGender Gender { get; }
             public ushort HP { get; }
             public ushort MaxHP { get; }
-            public PBEGender Gender { get; }
+            public PBEStatus1 Status1 { get; }
             public PBEFieldPosition FieldPosition { get; }
 
-            public PBESwitchInInfo(PBEPokemon pkmn)
-            {
-                PokemonId = pkmn.Id;
-                Species = pkmn.Shell.Species;
-                Nickname = pkmn.Shell.Nickname;
-                Level = pkmn.Shell.Level;
-                Shiny = pkmn.Shell.Shiny;
-                HP = pkmn.HP;
-                MaxHP = pkmn.MaxHP;
-                Gender = pkmn.Shell.Gender;
-                FieldPosition = pkmn.FieldPosition;
-            }
-            public PBESwitchInInfo(byte pkmnId, PBESpecies species, string nickname, byte level, bool shiny, ushort hp, ushort maxHP, PBEGender gender, PBEFieldPosition fieldPosition)
+            public PBESwitchInInfo(byte pkmnId, byte disguisedAsId, PBESpecies species, string nickname, byte level, bool shiny, PBEGender gender, ushort hp, ushort maxHP, PBEStatus1 status1, PBEFieldPosition fieldPosition)
             {
                 PokemonId = pkmnId;
+                DisguisedAsId = disguisedAsId;
                 Species = species;
                 Nickname = nickname;
                 Level = level;
                 Shiny = shiny;
+                Gender = gender;
                 HP = hp;
                 MaxHP = maxHP;
-                Gender = gender;
+                Status1 = status1;
                 FieldPosition = fieldPosition;
             }
 
@@ -55,19 +47,21 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 var bytes = new List<byte>();
                 bytes.Add(PokemonId);
+                bytes.Add(DisguisedAsId);
                 bytes.AddRange(BitConverter.GetBytes((uint)Species));
                 bytes.AddRange(PBEUtils.StringToBytes(Nickname));
                 bytes.Add(Level);
                 bytes.Add((byte)(Shiny ? 1 : 0));
+                bytes.Add((byte)Gender);
                 bytes.AddRange(BitConverter.GetBytes(HP));
                 bytes.AddRange(BitConverter.GetBytes(MaxHP));
-                bytes.Add((byte)Gender);
+                bytes.Add((byte)Status1);
                 bytes.Add((byte)FieldPosition);
                 return bytes.ToArray();
             }
             internal static PBESwitchInInfo FromBytes(BinaryReader r)
             {
-                return new PBESwitchInInfo(r.ReadByte(), (PBESpecies)r.ReadUInt32(), PBEUtils.StringFromBytes(r), r.ReadByte(), r.ReadBoolean(), r.ReadUInt16(), r.ReadUInt16(), (PBEGender)r.ReadByte(), (PBEFieldPosition)r.ReadByte());
+                return new PBESwitchInInfo(r.ReadByte(), r.ReadByte(), (PBESpecies)r.ReadUInt32(), PBEUtils.StringFromBytes(r), r.ReadByte(), r.ReadBoolean(), (PBEGender)r.ReadByte(), r.ReadUInt16(), r.ReadUInt16(), (PBEStatus1)r.ReadByte(), (PBEFieldPosition)r.ReadByte());
             }
         }
 
@@ -75,12 +69,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public ReadOnlyCollection<PBESwitchInInfo> SwitchIns { get; }
         public bool Forced { get; }
 
-        public PBEPkmnSwitchInPacket(PBETeam team, IEnumerable<PBEPokemon> pokemon, bool forced)
+        public PBEPkmnSwitchInPacket(PBETeam team, IEnumerable<PBESwitchInInfo> switchIns, bool forced)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((Team = team).Id);
-            bytes.Add((byte)(SwitchIns = pokemon.Select(p => new PBESwitchInInfo(p)).ToList().AsReadOnly()).Count);
+            bytes.Add((byte)(SwitchIns = switchIns.ToList().AsReadOnly()).Count);
             foreach (PBESwitchInInfo info in SwitchIns)
             {
                 bytes.AddRange(info.ToBytes());

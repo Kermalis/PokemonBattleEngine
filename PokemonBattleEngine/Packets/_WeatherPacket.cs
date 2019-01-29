@@ -15,15 +15,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEWeather Weather { get; }
         public PBEWeatherAction WeatherAction { get; }
-        public byte Victim { get; } // byte.MaxValue means no victim
+        public PBEFieldPosition DamageVictim { get; } // PBEFieldPosition.None means no victim
+        public PBETeam DamageVictimTeam { get; } // null means no victim
 
-        public PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon victim)
+        public PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon damageVictim)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Weather = weather));
             bytes.Add((byte)(WeatherAction = weatherAction));
-            bytes.Add(victim == null ? byte.MaxValue : victim.Id);
+            bytes.Add((byte)(DamageVictim = damageVictim == null ? PBEFieldPosition.None : damageVictim.FieldPosition));
+            bytes.Add((DamageVictimTeam = damageVictim?.Team) == null ? byte.MaxValue : damageVictim.Team.Id);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEWeatherPacket(byte[] buffer, PBEBattle battle)
@@ -34,7 +36,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 Weather = (PBEWeather)r.ReadByte();
                 WeatherAction = (PBEWeatherAction)r.ReadByte();
-                Victim = r.ReadByte();
+                DamageVictim = (PBEFieldPosition)r.ReadByte();
+                byte teamId = r.ReadByte();
+                DamageVictimTeam = teamId == byte.MaxValue ? null : battle.Teams[teamId];
             }
         }
 

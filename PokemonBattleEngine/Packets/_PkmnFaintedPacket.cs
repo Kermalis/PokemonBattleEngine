@@ -13,13 +13,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x0E;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte Victim { get; }
+        public byte PokemonId { get; }
+        public PBEFieldPosition PokemonPosition { get; }
+        public PBETeam PokemonTeam { get; }
 
-        public PBEPkmnFaintedPacket(PBEPokemon victim)
+        public PBEPkmnFaintedPacket(byte pokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(Victim = victim.Id);
+            bytes.Add(PokemonId = pokemonId);
+            bytes.Add((byte)(PokemonPosition = pokemonPosition));
+            bytes.Add((PokemonTeam = pokemonTeam).Id);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEPkmnFaintedPacket(byte[] buffer, PBEBattle battle)
@@ -28,7 +32,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                Victim = r.ReadByte();
+                PokemonId = r.ReadByte();
+                PokemonPosition = (PBEFieldPosition)r.ReadByte();
+                PokemonTeam = battle.Teams[r.ReadByte()];
             }
         }
 

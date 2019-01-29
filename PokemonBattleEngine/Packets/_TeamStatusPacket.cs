@@ -16,16 +16,16 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBETeam Team { get; }
         public PBETeamStatus TeamStatus { get; }
         public PBETeamStatusAction TeamStatusAction { get; }
-        public byte Victim { get; } // Victim of PBETeamStatusAction.CausedDamage (byte.MaxValue means no victim)
+        public PBEFieldPosition DamageVictim { get; } // PBEFieldPosition.None means no victim
 
-        public PBETeamStatusPacket(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEPokemon victim)
+        public PBETeamStatusPacket(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEPokemon damageVictim)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((Team = team).Id);
             bytes.Add((byte)(TeamStatus = teamStatus));
             bytes.Add((byte)(TeamStatusAction = teamStatusAction));
-            bytes.Add(victim == null ? byte.MaxValue : victim.Id);
+            bytes.Add((byte)(DamageVictim = damageVictim == null ? PBEFieldPosition.None : damageVictim.FieldPosition));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBETeamStatusPacket(byte[] buffer, PBEBattle battle)
@@ -36,7 +36,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Team = battle.Teams[r.ReadByte()];
                 TeamStatus = (PBETeamStatus)r.ReadByte();
                 TeamStatusAction = (PBETeamStatusAction)r.ReadByte();
-                Victim = r.ReadByte();
+                DamageVictim = (PBEFieldPosition)r.ReadByte();
             }
         }
 

@@ -61,7 +61,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             string NameForTrainer(PBEPokemon pkmn)
             {
-                return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.Shell.Nickname}";
+                return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.VisualNickname}";
             }
 
             string embedTitle = $"{context.Battlers[0].Username} vs {context.Battlers[1].Username}"; // TODO: Include turn number
@@ -70,39 +70,39 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 case PBEMoveMissedPacket mmp:
                     {
-                        PBEPokemon culprit = context.Battle.TryGetPokemon(mmp.Culprit),
-                            victim = context.Battle.TryGetPokemon(mmp.Victim);
+                        PBEPokemon moveUser = mmp.MoveUserTeam.TryGetPokemon(mmp.MoveUser),
+                            pokemon2 = mmp.Pokemon2Team.TryGetPokemon(mmp.Pokemon2);
                         var embed = new EmbedBuilder()
-                            .WithColor(Utils.GetColor(culprit))
+                            .WithColor(Utils.GetColor(moveUser))
                             .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
                             .WithTitle(embedTitle)
-                            .WithDescription(string.Format("{0}'s attack missed {1}!", NameForTrainer(culprit), NameForTrainer(victim)))
-                            .WithImageUrl(Utils.GetPokemonSprite(culprit));
+                            .WithDescription(string.Format("{0}'s attack missed {1}!", NameForTrainer(moveUser), NameForTrainer(pokemon2)))
+                            .WithImageUrl(Utils.GetPokemonSprite(moveUser));
                         await context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                         break;
                     }
                 case PBEMoveUsedPacket mup:
                     {
-                        PBEPokemon culprit = context.Battle.TryGetPokemon(mup.Culprit);
+                        PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
                         var embed = new EmbedBuilder()
-                            .WithColor(Utils.GetColor(culprit))
+                            .WithColor(Utils.GetColor(moveUser))
                             .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
                             .WithTitle(embedTitle)
-                            .WithDescription(string.Format("{0} used {1}!", NameForTrainer(culprit), PBEMoveLocalization.Names[mup.Move].English))
-                            .WithImageUrl(Utils.GetPokemonSprite(culprit));
+                            .WithDescription(string.Format("{0} used {1}!", NameForTrainer(moveUser), PBEMoveLocalization.Names[mup.Move].English))
+                            .WithImageUrl(Utils.GetPokemonSprite(moveUser));
                         await context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                         break;
                     }
                 case PBEPkmnHPChangedPacket phcp:
                     {
-                        PBEPokemon victim = context.Battle.TryGetPokemon(phcp.Victim);
+                        PBEPokemon pokemon = phcp.PokemonTeam.TryGetPokemon(phcp.Pokemon);
                         int hp = Math.Abs(phcp.Change);
                         var embed = new EmbedBuilder()
-                            .WithColor(Utils.GetColor(victim))
+                            .WithColor(Utils.GetColor(pokemon))
                             .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
                             .WithTitle(embedTitle)
-                            .WithDescription(string.Format("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(victim), phcp.Change <= 0 ? "lost" : "gained", hp, (double)hp / victim.MaxHP))
-                            .WithImageUrl(Utils.GetPokemonSprite(victim));
+                            .WithDescription(string.Format("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon), phcp.Change <= 0 ? "lost" : "gained", hp, (double)hp / pokemon.MaxHP))
+                            .WithImageUrl(Utils.GetPokemonSprite(pokemon));
                         await context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                         break;
                     }
@@ -117,7 +117,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     .WithColor(Utils.GetColor(pkmn))
                                     .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
                                     .WithTitle(embedTitle)
-                                    .WithDescription(string.Format("{1} sent out {0}!", pkmn.Shell.Nickname, psip.Team.TrainerName))
+                                    .WithDescription(string.Format("{1} sent out {0}!", pkmn.VisualNickname, psip.Team.TrainerName))
                                     .WithImageUrl(Utils.GetPokemonSprite(pkmn));
                                 await context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                             }

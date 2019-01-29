@@ -13,17 +13,19 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x09;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte Culprit { get; }
+        public PBEFieldPosition MoveUser { get; }
+        public PBETeam MoveUserTeam { get; }
         public PBEMove Move { get; }
         public bool OwnsMove { get; }
 
-        public PBEMoveUsedPacket(PBEPokemon culprit, PBEMove move)
+        public PBEMoveUsedPacket(PBEPokemon moveUser, PBEMove move)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(Culprit = culprit.Id);
+            bytes.Add((byte)(MoveUser = moveUser.FieldPosition));
+            bytes.Add((MoveUserTeam = moveUser.Team).Id);
             bytes.AddRange(BitConverter.GetBytes((ushort)(Move = move)));
-            bytes.Add((byte)((OwnsMove = culprit.Moves.Contains(Move)) ? 1 : 0));
+            bytes.Add((byte)((OwnsMove = moveUser.Moves.Contains(Move)) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEMoveUsedPacket(byte[] buffer, PBEBattle battle)
@@ -32,7 +34,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                Culprit = r.ReadByte();
+                MoveUser = (PBEFieldPosition)r.ReadByte();
+                MoveUserTeam = battle.Teams[r.ReadByte()];
                 Move = (PBEMove)r.ReadUInt16();
                 OwnsMove = r.ReadBoolean();
             }

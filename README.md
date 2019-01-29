@@ -8,7 +8,7 @@ The library comes with a desktop client, mobile app, server and Discord bot.
 The engine only emulates as if it were Pokémon B2W2 versions, so there will not be features introduced after generation 5.
 
 The library does not send information a player should not know; information slowly gets revealed to each player over time.
-For example, your opponent will not know your ability until your ability does something. He/she will also be unaware of your moves until you use them.
+For example, your opponent will not know your ability until your ability does something. The client has no way of telling if the opponent has a Pokémon out with Illusion.
 The opponent will never know your nature or hidden power damage/type unless they use context clues as a human.
 Therefore, a modified client cannot do anything more than an ordinary player (unless my code has exploits... in that case... create an issue!)
 

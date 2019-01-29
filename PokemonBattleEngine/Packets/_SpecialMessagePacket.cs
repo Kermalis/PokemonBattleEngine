@@ -22,22 +22,41 @@ namespace Kermalis.PokemonBattleEngine.Packets
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Message = message));
-            Params = Array.AsReadOnly(parameters);
+            var par = new List<object>();
             switch (Message)
             {
                 case PBESpecialMessage.DraggedOut:
                 case PBESpecialMessage.Endure:
                 case PBESpecialMessage.HPDrained:
-                case PBESpecialMessage.Magnitude:
                 case PBESpecialMessage.Recoil:
                 case PBESpecialMessage.Struggle:
-                    bytes.Add((byte)Params[0]);
-                    break;
+                    {
+                        par.Add(((PBEPokemon)parameters[0]).FieldPosition);
+                        par.Add(((PBEPokemon)parameters[0]).Team);
+                        bytes.Add((byte)((PBEPokemon)parameters[0]).FieldPosition);
+                        bytes.Add(((PBEPokemon)parameters[0]).Team.Id);
+                        break;
+                    }
+                case PBESpecialMessage.Magnitude:
+                    {
+                        par.Add(parameters[0]);
+                        bytes.Add((byte)parameters[0]);
+                        break;
+                    }
                 case PBESpecialMessage.PainSplit:
-                    bytes.Add((byte)Params[0]);
-                    bytes.Add((byte)Params[1]);
-                    break;
+                    {
+                        par.Add(((PBEPokemon)parameters[0]).FieldPosition);
+                        par.Add(((PBEPokemon)parameters[0]).Team);
+                        par.Add(((PBEPokemon)parameters[1]).FieldPosition);
+                        par.Add(((PBEPokemon)parameters[1]).Team);
+                        bytes.Add((byte)((PBEPokemon)parameters[0]).FieldPosition);
+                        bytes.Add(((PBEPokemon)parameters[0]).Team.Id);
+                        bytes.Add((byte)((PBEPokemon)parameters[1]).FieldPosition);
+                        bytes.Add(((PBEPokemon)parameters[1]).Team.Id);
+                        break;
+                    }
             }
+            Params = par.AsReadOnly();
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBESpecialMessagePacket(byte[] buffer, PBEBattle battle)
@@ -52,14 +71,22 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBESpecialMessage.DraggedOut:
                     case PBESpecialMessage.Endure:
                     case PBESpecialMessage.HPDrained:
-                    case PBESpecialMessage.Magnitude:
                     case PBESpecialMessage.Recoil:
                     case PBESpecialMessage.Struggle:
-                        Params = Array.AsReadOnly(new object[] { r.ReadByte() });
-                        break;
+                        {
+                            Params = Array.AsReadOnly(new object[] { (PBEFieldPosition)r.ReadByte(), battle.Teams[r.ReadByte()] });
+                            break;
+                        }
+                    case PBESpecialMessage.Magnitude:
+                        {
+                            Params = Array.AsReadOnly(new object[] { r.ReadByte() });
+                            break;
+                        }
                     case PBESpecialMessage.PainSplit:
-                        Params = Array.AsReadOnly(new object[] { r.ReadByte(), r.ReadByte() });
-                        break;
+                        {
+                            Params = Array.AsReadOnly(new object[] { (PBEFieldPosition)r.ReadByte(), battle.Teams[r.ReadByte()], (PBEFieldPosition)r.ReadByte(), battle.Teams[r.ReadByte()] });
+                            break;
+                        }
                 }
             }
         }

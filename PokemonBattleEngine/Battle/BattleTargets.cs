@@ -193,32 +193,32 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var targets = new List<PBEPokemon>();
             if (requestedTargets.HasFlag(PBETarget.AllyLeft))
             {
-                targets.Add(user.Team.TryGetPokemonAtPosition(PBEFieldPosition.Left));
+                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Left));
             }
             if (requestedTargets.HasFlag(PBETarget.AllyCenter))
             {
-                targets.Add(user.Team.TryGetPokemonAtPosition(PBEFieldPosition.Center));
+                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Center));
             }
             if (requestedTargets.HasFlag(PBETarget.AllyRight))
             {
-                targets.Add(user.Team.TryGetPokemonAtPosition(PBEFieldPosition.Right));
+                targets.Add(user.Team.TryGetPokemon(PBEFieldPosition.Right));
             }
             if (requestedTargets.HasFlag(PBETarget.FoeLeft))
             {
-                PBEPokemon pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
+                PBEPokemon pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Left);
                 if (pkmn == null)
                 {
                     if (user.Team.Battle.BattleFormat == PBEBattleFormat.Double)
                     {
-                        pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
+                        pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Right);
                     }
                     else if (user.Team.Battle.BattleFormat == PBEBattleFormat.Triple)
                     {
-                        pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Center);
+                        pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far right
                         if (pkmn == null && (user.FieldPosition != PBEFieldPosition.Right || canHitFarCorners))
                         {
-                            pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
+                            pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Right);
                         }
                     }
                 }
@@ -226,7 +226,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (requestedTargets.HasFlag(PBETarget.FoeCenter))
             {
-                PBEPokemon pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Center);
+                PBEPokemon pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Center);
                 // Target fainted, fallback to its teammate
                 if (pkmn == null)
                 {
@@ -234,26 +234,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (user.FieldPosition == PBEFieldPosition.Left)
                         {
-                            pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
+                            pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Right);
                             // Right fainted as well and user can reach far left
                             if (pkmn == null && (user.FieldPosition != PBEFieldPosition.Left || canHitFarCorners))
                             {
-                                pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
+                                pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Left);
                             }
                         }
                         else if (user.FieldPosition == PBEFieldPosition.Right)
                         {
-                            pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
+                            pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Left);
                             // Left fainted as well and user can reach far right
                             if (pkmn == null && (user.FieldPosition != PBEFieldPosition.Right || canHitFarCorners))
                             {
-                                pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
+                                pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Right);
                             }
                         }
                         else // Center
                         {
-                            PBEPokemon oppLeft = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left),
-                                oppRight = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
+                            PBEPokemon oppLeft = opposingTeam.TryGetPokemon(PBEFieldPosition.Left),
+                                oppRight = opposingTeam.TryGetPokemon(PBEFieldPosition.Right);
                             // Left is dead but not right
                             if (oppLeft == null && oppRight != null)
                             {
@@ -276,21 +276,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (requestedTargets.HasFlag(PBETarget.FoeRight))
             {
-                PBEPokemon pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right);
+                PBEPokemon pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Right);
                 // Target fainted, fallback to its teammate
                 if (pkmn == null)
                 {
                     if (user.Team.Battle.BattleFormat == PBEBattleFormat.Double)
                     {
-                        pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
+                        pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Left);
                     }
                     else if (user.Team.Battle.BattleFormat == PBEBattleFormat.Triple)
                     {
-                        pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Center);
+                        pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Center);
                         // Center fainted as well and user can reach far left
                         if (pkmn == null && (user.FieldPosition != PBEFieldPosition.Left || canHitFarCorners))
                         {
-                            pkmn = opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left);
+                            pkmn = opposingTeam.TryGetPokemon(PBEFieldPosition.Left);
                         }
                     }
                 }

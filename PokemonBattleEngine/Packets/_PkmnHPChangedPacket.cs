@@ -13,14 +13,16 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x0A;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte Victim { get; }
+        public PBEFieldPosition Pokemon { get; }
+        public PBETeam PokemonTeam { get; }
         public int Change { get; }
 
-        public PBEPkmnHPChangedPacket(PBEPokemon victim, int change)
+        public PBEPkmnHPChangedPacket(PBEPokemon pokemon, int change)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(Victim = victim.Id);
+            bytes.Add((byte)(Pokemon = pokemon.FieldPosition));
+            bytes.Add((PokemonTeam = pokemon.Team).Id);
             bytes.AddRange(BitConverter.GetBytes(Change = change));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
@@ -30,7 +32,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                Victim = r.ReadByte();
+                Pokemon = (PBEFieldPosition)r.ReadByte();
+                PokemonTeam = battle.Teams[r.ReadByte()];
                 Change = r.ReadInt32();
             }
         }

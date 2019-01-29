@@ -18,7 +18,9 @@ namespace Kermalis.PokemonBattleEngine
             Console.WriteLine("----- Pokémon Battle Engine Test -----");
 
             PBESettings settings = PBESettings.DefaultSettings;
-            PBEBattle battle = new PBEBattle(PBEBattleFormat.Triple, settings, PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize), PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize));
+            PBEPokemonShell[] team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
+            PBEPokemonShell[] team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
+            PBEBattle battle = new PBEBattle(PBEBattleFormat.Triple, settings, team0Party, team1Party);
             battle.Teams[0].TrainerName = "Team 1";
             battle.Teams[1].TrainerName = "Team 2";
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;

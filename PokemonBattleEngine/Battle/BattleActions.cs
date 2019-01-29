@@ -181,7 +181,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                                             r = PBEUtils.RNG.Next(3);
                                                             if (r == 0)
                                                             {
-                                                                if (opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Left) != null)
+                                                                if (opposingTeam.TryGetPokemon(PBEFieldPosition.Left) != null)
                                                                 {
                                                                     pkmn.SelectedAction.FightTargets = PBETarget.FoeLeft;
                                                                 }
@@ -192,7 +192,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                                             }
                                                             else if (r == 1)
                                                             {
-                                                                if (opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Center) != null)
+                                                                if (opposingTeam.TryGetPokemon(PBEFieldPosition.Center) != null)
                                                                 {
                                                                     pkmn.SelectedAction.FightTargets = PBETarget.FoeCenter;
                                                                 }
@@ -203,7 +203,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                                             }
                                                             else
                                                             {
-                                                                if (opposingTeam.TryGetPokemonAtPosition(PBEFieldPosition.Right) != null)
+                                                                if (opposingTeam.TryGetPokemon(PBEFieldPosition.Right) != null)
                                                                 {
                                                                     pkmn.SelectedAction.FightTargets = PBETarget.FoeRight;
                                                                 }

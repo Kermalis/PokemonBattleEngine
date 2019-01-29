@@ -8,29 +8,31 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPkmnStatChangedPacket : INetPacket
+    public sealed class PBEIllusionPacket : INetPacket
     {
-        public const short Code = 0x10;
+        public const short Code = 0x25;
         public IEnumerable<byte> Buffer { get; }
 
         public PBEFieldPosition Pokemon { get; }
         public PBETeam PokemonTeam { get; }
-        public PBEStat Stat { get; }
-        public short Change { get; }
-        public bool IsTooMuch { get; }
+        public PBEGender ActualGender { get; }
+        public bool ActualShiny { get; }
+        public string ActualNickname { get; }
+        public PBESpecies ActualSpecies { get; }
 
-        public PBEPkmnStatChangedPacket(PBEPokemon pokemon, PBEStat stat, short change, bool isTooMuch)
+        public PBEIllusionPacket(PBEPokemon pokemon)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Pokemon = pokemon.FieldPosition));
             bytes.Add((PokemonTeam = pokemon.Team).Id);
-            bytes.Add((byte)(Stat = stat));
-            bytes.AddRange(BitConverter.GetBytes(Change = change));
-            bytes.Add((byte)((IsTooMuch = isTooMuch) ? 1 : 0));
+            bytes.Add((byte)(ActualGender = pokemon.Shell.Gender));
+            bytes.AddRange(PBEUtils.StringToBytes(ActualNickname = pokemon.Shell.Nickname));
+            bytes.Add((byte)((ActualShiny = pokemon.Shell.Shiny) ? 1 : 0));
+            bytes.AddRange(BitConverter.GetBytes((ushort)(ActualSpecies = pokemon.Shell.Species)));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
-        public PBEPkmnStatChangedPacket(byte[] buffer, PBEBattle battle)
+        public PBEIllusionPacket(byte[] buffer, PBEBattle battle)
         {
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
@@ -38,9 +40,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 Pokemon = (PBEFieldPosition)r.ReadByte();
                 PokemonTeam = battle.Teams[r.ReadByte()];
-                Stat = (PBEStat)r.ReadByte();
-                Change = r.ReadInt16();
-                IsTooMuch = r.ReadBoolean();
+                ActualGender = (PBEGender)r.ReadByte();
+                ActualNickname = PBEUtils.StringFromBytes(r);
+                ActualShiny = r.ReadBoolean();
+                ActualSpecies = (PBESpecies)r.ReadUInt16();
             }
         }
 

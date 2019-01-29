@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ushort oldHP = victim.SubstituteHP;
                 victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
                 ushort damageAmt = (ushort)(oldHP - victim.SubstituteHP);
-                BroadcastStatus2(culprit, victim, PBEStatus2.Substitute, PBEStatusAction.Damage);
+                BroadcastStatus2(victim, culprit, PBEStatus2.Substitute, PBEStatusAction.Damage);
                 return damageAmt;
             }
             else

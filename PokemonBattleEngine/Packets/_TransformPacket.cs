@@ -14,8 +14,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x18;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte User { get; }
-        public byte Target { get; }
+        public PBEFieldPosition User { get; }
+        public PBETeam UserTeam { get; }
+        public PBEFieldPosition Target { get; }
+        public PBETeam TargetTeam { get; }
         public ushort TargetAttack { get; }
         public ushort TargetDefense { get; }
         public ushort TargetSpAttack { get; }
@@ -38,8 +40,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(User = user.Id);
-            bytes.Add(Target = target.Id);
+            bytes.Add((byte)(User = user.FieldPosition));
+            bytes.Add((UserTeam = user.Team).Id);
+            bytes.Add((byte)(Target = target.FieldPosition));
+            bytes.Add((TargetTeam = target.Team).Id);
             bytes.AddRange(BitConverter.GetBytes(TargetAttack = target.Attack));
             bytes.AddRange(BitConverter.GetBytes(TargetDefense = target.Defense));
             bytes.AddRange(BitConverter.GetBytes(TargetSpAttack = target.SpAttack));
@@ -69,8 +73,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                User = r.ReadByte();
-                Target = r.ReadByte();
+                User = (PBEFieldPosition)r.ReadByte();
+                UserTeam = battle.Teams[r.ReadByte()];
+                Target = (PBEFieldPosition)r.ReadByte();
+                TargetTeam = battle.Teams[r.ReadByte()];
                 TargetAttack = r.ReadUInt16();
                 TargetDefense = r.ReadUInt16();
                 TargetSpAttack = r.ReadUInt16();

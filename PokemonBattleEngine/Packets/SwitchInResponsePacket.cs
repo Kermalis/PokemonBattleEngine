@@ -21,11 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Switches = switches.ToList().AsReadOnly()).Count);
-            foreach (Tuple<byte, PBEFieldPosition> t in Switches)
-            {
-                bytes.Add(t.Item1);
-                bytes.Add((byte)t.Item2);
-            }
+            bytes.AddRange(Switches.SelectMany(s => new byte[] { s.Item1, (byte)s.Item2 }));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBESwitchInResponsePacket(byte[] buffer, PBEBattle battle)

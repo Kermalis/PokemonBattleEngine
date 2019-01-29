@@ -1,5 +1,6 @@
 ﻿using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Battle;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,15 +15,15 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public IEnumerable<byte> Buffer { get; }
 
         public PBETeam Team { get; }
-        public ReadOnlyCollection<byte> Pokemon { get; }
+        public ReadOnlyCollection<PBEFieldPosition> Pokemon { get; }
 
         public PBEActionsRequestPacket(PBETeam team)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((Team = team).Id);
-            bytes.Add((byte)(Pokemon = Team.ActionsRequired.Select(p => p.Id).ToList().AsReadOnly()).Count);
-            bytes.AddRange(Pokemon);
+            bytes.Add((byte)(Pokemon = Team.ActionsRequired.Select(p => p.FieldPosition).ToList().AsReadOnly()).Count);
+            bytes.AddRange(Pokemon.Cast<byte>());
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEActionsRequestPacket(byte[] buffer, PBEBattle battle)
@@ -31,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 Team = battle.Teams[r.ReadByte()];
-                Pokemon = new ReadOnlyCollection<byte>(r.ReadBytes(r.ReadByte()));
+                Pokemon = r.ReadBytes(r.ReadByte()).Cast<PBEFieldPosition>().ToList().AsReadOnly();
             }
         }
 

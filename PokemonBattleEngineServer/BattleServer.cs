@@ -211,74 +211,120 @@ namespace Kermalis.PokemonBattleEngineServer
             switch (battle.BattleState)
             {
                 case PBEBattleState.ReadyToBegin:
-                    foreach (Player player in battlers)
                     {
-                        foreach (PBEPokemonShell shell in player.Party)
+                        foreach (Player player in battlers)
                         {
-                            try
+                            foreach (PBEPokemonShell shell in player.Party)
                             {
-                                shell.ValidateShell(battle.Settings);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine($"Invalid team data received from {player.PlayerName}:");
-                                Console.WriteLine(e.Message);
-                                CancelMatch();
-                                return;
+                                try
+                                {
+                                    shell.ValidateShell(battle.Settings);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine($"Invalid team data received from {player.PlayerName}:");
+                                    Console.WriteLine(e.Message);
+                                    CancelMatch();
+                                    return;
+                                }
                             }
                         }
+                        state = ServerState.StartingMatch;
+                        Console.WriteLine("Battle starting!");
+                        battlers[0].Send(new PBESetPartyPacket(battle.Teams[0]));
+                        battlers[1].Send(new PBESetPartyPacket(battle.Teams[1]));
+                        battlers[0].ResetEvent.WaitOne();
+                        battlers[1].ResetEvent.WaitOne();
+                        battle.Begin();
+                        break;
                     }
-                    state = ServerState.StartingMatch;
-                    Console.WriteLine("Battle starting!");
-                    battlers[0].Send(new PBESetPartyPacket(battle.Teams[0]));
-                    battlers[1].Send(new PBESetPartyPacket(battle.Teams[1]));
-                    battlers[0].ResetEvent.WaitOne();
-                    battlers[1].ResetEvent.WaitOne();
-                    battle.Begin();
-                    break;
                 case PBEBattleState.Processing:
-                    state = ServerState.BattleProcessing;
-                    break;
+                    {
+                        state = ServerState.BattleProcessing;
+                        break;
+                    }
                 case PBEBattleState.ReadyToRunTurn:
-                    battle.RunTurn();
-                    break;
+                    {
+                        battle.RunTurn();
+                        break;
+                    }
                 case PBEBattleState.WaitingForActions:
-                    state = ServerState.WaitingForActions;
-                    Console.WriteLine("Waiting for actions...");
-                    break;
+                    {
+                        state = ServerState.WaitingForActions;
+                        Console.WriteLine("Waiting for actions...");
+                        break;
+                    }
                 case PBEBattleState.WaitingForSwitchIns:
-                    state = ServerState.WaitingForSwitchIns;
-                    Console.WriteLine("Waiting for switches...");
-                    break;
+                    {
+                        state = ServerState.WaitingForSwitchIns;
+                        Console.WriteLine("Waiting for switches...");
+                        break;
+                    }
             }
         }
         void BattleEventHandler(PBEBattle battle, INetPacket packet)
         {
             switch (packet)
             {
+                case PBEPkmnFaintedPacket pfp:
+                    {
+                        var hiddenId = new PBEPkmnFaintedPacket(byte.MaxValue, pfp.PokemonPosition, pfp.PokemonTeam);
+                        Player teamOwner = battlers[pfp.PokemonTeam.Id];
+                        teamOwner.Send(pfp);
+                        SendTo(Clients.Except(new[] { teamOwner }), hiddenId);
+                        foreach (Player player in Clients)
+                        {
+                            player.ResetEvent.WaitOne();
+                        }
+                        break;
+                    }
+                case PBEPkmnSwitchInPacket psip:
+                    {
+                        var hiddenId = new PBEPkmnSwitchInPacket(psip.Team, psip.SwitchIns.Select(s => new PBEPkmnSwitchInPacket.PBESwitchInInfo(byte.MaxValue, byte.MaxValue, s.Species, s.Nickname, s.Level, s.Shiny, s.Gender, s.HP, s.MaxHP, s.Status1, s.FieldPosition)), psip.Forced);
+                        Player teamOwner = battlers[psip.Team.Id];
+                        teamOwner.Send(psip);
+                        SendTo(Clients.Except(new[] { teamOwner }), hiddenId);
+                        foreach (Player player in Clients)
+                        {
+                            player.ResetEvent.WaitOne();
+                        }
+                        break;
+                    }
+                case PBEPkmnSwitchOutPacket psop:
+                    {
+                        var hiddenId = new PBEPkmnSwitchOutPacket(byte.MaxValue, psop.PokemonPosition, psop.PokemonTeam, psop.Forced);
+                        Player teamOwner = battlers[psop.PokemonTeam.Id];
+                        teamOwner.Send(psop);
+                        SendTo(Clients.Except(new[] { teamOwner }), hiddenId);
+                        foreach (Player player in Clients)
+                        {
+                            player.ResetEvent.WaitOne();
+                        }
+                        break;
+                    }
                 case PBETransformPacket tp:
                     {
-                        PBEPokemon user = battle.TryGetPokemon(tp.User),
-                            target = battle.TryGetPokemon(tp.Target);
-                        if (user.Team.Id == 0 || target.Team.Id == 0)
+                        if (tp.UserTeam.Id == 0 || tp.TargetTeam.Id == 0)
                         {
                             battlers[0].Send(tp);
                             battlers[0].ResetEvent.WaitOne();
                         }
-                        if (user.Team.Id == 1 || target.Team.Id == 1)
+                        if (tp.UserTeam.Id == 1 || tp.TargetTeam.Id == 1)
                         {
                             battlers[1].Send(tp);
                             battlers[1].ResetEvent.WaitOne();
                         }
+                        break;
                     }
-                    break;
                 default:
-                    SendToAll(packet);
-                    foreach (Player player in Clients)
                     {
-                        player.ResetEvent.WaitOne();
+                        SendToAll(packet);
+                        foreach (Player player in Clients)
+                        {
+                            player.ResetEvent.WaitOne();
+                        }
+                        break;
                     }
-                    break;
             }
         }
     }

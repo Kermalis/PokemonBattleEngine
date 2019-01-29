@@ -517,53 +517,57 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Cursed = 1 << 2,
         /// <summary>
+        /// The Pokémon is disguised as <see cref="PBEPokemon.DisguisedAsPokemon"/> with <see cref="PBEAbility.Illusion"/>.
+        /// </summary>
+        Disguised = 1 << 3,
+        /// <summary>
         /// The Pokémon is flinching and will be unable to move this turn.
         /// </summary>
-        Flinching = 1 << 3,
+        Flinching = 1 << 4,
         /// <summary>
         /// The Pokémon is infatuated with another Pokémon and may be unable to a move this turn.
         /// </summary>
-        Infatuated = 1 << 4, // TODO
+        Infatuated = 1 << 5, // TODO
         /// <summary>
         /// The Pokémon is seeded and HP will be stolen at the end of each turn.
         /// </summary>
-        LeechSeed = 1 << 5,
+        LeechSeed = 1 << 6,
         /// <summary>
         /// The Pokémon is minimized and will take double damage from <see cref="PBEMove.Steamroller"/> and <see cref="PBEMove.Stomp"/>.
         /// </summary>
-        Minimized = 1 << 6,
+        Minimized = 1 << 7,
         /// <summary>
         /// The Pokémon is protected from moves this turn.
         /// </summary>
-        Protected = 1 << 7,
+        Protected = 1 << 8,
         /// <summary>
         /// The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.
         /// </summary>
-        Pumped = 1 << 8,
+        Pumped = 1 << 9,
         /// <summary>
         /// The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.
         /// </summary>
-        Substitute = 1 << 9,
+        Substitute = 1 << 10,
         /// <summary>
         /// The Pokémon is unable to use the same move two times in a row.
         /// </summary>
-        Tormented = 1 << 10, // TODO
+        Tormented = 1 << 11, // TODO
         /// <summary>
         /// The Pokémon is transformed into another Pokémon.
         /// </summary>
-        Transformed = 1 << 11, // TODO: Fail if target is disguised with illusion
+        Transformed = 1 << 12,
         /// <summary>
         /// The Pokémon is underground.
         /// A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.
         /// </summary>
-        Underground = 1 << 12,
+        Underground = 1 << 13,
         /// <summary>
         /// The Pokémon is underwater.
         /// A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.
         /// </summary>
-        Underwater = 1 << 13
+        Underwater = 1 << 14
     }
     /// <summary>
     /// Represents a specific <see cref="PBEBattle"/>'s status.
@@ -1990,7 +1994,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// No effect in battle.
         /// </summary>
         Illuminate = 35,
-        Illusion = 149, // TODO
+        Illusion = 149,
         Immunity = 17, // TODO
         /// <summary>
         /// The Pokémon transforms into the foe across from it when switching in.

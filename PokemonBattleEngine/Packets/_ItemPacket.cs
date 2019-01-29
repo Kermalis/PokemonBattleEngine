@@ -13,17 +13,21 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x16;
         public IEnumerable<byte> Buffer { get; }
 
-        public byte Culprit { get; } // Item holder
-        public byte Victim { get; } // Victim of ItemAction
+        public PBEFieldPosition ItemHolder { get; }
+        public PBETeam ItemHolderTeam { get; }
+        public PBEFieldPosition Pokemon2 { get; }
+        public PBETeam Pokemon2Team { get; }
         public PBEItem Item { get; }
         public PBEItemAction ItemAction { get; }
 
-        public PBEItemPacket(PBEPokemon culprit, PBEPokemon victim, PBEItem item, PBEItemAction itemAction)
+        public PBEItemPacket(PBEPokemon itemHolder, PBEPokemon pokemon2, PBEItem item, PBEItemAction itemAction)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(Culprit = culprit.Id);
-            bytes.Add(Victim = victim.Id);
+            bytes.Add((byte)(ItemHolder = itemHolder.FieldPosition));
+            bytes.Add((ItemHolderTeam = itemHolder.Team).Id);
+            bytes.Add((byte)(Pokemon2 = pokemon2.FieldPosition));
+            bytes.Add((Pokemon2Team = pokemon2.Team).Id);
             bytes.AddRange(BitConverter.GetBytes((ushort)(Item = item)));
             bytes.Add((byte)(ItemAction = itemAction));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
@@ -34,8 +38,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                Culprit = r.ReadByte();
-                Victim = r.ReadByte();
+                ItemHolder = (PBEFieldPosition)r.ReadByte();
+                ItemHolderTeam = battle.Teams[r.ReadByte()];
+                Pokemon2 = (PBEFieldPosition)r.ReadByte();
+                Pokemon2Team = battle.Teams[r.ReadByte()];
                 Item = (PBEItem)r.ReadUInt16();
                 ItemAction = (PBEItemAction)r.ReadByte();
             }

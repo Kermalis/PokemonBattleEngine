@@ -21,10 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Party = party.ToList().AsReadOnly()).Count);
-            foreach (PBEPokemonShell pkmn in Party)
-            {
-                bytes.AddRange(pkmn.ToBytes());
-            }
+            bytes.AddRange(Party.SelectMany(p => p.ToBytes()));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEPartyResponsePacket(byte[] buffer, PBEBattle battle)

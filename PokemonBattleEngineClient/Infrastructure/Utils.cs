@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         }
         public static Uri GetPokemonSpriteUri(PBEPokemon pokemon, bool backSprite)
         {
-            return GetPokemonSpriteUri(pokemon.Species, pokemon.Shiny, pokemon.Shell.Gender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite);
+            return GetPokemonSpriteUri(pokemon.VisualSpecies, pokemon.VisualShiny, pokemon.VisualGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite);
         }
         public static Uri GetPokemonSpriteUri(PBEPokemonShell shell)
         {

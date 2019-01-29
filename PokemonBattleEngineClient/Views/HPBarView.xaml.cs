@@ -15,16 +15,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        PBEPokemon pokemon;
-        PBEPokemon Pokemon
-        {
-            get => pokemon;
-            set
-            {
-                pokemon = value;
-                OnPropertyChanged(nameof(Pokemon));
-            }
-        }
         bool visible;
         bool Visible
         {
@@ -45,6 +35,16 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Location));
             }
         }
+        string nickname;
+        string Nickname
+        {
+            get => nickname;
+            set
+            {
+                nickname = value;
+                OnPropertyChanged(nameof(Nickname));
+            }
+        }
         string level;
         string Level
         {
@@ -63,6 +63,16 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 hp = value;
                 OnPropertyChanged(nameof(HP));
+            }
+        }
+        ushort maxHP;
+        ushort MaxHP
+        {
+            get => maxHP;
+            set
+            {
+                maxHP = value;
+                OnPropertyChanged(nameof(MaxHP));
             }
         }
         IBitmap status;
@@ -110,15 +120,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void Update(PBEPokemon pkmn)
         {
-            Pokemon = pkmn;
             if (pkmn == null || pkmn.FieldPosition == PBEFieldPosition.None)
             {
                 Visible = false;
             }
             else
             {
-                Level = $"{(pkmn.Shell.Gender == PBEGender.Genderless ? " " : pkmn.GenderSymbol)}[LV]{pkmn.Shell.Level}";
+                Nickname = pkmn.VisualNickname;
+                PBEPokemon disguisedAs = pkmn.DisguisedAsPokemon ?? pkmn; // Don't use visual gender because of transform
+                Level = $"{(disguisedAs.Shell.Gender == PBEGender.Female ? "♀" : disguisedAs.Shell.Gender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Shell.Level}";
                 HP = pkmn.HP;
+                MaxHP = pkmn.MaxHP;
                 Status = pkmn.Status1 == PBEStatus1.None ? null : Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.STATUS1_{pkmn.Status1}.png?assembly=PokemonBattleEngineClient"));
 
                 double hpLeft = (double)pkmn.HP / pkmn.MaxHP;

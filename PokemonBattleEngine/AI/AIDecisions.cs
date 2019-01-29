@@ -54,26 +54,26 @@ namespace Kermalis.PokemonBattleEngine.AI
                     availablePositions.Add(PBEFieldPosition.Center);
                     break;
                 case PBEBattleFormat.Double:
-                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Left) == null)
+                    if (team.TryGetPokemon(PBEFieldPosition.Left) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Left);
                     }
-                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Right) == null)
+                    if (team.TryGetPokemon(PBEFieldPosition.Right) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Right);
                     }
                     break;
                 case PBEBattleFormat.Triple:
                 case PBEBattleFormat.Rotation:
-                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Left) == null)
+                    if (team.TryGetPokemon(PBEFieldPosition.Left) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Left);
                     }
-                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Center) == null)
+                    if (team.TryGetPokemon(PBEFieldPosition.Center) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Center);
                     }
-                    if (team.TryGetPokemonAtPosition(PBEFieldPosition.Right) == null)
+                    if (team.TryGetPokemon(PBEFieldPosition.Right) == null)
                     {
                         availablePositions.Add(PBEFieldPosition.Right);
                     }
