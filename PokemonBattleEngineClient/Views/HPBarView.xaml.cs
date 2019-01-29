@@ -54,7 +54,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
                 using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
                 {
-                    ctx.FillRectangle(Brushes.Aqua, new Rect(0, 0, 104, 27));
                     string bar;
                     byte yOffset;
                     if (pkmn.Id == byte.MaxValue)
