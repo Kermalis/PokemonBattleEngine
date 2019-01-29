@@ -15,15 +15,21 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEFieldPosition Pokemon { get; }
         public PBETeam PokemonTeam { get; }
-        public int Change { get; }
+        public ushort OldHP { get; }
+        public ushort NewHP { get; }
+        public double OldHPPercentage { get; }
+        public double NewHPPercentage { get; }
 
-        public PBEPkmnHPChangedPacket(PBEPokemon pokemon, int change)
+        public PBEPkmnHPChangedPacket(PBEFieldPosition pokemon, PBETeam pokemonTeam, ushort oldHP, ushort newHP, double oldHPPercentage, double newHPPercentage)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Pokemon = pokemon.FieldPosition));
-            bytes.Add((PokemonTeam = pokemon.Team).Id);
-            bytes.AddRange(BitConverter.GetBytes(Change = change));
+            bytes.Add((byte)(Pokemon = pokemon));
+            bytes.Add((PokemonTeam = pokemonTeam).Id);
+            bytes.AddRange(BitConverter.GetBytes(OldHP = oldHP));
+            bytes.AddRange(BitConverter.GetBytes(NewHP = newHP));
+            bytes.AddRange(BitConverter.GetBytes(OldHPPercentage = oldHPPercentage));
+            bytes.AddRange(BitConverter.GetBytes(NewHPPercentage = newHPPercentage));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEPkmnHPChangedPacket(byte[] buffer, PBEBattle battle)
@@ -34,7 +40,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 Pokemon = (PBEFieldPosition)r.ReadByte();
                 PokemonTeam = battle.Teams[r.ReadByte()];
-                Change = r.ReadInt32();
+                OldHP = r.ReadUInt16();
+                NewHP = r.ReadUInt16();
+                OldHPPercentage = r.ReadDouble();
+                NewHPPercentage = r.ReadDouble();
             }
         }
 

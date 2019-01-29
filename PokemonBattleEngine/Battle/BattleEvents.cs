@@ -33,16 +33,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBEMovePPChangedPacket(moveUser, move, change));
         void BroadcastMoveUsed(PBEPokemon moveUser, PBEMove move)
             => OnNewEvent?.Invoke(this, new PBEMoveUsedPacket(moveUser, move));
-        void BroadcastPkmnFainted(byte pokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam)
-            => OnNewEvent?.Invoke(this, new PBEPkmnFaintedPacket(pokemonId, pokemonPosition, pokemonTeam));
-        void BroadcastPkmnHPChanged(PBEPokemon pokemon, int change)
-            => OnNewEvent?.Invoke(this, new PBEPkmnHPChangedPacket(pokemon, change));
+        void BroadcastPkmnFainted(PBEPokemon pokemon, PBEFieldPosition oldPosition)
+            => OnNewEvent?.Invoke(this, new PBEPkmnFaintedPacket(pokemon.Id, oldPosition, pokemon.Team));
+        void BroadcastPkmnHPChanged(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)
+            => OnNewEvent?.Invoke(this, new PBEPkmnHPChangedPacket(pokemon.FieldPosition, pokemon.Team, oldHP, pokemon.HP, oldHPPercentage, pokemon.HPPercentage));
         void BroadcastPkmnStatChanged(PBEPokemon pokemon, PBEStat stat, short change, bool isTooMuch)
             => OnNewEvent?.Invoke(this, new PBEPkmnStatChangedPacket(pokemon, stat, change, isTooMuch));
         void BroadcastPkmnSwitchIn(PBETeam team, IEnumerable<PBEPkmnSwitchInPacket.PBESwitchInInfo> switchIns, bool forced)
             => OnNewEvent?.Invoke(this, new PBEPkmnSwitchInPacket(team, switchIns, forced));
-        void BroadcastPkmnSwitchOut(byte pokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam, bool forced)
-            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchOutPacket(pokemonId, pokemonPosition, pokemonTeam, forced));
+        void BroadcastPkmnSwitchOut(PBEPokemon pokemon, PBEFieldPosition oldPosition, bool forced)
+            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchOutPacket(pokemon.Id, oldPosition, pokemon.Team, forced));
         void BroadcastPsychUp(PBEPokemon user, PBEPokemon target)
             => OnNewEvent?.Invoke(this, new PBEPsychUpPacket(user, target));
 
@@ -376,8 +376,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEPkmnHPChangedPacket phcp:
                     {
                         PBEPokemon pokemon = phcp.PokemonTeam.TryGetPokemon(phcp.Pokemon);
-                        int hp = Math.Abs(phcp.Change);
-                        Console.WriteLine("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon), phcp.Change <= 0 ? "lost" : "gained", hp, (double)hp / pokemon.MaxHP);
+                        int change = phcp.NewHP - phcp.OldHP;
+                        int absChange = Math.Abs(change);
+                        double percentageChange = phcp.NewHPPercentage - phcp.OldHPPercentage;
+                        double absPercentageChange = Math.Abs(percentageChange);
+                        if (pokemon.HP == 0 && pokemon.MaxHP == 0)
+                        {
+                            Console.WriteLine("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon), percentageChange <= 0 ? "lost" : "restored", absPercentageChange);
+                        }
+                        else
+                        {
+                            Console.WriteLine("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon), change <= 0 ? "lost" : "restored", absChange, absPercentageChange);
+                        }
                         break;
                     }
                 case PBEPkmnStatChangedPacket pscp:

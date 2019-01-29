@@ -133,12 +133,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 MaxHP = pkmn.MaxHP;
                 Status = pkmn.Status1 == PBEStatus1.None ? null : Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.STATUS1_{pkmn.Status1}.png?assembly=PokemonBattleEngineClient"));
 
-                double hpLeft = (double)pkmn.HP / pkmn.MaxHP;
-                if (hpLeft <= 0.20)
+                if (pkmn.HPPercentage <= 0.20)
                 {
                     HPColor = red;
                 }
-                else if (hpLeft <= 0.50)
+                else if (pkmn.HPPercentage <= 0.50)
                 {
                     HPColor = yellow;
                 }
@@ -147,7 +146,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     HPColor = green;
                 }
                 const byte lineX = 49, lineY = 14, lineW = 49;
-                HPEndLocation = new Point(hpLeft * lineW + lineX, lineY);
+                HPEndLocation = new Point(pkmn.HPPercentage * lineW + lineX, lineY);
 
                 Visible = true;
             }

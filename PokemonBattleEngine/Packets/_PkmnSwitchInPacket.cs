@@ -25,10 +25,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
             public PBEGender Gender { get; }
             public ushort HP { get; }
             public ushort MaxHP { get; }
+            public double HPPercentage { get; }
             public PBEStatus1 Status1 { get; }
             public PBEFieldPosition FieldPosition { get; }
 
-            public PBESwitchInInfo(byte pkmnId, byte disguisedAsId, PBESpecies species, string nickname, byte level, bool shiny, PBEGender gender, ushort hp, ushort maxHP, PBEStatus1 status1, PBEFieldPosition fieldPosition)
+            public PBESwitchInInfo(byte pkmnId, byte disguisedAsId, PBESpecies species, string nickname, byte level, bool shiny, PBEGender gender, ushort hp, ushort maxHP, double hpPercentage, PBEStatus1 status1, PBEFieldPosition fieldPosition)
             {
                 PokemonId = pkmnId;
                 DisguisedAsId = disguisedAsId;
@@ -39,6 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Gender = gender;
                 HP = hp;
                 MaxHP = maxHP;
+                HPPercentage = hpPercentage;
                 Status1 = status1;
                 FieldPosition = fieldPosition;
             }
@@ -55,13 +57,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 bytes.Add((byte)Gender);
                 bytes.AddRange(BitConverter.GetBytes(HP));
                 bytes.AddRange(BitConverter.GetBytes(MaxHP));
+                bytes.AddRange(BitConverter.GetBytes(HPPercentage));
                 bytes.Add((byte)Status1);
                 bytes.Add((byte)FieldPosition);
                 return bytes.ToArray();
             }
             internal static PBESwitchInInfo FromBytes(BinaryReader r)
             {
-                return new PBESwitchInInfo(r.ReadByte(), r.ReadByte(), (PBESpecies)r.ReadUInt32(), PBEUtils.StringFromBytes(r), r.ReadByte(), r.ReadBoolean(), (PBEGender)r.ReadByte(), r.ReadUInt16(), r.ReadUInt16(), (PBEStatus1)r.ReadByte(), (PBEFieldPosition)r.ReadByte());
+                return new PBESwitchInInfo(r.ReadByte(), r.ReadByte(), (PBESpecies)r.ReadUInt32(), PBEUtils.StringFromBytes(r), r.ReadByte(), r.ReadBoolean(), (PBEGender)r.ReadByte(), r.ReadUInt16(), r.ReadUInt16(), r.ReadDouble(), (PBEStatus1)r.ReadByte(), (PBEFieldPosition)r.ReadByte());
             }
         }
 

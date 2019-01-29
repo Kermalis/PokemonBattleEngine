@@ -31,12 +31,11 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
                 //HP = pkmn.HP;
                 Status1.Source = pkmn.Status1 == PBEStatus1.None ? null : ImageSource.FromResource($"Kermalis.PokemonBattleEngineMobile.MISC.STATUS1_{pkmn.Status1}.png");
 
-                double hpLeft = (double)pkmn.HP / pkmn.MaxHP;
-                if (hpLeft <= 0.20)
+                if (pkmn.HPPercentage <= 0.20)
                 {
                     HP.Color = red;
                 }
-                else if (hpLeft <= 0.50)
+                else if (pkmn.HPPercentage <= 0.50)
                 {
                     HP.Color = yellow;
                 }
@@ -45,7 +44,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
                     HP.Color = green;
                 }
                 const byte lineW = 48, lineH = 3;
-                Canvas.SetSize(HP, new Size(hpLeft * lineW, lineH));
+                Canvas.SetSize(HP, new Size(pkmn.HPPercentage * lineW, lineH));
 
                 IsVisible = true;
             }

@@ -40,6 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 ushort oldHP = victim.HP;
+                double oldPercentage = victim.HPPercentage;
                 victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
                 bool sturdyHappened = false, focusBandHappened = false, focusSashHappened = false;
                 if (!ignoreSturdy && victim.HP == 0)
@@ -61,8 +62,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         victim.HP = 1;
                     }
                 }
-                ushort damageAmt = (ushort)(oldHP - victim.HP);
-                BroadcastPkmnHPChanged(victim, -damageAmt);
+                victim.HPPercentage = (double)victim.HP / victim.MaxHP;
+                BroadcastPkmnHPChanged(victim, oldHP, oldPercentage);
                 if (sturdyHappened)
                 {
                     BroadcastAbility(victim, culprit, PBEAbility.Sturdy, PBEAbilityAction.Damage);
@@ -77,7 +78,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     victim.Item = PBEItem.None;
                     BroadcastItem(victim, culprit, PBEItem.FocusSash, PBEItemAction.Consumed);
                 }
-                return damageAmt;
+                return (ushort)(oldHP - victim.HP);
             }
         }
         /// <summary>
@@ -89,11 +90,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         ushort HealDamage(PBEPokemon pkmn, ushort hp)
         {
             ushort oldHP = pkmn.HP;
+            double oldPercentage = pkmn.HPPercentage;
             pkmn.HP = (ushort)Math.Min(pkmn.MaxHP, pkmn.HP + Math.Max((ushort)1, hp)); // Always try to heal at least 1 HP
             ushort healAmt = (ushort)(pkmn.HP - oldHP);
             if (healAmt > 0)
             {
-                BroadcastPkmnHPChanged(pkmn, healAmt);
+                pkmn.HPPercentage = (double)pkmn.HP / pkmn.MaxHP;
+                BroadcastPkmnHPChanged(pkmn, oldHP, oldPercentage);
             }
             return healAmt;
         }

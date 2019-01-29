@@ -96,12 +96,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 case PBEPkmnHPChangedPacket phcp:
                     {
                         PBEPokemon pokemon = phcp.PokemonTeam.TryGetPokemon(phcp.Pokemon);
-                        int hp = Math.Abs(phcp.Change);
+                        int change = phcp.NewHP - phcp.OldHP;
+                        int absChange = Math.Abs(change);
+                        double percentageChange = phcp.NewHPPercentage - phcp.OldHPPercentage;
+                        double absPercentageChange = Math.Abs(percentageChange);
                         var embed = new EmbedBuilder()
                             .WithColor(Utils.GetColor(pokemon))
                             .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
                             .WithTitle(embedTitle)
-                            .WithDescription(string.Format("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon), phcp.Change <= 0 ? "lost" : "gained", hp, (double)hp / pokemon.MaxHP))
+                            .WithDescription(string.Format("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon), percentageChange <= 0 ? "lost" : "restored", absPercentageChange))
                             .WithImageUrl(Utils.GetPokemonSprite(pokemon));
                         await context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                         break;

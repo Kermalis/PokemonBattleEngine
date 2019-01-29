@@ -278,9 +278,21 @@ namespace Kermalis.PokemonBattleEngineServer
                         }
                         break;
                     }
+                case PBEPkmnHPChangedPacket phcp:
+                    {
+                        var hiddenId = new PBEPkmnHPChangedPacket(phcp.Pokemon, phcp.PokemonTeam, 0, 0, phcp.OldHPPercentage, phcp.NewHPPercentage);
+                        Player teamOwner = battlers[phcp.PokemonTeam.Id];
+                        teamOwner.Send(phcp);
+                        SendTo(Clients.Except(new[] { teamOwner }), hiddenId);
+                        foreach (Player player in Clients)
+                        {
+                            player.ResetEvent.WaitOne();
+                        }
+                        break;
+                    }
                 case PBEPkmnSwitchInPacket psip:
                     {
-                        var hiddenId = new PBEPkmnSwitchInPacket(psip.Team, psip.SwitchIns.Select(s => new PBEPkmnSwitchInPacket.PBESwitchInInfo(byte.MaxValue, byte.MaxValue, s.Species, s.Nickname, s.Level, s.Shiny, s.Gender, s.HP, s.MaxHP, s.Status1, s.FieldPosition)), psip.Forced);
+                        var hiddenId = new PBEPkmnSwitchInPacket(psip.Team, psip.SwitchIns.Select(s => new PBEPkmnSwitchInPacket.PBESwitchInInfo(byte.MaxValue, byte.MaxValue, s.Species, s.Nickname, s.Level, s.Shiny, s.Gender, 0, 0, s.HPPercentage, s.Status1, s.FieldPosition)), psip.Forced);
                         Player teamOwner = battlers[psip.Team.Id];
                         teamOwner.Send(psip);
                         SendTo(Clients.Except(new[] { teamOwner }), hiddenId);

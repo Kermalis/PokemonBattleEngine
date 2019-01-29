@@ -1015,7 +1015,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ActiveBattlers.Remove(pkmn);
                 PBEFieldPosition oldPos = pkmn.FieldPosition;
                 pkmn.FieldPosition = PBEFieldPosition.None;
-                BroadcastPkmnFainted(pkmn.Id, oldPos, pkmn.Team);
+                BroadcastPkmnFainted(pkmn, oldPos);
                 return true;
             }
             return false;
@@ -1308,10 +1308,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     pkmn.VisualNickname = last.Shell.Nickname;
                     pkmn.VisualShiny = last.Shell.Shiny;
                     pkmn.VisualSpecies = last.Shell.Species;
-                    return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.Shell.Species, last.Shell.Nickname, pkmn.Shell.Level, last.Shell.Shiny, last.Shell.Gender, pkmn.HP, pkmn.MaxHP, pkmn.Status1, pkmn.FieldPosition);
+                    return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.Shell.Species, last.Shell.Nickname, pkmn.Shell.Level, last.Shell.Shiny, last.Shell.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
                 }
             }
-            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Shell.Species, pkmn.Shell.Nickname, pkmn.Shell.Level, pkmn.Shell.Shiny, pkmn.Shell.Gender, pkmn.HP, pkmn.MaxHP, pkmn.Status1, pkmn.FieldPosition);
+            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Shell.Species, pkmn.Shell.Nickname, pkmn.Shell.Level, pkmn.Shell.Shiny, pkmn.Shell.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
         }
         // Switches in all Pokémon in PBETeam.SwitchInQueue
         // Sets BattleState to PBEBattleState.Processing
@@ -1335,7 +1335,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             pkmnLeaving.ClearForSwitch();
             turnOrder.Remove(pkmnLeaving); // Necessary?
             ActiveBattlers.Remove(pkmnLeaving);
-            BroadcastPkmnSwitchOut(pkmnLeaving.Id, pos, pkmnLeaving.Team, forced);
+            BroadcastPkmnSwitchOut(pkmnLeaving, pos, forced);
             pkmnComing.FieldPosition = pos;
             ActiveBattlers.Add(pkmnComing);
             BroadcastPkmnSwitchIn(pkmnComing.Team, new[] { CreateSwitchInInfo(pkmnComing) }, forced);

@@ -91,14 +91,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                 if (currentPacket != receivedPackets.Count - 1)
                 {
                     currentPacket++;
-                    try
-                    {
-                        runImmediately = ProcessPacket(receivedPackets[currentPacket]);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                    }
+                    runImmediately = ProcessPacket(receivedPackets[currentPacket]);
                 }
             } while (runImmediately);
         }
@@ -476,10 +469,21 @@ namespace Kermalis.PokemonBattleEngineMobile
                 case PBEPkmnHPChangedPacket phcp:
                     {
                         PBEPokemon pokemon = phcp.PokemonTeam.TryGetPokemon(phcp.Pokemon);
-                        pokemon.HP = (ushort)(pokemon.HP + phcp.Change);
+                        pokemon.HP = phcp.NewHP;
+                        pokemon.HPPercentage = phcp.NewHPPercentage;
                         BattleView.Field.UpdatePokemon(pokemon);
-                        int hp = Math.Abs(phcp.Change);
-                        BattleView.AddMessage(string.Format("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon, true), phcp.Change <= 0 ? "lost" : "gained", hp, (double)hp / pokemon.MaxHP), true, true);
+                        int change = phcp.NewHP - phcp.OldHP;
+                        int absChange = Math.Abs(change);
+                        double percentageChange = phcp.NewHPPercentage - phcp.OldHPPercentage;
+                        double absPercentageChange = Math.Abs(percentageChange);
+                        if (pokemon.Id == byte.MaxValue)
+                        {
+                            BattleView.AddMessage(string.Format("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon, true), percentageChange <= 0 ? "lost" : "restored", absPercentageChange), true, true);
+                        }
+                        else
+                        {
+                            BattleView.AddMessage(string.Format("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon, true), change <= 0 ? "lost" : "restored", absChange, absPercentageChange), true, true);
+                        }
                         break;
                     }
                 case PBEPkmnStatChangedPacket pscp:

@@ -194,6 +194,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         public ushort MaxHP { get; set; }
         /// <summary>
+        /// The Pokémon's current HP as a percentage.
+        /// </summary>
+        public double HPPercentage { get; set; }
+        /// <summary>
         /// The Pokémon's attack stat.
         /// </summary>
         public ushort Attack { get; set; }
@@ -301,6 +305,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             Item = Shell.Item;
             CalculateStats();
             HP = MaxHP;
+            HPPercentage = 1.0;
             Moves = Shell.Moves;
             PP = new byte[Moves.Length];
             MaxPP = new byte[Moves.Length];
@@ -349,6 +354,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             FieldPosition = info.FieldPosition;
             HP = info.HP;
             MaxHP = info.MaxHP;
+            HPPercentage = info.HPPercentage;
             Status1 = info.Status1;
             PBEPokemonData pData = PBEPokemonData.Data[Shell.Species];
             Type1 = pData.Type1;
@@ -399,6 +405,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             if (Ability == PBEAbility.Regenerator)
             {
                 HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
+                HPPercentage = (double)HP / MaxHP;
             }
             Ability = Shell.Ability;
             VisualGender = Shell.Gender;
@@ -635,7 +642,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             var sb = new StringBuilder();
             sb.AppendLine($"{Shell.Nickname}/{Shell.Species} {GenderSymbol} Lv.{Shell.Level}");
-            sb.AppendLine($"HP: {HP}/{MaxHP} ({(double)HP / MaxHP:P2})");
+            if (Id == byte.MaxValue)
+            {
+                sb.AppendLine($"HP: {HPPercentage:P2}");
+            }
+            else
+            {
+                sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
+            }
             sb.AppendLine($"Position: {FieldPosition}");
             sb.AppendLine($"Type1: {Type1}");
             sb.AppendLine($"Type2: {Type2}");
