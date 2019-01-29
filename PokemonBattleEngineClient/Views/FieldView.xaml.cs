@@ -165,10 +165,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     case PBEBattleFormat.Double:
                         {
                             this.FindControl<HPBarView>("Bar0_Left").Location = new Point(101, 35);
-                            this.FindControl<HPBarView>("Bar0_Right").Location = new Point(411, 35);
+                            this.FindControl<HPBarView>("Bar0_Right").Location = new Point(307, 35);
 
                             this.FindControl<HPBarView>("Bar1_Right").Location = new Point(101, 6);
-                            this.FindControl<HPBarView>("Bar1_Left").Location = new Point(411, 6);
+                            this.FindControl<HPBarView>("Bar1_Left").Location = new Point(307, 6);
 
                             this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-37, 43);
                             this.FindControl<PokemonView>("Battler0_Right").Location = new Point(168, 54);

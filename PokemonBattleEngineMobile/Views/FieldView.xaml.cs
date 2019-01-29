@@ -121,10 +121,10 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
                     case PBEBattleFormat.Double:
                         {
                             Canvas.SetLocation(Bar0_Left, new Point(101, 35));
-                            Canvas.SetLocation(Bar0_Right, new Point(411, 35));
+                            Canvas.SetLocation(Bar0_Right, new Point(307, 35));
 
                             Canvas.SetLocation(Bar1_Right, new Point(101, 6));
-                            Canvas.SetLocation(Bar1_Left, new Point(411, 6));
+                            Canvas.SetLocation(Bar1_Left, new Point(307, 6));
 
                             Canvas.SetLocation(Battler0_Left, new Point(-37, 43));
                             Canvas.SetLocation(Battler0_Right, new Point(168, 54));
