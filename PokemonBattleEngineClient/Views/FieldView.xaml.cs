@@ -152,61 +152,69 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 switch (battleView.Client.Battle.BattleFormat)
                 {
                     case PBEBattleFormat.Single:
-                        this.FindControl<HPBarView>("Bar0_Center").Location = new Point(199, 35);
+                        {
+                            this.FindControl<HPBarView>("Bar0_Center").Location = new Point(204, 35);
 
-                        this.FindControl<HPBarView>("Bar1_Center").Location = new Point(199, 6);
+                            this.FindControl<HPBarView>("Bar1_Center").Location = new Point(204, 6);
 
-                        this.FindControl<PokemonView>("Battler0_Center").Location = new Point(75, 53);
+                            this.FindControl<PokemonView>("Battler0_Center").Location = new Point(75, 53);
 
-                        this.FindControl<PokemonView>("Battler1_Center").Location = new Point(284, 8);
-                        break;
+                            this.FindControl<PokemonView>("Battler1_Center").Location = new Point(284, 8);
+                            break;
+                        }
                     case PBEBattleFormat.Double:
-                        this.FindControl<HPBarView>("Bar0_Left").Location = new Point(93, 35);
-                        this.FindControl<HPBarView>("Bar0_Right").Location = new Point(305, 35);
+                        {
+                            this.FindControl<HPBarView>("Bar0_Left").Location = new Point(101, 35);
+                            this.FindControl<HPBarView>("Bar0_Right").Location = new Point(411, 35);
 
-                        this.FindControl<HPBarView>("Bar1_Right").Location = new Point(93, 6);
-                        this.FindControl<HPBarView>("Bar1_Left").Location = new Point(305, 6);
+                            this.FindControl<HPBarView>("Bar1_Right").Location = new Point(101, 6);
+                            this.FindControl<HPBarView>("Bar1_Left").Location = new Point(411, 6);
 
-                        this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-37, 43);
-                        this.FindControl<PokemonView>("Battler0_Right").Location = new Point(168, 54);
+                            this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-37, 43);
+                            this.FindControl<PokemonView>("Battler0_Right").Location = new Point(168, 54);
 
-                        this.FindControl<PokemonView>("Battler1_Right").Location = new Point(242, 9);
-                        this.FindControl<PokemonView>("Battler1_Left").Location = new Point(332, 15);
-                        break;
+                            this.FindControl<PokemonView>("Battler1_Right").Location = new Point(242, 9);
+                            this.FindControl<PokemonView>("Battler1_Left").Location = new Point(332, 15);
+                            break;
+                        }
                     case PBEBattleFormat.Triple:
-                        this.FindControl<HPBarView>("Bar0_Left").Location = new Point(40, 35);
-                        this.FindControl<HPBarView>("Bar0_Center").Location = new Point(199, 35);
-                        this.FindControl<HPBarView>("Bar0_Right").Location = new Point(358, 35);
+                        {
+                            this.FindControl<HPBarView>("Bar0_Left").Location = new Point(50, 35);
+                            this.FindControl<HPBarView>("Bar0_Center").Location = new Point(204, 35);
+                            this.FindControl<HPBarView>("Bar0_Right").Location = new Point(358, 35);
 
-                        this.FindControl<HPBarView>("Bar1_Right").Location = new Point(40, 6);
-                        this.FindControl<HPBarView>("Bar1_Center").Location = new Point(199, 6);
-                        this.FindControl<HPBarView>("Bar1_Left").Location = new Point(358, 6);
+                            this.FindControl<HPBarView>("Bar1_Right").Location = new Point(50, 6);
+                            this.FindControl<HPBarView>("Bar1_Center").Location = new Point(204, 6);
+                            this.FindControl<HPBarView>("Bar1_Left").Location = new Point(358, 6);
 
-                        this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-53, 51);
-                        this.FindControl<PokemonView>("Battler0_Center").Location = new Point(92, 31);
-                        this.FindControl<PokemonView>("Battler0_Right").Location = new Point(221, 76);
+                            this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-53, 51);
+                            this.FindControl<PokemonView>("Battler0_Center").Location = new Point(92, 31);
+                            this.FindControl<PokemonView>("Battler0_Right").Location = new Point(221, 76);
 
-                        this.FindControl<PokemonView>("Battler1_Right").Location = new Point(209, -1);
-                        this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
-                        this.FindControl<PokemonView>("Battler1_Left").Location = new Point(362, 8);
-                        break;
+                            this.FindControl<PokemonView>("Battler1_Right").Location = new Point(209, -1);
+                            this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
+                            this.FindControl<PokemonView>("Battler1_Left").Location = new Point(362, 8);
+                            break;
+                        }
                     case PBEBattleFormat.Rotation:
-                        this.FindControl<HPBarView>("Bar0_Left").Location = new Point(40, 35);
-                        this.FindControl<HPBarView>("Bar0_Center").Location = new Point(199, 35);
-                        this.FindControl<HPBarView>("Bar0_Right").Location = new Point(358, 35);
+                        {
+                            this.FindControl<HPBarView>("Bar0_Left").Location = new Point(50, 35);
+                            this.FindControl<HPBarView>("Bar0_Center").Location = new Point(204, 35);
+                            this.FindControl<HPBarView>("Bar0_Right").Location = new Point(358, 35);
 
-                        this.FindControl<HPBarView>("Bar1_Right").Location = new Point(40, 6);
-                        this.FindControl<HPBarView>("Bar1_Center").Location = new Point(199, 6);
-                        this.FindControl<HPBarView>("Bar1_Left").Location = new Point(358, 6);
+                            this.FindControl<HPBarView>("Bar1_Right").Location = new Point(50, 6);
+                            this.FindControl<HPBarView>("Bar1_Center").Location = new Point(204, 6);
+                            this.FindControl<HPBarView>("Bar1_Left").Location = new Point(358, 6);
 
-                        this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-46, 384); // Hidden
-                        this.FindControl<PokemonView>("Battler0_Center").Location = new Point(52, 72);
-                        this.FindControl<PokemonView>("Battler0_Right").Location = new Point(228, 384); // Hidden
+                            this.FindControl<PokemonView>("Battler0_Left").Location = new Point(-46, 384); // Hidden
+                            this.FindControl<PokemonView>("Battler0_Center").Location = new Point(52, 72);
+                            this.FindControl<PokemonView>("Battler0_Right").Location = new Point(228, 384); // Hidden
 
-                        this.FindControl<PokemonView>("Battler1_Right").Location = new Point(211, -34);
-                        this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
-                        this.FindControl<PokemonView>("Battler1_Left").Location = new Point(421, -24);
-                        break;
+                            this.FindControl<PokemonView>("Battler1_Right").Location = new Point(211, -34);
+                            this.FindControl<PokemonView>("Battler1_Center").Location = new Point(282, 16);
+                            this.FindControl<PokemonView>("Battler1_Left").Location = new Point(421, -24);
+                            break;
+                        }
                     default: throw new ArgumentOutOfRangeException(nameof(battleView.Client.Battle.BattleFormat));
                 }
 
