@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using Avalonia.Controls.Platform.Surfaces;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.PokemonBattleEngine.Data;
@@ -69,12 +68,6 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             BattleLevel,
             BattleHP,
             MAX,
-        }
-        private class WbFb : IFramebufferPlatformSurface
-        {
-            WriteableBitmap _bitmap;
-            public WbFb(WriteableBitmap bmp) => _bitmap = bmp;
-            public ILockedFramebuffer Lock() => _bitmap.Lock();
         }
         static readonly ConcurrentDictionary<string, Bitmap> loadedBitmaps = new ConcurrentDictionary<string, Bitmap>();
         public static Bitmap RenderString(string str, StringRenderStyle style)
@@ -159,36 +152,34 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
             // Draw the string
             var wb = new WriteableBitmap(new PixelSize(stringWidth, stringHeight), new Vector(96, 96), PixelFormat.Bgra8888);
-            using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WbFb(wb) }))
+            using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
+            using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
             {
-                using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
+                double x = 0, y = 0;
+                index = 0;
+                while (index < str.Length)
                 {
-                    double x = 0, y = 0;
-                    index = 0;
-                    while (index < str.Length)
+                    if (str[index] == ' ')
                     {
-                        if (str[index] == ' ')
-                        {
-                            index++;
-                            x += spaceWidth;
-                        }
-                        else if (str[index] == '\r')
-                        {
-                            index++;
-                            continue;
-                        }
-                        else if (str[index] == '\n')
-                        {
-                            index++;
-                            y += charHeight + 1;
-                            x = 0;
-                        }
-                        else
-                        {
-                            Bitmap bmp = loadedBitmaps[GetCharKey()];
-                            ctx.DrawImage(bmp.PlatformImpl, 1, new Rect(0, 0, bmp.PixelSize.Width, charHeight), new Rect(x, y, bmp.PixelSize.Width, charHeight));
-                            x += bmp.PixelSize.Width;
-                        }
+                        index++;
+                        x += spaceWidth;
+                    }
+                    else if (str[index] == '\r')
+                    {
+                        index++;
+                        continue;
+                    }
+                    else if (str[index] == '\n')
+                    {
+                        index++;
+                        y += charHeight + 1;
+                        x = 0;
+                    }
+                    else
+                    {
+                        Bitmap bmp = loadedBitmaps[GetCharKey()];
+                        ctx.DrawImage(bmp.PlatformImpl, 1.0, new Rect(0, 0, bmp.PixelSize.Width, charHeight), new Rect(x, y, bmp.PixelSize.Width, charHeight));
+                        x += bmp.PixelSize.Width;
                     }
                 }
             }
@@ -252,12 +243,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 var bmp = new Bitmap(file);
                 var wb = new WriteableBitmap(bmp.PixelSize, new Vector(96, 96), PixelFormat.Bgra8888);
                 using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WbFb(wb) }))
+                using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
                 {
-                    using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
-                    {
-                        var rect = new Rect(0, 0, bmp.PixelSize.Width, bmp.PixelSize.Height);
-                        ctx.DrawImage(bmp.PlatformImpl, 1, rect, rect);
-                    }
+                    var rect = new Rect(0, 0, bmp.PixelSize.Width, bmp.PixelSize.Height);
+                    ctx.DrawImage(bmp.PlatformImpl, 1.0, rect, rect);
                 }
                 using (ILockedFramebuffer l = wb.Lock())
                 {

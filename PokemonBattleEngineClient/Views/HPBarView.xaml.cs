@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using System;
@@ -15,16 +16,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        bool visible;
-        bool Visible
-        {
-            get => visible;
-            set
-            {
-                visible = value;
-                OnPropertyChanged(nameof(Visible));
-            }
-        }
         Point location;
         public Point Location
         {
@@ -35,120 +26,100 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Location));
             }
         }
-        string nickname;
-        string Nickname
-        {
-            get => nickname;
-            set
-            {
-                nickname = value;
-                OnPropertyChanged(nameof(Nickname));
-            }
-        }
-        string level;
-        string Level
-        {
-            get => level;
-            set
-            {
-                level = value;
-                OnPropertyChanged(nameof(Level));
-            }
-        }
-        ushort hp;
-        ushort HP
-        {
-            get => hp;
-            set
-            {
-                hp = value;
-                OnPropertyChanged(nameof(HP));
-            }
-        }
-        ushort maxHP;
-        ushort MaxHP
-        {
-            get => maxHP;
-            set
-            {
-                maxHP = value;
-                OnPropertyChanged(nameof(MaxHP));
-            }
-        }
-        IBitmap status;
-        IBitmap Status
-        {
-            get => status;
-            set
-            {
-                status = value;
-                OnPropertyChanged(nameof(Status));
-            }
-        }
-        IBrush hpColor;
-        IBrush HPColor
-        {
-            get => hpColor;
-            set
-            {
-                hpColor = value;
-                OnPropertyChanged(nameof(HPColor));
-            }
-        }
-        Point hpEndLocation;
-        Point HPEndLocation
-        {
-            get => hpEndLocation;
-            set
-            {
-                hpEndLocation = value;
-                OnPropertyChanged(nameof(HPEndLocation));
-            }
-        }
 
-        readonly SolidColorBrush green, yellow, red;
+        readonly SolidColorBrush greenSides, greenMid, yellowSides, yellowMid, redSides, redMid;
 
         public HPBarView()
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
 
-            green = new SolidColorBrush(Color.FromRgb(0, 255, 41));
-            yellow = new SolidColorBrush(Color.FromRgb(247, 181, 0));
-            red = new SolidColorBrush(Color.FromRgb(255, 49, 66));
+            greenSides = new SolidColorBrush(0xFF008C29);
+            greenMid = new SolidColorBrush(0xFF00FF4A);
+            yellowSides = new SolidColorBrush(0xFF9C6310);
+            yellowMid = new SolidColorBrush(0xFFF7B500);
+            redSides = new SolidColorBrush(0xFF942131);
+            redMid = new SolidColorBrush(0xFFFF3142);
         }
 
         public void Update(PBEPokemon pkmn)
         {
             if (pkmn == null || pkmn.FieldPosition == PBEFieldPosition.None)
             {
-                Visible = false;
+                IsVisible = false;
             }
             else
             {
-                Nickname = pkmn.VisualNickname;
-                PBEPokemon disguisedAs = pkmn.DisguisedAsPokemon ?? pkmn; // Don't use visual gender because of transform
-                Level = $"{(disguisedAs.Shell.Gender == PBEGender.Female ? "♀" : disguisedAs.Shell.Gender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Shell.Level}";
-                HP = pkmn.HP;
-                MaxHP = pkmn.MaxHP;
-                Status = pkmn.Status1 == PBEStatus1.None ? null : Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.STATUS1_{pkmn.Status1}.png?assembly=PokemonBattleEngineClient"));
+                var wb = new WriteableBitmap(new PixelSize(104, 27), new Vector(96, 96), PixelFormat.Bgra8888);
+                using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
+                using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
+                {
+                    ctx.FillRectangle(Brushes.Aqua, new Rect(0, 0, 104, 27));
+                    string bar;
+                    byte yOffset;
+                    if (pkmn.Id == byte.MaxValue)
+                    {
+                        bar = "resm:Kermalis.PokemonBattleEngineClient.MISC.HPBAR_Foe.png?assembly=PokemonBattleEngineClient";
+                        yOffset = 2;
+                    }
+                    else
+                    {
+                        bar = "resm:Kermalis.PokemonBattleEngineClient.MISC.HPBAR_Ally.png?assembly=PokemonBattleEngineClient";
+                        yOffset = 0;
+                    }
+                    Bitmap hpBar = Utils.UriToBitmap(new Uri(bar));
+                    ctx.DrawImage(hpBar.PlatformImpl, 1.0, new Rect(0, 0, hpBar.PixelSize.Width, hpBar.PixelSize.Height), new Rect(0, 11 + yOffset, hpBar.PixelSize.Width, hpBar.PixelSize.Height));
 
-                if (pkmn.HPPercentage <= 0.20)
-                {
-                    HPColor = red;
-                }
-                else if (pkmn.HPPercentage <= 0.50)
-                {
-                    HPColor = yellow;
-                }
-                else
-                {
-                    HPColor = green;
-                }
-                const byte lineX = 49, lineY = 14, lineW = 49;
-                HPEndLocation = new Point(pkmn.HPPercentage * lineW + lineX, lineY);
+                    Bitmap nickname = Utils.RenderString(pkmn.VisualNickname, Utils.StringRenderStyle.BattleName);
+                    ctx.DrawImage(nickname.PlatformImpl, 1.0, new Rect(0, 0, nickname.PixelSize.Width, nickname.PixelSize.Height), new Rect(72 - Math.Max(54, nickname.PixelSize.Width), yOffset, nickname.PixelSize.Width, nickname.PixelSize.Height));
 
-                Visible = true;
+                    PBEPokemon disguisedAs = pkmn.DisguisedAsPokemon ?? pkmn; // Don't use visual gender because of transform
+                    Bitmap level = Utils.RenderString($"{(disguisedAs.Shell.Gender == PBEGender.Female ? "♀" : disguisedAs.Shell.Gender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Shell.Level}", Utils.StringRenderStyle.BattleLevel);
+                    ctx.DrawImage(level.PlatformImpl, 1.0, new Rect(0, 0, level.PixelSize.Width, level.PixelSize.Height), new Rect(70, 1 + yOffset, level.PixelSize.Width, level.PixelSize.Height));
+
+                    if (pkmn.Status1 != PBEStatus1.None)
+                    {
+                        Bitmap status = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.STATUS1_{pkmn.Status1}.png?assembly=PokemonBattleEngineClient"));
+                        ctx.DrawImage(status.PlatformImpl, 1.0, new Rect(0, 0, status.PixelSize.Width, status.PixelSize.Height), new Rect(1, 11 + yOffset, status.PixelSize.Width, status.PixelSize.Height));
+                    }
+
+                    IBrush hpSides, hpMid;
+                    if (pkmn.HPPercentage <= 0.20)
+                    {
+                        hpSides = redSides;
+                        hpMid = redMid;
+                    }
+                    else if (pkmn.HPPercentage <= 0.50)
+                    {
+                        hpSides = yellowSides;
+                        hpMid = yellowMid;
+                    }
+                    else
+                    {
+                        hpSides = greenSides;
+                        hpMid = greenMid;
+                    }
+                    const byte lineW = 48;
+                    int theW = (int)(lineW * pkmn.HPPercentage);
+                    if (theW == 0 && pkmn.HPPercentage > 0)
+                    {
+                        theW = 1;
+                    }
+                    ctx.FillRectangle(hpSides, new Rect(38, 13 + yOffset, theW, 1));
+                    ctx.FillRectangle(hpMid, new Rect(38, 13 + yOffset + 1, theW, 1));
+                    ctx.FillRectangle(hpSides, new Rect(38, 13 + yOffset + 2, theW, 1));
+
+                    if (pkmn.Id != byte.MaxValue)
+                    {
+                        Bitmap hp = Utils.RenderString(pkmn.HP.ToString(), Utils.StringRenderStyle.BattleHP);
+                        ctx.DrawImage(hp.PlatformImpl, 1.0, new Rect(0, 0, hp.PixelSize.Width, hp.PixelSize.Height), new Rect(62 - hp.PixelSize.Width, 16 + yOffset, hp.PixelSize.Width, hp.PixelSize.Height));
+                        Bitmap maxHP = Utils.RenderString(pkmn.MaxHP.ToString(), Utils.StringRenderStyle.BattleHP);
+                        ctx.DrawImage(maxHP.PlatformImpl, 1.0, new Rect(0, 0, maxHP.PixelSize.Width, maxHP.PixelSize.Height), new Rect(70, 16 + yOffset, maxHP.PixelSize.Width, maxHP.PixelSize.Height));
+                    }
+                }
+                this.FindControl<Image>("Drawn").Source = wb;
+
+                IsVisible = true;
             }
         }
     }

@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
         {
             InitializeComponent();
             IsVisible = false;
-            Bar.Source = ImageSource.FromResource("Kermalis.PokemonBattleEngineMobile.MISC.HPBar.png");
+            Bar.Source = ImageSource.FromResource("Kermalis.PokemonBattleEngineMobile.MISC.HPBAR_Ally.png");
 
             green = Color.FromRgb(0, 255, 41);
             yellow = Color.FromRgb(247, 181, 0);
