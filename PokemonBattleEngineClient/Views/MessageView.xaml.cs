@@ -23,9 +23,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void AddMessage(string message)
         {
-            Bitmap bmp = Utils.RenderString(message, Utils.StringRenderStyle.MenuBlack);
             Dispatcher.UIThread.InvokeAsync(() =>
             {
+                Bitmap bmp = Utils.RenderString(message, Utils.StringRenderStyle.MenuBlack);
                 Messages.Add(bmp);
                 listBox.ScrollIntoView(bmp);
             });
