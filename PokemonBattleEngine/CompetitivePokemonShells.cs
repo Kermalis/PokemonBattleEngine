@@ -403,7 +403,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 0, 252, 0, 0, 4, 252 },
-            Moves = new PBEMove[] { PBEMove.IronTail, PBEMove.Return, PBEMove.SeedBomb, PBEMove.Protect }, // Tail Slap, Rock Blast, Bullet Seed, U-turn
+            Moves = new PBEMove[] { PBEMove.IronTail, PBEMove.Return, PBEMove.SeedBomb, PBEMove.Dig }, // Tail Slap, Rock Blast, Bullet Seed, U-turn
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Cobalion_VGC { get; } = new PBEPokemonShell
