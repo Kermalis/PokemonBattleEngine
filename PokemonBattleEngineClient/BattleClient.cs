@@ -224,10 +224,8 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEAbility.Mummy:
                                 switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Changed:
-                                        pokemon2.Ability = PBEAbility.Mummy;
-                                        message = "{1}'s Ability became {2}!";
-                                        break;
+                                    case PBEAbilityAction.Changed: message = "{0}'s Ability became {2}!"; break;
+                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break;
                                     default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                 }
                                 break;
