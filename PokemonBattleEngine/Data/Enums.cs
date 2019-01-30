@@ -2162,7 +2162,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         SwiftSwim = 33,
         Synchronize = 28, // TODO
-        TangledFeet = 77, // TODO
+        TangledFeet = 77,
         Technician = 101, // TODO
         Telepathy = 140, // TODO
         Teravolt = 164, // TODO

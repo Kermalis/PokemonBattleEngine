@@ -896,6 +896,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 1.1;
             }
+            if (target.Ability == PBEAbility.TangledFeet && target.Status2.HasFlag(PBEStatus2.Confused))
+            {
+                chance *= 0.5;
+            }
         roll:
             if (PBEUtils.RNG.ApplyChance((int)chance, 100))
             {
