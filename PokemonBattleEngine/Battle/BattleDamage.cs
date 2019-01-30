@@ -1013,7 +1013,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             damage = (ushort)(2 * user.Shell.Level / 5 + 2);
             damage = (ushort)(damage * a * basePower / d);
             damage /= 50;
-            return (ushort)(damage + 2);
+            damage += 2;
+            return (ushort)(damage * PBEUtils.RNG.Next(85, 101) / 100);
         }
     }
 }
