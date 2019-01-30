@@ -59,6 +59,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
 
         public void SetMessage(string message)
         {
+            // TODO: Remove this when the converter is there
             Device.BeginInvokeOnMainThread(() =>
             {
                 Message.Text = message;

@@ -5,9 +5,9 @@ using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
-    class PokemonInfo
+    public class PokemonInfo
     {
-        ReactiveCommand SelectPokemonCommand { get; }
+        public ReactiveCommand SelectPokemonCommand { get; }
 
         public PBEPokemon Pokemon { get; }
 

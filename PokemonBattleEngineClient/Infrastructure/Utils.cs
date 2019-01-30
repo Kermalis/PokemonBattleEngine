@@ -226,11 +226,9 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 var bmp = new Bitmap(file);
                 var wb = new WriteableBitmap(new PixelSize(bmp.PixelSize.Width, 11), new Vector(96, 96), PixelFormat.Bgra8888);
                 using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WbFb(wb) }))
+                using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
                 {
-                    using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
-                    {
-                        ctx.DrawImage(bmp.PlatformImpl, 1, new Rect(0, 0, bmp.PixelSize.Width, bmp.PixelSize.Height), new Rect(0, 1, bmp.PixelSize.Width, bmp.PixelSize.Height));
-                    }
+                    ctx.DrawImage(bmp.PlatformImpl, 1, new Rect(0, 0, bmp.PixelSize.Width, bmp.PixelSize.Height), new Rect(0, 1, bmp.PixelSize.Width, bmp.PixelSize.Height));
                 }
                 wb.Save(file);
             }

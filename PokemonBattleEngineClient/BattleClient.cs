@@ -15,7 +15,7 @@ using System.Timers;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
-    class BattleClient : NetClient
+    public class BattleClient : NetClient
     {
         readonly PBEPacketProcessor packetProcessor;
         public override IPacketProcessor PacketProcessor => packetProcessor;

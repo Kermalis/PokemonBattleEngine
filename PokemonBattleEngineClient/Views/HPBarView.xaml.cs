@@ -11,7 +11,7 @@ using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    class HPBarView : UserControl, INotifyPropertyChanged
+    public class HPBarView : UserControl, INotifyPropertyChanged
     {
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
@@ -33,6 +33,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
+            IsVisible = false;
 
             greenSides = new SolidColorBrush(0xFF008C29);
             greenMid = new SolidColorBrush(0xFF00FF4A);

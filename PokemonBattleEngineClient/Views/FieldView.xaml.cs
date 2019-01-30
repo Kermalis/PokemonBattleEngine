@@ -1,9 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using AvaloniaGif;
 using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
@@ -12,7 +14,7 @@ using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    class FieldView : UserControl, INotifyPropertyChanged
+    public class FieldView : UserControl, INotifyPropertyChanged
     {
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
@@ -20,45 +22,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         IBitmap BGSource { get; set; }
         string Message { get; set; }
         bool MessageBoxVisible { get; set; }
-        IBrush weatherDim;
-        IBrush WeatherDim
-        {
-            get => weatherDim;
-            set
-            {
-                weatherDim = value;
-                OnPropertyChanged(nameof(WeatherDim));
-            }
-        }
-        Uri weatherGif;
-        Uri WeatherGif
-        {
-            get => weatherGif; set
-            {
-                weatherGif = value;
-                OnPropertyChanged(nameof(WeatherGif));
-            }
-        }
-        bool weatherDimVisible;
-        bool WeatherDimVisible
-        {
-            get => weatherDimVisible;
-            set
-            {
-                weatherDimVisible = value;
-                OnPropertyChanged(nameof(WeatherDimVisible));
-            }
-        }
-        bool weatherGifVisible;
-        bool WeatherGifVisible
-        {
-            get => weatherGifVisible;
-            set
-            {
-                weatherGifVisible = value;
-                OnPropertyChanged(nameof(WeatherGifVisible));
-            }
-        }
 
         BattleView battleView;
         readonly IBrush hailstormDim, harshSunlightDim, rainDim, sandstormDim;
@@ -118,31 +81,36 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void UpdateWeather()
         {
-            Uri uri = new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.WEATHER_{battleView.Client.Battle.Weather}.gif?assembly=PokemonBattleEngineClient");
-            switch (battleView.Client.Battle.Weather)
+            Dispatcher.UIThread.InvokeAsync(() =>
             {
-                case PBEWeather.Hailstorm:
-                    WeatherDim = hailstormDim;
-                    WeatherGif = uri;
-                    WeatherDimVisible = WeatherGifVisible = true;
-                    break;
-                case PBEWeather.HarshSunlight:
-                    WeatherDim = harshSunlightDim;
-                    WeatherDimVisible = true;
-                    WeatherGifVisible = false;
-                    break;
-                case PBEWeather.Rain:
-                    WeatherDim = rainDim;
-                    WeatherGif = uri;
-                    WeatherDimVisible = WeatherGifVisible = true;
-                    break;
-                case PBEWeather.Sandstorm:
-                    WeatherDim = sandstormDim;
-                    WeatherDimVisible = true;
-                    WeatherGifVisible = false;
-                    break;
-                default: WeatherDimVisible = WeatherGifVisible = false; break;
-            }
+                Rectangle dim = this.FindControl<Rectangle>("WeatherDim");
+                Image gif = this.FindControl<Image>("WeatherGif");
+                Uri uri = new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.WEATHER_{battleView.Client.Battle.Weather}.gif?assembly=PokemonBattleEngineClient");
+                switch (battleView.Client.Battle.Weather)
+                {
+                    case PBEWeather.Hailstorm:
+                        dim.Fill = hailstormDim;
+                        GifImage.SetSourceUri(gif, uri);
+                        dim.IsVisible = gif.IsVisible = true;
+                        break;
+                    case PBEWeather.HarshSunlight:
+                        dim.Fill = harshSunlightDim;
+                        dim.IsVisible = true;
+                        gif.IsVisible = false;
+                        break;
+                    case PBEWeather.Rain:
+                        dim.Fill = rainDim;
+                        GifImage.SetSourceUri(gif, uri);
+                        dim.IsVisible = gif.IsVisible = true;
+                        break;
+                    case PBEWeather.Sandstorm:
+                        dim.Fill = sandstormDim;
+                        dim.IsVisible = true;
+                        gif.IsVisible = false;
+                        break;
+                    default: dim.IsVisible = gif.IsVisible = false; break;
+                }
+            });
         }
         // pkmn.FieldPosition must be updated before calling this
         public void UpdatePokemon(PBEPokemon pkmn, PBEFieldPosition oldPosition = PBEFieldPosition.None)

@@ -9,31 +9,31 @@
       <ImageBrush Source="{Binding BGSource}"/>
     </Canvas.Background>
 
-    <Rectangle Width="512" Height="384" Fill="{Binding WeatherDim}" IsVisible="{Binding WeatherDimVisible}" ZIndex="3" IsHitTestVisible="false"/>
-    <Image gif:GifImage.SourceUri="{Binding WeatherGif}" IsVisible="{Binding WeatherGifVisible}" ZIndex="2" IsHitTestVisible="false"/>
+    <view:PokemonView Name="Battler1_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler1_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler1_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler0_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler0_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:PokemonView Name="Battler0_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
 
-    <view:HPBarView Name="Bar0_Left" ZIndex="4" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:PokemonView Name="Battler0_Left" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:HPBarView Name="Bar0_Center" ZIndex="4" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:PokemonView Name="Battler0_Center" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:HPBarView Name="Bar0_Right" ZIndex="4" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:PokemonView Name="Battler0_Right" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <Image Name="WeatherGif" IsHitTestVisible="false"/>
+    <Rectangle Name="WeatherDim" Width="512" Height="384" IsHitTestVisible="false"/>
 
-    <view:HPBarView Name="Bar1_Right" ZIndex="4" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:PokemonView Name="Battler1_Right" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:HPBarView Name="Bar1_Center" ZIndex="4" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:PokemonView Name="Battler1_Center" ZIndex="1" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:HPBarView Name="Bar1_Left" ZIndex="4" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <view:PokemonView Name="Battler1_Left" ZIndex="0" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar0_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar0_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar0_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar1_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar1_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <view:HPBarView Name="Bar1_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
 
-    <Line StartPoint="0,335" EndPoint="512,335" Stroke="#C3000000" IsVisible="{Binding MessageBoxVisible}" ZIndex="4" IsHitTestVisible="false"/>
-    <Line StartPoint="0,336" EndPoint="512,336" Stroke="#35000000" IsVisible="{Binding MessageBoxVisible}" ZIndex="4" IsHitTestVisible="false"/>
-    <Line StartPoint="0,337" EndPoint="512,337" Stroke="#7C000000" IsVisible="{Binding MessageBoxVisible}" ZIndex="4" IsHitTestVisible="false"/>
-    <Rectangle Width="512" Height="36" Canvas.Left="0" Canvas.Top="338" Fill="#83000000" IsVisible="{Binding MessageBoxVisible}" ZIndex="4" IsHitTestVisible="false"/>
-    <Image Source="{Binding Message, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleWhite, Mode=OneWay}" Canvas.Left="16" Canvas.Top="340" IsVisible="{Binding MessageBoxVisible}" ZIndex="5" IsHitTestVisible="false"/>
-    <Line StartPoint="0,375" EndPoint="512,375" Stroke="#7C000000" IsVisible="{Binding MessageBoxVisible}" ZIndex="4" IsHitTestVisible="false"/>
-    <Line StartPoint="0,376" EndPoint="512,376" Stroke="#35000000" IsVisible="{Binding MessageBoxVisible}" ZIndex="4" IsHitTestVisible="false"/>
-    <Line StartPoint="0,377" EndPoint="512,377" Stroke="#C3000000" IsVisible="{Binding MessageBoxVisible}" ZIndex="4" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="336" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="337" Fill="#5A000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="338" Fill="#76000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="36" Canvas.Left="0" Canvas.Top="339" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="375" Fill="#76000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="376" Fill="#5A000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="377" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Image Source="{Binding Message, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleWhite, Mode=OneWay}" Canvas.Left="16" Canvas.Top="341" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
 
   </Canvas>
 </UserControl>

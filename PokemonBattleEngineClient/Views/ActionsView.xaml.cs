@@ -11,13 +11,13 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
     // If you dislike spaghetti code please close this file unless I told you otherwise
-    class ActionsView : UserControl, INotifyPropertyChanged
+    public class ActionsView : UserControl, INotifyPropertyChanged
     {
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
 
         PBEPokemon targetAllyLeft;
-        PBEPokemon TargetAllyLeft
+        public PBEPokemon TargetAllyLeft
         {
             get => targetAllyLeft;
             set
@@ -27,7 +27,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetAllyLeftEnabled;
-        bool TargetAllyLeftEnabled
+        public bool TargetAllyLeftEnabled
         {
             get => targetAllyLeftEnabled;
             set
@@ -37,7 +37,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         PBEPokemon targetAllyCenter;
-        PBEPokemon TargetAllyCenter
+        public PBEPokemon TargetAllyCenter
         {
             get => targetAllyCenter;
             set
@@ -47,7 +47,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetAllyCenterEnabled;
-        bool TargetAllyCenterEnabled
+        public bool TargetAllyCenterEnabled
         {
             get => targetAllyCenterEnabled;
             set
@@ -57,7 +57,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         PBEPokemon targetAllyRight;
-        PBEPokemon TargetAllyRight
+        public PBEPokemon TargetAllyRight
         {
             get => targetAllyRight;
             set
@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetAllyRightEnabled;
-        bool TargetAllyRightEnabled
+        public bool TargetAllyRightEnabled
         {
             get => targetAllyRightEnabled;
             set
@@ -77,7 +77,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         PBEPokemon targetFoeLeft;
-        PBEPokemon TargetFoeLeft
+        public PBEPokemon TargetFoeLeft
         {
             get => targetFoeLeft;
             set
@@ -87,7 +87,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetFoeLeftEnabled;
-        bool TargetFoeLeftEnabled
+        public bool TargetFoeLeftEnabled
         {
             get => targetFoeLeftEnabled;
             set
@@ -97,7 +97,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         PBEPokemon targetFoeCenter;
-        PBEPokemon TargetFoeCenter
+        public PBEPokemon TargetFoeCenter
         {
             get => targetFoeCenter;
             set
@@ -107,7 +107,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetFoeCenterEnabled;
-        bool TargetFoeCenterEnabled
+        public bool TargetFoeCenterEnabled
         {
             get => targetFoeCenterEnabled;
             set
@@ -117,7 +117,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         PBEPokemon targetFoeRight;
-        PBEPokemon TargetFoeRight
+        public PBEPokemon TargetFoeRight
         {
             get => targetFoeRight;
             set
@@ -127,7 +127,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetFoeRightEnabled;
-        bool TargetFoeRightEnabled
+        public bool TargetFoeRightEnabled
         {
             get => targetFoeRightEnabled;
             set
@@ -138,7 +138,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         bool centerTargetsVisible;
-        bool CenterTargetsVisible
+        public bool CenterTargetsVisible
         {
             get => centerTargetsVisible;
             set
@@ -148,7 +148,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         double leftX;
-        double LeftX
+        public double LeftX
         {
             get => leftX;
             set
@@ -158,7 +158,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         double rightX;
-        double RightX
+        public double RightX
         {
             get => rightX;
             set
@@ -168,7 +168,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         double leftLineX;
-        double LeftLineX
+        public double LeftLineX
         {
             get => leftLineX;
             set
@@ -178,7 +178,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         double centerLineX;
-        double CenterLineX
+        public double CenterLineX
         {
             get => centerLineX;
             set
@@ -188,7 +188,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         double rightLineX;
-        double RightLineX
+        public double RightLineX
         {
             get => rightLineX;
             set
@@ -199,7 +199,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         bool targetLineFoeLeftFoeCenterEnabled;
-        bool TargetLineFoeLeftFoeCenterEnabled
+        public bool TargetLineFoeLeftFoeCenterEnabled
         {
             get => targetLineFoeLeftFoeCenterEnabled;
             set
@@ -209,7 +209,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetLineFoeLeftAllyRightEnabled;
-        bool TargetLineFoeLeftAllyRightEnabled
+        public bool TargetLineFoeLeftAllyRightEnabled
         {
             get => targetLineFoeLeftAllyRightEnabled;
             set
@@ -219,7 +219,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetLineFoeCenterAllyCenterEnabled;
-        bool TargetLineFoeCenterAllyCenterEnabled
+        public bool TargetLineFoeCenterAllyCenterEnabled
         {
             get => targetLineFoeCenterAllyCenterEnabled;
             set
@@ -229,7 +229,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetLineFoeRightFoeCenterEnabled;
-        bool TargetLineFoeRightFoeCenterEnabled
+        public bool TargetLineFoeRightFoeCenterEnabled
         {
             get => targetLineFoeRightFoeCenterEnabled;
             set
@@ -239,7 +239,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetLineFoeRightAllyLeftEnabled;
-        bool TargetLineFoeRightAllyLeftEnabled
+        public bool TargetLineFoeRightAllyLeftEnabled
         {
             get => targetLineFoeRightAllyLeftEnabled;
             set
@@ -249,7 +249,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetLineAllyLeftAllyCenterEnabled;
-        bool TargetLineAllyLeftAllyCenterEnabled
+        public bool TargetLineAllyLeftAllyCenterEnabled
         {
             get => targetLineAllyLeftAllyCenterEnabled;
             set
@@ -259,7 +259,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool targetLineAllyRightAllyCenterEnabled;
-        bool TargetLineAllyRightAllyCenterEnabled
+        public bool TargetLineAllyRightAllyCenterEnabled
         {
             get => targetLineAllyRightAllyCenterEnabled;
             set
@@ -270,7 +270,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         bool leftPositionEnabled;
-        bool LeftPositionEnabled
+        public bool LeftPositionEnabled
         {
             get => leftPositionEnabled;
             set
@@ -280,7 +280,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool centerPositionEnabled;
-        bool CenterPositionEnabled
+        public bool CenterPositionEnabled
         {
             get => centerPositionEnabled;
             set
@@ -290,7 +290,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool rightPositionEnabled;
-        bool RightPositionEnabled
+        public bool RightPositionEnabled
         {
             get => rightPositionEnabled;
             set
@@ -303,11 +303,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         PBETarget targetAllyLeftResult, targetAllyCenterResult, targetAllyRightResult,
             targetFoeLeftResult, targetFoeCenterResult, targetFoeRightResult;
 
-        ReactiveCommand SelectTargetCommand { get; }
-        ReactiveCommand SelectPositionCommand { get; }
+        public ReactiveCommand SelectTargetCommand { get; }
+        public ReactiveCommand SelectPositionCommand { get; }
 
         IEnumerable<MoveInfo> moves;
-        IEnumerable<MoveInfo> Moves
+        public IEnumerable<MoveInfo> Moves
         {
             get => moves;
             set
@@ -317,7 +317,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         IEnumerable<PokemonInfo> party;
-        IEnumerable<PokemonInfo> Party
+        public IEnumerable<PokemonInfo> Party
         {
             get => party;
             set
@@ -328,7 +328,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         bool targetsVisible;
-        bool TargetsVisible
+        public bool TargetsVisible
         {
             get => targetsVisible;
             set
@@ -338,7 +338,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool movesVisible;
-        bool MovesVisible
+        public bool MovesVisible
         {
             get => movesVisible;
             set
@@ -348,7 +348,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool switchesVisible;
-        bool SwitchesVisible
+        public bool SwitchesVisible
         {
             get => switchesVisible;
             set
@@ -358,7 +358,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         bool positionsVisible;
-        bool PositionsVisible
+        public bool PositionsVisible
         {
             get => positionsVisible;
             set

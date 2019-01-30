@@ -25,13 +25,13 @@
         <views:HPBarView x:Name="Bar1_Center" />
         <views:HPBarView x:Name="Bar1_Right" />
 
-        <BoxView Color="#C3000000" infrastructure:Canvas.Location="0,334" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
-        <BoxView Color="#35000000" infrastructure:Canvas.Location="0,335" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
-        <BoxView Color="#7C000000" infrastructure:Canvas.Location="0,336" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
-        <BoxView Color="#83000000" infrastructure:Canvas.Location="0,338" infrastructure:Canvas.Size="512,36" IsVisible="{Binding MessageBoxVisible}" />
-        <BoxView Color="#7C000000" infrastructure:Canvas.Location="0,375" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
-        <BoxView Color="#35000000" infrastructure:Canvas.Location="0,376" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
-        <BoxView Color="#C3000000" infrastructure:Canvas.Location="0,377" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
-        <Label x:Name="Message" TextColor="White" infrastructure:Canvas.Location="16,340" infrastructure:Canvas.Size="512,44" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#90000000" infrastructure:Canvas.Location="0,336" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#5A000000" infrastructure:Canvas.Location="0,337" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#76000000" infrastructure:Canvas.Location="0,338" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#90000000" infrastructure:Canvas.Location="0,339" infrastructure:Canvas.Size="512,36" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#76000000" infrastructure:Canvas.Location="0,375" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#5A000000" infrastructure:Canvas.Location="0,376" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <BoxView Color="#90000000" infrastructure:Canvas.Location="0,377" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
+        <Label x:Name="Message" TextColor="White" infrastructure:Canvas.Location="16,341" infrastructure:Canvas.Size="512,43" IsVisible="{Binding MessageBoxVisible}" />
     </infrastructure:Canvas>
 </ContentView>

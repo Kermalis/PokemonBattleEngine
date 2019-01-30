@@ -7,7 +7,7 @@ using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
-    class MoveInfo
+    public class MoveInfo
     {
         static Dictionary<PBEType, Tuple<SolidColorBrush, SolidColorBrush>> typeToBrush;
         public static void CreateBrushes()
@@ -37,12 +37,12 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             }
         }
 
-        ReactiveCommand SelectMoveCommand { get; }
+        public ReactiveCommand SelectMoveCommand { get; }
 
         public PBEMove Move { get; }
-        IBrush Brush { get; }
-        IBrush BorderBrush { get; }
-        string Description { get; }
+        public IBrush Brush { get; }
+        public IBrush BorderBrush { get; }
+        public string Description { get; }
 
         public MoveInfo(int i, PBEPokemon pkmn, Action<MoveInfo> clickAction)
         {

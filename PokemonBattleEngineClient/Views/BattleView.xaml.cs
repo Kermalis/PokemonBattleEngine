@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    class BattleView : UserControl
+    public class BattleView : UserControl
     {
         public FieldView Field { get; }
         public ActionsView Actions { get; }

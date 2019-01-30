@@ -16,13 +16,13 @@ using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
-    class MainWindow : Window, INotifyPropertyChanged
+    public class MainWindow : Window, INotifyPropertyChanged
     {
         void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         public new event PropertyChangedEventHandler PropertyChanged;
 
         Uri source;
-        Uri Source
+        public Uri Source
         {
             get => source; set
             {
@@ -35,9 +35,9 @@ namespace Kermalis.PokemonBattleEngineClient
         readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
         readonly IEnumerable<PBEItem> allItems = PBEItemLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
 
-        IEnumerable<PBESpecies> AvailableSpecies { get; } = PBEPokemonLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
+        public IEnumerable<PBESpecies> AvailableSpecies { get; } = PBEPokemonLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
         IEnumerable<PBEAbility> availableAbilities;
-        IEnumerable<PBEAbility> AvailableAbilities
+        public IEnumerable<PBEAbility> AvailableAbilities
         {
             get => availableAbilities;
             set
@@ -48,7 +48,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         IEnumerable<PBENature> Natures { get; } = Enum.GetValues(typeof(PBENature)).Cast<PBENature>().Except(new[] { PBENature.MAX });
         IEnumerable<PBEGender> availableGenders;
-        IEnumerable<PBEGender> AvailableGenders
+        public IEnumerable<PBEGender> AvailableGenders
         {
             get => availableGenders;
             set
@@ -58,7 +58,7 @@ namespace Kermalis.PokemonBattleEngineClient
             }
         }
         IEnumerable<PBEItem> availableItems;
-        IEnumerable<PBEItem> AvailableItems
+        public IEnumerable<PBEItem> AvailableItems
         {
             get => availableItems;
             set
@@ -67,11 +67,11 @@ namespace Kermalis.PokemonBattleEngineClient
                 OnPropertyChanged(nameof(AvailableItems));
             }
         }
-        IEnumerable<PBEMove> AvailableMoves { get; } = PBEMoveLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
+        public IEnumerable<PBEMove> AvailableMoves { get; } = PBEMoveLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
 
         PBEPokemonShell shell;
         Tuple<string, ObservableCollection<PBEPokemonShell>> team;
-        Tuple<string, ObservableCollection<PBEPokemonShell>> Team
+        public Tuple<string, ObservableCollection<PBEPokemonShell>> Team
         {
             get => team;
             set
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 OnPropertyChanged(nameof(Team));
             }
         }
-        ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>> Teams { get; } = new ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>>();
+        public ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>> Teams { get; } = new ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>>();
 
         readonly Subject<bool> addPartyEnabled, removePartyEnabled;
 
