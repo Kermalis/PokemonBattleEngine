@@ -1041,6 +1041,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.HP == 0)
             {
+                if (Winner == null && pkmn.Team.NumPkmnAlive == 0)
+                {
+                    Winner = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
+                }
                 turnOrder.Remove(pkmn); // Necessary?
                 ActiveBattlers.Remove(pkmn);
                 PBEFieldPosition oldPos = pkmn.FieldPosition;

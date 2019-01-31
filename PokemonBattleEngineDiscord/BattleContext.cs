@@ -50,11 +50,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
             switch (context.Battle.BattleState)
             {
                 case PBEBattleState.ReadyToRunTurn:
-                    context.Battle.RunTurn();
-                    break;
+                    {
+                        context.Battle.RunTurn();
+                        break;
+                    }
                 case PBEBattleState.Ended:
-                    ActiveBattles.Remove(context);
-                    break;
+                    {
+                        ActiveBattles.Remove(context);
+                        break;
+                    }
             }
         }
         static async Task Battle_OnNewEvent(BattleContext context, INetPacket packet)
@@ -125,6 +129,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 await context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                             }
                         }
+                        break;
+                    }
+                case PBEWinnerPacket win:
+                    {
+                        var embed = new EmbedBuilder()
+                            .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
+                            .WithTitle(embedTitle)
+                            .WithDescription(string.Format("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == context.Battle.Teams[0] ? context.Battle.Teams[1] : context.Battle.Teams[0]).TrainerName));
+                        await context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                         break;
                     }
                 case PBEActionsRequestPacket arp:

@@ -1042,6 +1042,12 @@ namespace Kermalis.PokemonBattleEngineClient
                         BattleView.AddMessage(string.Format(message, NameForTrainer(wp.DamageVictimTeam?.TryGetPokemon(wp.DamageVictim), true)), true, true);
                         break;
                     }
+                case PBEWinnerPacket win:
+                    {
+                        Battle.Winner = win.WinningTeam;
+                        BattleView.AddMessage(string.Format("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == Battle.Teams[0] ? Battle.Teams[1] : Battle.Teams[0]).TrainerName), true, true);
+                        break;
+                    }
                 case PBEActionsRequestPacket arp:
                     {
                         if (arp.Team.Id == Index)

@@ -46,36 +46,44 @@ namespace Kermalis.PokemonBattleEngine
                 switch (battle.BattleState)
                 {
                     case PBEBattleState.Ended:
-                        Console.SetOut(oldWriter);
-                        writer.Close();
-                        Console.WriteLine($"Test battle ended. \"{logFile}\" contains the battle.");
-                        Console.ReadKey();
-                        break;
+                        {
+                            Console.SetOut(oldWriter);
+                            writer.Close();
+                            Console.WriteLine($"Test battle ended. \"{logFile}\" contains the battle.");
+                            Console.ReadKey();
+                            break;
+                        }
                     case PBEBattleState.ReadyToRunTurn:
-                        foreach (PBETeam team in battle.Teams)
                         {
-                            Console.WriteLine();
-                            Console.WriteLine("{0}'s team:", team.TrainerName);
-                            foreach (PBEPokemon pkmn in team.ActiveBattlers)
+                            foreach (PBETeam team in battle.Teams)
                             {
-                                Console.WriteLine(pkmn);
                                 Console.WriteLine();
+                                Console.WriteLine("{0}'s team:", team.TrainerName);
+                                foreach (PBEPokemon pkmn in team.ActiveBattlers)
+                                {
+                                    Console.WriteLine(pkmn);
+                                    Console.WriteLine();
+                                }
                             }
+                            battle.RunTurn();
+                            break;
                         }
-                        battle.RunTurn();
-                        break;
                     case PBEBattleState.WaitingForActions:
-                        foreach (PBETeam team in battle.Teams)
                         {
-                            PBEBattle.SelectActionsIfValid(team, AIManager.CreateActions(team));
+                            foreach (PBETeam team in battle.Teams)
+                            {
+                                PBEBattle.SelectActionsIfValid(team, AIManager.CreateActions(team));
+                            }
+                            break;
                         }
-                        break;
                     case PBEBattleState.WaitingForSwitchIns:
-                        foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
                         {
-                            PBEBattle.SelectSwitchesIfValid(team, AIManager.CreateSwitches(team));
+                            foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
+                            {
+                                PBEBattle.SelectSwitchesIfValid(team, AIManager.CreateSwitches(team));
+                            }
+                            break;
                         }
-                        break;
                 }
             }
             catch (Exception e)

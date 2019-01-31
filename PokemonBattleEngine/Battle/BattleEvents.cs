@@ -71,6 +71,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBETransformPacket(user, target));
         void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon damageVictim = null)
             => OnNewEvent?.Invoke(this, new PBEWeatherPacket(weather, weatherAction, damageVictim));
+        void BroadcastWinner(PBETeam winningTeam)
+            => OnNewEvent?.Invoke(this, new PBEWinnerPacket(winningTeam));
         void BroadcastActionsRequest(PBETeam team)
             => OnNewEvent?.Invoke(this, new PBEActionsRequestPacket(team));
         void BroadcastSwitchInRequest(PBETeam team)
@@ -772,6 +774,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             default: throw new ArgumentOutOfRangeException(nameof(wp.Weather));
                         }
                         Console.WriteLine(message, NameForTrainer(wp.DamageVictimTeam?.TryGetPokemon(wp.DamageVictim)));
+                        break;
+                    }
+                case PBEWinnerPacket win:
+                    {
+                        Console.WriteLine("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == battle.Teams[0] ? battle.Teams[1] : battle.Teams[0]).TrainerName);
                         break;
                     }
                 case PBEActionsRequestPacket arp:

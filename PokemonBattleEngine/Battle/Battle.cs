@@ -86,6 +86,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public delegate void BattleStateChangedEvent(PBEBattle battle);
         public event BattleStateChangedEvent OnStateChanged;
         public PBEBattleState BattleState { get; private set; }
+        /// <summary>
+        /// The winner of the battle. Null if the battle is ongoing or the battle resulted in a draw.
+        /// </summary>
+        public PBETeam Winner { get; set; }
 
         public PBEBattleFormat BattleFormat { get; }
         public PBESettings Settings { get; }
@@ -429,6 +433,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Sets BattleState to PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches/PBEBattleState.Ended
         void TurnEnded()
         {
+            if (Winner != null)
+            {
+                BroadcastWinner(Winner);
+                BattleState = PBEBattleState.Ended;
+                OnStateChanged?.Invoke(this);
+                return;
+            }
+
             // Weather stops before doing damage
             if (WeatherCounter > 0)
             {
@@ -458,12 +470,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             foreach (PBETeam team in Teams)
             {
-                if (team.NumPkmnAlive == 0) // TODO: Figure out how wins are determined (tie exists?)
-                {
-                    BattleState = PBEBattleState.Ended;
-                    OnStateChanged?.Invoke(this);
-                    return;
-                }
                 if (team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
                 {
                     team.ReflectCount--;
@@ -512,48 +518,54 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (BattleFormat)
                 {
                     case PBEBattleFormat.Single:
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
                         {
-                            team.SwitchInsRequired = 1;
-                            nextState = PBEBattleState.WaitingForSwitchIns;
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
+                            {
+                                team.SwitchInsRequired = 1;
+                                nextState = PBEBattleState.WaitingForSwitchIns;
+                            }
+                            break;
                         }
-                        break;
                     case PBEBattleFormat.Double:
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
                         {
-                            available--;
-                            team.SwitchInsRequired++;
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
+                            {
+                                available--;
+                                team.SwitchInsRequired++;
+                            }
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
+                            {
+                                team.SwitchInsRequired++;
+                            }
+                            if (team.SwitchInsRequired > 0)
+                            {
+                                nextState = PBEBattleState.WaitingForSwitchIns;
+                            }
+                            break;
                         }
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
-                        {
-                            team.SwitchInsRequired++;
-                        }
-                        if (team.SwitchInsRequired > 0)
-                        {
-                            nextState = PBEBattleState.WaitingForSwitchIns;
-                        }
-                        break;
                     case PBEBattleFormat.Rotation:
                     case PBEBattleFormat.Triple:
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
                         {
-                            available--;
-                            team.SwitchInsRequired++;
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
+                            {
+                                available--;
+                                team.SwitchInsRequired++;
+                            }
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
+                            {
+                                available--;
+                                team.SwitchInsRequired++;
+                            }
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
+                            {
+                                team.SwitchInsRequired++;
+                            }
+                            if (team.SwitchInsRequired > 0)
+                            {
+                                nextState = PBEBattleState.WaitingForSwitchIns;
+                            }
+                            break;
                         }
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
-                        {
-                            available--;
-                            team.SwitchInsRequired++;
-                        }
-                        if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
-                        {
-                            team.SwitchInsRequired++;
-                        }
-                        if (team.SwitchInsRequired > 0)
-                        {
-                            nextState = PBEBattleState.WaitingForSwitchIns;
-                        }
-                        break;
                     default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
                 }
             }
