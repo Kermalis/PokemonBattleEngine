@@ -151,95 +151,119 @@ namespace Kermalis.PokemonBattleEngineMobile
                             case PBEAbility.Drought:
                             case PBEAbility.SandStream:
                             case PBEAbility.SnowWarning:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Weather: message = "{0}'s {2} activated!"; break; // Message is displayed from a weather packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Weather: message = "{0}'s {2} activated!"; break; // Message is displayed from a weather packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.Healer:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.CuredStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.CuredStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.IceBody:
                             case PBEAbility.RainDish:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.RestoredHP: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.RestoredHP: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.Illusion:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.ChangedAppearance: message = "{0}'s illusion wore off!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.ChangedAppearance: message = "{0}'s illusion wore off!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.Imposter:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a status2 packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a status2 packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.IronBarbs:
                             case PBEAbility.RoughSkin:
                             case PBEAbility.SolarPower:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.Levitate:
                             case PBEAbility.WonderGuard:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.Limber:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.CuredStatus: // Message is displayed from a status1 packet
-                                    case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.CuredStatus: // Message is displayed from a status1 packet
+                                        case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.LiquidOoze:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Damage: message = "{1} sucked up the liquid ooze!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Damage: message = "{1} sucked up the liquid ooze!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.Mummy:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Changed: message = "{0}'s Ability became {2}!"; break;
-                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Changed: message = "{0}'s Ability became {2}!"; break;
+                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.None:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEAbility.Sturdy:
-                                switch (ap.AbilityAction)
                                 {
-                                    case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a special message packet
-                                    default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a special message packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), NameForTrainer(pokemon2, true), PBEAbilityLocalization.Names[ap.Ability].FromUICultureInfo()), true, true);
@@ -251,14 +275,16 @@ namespace Kermalis.PokemonBattleEngineMobile
                         switch (bsp.BattleStatus)
                         {
                             case PBEBattleStatus.TrickRoom:
-                                switch (bsp.BattleStatusAction)
                                 {
-                                    case PBEBattleStatusAction.Added: message = "The dimensions were twisted!"; break;
-                                    case PBEBattleStatusAction.Cleared:
-                                    case PBEBattleStatusAction.Ended: message = "The twisted dimensions returned to normal!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(bsp.BattleStatusAction));
+                                    switch (bsp.BattleStatusAction)
+                                    {
+                                        case PBEBattleStatusAction.Added: message = "The dimensions were twisted!"; break;
+                                        case PBEBattleStatusAction.Cleared:
+                                        case PBEBattleStatusAction.Ended: message = "The twisted dimensions returned to normal!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(bsp.BattleStatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(bsp.BattleStatus));
                         }
                         BattleView.AddMessage(message, true, true);
@@ -289,12 +315,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                             pokemon2 = ip.Pokemon2Team.TryGetPokemon(ip.Pokemon2);
                         switch (ip.ItemAction)
                         {
-                            case PBEItemAction.Consumed:
-                                itemHolder.Item = PBEItem.None;
-                                break;
-                            default:
-                                itemHolder.Item = ip.Item;
-                                break;
+                            case PBEItemAction.Consumed: itemHolder.Item = PBEItem.None; break;
+                            default: itemHolder.Item = ip.Item; break;
                         }
                         bool itemHolderCaps = true,
                             pokemon2Caps = false;
@@ -318,76 +340,96 @@ namespace Kermalis.PokemonBattleEngineMobile
                             case PBEItem.RockGem:
                             case PBEItem.SteelGem:
                             case PBEItem.WaterGem:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.Consumed: message = "The {2} strengthened {0}'s power!"; itemHolderCaps = false; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.Consumed: message = "The {2} strengthened {0}'s power!"; itemHolderCaps = false; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEItem.BlackSludge:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.Damage: message = "{0} is hurt by its {2}!"; break;
-                                    case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.Damage: message = "{0} is hurt by its {2}!"; break;
+                                        case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its {2}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEItem.FlameOrb:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.ChangedStatus: message = "{0} was burned by its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.ChangedStatus: message = "{0} was burned by its {2}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEItem.FocusBand:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.Damage: message = "{0} hung on using its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.Damage: message = "{0} hung on using its {2}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEItem.FocusSash:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.Consumed: message = "{0} hung on using its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.Consumed: message = "{0} hung on using its {2}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEItem.Leftovers:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.RestoredHP: message = "{0} restored a little HP using its {2}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEItem.LifeOrb:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.Damage: message = "{0} is hurt by its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.Damage: message = "{0} is hurt by its {2}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEItem.PowerHerb:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.Consumed: message = "{0} became fully charged due to its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.Consumed: message = "{0} became fully charged due to its {2}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEItem.RockyHelmet:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.Damage: message = "{1} was hurt by the {2}!"; pokemon2Caps = true; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.Damage: message = "{1} was hurt by the {2}!"; pokemon2Caps = true; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEItem.ToxicOrb:
-                                switch (ip.ItemAction)
                                 {
-                                    case PBEItemAction.ChangedStatus: message = "{0} was badly poisoned by its {2}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.ChangedStatus: message = "{0} was badly poisoned by its {2}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(itemHolder, itemHolderCaps), NameForTrainer(pokemon2, pokemon2Caps), PBEItemLocalization.Names[ip.Item].FromUICultureInfo()), true, true);
@@ -400,6 +442,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                     }
                 case PBEMoveEffectivenessPacket mep:
                     {
+                        PBEPokemon victim = mep.VictimTeam.TryGetPokemon(mep.Victim);
                         string message;
                         switch (mep.Effectiveness)
                         {
@@ -409,11 +452,13 @@ namespace Kermalis.PokemonBattleEngineMobile
                             case PBEEffectiveness.SuperEffective: message = "It's super effective!"; break;
                             default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness));
                         }
-                        BattleView.AddMessage(string.Format(message, NameForTrainer(mep.VictimTeam.TryGetPokemon(mep.Victim), false)), true, true);
+                        BattleView.AddMessage(string.Format(message, NameForTrainer(victim, false)), true, true);
                         break;
                     }
                 case PBEMoveFailedPacket mfp:
                     {
+                        PBEPokemon moveUser = mfp.MoveUserTeam.TryGetPokemon(mfp.MoveUser),
+                            pokemon2 = mfp.Pokemon2Team.TryGetPokemon(mfp.Pokemon2);
                         string message;
                         switch (mfp.FailReason)
                         {
@@ -423,12 +468,14 @@ namespace Kermalis.PokemonBattleEngineMobile
                             case PBEFailReason.NoTarget: message = "There was no target..."; break;
                             default: throw new ArgumentOutOfRangeException(nameof(mfp.FailReason));
                         }
-                        BattleView.AddMessage(string.Format(message, NameForTrainer(mfp.MoveUserTeam.TryGetPokemon(mfp.MoveUser), true), NameForTrainer(mfp.Pokemon2Team.TryGetPokemon(mfp.Pokemon2), true)), true, true);
+                        BattleView.AddMessage(string.Format(message, NameForTrainer(moveUser, true), NameForTrainer(pokemon2, true)), true, true);
                         break;
                     }
                 case PBEMoveMissedPacket mmp:
                     {
-                        BattleView.AddMessage(string.Format("{0}'s attack missed {1}!", NameForTrainer(mmp.MoveUserTeam.TryGetPokemon(mmp.MoveUser), true), NameForTrainer(mmp.Pokemon2Team.TryGetPokemon(mmp.Pokemon2), false)), true, true);
+                        PBEPokemon moveUser = mmp.MoveUserTeam.TryGetPokemon(mmp.MoveUser),
+                            pokemon2 = mmp.Pokemon2Team.TryGetPokemon(mmp.Pokemon2);
+                        BattleView.AddMessage(string.Format("{0}'s attack missed {1}!", NameForTrainer(moveUser, true), NameForTrainer(pokemon2, false)), true, true);
                         break;
                     }
                 case PBEMovePPChangedPacket mpcp:
@@ -606,26 +653,40 @@ namespace Kermalis.PokemonBattleEngineMobile
                         switch (smp.Message)
                         {
                             case PBESpecialMessage.DraggedOut:
-                                message = string.Format("{0} was dragged out!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
-                                break;
+                                {
+                                    message = string.Format("{0} was dragged out!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
+                                    break;
+                                }
                             case PBESpecialMessage.Endure:
-                                message = string.Format("{0} endured the hit!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
-                                break;
+                                {
+                                    message = string.Format("{0} endured the hit!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
+                                    break;
+                                }
                             case PBESpecialMessage.HPDrained:
-                                message = string.Format("{0} had its energy drained!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
-                                break;
+                                {
+                                    message = string.Format("{0} had its energy drained!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
+                                    break;
+                                }
                             case PBESpecialMessage.Magnitude:
-                                message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
-                                break;
+                                {
+                                    message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
+                                    break;
+                                }
                             case PBESpecialMessage.PainSplit:
-                                message = string.Format("The battlers shared their pain!");
-                                break;
+                                {
+                                    message = "The battlers shared their pain!";
+                                    break;
+                                }
                             case PBESpecialMessage.Recoil:
-                                message = string.Format("{0} is damaged by recoil!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
-                                break;
+                                {
+                                    message = string.Format("{0} is damaged by recoil!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
+                                    break;
+                                }
                             case PBESpecialMessage.Struggle:
-                                message = string.Format("{0} has no moves left!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
-                                break;
+                                {
+                                    message = string.Format("{0} has no moves left!", NameForTrainer(((PBETeam)smp.Params[1]).TryGetPokemon((PBEFieldPosition)smp.Params[0]), true));
+                                    break;
+                                }
                             default: throw new ArgumentOutOfRangeException(nameof(smp.Message));
                         }
                         BattleView.AddMessage(message, true, true);
@@ -636,74 +697,82 @@ namespace Kermalis.PokemonBattleEngineMobile
                         PBEPokemon status1Receiver = s1p.Status1ReceiverTeam.TryGetPokemon(s1p.Status1Receiver);
                         switch (s1p.StatusAction)
                         {
-                            case PBEStatusAction.Added:
-                                status1Receiver.Status1 = s1p.Status1;
-                                break;
+                            case PBEStatusAction.Added: status1Receiver.Status1 = s1p.Status1; break;
                             case PBEStatusAction.Cured:
-                            case PBEStatusAction.Ended:
-                                status1Receiver.Status1 = PBEStatus1.None;
-                                break;
+                            case PBEStatusAction.Ended: status1Receiver.Status1 = PBEStatus1.None; break;
                         }
                         BattleView.Field.UpdatePokemon(status1Receiver);
                         string message;
                         switch (s1p.Status1)
                         {
                             case PBEStatus1.Asleep:
-                                switch (s1p.StatusAction)
                                 {
-                                    case PBEStatusAction.Activated: message = "{0} is fast asleep."; break;
-                                    case PBEStatusAction.Added: message = "{0} fell asleep!"; break;
-                                    case PBEStatusAction.Cured:
-                                    case PBEStatusAction.Ended: message = "{0} woke up!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    switch (s1p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Activated: message = "{0} is fast asleep."; break;
+                                        case PBEStatusAction.Added: message = "{0} fell asleep!"; break;
+                                        case PBEStatusAction.Cured:
+                                        case PBEStatusAction.Ended: message = "{0} woke up!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus1.BadlyPoisoned:
-                                switch (s1p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added: message = "{0} was badly poisoned!"; break;
-                                    case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
-                                    case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    switch (s1p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{0} was badly poisoned!"; break;
+                                        case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
+                                        case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus1.Poisoned:
-                                switch (s1p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
-                                    case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
-                                    case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    switch (s1p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{0} was poisoned!"; break;
+                                        case PBEStatusAction.Cured: message = "{0} was cured of its poisoning."; break;
+                                        case PBEStatusAction.Damage: message = "{0} was hurt by poison!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus1.Burned:
-                                switch (s1p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added: message = "{0} was burned!"; break;
-                                    case PBEStatusAction.Cured: message = "{0}'s burn was healed."; break;
-                                    case PBEStatusAction.Damage: message = "{0} was hurt by its burn!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    switch (s1p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{0} was burned!"; break;
+                                        case PBEStatusAction.Cured: message = "{0}'s burn was healed."; break;
+                                        case PBEStatusAction.Damage: message = "{0} was hurt by its burn!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus1.Frozen:
-                                switch (s1p.StatusAction)
                                 {
-                                    case PBEStatusAction.Activated: message = "{0} is frozen solid!"; break;
-                                    case PBEStatusAction.Added: message = "{0} was frozen solid!"; break;
-                                    case PBEStatusAction.Cured:
-                                    case PBEStatusAction.Ended: message = "{0} thawed out!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    switch (s1p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Activated: message = "{0} is frozen solid!"; break;
+                                        case PBEStatusAction.Added: message = "{0} was frozen solid!"; break;
+                                        case PBEStatusAction.Cured:
+                                        case PBEStatusAction.Ended: message = "{0} thawed out!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus1.Paralyzed:
-                                switch (s1p.StatusAction)
                                 {
-                                    case PBEStatusAction.Activated: message = "{0} is paralyzed! It can't move!"; break;
-                                    case PBEStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
-                                    case PBEStatusAction.Cured: message = "{0} was cured of paralysis."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    switch (s1p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Activated: message = "{0} is paralyzed! It can't move!"; break;
+                                        case PBEStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
+                                        case PBEStatusAction.Cured: message = "{0} was cured of paralysis."; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(s1p.Status1));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(status1Receiver, true)), true, true);
@@ -715,156 +784,189 @@ namespace Kermalis.PokemonBattleEngineMobile
                             pokemon2 = s2p.Pokemon2Team.TryGetPokemon(s2p.Pokemon2);
                         switch (s2p.StatusAction)
                         {
-                            case PBEStatusAction.Added:
-                                status2Receiver.Status2 |= s2p.Status2;
-                                break;
-                            case PBEStatusAction.Ended:
-                                status2Receiver.Status2 &= ~s2p.Status2;
-                                break;
+                            case PBEStatusAction.Added: status2Receiver.Status2 |= s2p.Status2; break;
+                            case PBEStatusAction.Ended: status2Receiver.Status2 &= ~s2p.Status2; break;
                         }
                         string message;
-                        bool status2ReceiverCaps = true, pokemon2Caps = false;
+                        bool status2ReceiverCaps = true,
+                            pokemon2Caps = false;
                         switch (s2p.Status2)
                         {
                             case PBEStatus2.Airborne:
-                                BattleView.Field.UpdatePokemon(status2Receiver);
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added:
-                                        message = "{0} flew up high!";
-                                        if (status2Receiver.Team.Id == Index)
-                                        {
-                                            status2Receiver.TempLockedMove = status2Receiver.SelectedAction.FightMove;
-                                            status2Receiver.TempLockedTargets = status2Receiver.SelectedAction.FightTargets;
-                                        }
-                                        break;
-                                    case PBEStatusAction.Ended:
-                                        if (status2Receiver.Team.Id == Index)
-                                        {
-                                            status2Receiver.TempLockedMove = PBEMove.None;
-                                            status2Receiver.TempLockedTargets = PBETarget.None;
-                                        }
-                                        return true;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    BattleView.Field.UpdatePokemon(status2Receiver);
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added:
+                                            {
+                                                message = "{0} flew up high!";
+                                                if (status2Receiver.Team.Id == Index)
+                                                {
+                                                    status2Receiver.TempLockedMove = status2Receiver.SelectedAction.FightMove;
+                                                    status2Receiver.TempLockedTargets = status2Receiver.SelectedAction.FightTargets;
+                                                }
+                                                break;
+                                            }
+                                        case PBEStatusAction.Ended:
+                                            {
+                                                if (status2Receiver.Team.Id == Index)
+                                                {
+                                                    status2Receiver.TempLockedMove = PBEMove.None;
+                                                    status2Receiver.TempLockedTargets = PBETarget.None;
+                                                }
+                                                return true;
+                                            }
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus2.Confused:
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Activated: message = "{0} is confused!"; break;
-                                    case PBEStatusAction.Added: message = "{0} became confused!"; break;
-                                    case PBEStatusAction.Damage: message = "It hurt itself in its confusion!"; break;
-                                    case PBEStatusAction.Ended: message = "{0} snapped out of its confusion."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Activated: message = "{0} is confused!"; break;
+                                        case PBEStatusAction.Added: message = "{0} became confused!"; break;
+                                        case PBEStatusAction.Damage: message = "It hurt itself in its confusion!"; break;
+                                        case PBEStatusAction.Ended: message = "{0} snapped out of its confusion."; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus2.Cursed:
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added: message = "{1} cut its own HP and laid a curse on {0}!"; status2ReceiverCaps = false; pokemon2Caps = true; break;
-                                    case PBEStatusAction.Damage: message = "{0} is afflicted by the curse!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{1} cut its own HP and laid a curse on {0}!"; status2ReceiverCaps = false; pokemon2Caps = true; break;
+                                        case PBEStatusAction.Damage: message = "{0} is afflicted by the curse!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus2.Flinching:
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus2.LeechSeed:
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added: message = "{0} was seeded!"; break;
-                                    case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{0} was seeded!"; break;
+                                        case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus2.Minimized:
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added: return true;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: return true;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
                                 }
                             case PBEStatus2.Protected:
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Activated:
-                                    case PBEStatusAction.Added: message = "{0} protected itself!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Activated:
+                                        case PBEStatusAction.Added: message = "{0} protected itself!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus2.Pumped:
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added: message = "{0} is getting pumped!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{0} is getting pumped!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus2.Substitute:
-                                BattleView.Field.UpdatePokemon(status2Receiver);
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added: message = "{0} put in a substitute!"; break;
-                                    case PBEStatusAction.Damage: message = "The substitute took damage for {0}!"; status2ReceiverCaps = false; break;
-                                    case PBEStatusAction.Ended: message = "{0}'s substitute faded!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    BattleView.Field.UpdatePokemon(status2Receiver);
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{0} put in a substitute!"; break;
+                                        case PBEStatusAction.Damage: message = "The substitute took damage for {0}!"; status2ReceiverCaps = false; break;
+                                        case PBEStatusAction.Ended: message = "{0}'s substitute faded!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
-                            case PBEStatus2.Transformed: // Victim is the user, culprit is the target (victim receives the transformed flag)
-                                status2Receiver.Transform(pokemon2);
-                                BattleView.Field.UpdatePokemon(status2Receiver);
-                                switch (s2p.StatusAction)
+                            case PBEStatus2.Transformed:
                                 {
-                                    case PBEStatusAction.Added: message = "{0} transformed into {1}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    status2Receiver.Transform(pokemon2);
+                                    BattleView.Field.UpdatePokemon(status2Receiver);
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{0} transformed into {1}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus2.Underground:
-                                BattleView.Field.UpdatePokemon(status2Receiver);
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added:
-                                        message = "{0} burrowed its way under the ground!";
-                                        if (status2Receiver.Team.Id == Index)
-                                        {
-                                            status2Receiver.TempLockedMove = status2Receiver.SelectedAction.FightMove;
-                                            status2Receiver.TempLockedTargets = status2Receiver.SelectedAction.FightTargets;
-                                        }
-                                        break;
-                                    case PBEStatusAction.Ended:
-                                        if (status2Receiver.Team.Id == Index)
-                                        {
-                                            status2Receiver.TempLockedMove = PBEMove.None;
-                                            status2Receiver.TempLockedTargets = PBETarget.None;
-                                        }
-                                        return true;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    BattleView.Field.UpdatePokemon(status2Receiver);
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added:
+                                            {
+                                                message = "{0} burrowed its way under the ground!";
+                                                if (status2Receiver.Team.Id == Index)
+                                                {
+                                                    status2Receiver.TempLockedMove = status2Receiver.SelectedAction.FightMove;
+                                                    status2Receiver.TempLockedTargets = status2Receiver.SelectedAction.FightTargets;
+                                                }
+                                                break;
+                                            }
+                                        case PBEStatusAction.Ended:
+                                            {
+                                                if (status2Receiver.Team.Id == Index)
+                                                {
+                                                    status2Receiver.TempLockedMove = PBEMove.None;
+                                                    status2Receiver.TempLockedTargets = PBETarget.None;
+                                                }
+                                                return true;
+                                            }
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEStatus2.Underwater:
-                                BattleView.Field.UpdatePokemon(status2Receiver);
-                                switch (s2p.StatusAction)
                                 {
-                                    case PBEStatusAction.Added:
-                                        message = "{0} hid underwater!";
-                                        if (status2Receiver.Team.Id == Index)
-                                        {
-                                            status2Receiver.TempLockedMove = status2Receiver.SelectedAction.FightMove;
-                                            status2Receiver.TempLockedTargets = status2Receiver.SelectedAction.FightTargets;
-                                        }
-                                        break;
-                                    case PBEStatusAction.Ended:
-                                        if (status2Receiver.Team.Id == Index)
-                                        {
-                                            status2Receiver.TempLockedMove = PBEMove.None;
-                                            status2Receiver.TempLockedTargets = PBETarget.None;
-                                        }
-                                        return true;
-                                    default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    BattleView.Field.UpdatePokemon(status2Receiver);
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added:
+                                            {
+                                                message = "{0} hid underwater!";
+                                                if (status2Receiver.Team.Id == Index)
+                                                {
+                                                    status2Receiver.TempLockedMove = status2Receiver.SelectedAction.FightMove;
+                                                    status2Receiver.TempLockedTargets = status2Receiver.SelectedAction.FightTargets;
+                                                }
+                                                break;
+                                            }
+                                        case PBEStatusAction.Ended:
+                                            {
+                                                if (status2Receiver.Team.Id == Index)
+                                                {
+                                                    status2Receiver.TempLockedMove = PBEMove.None;
+                                                    status2Receiver.TempLockedTargets = PBETarget.None;
+                                                }
+                                                return true;
+                                            }
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(status2Receiver, status2ReceiverCaps), NameForTrainer(pokemon2, pokemon2Caps)), true, true);
@@ -874,82 +976,99 @@ namespace Kermalis.PokemonBattleEngineMobile
                     {
                         switch (tsp.TeamStatusAction)
                         {
-                            case PBETeamStatusAction.Added:
-                                tsp.Team.TeamStatus |= tsp.TeamStatus;
-                                break;
+                            case PBETeamStatusAction.Added: tsp.Team.TeamStatus |= tsp.TeamStatus; break;
                             case PBETeamStatusAction.Cleared:
-                            case PBETeamStatusAction.Ended:
-                                tsp.Team.TeamStatus &= ~tsp.TeamStatus;
-                                break;
+                            case PBETeamStatusAction.Ended: tsp.Team.TeamStatus &= ~tsp.TeamStatus; break;
                         }
+                        PBEPokemon damageVictim = tsp.Team.TryGetPokemon(tsp.DamageVictim);
                         string message;
                         bool damageVictimCaps = false;
                         switch (tsp.TeamStatus)
                         {
                             case PBETeamStatus.LightScreen:
-                                switch (tsp.TeamStatusAction)
                                 {
-                                    case PBETeamStatusAction.Added: message = "Light Screen raised {0} team's Special Defense!"; break;
-                                    case PBETeamStatusAction.Cleared:
-                                    case PBETeamStatusAction.Ended: message = "{1} team's Light Screen wore off!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    switch (tsp.TeamStatusAction)
+                                    {
+                                        case PBETeamStatusAction.Added: message = "Light Screen raised {0} team's Special Defense!"; break;
+                                        case PBETeamStatusAction.Cleared:
+                                        case PBETeamStatusAction.Ended: message = "{1} team's Light Screen wore off!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBETeamStatus.LuckyChant:
-                                switch (tsp.TeamStatusAction)
                                 {
-                                    case PBETeamStatusAction.Added: message = "The Lucky Chant shielded {0} team from critical hits!"; break;
-                                    case PBETeamStatusAction.Ended: message = "{1} team's Lucky Chant wore off!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    switch (tsp.TeamStatusAction)
+                                    {
+                                        case PBETeamStatusAction.Added: message = "The Lucky Chant shielded {0} team from critical hits!"; break;
+                                        case PBETeamStatusAction.Ended: message = "{1} team's Lucky Chant wore off!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBETeamStatus.Reflect:
-                                switch (tsp.TeamStatusAction)
                                 {
-                                    case PBETeamStatusAction.Added: message = "Reflect raised {0} team's Defense!"; break;
-                                    case PBETeamStatusAction.Cleared:
-                                    case PBETeamStatusAction.Ended: message = "{1} team's Reflect wore off!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    switch (tsp.TeamStatusAction)
+                                    {
+                                        case PBETeamStatusAction.Added: message = "Reflect raised {0} team's Defense!"; break;
+                                        case PBETeamStatusAction.Cleared:
+                                        case PBETeamStatusAction.Ended: message = "{1} team's Reflect wore off!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBETeamStatus.Spikes:
-                                switch (tsp.TeamStatusAction)
                                 {
-                                    case PBETeamStatusAction.Added:
-                                        tsp.Team.SpikeCount++;
-                                        message = "Spikes were scattered all around the feet of {2} team!";
-                                        break;
-                                    case PBETeamStatusAction.Cleared:
-                                        tsp.Team.SpikeCount = 0;
-                                        message = "The spikes disappeared from around {2} team's feet!";
-                                        break;
-                                    case PBETeamStatusAction.Damage: message = "{4} is hurt by the spikes!"; damageVictimCaps = true; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    switch (tsp.TeamStatusAction)
+                                    {
+                                        case PBETeamStatusAction.Added:
+                                            {
+                                                tsp.Team.SpikeCount++;
+                                                message = "Spikes were scattered all around the feet of {2} team!";
+                                                break;
+                                            }
+                                        case PBETeamStatusAction.Cleared:
+                                            {
+                                                tsp.Team.SpikeCount = 0;
+                                                message = "The spikes disappeared from around {2} team's feet!";
+                                                break;
+                                            }
+                                        case PBETeamStatusAction.Damage: message = "{4} is hurt by the spikes!"; damageVictimCaps = true; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBETeamStatus.StealthRock:
-                                switch (tsp.TeamStatusAction)
                                 {
-                                    case PBETeamStatusAction.Added: message = "Pointed stones float in the air around {3} team!"; break;
-                                    case PBETeamStatusAction.Cleared: message = "The pointed stones disappeared from around {2} team!"; break;
-                                    case PBETeamStatusAction.Damage: message = "Pointed stones dug into {4}!"; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    switch (tsp.TeamStatusAction)
+                                    {
+                                        case PBETeamStatusAction.Added: message = "Pointed stones float in the air around {3} team!"; break;
+                                        case PBETeamStatusAction.Cleared: message = "The pointed stones disappeared from around {2} team!"; break;
+                                        case PBETeamStatusAction.Damage: message = "Pointed stones dug into {4}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBETeamStatus.ToxicSpikes:
-                                switch (tsp.TeamStatusAction)
                                 {
-                                    case PBETeamStatusAction.Added:
-                                        tsp.Team.ToxicSpikeCount++;
-                                        message = "Poison spikes were scattered all around {2} team's feet!";
-                                        break;
-                                    case PBETeamStatusAction.Cleared:
-                                        tsp.Team.ToxicSpikeCount = 0;
-                                        message = "The poison spikes disappeared from around {2} team's feet!";
-                                        break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    switch (tsp.TeamStatusAction)
+                                    {
+                                        case PBETeamStatusAction.Added:
+                                            {
+                                                tsp.Team.ToxicSpikeCount++;
+                                                message = "Poison spikes were scattered all around {2} team's feet!";
+                                                break;
+                                            }
+                                        case PBETeamStatusAction.Cleared:
+                                            {
+                                                tsp.Team.ToxicSpikeCount = 0;
+                                                message = "The poison spikes disappeared from around {2} team's feet!";
+                                                break;
+                                            }
+                                        default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatus));
                         }
                         BattleView.AddMessage(string.Format(message,
@@ -957,7 +1076,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                             Index >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == Index ? "Your" : "The opposing",
                             Index >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == Index ? "your" : "the foe's",
                             Index >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == Index ? "your" : "your foe's",
-                            NameForTrainer(tsp.Team.TryGetPokemon(tsp.DamageVictim), damageVictimCaps)
+                            NameForTrainer(damageVictim, damageVictimCaps)
                             ), true, true);
                         break;
                     }
@@ -989,54 +1108,67 @@ namespace Kermalis.PokemonBattleEngineMobile
                         switch (wp.WeatherAction)
                         {
                             case PBEWeatherAction.Added:
-                                Battle.Weather = wp.Weather;
-                                BattleView.Field.UpdateWeather();
-                                break;
+                                {
+                                    Battle.Weather = wp.Weather;
+                                    BattleView.Field.UpdateWeather();
+                                    break;
+                                }
                             case PBEWeatherAction.Ended:
-                                Battle.Weather = PBEWeather.None;
-                                BattleView.Field.UpdateWeather();
-                                break;
+                                {
+                                    Battle.Weather = PBEWeather.None;
+                                    BattleView.Field.UpdateWeather();
+                                    break;
+                                }
                         }
+                        PBEPokemon damageVictim = wp.DamageVictimTeam?.TryGetPokemon(wp.DamageVictim);
                         string message;
                         switch (wp.Weather)
                         {
                             case PBEWeather.Hailstorm:
-                                switch (wp.WeatherAction)
                                 {
-                                    case PBEWeatherAction.Added: message = "It started to hail!"; break;
-                                    case PBEWeatherAction.CausedDamage: message = "{0} is buffeted by the hail!"; break;
-                                    case PBEWeatherAction.Ended: message = "The hail stopped."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
+                                    switch (wp.WeatherAction)
+                                    {
+                                        case PBEWeatherAction.Added: message = "It started to hail!"; break;
+                                        case PBEWeatherAction.CausedDamage: message = "{0} is buffeted by the hail!"; break;
+                                        case PBEWeatherAction.Ended: message = "The hail stopped."; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEWeather.HarshSunlight:
-                                switch (wp.WeatherAction)
                                 {
-                                    case PBEWeatherAction.Added: message = "The sunlight turned harsh!"; break;
-                                    case PBEWeatherAction.Ended: message = "The sunlight faded."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
+                                    switch (wp.WeatherAction)
+                                    {
+                                        case PBEWeatherAction.Added: message = "The sunlight turned harsh!"; break;
+                                        case PBEWeatherAction.Ended: message = "The sunlight faded."; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEWeather.Rain:
-                                switch (wp.WeatherAction)
                                 {
-                                    case PBEWeatherAction.Added: message = "It started to rain!"; break;
-                                    case PBEWeatherAction.Ended: message = "The rain stopped."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
+                                    switch (wp.WeatherAction)
+                                    {
+                                        case PBEWeatherAction.Added: message = "It started to rain!"; break;
+                                        case PBEWeatherAction.Ended: message = "The rain stopped."; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             case PBEWeather.Sandstorm:
-                                switch (wp.WeatherAction)
                                 {
-                                    case PBEWeatherAction.Added: message = "A sandstorm kicked up!"; break;
-                                    case PBEWeatherAction.CausedDamage: message = "{0} is buffeted by the sandstorm!"; break;
-                                    case PBEWeatherAction.Ended: message = "The sandstorm subsided."; break;
-                                    default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
+                                    switch (wp.WeatherAction)
+                                    {
+                                        case PBEWeatherAction.Added: message = "A sandstorm kicked up!"; break;
+                                        case PBEWeatherAction.CausedDamage: message = "{0} is buffeted by the sandstorm!"; break;
+                                        case PBEWeatherAction.Ended: message = "The sandstorm subsided."; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
+                                    }
+                                    break;
                                 }
-                                break;
                             default: throw new ArgumentOutOfRangeException(nameof(wp.Weather));
                         }
-                        BattleView.AddMessage(string.Format(message, NameForTrainer(wp.DamageVictimTeam?.TryGetPokemon(wp.DamageVictim), true)), true, true);
+                        BattleView.AddMessage(string.Format(message, NameForTrainer(damageVictim, true)), true, true);
                         break;
                     }
                 case PBEWinnerPacket win:

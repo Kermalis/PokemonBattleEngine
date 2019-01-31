@@ -23,6 +23,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Protect from corrupt packets (if they are even a problem)
 * Allow spectators to join mid-game instead of having to be present when the game begins
 * Watchable replays
+* Mobile HP bars
 
 ----
 # PokemonBattleEngine Uses:
