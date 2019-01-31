@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(MoveUser = moveUser.FieldPosition));
-            bytes.Add((MoveUserTeam = pokemon2.Team).Id);
+            bytes.Add((MoveUserTeam = moveUser.Team).Id);
             bytes.Add((byte)(Pokemon2 = pokemon2.FieldPosition));
             bytes.Add((Pokemon2Team = pokemon2.Team).Id);
             bytes.Add((byte)(FailReason = failReason));
