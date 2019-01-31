@@ -157,58 +157,66 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (BattleFormat)
                 {
                     case PBEBattleFormat.Single:
-                        foreach (PBETeam team in Teams)
                         {
-                            team.Party[0].FieldPosition = PBEFieldPosition.Center;
-                            team.SwitchInQueue.Add(team.Party[0]);
+                            foreach (PBETeam team in Teams)
+                            {
+                                team.Party[0].FieldPosition = PBEFieldPosition.Center;
+                                team.SwitchInQueue.Add(team.Party[0]);
+                            }
+                            break;
                         }
-                        break;
                     case PBEBattleFormat.Double:
-                        foreach (PBETeam team in Teams)
                         {
-                            team.Party[0].FieldPosition = PBEFieldPosition.Left;
-                            team.SwitchInQueue.Add(team.Party[0]);
-                            if (team.Party.Count > 1)
+                            foreach (PBETeam team in Teams)
                             {
-                                team.Party[1].FieldPosition = PBEFieldPosition.Right;
-                                team.SwitchInQueue.Add(team.Party[1]);
+                                team.Party[0].FieldPosition = PBEFieldPosition.Left;
+                                team.SwitchInQueue.Add(team.Party[0]);
+                                if (team.Party.Count > 1)
+                                {
+                                    team.Party[1].FieldPosition = PBEFieldPosition.Right;
+                                    team.SwitchInQueue.Add(team.Party[1]);
+                                }
                             }
+                            break;
                         }
-                        break;
                     case PBEBattleFormat.Triple:
-                        foreach (PBETeam team in Teams)
                         {
-                            team.Party[0].FieldPosition = PBEFieldPosition.Left;
-                            team.SwitchInQueue.Add(team.Party[0]);
-                            if (team.Party.Count > 1)
+                            foreach (PBETeam team in Teams)
                             {
-                                team.Party[1].FieldPosition = PBEFieldPosition.Center;
-                                team.SwitchInQueue.Add(team.Party[1]);
+                                team.Party[0].FieldPosition = PBEFieldPosition.Left;
+                                team.SwitchInQueue.Add(team.Party[0]);
+                                if (team.Party.Count > 1)
+                                {
+                                    team.Party[1].FieldPosition = PBEFieldPosition.Center;
+                                    team.SwitchInQueue.Add(team.Party[1]);
+                                }
+                                if (team.Party.Count > 2)
+                                {
+                                    team.Party[2].FieldPosition = PBEFieldPosition.Right;
+                                    team.SwitchInQueue.Add(team.Party[2]);
+                                }
                             }
-                            if (team.Party.Count > 2)
-                            {
-                                team.Party[2].FieldPosition = PBEFieldPosition.Right;
-                                team.SwitchInQueue.Add(team.Party[2]);
-                            }
+                            break;
                         }
-                        break;
                     case PBEBattleFormat.Rotation:
-                        foreach (PBETeam team in Teams)
                         {
-                            team.Party[0].FieldPosition = PBEFieldPosition.Center;
-                            team.SwitchInQueue.Add(team.Party[0]);
-                            if (team.Party.Count > 1)
+                            foreach (PBETeam team in Teams)
                             {
-                                team.Party[1].FieldPosition = PBEFieldPosition.Left;
-                                team.SwitchInQueue.Add(team.Party[1]);
+                                team.Party[0].FieldPosition = PBEFieldPosition.Center;
+                                team.SwitchInQueue.Add(team.Party[0]);
+                                if (team.Party.Count > 1)
+                                {
+                                    team.Party[1].FieldPosition = PBEFieldPosition.Left;
+                                    team.SwitchInQueue.Add(team.Party[1]);
+                                }
+                                if (team.Party.Count > 2)
+                                {
+                                    team.Party[2].FieldPosition = PBEFieldPosition.Right;
+                                    team.SwitchInQueue.Add(team.Party[2]);
+                                }
                             }
-                            if (team.Party.Count > 2)
-                            {
-                                team.Party[2].FieldPosition = PBEFieldPosition.Right;
-                                team.SwitchInQueue.Add(team.Party[2]);
-                            }
+                            break;
                         }
-                        break;
                     default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
                 }
 
@@ -433,24 +441,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastWeather(w, PBEWeatherAction.Ended);
                 }
             }
+            DoTurnEndedEffects();
 
-            // Pokémon
-            foreach (PBEPokemon pkmn in GetActingOrder(ActiveBattlers, true))
+            // TODO: This should go for all Pokémon, and flinching and protected should be cleared on switch just in case
+            foreach (PBEPokemon pkmn in ActiveBattlers)
             {
-                if (ActiveBattlers.Contains(pkmn))
+                pkmn.SelectedAction.Decision = PBEDecision.None; // No longer necessary
+                pkmn.Status2 &= ~PBEStatus2.Flinching;
+                pkmn.Status2 &= ~PBEStatus2.Protected;
+
+                // TODO: https://github.com/Kermalis/PokemonBattleEngine/issues/79
+                if (pkmn.PreviousAction.Decision == PBEDecision.Fight && pkmn.PreviousAction.FightMove != PBEMove.Protect && pkmn.PreviousAction.FightMove != PBEMove.Detect)
                 {
-                    pkmn.SelectedAction.Decision = PBEDecision.None; // No longer necessary
-                    pkmn.Status2 &= ~PBEStatus2.Flinching;
-                    pkmn.Status2 &= ~PBEStatus2.Protected;
-                    if (pkmn.PreviousAction.Decision == PBEDecision.Fight && pkmn.PreviousAction.FightMove != PBEMove.Protect && pkmn.PreviousAction.FightMove != PBEMove.Detect)
-                    {
-                        pkmn.ProtectCounter = 0;
-                    }
-                    DoTurnEndedEffects(pkmn);
+                    pkmn.ProtectCounter = 0;
                 }
             }
 
-            // Teams
             foreach (PBETeam team in Teams)
             {
                 if (team.NumPkmnAlive == 0) // TODO: Figure out how wins are determined (tie exists?)
@@ -488,7 +494,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Battle Statuses
             if (BattleStatus.HasFlag(PBEBattleStatus.TrickRoom))
             {
                 TrickRoomCount--;
@@ -500,7 +505,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             PBEBattleState nextState = PBEBattleState.WaitingForActions;
-            // Requesting a replacement
             foreach (PBETeam team in Teams)
             {
                 int available = team.NumPkmnAlive - team.NumPkmnOnField;
@@ -554,7 +558,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
                 }
             }
-
             if (nextState == PBEBattleState.WaitingForSwitchIns)
             {
                 BattleState = PBEBattleState.WaitingForSwitchIns;
