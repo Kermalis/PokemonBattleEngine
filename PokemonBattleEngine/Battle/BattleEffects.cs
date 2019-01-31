@@ -752,67 +752,45 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts status ending events & status causing immobility events
         bool PreMoveStatusCheck(PBEPokemon user, PBEMove move)
         {
-            // Increment counters first
-            if (user.Status2.HasFlag(PBEStatus2.Confused))
-            {
-                user.ConfusionCounter++;
-            }
+            // Verified: Sleep and Freeze don't interact with Flinch unless they come out of the status
             if (user.Status1 == PBEStatus1.Asleep)
             {
                 user.Status1Counter++;
+                if (user.Status1Counter > user.SleepTurns)
+                {
+                    user.Status1 = PBEStatus1.None;
+                    user.Status1Counter = user.SleepTurns = 0;
+                    BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Ended);
+                }
+                else
+                {
+                    BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Activated);
+                    return true;
+                }
             }
-
-            // TODO: https://github.com/Kermalis/PokemonBattleEngine/issues/94
+            else if (user.Status1 == PBEStatus1.Frozen)
+            {
+                if (PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.RNG.ApplyChance(20, 100))
+                {
+                    user.Status1 = PBEStatus1.None;
+                    BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Ended);
+                }
+                else
+                {
+                    BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Activated);
+                    return true;
+                }
+            }
+            // Verified: Flinch before Confusion and Paralysis can do anything
             if (user.Status2.HasFlag(PBEStatus2.Flinching))
             {
                 BroadcastStatus2(user, user, PBEStatus2.Flinching, PBEStatusAction.Activated);
                 return true;
             }
-
-            // Major statuses
-            switch (user.Status1)
-            {
-                case PBEStatus1.Asleep:
-                    // Check if we can wake up
-                    if (user.Status1Counter > user.SleepTurns)
-                    {
-                        user.Status1 = PBEStatus1.None;
-                        user.Status1Counter = user.SleepTurns = 0;
-                        BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Ended);
-                    }
-                    else
-                    {
-                        BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Activated);
-                        return true;
-                    }
-                    break;
-                case PBEStatus1.Frozen:
-                    // Some moves always defrost the user, but if they don't, there is a 20% chance to thaw out
-                    if (PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.RNG.ApplyChance(20, 100))
-                    {
-                        user.Status1 = PBEStatus1.None;
-                        BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Ended);
-                    }
-                    else
-                    {
-                        BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Activated);
-                        return true;
-                    }
-                    break;
-                case PBEStatus1.Paralyzed:
-                    // 25% chance to be unable to move
-                    if (PBEUtils.RNG.ApplyChance(25, 100))
-                    {
-                        BroadcastStatus1(user, user, PBEStatus1.Paralyzed, PBEStatusAction.Activated);
-                        return true;
-                    }
-                    break;
-            }
-
-            // Minor statuses
+            // Verified: Confusion before Paralysis
             if (user.Status2.HasFlag(PBEStatus2.Confused))
             {
-                // Check if we snap out of confusion
+                user.ConfusionCounter++;
                 if (user.ConfusionCounter > user.ConfusionTurns)
                 {
                     user.Status2 &= ~PBEStatus2.Confused;
@@ -822,7 +800,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                 {
                     BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Activated);
-                    // 50% chance to hit itself
                     if (PBEUtils.RNG.ApplyChance(50, 100))
                     {
                         ushort damage = CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, false);
@@ -833,7 +810,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
-
+            // Paralysis
+            if (user.Status1 == PBEStatus1.Paralyzed && PBEUtils.RNG.ApplyChance(25, 100))
+            {
+                BroadcastStatus1(user, user, PBEStatus1.Paralyzed, PBEStatusAction.Activated);
+                return true;
+            }
             return false;
         }
 
