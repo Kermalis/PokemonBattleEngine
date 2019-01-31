@@ -2022,7 +2022,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The Pokémon cannot be paralyzed.
         /// </summary>
-        Limber = 7,
+        Limber = 7, // TODO: Skill Swap calls LimberCure right away.
         LiquidOoze = 64,
         MagicBounce = 156, // TODO
         MagicGuard = 98, // TODO

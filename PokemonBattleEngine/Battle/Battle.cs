@@ -412,7 +412,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEDecision.Fight:
                             {
-                                DoPreMoveEffects(pkmn);
                                 UseMove(pkmn);
                                 break;
                             }

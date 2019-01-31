@@ -8,112 +8,117 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        void DoSwitchInEffects(PBEPokemon pkmn)
+        void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers)
         {
-            // TODO: Order properly
-            PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
+            IEnumerable<PBEPokemon> order = GetActingOrder(battlers, true);
 
-            // Entry Hazards
-            if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
+            foreach (PBEPokemon pkmn in order)
             {
-                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))), true);
-                BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn);
-                if (FaintCheck(pkmn))
+                // Verified: Spikes then StealthRock then ToxicSpikes before ability
+                if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
                 {
-                    return;
-                }
-            }
-            if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
-            {
-                double effectiveness = 0.125;
-                effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type1];
-                effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type2];
-                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * effectiveness), true);
-                BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn);
-                if (FaintCheck(pkmn))
-                {
-                    return;
-                }
-            }
-            if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
-            {
-                // Grounded Poison types remove the Toxic Spikes
-                if (pkmn.HasType(PBEType.Poison) && pkmn.Ability != PBEAbility.Levitate && !pkmn.HasType(PBEType.Flying))
-                {
-                    BroadcastTeamStatus(pkmn.Team, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
-                }
-                // Steel types and floating Pokémon don't get Poisoned
-                else if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Steel) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
-                {
-                    pkmn.Status1 = pkmn.Team.ToxicSpikeCount == 1 ? PBEStatus1.Poisoned : PBEStatus1.BadlyPoisoned;
-                    if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))), true);
+                    BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn);
+                    if (FaintCheck(pkmn))
                     {
-                        pkmn.Status1Counter = 1;
+                        continue;
                     }
-                    BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Added);
                 }
-            }
-
-            // Abilities
-            LimberCheck(pkmn);
-            switch (pkmn.Ability)
-            {
-                case PBEAbility.Drizzle:
-                    if (Weather != PBEWeather.Rain || WeatherCounter != 0)
+                if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
+                {
+                    double effectiveness = 0.125;
+                    effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type1];
+                    effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type2];
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * effectiveness), true);
+                    BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn);
+                    if (FaintCheck(pkmn))
                     {
-                        Weather = PBEWeather.Rain;
-                        WeatherCounter = 0;
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.Drizzle, PBEAbilityAction.Weather);
-                        BroadcastWeather(PBEWeather.Rain, PBEWeatherAction.Added);
+                        continue;
                     }
-                    break;
-                case PBEAbility.Drought:
-                    if (Weather != PBEWeather.HarshSunlight || WeatherCounter != 0)
+                }
+                if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
+                {
+                    // Grounded Poison types remove the Toxic Spikes
+                    if (pkmn.HasType(PBEType.Poison) && pkmn.Ability != PBEAbility.Levitate && !pkmn.HasType(PBEType.Flying))
                     {
-                        Weather = PBEWeather.HarshSunlight;
-                        WeatherCounter = 0;
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.Drought, PBEAbilityAction.Weather);
-                        BroadcastWeather(PBEWeather.HarshSunlight, PBEWeatherAction.Added);
+                        BroadcastTeamStatus(pkmn.Team, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
                     }
-                    break;
-                case PBEAbility.Imposter:
+                    // Steel types and floating Pokémon don't get Poisoned
+                    else if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Steel) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
                     {
-                        PBEFieldPosition targetPos = GetPositionAcross(BattleFormat, pkmn.FieldPosition);
-                        PBEPokemon target = opposingTeam.TryGetPokemon(targetPos);
-                        if (target != null
-                            && !target.Status2.HasFlag(PBEStatus2.Disguised)
-                            && !target.Status2.HasFlag(PBEStatus2.Substitute)
-                            && !target.Status2.HasFlag(PBEStatus2.Transformed))
+                        pkmn.Status1 = pkmn.Team.ToxicSpikeCount == 1 ? PBEStatus1.Poisoned : PBEStatus1.BadlyPoisoned;
+                        if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
                         {
-                            BroadcastAbility(pkmn, target, PBEAbility.Imposter, PBEAbilityAction.ChangedAppearance);
-                            ApplyStatus2IfPossible(pkmn, target, PBEStatus2.Transformed, false);
+                            pkmn.Status1Counter = 1;
                         }
-                        break;
+                        BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Added);
                     }
-                case PBEAbility.SandStream:
-                    if (Weather != PBEWeather.Sandstorm || WeatherCounter != 0)
-                    {
-                        Weather = PBEWeather.Sandstorm;
-                        WeatherCounter = 0;
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.SandStream, PBEAbilityAction.Weather);
-                        BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.Added);
-                    }
-                    break;
-                case PBEAbility.SnowWarning:
-                    if (Weather != PBEWeather.Hailstorm || WeatherCounter != 0)
-                    {
-                        Weather = PBEWeather.Hailstorm;
-                        WeatherCounter = 0;
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.SnowWarning, PBEAbilityAction.Weather);
-                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.Added);
-                    }
-                    break;
+                }
+
+                LimberCheck(pkmn);
+                switch (pkmn.Ability)
+                {
+                    case PBEAbility.Drizzle:
+                        {
+                            if (Weather != PBEWeather.Rain || WeatherCounter != 0)
+                            {
+                                Weather = PBEWeather.Rain;
+                                WeatherCounter = 0;
+                                BroadcastAbility(pkmn, pkmn, PBEAbility.Drizzle, PBEAbilityAction.Weather);
+                                BroadcastWeather(PBEWeather.Rain, PBEWeatherAction.Added);
+                            }
+                            break;
+                        }
+                    case PBEAbility.Drought:
+                        {
+                            if (Weather != PBEWeather.HarshSunlight || WeatherCounter != 0)
+                            {
+                                Weather = PBEWeather.HarshSunlight;
+                                WeatherCounter = 0;
+                                BroadcastAbility(pkmn, pkmn, PBEAbility.Drought, PBEAbilityAction.Weather);
+                                BroadcastWeather(PBEWeather.HarshSunlight, PBEWeatherAction.Added);
+                            }
+                            break;
+                        }
+                    case PBEAbility.Imposter:
+                        {
+                            PBEFieldPosition targetPos = GetPositionAcross(BattleFormat, pkmn.FieldPosition);
+                            PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
+                            PBEPokemon target = opposingTeam.TryGetPokemon(targetPos);
+                            if (target != null
+                                && !target.Status2.HasFlag(PBEStatus2.Disguised)
+                                && !target.Status2.HasFlag(PBEStatus2.Substitute)
+                                && !target.Status2.HasFlag(PBEStatus2.Transformed))
+                            {
+                                BroadcastAbility(pkmn, target, PBEAbility.Imposter, PBEAbilityAction.ChangedAppearance);
+                                ApplyStatus2IfPossible(pkmn, target, PBEStatus2.Transformed, false);
+                            }
+                            break;
+                        }
+                    case PBEAbility.SandStream:
+                        {
+                            if (Weather != PBEWeather.Sandstorm || WeatherCounter != 0)
+                            {
+                                Weather = PBEWeather.Sandstorm;
+                                WeatherCounter = 0;
+                                BroadcastAbility(pkmn, pkmn, PBEAbility.SandStream, PBEAbilityAction.Weather);
+                                BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.Added);
+                            }
+                            break;
+                        }
+                    case PBEAbility.SnowWarning:
+                        {
+                            if (Weather != PBEWeather.Hailstorm || WeatherCounter != 0)
+                            {
+                                Weather = PBEWeather.Hailstorm;
+                                WeatherCounter = 0;
+                                BroadcastAbility(pkmn, pkmn, PBEAbility.SnowWarning, PBEAbilityAction.Weather);
+                                BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.Added);
+                            }
+                            break;
+                        }
+                }
             }
-        }
-        void DoPreMoveEffects(PBEPokemon pkmn)
-        {
-            // Abilities
-            LimberCheck(pkmn);
         }
         /// <summary>
         /// Does effects that take place after hitting such as substitute breaking, rough skin, and victim eating its berry.
@@ -123,6 +128,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="move">The move <paramref name="user"/> used.</param>
         void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move)
         {
+            // TODO: Move Limber to the proper place (DoPostAttackedEffects)
+            LimberCheck(victim);
             if (victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
                 if (victim.SubstituteHP == 0)
@@ -1365,10 +1372,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ActiveBattlers.AddRange(team.SwitchInQueue);
                 BroadcastPkmnSwitchIn(team, team.SwitchInQueue.Select(p => CreateSwitchInInfo(p)), false);
             }
-            foreach (PBEPokemon pkmn in GetActingOrder(Teams.SelectMany(t => t.SwitchInQueue), true))
-            {
-                DoSwitchInEffects(pkmn);
-            }
+            DoSwitchInEffects(Teams.SelectMany(t => t.SwitchInQueue));
         }
         void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
         {
@@ -1384,7 +1388,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastDraggedOut(pkmnComing);
             }
-            DoSwitchInEffects(pkmnComing);
+            DoSwitchInEffects(new[] { pkmnComing });
         }
 
         void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
