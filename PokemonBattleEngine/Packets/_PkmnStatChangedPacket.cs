@@ -16,18 +16,18 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEFieldPosition Pokemon { get; }
         public PBETeam PokemonTeam { get; }
         public PBEStat Stat { get; }
-        public short Change { get; }
-        public bool IsTooMuch { get; }
+        public sbyte OldValue { get; }
+        public sbyte NewValue { get; }
 
-        public PBEPkmnStatChangedPacket(PBEPokemon pokemon, PBEStat stat, short change, bool isTooMuch)
+        public PBEPkmnStatChangedPacket(PBEPokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Pokemon = pokemon.FieldPosition));
             bytes.Add((PokemonTeam = pokemon.Team).Id);
             bytes.Add((byte)(Stat = stat));
-            bytes.AddRange(BitConverter.GetBytes(Change = change));
-            bytes.Add((byte)((IsTooMuch = isTooMuch) ? 1 : 0));
+            bytes.Add((byte)(OldValue = oldValue));
+            bytes.Add((byte)(NewValue = newValue));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEPkmnStatChangedPacket(byte[] buffer, PBEBattle battle)
@@ -39,8 +39,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Pokemon = (PBEFieldPosition)r.ReadByte();
                 PokemonTeam = battle.Teams[r.ReadByte()];
                 Stat = (PBEStat)r.ReadByte();
-                Change = r.ReadInt16();
-                IsTooMuch = r.ReadBoolean();
+                OldValue = r.ReadSByte();
+                NewValue = r.ReadSByte();
             }
         }
 

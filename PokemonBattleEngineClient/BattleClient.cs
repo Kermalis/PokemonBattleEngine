@@ -490,38 +490,51 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PBEPkmnStatChangedPacket pscp:
                     {
                         PBEPokemon pokemon = pscp.PokemonTeam.TryGetPokemon(pscp.Pokemon);
-                        PBEBattle.ApplyStatChange(Battle, pokemon, pscp.Stat, pscp.Change, false, true);
-                        string message;
-                        switch (pscp.Change)
+                        string statName, message;
+                        switch (pscp.Stat)
+                        {
+                            case PBEStat.Accuracy: statName = "Accuracy"; pokemon.AccuracyChange = pscp.NewValue; break;
+                            case PBEStat.Attack: statName = "Attack"; pokemon.AttackChange = pscp.NewValue; break;
+                            case PBEStat.Defense: statName = "Defense"; pokemon.DefenseChange = pscp.NewValue; break;
+                            case PBEStat.Evasion: statName = "Evasion"; pokemon.EvasionChange = pscp.NewValue; break;
+                            case PBEStat.SpAttack: statName = "Special Attack"; pokemon.SpAttackChange = pscp.NewValue; break;
+                            case PBEStat.SpDefense: statName = "Special Defense"; pokemon.SpDefenseChange = pscp.NewValue; break;
+                            case PBEStat.Speed: statName = "Speed"; pokemon.SpeedChange = pscp.NewValue; break;
+                            default: throw new ArgumentOutOfRangeException(nameof(pscp.Stat));
+                        }
+                        int change = pscp.NewValue - pscp.OldValue;
+                        switch (change)
                         {
                             case -2: message = "harshly fell"; break;
                             case -1: message = "fell"; break;
                             case +1: message = "rose"; break;
                             case +2: message = "rose sharply"; break;
                             default:
-                                if (pscp.IsTooMuch && pscp.Change < 0)
                                 {
-                                    message = "won't go lower";
+                                    if (change == 0 && pscp.NewValue == -Battle.Settings.MaxStatChange)
+                                    {
+                                        message = "won't go lower";
+                                    }
+                                    else if (change == 0 && pscp.NewValue == Battle.Settings.MaxStatChange)
+                                    {
+                                        message = "won't go higher";
+                                    }
+                                    else if (change <= -3)
+                                    {
+                                        message = "severely fell";
+                                    }
+                                    else if (change >= +3)
+                                    {
+                                        message = "rose drastically";
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException();
+                                    }
+                                    break;
                                 }
-                                else if (pscp.IsTooMuch && pscp.Change > 0)
-                                {
-                                    message = "won't go higher";
-                                }
-                                else if (pscp.Change <= -3)
-                                {
-                                    message = "severely fell";
-                                }
-                                else if (pscp.Change >= 3)
-                                {
-                                    message = "rose drastically";
-                                }
-                                else // +0
-                                {
-                                    throw new ArgumentOutOfRangeException(nameof(pscp.Change));
-                                }
-                                break;
                         }
-                        BattleView.AddMessage(string.Format("{0}'s {1} {2}!", NameForTrainer(pokemon, true), pscp.Stat, message), true, true);
+                        BattleView.AddMessage(string.Format("{0}'s {1} {2}!", NameForTrainer(pokemon, true), statName, message), true, true);
                         break;
                     }
                 case PBEPkmnSwitchInPacket psip:

@@ -1054,99 +1054,67 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>
         /// Changes a Pokémon's stat.
         /// </summary>
-        /// <param name="battle">The battle the stat change happened in.</param>
         /// <param name="pkmn">The Pokémon who's stats will be changed.</param>
         /// <param name="stat">The stat to change.</param>
-        /// <param name="change">The stat change which will be added.</param>
-        /// <param name="broadcast">True if the event should be broadcast from the battle, False otherwise.</param>
-        /// <param name="ignoreSimple">True if the stat change should not be modified by <see cref="PBEAbility.Simple"/>, False otherwise.</param>
+        /// <param name="value">The value to add to the stat.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="stat"/> is invalid.</exception>
-        public static void ApplyStatChange(PBEBattle battle, PBEPokemon pkmn, PBEStat stat, short change, bool broadcast = true, bool ignoreSimple = false)
+        public void ApplyStatChange(PBEPokemon pkmn, PBEStat stat, short value)
         {
-            if (!ignoreSimple && pkmn.Ability == PBEAbility.Simple)
+            if (pkmn.Ability == PBEAbility.Simple)
             {
-                change *= 2;
+                value *= 2;
             }
-            bool isTooMuch = false;
+
+            sbyte oldValue, newValue;
             // I used to use unsafe pointers, and even though it was cool and compact, I decided to use properties and a more C#-styled approach
             switch (stat)
             {
                 case PBEStat.Attack:
-                    if (pkmn.AttackChange <= -battle.Settings.MaxStatChange || pkmn.AttackChange >= battle.Settings.MaxStatChange)
                     {
-                        isTooMuch = true;
+                        oldValue = pkmn.AttackChange;
+                        newValue = pkmn.AttackChange = (sbyte)PBEUtils.Clamp(pkmn.AttackChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
+                        break;
                     }
-                    else
-                    {
-                        pkmn.AttackChange = (sbyte)PBEUtils.Clamp(pkmn.AttackChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
-                    }
-                    break;
                 case PBEStat.Defense:
-                    if (pkmn.DefenseChange <= -battle.Settings.MaxStatChange || pkmn.DefenseChange >= battle.Settings.MaxStatChange)
                     {
-                        isTooMuch = true;
+                        oldValue = pkmn.DefenseChange;
+                        newValue = pkmn.DefenseChange = (sbyte)PBEUtils.Clamp(pkmn.DefenseChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
+                        break;
                     }
-                    else
-                    {
-                        pkmn.DefenseChange = (sbyte)PBEUtils.Clamp(pkmn.DefenseChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
-                    }
-                    break;
                 case PBEStat.SpAttack:
-                    if (pkmn.SpAttackChange <= -battle.Settings.MaxStatChange || pkmn.SpAttackChange >= battle.Settings.MaxStatChange)
                     {
-                        isTooMuch = true;
+                        oldValue = pkmn.SpAttackChange;
+                        newValue = pkmn.SpAttackChange = (sbyte)PBEUtils.Clamp(pkmn.SpAttackChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
+                        break;
                     }
-                    else
-                    {
-                        pkmn.SpAttackChange = (sbyte)PBEUtils.Clamp(pkmn.SpAttackChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
-                    }
-                    break;
                 case PBEStat.SpDefense:
-                    if (pkmn.SpDefenseChange <= -battle.Settings.MaxStatChange || pkmn.SpDefenseChange >= battle.Settings.MaxStatChange)
                     {
-                        isTooMuch = true;
+                        oldValue = pkmn.SpDefenseChange;
+                        newValue = pkmn.SpDefenseChange = (sbyte)PBEUtils.Clamp(pkmn.SpDefenseChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
+                        break;
                     }
-                    else
-                    {
-                        pkmn.SpDefenseChange = (sbyte)PBEUtils.Clamp(pkmn.SpDefenseChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
-                    }
-                    break;
                 case PBEStat.Speed:
-                    if (pkmn.SpeedChange <= -battle.Settings.MaxStatChange || pkmn.SpeedChange >= battle.Settings.MaxStatChange)
                     {
-                        isTooMuch = true;
+                        oldValue = pkmn.SpeedChange;
+                        newValue = pkmn.SpeedChange = (sbyte)PBEUtils.Clamp(pkmn.SpeedChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
+                        break;
                     }
-                    else
-                    {
-                        pkmn.SpeedChange = (sbyte)PBEUtils.Clamp(pkmn.SpeedChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
-                    }
-                    break;
                 case PBEStat.Accuracy:
-                    if (pkmn.AccuracyChange <= -battle.Settings.MaxStatChange || pkmn.AccuracyChange >= battle.Settings.MaxStatChange)
                     {
-                        isTooMuch = true;
+                        oldValue = pkmn.AccuracyChange;
+                        newValue = pkmn.AccuracyChange = (sbyte)PBEUtils.Clamp(pkmn.AccuracyChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
+                        break;
                     }
-                    else
-                    {
-                        pkmn.AccuracyChange = (sbyte)PBEUtils.Clamp(pkmn.AccuracyChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
-                    }
-                    break;
                 case PBEStat.Evasion:
-                    if (pkmn.EvasionChange <= -battle.Settings.MaxStatChange || pkmn.EvasionChange >= battle.Settings.MaxStatChange)
                     {
-                        isTooMuch = true;
+                        oldValue = pkmn.EvasionChange;
+                        newValue = pkmn.EvasionChange = (sbyte)PBEUtils.Clamp(pkmn.EvasionChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
+                        break;
                     }
-                    else
-                    {
-                        pkmn.EvasionChange = (sbyte)PBEUtils.Clamp(pkmn.EvasionChange + change, -battle.Settings.MaxStatChange, battle.Settings.MaxStatChange);
-                    }
-                    break;
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
-            if (broadcast)
-            {
-                battle.BroadcastPkmnStatChanged(pkmn, stat, change, isTooMuch);
-            }
+
+            BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
         }
 
         // Returns true if the status was applied
@@ -1263,7 +1231,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEStatus2.Minimized:
                     user.Status2 |= PBEStatus2.Minimized;
                     BroadcastStatus2(user, user, PBEStatus2.Minimized, PBEStatusAction.Added);
-                    ApplyStatChange(this, user, PBEStat.Evasion, +2);
+                    ApplyStatChange(user, PBEStat.Evasion, +2);
                     return true;
                 case PBEStatus2.Protected:
                     {
@@ -1712,7 +1680,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
-                        ApplyStatChange(this, target, stats[i], changes[i]);
+                        ApplyStatChange(target, stats[i], changes[i]);
                     }
                 }
             }
@@ -1724,7 +1692,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             for (int i = 0; i < stats.Length; i++)
             {
-                ApplyStatChange(this, user, stats[i], changes[i]);
+                ApplyStatChange(user, stats[i], changes[i]);
             }
         }
         void Ef_Hit__MaybeChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
@@ -1738,7 +1706,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
-                        ApplyStatChange(this, target, stats[i], changes[i]);
+                        ApplyStatChange(target, stats[i], changes[i]);
                     }
                 }
             }
@@ -1756,7 +1724,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     for (int i = 0; i < stats.Length; i++)
                     {
-                        ApplyStatChange(this, user, stats[i], changes[i]);
+                        ApplyStatChange(user, stats[i], changes[i]);
                     }
                 }
             }
@@ -2201,9 +2169,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    ApplyStatChange(this, user, PBEStat.Speed, -1);
-                    ApplyStatChange(this, user, PBEStat.Attack, +1);
-                    ApplyStatChange(this, user, PBEStat.Defense, +1);
+                    ApplyStatChange(user, PBEStat.Speed, -1);
+                    ApplyStatChange(user, PBEStat.Attack, +1);
+                    ApplyStatChange(user, PBEStat.Defense, +1);
                 }
             }
         }
@@ -2220,7 +2188,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    ApplyStatChange(this, target, PBEStat.SpAttack, +1);
+                    ApplyStatChange(target, PBEStat.SpAttack, +1);
                     ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
                 }
             }
@@ -2283,7 +2251,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    ApplyStatChange(this, target, PBEStat.Attack, +2);
+                    ApplyStatChange(target, PBEStat.Attack, +2);
                     ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
                 }
             }
