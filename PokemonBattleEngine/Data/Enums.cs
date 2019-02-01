@@ -765,9 +765,29 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEFailReason : byte
     {
         /// <summary>
-        /// The move failed because the target is already confused.
+        /// The move failed because the target already has <see cref="PBEStatus1.Asleep"/>.
+        /// </summary>
+        AlreadyAsleep,
+        /// <summary>
+        /// The move failed because the target already has <see cref="PBEStatus1.Burned"/>.
+        /// </summary>
+        AlreadyBurned,
+        /// <summary>
+        /// The move failed because the target already has <see cref="PBEStatus2.Confused"/>.
         /// </summary>
         AlreadyConfused,
+        /// <summary>
+        /// The move failed because the target already has <see cref="PBEStatus1.Paralyzed"/>.
+        /// </summary>
+        AlreadyParalyzed,
+        /// <summary>
+        /// The move failed because the target already has <see cref="PBEStatus1.BadlyPoisoned"/> or <see cref="PBEStatus1.Poisoned"/>.
+        /// </summary>
+        AlreadyPoisoned,
+        /// <summary>
+        /// The move failed because the target already has <see cref="PBEStatus2.Substitute"/>.
+        /// </summary>
+        AlreadySubstituted,
         /// <summary>
         /// General failure.
         /// </summary>

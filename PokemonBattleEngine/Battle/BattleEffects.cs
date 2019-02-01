@@ -802,9 +802,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Activated);
                     if (PBEUtils.RNG.ApplyChance(50, 100))
                     {
+                        BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         ushort damage = CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, false);
                         DealDamage(user, user, damage, true);
-                        BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         FaintCheck(user);
                         return true;
                     }
@@ -1125,18 +1125,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts the change if applied
         bool ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastFailOrEffectiveness)
         {
-            // Cannot change status if already afflicted
-            // Cannot change status of a target behind a substitute
-            if (target.Status1 != PBEStatus1.None
-                || target.Status2.HasFlag(PBEStatus2.Substitute))
+            if (target.Status1 != PBEStatus1.None || target.Status2.HasFlag(PBEStatus2.Substitute))
             {
                 if (broadcastFailOrEffectiveness)
                 {
-                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                    PBEFailReason failReason;
+                    if (target.Status1 == PBEStatus1.Asleep && status == PBEStatus1.Asleep)
+                    {
+                        failReason = PBEFailReason.AlreadyAsleep;
+                    }
+                    else if (target.Status1 == PBEStatus1.Burned && status == PBEStatus1.Burned)
+                    {
+                        failReason = PBEFailReason.AlreadyBurned;
+                    }
+                    else if (target.Status1 == PBEStatus1.Paralyzed && status == PBEStatus1.Paralyzed)
+                    {
+                        failReason = PBEFailReason.AlreadyParalyzed;
+                    }
+                    else if ((target.Status1 == PBEStatus1.BadlyPoisoned || target.Status1 == PBEStatus1.Poisoned) && (status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned))
+                    {
+                        failReason = PBEFailReason.AlreadyPoisoned;
+                    }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    BroadcastMoveFailed(user, target, failReason);
                 }
                 return false;
             }
-            // A Pokémon with Limber cannot be Paralyzed unless the attacker has Mold Breaker
             if (status == PBEStatus1.Paralyzed && target.Ability == PBEAbility.Limber)
             {
                 if (broadcastFailOrEffectiveness)
@@ -1146,26 +1163,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 return false;
             }
-            // An Ice type Pokémon cannot be Frozen
-            if (status == PBEStatus1.Frozen && target.HasType(PBEType.Ice))
-            {
-                if (broadcastFailOrEffectiveness)
-                {
-                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                }
-                return false;
-            }
-            // A Fire type Pokémon cannot be Burned
-            if (status == PBEStatus1.Burned && target.HasType(PBEType.Fire))
-            {
-                if (broadcastFailOrEffectiveness)
-                {
-                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                }
-                return false;
-            }
-            // A Poison or Steel type Pokémon cannot be Poisoned or Badly Poisoned
-            if ((status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned) && (target.HasType(PBEType.Poison) || target.HasType(PBEType.Steel)))
+            if ((status == PBEStatus1.Burned && target.HasType(PBEType.Fire))
+                || (status == PBEStatus1.Frozen && target.HasType(PBEType.Ice))
+                || ((status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned) && (target.HasType(PBEType.Poison) || target.HasType(PBEType.Steel))))
             {
                 if (broadcastFailOrEffectiveness)
                 {
@@ -1175,12 +1175,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             target.Status1 = status;
-            // Start toxic counter
             if (status == PBEStatus1.BadlyPoisoned)
             {
                 target.Status1Counter = 1;
             }
-            // Set sleep length
             if (status == PBEStatus1.Asleep)
             {
                 target.SleepTurns = (byte)PBEUtils.RNG.Next(Settings.SleepMinTurns, Settings.SleepMaxTurns + 1);
@@ -1190,84 +1188,122 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         // Returns true if the status was applied
         // Broadcasts the change if applied and required
-        bool ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastFail, PBEFailReason failReason = PBEFailReason.Default)
+        bool ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastFailOrEffectiveness)
         {
+            PBEFailReason failReason;
             switch (status)
             {
                 case PBEStatus2.Confused:
-                    if (!target.Status2.HasFlag(PBEStatus2.Confused)
-                        && !target.Status2.HasFlag(PBEStatus2.Substitute))
                     {
-                        target.Status2 |= PBEStatus2.Confused;
-                        target.ConfusionTurns = (byte)PBEUtils.RNG.Next(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns + 1);
-                        BroadcastStatus2(target, user, PBEStatus2.Confused, PBEStatusAction.Added);
-                        return true;
+                        bool alreadyConfused = target.Status2.HasFlag(PBEStatus2.Confused);
+                        if (!alreadyConfused && !target.Status2.HasFlag(PBEStatus2.Substitute))
+                        {
+                            target.Status2 |= PBEStatus2.Confused;
+                            target.ConfusionTurns = (byte)PBEUtils.RNG.Next(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns + 1);
+                            BroadcastStatus2(target, user, PBEStatus2.Confused, PBEStatusAction.Added);
+                            return true;
+                        }
+                        else
+                        {
+                            failReason = alreadyConfused ? PBEFailReason.AlreadyConfused : PBEFailReason.Default;
+                            break;
+                        }
                     }
-                    break;
                 case PBEStatus2.Cursed:
-                    if (!target.Status2.HasFlag(PBEStatus2.Cursed))
                     {
-                        target.Status2 |= PBEStatus2.Cursed;
-                        BroadcastStatus2(target, user, PBEStatus2.Cursed, PBEStatusAction.Added);
-                        DealDamage(user, user, (ushort)(user.MaxHP / 2), true);
-                        FaintCheck(user);
-                        return true;
+                        if (!target.Status2.HasFlag(PBEStatus2.Cursed))
+                        {
+                            target.Status2 |= PBEStatus2.Cursed;
+                            BroadcastStatus2(target, user, PBEStatus2.Cursed, PBEStatusAction.Added);
+                            DealDamage(user, user, (ushort)(user.MaxHP / 2), true);
+                            FaintCheck(user);
+                            return true;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
+                            break;
+                        }
                     }
-                    break;
                 case PBEStatus2.Flinching:
-                    if (!target.Status2.HasFlag(PBEStatus2.Substitute))
                     {
-                        target.Status2 |= status;
-                        return true;
+                        if (!target.Status2.HasFlag(PBEStatus2.Substitute))
+                        {
+                            target.Status2 |= status;
+                            return true;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default; // Never used
+                            break;
+                        }
                     }
-                    break;
                 case PBEStatus2.LeechSeed:
-                    if (!target.Status2.HasFlag(PBEStatus2.LeechSeed)
-                        && !target.Status2.HasFlag(PBEStatus2.Substitute)
-                        && !target.HasType(PBEType.Grass))
                     {
-                        target.Status2 |= PBEStatus2.LeechSeed;
-                        target.SeededPosition = user.FieldPosition;
-                        BroadcastStatus2(target, user, PBEStatus2.LeechSeed, PBEStatusAction.Added);
+                        if (target.HasType(PBEType.Grass))
+                        {
+                            if (broadcastFailOrEffectiveness)
+                            {
+                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                            }
+                            return false;
+                        }
+                        else if (!target.Status2.HasFlag(PBEStatus2.LeechSeed) && !target.Status2.HasFlag(PBEStatus2.Substitute))
+                        {
+                            target.Status2 |= PBEStatus2.LeechSeed;
+                            target.SeededPosition = user.FieldPosition;
+                            BroadcastStatus2(target, user, PBEStatus2.LeechSeed, PBEStatusAction.Added);
+                            return true;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
+                            break;
+                        }
+                    }
+                case PBEStatus2.Minimized:
+                    {
+                        user.Status2 |= PBEStatus2.Minimized;
+                        BroadcastStatus2(user, user, PBEStatus2.Minimized, PBEStatusAction.Added);
+                        ApplyStatChange(user, PBEStat.Evasion, +2);
                         return true;
                     }
-                    break;
-                case PBEStatus2.Minimized:
-                    user.Status2 |= PBEStatus2.Minimized;
-                    BroadcastStatus2(user, user, PBEStatus2.Minimized, PBEStatusAction.Added);
-                    ApplyStatChange(user, PBEStat.Evasion, +2);
-                    return true;
                 case PBEStatus2.Protected:
                     {
                         // TODO: If the user goes last, fail
-                        ushort chance = ushort.MaxValue;
-                        for (int i = 0; i < user.ProtectCounter; i++)
-                        {
-                            chance /= 2;
-                        }
-
-                        if (PBEUtils.RNG.ApplyChance(chance, ushort.MaxValue))
+                        if (PBEUtils.RNG.ApplyChance(ushort.MaxValue / (2 * user.ProtectCounter), ushort.MaxValue))
                         {
                             user.Status2 |= PBEStatus2.Protected;
                             user.ProtectCounter++;
                             BroadcastStatus2(user, user, PBEStatus2.Protected, PBEStatusAction.Added);
                             return true;
                         }
-                        user.ProtectCounter = 0;
+                        else
+                        {
+                            user.ProtectCounter = 0;
+                            failReason = PBEFailReason.Default;
+                            break;
+                        }
                     }
-                    break;
                 case PBEStatus2.Pumped:
-                    if (!user.Status2.HasFlag(PBEStatus2.Pumped))
                     {
-                        user.Status2 |= status;
-                        BroadcastStatus2(user, user, PBEStatus2.Pumped, PBEStatusAction.Added);
-                        return true;
+                        if (!user.Status2.HasFlag(PBEStatus2.Pumped))
+                        {
+                            user.Status2 |= status;
+                            BroadcastStatus2(user, user, PBEStatus2.Pumped, PBEStatusAction.Added);
+                            return true;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
+                            break;
+                        }
                     }
-                    break;
                 case PBEStatus2.Substitute:
                     {
+                        bool alreadyHasSubstitute = user.Status2.HasFlag(PBEStatus2.Substitute);
                         ushort hpRequired = (ushort)(user.MaxHP / 4);
-                        if (!user.Status2.HasFlag(PBEStatus2.Substitute) && hpRequired > 0 && user.HP > hpRequired)
+                        if (!alreadyHasSubstitute && hpRequired > 0 && user.HP > hpRequired)
                         {
                             DealDamage(user, user, hpRequired, true);
                             user.Status2 |= PBEStatus2.Substitute;
@@ -1275,22 +1311,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastStatus2(user, user, PBEStatus2.Substitute, PBEStatusAction.Added);
                             return true;
                         }
+                        else
+                        {
+                            failReason = alreadyHasSubstitute ? PBEFailReason.AlreadySubstituted : PBEFailReason.Default;
+                            break;
+                        }
                     }
-                    break;
                 case PBEStatus2.Transformed:
-                    if (!target.Status2.HasFlag(PBEStatus2.Disguised)
-                        && !target.Status2.HasFlag(PBEStatus2.Substitute)
-                        && !user.Status2.HasFlag(PBEStatus2.Transformed)
-                        && !target.Status2.HasFlag(PBEStatus2.Transformed))
                     {
-                        user.Transform(target);
-                        BroadcastTransform(user, target);
-                        BroadcastStatus2(user, target, PBEStatus2.Transformed, PBEStatusAction.Added);
-                        return true;
+                        if (!target.Status2.HasFlag(PBEStatus2.Disguised)
+                            && !target.Status2.HasFlag(PBEStatus2.Substitute)
+                            && !user.Status2.HasFlag(PBEStatus2.Transformed)
+                            && !target.Status2.HasFlag(PBEStatus2.Transformed))
+                        {
+                            user.Transform(target);
+                            BroadcastTransform(user, target);
+                            BroadcastStatus2(user, target, PBEStatus2.Transformed, PBEStatusAction.Added);
+                            return true;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
+                            break;
+                        }
                     }
-                    break;
+                default: throw new ArgumentOutOfRangeException(nameof(status));
             }
-            if (broadcastFail)
+            if (broadcastFailOrEffectiveness)
             {
                 BroadcastMoveFailed(user, target, failReason);
             }
@@ -1750,6 +1797,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             bool BeforeDoingDamage(PBEPokemon target)
             {
+                // Verified: Reflect then Light Screen
                 if (target.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
                 {
                     target.Team.TeamStatus &= ~PBETeamStatus.Reflect;
@@ -2193,7 +2241,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                 {
                     ApplyStatChange(target, PBEStat.SpAttack, +1);
-                    ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
+                    ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
                 }
             }
         }
@@ -2256,7 +2304,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                 {
                     ApplyStatChange(target, PBEStat.Attack, +2);
-                    ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true, PBEFailReason.AlreadyConfused);
+                    ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
                 }
             }
         }

@@ -462,7 +462,12 @@ namespace Kermalis.PokemonBattleEngineMobile
                         string message;
                         switch (mfp.FailReason)
                         {
+                            case PBEFailReason.AlreadyAsleep: message = "{1} is already asleep!"; break;
+                            case PBEFailReason.AlreadyBurned: message = "{1} already has a burn."; break;
                             case PBEFailReason.AlreadyConfused: message = "{1} is already confused!"; break;
+                            case PBEFailReason.AlreadyParalyzed: message = "{1} is already paralyzed!"; break;
+                            case PBEFailReason.AlreadyPoisoned: message = "{1} is already poisoned."; break;
+                            case PBEFailReason.AlreadySubstituted: message = "{1} already has a substitute!"; break;
                             case PBEFailReason.Default: message = "But it failed!"; break;
                             case PBEFailReason.HPFull: message = "{1}'s HP is full!"; break;
                             case PBEFailReason.NoTarget: message = "There was no target..."; break;

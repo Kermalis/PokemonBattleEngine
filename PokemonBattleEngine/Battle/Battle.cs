@@ -441,7 +441,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
 
-            // Weather stops before doing damage
+            // Verified: Weather stops before doing damage
             if (WeatherCounter > 0)
             {
                 WeatherCounter--;
@@ -452,6 +452,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastWeather(w, PBEWeatherAction.Ended);
                 }
             }
+            // Verified: Effects before Reflect/LightScreen/LuckyChant
             DoTurnEndedEffects();
 
             // TODO: This should go for all Pokémon, and flinching and protected should be cleared on switch just in case
@@ -468,6 +469,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
+            // Verified: Reflect then Light Screen then Lucky Chant then Trick Room
             foreach (PBETeam team in Teams)
             {
                 if (team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
@@ -499,6 +501,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
+            // Trick Room
             if (BattleStatus.HasFlag(PBEBattleStatus.TrickRoom))
             {
                 TrickRoomCount--;
