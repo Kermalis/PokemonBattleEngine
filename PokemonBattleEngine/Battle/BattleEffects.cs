@@ -1032,8 +1032,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // TODO: If target is not self and has pressure
             byte oldPP = pkmn.PP[moveIndex];
             pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
-            int change = oldPP - pkmn.PP[moveIndex];
-            BroadcastMovePPChanged(pkmn, move, (short)-change);
+            BroadcastMovePPChanged(pkmn, move, oldPP, pkmn.PP[moveIndex]);
         }
 
         // Returns true if the Pokémon fainted & removes it from activeBattlers

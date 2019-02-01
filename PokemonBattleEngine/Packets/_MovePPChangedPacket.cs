@@ -16,16 +16,18 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEFieldPosition MoveUser { get; }
         public PBETeam MoveUserTeam { get; }
         public PBEMove Move { get; }
-        public short Change { get; }
+        public byte OldValue { get; }
+        public byte NewValue { get; }
 
-        public PBEMovePPChangedPacket(PBEPokemon moveUser, PBEMove move, short change)
+        public PBEMovePPChangedPacket(PBEFieldPosition moveUser, PBETeam moveUserTeam, PBEMove move, byte oldValue, byte newValue)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(MoveUser = moveUser.FieldPosition));
-            bytes.Add((MoveUserTeam = moveUser.Team).Id);
+            bytes.Add((byte)(MoveUser = moveUser));
+            bytes.Add((MoveUserTeam = moveUserTeam).Id);
             bytes.AddRange(BitConverter.GetBytes((ushort)(Move = move)));
-            bytes.AddRange(BitConverter.GetBytes(Change = change));
+            bytes.Add(OldValue = oldValue);
+            bytes.Add(NewValue = newValue);
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEMovePPChangedPacket(byte[] buffer, PBEBattle battle)
@@ -37,7 +39,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 MoveUser = (PBEFieldPosition)r.ReadByte();
                 MoveUserTeam = battle.Teams[r.ReadByte()];
                 Move = (PBEMove)r.ReadUInt16();
-                Change = r.ReadInt16();
+                OldValue = r.ReadByte();
+                NewValue = r.ReadByte();
             }
         }
 

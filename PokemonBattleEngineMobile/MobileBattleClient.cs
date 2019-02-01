@@ -486,11 +486,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                 case PBEMovePPChangedPacket mpcp:
                     {
                         PBEPokemon moveUser = mpcp.MoveUserTeam.TryGetPokemon(mpcp.MoveUser);
-                        if (moveUser.Team.Id == Index)
-                        {
-                            int i = Array.IndexOf(moveUser.Moves, mpcp.Move);
-                            moveUser.PP[i] = (byte)(moveUser.PP[i] + mpcp.Change);
-                        }
+                        moveUser.PP[Array.IndexOf(moveUser.Moves, mpcp.Move)] = mpcp.NewValue;
                         return true;
                     }
                 case PBEMoveUsedPacket mup:

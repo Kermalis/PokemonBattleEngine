@@ -61,7 +61,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
             }
         }
-        static readonly string url = "https://github.com/Kermalis/PokemonBattleEngine";
         static async Task Battle_OnNewEvent(BattleContext context, INetPacket packet)
         {
             string NameForTrainer(PBEPokemon pkmn)
@@ -71,7 +70,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             async Task CreateAndSendEmbed(string message, PBEPokemon pkmn = null)
             {
                 var embed = new EmbedBuilder()
-                    .WithUrl(url)
+                    .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
                     .WithTitle($"{context.Battlers[0].Username} vs {context.Battlers[1].Username}") // TODO: Include turn number
                     .WithDescription(message);
                 if (pkmn != null)

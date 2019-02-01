@@ -266,6 +266,13 @@ namespace Kermalis.PokemonBattleEngineServer
         {
             switch (packet)
             {
+                case PBEMovePPChangedPacket mpcp:
+                    {
+                        Player teamOwner = battlers[mpcp.MoveUserTeam.Id];
+                        teamOwner.Send(mpcp);
+                        teamOwner.ResetEvent.WaitOne();
+                        break;
+                    }
                 case PBEPkmnFaintedPacket pfp:
                     {
                         var hiddenId = new PBEPkmnFaintedPacket(byte.MaxValue, pfp.PokemonPosition, pfp.PokemonTeam);

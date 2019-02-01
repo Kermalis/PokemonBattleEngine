@@ -29,8 +29,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBEMoveFailedPacket(moveUser, pokemon2, failReason));
         void BroadcastMoveMissed(PBEPokemon moveUser, PBEPokemon pokemon2)
             => OnNewEvent?.Invoke(this, new PBEMoveMissedPacket(moveUser, pokemon2));
-        void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, short change)
-            => OnNewEvent?.Invoke(this, new PBEMovePPChangedPacket(moveUser, move, change));
+        void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, byte oldValue, byte newValue)
+            => OnNewEvent?.Invoke(this, new PBEMovePPChangedPacket(moveUser.FieldPosition, moveUser.Team, move, oldValue, newValue));
         void BroadcastMoveUsed(PBEPokemon moveUser, PBEMove move)
             => OnNewEvent?.Invoke(this, new PBEMoveUsedPacket(moveUser, move));
         void BroadcastPkmnFainted(PBEPokemon pokemon, PBEFieldPosition oldPosition)
@@ -413,7 +413,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMovePPChangedPacket mpcp:
                     {
                         PBEPokemon moveUser = mpcp.MoveUserTeam.TryGetPokemon(mpcp.MoveUser);
-                        Console.WriteLine("{0}'s {1} {3} {2} PP!", NameForTrainer(moveUser), PBEMoveLocalization.Names[mpcp.Move].English, Math.Abs(mpcp.Change), mpcp.Change <= 0 ? "lost" : "gained");
+                        int change = mpcp.NewValue - mpcp.OldValue;
+                        Console.WriteLine("{0}'s {1} {3} {2} PP!", NameForTrainer(moveUser), PBEMoveLocalization.Names[mpcp.Move].English, Math.Abs(change), change <= 0 ? "lost" : "gained");
                         break;
                     }
                 case PBEMoveUsedPacket mup:
