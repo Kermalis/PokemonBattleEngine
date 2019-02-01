@@ -1210,6 +1210,11 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         return true;
                     }
+                case PBETurnBeganPacket tbp:
+                    {
+                        BattleView.AddMessage($"Turn {Battle.TurnNumber = tbp.TurnNumber}", false, true);
+                        return true;
+                    }
             }
             return false;
         }

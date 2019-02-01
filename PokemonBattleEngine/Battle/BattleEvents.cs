@@ -77,6 +77,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBEActionsRequestPacket(team));
         void BroadcastSwitchInRequest(PBETeam team)
             => OnNewEvent?.Invoke(this, new PBESwitchInRequestPacket(team));
+        void BroadcastTurnBegan()
+            => OnNewEvent?.Invoke(this, new PBETurnBeganPacket(TurnNumber));
 
 
         /// <summary>
@@ -931,6 +933,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBESwitchInRequestPacket sirp:
                     {
                         Console.WriteLine("{0} must send in {1} Pokémon.", sirp.Team.TrainerName, sirp.Amount);
+                        break;
+                    }
+                case PBETurnBeganPacket tbp:
+                    {
+                        Console.WriteLine("Turn {0} is starting.", tbp.TurnNumber);
                         break;
                     }
             }

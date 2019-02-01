@@ -69,9 +69,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             async Task CreateAndSendEmbed(string message, PBEPokemon pkmn = null)
             {
+                string title = $"{context.Battlers[0].Username} vs {context.Battlers[1].Username}";
+                if (context.Battle.TurnNumber > 0)
+                {
+                    title += $" (Turn {context.Battle.TurnNumber})";
+                }
                 var embed = new EmbedBuilder()
                     .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
-                    .WithTitle($"{context.Battlers[0].Username} vs {context.Battlers[1].Username}") // TODO: Include turn number
+                    .WithTitle(title)
                     .WithDescription(message);
                 if (pkmn != null)
                 {
@@ -389,7 +394,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             case PBEFailReason.NoTarget: message = "There was no target..."; break;
                             default: throw new ArgumentOutOfRangeException(nameof(mfp.FailReason));
                         }
-                        await CreateAndSendEmbed(string.Format(message, NameForTrainer(moveUser), NameForTrainer(pokemon2)), moveUser);
+                        await CreateAndSendEmbed(string.Format(message, NameForTrainer(moveUser), NameForTrainer(pokemon2)), pokemon2);
                         break;
                     }
                 case PBEMoveMissedPacket mmp:
@@ -895,7 +900,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 case PBEActionsRequestPacket arp:
                     {
                         SocketUser guy = context.Battlers[Array.IndexOf(context.Battle.Teams, arp.Team)];
-                        await guy.SendMessageAsync("Actions");
+                        await guy.SendMessageAsync($"Actions for turn {context.Battle.TurnNumber}");
                         PBEBattle.SelectActionsIfValid(arp.Team, PokemonBattleEngine.AI.AIManager.CreateActions(arp.Team));
                         break;
                     }

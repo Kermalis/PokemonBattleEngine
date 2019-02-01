@@ -86,6 +86,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public delegate void BattleStateChangedEvent(PBEBattle battle);
         public event BattleStateChangedEvent OnStateChanged;
         public PBEBattleState BattleState { get; private set; }
+        public ushort TurnNumber { get; set; }
         /// <summary>
         /// The winner of the battle. Null if the battle is ongoing or the battle resulted in a draw.
         /// </summary>
@@ -356,7 +357,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                // TODO: Turn began packet
                 // TODO: This should go for all Pokémon, and flinching and protected should be cleared on switch just in case (Set Status2 to None if possible)
                 foreach (PBEPokemon pkmn in ActiveBattlers)
                 {
@@ -370,12 +370,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.ProtectCounter = 0;
                     }
                 }
-
                 foreach (PBETeam team in Teams)
                 {
                     team.ActionsRequired.Clear();
                     team.ActionsRequired.AddRange(team.ActiveBattlers);
                 }
+                TurnNumber++;
+                BroadcastTurnBegan();
                 BattleState = PBEBattleState.WaitingForActions;
                 OnStateChanged?.Invoke(this);
                 foreach (PBETeam team in Teams)

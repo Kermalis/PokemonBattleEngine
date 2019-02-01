@@ -251,13 +251,11 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBEBattleState.WaitingForActions:
                     {
                         state = ServerState.WaitingForActions;
-                        Console.WriteLine("Waiting for actions...");
                         break;
                     }
                 case PBEBattleState.WaitingForSwitchIns:
                     {
                         state = ServerState.WaitingForSwitchIns;
-                        Console.WriteLine("Waiting for switches...");
                         break;
                     }
             }
