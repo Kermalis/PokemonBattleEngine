@@ -433,7 +433,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEMoveData mData = PBEMoveData.Data[move];
             PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, user.GetMoveTargets(move) == PBEMoveTarget.SingleNotSelf);
             // Selfdestruct effect still causes the user to faint even if it has no targets
-            if (targets.Length == 0 && mData.Effect != PBEMoveEffect.Selfdestruct)
+            if (targets.Length == 0 && mData.Effect != PBEMoveEffect.Selfdestruct
+                && mData.Targets != PBEMoveTarget.AllFoes && mData.Targets != PBEMoveTarget.AllTeam)
             {
                 BroadcastMoveUsed(user, move);
                 PPReduce(user, move);
@@ -1562,19 +1563,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (status)
             {
                 case PBEBattleStatus.TrickRoom:
-                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
                     {
-                        BattleStatus |= PBEBattleStatus.TrickRoom;
-                        TrickRoomCount = 5;
-                        BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Added);
+                        if (!BattleStatus.HasFlag(PBEBattleStatus.TrickRoom))
+                        {
+                            BattleStatus |= PBEBattleStatus.TrickRoom;
+                            TrickRoomCount = 5;
+                            BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Added);
+                        }
+                        else
+                        {
+                            BattleStatus &= ~PBEBattleStatus.TrickRoom;
+                            TrickRoomCount = 0;
+                            BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Cleared);
+                        }
+                        break;
                     }
-                    else
-                    {
-                        BattleStatus &= ~PBEBattleStatus.TrickRoom;
-                        TrickRoomCount = 0;
-                        BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Cleared);
-                    }
-                    break;
             }
         }
         void Ef_TryForceTeamStatus(PBEPokemon user, PBEMove move, PBETeamStatus status)
@@ -1586,58 +1589,70 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (status)
             {
                 case PBETeamStatus.LightScreen:
-                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
                     {
-                        user.Team.TeamStatus |= PBETeamStatus.LightScreen;
-                        user.Team.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
-                        BroadcastTeamStatus(user.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
-                        return;
+                        if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
+                        {
+                            user.Team.TeamStatus |= PBETeamStatus.LightScreen;
+                            user.Team.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
+                            BroadcastTeamStatus(user.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
+                            return;
+                        }
+                        break;
                     }
-                    break;
                 case PBETeamStatus.LuckyChant:
-                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
                     {
-                        user.Team.TeamStatus |= PBETeamStatus.LuckyChant;
-                        user.Team.LuckyChantCount = 5;
-                        BroadcastTeamStatus(user.Team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Added);
-                        return;
+                        if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
+                        {
+                            user.Team.TeamStatus |= PBETeamStatus.LuckyChant;
+                            user.Team.LuckyChantCount = 5;
+                            BroadcastTeamStatus(user.Team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Added);
+                            return;
+                        }
+                        break;
                     }
-                    break;
                 case PBETeamStatus.Reflect:
-                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
                     {
-                        user.Team.TeamStatus |= PBETeamStatus.Reflect;
-                        user.Team.ReflectCount = (byte)(Settings.ReflectTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
-                        BroadcastTeamStatus(user.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
-                        return;
+                        if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
+                        {
+                            user.Team.TeamStatus |= PBETeamStatus.Reflect;
+                            user.Team.ReflectCount = (byte)(Settings.ReflectTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
+                            BroadcastTeamStatus(user.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
+                            return;
+                        }
+                        break;
                     }
-                    break;
                 case PBETeamStatus.Spikes:
-                    if (opposingTeam.SpikeCount < 3)
                     {
-                        opposingTeam.TeamStatus |= PBETeamStatus.Spikes;
-                        opposingTeam.SpikeCount++;
-                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
-                        return;
+                        if (opposingTeam.SpikeCount < 3)
+                        {
+                            opposingTeam.TeamStatus |= PBETeamStatus.Spikes;
+                            opposingTeam.SpikeCount++;
+                            BroadcastTeamStatus(opposingTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
+                            return;
+                        }
+                        break;
                     }
-                    break;
                 case PBETeamStatus.StealthRock:
-                    if (!opposingTeam.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                     {
-                        opposingTeam.TeamStatus |= PBETeamStatus.StealthRock;
-                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
-                        return;
+                        if (!opposingTeam.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
+                        {
+                            opposingTeam.TeamStatus |= PBETeamStatus.StealthRock;
+                            BroadcastTeamStatus(opposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
+                            return;
+                        }
+                        break;
                     }
-                    break;
                 case PBETeamStatus.ToxicSpikes:
-                    if (opposingTeam.ToxicSpikeCount < 2)
                     {
-                        opposingTeam.TeamStatus |= PBETeamStatus.ToxicSpikes;
-                        opposingTeam.ToxicSpikeCount++;
-                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
-                        return;
+                        if (opposingTeam.ToxicSpikeCount < 2)
+                        {
+                            opposingTeam.TeamStatus |= PBETeamStatus.ToxicSpikes;
+                            opposingTeam.ToxicSpikeCount++;
+                            BroadcastTeamStatus(opposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
+                            return;
+                        }
+                        break;
                     }
-                    break;
             }
             BroadcastMoveFailed(user, user, PBEFailReason.Default);
         }
@@ -1658,25 +1673,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (weather)
                 {
                     case PBEWeather.Hailstorm:
-                        turns = Settings.HailTurns;
-                        extensionItem = PBEItem.IcyRock;
-                        itemTurnExtension = Settings.IcyRockTurnExtension;
-                        break;
+                        {
+                            turns = Settings.HailTurns;
+                            extensionItem = PBEItem.IcyRock;
+                            itemTurnExtension = Settings.IcyRockTurnExtension;
+                            break;
+                        }
                     case PBEWeather.HarshSunlight:
-                        turns = Settings.SunTurns;
-                        extensionItem = PBEItem.HeatRock;
-                        itemTurnExtension = Settings.HeatRockTurnExtension;
-                        break;
+                        {
+                            turns = Settings.SunTurns;
+                            extensionItem = PBEItem.HeatRock;
+                            itemTurnExtension = Settings.HeatRockTurnExtension;
+                            break;
+                        }
                     case PBEWeather.Rain:
-                        turns = Settings.RainTurns;
-                        extensionItem = PBEItem.DampRock;
-                        itemTurnExtension = Settings.DampRockTurnExtension;
-                        break;
+                        {
+                            turns = Settings.RainTurns;
+                            extensionItem = PBEItem.DampRock;
+                            itemTurnExtension = Settings.DampRockTurnExtension;
+                            break;
+                        }
                     case PBEWeather.Sandstorm:
-                        turns = Settings.SandstormTurns;
-                        extensionItem = PBEItem.SmoothRock;
-                        itemTurnExtension = Settings.SmoothRockTurnExtension;
-                        break;
+                        {
+                            turns = Settings.SandstormTurns;
+                            extensionItem = PBEItem.SmoothRock;
+                            itemTurnExtension = Settings.SmoothRockTurnExtension;
+                            break;
+                        }
                     default: throw new ArgumentOutOfRangeException(nameof(weather));
                 }
 

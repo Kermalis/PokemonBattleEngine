@@ -2558,7 +2558,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Zubat = 41,
         Zweilous = 634
     }
-    public enum PBEMoveTarget : byte // Used in MoveData
+    public enum PBEMoveTarget : byte
     {
         All,                   // Every battler (Ex. Perish Song)
         AllFoes,               // Every foe (Ex. Stealth Rock)
