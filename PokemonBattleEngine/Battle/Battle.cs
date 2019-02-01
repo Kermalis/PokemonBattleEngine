@@ -261,8 +261,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToBegin} to begin the battle.");
             }
-            SwitchInQueuedPokemon();
-            RequestActions();
+            SwitchesOrActions();
         }
         // Runs a turn
         // Sets BattleState to PBEBattleState.Processing, then PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches/PBEBattleState.Ended
@@ -278,19 +277,111 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RunActionsInOrder();
             TurnEnded();
         }
-        // Sets BattleState to PBEBattleState.WaitingForActions
-        void RequestActions()
+        // Sets BattleState to PBEBattleState.Processing/PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches
+        void SwitchesOrActions()
         {
-            foreach (PBETeam team in Teams)
-            {
-                team.ActionsRequired.Clear();
-                team.ActionsRequired.AddRange(team.ActiveBattlers);
-            }
-            BattleState = PBEBattleState.WaitingForActions;
+            BattleState = PBEBattleState.Processing;
             OnStateChanged?.Invoke(this);
+
+            IEnumerable<PBETeam> teamsWithSwitchIns = Teams.Where(t => t.SwitchInQueue.Count > 0);
+            if (teamsWithSwitchIns.Count() > 0)
+            {
+                foreach (PBETeam team in teamsWithSwitchIns)
+                {
+                    ActiveBattlers.AddRange(team.SwitchInQueue);
+                    BroadcastPkmnSwitchIn(team, team.SwitchInQueue.Select(p => CreateSwitchInInfo(p)), false);
+                }
+                DoSwitchInEffects(teamsWithSwitchIns.SelectMany(t => t.SwitchInQueue));
+            }
+
             foreach (PBETeam team in Teams)
             {
-                BroadcastActionsRequest(team);
+                int available = team.NumPkmnAlive - team.NumPkmnOnField;
+                team.SwitchInsRequired = 0;
+                team.SwitchInQueue.Clear();
+                switch (BattleFormat)
+                {
+                    case PBEBattleFormat.Single:
+                        {
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
+                            {
+                                team.SwitchInsRequired = 1;
+                            }
+                            break;
+                        }
+                    case PBEBattleFormat.Double:
+                        {
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
+                            {
+                                available--;
+                                team.SwitchInsRequired++;
+                            }
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
+                            {
+                                team.SwitchInsRequired++;
+                            }
+                            break;
+                        }
+                    case PBEBattleFormat.Rotation:
+                    case PBEBattleFormat.Triple:
+                        {
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
+                            {
+                                available--;
+                                team.SwitchInsRequired++;
+                            }
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
+                            {
+                                available--;
+                                team.SwitchInsRequired++;
+                            }
+                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
+                            {
+                                team.SwitchInsRequired++;
+                            }
+                            break;
+                        }
+                    default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
+                }
+            }
+            teamsWithSwitchIns = Teams.Where(t => t.SwitchInsRequired > 0);
+            if (teamsWithSwitchIns.Count() > 0)
+            {
+                BattleState = PBEBattleState.WaitingForSwitchIns;
+                OnStateChanged?.Invoke(this);
+                foreach (PBETeam team in teamsWithSwitchIns)
+                {
+                    BroadcastSwitchInRequest(team);
+                }
+            }
+            else
+            {
+                // TODO: Turn began packet
+                // TODO: This should go for all Pokémon, and flinching and protected should be cleared on switch just in case (Set Status2 to None if possible)
+                foreach (PBEPokemon pkmn in ActiveBattlers)
+                {
+                    pkmn.SelectedAction.Decision = PBEDecision.None; // No longer necessary
+                    pkmn.Status2 &= ~PBEStatus2.Flinching;
+                    pkmn.Status2 &= ~PBEStatus2.Protected;
+
+                    // TODO: https://github.com/Kermalis/PokemonBattleEngine/issues/79
+                    if (pkmn.PreviousAction.Decision == PBEDecision.Fight && pkmn.PreviousAction.FightMove != PBEMove.Protect && pkmn.PreviousAction.FightMove != PBEMove.Detect)
+                    {
+                        pkmn.ProtectCounter = 0;
+                    }
+                }
+
+                foreach (PBETeam team in Teams)
+                {
+                    team.ActionsRequired.Clear();
+                    team.ActionsRequired.AddRange(team.ActiveBattlers);
+                }
+                BattleState = PBEBattleState.WaitingForActions;
+                OnStateChanged?.Invoke(this);
+                foreach (PBETeam team in Teams)
+                {
+                    BroadcastActionsRequest(team);
+                }
             }
         }
         IEnumerable<PBEPokemon> GetActingOrder(IEnumerable<PBEPokemon> pokemon, bool ignoreItemsThatActivate)
@@ -455,20 +546,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Verified: Effects before Reflect/LightScreen/LuckyChant
             DoTurnEndedEffects();
 
-            // TODO: This should go for all Pokémon, and flinching and protected should be cleared on switch just in case
-            foreach (PBEPokemon pkmn in ActiveBattlers)
-            {
-                pkmn.SelectedAction.Decision = PBEDecision.None; // No longer necessary
-                pkmn.Status2 &= ~PBEStatus2.Flinching;
-                pkmn.Status2 &= ~PBEStatus2.Protected;
-
-                // TODO: https://github.com/Kermalis/PokemonBattleEngine/issues/79
-                if (pkmn.PreviousAction.Decision == PBEDecision.Fight && pkmn.PreviousAction.FightMove != PBEMove.Protect && pkmn.PreviousAction.FightMove != PBEMove.Detect)
-                {
-                    pkmn.ProtectCounter = 0;
-                }
-            }
-
             // Verified: Reflect then Light Screen then Lucky Chant then Trick Room
             foreach (PBETeam team in Teams)
             {
@@ -512,79 +589,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            PBEBattleState nextState = PBEBattleState.WaitingForActions;
-            foreach (PBETeam team in Teams)
-            {
-                int available = team.NumPkmnAlive - team.NumPkmnOnField;
-                team.SwitchInsRequired = 0;
-                team.SwitchInQueue.Clear();
-                switch (BattleFormat)
-                {
-                    case PBEBattleFormat.Single:
-                        {
-                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
-                            {
-                                team.SwitchInsRequired = 1;
-                                nextState = PBEBattleState.WaitingForSwitchIns;
-                            }
-                            break;
-                        }
-                    case PBEBattleFormat.Double:
-                        {
-                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
-                            {
-                                available--;
-                                team.SwitchInsRequired++;
-                            }
-                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
-                            {
-                                team.SwitchInsRequired++;
-                            }
-                            if (team.SwitchInsRequired > 0)
-                            {
-                                nextState = PBEBattleState.WaitingForSwitchIns;
-                            }
-                            break;
-                        }
-                    case PBEBattleFormat.Rotation:
-                    case PBEBattleFormat.Triple:
-                        {
-                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Left) == null)
-                            {
-                                available--;
-                                team.SwitchInsRequired++;
-                            }
-                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Center) == null)
-                            {
-                                available--;
-                                team.SwitchInsRequired++;
-                            }
-                            if (available > 0 && team.TryGetPokemon(PBEFieldPosition.Right) == null)
-                            {
-                                team.SwitchInsRequired++;
-                            }
-                            if (team.SwitchInsRequired > 0)
-                            {
-                                nextState = PBEBattleState.WaitingForSwitchIns;
-                            }
-                            break;
-                        }
-                    default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
-                }
-            }
-            if (nextState == PBEBattleState.WaitingForSwitchIns)
-            {
-                BattleState = PBEBattleState.WaitingForSwitchIns;
-                OnStateChanged?.Invoke(this);
-                foreach (PBETeam team in Teams.Where(t => t.SwitchInsRequired > 0))
-                {
-                    BroadcastSwitchInRequest(team);
-                }
-            }
-            else // PBEBattleState.WaitingForActions
-            {
-                RequestActions();
-            }
+            SwitchesOrActions();
         }
     }
 }

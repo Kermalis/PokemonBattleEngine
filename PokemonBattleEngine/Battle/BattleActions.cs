@@ -296,8 +296,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (team.Battle.Teams.All(t => t.SwitchInsRequired == 0))
                 {
-                    team.Battle.SwitchInQueuedPokemon();
-                    team.Battle.RequestActions();
+                    team.Battle.SwitchesOrActions();
                 }
                 return true;
             }

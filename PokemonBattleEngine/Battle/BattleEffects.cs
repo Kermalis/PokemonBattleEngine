@@ -1367,19 +1367,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Shell.Species, pkmn.Shell.Nickname, pkmn.Shell.Level, pkmn.Shell.Shiny, pkmn.Shell.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
         }
-        // Switches in all Pokémon in PBETeam.SwitchInQueue
-        // Sets BattleState to PBEBattleState.Processing
-        void SwitchInQueuedPokemon()
-        {
-            BattleState = PBEBattleState.Processing;
-            OnStateChanged?.Invoke(this);
-            foreach (PBETeam team in Teams.Where(t => t.SwitchInQueue.Count > 0))
-            {
-                ActiveBattlers.AddRange(team.SwitchInQueue);
-                BroadcastPkmnSwitchIn(team, team.SwitchInQueue.Select(p => CreateSwitchInInfo(p)), false);
-            }
-            DoSwitchInEffects(Teams.SelectMany(t => t.SwitchInQueue));
-        }
         void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
         {
             PBEFieldPosition pos = pkmnLeaving.FieldPosition;
