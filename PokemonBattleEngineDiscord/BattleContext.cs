@@ -364,8 +364,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         switch (mep.Effectiveness)
                         {
                             case PBEEffectiveness.Ineffective: message = "It doesn't affect {0}..."; break;
-                            case PBEEffectiveness.NotVeryEffective: return;
-                            case PBEEffectiveness.Normal: message = "It's normally effective."; break;
+                            case PBEEffectiveness.NotVeryEffective: message = "It's not very effective..."; break;
+                            case PBEEffectiveness.Normal: return;
                             case PBEEffectiveness.SuperEffective: message = "It's super effective!"; break;
                             default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness));
                         }
