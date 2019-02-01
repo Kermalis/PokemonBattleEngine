@@ -1271,7 +1271,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEStatus2.Protected:
                     {
                         // TODO: If the user goes last, fail
-                        if (PBEUtils.RNG.ApplyChance(ushort.MaxValue / (2 * user.ProtectCounter), ushort.MaxValue))
+                        ushort chance = ushort.MaxValue;
+                        for (int i = 0; i < user.ProtectCounter; i++) // Avoid dividing by 0
+                        {
+                            chance /= 2;
+                        }
+                        if (PBEUtils.RNG.ApplyChance(chance, ushort.MaxValue))
                         {
                             user.Status2 |= PBEStatus2.Protected;
                             user.ProtectCounter++;
