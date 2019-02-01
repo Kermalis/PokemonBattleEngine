@@ -481,7 +481,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PP[i] = MaxPP[i] = (byte)(Moves[i] == PBEMove.None ? 0 : PBEMoveData.Data[Moves[i]].PPTier == 0 ? 1 : Team.Battle.Settings.PPMultiplier);
                 }
             }
-            ChoiceLockedMove = PBEMove.None;
+            if (!Moves.Contains(ChoiceLockedMove))
+            {
+                ChoiceLockedMove = PBEMove.None;
+            }
             Status2 |= PBEStatus2.Transformed;
         }
 
