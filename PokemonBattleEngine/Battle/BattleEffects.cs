@@ -1042,46 +1042,58 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (move)
             {
                 case PBEMove.Blizzard:
-                    if (Weather == PBEWeather.Hailstorm)
                     {
-                        return false;
+                        if (Weather == PBEWeather.Hailstorm)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            chance = mData.Accuracy;
+                        }
+                        break;
                     }
-                    else
-                    {
-                        chance = mData.Accuracy;
-                    }
-                    break;
                 case PBEMove.Fissure:
                 case PBEMove.Guillotine:
                 case PBEMove.HornDrill:
                 case PBEMove.SheerCold:
-                    chance = user.Shell.Level - target.Shell.Level + 30;
-                    goto roll; // Skip all modifiers
+                    {
+                        chance = user.Shell.Level - target.Shell.Level + 30;
+                        goto roll; // Skip all modifiers
+                    }
                 case PBEMove.Hurricane:
                 case PBEMove.Thunder:
-                    if (Weather == PBEWeather.Rain)
                     {
-                        return false;
+                        if (Weather == PBEWeather.Rain)
+                        {
+                            return false;
+                        }
+                        else if (Weather == PBEWeather.HarshSunlight)
+                        {
+                            chance = 50.0;
+                        }
+                        else
+                        {
+                            chance = mData.Accuracy;
+                        }
+                        break;
                     }
-                    else if (Weather == PBEWeather.HarshSunlight)
-                    {
-                        chance = 50.0;
-                    }
-                    else
-                    {
-                        chance = mData.Accuracy;
-                    }
-                    break;
                 default:
-                    if (mData.Accuracy == 0)
                     {
-                        return false;
+                        if (target.Ability == PBEAbility.WonderSkin && mData.Category == PBEMoveCategory.Status)
+                        {
+                            chance = 50;
+                        }
+                        else if (mData.Accuracy == 0)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            chance = mData.Accuracy;
+                        }
+                        break;
                     }
-                    else
-                    {
-                        chance = mData.Accuracy;
-                    }
-                    break;
             }
             chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
             if (user.Ability == PBEAbility.Compoundeyes)

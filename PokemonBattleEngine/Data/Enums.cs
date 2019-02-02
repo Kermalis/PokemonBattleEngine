@@ -2216,7 +2216,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The Pokémon is immune to all damaging moves except for moves that would deal super-effective damage.
         /// </summary>
         WonderGuard = 25, // TODO: Mold Breaker, Teravolt, Turboblaze, Role Play, Skill Swap
-        WonderSkin = 147, // TODO
+        WonderSkin = 147,
         ZenMode = 161, // TODO
         /// <summary>
         /// Invalid ability.
