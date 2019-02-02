@@ -374,10 +374,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     return;
                 }
 
-                // TODO: This should go for all Pokémon, and flinching and protected should be cleared on switch just in case (Set Status2 to None if possible)
                 foreach (PBEPokemon pkmn in ActiveBattlers)
                 {
-                    pkmn.SelectedAction.Decision = PBEDecision.None; // No longer necessary
                     pkmn.Status2 &= ~PBEStatus2.Flinching;
                     pkmn.Status2 &= ~PBEStatus2.Protected;
 

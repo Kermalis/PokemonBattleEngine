@@ -1209,6 +1209,11 @@ namespace Kermalis.PokemonBattleEngineMobile
                     }
                 case PBETurnBeganPacket tbp:
                     {
+                        foreach (PBEPokemon pkmn in Battle.ActiveBattlers)
+                        {
+                            pkmn.Status2 &= ~PBEStatus2.Flinching;
+                            pkmn.Status2 &= ~PBEStatus2.Protected;
+                        }
                         BattleView.AddMessage($"Turn {Battle.TurnNumber = tbp.TurnNumber}", false, true);
                         return true;
                     }

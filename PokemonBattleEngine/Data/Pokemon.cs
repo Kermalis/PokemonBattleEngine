@@ -423,28 +423,23 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 Status1Counter = 1;
             }
-            Status2 &= ~PBEStatus2.Confused;
+
+            Status2 = PBEStatus2.None;
             ConfusionCounter = ConfusionTurns = 0;
-            Status2 &= ~PBEStatus2.Cursed;
-            Status2 &= ~PBEStatus2.Disguised;
             DisguisedAsPokemon = null;
-            Status2 &= ~PBEStatus2.LeechSeed;
             SeededPosition = PBEFieldPosition.None;
-            Status2 &= ~PBEStatus2.Minimized;
-            Status2 &= ~PBEStatus2.Pumped;
-            Status2 &= ~PBEStatus2.Substitute;
             SubstituteHP = 0;
-            if (Status2.HasFlag(PBEStatus2.Transformed))
-            {
-                Status2 &= ~PBEStatus2.Transformed;
-                if (Id != byte.MaxValue)
-                {
-                    CalculateStats();
-                }
-            }
 
             TempLockedMove = ChoiceLockedMove = PBEMove.None;
             TempLockedTargets = PBETarget.None;
+
+            // TODO: Temporary: https://github.com/Kermalis/PokemonBattleEngine/issues/79
+            ProtectCounter = 0;
+
+            if (Id != byte.MaxValue)
+            {
+                CalculateStats();
+            }
         }
 
         /// <summary>
