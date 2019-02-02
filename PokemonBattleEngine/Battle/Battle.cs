@@ -283,9 +283,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (Winner != null)
             {
+                BroadcastWinner(Winner);
                 BattleState = PBEBattleState.Ended;
                 OnStateChanged?.Invoke(this);
-                BroadcastWinner(Winner);
                 return true;
             }
             return false;
