@@ -2,6 +2,7 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -72,7 +73,13 @@ namespace Kermalis.PokemonBattleEngine
                         {
                             foreach (PBETeam team in battle.Teams)
                             {
-                                PBEBattle.SelectActionsIfValid(team, AIManager.CreateActions(team));
+                                IEnumerable<PBEAction> actions = AIManager.CreateActions(team);
+                                bool valid = PBEBattle.AreActionsValid(team, actions);
+                                if (!valid)
+                                {
+                                    throw new Exception($"{team.TrainerName}'s AI created invalid actions!");
+                                }
+                                PBEBattle.SelectActionsIfValid(team, actions);
                             }
                             break;
                         }
@@ -80,7 +87,13 @@ namespace Kermalis.PokemonBattleEngine
                         {
                             foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
                             {
-                                PBEBattle.SelectSwitchesIfValid(team, AIManager.CreateSwitches(team));
+                                IEnumerable<Tuple<byte, PBEFieldPosition>> switches = AIManager.CreateSwitches(team);
+                                bool valid = PBEBattle.AreSwitchesValid(team, switches);
+                                if (!valid)
+                                {
+                                    throw new Exception($"{team.TrainerName}'s AI created invalid switches!");
+                                }
+                                PBEBattle.SelectSwitchesIfValid(team, switches);
                             }
                             break;
                         }
