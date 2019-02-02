@@ -2205,7 +2205,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unaware = 109, // TODO
         Unburden = 84, // TODO
         Unnerve = 127, // TODO
-        VictoryStar = 162, // TODO
+        VictoryStar = 162,
         VitalSpirit = 72, // TODO
         VoltAbsorb = 10, // TODO
         WaterAbsorb = 11, // TODO
