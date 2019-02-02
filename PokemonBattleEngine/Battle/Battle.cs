@@ -278,7 +278,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RunActionsInOrder();
             TurnEnded();
         }
-        // Sets BattleState to PBEBattleState.Processing/PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches
+        // Sets BattleState to PBEBattleState.Ended
+        bool WinCheck()
+        {
+            if (Winner != null)
+            {
+                BattleState = PBEBattleState.Ended;
+                OnStateChanged?.Invoke(this);
+                BroadcastWinner(Winner);
+                return true;
+            }
+            return false;
+        }
+        // Sets BattleState to PBEBattleState.Processing/PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches/PBEBattleState.Ended
         void SwitchesOrActions()
         {
             BattleState = PBEBattleState.Processing;
@@ -357,6 +369,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
+                if (WinCheck())
+                {
+                    return;
+                }
+
                 // TODO: This should go for all Pokémon, and flinching and protected should be cleared on switch just in case (Set Status2 to None if possible)
                 foreach (PBEPokemon pkmn in ActiveBattlers)
                 {
@@ -375,6 +392,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.ActionsRequired.Clear();
                     team.ActionsRequired.AddRange(team.ActiveBattlers);
                 }
+
                 TurnNumber++;
                 BroadcastTurnBegan();
                 BattleState = PBEBattleState.WaitingForActions;
@@ -525,11 +543,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Sets BattleState to PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches/PBEBattleState.Ended
         void TurnEnded()
         {
-            if (Winner != null)
+            if (WinCheck())
             {
-                BroadcastWinner(Winner);
-                BattleState = PBEBattleState.Ended;
-                OnStateChanged?.Invoke(this);
                 return;
             }
 
@@ -546,6 +561,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             // Verified: Effects before Reflect/LightScreen/LuckyChant
             DoTurnEndedEffects();
+
+            if (WinCheck())
+            {
+                return;
+            }
 
             // Verified: Reflect then Light Screen then Lucky Chant then Trick Room
             foreach (PBETeam team in Teams)
