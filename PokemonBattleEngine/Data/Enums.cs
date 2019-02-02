@@ -2052,7 +2052,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The Pokémon's defense is boosted when it is afflicted with a <see cref="PBEStatus1"/>.
         /// </summary>
         MarvelScale = 63,
-        Minus = 58, // TODO
+        Minus = 58,
         MoldBreaker = 104, // TODO
         Moody = 141, // TODO
         MotorDrive = 78, // TODO
@@ -2081,7 +2081,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         OwnTempo = 20, // TODO
         Pickpocket = 124, // TODO
         Pickup = 53, // TODO
-        Plus = 57, // TODO
+        Plus = 57,
         PoisonHeal = 90, // TODO
         PoisonPoint = 38, // TODO
         PoisonTouch = 143, // TODO

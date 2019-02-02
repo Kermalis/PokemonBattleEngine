@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -935,6 +936,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 spAttack *= 1.5;
             }
             if (user.Item == PBEItem.ChoiceSpecs)
+            {
+                spAttack *= 1.5;
+            }
+            if ((user.Ability == PBEAbility.Minus || user.Ability == PBEAbility.Plus) && user.Team.ActiveBattlers.Any(p => p != user && (p.Ability == PBEAbility.Minus || p.Ability == PBEAbility.Plus)))
             {
                 spAttack *= 1.5;
             }
