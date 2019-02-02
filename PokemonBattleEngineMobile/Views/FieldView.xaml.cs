@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineMobile.Infrastructure;
 using System;

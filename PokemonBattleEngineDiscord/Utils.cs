@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.Generic;
 using System.Net;
