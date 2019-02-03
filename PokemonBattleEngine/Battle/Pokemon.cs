@@ -123,7 +123,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #endregion
 
         #region Actions
-        public PBEAction SelectedAction { get; set; }
+        public PBEAction SelectedAction; // Must be a field
         public List<PBEExecutedMove> ExecutedMoves { get; } = new List<PBEExecutedMove>();
         /// <summary>
         /// The move the Pokémon is forced to use by multi-turn moves.
