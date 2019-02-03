@@ -112,10 +112,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// </summary>
         public PBEFieldPosition SeededPosition { get; set; }
         /// <summary>
-        /// The amount of consecutive turns the Pokémon has used protection.
-        /// </summary>
-        public byte ProtectCounter { get; set; }
-        /// <summary>
         /// The amount of HP the Pokémon's <see cref="PBEStatus2.Substitute"/> has left.
         /// </summary>
         public ushort SubstituteHP { get; set; }
@@ -127,7 +123,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #endregion
 
         #region Actions
-        public PBEAction PreviousAction, SelectedAction;
+        public PBEAction SelectedAction { get; set; }
+        public List<PBEExecutedMove> ExecutedMoves { get; } = new List<PBEExecutedMove>();
         /// <summary>
         /// The move the Pokémon is forced to use by multi-turn moves.
         /// </summary>
@@ -284,8 +281,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             TempLockedMove = ChoiceLockedMove = PBEMove.None;
             TempLockedTargets = PBETarget.None;
 
-            // TODO: Temporary: https://github.com/Kermalis/PokemonBattleEngine/issues/79
-            ProtectCounter = 0;
+            ExecutedMoves.Clear();
 
             if (Id != byte.MaxValue)
             {

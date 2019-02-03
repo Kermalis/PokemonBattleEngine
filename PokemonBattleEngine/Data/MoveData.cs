@@ -1708,7 +1708,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.Minimize, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeUser_EVA, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },

@@ -306,12 +306,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     pkmn.Status2 &= ~PBEStatus2.Flinching;
                     pkmn.Status2 &= ~PBEStatus2.Protected;
-
-                    // TODO: https://github.com/Kermalis/PokemonBattleEngine/issues/79
-                    if (pkmn.PreviousAction.Decision == PBEDecision.Fight && pkmn.PreviousAction.FightMove != PBEMove.Protect && pkmn.PreviousAction.FightMove != PBEMove.Detect)
-                    {
-                        pkmn.ProtectCounter = 0;
-                    }
                 }
                 foreach (PBETeam team in Teams)
                 {
@@ -462,7 +456,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         default: throw new ArgumentOutOfRangeException(nameof(pkmn.SelectedAction.Decision));
                     }
-                    pkmn.PreviousAction = pkmn.SelectedAction;
                 }
             }
         }

@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x06;
         public IEnumerable<byte> Buffer { get; }
 
-        public class PBESwitchInInfo
+        public sealed class PBESwitchInInfo
         {
             public byte PokemonId { get; }
             public byte DisguisedAsId { get; }

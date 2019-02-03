@@ -146,10 +146,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEDecision.Fight:
                             {
-                                if (pkmn.Item == PBEItem.ChoiceBand || pkmn.Item == PBEItem.ChoiceScarf || pkmn.Item == PBEItem.ChoiceSpecs)
-                                {
-                                    pkmn.ChoiceLockedMove = pkmn.SelectedAction.FightMove;
-                                }
                                 switch (pkmn.GetMoveTargets(pkmn.SelectedAction.FightMove))
                                 {
                                     case PBEMoveTarget.RandomFoeSurrounding:

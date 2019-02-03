@@ -692,14 +692,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     }
                                     break;
                                 }
-                            case PBEStatus2.Minimized:
-                                {
-                                    switch (s2p.StatusAction)
-                                    {
-                                        case PBEStatusAction.Added: return;
-                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
-                                    }
-                                }
                             case PBEStatus2.Protected:
                                 {
                                     switch (s2p.StatusAction)

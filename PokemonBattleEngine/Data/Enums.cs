@@ -533,41 +533,37 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         LeechSeed = 1 << 6,
         /// <summary>
-        /// The Pokémon is minimized and will take double damage from <see cref="PBEMove.Steamroller"/> and <see cref="PBEMove.Stomp"/>.
-        /// </summary>
-        Minimized = 1 << 7,
-        /// <summary>
         /// The Pokémon is protected from moves this turn.
         /// </summary>
-        Protected = 1 << 8,
+        Protected = 1 << 7,
         /// <summary>
         /// The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.
         /// </summary>
-        Pumped = 1 << 9,
+        Pumped = 1 << 8,
         /// <summary>
         /// The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.
         /// </summary>
-        Substitute = 1 << 10,
+        Substitute = 1 << 9,
         /// <summary>
         /// The Pokémon is unable to use the same move two times in a row.
         /// </summary>
-        Tormented = 1 << 11, // TODO
+        Tormented = 1 << 10, // TODO
         /// <summary>
         /// The Pokémon is transformed into another Pokémon.
         /// </summary>
-        Transformed = 1 << 12,
+        Transformed = 1 << 11,
         /// <summary>
         /// The Pokémon is underground.
         /// A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.
         /// </summary>
-        Underground = 1 << 13,
+        Underground = 1 << 12,
         /// <summary>
         /// The Pokémon is underwater.
         /// A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.
         /// </summary>
-        Underwater = 1 << 14
+        Underwater = 1 << 13
     }
     /// <summary>
     /// Represents a specific <see cref="PBEBattle"/>'s status.
@@ -765,6 +761,10 @@ namespace Kermalis.PokemonBattleEngine.Data
     public enum PBEFailReason : byte
     {
         /// <summary>
+        /// The move did not fail.
+        /// </summary>
+        None,
+        /// <summary>
         /// The move failed because the target already has <see cref="PBEStatus1.Asleep"/>.
         /// </summary>
         AlreadyAsleep,
@@ -796,6 +796,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The move tried to heal a Pokémon's HP when it was already full.
         /// </summary>
         HPFull,
+        /// <summary>
+        /// The move failed because the Pokémon was unaffected by the move.
+        /// </summary>
+        Ineffective,
         /// <summary>
         /// The move was used when there were no available targets to hit.
         /// </summary>
@@ -2706,7 +2710,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         LuckyChant,
-        Minimize,
         Moonlight,
         OneHitKnockout,
         PainSplit,

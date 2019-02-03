@@ -729,11 +729,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_TryForceTeamStatus(user, move, PBETeamStatus.LuckyChant);
                         break;
                     }
-                case PBEMoveEffect.Minimize:
-                    {
-                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.Minimized);
-                        break;
-                    }
                 case PBEMoveEffect.Moonlight:
                     {
                         Ef_Moonlight(user, move);
@@ -1229,6 +1224,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
+        void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason, IList<PBEExecutedMove.PBETargetSuccess> targets)
+        {
+            user.ExecutedMoves.Add(new PBEExecutedMove(TurnNumber, move, failReason, targets));
+            if ((user.Item == PBEItem.ChoiceBand || user.Item == PBEItem.ChoiceScarf || user.Item == PBEItem.ChoiceSpecs) && user.Moves.Contains(move))
+            {
+                user.ChoiceLockedMove = move;
+            }
+        }
+
         // Broadcasts the event
         void PPReduce(PBEPokemon pkmn, PBEMove move)
         {
@@ -1326,38 +1330,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
         }
 
-        // Returns true if the status was applied
-        // Broadcasts the change if applied
-        bool ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastFailOrEffectiveness)
+        PBEFailReason ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastFailOrEffectiveness)
         {
             if (target.Status1 != PBEStatus1.None || target.Status2.HasFlag(PBEStatus2.Substitute))
             {
+                PBEFailReason failReason;
+                if (target.Status1 == PBEStatus1.Asleep && status == PBEStatus1.Asleep)
+                {
+                    failReason = PBEFailReason.AlreadyAsleep;
+                }
+                else if (target.Status1 == PBEStatus1.Burned && status == PBEStatus1.Burned)
+                {
+                    failReason = PBEFailReason.AlreadyBurned;
+                }
+                else if (target.Status1 == PBEStatus1.Paralyzed && status == PBEStatus1.Paralyzed)
+                {
+                    failReason = PBEFailReason.AlreadyParalyzed;
+                }
+                else if ((target.Status1 == PBEStatus1.BadlyPoisoned || target.Status1 == PBEStatus1.Poisoned) && (status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned))
+                {
+                    failReason = PBEFailReason.AlreadyPoisoned;
+                }
+                else
+                {
+                    failReason = PBEFailReason.Default;
+                }
+
                 if (broadcastFailOrEffectiveness)
                 {
-                    PBEFailReason failReason;
-                    if (target.Status1 == PBEStatus1.Asleep && status == PBEStatus1.Asleep)
-                    {
-                        failReason = PBEFailReason.AlreadyAsleep;
-                    }
-                    else if (target.Status1 == PBEStatus1.Burned && status == PBEStatus1.Burned)
-                    {
-                        failReason = PBEFailReason.AlreadyBurned;
-                    }
-                    else if (target.Status1 == PBEStatus1.Paralyzed && status == PBEStatus1.Paralyzed)
-                    {
-                        failReason = PBEFailReason.AlreadyParalyzed;
-                    }
-                    else if ((target.Status1 == PBEStatus1.BadlyPoisoned || target.Status1 == PBEStatus1.Poisoned) && (status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned))
-                    {
-                        failReason = PBEFailReason.AlreadyPoisoned;
-                    }
-                    else
-                    {
-                        failReason = PBEFailReason.Default;
-                    }
                     BroadcastMoveFailed(user, target, failReason);
                 }
-                return false;
+                return failReason;
             }
             if (status == PBEStatus1.Paralyzed && target.Ability == PBEAbility.Limber)
             {
@@ -1366,7 +1369,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastAbility(target, target, PBEAbility.Limber, PBEAbilityAction.PreventedStatus);
                     BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                 }
-                return false;
+                return PBEFailReason.Ineffective;
             }
             if ((status == PBEStatus1.Burned && target.HasType(PBEType.Fire))
                 || (status == PBEStatus1.Frozen && target.HasType(PBEType.Ice))
@@ -1376,7 +1379,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                 }
-                return false;
+                return PBEFailReason.Ineffective;
             }
 
             target.Status1 = status;
@@ -1389,11 +1392,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 target.SleepTurns = (byte)PBEUtils.RNG.Next(Settings.SleepMinTurns, Settings.SleepMaxTurns + 1);
             }
             BroadcastStatus1(target, user, status, PBEStatusAction.Added);
-            return true;
+            return PBEFailReason.None;
         }
-        // Returns true if the status was applied
-        // Broadcasts the change if applied and required
-        bool ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastFailOrEffectiveness)
+        PBEFailReason ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastFailOrEffectiveness)
         {
             PBEFailReason failReason;
             switch (status)
@@ -1406,13 +1407,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             target.Status2 |= PBEStatus2.Confused;
                             target.ConfusionTurns = (byte)PBEUtils.RNG.Next(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns + 1);
                             BroadcastStatus2(target, user, PBEStatus2.Confused, PBEStatusAction.Added);
-                            return true;
+                            failReason = PBEFailReason.None;
                         }
                         else
                         {
                             failReason = alreadyConfused ? PBEFailReason.AlreadyConfused : PBEFailReason.Default;
-                            break;
                         }
+                        break;
                     }
                 case PBEStatus2.Cursed:
                     {
@@ -1422,26 +1423,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastStatus2(target, user, PBEStatus2.Cursed, PBEStatusAction.Added);
                             DealDamage(user, user, (ushort)(user.MaxHP / 2), true);
                             FaintCheck(user);
-                            return true;
+                            failReason = PBEFailReason.None;
                         }
                         else
                         {
                             failReason = PBEFailReason.Default;
-                            break;
                         }
+                        break;
                     }
                 case PBEStatus2.Flinching:
                     {
                         if (!target.Status2.HasFlag(PBEStatus2.Substitute))
                         {
                             target.Status2 |= status;
-                            return true;
+                            failReason = PBEFailReason.None;
                         }
                         else
                         {
-                            failReason = PBEFailReason.Default; // Never used
-                            break;
+                            failReason = PBEFailReason.Default; // Never used (broadcastFailOrEffectiveness)
                         }
+                        break;
                     }
                 case PBEStatus2.LeechSeed:
                     {
@@ -1451,49 +1452,48 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                             }
-                            return false;
+                            failReason = PBEFailReason.Ineffective;
                         }
                         else if (!target.Status2.HasFlag(PBEStatus2.LeechSeed) && !target.Status2.HasFlag(PBEStatus2.Substitute))
                         {
                             target.Status2 |= PBEStatus2.LeechSeed;
                             target.SeededPosition = user.FieldPosition;
                             BroadcastStatus2(target, user, PBEStatus2.LeechSeed, PBEStatusAction.Added);
-                            return true;
+                            failReason = PBEFailReason.None;
                         }
                         else
                         {
                             failReason = PBEFailReason.Default;
-                            break;
                         }
-                    }
-                case PBEStatus2.Minimized:
-                    {
-                        user.Status2 |= PBEStatus2.Minimized;
-                        BroadcastStatus2(user, user, PBEStatus2.Minimized, PBEStatusAction.Added);
-                        ApplyStatChange(user, PBEStat.Evasion, +2);
-                        return true;
+                        break;
                     }
                 case PBEStatus2.Protected:
                     {
                         // TODO: If the user goes last, fail
                         ushort chance = ushort.MaxValue;
-                        for (int i = 0; i < user.ProtectCounter; i++) // Avoid dividing by 0
+                        for (int i = user.ExecutedMoves.Count - 1; i >= 0; i--)
                         {
-                            chance /= 2;
+                            PBEExecutedMove ex = user.ExecutedMoves[i];
+                            if ((ex.Move == PBEMove.Detect || ex.Move == PBEMove.Protect) && ex.FailReason == PBEFailReason.None)
+                            {
+                                chance /= 2;
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
                         if (PBEUtils.RNG.ApplyChance(chance, ushort.MaxValue))
                         {
                             user.Status2 |= PBEStatus2.Protected;
-                            user.ProtectCounter++;
                             BroadcastStatus2(user, user, PBEStatus2.Protected, PBEStatusAction.Added);
-                            return true;
+                            failReason = PBEFailReason.None;
                         }
                         else
                         {
-                            user.ProtectCounter = 0;
                             failReason = PBEFailReason.Default;
-                            break;
                         }
+                        break;
                     }
                 case PBEStatus2.Pumped:
                     {
@@ -1501,13 +1501,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             user.Status2 |= status;
                             BroadcastStatus2(user, user, PBEStatus2.Pumped, PBEStatusAction.Added);
-                            return true;
+                            failReason = PBEFailReason.None;
                         }
                         else
                         {
                             failReason = PBEFailReason.Default;
-                            break;
                         }
+                        break;
                     }
                 case PBEStatus2.Substitute:
                     {
@@ -1519,13 +1519,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             user.Status2 |= PBEStatus2.Substitute;
                             user.SubstituteHP = hpRequired;
                             BroadcastStatus2(user, user, PBEStatus2.Substitute, PBEStatusAction.Added);
-                            return true;
+                            failReason = PBEFailReason.None;
                         }
                         else
                         {
                             failReason = alreadyHasSubstitute ? PBEFailReason.AlreadySubstituted : PBEFailReason.Default;
-                            break;
                         }
+                        break;
                     }
                 case PBEStatus2.Transformed:
                     {
@@ -1537,21 +1537,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             user.Transform(target);
                             BroadcastTransform(user, target);
                             BroadcastStatus2(user, target, PBEStatus2.Transformed, PBEStatusAction.Added);
-                            return true;
+                            failReason = PBEFailReason.None;
                         }
                         else
                         {
                             failReason = PBEFailReason.Default;
-                            break;
                         }
+                        break;
                     }
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
-            if (broadcastFailOrEffectiveness)
+            if (failReason != PBEFailReason.None && broadcastFailOrEffectiveness)
             {
                 BroadcastMoveFailed(user, target, failReason);
             }
-            return false;
+            return failReason;
         }
 
         PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEPokemon pkmn)
@@ -1589,10 +1589,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             DoSwitchInEffects(new[] { pkmnComing });
         }
 
-        void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
+        void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess,
             PBEType? overridingMoveType = null,
             Func<int, int> recoilFunc = null,
-            Func<PBEPokemon, bool> beforeDoingDamage = null,
+            Func<PBEPokemon, PBEFailReason> beforeDoingDamage = null,
             Action<PBEPokemon> beforePostHit = null,
             Action<PBEPokemon, ushort> afterPostHit = null,
             Action beforeTargetsFaint = null)
@@ -1605,48 +1605,66 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double basePower = CalculateBasePower(user, targets, move, moveType);
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP == 0 || MissCheck(user, target, move))
+                var success = new PBEExecutedMove.PBETargetSuccess
                 {
-                    continue;
-                }
-
-                double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
-                TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref damageMultiplier, false);
-                if (moveEffectiveness == PBEEffectiveness.Ineffective)
+                    Target = target,
+                    OldHP = target.HP,
+                    OldHPPercentage = target.HPPercentage
+                };
+                if (MissCheck(user, target, move))
                 {
-                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                    continue;
+                    success.Missed = true;
                 }
-
-                // Brick Break destroys Light Screen and Reflect before doing damage
-                // Dream Eater checks for sleep before doing damage
-                if (beforeDoingDamage != null && beforeDoingDamage.Invoke(target))
+                else
                 {
-                    continue;
-                }
+                    double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
+                    TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref damageMultiplier, false);
+                    if (moveEffectiveness == PBEEffectiveness.Ineffective)
+                    {
+                        success.FailReason = PBEFailReason.Ineffective;
+                        BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    }
+                    else
+                    {
+                        // Brick Break destroys Light Screen and Reflect before doing damage
+                        // Dream Eater checks for sleep before doing damage
+                        if (beforeDoingDamage != null)
+                        {
+                            success.FailReason = beforeDoingDamage.Invoke(target);
+                            if (success.FailReason != PBEFailReason.None)
+                            {
+                                goto record;
+                            }
+                        }
 
-                bool criticalHit = CritCheck(user, target, move);
-                damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, moveEffectiveness, criticalHit);
-                ushort damage = (ushort)(damageMultiplier * CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, criticalHit));
-                ushort damageDealt = DealDamage(user, target, damage, false);
-                totalDamageDealt += damageDealt;
+                        success.CriticalHit = CritCheck(user, target, move);
+                        damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, moveEffectiveness, success.CriticalHit);
+                        ushort damage = (ushort)(damageMultiplier * CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, success.CriticalHit));
+                        ushort damageDealt = DealDamage(user, target, damage, false);
+                        totalDamageDealt += damageDealt;
 
-                BroadcastEffectiveness(target, moveEffectiveness);
-                if (criticalHit)
-                {
-                    BroadcastMoveCrit();
-                }
+                        BroadcastEffectiveness(target, moveEffectiveness);
+                        if (success.CriticalHit)
+                        {
+                            BroadcastMoveCrit();
+                        }
 
-                hit++;
-                if (!target.Status2.HasFlag(PBEStatus2.Substitute))
-                {
-                    lifeOrbDamage = true;
+                        hit++;
+                        if (!target.Status2.HasFlag(PBEStatus2.Substitute))
+                        {
+                            lifeOrbDamage = true;
+                        }
+                        // Target's statuses are assigned and target's stats are changed before post-hit effects
+                        beforePostHit?.Invoke(target);
+                        DoPostHitEffects(user, target, move);
+                        // HP-draining moves restore HP after post-hit effects
+                        afterPostHit?.Invoke(target, damageDealt);
+                    }
                 }
-                // Target's statuses are assigned and target's stats are changed before post-hit effects
-                beforePostHit?.Invoke(target);
-                DoPostHitEffects(user, target, move);
-                // HP-draining moves restore HP after post-hit effects
-                afterPostHit?.Invoke(target, damageDealt);
+            record:
+                success.NewHP = target.HP;
+                success.NewHPPercentage = target.HPPercentage;
+                targetSuccess.Add(success);
             }
 
             if (hit > 0)
@@ -1657,43 +1675,59 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     FaintCheck(target);
                 }
-                ushort recoilDamage = (ushort)(recoilFunc == null ? 0 : recoilFunc.Invoke(totalDamageDealt));
-                DoPostAttackedEffects(user, !lifeOrbDamage, recoilDamage);
             }
+            ushort recoilDamage = (ushort)(recoilFunc == null ? 0 : recoilFunc.Invoke(totalDamageDealt));
+            DoPostAttackedEffects(user, !lifeOrbDamage, recoilDamage);
         }
-        void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, Func<PBEPokemon, ushort> damageFunc,
-            Func<PBEPokemon, bool> afterMissCheck = null)
+        void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess, Func<PBEPokemon, ushort> damageFunc,
+            Func<PBEPokemon, PBEFailReason> afterMissCheck = null)
         {
             byte hit = 0;
             PBEType moveType = user.GetMoveType(move);
             foreach (PBEPokemon target in targets)
             {
-                if (target.HP == 0 || MissCheck(user, target, move))
+                var success = new PBEExecutedMove.PBETargetSuccess
                 {
-                    continue;
+                    Target = target,
+                    OldHP = target.HP,
+                    OldHPPercentage = target.HPPercentage
+                };
+                if (MissCheck(user, target, move))
+                {
+                    success.Missed = true;
                 }
-                // Endeavor fails if the target's HP is <= the user's HP
-                if (afterMissCheck != null)
+                else
                 {
-                    if (!afterMissCheck.Invoke(target))
+                    // Endeavor fails if the target's HP is <= the user's HP
+                    if (afterMissCheck != null)
                     {
-                        continue;
+                        success.FailReason = afterMissCheck.Invoke(target);
+                        if (success.FailReason != PBEFailReason.None)
+                        {
+                            goto record;
+                        }
+                    }
+
+                    double d = 1.0;
+                    TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref d, false);
+                    if (moveEffectiveness == PBEEffectiveness.Ineffective)
+                    {
+                        success.FailReason = PBEFailReason.Ineffective;
+                        BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                    }
+                    else
+                    {
+                        // Damage func is run and the output is dealt to target
+                        DealDamage(user, target, damageFunc.Invoke(target), false);
+
+                        hit++;
+                        DoPostHitEffects(user, target, move);
                     }
                 }
-
-                double d = 1.0;
-                TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref d, false);
-                if (moveEffectiveness == PBEEffectiveness.Ineffective)
-                {
-                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                    continue;
-                }
-
-                // Damage func is run and the output is dealt to target
-                DealDamage(user, target, damageFunc.Invoke(target), false);
-
-                hit++;
-                DoPostHitEffects(user, target, move);
+            record:
+                success.NewHP = target.HP;
+                success.NewHPPercentage = target.HPPercentage;
+                targetSuccess.Add(success);
             }
 
             if (hit > 0)
@@ -1702,59 +1736,95 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     FaintCheck(target);
                 }
-                DoPostAttackedEffects(user, true);
             }
+            DoPostAttackedEffects(user, true);
         }
 
         void Ef_TryForceStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (target.HP == 0 || MissCheck(user, target, move))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    continue;
-                }
-
-                double d = 1.0;
-                PBEType moveType = user.GetMoveType(move);
-                TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref d, true);
-                if (moveEffectiveness == PBEEffectiveness.Ineffective) // Paralysis, Normalize
-                {
-                    BroadcastEffectiveness(target, moveEffectiveness);
-                }
-                else
-                {
-                    ApplyStatus1IfPossible(user, target, status, true);
+                    var success = new PBEExecutedMove.PBETargetSuccess
+                    {
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
+                    }
+                    else
+                    {
+                        double d = 1.0;
+                        PBEType moveType = user.GetMoveType(move);
+                        TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref d, true);
+                        if (moveEffectiveness == PBEEffectiveness.Ineffective) // Paralysis, Normalize
+                        {
+                            success.FailReason = PBEFailReason.Ineffective;
+                            BroadcastEffectiveness(target, moveEffectiveness);
+                        }
+                        else
+                        {
+                            success.FailReason = ApplyStatus1IfPossible(user, target, status, true);
+                        }
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
             }
+            RecordExecutedMove(user, move, PBEFailReason.NoTarget, targetSuccess);
+            return;
         }
         void Ef_TryForceStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (target.HP == 0 || MissCheck(user, target, move))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    continue;
+                    var success = new PBEExecutedMove.PBETargetSuccess
+                    {
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
+                    }
+                    else
+                    {
+                        success.FailReason = ApplyStatus2IfPossible(user, target, status, true);
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
-
-                ApplyStatus2IfPossible(user, target, status, true);
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_TryForceBattleStatus(PBEPokemon user, PBEMove move, PBEBattleStatus status)
         {
@@ -1779,10 +1849,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         break;
                     }
+                default: throw new ArgumentOutOfRangeException(nameof(status));
             }
+            RecordExecutedMove(user, move, PBEFailReason.None, new PBEExecutedMove.PBETargetSuccess[0]);
         }
         void Ef_TryForceTeamStatus(PBEPokemon user, PBEMove move, PBETeamStatus status)
         {
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
 
@@ -1796,7 +1869,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             user.Team.TeamStatus |= PBETeamStatus.LightScreen;
                             user.Team.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
                             BroadcastTeamStatus(user.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
-                            return;
+                            failReason = PBEFailReason.None;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
                         }
                         break;
                     }
@@ -1807,7 +1884,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             user.Team.TeamStatus |= PBETeamStatus.LuckyChant;
                             user.Team.LuckyChantCount = 5;
                             BroadcastTeamStatus(user.Team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Added);
-                            return;
+                            failReason = PBEFailReason.None;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
                         }
                         break;
                     }
@@ -1818,7 +1899,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             user.Team.TeamStatus |= PBETeamStatus.Reflect;
                             user.Team.ReflectCount = (byte)(Settings.ReflectTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
                             BroadcastTeamStatus(user.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
-                            return;
+                            failReason = PBEFailReason.None;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
                         }
                         break;
                     }
@@ -1829,7 +1914,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             opposingTeam.TeamStatus |= PBETeamStatus.Spikes;
                             opposingTeam.SpikeCount++;
                             BroadcastTeamStatus(opposingTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
-                            return;
+                            failReason = PBEFailReason.None;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
                         }
                         break;
                     }
@@ -1839,7 +1928,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             opposingTeam.TeamStatus |= PBETeamStatus.StealthRock;
                             BroadcastTeamStatus(opposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
-                            return;
+                            failReason = PBEFailReason.None;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
                         }
                         break;
                     }
@@ -1850,24 +1943,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             opposingTeam.TeamStatus |= PBETeamStatus.ToxicSpikes;
                             opposingTeam.ToxicSpikeCount++;
                             BroadcastTeamStatus(opposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
-                            return;
+                            failReason = PBEFailReason.None;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
                         }
                         break;
                     }
+                default: throw new ArgumentOutOfRangeException(nameof(status));
             }
-            BroadcastMoveFailed(user, user, PBEFailReason.Default);
-        }
-        void Ef_TryForceWeather(PBEPokemon user, PBEMove move, PBEWeather weather)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-
-            if (Weather == weather)
+            if (failReason != PBEFailReason.None)
             {
                 BroadcastMoveFailed(user, user, PBEFailReason.Default);
             }
+            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
+        }
+        void Ef_TryForceWeather(PBEPokemon user, PBEMove move, PBEWeather weather)
+        {
+            PBEFailReason failReason;
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (Weather == weather)
+            {
+                failReason = PBEFailReason.Default;
+                BroadcastMoveFailed(user, user, failReason);
+            }
             else
             {
+                failReason = PBEFailReason.None;
                 byte turns;
                 PBEItem extensionItem;
                 byte itemTurnExtension;
@@ -1903,82 +2007,110 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     default: throw new ArgumentOutOfRangeException(nameof(weather));
                 }
-
                 Weather = weather;
                 WeatherCounter = (byte)(turns + (user.Item == extensionItem ? itemTurnExtension : 0));
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
             }
+            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
         }
         void Ef_Hit__MaybeInflictStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status, int chanceToInflict)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            void BeforePostHit(PBEPokemon target)
+            else
             {
-                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToInflict, 100))
+                failReason = PBEFailReason.None;
+                void BeforePostHit(PBEPokemon target)
                 {
-                    ApplyStatus1IfPossible(user, target, status, false);
+                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToInflict, 100))
+                    {
+                        ApplyStatus1IfPossible(user, target, status, false);
+                    }
                 }
+                BasicHit(user, targets, move, ref targetSuccess, beforePostHit: BeforePostHit);
             }
-
-            BasicHit(user, targets, move, beforePostHit: BeforePostHit);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Hit__MaybeInflictStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status, int chanceToInflict)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            void BeforePostHit(PBEPokemon target)
+            else
             {
-                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToInflict, 100))
+                failReason = PBEFailReason.None;
+                void BeforePostHit(PBEPokemon target)
                 {
-                    ApplyStatus2IfPossible(user, target, status, false);
+                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToInflict, 100))
+                    {
+                        ApplyStatus2IfPossible(user, target, status, false);
+                    }
                 }
+                BasicHit(user, targets, move, ref targetSuccess, beforePostHit: BeforePostHit);
             }
-
-            BasicHit(user, targets, move, beforePostHit: BeforePostHit);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
         void Ef_ChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (target.HP == 0 || MissCheck(user, target, move))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    continue;
-                }
-
-                if (target.Status2.HasFlag(PBEStatus2.Substitute))
-                {
-                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
-                }
-                else
-                {
-                    for (int i = 0; i < stats.Length; i++)
+                    var success = new PBEExecutedMove.PBETargetSuccess
                     {
-                        ApplyStatChange(target, stats[i], changes[i]);
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
                     }
+                    else
+                    {
+                        if (target.Status2.HasFlag(PBEStatus2.Substitute))
+                        {
+                            success.FailReason = PBEFailReason.Default;
+                            BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < stats.Length; i++)
+                            {
+                                ApplyStatChange(target, stats[i], changes[i]);
+                            }
+                        }
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_ChangeUserStats(PBEPokemon user, PBEMove move, PBEStat[] stats, short[] changes)
         {
@@ -1989,84 +2121,107 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 ApplyStatChange(user, stats[i], changes[i]);
             }
+
+            RecordExecutedMove(user, move, PBEFailReason.None, new PBEExecutedMove.PBETargetSuccess[0]);
         }
         void Ef_Hit__MaybeChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            void BeforePostHit(PBEPokemon target)
+            else
             {
-                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToChangeStats, 100))
+                failReason = PBEFailReason.None;
+                void BeforePostHit(PBEPokemon target)
                 {
-                    for (int i = 0; i < stats.Length; i++)
+                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToChangeStats, 100))
                     {
-                        ApplyStatChange(target, stats[i], changes[i]);
+                        for (int i = 0; i < stats.Length; i++)
+                        {
+                            ApplyStatChange(target, stats[i], changes[i]);
+                        }
                     }
                 }
+                BasicHit(user, targets, move, ref targetSuccess, beforePostHit: BeforePostHit);
             }
-
-            BasicHit(user, targets, move, beforePostHit: BeforePostHit);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Hit__MaybeChangeUserStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-
-            void BeforeTargetsFaint()
+            if (targets.Length == 0)
             {
-                if (user.HP > 0 && PBEUtils.RNG.ApplyChance(chanceToChangeStats, 100))
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
+            }
+            else
+            {
+                failReason = PBEFailReason.None;
+                void BeforeTargetsFaint()
                 {
-                    for (int i = 0; i < stats.Length; i++)
+                    if (user.HP > 0 && PBEUtils.RNG.ApplyChance(chanceToChangeStats, 100))
                     {
-                        ApplyStatChange(user, stats[i], changes[i]);
+                        for (int i = 0; i < stats.Length; i++)
+                        {
+                            ApplyStatChange(user, stats[i], changes[i]);
+                        }
                     }
                 }
+                BasicHit(user, targets, move, ref targetSuccess, beforeTargetsFaint: BeforeTargetsFaint);
             }
-
-            BasicHit(user, targets, move, beforeTargetsFaint: BeforeTargetsFaint);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
         void Ef_BrickBreak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            bool BeforeDoingDamage(PBEPokemon target)
+            else
             {
-                // Verified: Reflect then Light Screen
-                if (target.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
+                failReason = PBEFailReason.None;
+                PBEFailReason BeforeDoingDamage(PBEPokemon target)
                 {
-                    target.Team.TeamStatus &= ~PBETeamStatus.Reflect;
-                    target.Team.ReflectCount = 0;
-                    BroadcastTeamStatus(target.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
+                    // Verified: Reflect then Light Screen
+                    if (target.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
+                    {
+                        target.Team.TeamStatus &= ~PBETeamStatus.Reflect;
+                        target.Team.ReflectCount = 0;
+                        BroadcastTeamStatus(target.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Cleared);
+                    }
+                    if (target.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
+                    {
+                        target.Team.TeamStatus &= ~PBETeamStatus.LightScreen;
+                        target.Team.LightScreenCount = 0;
+                        BroadcastTeamStatus(target.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
+                    }
+                    return PBEFailReason.None;
                 }
-                if (target.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
-                {
-                    target.Team.TeamStatus &= ~PBETeamStatus.LightScreen;
-                    target.Team.LightScreenCount = 0;
-                    BroadcastTeamStatus(target.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Cleared);
-                }
-                return false;
+                BasicHit(user, targets, move, ref targetSuccess, beforeDoingDamage: BeforeDoingDamage);
             }
-
-            BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underground))
             {
@@ -2074,13 +2229,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.TempLockedTargets = PBETarget.None;
                 user.Status2 &= ~PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
-
                 if (targets.Length == 0)
                 {
-                    BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                    return;
+                    failReason = PBEFailReason.NoTarget;
+                    BroadcastMoveFailed(user, user, failReason);
                 }
-                BasicHit(user, targets, move);
+                else
+                {
+                    failReason = PBEFailReason.None;
+                    BasicHit(user, targets, move, ref targetSuccess);
+                }
             }
             else
             {
@@ -2088,18 +2246,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.TempLockedTargets = user.SelectedAction.FightTargets;
                 user.Status2 |= PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
-
                 if (PowerHerbCheck(user))
                 {
                     goto top;
                 }
+                else
+                {
+                    failReason = PBEFailReason.None;
+                }
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underwater))
             {
@@ -2107,13 +2270,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.TempLockedTargets = PBETarget.None;
                 user.Status2 &= ~PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
-
                 if (targets.Length == 0)
                 {
-                    BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                    return;
+                    failReason = PBEFailReason.NoTarget;
+                    BroadcastMoveFailed(user, user, failReason);
                 }
-                BasicHit(user, targets, move);
+                else
+                {
+                    failReason = PBEFailReason.None;
+                    BasicHit(user, targets, move, ref targetSuccess);
+                }
             }
             else
             {
@@ -2121,24 +2287,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.TempLockedTargets = user.SelectedAction.FightTargets;
                 user.Status2 |= PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
-
                 if (PowerHerbCheck(user))
                 {
                     goto top;
                 }
+                else
+                {
+                    failReason = PBEFailReason.None;
+                }
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Fail(PBEPokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             BroadcastMoveFailed(user, user, PBEFailReason.Default);
+            RecordExecutedMove(user, move, PBEFailReason.Default, new PBEExecutedMove.PBETargetSuccess[0]);
         }
         void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-
         top:
             if (user.Status2.HasFlag(PBEStatus2.Airborne))
             {
@@ -2146,13 +2318,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.TempLockedTargets = PBETarget.None;
                 user.Status2 &= ~PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
-
                 if (targets.Length == 0)
                 {
-                    BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                    return;
+                    failReason = PBEFailReason.NoTarget;
+                    BroadcastMoveFailed(user, user, failReason);
                 }
-                BasicHit(user, targets, move);
+                else
+                {
+                    failReason = PBEFailReason.None;
+                    BasicHit(user, targets, move, ref targetSuccess);
+                }
             }
             else
             {
@@ -2160,218 +2335,276 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 user.TempLockedTargets = user.SelectedAction.FightTargets;
                 user.Status2 |= PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
-
                 if (PowerHerbCheck(user))
                 {
                     goto top;
                 }
+                else
+                {
+                    failReason = PBEFailReason.None;
+                }
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Hit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-            BasicHit(user, targets, move);
+            else
+            {
+                failReason = PBEFailReason.None;
+                BasicHit(user, targets, move, ref targetSuccess);
+            }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Selfdestruct(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             // TODO: Damp
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             DealDamage(user, user, user.MaxHP, true, ignoreSturdy: true);
             FaintCheck(user);
             if (targets.Length == 0) // You still faint if there are no targets
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-            BasicHit(user, targets, move);
+            else
+            {
+                failReason = PBEFailReason.None;
+                BasicHit(user, targets, move, ref targetSuccess);
+            }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
         void Ef_Endeavor(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            ushort DamageFunc(PBEPokemon target)
+            else
             {
-                return (ushort)(target.HP - user.HP);
-            }
-            bool AfterMissCheck(PBEPokemon target)
-            {
-                if (target.HP <= user.HP)
+                failReason = PBEFailReason.None;
+                ushort DamageFunc(PBEPokemon target)
                 {
-                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
-                    return false;
+                    return (ushort)(target.HP - user.HP);
                 }
-                return true;
+                PBEFailReason AfterMissCheck(PBEPokemon target)
+                {
+                    if (target.HP <= user.HP)
+                    {
+                        BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                        return PBEFailReason.Default;
+                    }
+                    return PBEFailReason.None;
+                }
+                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc, afterMissCheck: AfterMissCheck);
             }
-
-            FixedDamageHit(user, targets, move, damageFunc: DamageFunc, afterMissCheck: AfterMissCheck);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_FinalGambit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            ushort DamageFunc(PBEPokemon target)
+            else
             {
-                ushort oldHP = user.HP;
-                DealDamage(user, user, oldHP, true);
-                FaintCheck(user);
-                return oldHP;
+                failReason = PBEFailReason.None;
+                ushort DamageFunc(PBEPokemon target)
+                {
+                    ushort oldHP = user.HP;
+                    DealDamage(user, user, oldHP, true);
+                    FaintCheck(user);
+                    return oldHP;
+                }
+                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
             }
-
-            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_OneHitKnockout(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            ushort DamageFunc(PBEPokemon target)
+            else
             {
-                return target.HP;
+                failReason = PBEFailReason.None;
+                ushort DamageFunc(PBEPokemon target)
+                {
+                    return target.HP;
+                }
+                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
             }
-
-            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Psywave(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            ushort DamageFunc(PBEPokemon target)
+            else
             {
-                return (ushort)(user.Shell.Level * (PBEUtils.RNG.Next(0, Settings.MaxLevel + 1) + (Settings.MaxLevel / 2)) / Settings.MaxLevel);
+                failReason = PBEFailReason.None;
+                ushort DamageFunc(PBEPokemon target)
+                {
+                    return (ushort)(user.Shell.Level * (PBEUtils.RNG.Next(0, Settings.MaxLevel + 1) + (Settings.MaxLevel / 2)) / Settings.MaxLevel);
+                }
+                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
             }
-
-            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_SeismicToss(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            ushort DamageFunc(PBEPokemon target)
+            else
             {
-                return user.Shell.Level;
+                failReason = PBEFailReason.None;
+                ushort DamageFunc(PBEPokemon target)
+                {
+                    return user.Shell.Level;
+                }
+                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
             }
-
-            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_SetDamage(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int damage)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            ushort DamageFunc(PBEPokemon target)
+            else
             {
-                return (ushort)damage;
+                failReason = PBEFailReason.None;
+                ushort DamageFunc(PBEPokemon target)
+                {
+                    return (ushort)damage;
+                }
+                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
             }
-
-            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_SuperFang(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            ushort DamageFunc(PBEPokemon target)
+            else
             {
-                return (ushort)(target.HP / 2);
+                failReason = PBEFailReason.None;
+                ushort DamageFunc(PBEPokemon target)
+                {
+                    return (ushort)(target.HP / 2);
+                }
+                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
             }
-
-            FixedDamageHit(user, targets, move, damageFunc: DamageFunc);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
         void Ef_HPDrain(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            bool BeforeDoingDamage(PBEPokemon target)
+            else
             {
-                if (move == PBEMove.DreamEater && target.Status1 != PBEStatus1.Asleep)
+                failReason = PBEFailReason.None;
+                PBEFailReason BeforeDoingDamage(PBEPokemon target)
                 {
-                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
-                    return true;
+                    if (move == PBEMove.DreamEater && target.Status1 != PBEStatus1.Asleep)
+                    {
+                        BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                        return PBEFailReason.Default;
+                    }
+                    else
+                    {
+                        return PBEFailReason.None;
+                    }
                 }
-                else
+                void AfterPostHit(PBEPokemon target, ushort damageDealt)
                 {
-                    return false;
+                    ushort restoreAmt = (ushort)(damageDealt * (percentRestored / 100.0));
+                    if (user.Item == PBEItem.BigRoot)
+                    {
+                        restoreAmt += (ushort)(restoreAmt * 0.3);
+                    }
+                    if (target.Ability == PBEAbility.LiquidOoze)
+                    {
+                        DealDamage(target, user, restoreAmt, true, ignoreSturdy: true); // Verified: it does ignore sturdy.
+                        BroadcastAbility(target, user, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
+                        FaintCheck(user);
+                    }
+                    else
+                    {
+                        HealDamage(user, restoreAmt);
+                        BroadcastHPDrained(target);
+                    }
                 }
+                BasicHit(user, targets, move, ref targetSuccess, beforeDoingDamage: BeforeDoingDamage, afterPostHit: AfterPostHit);
             }
-
-            void AfterPostHit(PBEPokemon target, ushort damageDealt)
-            {
-                ushort restoreAmt = (ushort)(damageDealt * (percentRestored / 100.0));
-                if (user.Item == PBEItem.BigRoot)
-                {
-                    restoreAmt += (ushort)(restoreAmt * 0.3);
-                }
-                if (target.Ability == PBEAbility.LiquidOoze)
-                {
-                    DealDamage(target, user, restoreAmt, true, ignoreSturdy: true); // Tested; it does ignore sturdy.
-                    BroadcastAbility(target, user, PBEAbility.LiquidOoze, PBEAbilityAction.Damage);
-                    FaintCheck(user);
-                }
-                else
-                {
-                    HealDamage(user, restoreAmt);
-                    BroadcastHPDrained(target);
-                }
-            }
-
-            BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage, afterPostHit: AfterPostHit);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Moonlight(PBEPokemon user, PBEMove move)
         {
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
 
@@ -2382,165 +2615,239 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEWeather.HarshSunlight: percentage = 0.66; break;
                 default: percentage = 0.25; break;
             }
-            if (HealDamage(user, (ushort)(user.MaxHP * percentage)) == 0)
+            ushort amtRestored = HealDamage(user, (ushort)(user.MaxHP * percentage));
+            if (amtRestored == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
+                failReason = PBEFailReason.HPFull;
+                BroadcastMoveFailed(user, user, failReason);
             }
+            else
+            {
+                failReason = PBEFailReason.None;
+            }
+            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
         }
         void Ef_PainSplit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (target.Status2.HasFlag(PBEStatus2.Substitute))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
-                    return;
-                }
-                if (MissCheck(user, target, move))
-                {
-                    return;
-                }
-
-                ushort total = (ushort)(user.HP + target.HP);
-                ushort hp = (ushort)(total / 2);
-                foreach (PBEPokemon pkmn in new PBEPokemon[] { user, target })
-                {
-                    if (hp >= pkmn.HP)
+                    var success = new PBEExecutedMove.PBETargetSuccess
                     {
-                        HealDamage(pkmn, (ushort)(hp - pkmn.HP));
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
                     }
                     else
                     {
-                        DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), true);
-                        DoPostHitEffects(user, pkmn, move);
-                    }
-                }
+                        if (target.Status2.HasFlag(PBEStatus2.Substitute))
+                        {
+                            success.FailReason = PBEFailReason.Default;
+                            BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                        }
+                        else
+                        {
+                            ushort total = (ushort)(user.HP + target.HP);
+                            ushort hp = (ushort)(total / 2);
+                            foreach (PBEPokemon pkmn in new PBEPokemon[] { user, target })
+                            {
+                                if (hp >= pkmn.HP)
+                                {
+                                    HealDamage(pkmn, (ushort)(hp - pkmn.HP));
+                                }
+                                else
+                                {
+                                    DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), true);
+                                    DoPostHitEffects(user, pkmn, move);
+                                }
+                            }
 
-                BroadcastPainSplit(user, target);
+                            BroadcastPainSplit(user, target);
+                        }
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
+                }
+                DoPostAttackedEffects(user, true);
             }
-            DoPostAttackedEffects(user, true);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_RestoreTargetHP(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (target.HP == 0 || MissCheck(user, target, move))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    continue;
-                }
-
-                if (target.Status2.HasFlag(PBEStatus2.Substitute))
-                {
-                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
-                }
-                else if (HealDamage(target, (ushort)(target.MaxHP * (percentRestored / 100.0))) == 0)
-                {
-                    BroadcastMoveFailed(user, target, PBEFailReason.HPFull);
+                    var success = new PBEExecutedMove.PBETargetSuccess
+                    {
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
+                    }
+                    else
+                    {
+                        if (target.Status2.HasFlag(PBEStatus2.Substitute))
+                        {
+                            success.FailReason = PBEFailReason.Default;
+                            BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                        }
+                        else
+                        {
+                            ushort amtRestored = HealDamage(target, (ushort)(target.MaxHP * (percentRestored / 100.0)));
+                            if (amtRestored == 0)
+                            {
+                                success.FailReason = PBEFailReason.HPFull;
+                                BroadcastMoveFailed(user, target, PBEFailReason.HPFull);
+                            }
+                        }
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_RestoreUserHP(PBEPokemon user, PBEMove move, int percentRestored)
         {
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-
-            if (HealDamage(user, (ushort)(user.MaxHP * (percentRestored / 100.0))) == 0)
+            ushort amtRestored = HealDamage(user, (ushort)(user.MaxHP * (percentRestored / 100.0)));
+            if (amtRestored == 0)
             {
+                failReason = PBEFailReason.HPFull;
                 BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
             }
+            else
+            {
+                failReason = PBEFailReason.None;
+            }
+            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
         }
 
         void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            int RecoilFunc(int totalDamageDealt)
+            else
             {
-                return user.Ability == PBEAbility.RockHead ? 0 : totalDamageDealt / denominator;
+                failReason = PBEFailReason.None;
+                int RecoilFunc(int totalDamageDealt)
+                {
+                    return user.Ability == PBEAbility.RockHead ? 0 : totalDamageDealt / denominator;
+                }
+                BasicHit(user, targets, move, ref targetSuccess, recoilFunc: RecoilFunc);
             }
-
-            BasicHit(user, targets, move, recoilFunc: RecoilFunc);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Recoil3__MaybeInflictStatus1With10PercentChance(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            int RecoilFunc(int totalDamageDealt)
+            else
             {
-                return user.Ability == PBEAbility.RockHead ? 0 : totalDamageDealt / 3;
-            }
-            void BeforePostHit(PBEPokemon target)
-            {
-                if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(10, 100))
+                failReason = PBEFailReason.None;
+                int RecoilFunc(int totalDamageDealt)
                 {
-                    ApplyStatus1IfPossible(user, target, status, false);
+                    return user.Ability == PBEAbility.RockHead ? 0 : totalDamageDealt / 3;
                 }
+                void BeforePostHit(PBEPokemon target)
+                {
+                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(10, 100))
+                    {
+                        ApplyStatus1IfPossible(user, target, status, false);
+                    }
+                }
+                BasicHit(user, targets, move, ref targetSuccess, recoilFunc: RecoilFunc, beforePostHit: BeforePostHit);
             }
-
-            BasicHit(user, targets, move, recoilFunc: RecoilFunc, beforePostHit: BeforePostHit);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Struggle(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastStruggle(user);
             BroadcastMoveUsed(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            int RecoilFunc(int totalDamageDealt)
+            else
             {
-                return user.MaxHP / 4;
+                failReason = PBEFailReason.None;
+                int RecoilFunc(int totalDamageDealt)
+                {
+                    return user.MaxHP / 4;
+                }
+                BasicHit(user, targets, move, ref targetSuccess, overridingMoveType: PBEType.None, recoilFunc: RecoilFunc);
             }
-
-            BasicHit(user, targets, move, overridingMoveType: PBEType.None, recoilFunc: RecoilFunc);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
         void Ef_Curse(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                PBEPokemon t = target;
+                failReason = PBEFailReason.None;
                 if (user.HasType(PBEType.Ghost))
                 {
-                    if (t == user) // Just gained the Ghost type after selecting the move, so get a random target
+                    PBEPokemon target = targets[0];
+                    if (target == user) // Just gained the Ghost type after selecting the move, so get a random target
                     {
                         PBEFieldPosition prioritizedPos = GetPositionAcross(BattleFormat, user.FieldPosition);
                         PBETarget moveTarget;
@@ -2560,16 +2867,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         PBEPokemon[] runtimeTargets = GetRuntimeTargets(user, moveTarget, false);
                         if (runtimeTargets.Length == 0)
                         {
-                            BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                            continue;
+                            failReason = PBEFailReason.NoTarget;
+                            BroadcastMoveFailed(user, user, failReason);
                         }
-                        t = runtimeTargets[0];
+                        else
+                        {
+                            failReason = PBEFailReason.None;
+                            target = runtimeTargets[0];
+                        }
                     }
 
-                    if (!MissCheck(user, t, move))
+                    var success = new PBEExecutedMove.PBETargetSuccess
                     {
-                        ApplyStatus2IfPossible(user, t, PBEStatus2.Cursed, true);
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
                     }
+                    else
+                    {
+                        success.FailReason = ApplyStatus2IfPossible(user, target, PBEStatus2.Cursed, true);
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
                 else
                 {
@@ -2577,68 +2901,104 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         && user.AttackChange == Settings.MaxStatChange
                         && user.DefenseChange == Settings.MaxStatChange)
                     {
+                        failReason = PBEFailReason.Default;
                         BroadcastMoveFailed(user, user, PBEFailReason.Default);
                     }
                     else
                     {
+                        failReason = PBEFailReason.None;
                         ApplyStatChange(user, PBEStat.Speed, -1);
                         ApplyStatChange(user, PBEStat.Attack, +1);
                         ApplyStatChange(user, PBEStat.Defense, +1);
                     }
                 }
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Flatter(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (MissCheck(user, target, move))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    continue;
-                }
-                else
-                {
-                    ApplyStatChange(target, PBEStat.SpAttack, +1);
-                    ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
+                    var success = new PBEExecutedMove.PBETargetSuccess
+                    {
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
+                    }
+                    else
+                    {
+                        ApplyStatChange(target, PBEStat.SpAttack, +1);
+                        ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_GastroAcid(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (MissCheck(user, target, move))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    continue;
-                }
-
-                if (target.Ability == PBEAbility.Multitype || target.Ability == PBEAbility.None)
-                {
-                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
-                }
-                else
-                {
-                    target.Ability = PBEAbility.None;
-                    BroadcastAbility(target, user, PBEAbility.None, PBEAbilityAction.Changed);
-                    IllusionBreak(target, user);
+                    var success = new PBEExecutedMove.PBETargetSuccess
+                    {
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
+                    }
+                    else
+                    {
+                        if (target.Ability == PBEAbility.Multitype || target.Ability == PBEAbility.None)
+                        {
+                            success.FailReason = PBEFailReason.Default;
+                            BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                        }
+                        else
+                        {
+                            target.Ability = PBEAbility.None;
+                            BroadcastAbility(target, user, PBEAbility.None, PBEAbilityAction.Changed);
+                            IllusionBreak(target, user);
+                        }
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Growth(PBEPokemon user, PBEMove move)
         {
@@ -2647,80 +3007,131 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (MissCheck(user, target, move))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    continue;
+                    var success = new PBEExecutedMove.PBETargetSuccess
+                    {
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
+                    }
+                    else
+                    {
+                        user.AttackChange = target.AttackChange;
+                        user.DefenseChange = target.DefenseChange;
+                        user.SpAttackChange = target.SpAttackChange;
+                        user.SpDefenseChange = target.SpDefenseChange;
+                        user.SpeedChange = target.SpeedChange;
+                        user.AccuracyChange = target.AccuracyChange;
+                        user.EvasionChange = target.EvasionChange;
+                        BroadcastPsychUp(user, target);
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
-
-                user.AttackChange = target.AttackChange;
-                user.DefenseChange = target.DefenseChange;
-                user.SpAttackChange = target.SpAttackChange;
-                user.SpDefenseChange = target.SpDefenseChange;
-                user.SpeedChange = target.SpeedChange;
-                user.AccuracyChange = target.AccuracyChange;
-                user.EvasionChange = target.EvasionChange;
-                BroadcastPsychUp(user, target);
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Swagger(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (MissCheck(user, target, move))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    continue;
-                }
-                else
-                {
-                    ApplyStatChange(target, PBEStat.Attack, +2);
-                    ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
+                    var success = new PBEExecutedMove.PBETargetSuccess
+                    {
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
+                    }
+                    else
+                    {
+                        ApplyStatChange(target, PBEStat.Attack, +2);
+                        ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Whirlwind(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             if (targets.Length == 0)
             {
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
-                return;
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, failReason);
             }
-
-            foreach (PBEPokemon target in targets)
+            else
             {
-                if (MissCheck(user, target, move))
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
                 {
-                    continue;
+                    var success = new PBEExecutedMove.PBETargetSuccess
+                    {
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    if (MissCheck(user, target, move))
+                    {
+                        success.Missed = true;
+                    }
+                    else
+                    {
+                        IEnumerable<PBEPokemon> possibleSwitcheroonies = target.Team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None);
+                        if (possibleSwitcheroonies.Count() == 0)
+                        {
+                            success.FailReason = PBEFailReason.Default;
+                            BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                        }
+                        else
+                        {
+                            SwitchTwoPokemon(target, possibleSwitcheroonies.Sample(), true);
+                        }
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
                 }
-
-                IEnumerable<PBEPokemon> possibleSwitcheroonies = target.Team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None);
-                if (possibleSwitcheroonies.Count() == 0)
-                {
-                    BroadcastMoveFailed(user, target, PBEFailReason.Default);
-                    continue;
-                }
-
-                SwitchTwoPokemon(target, possibleSwitcheroonies.Sample(), true);
             }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
         }
     }
 }

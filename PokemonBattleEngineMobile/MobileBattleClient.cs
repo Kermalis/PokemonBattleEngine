@@ -496,6 +496,10 @@ namespace Kermalis.PokemonBattleEngineMobile
                         {
                             moveUser.Moves[Array.IndexOf(moveUser.Moves, PBEMove.MAX)] = mup.Move;
                         }
+                        if (moveUser.Team.Id == Index && (moveUser.Item == PBEItem.ChoiceBand || moveUser.Item == PBEItem.ChoiceScarf || moveUser.Item == PBEItem.ChoiceSpecs) && mup.OwnsMove)
+                        {
+                            moveUser.ChoiceLockedMove = mup.Move;
+                        }
                         BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(moveUser, true), PBEMoveLocalization.Names[mup.Move].FromUICultureInfo()), true, true);
                         break;
                     }
@@ -861,14 +865,6 @@ namespace Kermalis.PokemonBattleEngineMobile
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;
-                                }
-                            case PBEStatus2.Minimized:
-                                {
-                                    switch (s2p.StatusAction)
-                                    {
-                                        case PBEStatusAction.Added: return true;
-                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
-                                    }
                                 }
                             case PBEStatus2.Protected:
                                 {
@@ -1238,16 +1234,6 @@ namespace Kermalis.PokemonBattleEngineMobile
             int i = actions.FindIndex(p => p.SelectedAction.Decision == PBEDecision.None);
             if (i == -1)
             {
-                foreach (PBEPokemon pkmn in actions)
-                {
-                    if (pkmn.SelectedAction.Decision == PBEDecision.Fight && pkmn.ChoiceLockedMove == PBEMove.None)
-                    {
-                        if (pkmn.Item == PBEItem.ChoiceBand || pkmn.Item == PBEItem.ChoiceScarf || pkmn.Item == PBEItem.ChoiceSpecs)
-                        {
-                            pkmn.ChoiceLockedMove = pkmn.SelectedAction.FightMove;
-                        }
-                    }
-                }
                 BattleView.AddMessage($"Waiting for {Battle.Teams[Index == 0 ? 1 : 0].TrainerName}...", true, false);
                 Send(new PBEActionsResponsePacket(actions.Select(p => p.SelectedAction)));
             }
