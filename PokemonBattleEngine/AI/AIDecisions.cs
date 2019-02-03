@@ -42,13 +42,13 @@ namespace Kermalis.PokemonBattleEngine.AI
                 {
                     actions[i].FightMove = PBEMove.Struggle;
                 }
-                else if (pkmn.ChoiceLockedMove != PBEMove.None)
-                {
-                    actions[i].FightMove = pkmn.ChoiceLockedMove;
-                }
                 else if (pkmn.TempLockedMove != PBEMove.None)
                 {
                     actions[i].FightMove = pkmn.TempLockedMove;
+                }
+                else if (pkmn.ChoiceLockedMove != PBEMove.None)
+                {
+                    actions[i].FightMove = pkmn.ChoiceLockedMove;
                 }
                 else
                 {

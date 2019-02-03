@@ -80,12 +80,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 if (action.FightMove == PBEMove.None
                                     || !pkmn.Moves.Contains(action.FightMove)
-                                    || pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0
-                                    || (pkmn.ChoiceLockedMove != PBEMove.None && pkmn.ChoiceLockedMove != action.FightMove)
-                                    || (pkmn.TempLockedMove != PBEMove.None && pkmn.TempLockedMove != action.FightMove)
-                                    || (pkmn.TempLockedTargets != PBETarget.None && pkmn.TempLockedTargets != action.FightTargets)
-                                    || !AreTargetsValid(pkmn, action.FightMove, action.FightTargets)
-                                    )
+                                    || pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0)
+                                {
+                                    return false;
+                                }
+                                else if ((pkmn.TempLockedMove != PBEMove.None && pkmn.TempLockedMove != action.FightMove)
+                                    || (pkmn.TempLockedTargets != PBETarget.None && pkmn.TempLockedTargets != action.FightTargets))
+                                {
+                                    return false;
+                                }
+                                else if (pkmn.ChoiceLockedMove != PBEMove.None && pkmn.ChoiceLockedMove != action.FightMove)
+                                {
+                                    return false;
+                                }
+                                else if (!AreTargetsValid(pkmn, action.FightMove, action.FightTargets))
                                 {
                                     return false;
                                 }

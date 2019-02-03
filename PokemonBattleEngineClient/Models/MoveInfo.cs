@@ -47,31 +47,31 @@ namespace Kermalis.PokemonBattleEngineClient.Models
 
         public MoveInfo(int i, PBEPokemon pkmn, Action<MoveInfo> clickAction)
         {
-            bool forcedToStruggle = pkmn.IsForcedToStruggle();
-            PBEMove move = forcedToStruggle ? PBEMove.Struggle : pkmn.Moves[i];
-            var ttb = move == PBEMove.None ? typeToBrush[PBEType.Normal] : typeToBrush[pkmn.GetMoveType(move)];
-
             bool enabled;
-            if (forcedToStruggle)
+            if (pkmn.IsForcedToStruggle())
             {
+                Move = PBEMove.Struggle;
                 enabled = true;
             }
             else if (pkmn.TempLockedMove != PBEMove.None)
             {
-                enabled = pkmn.TempLockedMove == move;
+                Move = pkmn.TempLockedMove;
+                enabled = true;
             }
             else if (pkmn.ChoiceLockedMove != PBEMove.None)
             {
-                enabled = pkmn.ChoiceLockedMove == move;
+                Move = pkmn.ChoiceLockedMove;
+                enabled = true;
             }
             else
             {
-                enabled = move != PBEMove.None && pkmn.PP[i] > 0;
+                Move = pkmn.Moves[i];
+                enabled = Move != PBEMove.None && pkmn.PP[i] > 0;
             }
-            Move = move;
+            Tuple<SolidColorBrush, SolidColorBrush> ttb = Move == PBEMove.None ? typeToBrush[PBEType.Normal] : typeToBrush[pkmn.GetMoveType(Move)];
             Brush = ttb.Item1;
             BorderBrush = ttb.Item2;
-            Description = move == PBEMove.None ? string.Empty : PBEMoveData.Data[move].ToString();
+            Description = Move == PBEMove.None ? string.Empty : PBEMoveData.Data[Move].ToString();
 
             var sub = new Subject<bool>();
             SelectMoveCommand = ReactiveCommand.Create(() => clickAction(this), sub);
