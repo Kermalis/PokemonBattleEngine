@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, byte oldValue, byte newValue)
             => OnNewEvent?.Invoke(this, new PBEMovePPChangedPacket(moveUser.FieldPosition, moveUser.Team, move, oldValue, newValue));
         void BroadcastMoveUsed(PBEPokemon moveUser, PBEMove move)
-            => OnNewEvent?.Invoke(this, new PBEMoveUsedPacket(moveUser, move));
+            => OnNewEvent?.Invoke(this, new PBEMoveUsedPacket(moveUser, move, calledFromOtherMove));
         void BroadcastPkmnFainted(PBEPokemon pokemon, PBEFieldPosition oldPosition)
             => OnNewEvent?.Invoke(this, new PBEPkmnFaintedPacket(pokemon.Id, oldPosition, pokemon.Team));
         void BroadcastPkmnHPChanged(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)

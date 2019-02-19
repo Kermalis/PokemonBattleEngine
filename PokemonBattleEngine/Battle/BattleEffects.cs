@@ -8,6 +8,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
+        bool calledFromOtherMove;
+
         void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers)
         {
             IEnumerable<PBEPokemon> order = GetActingOrder(battlers, true);
@@ -1240,9 +1242,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts the event
         void PPReduce(PBEPokemon pkmn, PBEMove move)
         {
-            int moveIndex = Array.IndexOf(pkmn.Moves, move);
-            if (moveIndex >= 0)
+            if (!calledFromOtherMove)
             {
+                int moveIndex = Array.IndexOf(pkmn.Moves, move);
                 int amtToReduce = 1;
                 // TODO: If target is not self and has pressure
                 byte oldPP = pkmn.PP[moveIndex];
@@ -2820,7 +2822,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEFailReason failReason;
             BroadcastStruggle(user);
             BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
@@ -3018,6 +3019,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             PBEMove newMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).Sample();
+            calledFromOtherMove = true;
             UseMove(user, newMove, PBETarget.FoeCenter); // TODO: Targets
         }
         void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)

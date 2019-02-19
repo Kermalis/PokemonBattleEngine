@@ -446,6 +446,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEDecision.Fight:
                             {
+                                calledFromOtherMove = false;
                                 UseMove(pkmn, pkmn.SelectedAction.FightMove, pkmn.SelectedAction.FightTargets);
                                 break;
                             }
