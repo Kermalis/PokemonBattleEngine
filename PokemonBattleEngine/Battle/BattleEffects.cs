@@ -423,15 +423,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        void UseMove(PBEPokemon user)
+        void UseMove(PBEPokemon user, PBEMove move, PBETarget requestedTargets)
         {
-            PBEMove move = user.SelectedAction.FightMove;
             if (PreMoveStatusCheck(user, move))
             {
                 return;
             }
             PBEMoveData mData = PBEMoveData.Data[move];
-            PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, user.GetMoveTargets(move) == PBEMoveTarget.SingleNotSelf);
+            PBEPokemon[] targets = GetRuntimeTargets(user, requestedTargets, user.GetMoveTargets(move) == PBEMoveTarget.SingleNotSelf);
             switch (mData.Effect)
             {
                 case PBEMoveEffect.BrickBreak:
@@ -727,6 +726,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.LuckyChant:
                     {
                         Ef_TryForceTeamStatus(user, move, PBETeamStatus.LuckyChant);
+                        break;
+                    }
+                case PBEMoveEffect.Metronome:
+                    {
+                        Ef_Metronome(user, move);
                         break;
                     }
                 case PBEMoveEffect.Moonlight:
@@ -1237,11 +1241,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void PPReduce(PBEPokemon pkmn, PBEMove move)
         {
             int moveIndex = Array.IndexOf(pkmn.Moves, move);
-            int amtToReduce = 1;
-            // TODO: If target is not self and has pressure
-            byte oldPP = pkmn.PP[moveIndex];
-            pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
-            BroadcastMovePPChanged(pkmn, move, oldPP, pkmn.PP[moveIndex]);
+            if (moveIndex >= 0)
+            {
+                int amtToReduce = 1;
+                // TODO: If target is not self and has pressure
+                byte oldPP = pkmn.PP[moveIndex];
+                pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
+                BroadcastMovePPChanged(pkmn, move, oldPP, pkmn.PP[moveIndex]);
+            }
         }
 
         // Returns true if the Pokémon fainted & removes it from activeBattlers
@@ -2813,6 +2820,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEFailReason failReason;
             BroadcastStruggle(user);
             BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
@@ -3004,6 +3012,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             short change = (short)(Weather == PBEWeather.HarshSunlight ? +2 : +1);
             Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { change, change });
+        }
+        void Ef_Metronome(PBEPokemon user, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            PBEMove newMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).Sample();
+            UseMove(user, newMove, PBETarget.FoeCenter); // TODO: Targets
         }
         void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {

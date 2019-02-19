@@ -2616,38 +2616,39 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The move always lands a critical hit.
         /// </summary>
         AlwaysCrit = 1 << 6,
+        BlockedByMetronome = 1 << 7,
         /// <summary>
         /// The move removes <see cref="PBEStatus1.Frozen"/> from the user.
         /// </summary>
-        DefrostsUser = 1 << 7,
+        DefrostsUser = 1 << 8,
         /// <summary>
         /// The move has a higher chance of landing a critical hit.
         /// </summary>
-        HighCritChance = 1 << 8,
+        HighCritChance = 1 << 9,
         /// <summary>
         /// The move can hit <see cref="PBEStatus2.Airborne"/> targets.
         /// </summary>
-        HitsAirborne = 1 << 9,
+        HitsAirborne = 1 << 10,
         /// <summary>
         /// The move can hit <see cref="PBEStatus2.Underground"/> targets.
         /// </summary>
-        HitsUnderground = 1 << 10,
+        HitsUnderground = 1 << 11,
         /// <summary>
         /// The move can hit <see cref="PBEStatus2.Underwater"/> targets.
         /// </summary>
-        HitsUnderwater = 1 << 11,
+        HitsUnderwater = 1 << 12,
         /// <summary>
         /// The user makes contact with the target, causing it to take damage from the target's <see cref="PBEAbility.IronBarbs"/>, <see cref="PBEAbility.RoughSkin"/>, and <see cref="PBEItem.RockyHelmet"/>.
         /// </summary>
-        MakesContact = 1 << 12,
+        MakesContact = 1 << 13,
         /// <summary>
         /// The move is blocked by <see cref="PBEAbility.Soundproof"/>.
         /// </summary>
-        SoundBased = 1 << 13,
+        SoundBased = 1 << 14,
         /// <summary>
         /// The move does not consume a held gem.
         /// </summary>
-        UnaffectedByGems = 1 << 14
+        UnaffectedByGems = 1 << 15
     }
     public enum PBEMoveEffect : byte
     {
@@ -2710,6 +2711,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         LuckyChant,
+        Metronome,
         Moonlight,
         OneHitKnockout,
         PainSplit,
@@ -2761,6 +2763,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Acrobatics = 512,
         AerialAce = 332,
         Aeroblast = 177,
+        //AfterYou // TODO: Blocked by Metronome
         Agility = 97,
         AirCutter = 314,
         AirSlash = 403,
@@ -2768,11 +2771,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         AncientPower = 246,
         AquaJet = 453,
         AquaTail = 401,
+        //Assist // TODO: Blocked by Metronome
         Astonish = 310,
         AttackOrder = 454,
         AuraSphere = 396,
         AuroraBeam = 62,
         Barrier = 112,
+        //Bestow // TODO: Blocked by Metronome
         Bite = 44,
         BlazeKick = 299,
         Blizzard = 59,
@@ -2798,8 +2803,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         //CometPunch = 4, // TODO: Iron Fist
         ConfuseRay = 109,
         Confusion = 93,
+        //CopyCat // TODO: Blocked by Metronome
         CosmicPower = 322,
         CottonGuard = 538,
+        //Counter // TODO: Blocked by Metronome
+        //Covet // TODO: Blocked by Metronome
         Crabhammer = 152,
         CrossChop = 238,
         CrossPoison = 440,
@@ -2811,6 +2819,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DarkVoid = 464,
         DefendOrder = 455,
         DefenseCurl = 111,
+        //DestinyBond // TODO: Blocked by Metronome
         Detect = 197,
         Dig = 91,
         Discharge = 435,
@@ -2836,6 +2845,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Electroweb = 527,
         Ember = 52,
         Endeavor = 283,
+        //Endure // TODO: Blocked by Metronome
         EnergyBall = 412,
         Eruption = 284,
         Explosion = 153,
@@ -2845,6 +2855,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FaintAttack = 185,
         FakeTears = 313,
         FeatherDance = 297,
+        //Feint // TODO: Blocked by Metronome
         FieryDance = 552,
         FinalGambit = 515,
         FireBlast = 126,
@@ -2861,9 +2872,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         Fly = 19,
         FocusBlast = 411,
         FocusEnergy = 116,
-        //FocusPunch = 264, // TODO: Iron Fist
+        //FocusPunch = 264, // TODO: Iron Fist // TODO: Blocked by Metronome
+        //FollowMe // TODO: Blocked by Metronome
         ForcePalm = 395,
         FoulPlay = 492,
+        //FreezeShock // TODO: Blocked by Metronome
         FrostBreath = 524,
         Frustration = 218,
         GastroAcid = 380, // TODO: Magic Bounce, Magic Coat
@@ -2889,6 +2902,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HeatCrash = 535,
         HeatWave = 257,
         HeavySlam = 484,
+        //HelpingHand // TODO: Blocked by Metronome
         Hex = 506,
         HiddenPower = 237,
         //HiJumpKick = 136, // TODO: Reckless
@@ -2903,6 +2917,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         HyperVoice = 304,
         Hypnosis = 95,
         IceBeam = 58,
+        //IceBurn // TODO: Blocked by Metronome
         IcePunch = 8,
         IceShard = 420,
         IcicleCrash = 556,
@@ -2934,6 +2949,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MagnetBomb = 443,
         Magnitude = 222,
         Meditate = 96,
+        //MeFirst // TODO: Blocked by Metronome
         MegaDrain = 72,
         Megahorn = 224,
         MegaKick = 25,
@@ -2941,8 +2957,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         MetalClaw = 232,
         MetalSound = 319,
         MeteorMash = 309,
+        Metronome = 118,
         MilkDrink = 208,
+        //Mimic // TODO: Blocked by Metronome
         Minimize = 107,
+        //MirrorCoat // TODO: Blocked by Metronome
+        //MirrorMove // TODO: Blocked by Metronome
         MirrorShot = 429,
         MistBall = 296,
         Moonlight = 236,
@@ -2980,13 +3000,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         Psyshock = 473,
         Psystrike = 540,
         Psywave = 149,
+        //Quash // TODO: Blocked by Metronome
         QuickAttack = 98,
+        //QuickGuard // TODO: Blocked by Metronome
         QuiverDance = 483,
+        //RagePowder // TODO: Blocked by Metronome
         RainDance = 240,
         RazorLeaf = 75,
         RazorShell = 534,
         Recover = 105,
         Reflect = 115,
+        //RelicSong // TODO: Blocked by Metronome
         Retaliate = 514, // TODO
         Return = 216,
         Reversal = 179,
@@ -3022,17 +3046,20 @@ namespace Kermalis.PokemonBattleEngine.Data
         SilverWind = 318,
         Sing = 47,
         ShockWave = 351,
+        //Sketch // TODO: Blocked by Metronome
         SkyUppercut = 327,
         SlackOff = 303,
         Slam = 21,
         Slash = 163,
         SleepPowder = 79,
+        //SleepTalk // TODO: Blocked by Metronome
         Sludge = 124,
         SludgeBomb = 188,
         SludgeWave = 482,
         Smog = 123,
         SmokeScreen = 108,
         Snarl = 555,
+        //Snatch // TODO: Blocked by Metronome
         Softboiled = 135,
         SonicBoom = 49,
         SpacialRend = 460,
@@ -3061,6 +3088,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SweetKiss = 186,
         SweetScent = 230,
         Swift = 129,
+        //Switcheroo // TODO: Blocked by Metronome
         SwordsDance = 14,
         Synthesis = 235,
         Tackle = 33,
@@ -3070,12 +3098,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         TechnoBlast = 546,
         TeeterDance = 298,
         Teleport = 100,
+        //Thief // TODO: Blocked by Metronome
         Thunder = 87,
         Thunderbolt = 85,
         ThunderPunch = 9,
         ThunderShock = 84,
         ThunderWave = 86,
         Tickle = 321,
+        //Trick // TODO: Blocked by Metronome
         Toxic = 92,
         ToxicSpikes = 390,
         Transform = 144,
@@ -3093,6 +3123,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WaterSpout = 323,
         WeatherBall = 311,
         Whirlwind = 18, // TODO: Suction Cups, Ingrain
+        //WideGuard // TODO: Blocked by Metronome
         WildCharge = 528,
         WillOWisp = 261,
         WingAttack = 17,
