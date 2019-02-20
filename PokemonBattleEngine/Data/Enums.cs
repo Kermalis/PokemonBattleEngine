@@ -833,6 +833,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         Recoil,
         Struggle,
     }
+    public enum PBEMoveLockType : byte
+    {
+        ChoiceItem,
+        Temporary
+    }
     public enum PBEType : byte
     {
         None,

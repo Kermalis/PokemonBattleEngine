@@ -1237,6 +1237,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if ((user.Item == PBEItem.ChoiceBand || user.Item == PBEItem.ChoiceScarf || user.Item == PBEItem.ChoiceSpecs) && user.Moves.Contains(move))
             {
                 user.ChoiceLockedMove = move;
+                BroadcastMoveLock(user, move, PBETarget.None, PBEMoveLockType.ChoiceItem);
             }
         }
 
@@ -2236,6 +2237,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 user.TempLockedMove = PBEMove.None;
                 user.TempLockedTargets = PBETarget.None;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
                 if (targets.Length == 0)
@@ -2254,6 +2256,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PPReduce(user, move);
                 user.TempLockedMove = move;
                 user.TempLockedTargets = requestedTargets;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 |= PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
                 if (PowerHerbCheck(user))
@@ -2277,6 +2280,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 user.TempLockedMove = PBEMove.None;
                 user.TempLockedTargets = PBETarget.None;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
                 if (targets.Length == 0)
@@ -2295,6 +2299,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PPReduce(user, move);
                 user.TempLockedMove = move;
                 user.TempLockedTargets = requestedTargets;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 |= PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
                 if (PowerHerbCheck(user))
@@ -2325,6 +2330,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 user.TempLockedMove = PBEMove.None;
                 user.TempLockedTargets = PBETarget.None;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
                 if (targets.Length == 0)
@@ -2343,6 +2349,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PPReduce(user, move);
                 user.TempLockedMove = move;
                 user.TempLockedTargets = requestedTargets;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 |= PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
                 if (PowerHerbCheck(user))

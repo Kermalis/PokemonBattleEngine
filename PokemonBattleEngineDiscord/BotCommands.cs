@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     PBEPokemonShell[] team0Party = PBECompetitivePokemonShells.CreateRandomTeam(PBESettings.DefaultSettings.MaxPartySize).ToArray();
                     PBEPokemonShell[] team1Party = PBECompetitivePokemonShells.CreateRandomTeam(PBESettings.DefaultSettings.MaxPartySize).ToArray();
-                    PBEBattle battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0Party, team1Party);
+                    var battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0Party, team1Party);
                     battle.Teams[0].TrainerName = Context.User.Username;
                     battle.Teams[1].TrainerName = battler1.Username;
                     var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);

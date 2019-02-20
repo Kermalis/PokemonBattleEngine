@@ -27,6 +27,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBEMoveEffectivenessPacket(victim, effectiveness));
         void BroadcastMoveFailed(PBEPokemon moveUser, PBEPokemon pokemon2, PBEFailReason failReason)
             => OnNewEvent?.Invoke(this, new PBEMoveFailedPacket(moveUser, pokemon2, failReason));
+        void BroadcastMoveLock(PBEPokemon moveUser, PBEMove lockedMove, PBETarget lockedTargets, PBEMoveLockType moveLockType)
+            => OnNewEvent?.Invoke(this, new PBEMoveLockPacket(moveUser, lockedMove, lockedTargets, moveLockType));
         void BroadcastMoveMissed(PBEPokemon moveUser, PBEPokemon pokemon2)
             => OnNewEvent?.Invoke(this, new PBEMoveMissedPacket(moveUser, pokemon2));
         void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, byte oldValue, byte newValue)
