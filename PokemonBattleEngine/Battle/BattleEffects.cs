@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        bool calledFromOtherMove;
+        bool calledFromOtherMove = false;
 
         void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers)
         {
@@ -3018,9 +3018,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
-            PBEMove newMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).Sample();
+            PBEMove calledMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).Sample();
             calledFromOtherMove = true;
-            UseMove(user, newMove, PBETarget.FoeCenter); // TODO: Targets
+            UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
+            calledFromOtherMove = false;
         }
         void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
