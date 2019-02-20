@@ -1233,6 +1233,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason, IList<PBEExecutedMove.PBETargetSuccess> targets)
         {
             user.ExecutedMoves.Add(new PBEExecutedMove(TurnNumber, move, failReason, targets));
+            // Doesn't care if there is a Choice Locked move already. As long as the user knows it, it will become locked. (Metronome calling a move the user knows, Ditto transforming into someone else with transform)
             if ((user.Item == PBEItem.ChoiceBand || user.Item == PBEItem.ChoiceScarf || user.Item == PBEItem.ChoiceSpecs) && user.Moves.Contains(move))
             {
                 user.ChoiceLockedMove = move;
@@ -3018,6 +3019,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+            // Record before the called move is recorded
+            RecordExecutedMove(user, move, PBEFailReason.None, new PBEExecutedMove.PBETargetSuccess[0]);
+
             PBEMove calledMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).Sample();
             calledFromOtherMove = true;
             UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
