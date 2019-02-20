@@ -517,12 +517,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEMoveEffect.Dig:
                     {
-                        Ef_Dig(user, targets, move);
+                        Ef_Dig(user, targets, move, requestedTargets);
                         break;
                     }
                 case PBEMoveEffect.Dive:
                     {
-                        Ef_Dive(user, targets, move);
+                        Ef_Dive(user, targets, move, requestedTargets);
                         break;
                     }
                 case PBEMoveEffect.Endeavor:
@@ -552,7 +552,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEMoveEffect.Fly:
                     {
-                        Ef_Fly(user, targets, move);
+                        Ef_Fly(user, targets, move, requestedTargets);
                         break;
                     }
                 case PBEMoveEffect.FocusEnergy:
@@ -2225,12 +2225,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underground))
             {
@@ -2251,8 +2250,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                user.TempLockedMove = user.SelectedAction.FightMove;
-                user.TempLockedTargets = user.SelectedAction.FightTargets;
+                PPReduce(user, move);
+                user.TempLockedMove = move;
+                user.TempLockedTargets = requestedTargets;
                 user.Status2 |= PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
                 if (PowerHerbCheck(user))
@@ -2266,12 +2266,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underwater))
             {
@@ -2292,8 +2291,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                user.TempLockedMove = user.SelectedAction.FightMove;
-                user.TempLockedTargets = user.SelectedAction.FightTargets;
+                PPReduce(user, move);
+                user.TempLockedMove = move;
+                user.TempLockedTargets = requestedTargets;
                 user.Status2 |= PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
                 if (PowerHerbCheck(user))
@@ -2314,12 +2314,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveFailed(user, user, PBEFailReason.Default);
             RecordExecutedMove(user, move, PBEFailReason.Default, new PBEExecutedMove.PBETargetSuccess[0]);
         }
-        void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
         top:
             if (user.Status2.HasFlag(PBEStatus2.Airborne))
             {
@@ -2340,8 +2339,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                user.TempLockedMove = user.SelectedAction.FightMove;
-                user.TempLockedTargets = user.SelectedAction.FightTargets;
+                PPReduce(user, move);
+                user.TempLockedMove = move;
+                user.TempLockedTargets = requestedTargets;
                 user.Status2 |= PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
                 if (PowerHerbCheck(user))
