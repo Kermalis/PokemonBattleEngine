@@ -126,7 +126,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Reflect, new PBELocalizedString("リフレクター", "리플렉터", "Protection", "Reflektor", "Reflejo", "Riflesso", "Reflect") },
             { PBEMove.FocusEnergy, new PBELocalizedString("きあいだめ", "기충전", "Puissance", "Energiefokus", "Foco Energía", "Focalenergia", "Focus Energy") },
             // { PBEMove.117, new PBELocalizedString("がまん", "참기", "Patience", "Geduld", "Venganza", "Pazienza", "Bide") },
-            // { PBEMove.118, new PBELocalizedString("ゆびをふる", "손가락흔들기", "Métronome", "Metronom", "Metrónomo", "Metronomo", "Metronome") },
+            { PBEMove.Metronome, new PBELocalizedString("ゆびをふる", "손가락흔들기", "Métronome", "Metronom", "Metrónomo", "Metronomo", "Metronome") },
             // { PBEMove.119, new PBELocalizedString("オウムがえし", "따라하기", "Mimique", "Spiegeltrick", "Mov. Espejo", "Speculmossa", "Mirror Move") },
             { PBEMove.Selfdestruct, new PBELocalizedString("じばく", "자폭", "Destruction", "Finale", "Autodestruc", "Autodistruzione", "Selfdestruct") },
             { PBEMove.EggBomb, new PBELocalizedString("タマゴばくだん", "알폭탄", "Bomb’Œuf", "Eierbombe", "Bomba Huevo", "Uovobomba", "Egg Bomb") },

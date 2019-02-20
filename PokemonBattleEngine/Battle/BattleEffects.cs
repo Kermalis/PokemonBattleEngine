@@ -8,6 +8,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
+        bool calledFromOtherMove = false;
+
         void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers)
         {
             IEnumerable<PBEPokemon> order = GetActingOrder(battlers, true);
@@ -423,15 +425,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        void UseMove(PBEPokemon user)
+        void UseMove(PBEPokemon user, PBEMove move, PBETarget requestedTargets)
         {
-            PBEMove move = user.SelectedAction.FightMove;
             if (PreMoveStatusCheck(user, move))
             {
                 return;
             }
             PBEMoveData mData = PBEMoveData.Data[move];
-            PBEPokemon[] targets = GetRuntimeTargets(user, user.SelectedAction.FightTargets, user.GetMoveTargets(move) == PBEMoveTarget.SingleNotSelf);
+            PBEPokemon[] targets = GetRuntimeTargets(user, requestedTargets, user.GetMoveTargets(move) == PBEMoveTarget.SingleNotSelf);
             switch (mData.Effect)
             {
                 case PBEMoveEffect.BrickBreak:
@@ -516,12 +517,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEMoveEffect.Dig:
                     {
-                        Ef_Dig(user, targets, move);
+                        Ef_Dig(user, targets, move, requestedTargets);
                         break;
                     }
                 case PBEMoveEffect.Dive:
                     {
-                        Ef_Dive(user, targets, move);
+                        Ef_Dive(user, targets, move, requestedTargets);
                         break;
                     }
                 case PBEMoveEffect.Endeavor:
@@ -551,7 +552,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEMoveEffect.Fly:
                     {
-                        Ef_Fly(user, targets, move);
+                        Ef_Fly(user, targets, move, requestedTargets);
                         break;
                     }
                 case PBEMoveEffect.FocusEnergy:
@@ -727,6 +728,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMoveEffect.LuckyChant:
                     {
                         Ef_TryForceTeamStatus(user, move, PBETeamStatus.LuckyChant);
+                        break;
+                    }
+                case PBEMoveEffect.Metronome:
+                    {
+                        Ef_Metronome(user, move);
                         break;
                     }
                 case PBEMoveEffect.Moonlight:
@@ -1227,21 +1233,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason, IList<PBEExecutedMove.PBETargetSuccess> targets)
         {
             user.ExecutedMoves.Add(new PBEExecutedMove(TurnNumber, move, failReason, targets));
+            // Doesn't care if there is a Choice Locked move already. As long as the user knows it, it will become locked. (Metronome calling a move the user knows, Ditto transforming into someone else with transform)
             if ((user.Item == PBEItem.ChoiceBand || user.Item == PBEItem.ChoiceScarf || user.Item == PBEItem.ChoiceSpecs) && user.Moves.Contains(move))
             {
                 user.ChoiceLockedMove = move;
+                BroadcastMoveLock(user, move, PBETarget.None, PBEMoveLockType.ChoiceItem);
             }
         }
 
         // Broadcasts the event
         void PPReduce(PBEPokemon pkmn, PBEMove move)
         {
-            int moveIndex = Array.IndexOf(pkmn.Moves, move);
-            int amtToReduce = 1;
-            // TODO: If target is not self and has pressure
-            byte oldPP = pkmn.PP[moveIndex];
-            pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
-            BroadcastMovePPChanged(pkmn, move, oldPP, pkmn.PP[moveIndex]);
+            if (!calledFromOtherMove)
+            {
+                int moveIndex = Array.IndexOf(pkmn.Moves, move);
+                int amtToReduce = 1;
+                // TODO: If target is not self and has pressure
+                byte oldPP = pkmn.PP[moveIndex];
+                pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
+                BroadcastMovePPChanged(pkmn, move, oldPP, pkmn.PP[moveIndex]);
+            }
         }
 
         // Returns true if the Pokémon fainted & removes it from activeBattlers
@@ -2216,17 +2227,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underground))
             {
                 user.TempLockedMove = PBEMove.None;
                 user.TempLockedTargets = PBETarget.None;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
                 if (targets.Length == 0)
@@ -2242,8 +2253,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                user.TempLockedMove = user.SelectedAction.FightMove;
-                user.TempLockedTargets = user.SelectedAction.FightTargets;
+                PPReduce(user, move);
+                user.TempLockedMove = move;
+                user.TempLockedTargets = requestedTargets;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 |= PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
                 if (PowerHerbCheck(user))
@@ -2257,17 +2270,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underwater))
             {
                 user.TempLockedMove = PBEMove.None;
                 user.TempLockedTargets = PBETarget.None;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
                 if (targets.Length == 0)
@@ -2283,8 +2296,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                user.TempLockedMove = user.SelectedAction.FightMove;
-                user.TempLockedTargets = user.SelectedAction.FightTargets;
+                PPReduce(user, move);
+                user.TempLockedMove = move;
+                user.TempLockedTargets = requestedTargets;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 |= PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
                 if (PowerHerbCheck(user))
@@ -2305,17 +2320,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveFailed(user, user, PBEFailReason.Default);
             RecordExecutedMove(user, move, PBEFailReason.Default, new PBEExecutedMove.PBETargetSuccess[0]);
         }
-        void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
         top:
             if (user.Status2.HasFlag(PBEStatus2.Airborne))
             {
                 user.TempLockedMove = PBEMove.None;
                 user.TempLockedTargets = PBETarget.None;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
                 if (targets.Length == 0)
@@ -2331,8 +2346,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                user.TempLockedMove = user.SelectedAction.FightMove;
-                user.TempLockedTargets = user.SelectedAction.FightTargets;
+                PPReduce(user, move);
+                user.TempLockedMove = move;
+                user.TempLockedTargets = requestedTargets;
+                BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 |= PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
                 if (PowerHerbCheck(user))
@@ -3004,6 +3021,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             short change = (short)(Weather == PBEWeather.HarshSunlight ? +2 : +1);
             Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { change, change });
+        }
+        void Ef_Metronome(PBEPokemon user, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            // Record before the called move is recorded
+            RecordExecutedMove(user, move, PBEFailReason.None, new PBEExecutedMove.PBETargetSuccess[0]);
+
+            PBEMove calledMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).Sample();
+            calledFromOtherMove = true;
+            UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
+            calledFromOtherMove = false;
         }
         void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {

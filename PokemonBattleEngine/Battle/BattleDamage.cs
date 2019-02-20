@@ -1019,7 +1019,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             damage = (ushort)(damage * a * basePower / d);
             damage /= 50;
             damage += 2;
-            return (ushort)(damage * PBEUtils.RNG.Next(85, 101) / 100);
+            return (ushort)(damage * (100 - PBEUtils.RNG.Next(0, 0x10)) / 100);
         }
     }
 }

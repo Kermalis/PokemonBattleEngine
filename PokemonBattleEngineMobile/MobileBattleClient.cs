@@ -476,6 +476,26 @@ namespace Kermalis.PokemonBattleEngineMobile
                         BattleView.AddMessage(string.Format(message, NameForTrainer(moveUser, true), NameForTrainer(pokemon2, true)), true, true);
                         break;
                     }
+                case PBEMoveLockPacket mlp:
+                    {
+                        PBEPokemon moveUser = mlp.MoveUserTeam.TryGetPokemon(mlp.MoveUser);
+                        switch (mlp.MoveLockType)
+                        {
+                            case PBEMoveLockType.ChoiceItem:
+                                {
+                                    moveUser.ChoiceLockedMove = mlp.LockedMove;
+                                    break;
+                                }
+                            case PBEMoveLockType.Temporary:
+                                {
+                                    moveUser.TempLockedMove = mlp.LockedMove;
+                                    moveUser.TempLockedTargets = mlp.LockedTargets;
+                                    break;
+                                }
+                            default: throw new ArgumentOutOfRangeException(nameof(mlp.MoveLockType));
+                        }
+                        return true;
+                    }
                 case PBEMoveMissedPacket mmp:
                     {
                         PBEPokemon moveUser = mmp.MoveUserTeam.TryGetPokemon(mmp.MoveUser),
@@ -492,13 +512,9 @@ namespace Kermalis.PokemonBattleEngineMobile
                 case PBEMoveUsedPacket mup:
                     {
                         PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
-                        if (moveUser.Team.Id != Index && mup.OwnsMove && !moveUser.Moves.Contains(mup.Move))
+                        if (moveUser.Team.Id != Index && !mup.CalledFromOtherMove && !moveUser.Moves.Contains(mup.Move))
                         {
                             moveUser.Moves[Array.IndexOf(moveUser.Moves, PBEMove.MAX)] = mup.Move;
-                        }
-                        if (moveUser.Team.Id == Index && (moveUser.Item == PBEItem.ChoiceBand || moveUser.Item == PBEItem.ChoiceScarf || moveUser.Item == PBEItem.ChoiceSpecs) && mup.OwnsMove)
-                        {
-                            moveUser.ChoiceLockedMove = mup.Move;
                         }
                         BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(moveUser, true), PBEMoveLocalization.Names[mup.Move].FromUICultureInfo()), true, true);
                         break;
@@ -802,25 +818,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                                     BattleView.Field.UpdatePokemon(status2Receiver);
                                     switch (s2p.StatusAction)
                                     {
-                                        case PBEStatusAction.Added:
-                                            {
-                                                message = "{0} flew up high!";
-                                                if (status2Receiver.Team.Id == Index)
-                                                {
-                                                    status2Receiver.TempLockedMove = status2Receiver.SelectedAction.FightMove;
-                                                    status2Receiver.TempLockedTargets = status2Receiver.SelectedAction.FightTargets;
-                                                }
-                                                break;
-                                            }
-                                        case PBEStatusAction.Ended:
-                                            {
-                                                if (status2Receiver.Team.Id == Index)
-                                                {
-                                                    status2Receiver.TempLockedMove = PBEMove.None;
-                                                    status2Receiver.TempLockedTargets = PBETarget.None;
-                                                }
-                                                return true;
-                                            }
+                                        case PBEStatusAction.Added: message = "{0} flew up high!"; break;
+                                        case PBEStatusAction.Ended: return true;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;
@@ -913,25 +912,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                                     BattleView.Field.UpdatePokemon(status2Receiver);
                                     switch (s2p.StatusAction)
                                     {
-                                        case PBEStatusAction.Added:
-                                            {
-                                                message = "{0} burrowed its way under the ground!";
-                                                if (status2Receiver.Team.Id == Index)
-                                                {
-                                                    status2Receiver.TempLockedMove = status2Receiver.SelectedAction.FightMove;
-                                                    status2Receiver.TempLockedTargets = status2Receiver.SelectedAction.FightTargets;
-                                                }
-                                                break;
-                                            }
-                                        case PBEStatusAction.Ended:
-                                            {
-                                                if (status2Receiver.Team.Id == Index)
-                                                {
-                                                    status2Receiver.TempLockedMove = PBEMove.None;
-                                                    status2Receiver.TempLockedTargets = PBETarget.None;
-                                                }
-                                                return true;
-                                            }
+                                        case PBEStatusAction.Added: message = "{0} burrowed its way under the ground!"; break;
+                                        case PBEStatusAction.Ended: return true;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;
@@ -941,25 +923,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                                     BattleView.Field.UpdatePokemon(status2Receiver);
                                     switch (s2p.StatusAction)
                                     {
-                                        case PBEStatusAction.Added:
-                                            {
-                                                message = "{0} hid underwater!";
-                                                if (status2Receiver.Team.Id == Index)
-                                                {
-                                                    status2Receiver.TempLockedMove = status2Receiver.SelectedAction.FightMove;
-                                                    status2Receiver.TempLockedTargets = status2Receiver.SelectedAction.FightTargets;
-                                                }
-                                                break;
-                                            }
-                                        case PBEStatusAction.Ended:
-                                            {
-                                                if (status2Receiver.Team.Id == Index)
-                                                {
-                                                    status2Receiver.TempLockedMove = PBEMove.None;
-                                                    status2Receiver.TempLockedTargets = PBETarget.None;
-                                                }
-                                                return true;
-                                            }
+                                        case PBEStatusAction.Added: message = "{0} hid underwater!"; break;
+                                        case PBEStatusAction.Ended: return true;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;

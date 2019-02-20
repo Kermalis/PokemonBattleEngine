@@ -395,7 +395,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Flying, PBEMoveCategory.Special, 0, 4, 60, 100,
                     PBEMoveEffect.Hit__MaybeConfuse, 0, PBEMoveTarget.SingleNotSelf,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByMetronome | PBEMoveFlag.SoundBased
                 )
             },
             {
@@ -557,7 +557,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Fighting, PBEMoveCategory.Status, +4, 1, 0, 0,
                     PBEMoveEffect.Protect, 0, PBEMoveTarget.Self,
-                    PBEMoveFlag.None
+                    PBEMoveFlag.BlockedByMetronome
                 )
             },
             {
@@ -1695,6 +1695,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Metronome,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.Metronome, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.BlockedByMetronome
+                )
+            },
+            {
                 PBEMove.MilkDrink,
                 new PBEMoveData
                 (
@@ -1970,7 +1979,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Normal, PBEMoveCategory.Status, +4, 2, 0, 0,
                     PBEMoveEffect.Protect, 0, PBEMoveTarget.Self,
-                    PBEMoveFlag.None
+                    PBEMoveFlag.BlockedByMetronome
                 )
             },
             {
@@ -2276,7 +2285,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Fighting, PBEMoveCategory.Special, 0, 2, 85, 100,
                     PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByMetronome
                 )
             },
             {
@@ -2519,7 +2528,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Dark, PBEMoveCategory.Special, 0, 3, 55, 95,
                     PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1, 100, PBEMoveTarget.AllFoesSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByMetronome | PBEMoveFlag.SoundBased
                 )
             },
             {
@@ -2654,7 +2663,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 0, 50, 0,
                     PBEMoveEffect.Struggle, 0, PBEMoveTarget.RandomFoeSurrounding,
-                    PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact | PBEMoveFlag.UnaffectedByGems
+                    PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByMetronome | PBEMoveFlag.MakesContact | PBEMoveFlag.UnaffectedByGems
                 )
             },
             {
@@ -2933,7 +2942,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
                     PBEMoveEffect.Transform, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.None
+                    PBEMoveFlag.BlockedByMetronome
                 )
             },
             {
@@ -2960,7 +2969,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Fire, PBEMoveCategory.Physical, 0, 1, 180, 95,
                     PBEMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1, 100, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByMetronome | PBEMoveFlag.MakesContact
                 )
             },
             {

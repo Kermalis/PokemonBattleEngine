@@ -78,24 +78,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                if (action.FightMove == PBEMove.None
-                                    || !pkmn.Moves.Contains(action.FightMove)
-                                    || pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0)
+                                // If Metronome calls Dig, Dig should be selected again even if the Pokémon does not know Dig.
+                                if (pkmn.TempLockedMove != PBEMove.None)
                                 {
-                                    return false;
+                                    if (pkmn.TempLockedMove != action.FightMove || pkmn.TempLockedTargets != action.FightTargets)
+                                    {
+                                        return false;
+                                    }
                                 }
-                                else if ((pkmn.TempLockedMove != PBEMove.None && pkmn.TempLockedMove != action.FightMove)
-                                    || (pkmn.TempLockedTargets != PBETarget.None && pkmn.TempLockedTargets != action.FightTargets))
+                                else
                                 {
-                                    return false;
-                                }
-                                else if (pkmn.ChoiceLockedMove != PBEMove.None && pkmn.ChoiceLockedMove != action.FightMove)
-                                {
-                                    return false;
-                                }
-                                else if (!AreTargetsValid(pkmn, action.FightMove, action.FightTargets))
-                                {
-                                    return false;
+                                    if (action.FightMove == PBEMove.None
+                                        || !pkmn.Moves.Contains(action.FightMove)
+                                        || pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0)
+                                    {
+                                        return false;
+                                    }
+                                    else if (pkmn.ChoiceLockedMove != PBEMove.None && pkmn.ChoiceLockedMove != action.FightMove)
+                                    {
+                                        return false;
+                                    }
+                                    else if (!AreTargetsValid(pkmn, action.FightMove, action.FightTargets))
+                                    {
+                                        return false;
+                                    }
                                 }
                             }
                             break;

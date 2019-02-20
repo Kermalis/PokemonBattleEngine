@@ -264,6 +264,13 @@ namespace Kermalis.PokemonBattleEngineServer
         {
             switch (packet)
             {
+                case PBEMoveLockPacket mlp:
+                    {
+                        Player teamOwner = battlers[mlp.MoveUserTeam.Id];
+                        teamOwner.Send(mlp);
+                        teamOwner.ResetEvent.WaitOne();
+                        break;
+                    }
                 case PBEMovePPChangedPacket mpcp:
                     {
                         Player teamOwner = battlers[mpcp.MoveUserTeam.Id];
