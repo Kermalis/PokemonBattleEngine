@@ -439,9 +439,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Switching happens first:
             turnOrder.AddRange(GetActingOrder(pkmnSwitchingOut, true));
             // Moves:
-            foreach (sbyte priority in pkmnFighting.Select(p => PBEMoveData.Data[p.SelectedAction.FightMove].Priority).Distinct().OrderByDescending(p => p))
+            sbyte GetPrio(PBEPokemon p)
             {
-                IEnumerable<PBEPokemon> pkmnWithThisPriority = pkmnFighting.Where(p => PBEMoveData.Data[p.SelectedAction.FightMove].Priority == priority);
+                PBEMoveData mData = PBEMoveData.Data[p.SelectedAction.FightMove];
+                return (sbyte)PBEUtils.Clamp(mData.Priority + (p.Ability == PBEAbility.Prankster && mData.Category == PBEMoveCategory.Status ? 1 : 0), sbyte.MinValue, sbyte.MaxValue);
+            }
+            foreach (sbyte priority in pkmnFighting.Select(p => GetPrio(p)).Distinct().OrderByDescending(p => p))
+            {
+                IEnumerable<PBEPokemon> pkmnWithThisPriority = pkmnFighting.Where(p => GetPrio(p) == priority);
                 if (pkmnWithThisPriority.Count() > 0)
                 {
                     Debug.WriteLine("Priority {0} bracket...", priority);

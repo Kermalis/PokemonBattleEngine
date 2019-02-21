@@ -2103,7 +2103,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PoisonHeal = 90, // TODO
         PoisonPoint = 38, // TODO
         PoisonTouch = 143, // TODO
-        Prankster = 158, // TODO
+        Prankster = 158,
         Pressure = 46, // TODO
         /// <summary>
         /// The Pokémon's attack is boosted.
