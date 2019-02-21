@@ -684,6 +684,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     switch (s2p.StatusAction)
                                     {
                                         case PBEStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
+                                        case PBEStatusAction.Ended: return;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
+                                }
+                            case PBEStatus2.HelpingHand:
+                                {
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{1} is ready to help {0}!"; break;
+                                        case PBEStatusAction.Ended: return;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;
@@ -704,6 +715,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     {
                                         case PBEStatusAction.Activated:
                                         case PBEStatusAction.Added: message = "{0} protected itself!"; break;
+                                        case PBEStatusAction.Ended: return;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;

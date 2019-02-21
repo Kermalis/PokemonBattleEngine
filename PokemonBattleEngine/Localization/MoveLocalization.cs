@@ -278,7 +278,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.267, new PBELocalizedString("しぜんのちから", "자연의힘", "Force-Nature", "Natur-Kraft", "Adaptación", "Naturforza", "Nature Power") },
             // { PBEMove.268, new PBELocalizedString("じゅうでん", "충전", "Chargeur", "Ladevorgang", "Carga", "Sottocarica", "Charge") },
             // { PBEMove.269, new PBELocalizedString("ちょうはつ", "도발", "Provoc", "Verhöhner", "Mofa", "Provocazione", "Taunt") },
-            // { PBEMove.270, new PBELocalizedString("てだすけ", "도우미", "Coup d’Main", "Rechte Hand", "Refuerzo", "Altruismo", "Helping Hand") },
+            { PBEMove.HelpingHand, new PBELocalizedString("てだすけ", "도우미", "Coup d’Main", "Rechte Hand", "Refuerzo", "Altruismo", "Helping Hand") },
             // { PBEMove.271, new PBELocalizedString("トリック", "트릭", "Tourmagik", "Trickbetrug", "Truco", "Raggiro", "Trick") },
             // { PBEMove.272, new PBELocalizedString("なりきり", "역할", "Imitation", "Rollentausch", "Imitación", "Giocodiruolo", "Role Play") },
             // { PBEMove.273, new PBELocalizedString("ねがいごと", "희망사항", "Vœu", "Wunschtraum", "Deseo", "Desiderio", "Wish") },

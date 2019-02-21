@@ -104,12 +104,12 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // 2010 birthday
                     (
                         new byte[] { 5 }, PBESpecies.Audino, 30, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Healer }, new PBENature[] { PBENature.Calm },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HealPulse/*, PBEMove.HelpingHand, PBEMove.Refresh, PBEMove.DoubleSlap*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HealPulse, PBEMove.HelpingHand/*, PBEMove.Refresh, PBEMove.DoubleSlap*/ }
                     ),
                     new PBEEventPokemon // 2011 birthday | 2012 birthday
                     (
                         new byte[] { 5 }, PBESpecies.Audino, 30, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Healer }, new PBENature[] { PBENature.Jolly, PBENature.Serious },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HealPulse/*, PBEMove.HelpingHand, PBEMove.Refresh, PBEMove.Present*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.HealPulse, PBEMove.HelpingHand/*, PBEMove.Refresh, PBEMove.Present*/ }
                     )
                 })
             },
@@ -269,7 +269,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // 2009 birthday | 2010 birthday
                     (
                         new byte[] { 4 }, PBESpecies.Chimchar, 40, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Blaze }, new PBENature[] { PBENature.Hardy, PBENature.Mild },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Flamethrower, PBEMove.ThunderPunch, PBEMove.GrassKnot/*, PBEMove.HelpingHand*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Flamethrower, PBEMove.ThunderPunch, PBEMove.GrassKnot, PBEMove.HelpingHand }
                     ),
                     new PBEEventPokemon // Global Link promotion
                     (
@@ -388,7 +388,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Eevee collection promotion
                     (
                         new byte[] { 4 }, PBESpecies.Eevee, 10, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Adaptability }, new PBENature[] { PBENature.Lonely },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Covet, */PBEMove.Bite/*, PBEMove.HelpingHand, PBEMove.Attract*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Covet, */PBEMove.Bite, PBEMove.HelpingHand/*, PBEMove.Attract*/ }
                     ),
                     new PBEEventPokemon // World championships 2010
                     (
@@ -436,7 +436,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Espeon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.MagicBounce }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle/*, PBEMove.HelpingHand*/, PBEMove.SandAttack }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
             },
@@ -458,7 +458,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Flareon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Guts }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle/*, PBEMove.HelpingHand*/, PBEMove.SandAttack }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
             },
@@ -512,7 +512,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Glaceon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.IceBody }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle/*, PBEMove.HelpingHand*/, PBEMove.SandAttack }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
             },
@@ -594,7 +594,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // PokéPark Jirachi
                     (
                         new byte[] { 3 }, PBESpecies.Jirachi, 30, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Psychic/*, PBEMove.HelpingHand, PBEMove.Rest*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Psychic, PBEMove.HelpingHand/*, PBEMove.Rest*/ }
                     ),
                     new PBEEventPokemon // 2009 Jirachi | 2010 (rest of the world) Jirachi
                     (
@@ -630,7 +630,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Jolteon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.QuickFeet }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle/*, PBEMove.HelpingHand*/, PBEMove.SandAttack }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
             },
@@ -695,7 +695,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Leafeon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Chlorophyll }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle/*, PBEMove.HelpingHand*/, PBEMove.SandAttack }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
             },
@@ -1446,7 +1446,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Umbreon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.InnerFocus }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle/*, PBEMove.HelpingHand*/, PBEMove.SandAttack }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
             },
@@ -1457,7 +1457,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Global Link promotion
                     (
                         new byte[] { 5 }, PBESpecies.Vaporeon, 10, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Hydration }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle/*, PBEMove.HelpingHand*/, PBEMove.SandAttack }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.TailWhip, PBEMove.Tackle, PBEMove.HelpingHand, PBEMove.SandAttack }
                     )
                 })
             },
@@ -1511,7 +1511,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Powerful Tag
                     (
                         new byte[] { 5 }, PBESpecies.Whimsicott, 50, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Prankster }, new PBENature[] { PBENature.Timid },
-                        new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { PBEMove.Swagger, PBEMove.GigaDrain/*, PBEMove.BeatUp, PBEMove.HelpingHand*/ }
+                        new byte?[] { null, null, null, null, null, 31 }, new PBEMove[] { PBEMove.Swagger, PBEMove.GigaDrain/*, PBEMove.BeatUp*/, PBEMove.HelpingHand }
                     )
                 })
             },

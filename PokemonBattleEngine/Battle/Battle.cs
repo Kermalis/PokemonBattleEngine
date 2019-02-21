@@ -304,8 +304,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                 foreach (PBEPokemon pkmn in ActiveBattlers)
                 {
-                    pkmn.Status2 &= ~PBEStatus2.Flinching;
-                    pkmn.Status2 &= ~PBEStatus2.Protected;
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Flinching))
+                    {
+                        pkmn.Status2 &= ~PBEStatus2.Flinching;
+                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Flinching, PBEStatusAction.Ended);
+                    }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.HelpingHand))
+                    {
+                        pkmn.Status2 &= ~PBEStatus2.HelpingHand;
+                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.HelpingHand, PBEStatusAction.Ended);
+                    }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Protected))
+                    {
+                        pkmn.Status2 &= ~PBEStatus2.Protected;
+                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Protected, PBEStatusAction.Ended);
+                    }
                 }
                 foreach (PBETeam team in Teams)
                 {

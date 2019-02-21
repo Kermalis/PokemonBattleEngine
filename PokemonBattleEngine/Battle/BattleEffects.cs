@@ -425,6 +425,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
+        bool HasActedThisTurn(PBEPokemon pkmn)
+        {
+            return pkmn.ExecutedMoves.Any(e => e.TurnNumber == TurnNumber);
+        }
+
         void UseMove(PBEPokemon user, PBEMove move, PBETarget requestedTargets)
         {
             if (PreMoveStatusCheck(user, move))
@@ -599,6 +604,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.Hail:
                         {
                             Ef_TryForceWeather(user, move, PBEWeather.Hailstorm);
+                            break;
+                        }
+                    case PBEMoveEffect.HelpingHand:
+                        {
+                            Ef_HelpingHand(user, targets, move);
                             break;
                         }
                     case PBEMoveEffect.Hit:
@@ -1478,7 +1488,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            failReason = PBEFailReason.Default; // Never used (broadcastFailOrEffectiveness)
+                            failReason = PBEFailReason.Default; // Never used by broadcastFailOrEffectiveness
+                        }
+                        break;
+                    }
+                case PBEStatus2.HelpingHand:
+                    {
+                        if (!HasActedThisTurn(target))
+                        {
+                            target.Status2 |= PBEStatus2.HelpingHand;
+                            BroadcastStatus2(target, user, PBEStatus2.HelpingHand, PBEStatusAction.Added);
+                            failReason = PBEFailReason.None;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
                         }
                         break;
                     }
@@ -1790,7 +1814,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -1839,7 +1863,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2063,7 +2087,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2088,7 +2112,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2114,7 +2138,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2174,7 +2198,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2202,7 +2226,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2231,7 +2255,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2402,7 +2426,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2423,7 +2447,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0) // You still faint if there are no targets
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2442,7 +2466,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2473,7 +2497,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2498,7 +2522,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2539,7 +2563,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2561,7 +2585,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2583,7 +2607,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2605,7 +2629,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2628,7 +2652,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2702,7 +2726,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2763,7 +2787,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2831,7 +2855,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2853,7 +2877,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2882,7 +2906,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2905,7 +2929,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -2990,7 +3014,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -3028,7 +3052,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -3071,6 +3095,53 @@ namespace Kermalis.PokemonBattleEngine.Battle
             short change = (short)(Weather == PBEWeather.HarshSunlight ? +2 : +1);
             Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { change, change });
         }
+        void Ef_HelpingHand(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
+            }
+            else
+            {
+                failReason = PBEFailReason.None;
+                foreach (PBEPokemon target in targets)
+                {
+                    var success = new PBEExecutedMove.PBETargetSuccess
+                    {
+                        Target = target,
+                        OldHP = target.HP,
+                        OldHPPercentage = target.HPPercentage
+                    };
+                    // TODO: When triple battle shifting happens, all moves that can target allies but not the user will have to check if the user targetted itself due to shifting.
+                    // For now, I'll put this check here, because this is the only move that will attempt to target the user when the move cannot normally do so (single/rotation battle).
+                    if (target == user)
+                    {
+                        success.FailReason = PBEFailReason.NoTarget;
+                        BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
+                    }
+                    else
+                    {
+                        if (MissCheck(user, target, move))
+                        {
+                            success.Missed = true;
+                        }
+                        else
+                        {
+                            success.FailReason = ApplyStatus2IfPossible(user, target, PBEStatus2.HelpingHand, true);
+                        }
+                    }
+                    success.NewHP = target.HP;
+                    success.NewHPPercentage = target.HPPercentage;
+                    targetSuccess.Add(success);
+                }
+            }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
+        }
         void Ef_Metronome(PBEPokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
@@ -3092,7 +3163,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -3136,7 +3207,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {
@@ -3174,7 +3245,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (targets.Length == 0)
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, failReason);
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
             }
             else
             {

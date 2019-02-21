@@ -860,6 +860,17 @@ namespace Kermalis.PokemonBattleEngineClient
                                     switch (s2p.StatusAction)
                                     {
                                         case PBEStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
+                                        case PBEStatusAction.Ended: return true;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
+                                }
+                            case PBEStatus2.HelpingHand:
+                                {
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added: message = "{1} is ready to help {0}!"; status2ReceiverCaps = false; pokemon2Caps = true; break;
+                                        case PBEStatusAction.Ended: return true;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;
@@ -880,6 +891,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     {
                                         case PBEStatusAction.Activated:
                                         case PBEStatusAction.Added: message = "{0} protected itself!"; break;
+                                        case PBEStatusAction.Ended: return true;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;
@@ -1179,11 +1191,6 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                 case PBETurnBeganPacket tbp:
                     {
-                        foreach (PBEPokemon pkmn in Battle.ActiveBattlers)
-                        {
-                            pkmn.Status2 &= ~PBEStatus2.Flinching;
-                            pkmn.Status2 &= ~PBEStatus2.Protected;
-                        }
                         BattleView.AddMessage($"Turn {Battle.TurnNumber = tbp.TurnNumber}", false, true);
                         return true;
                     }

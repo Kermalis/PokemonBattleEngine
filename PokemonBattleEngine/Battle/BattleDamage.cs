@@ -710,6 +710,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
             }
 
+            if (user.Status2.HasFlag(PBEStatus2.HelpingHand))
+            {
+                basePower *= 1.5;
+            }
             if (user.Item == PBEItem.LifeOrb)
             {
                 basePower *= 1.3;

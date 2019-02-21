@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Careful,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 0, 4, 252, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.Substitute, PBEMove.HealPulse, PBEMove.Waterfall, PBEMove.Protect }, // Helping Hand, Heal Pulse, Waterfall, Wide Guard
+            Moves = new PBEMove[] { PBEMove.HelpingHand, PBEMove.HealPulse, PBEMove.Waterfall, PBEMove.Protect }, // Helping Hand, Heal Pulse, Waterfall, Wide Guard
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Amoonguss_VGC { get; } = new PBEPokemonShell
@@ -111,7 +111,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Sassy,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 4, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.HealPulse, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Heal Pulse, Helping Hand, Safeguard
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.HealPulse, PBEMove.HelpingHand, PBEMove.Protect }, // Trick Room, Heal Pulse, Helping Hand, Safeguard
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Azelf_VGC { get; } = new PBEPokemonShell
@@ -478,7 +478,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Relaxed,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 60, 0, 196, 0 },
-            Moves = new PBEMove[] { PBEMove.Psychic, PBEMove.TrickRoom, PBEMove.Reflect, PBEMove.LightScreen }, // Psychic, Trick Room, Reflect, Helping Hand
+            Moves = new PBEMove[] { PBEMove.Psychic, PBEMove.TrickRoom, PBEMove.Reflect, PBEMove.HelpingHand },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Crobat_VGC { get; } = new PBEPokemonShell
@@ -1177,7 +1177,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Bold,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 0, 252, 0, 0, 4 },
-            Moves = new PBEMove[] { PBEMove.DragonPulse, PBEMove.IcyWind, PBEMove.DoubleTeam, PBEMove.Recover }, // Dragon Pulse, Icy Wind, Helping Hand, Recover
+            Moves = new PBEMove[] { PBEMove.DragonPulse, PBEMove.IcyWind, PBEMove.HelpingHand, PBEMove.Recover },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Latios_VGC { get; } = new PBEPokemonShell
@@ -1432,7 +1432,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Sassy,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 0, 0, 4, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.Psychic, PBEMove.LightScreen, PBEMove.Protect }, // Trick Room, Psychic, Helping Hand, Imprison
+            Moves = new PBEMove[] { PBEMove.TrickRoom, PBEMove.Psychic, PBEMove.HelpingHand, PBEMove.Protect }, // Trick Room, Psychic, Helping Hand, Imprison
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
@@ -1855,7 +1855,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Adamant,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.Return, PBEMove.Crunch, PBEMove.ThunderWave, PBEMove.Protect }, // Return, Crunch, Helping Hand, Protect
+            Moves = new PBEMove[] { PBEMove.Return, PBEMove.Crunch, PBEMove.HelpingHand, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Stunfisk_Uber { get; } = new PBEPokemonShell

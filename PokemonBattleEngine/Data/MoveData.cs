@@ -1245,6 +1245,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.HelpingHand,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, +5, 4, 0, 0,
+                    PBEMoveEffect.HelpingHand, 0, PBEMoveTarget.SingleAllySurrounding,
+                    PBEMoveFlag.BlockedByMetronome
+                )
+            },
+            {
                 PBEMove.Hex,
                 new PBEMoveData
                 (
