@@ -397,7 +397,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.386, new PBELocalizedString("おしおき", "혼내기", "Punition", "Strafattacke", "Castigo", "Punizione", "Punishment") },
             // { PBEMove.387, new PBELocalizedString("とっておき", "뒀다쓰기", "Dernierecour", "Zuflucht", "Última Baza", "Ultimascelta", "Last Resort") },
             // { PBEMove.388, new PBELocalizedString("なやみのタネ", "고민씨", "Soucigraine", "Sorgensamen", "Abatidoras", "Affannoseme", "Worry Seed") },
-            // { PBEMove.389, new PBELocalizedString("ふいうち", "기습", "Coup Bas", "Tiefschlag", "Golpe Bajo", "Sbigoattacco", "Sucker Punch") },
+            { PBEMove.SuckerPunch, new PBELocalizedString("ふいうち", "기습", "Coup Bas", "Tiefschlag", "Golpe Bajo", "Sbigoattacco", "Sucker Punch") },
             { PBEMove.ToxicSpikes, new PBELocalizedString("どくびし", "독압정", "Pics Toxik", "Giftspitzen", "Púas Tóxicas", "Fielepunte", "Toxic Spikes") },
             // { PBEMove.391, new PBELocalizedString("ハートスワップ", "하트스웹", "Permucœur", "Statustausch", "Cambia Almas", "Cuorbaratto", "Heart Swap") },
             // { PBEMove.392, new PBELocalizedString("アクアリング", "아쿠아링", "Anneau Hydro", "Wasserring", "Acua Aro", "Acquanello", "Aqua Ring") },

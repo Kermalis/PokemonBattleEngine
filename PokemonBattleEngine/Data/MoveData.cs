@@ -2712,6 +2712,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.SuckerPunch,
+                new PBEMoveData
+                (
+                    PBEType.Dark, PBEMoveCategory.Physical, +1, 1, 80, 100,
+                    PBEMoveEffect.SuckerPunch, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.SunnyDay,
                 new PBEMoveData
                 (

@@ -2758,6 +2758,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StealthRock,
         Struggle,
         Substitute,
+        SuckerPunch, // TODO: Me First
         SunnyDay,
         SuperFang,
         Swagger,
@@ -3094,6 +3095,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StunSpore = 78,
         Submission = 66,
         Substitute = 164,
+        SuckerPunch = 389,
         SunnyDay = 241,
         SuperFang = 162,
         Superpower = 276,

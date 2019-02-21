@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Adamant,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 0, 252, 4, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.RockSlide, PBEMove.NightSlash, PBEMove.Superpower }, // Sucker Punch, Superpower, Night Slash, Pursuit
+            Moves = new PBEMove[] { PBEMove.SwordsDance, PBEMove.SuckerPunch, PBEMove.NightSlash, PBEMove.Superpower }, // Sucker Punch, Superpower, Night Slash, Pursuit
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Accelgor_VGC { get; } = new PBEPokemonShell
@@ -226,7 +226,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Adamant,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.AerialAce, PBEMove.NightSlash, PBEMove.IronHead, PBEMove.Protect }, // Sucker Punch, Night Slash, Iron Head, Protect
+            Moves = new PBEMove[] { PBEMove.SuckerPunch, PBEMove.NightSlash, PBEMove.IronHead, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         /// <summary>
@@ -613,7 +613,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Brave,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 252, 0, 0, 4, 0 },
-            Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.RockSlide, PBEMove.Superpower, PBEMove.Protect }, // Dragon Claw, Sucker Punch, Superpower, Protect
+            Moves = new PBEMove[] { PBEMove.DragonClaw, PBEMove.SuckerPunch, PBEMove.Superpower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Durant_VGC { get; } = new PBEPokemonShell
@@ -1237,7 +1237,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Return, PBEMove.NightSlash, PBEMove.AerialAce, PBEMove.Protect }, // Fake Out, Sucker Punch, Snatch, Encore
+            Moves = new PBEMove[] { PBEMove.Return, PBEMove.SuckerPunch, PBEMove.AerialAce, PBEMove.Protect }, // Fake Out, Sucker Punch, Snatch, Encore
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Lilligant_VGC { get; } = new PBEPokemonShell
@@ -1312,7 +1312,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Naughty,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 0, 252, 0, 48, 0, 208 },
-            Moves = new PBEMove[] { PBEMove.Spikes, PBEMove.NeedleArm, PBEMove.GrassKnot, PBEMove.Endeavor }, // Spikes, Bullet Seed, Grass Knot, Sucker Punch
+            Moves = new PBEMove[] { PBEMove.Spikes, PBEMove.NeedleArm, PBEMove.GrassKnot, PBEMove.SuckerPunch },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Marowak_VGC { get; } = new PBEPokemonShell
@@ -2209,7 +2209,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Lonely,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 104, 148, 0, 252, 0, 4 },
-            Moves = new PBEMove[] { PBEMove.ShadowClaw, PBEMove.NightDaze, PBEMove.Flamethrower, PBEMove.Protect }, // Sucker Punch, Night Daze, Flamethrower, Protect
+            Moves = new PBEMove[] { PBEMove.SuckerPunch, PBEMove.NightDaze, PBEMove.Flamethrower, PBEMove.Protect },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
 

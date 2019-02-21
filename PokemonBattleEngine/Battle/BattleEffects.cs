@@ -425,7 +425,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        bool HasActedThisTurn(PBEPokemon pkmn)
+        bool HasUsedMoveThisTurn(PBEPokemon pkmn)
         {
             return pkmn.ExecutedMoves.Any(e => e.TurnNumber == TurnNumber);
         }
@@ -924,6 +924,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.Substitute:
                         {
                             Ef_TryForceStatus2(user, targets, move, PBEStatus2.Substitute);
+                            break;
+                        }
+                    case PBEMoveEffect.SuckerPunch:
+                        {
+                            Ef_SuckerPunch(user, targets, move);
                             break;
                         }
                     case PBEMoveEffect.SunnyDay:
@@ -1494,7 +1499,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEStatus2.HelpingHand:
                     {
-                        if (!HasActedThisTurn(target))
+                        if (!HasUsedMoveThisTurn(target))
                         {
                             target.Status2 |= PBEStatus2.HelpingHand;
                             BroadcastStatus2(target, user, PBEStatus2.HelpingHand, PBEStatusAction.Added);
@@ -1690,6 +1695,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         // Brick Break destroys Light Screen and Reflect before doing damage
                         // Dream Eater checks for sleep before doing damage
+                        // Sucker Punch fails before doing damage
                         if (beforeDoingDamage != null)
                         {
                             success.FailReason = beforeDoingDamage.Invoke(target);
@@ -2453,6 +2459,38 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 failReason = PBEFailReason.None;
                 BasicHit(user, targets, move, ref targetSuccess);
+            }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
+        }
+        void Ef_SuckerPunch(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
+            }
+            else
+            {
+                failReason = PBEFailReason.None;
+                PBEFailReason BeforeDoingDamage(PBEPokemon target)
+                {
+                    if (target.SelectedAction.Decision != PBEDecision.Fight
+                        || PBEMoveData.Data[target.SelectedAction.FightMove].Category == PBEMoveCategory.Status
+                        || HasUsedMoveThisTurn(target))
+                    {
+                        BroadcastMoveFailed(user, target, PBEFailReason.Default);
+                        return PBEFailReason.Default;
+                    }
+                    else
+                    {
+                        return PBEFailReason.None;
+                    }
+                }
+                BasicHit(user, targets, move, ref targetSuccess, beforeDoingDamage: BeforeDoingDamage);
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
