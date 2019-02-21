@@ -250,10 +250,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public void ClearForSwitch()
         {
             FieldPosition = PBEFieldPosition.None;
-            if (Ability == PBEAbility.Regenerator)
+            switch (Ability)
             {
-                HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
-                HPPercentage = (double)HP / MaxHP;
+                case PBEAbility.NaturalCure:
+                    {
+                        Status1 = PBEStatus1.None;
+                        Status1Counter = SleepTurns = 0;
+                        break;
+                    }
+                case PBEAbility.Regenerator:
+                    {
+                        HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
+                        HPPercentage = (double)HP / MaxHP;
+                        break;
+                    }
             }
             Ability = Shell.Ability;
             VisualGender = Shell.Gender;

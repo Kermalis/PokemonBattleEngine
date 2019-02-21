@@ -2081,7 +2081,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Multitype = 121,
         Mummy = 152,
-        NaturalCure = 30, // TODO
+        NaturalCure = 30,
         /// <summary>
         /// The Pokémon will always hit and always get hit unless protection is used.
         /// </summary>
