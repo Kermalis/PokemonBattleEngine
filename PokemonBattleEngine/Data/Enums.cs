@@ -2109,7 +2109,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The Pokémon's attack is boosted.
         /// </summary>
         PurePower = 74,
-        QuickFeet = 95, // TODO
+        QuickFeet = 95,
         /// <summary>
         /// In rain, the Pokémon restores HP at the end of each turn.
         /// </summary>

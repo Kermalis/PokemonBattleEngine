@@ -382,7 +382,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     speed *= 2.0;
                 }
-                if (pkmn.Status1 == PBEStatus1.Paralyzed)
+
+                if (pkmn.Ability == PBEAbility.QuickFeet)
+                {
+                    if (pkmn.Status1 != PBEStatus1.None)
+                    {
+                        speed *= 1.5;
+                    }
+                }
+                else if (pkmn.Status1 == PBEStatus1.Paralyzed)
                 {
                     speed *= 0.25;
                 }
