@@ -144,6 +144,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 IllusionBreak(victim, user); // Verified: Illusion before Rocky Helmet
+                if (user.HP > 0 && victim.Ability == PBEAbility.Justified && moveType == PBEType.Dark) // Verified: Justified before Rocky Helmet
+                {
+                    BroadcastAbility(victim, user, PBEAbility.Justified, PBEAbilityAction.Damage);
+                    ApplyStatChange(victim, PBEStat.Attack, +1);
+                }
                 if (user.HP > 0 && victim.Ability == PBEAbility.Rattled && (moveType == PBEType.Bug || moveType == PBEType.Dark || moveType == PBEType.Ghost)) // Verified: Rattled before Rocky Helmet
                 {
                     BroadcastAbility(victim, user, PBEAbility.Rattled, PBEAbilityAction.Damage);

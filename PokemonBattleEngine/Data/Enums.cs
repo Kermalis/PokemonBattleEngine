@@ -2047,7 +2047,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// The power of moves with <see cref="PBEMoveFlag.AffectedByIronFist"/> is increased.
         /// </summary>
         IronFist = 89,
-        Justified = 154, // TODO
+        Justified = 154,
         KeenEye = 51, // TODO
         Klutz = 103, // TODO
         LeafGuard = 102, // TODO
