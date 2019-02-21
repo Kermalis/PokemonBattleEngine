@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(MoveUser = moveUser.FieldPosition));
             bytes.Add((MoveUserTeam = moveUser.Team).Id);
-            bytes.Add((byte)(LockedMove = lockedMove));
+            bytes.AddRange(BitConverter.GetBytes((ushort)(LockedMove = lockedMove)));
             bytes.Add((byte)(LockedTargets = lockedTargets));
             bytes.Add((byte)(MoveLockType = moveLockType));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 r.ReadInt16(); // Skip Code
                 MoveUser = (PBEFieldPosition)r.ReadByte();
                 MoveUserTeam = battle.Teams[r.ReadByte()];
-                LockedMove = (PBEMove)r.ReadByte();
+                LockedMove = (PBEMove)r.ReadUInt16();
                 LockedTargets = (PBETarget)r.ReadByte();
                 MoveLockType = (PBEMoveLockType)r.ReadByte();
             }
