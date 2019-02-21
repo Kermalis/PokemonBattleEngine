@@ -128,7 +128,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="user">The Pokémon who used <paramref name="move"/>.</param>
         /// <param name="victim">The Pokémon who was affected by <paramref name="move"/>.</param>
         /// <param name="move">The move <paramref name="user"/> used.</param>
-        void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move)
+        /// <param name="moveType">The type that the move was.</param>
+        void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move, PBEType moveType)
         {
             // TODO: Move Limber to the proper place (DoPostAttackedEffects)
             LimberCheck(victim);
@@ -142,7 +143,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                IllusionBreak(victim, user);
+                IllusionBreak(victim, user); // Verified: Illusion before Rocky Helmet
+                if (user.HP > 0 && victim.Ability == PBEAbility.Rattled && (moveType == PBEType.Bug || moveType == PBEType.Dark || moveType == PBEType.Ghost)) // Verified: Rattled before Rocky Helmet
+                {
+                    BroadcastAbility(victim, user, PBEAbility.Rattled, PBEAbilityAction.Damage);
+                    ApplyStatChange(victim, PBEStat.Speed, +1);
+                }
+
                 if (PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.MakesContact))
                 {
                     if (user.HP > 0 && victim.Ability == PBEAbility.Mummy && user.Ability != PBEAbility.Multitype && user.Ability != PBEAbility.Mummy && user.Ability != PBEAbility.ZenMode)
@@ -1724,7 +1731,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         // Target's statuses are assigned and target's stats are changed before post-hit effects
                         beforePostHit?.Invoke(target);
-                        DoPostHitEffects(user, target, move);
+                        DoPostHitEffects(user, target, move, moveType);
                         // HP-draining moves restore HP after post-hit effects
                         afterPostHit?.Invoke(target, damageDealt);
                     }
@@ -1790,7 +1797,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         DealDamage(user, target, damageFunc.Invoke(target), false);
 
                         hit++;
-                        DoPostHitEffects(user, target, move);
+                        DoPostHitEffects(user, target, move, moveType);
                     }
                 }
             record:
@@ -2801,7 +2808,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 else
                                 {
                                     DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), true);
-                                    DoPostHitEffects(user, pkmn, move);
+                                    DoPostHitEffects(user, pkmn, move, user.GetMoveType(move));
                                 }
                             }
 

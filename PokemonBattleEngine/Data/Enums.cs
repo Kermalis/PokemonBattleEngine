@@ -2114,7 +2114,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// In rain, the Pokémon restores HP at the end of each turn.
         /// </summary>
         RainDish = 44,
-        Rattled = 155, // TODO
+        Rattled = 155,
         Reckless = 120,
         Regenerator = 144,
         Rivalry = 79, // TODO
