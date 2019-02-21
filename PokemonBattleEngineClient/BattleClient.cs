@@ -474,6 +474,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBEFailReason.Default: message = "But it failed!"; break;
                             case PBEFailReason.HPFull: message = "{1}'s HP is full!"; break;
                             case PBEFailReason.NoTarget: message = "There was no target..."; break;
+                            case PBEFailReason.OneHitKnockoutUnaffected: message = "{1} is unaffected!"; break;
                             default: throw new ArgumentOutOfRangeException(nameof(mfp.FailReason));
                         }
                         BattleView.AddMessage(string.Format(message, NameForTrainer(moveUser, true), NameForTrainer(pokemon2, true)), true, true);
@@ -694,6 +695,11 @@ namespace Kermalis.PokemonBattleEngineClient
                             case PBESpecialMessage.Magnitude:
                                 {
                                     message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
+                                    break;
+                                }
+                            case PBESpecialMessage.OneHitKnockout:
+                                {
+                                    message = "It's a one-hit KO!";
                                     break;
                                 }
                             case PBESpecialMessage.PainSplit:

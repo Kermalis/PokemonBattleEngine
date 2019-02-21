@@ -797,13 +797,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         HPFull,
         /// <summary>
-        /// The move failed because the Pokémon was unaffected by the move.
+        /// The move failed because the Pokémon was immune to the move.
         /// </summary>
         Ineffective,
         /// <summary>
         /// The move was used when there were no available targets to hit.
         /// </summary>
-        NoTarget
+        NoTarget,
+        /// <summary>
+        /// The one-hit-knockout move failed because the target was a higher level than the user.
+        /// </summary>
+        OneHitKnockoutUnaffected
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEWeather"/>.
@@ -829,6 +833,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Endure,
         HPDrained,
         Magnitude,
+        OneHitKnockout,
         PainSplit,
         Recoil,
         Struggle,

@@ -1691,7 +1691,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             DoPostAttackedEffects(user, !lifeOrbDamage, recoilDamage);
         }
         void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess, Func<PBEPokemon, ushort> damageFunc,
-            Func<PBEPokemon, PBEFailReason> afterMissCheck = null)
+            Func<PBEPokemon, PBEFailReason> beforeMissCheck = null,
+            Action beforeTargetsFaint = null)
         {
             byte hit = 0;
             PBEType moveType = user.GetMoveType(move);
@@ -1703,22 +1704,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     OldHP = target.HP,
                     OldHPPercentage = target.HPPercentage
                 };
+                // Endeavor fails if the target's HP is <= the user's HP
+                // One hit knockout moves fail if the target's level is > the user's level
+                if (beforeMissCheck != null)
+                {
+                    success.FailReason = beforeMissCheck.Invoke(target);
+                    if (success.FailReason != PBEFailReason.None)
+                    {
+                        goto record;
+                    }
+                }
                 if (MissCheck(user, target, move))
                 {
                     success.Missed = true;
                 }
                 else
                 {
-                    // Endeavor fails if the target's HP is <= the user's HP
-                    if (afterMissCheck != null)
-                    {
-                        success.FailReason = afterMissCheck.Invoke(target);
-                        if (success.FailReason != PBEFailReason.None)
-                        {
-                            goto record;
-                        }
-                    }
-
                     double d = 1.0;
                     TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref d, false);
                     if (moveEffectiveness == PBEEffectiveness.Ineffective)
@@ -1743,6 +1744,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (hit > 0)
             {
+                // "It's a one-hit KO!"
+                beforeTargetsFaint?.Invoke();
                 foreach (PBEPokemon target in targets)
                 {
                     FaintCheck(target);
@@ -2421,7 +2424,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return (ushort)(target.HP - user.HP);
                 }
-                PBEFailReason AfterMissCheck(PBEPokemon target)
+                PBEFailReason BeforeMissCheck(PBEPokemon target)
                 {
                     if (target.HP <= user.HP)
                     {
@@ -2430,7 +2433,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     return PBEFailReason.None;
                 }
-                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc, afterMissCheck: AfterMissCheck);
+                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc, beforeMissCheck: BeforeMissCheck);
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
@@ -2477,7 +2480,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return target.HP;
                 }
-                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
+                PBEFailReason BeforeMissCheck(PBEPokemon target)
+                {
+                    if (target.Shell.Level > user.Shell.Level)
+                    {
+                        BroadcastMoveFailed(user, target, PBEFailReason.OneHitKnockoutUnaffected);
+                        return PBEFailReason.OneHitKnockoutUnaffected;
+                    }
+                    else
+                    {
+                        return PBEFailReason.None;
+                    }
+                }
+                void BeforeTargetsFaint()
+                {
+                    if (targets.Any(p => p.HP == 0))
+                    {
+                        BroadcastOneHitKnockout();
+                    }
+                }
+                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc, beforeMissCheck: BeforeMissCheck, beforeTargetsFaint: BeforeTargetsFaint);
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }

@@ -87,6 +87,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
                             Params = Array.AsReadOnly(new object[] { (PBEFieldPosition)r.ReadByte(), battle.Teams[r.ReadByte()], (PBEFieldPosition)r.ReadByte(), battle.Teams[r.ReadByte()] });
                             break;
                         }
+                    default: // OneHitKnockout
+                        {
+                            Params = Array.AsReadOnly(new object[0]);
+                            break;
+                        }
                 }
             }
         }

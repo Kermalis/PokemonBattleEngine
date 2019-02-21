@@ -56,6 +56,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.HPDrained, pokemon));
         void BroadcastMagnitude(byte magnitude)
             => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude));
+        void BroadcastOneHitKnockout()
+            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.OneHitKnockout));
         void BroadcastPainSplit(PBEPokemon user, PBEPokemon target)
             => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.PainSplit, user, target));
         void BroadcastRecoil(PBEPokemon pokemon)
@@ -402,6 +404,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             case PBEFailReason.Default: message = "But it failed!"; break;
                             case PBEFailReason.HPFull: message = "{1}'s HP is full!"; break;
                             case PBEFailReason.NoTarget: message = "There was no target..."; break;
+                            case PBEFailReason.OneHitKnockoutUnaffected: message = "{1} is unaffected!"; break;
                             default: throw new ArgumentOutOfRangeException(nameof(mfp.FailReason));
                         }
                         Console.WriteLine(message, NameForTrainer(moveUser), NameForTrainer(pokemon2));
@@ -563,6 +566,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             case PBESpecialMessage.Magnitude:
                                 {
                                     message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
+                                    break;
+                                }
+                            case PBESpecialMessage.OneHitKnockout:
+                                {
+                                    message = "It's a one-hit KO!";
                                     break;
                                 }
                             case PBESpecialMessage.PainSplit:
