@@ -90,7 +90,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     if (action.FightMove == PBEMove.None
                                         || !pkmn.Moves.Contains(action.FightMove)
-                                        || pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0)
+                                        || pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0
+                                        )
                                     {
                                         return false;
                                     }
@@ -108,19 +109,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     case PBEDecision.SwitchOut:
                         {
-                            if (pkmn.Status2.HasFlag(PBEStatus2.Airborne)
-                                || pkmn.Status2.HasFlag(PBEStatus2.Underground)
-                                || pkmn.Status2.HasFlag(PBEStatus2.Underwater)
-                                )
+                            if (pkmn.TempLockedMove != PBEMove.None)
                             {
                                 return false;
                             }
                             PBEPokemon switchPkmn = team.Battle.TryGetPokemon(action.SwitchPokemonId);
                             if (switchPkmn == null
                                 || switchPkmn.Team != team
-                                || switchPkmn.Id == pkmn.Id
                                 || switchPkmn.HP == 0
-                                || switchPkmn.FieldPosition != PBEFieldPosition.None
+                                || switchPkmn.FieldPosition != PBEFieldPosition.None // Also takes care of trying to switch into yourself
                                 || standBy.Contains(switchPkmn)
                                 )
                             {
