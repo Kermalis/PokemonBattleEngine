@@ -347,24 +347,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                 }
                             case PBEMoveTarget.AllTeam:
+                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.Self:
                             case PBEMoveTarget.SelfOrAllySurrounding:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Center)
-                                    {
-                                        return targets == PBETarget.AllyCenter;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.SingleAllySurrounding:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                     {
-                                        return true;
+                                        return targets == PBETarget.AllyCenter;
                                     }
                                     else
                                     {
@@ -427,6 +417,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
+                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.Self:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Left)
@@ -489,17 +480,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     else if (pkmn.FieldPosition == PBEFieldPosition.Right)
                                     {
                                         return targets == PBETarget.AllyLeft || targets == PBETarget.FoeLeft || targets == PBETarget.FoeRight;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.RandomFoeSurrounding:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return true;
                                     }
                                     else
                                     {
@@ -584,6 +564,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
+                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.Self:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Left)
@@ -698,17 +679,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
-                            case PBEMoveTarget.RandomFoeSurrounding:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return true;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
                             default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                         }
                     }
@@ -744,24 +714,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                 }
                             case PBEMoveTarget.AllTeam:
+                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.Self:
                             case PBEMoveTarget.SelfOrAllySurrounding:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return targets == PBETarget.AllyCenter;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.SingleAllySurrounding:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
                                     {
-                                        return true;
+                                        return targets == PBETarget.AllyCenter;
                                     }
                                     else
                                     {

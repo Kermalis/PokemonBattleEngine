@@ -229,14 +229,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                             }
                                             break;
                                         }
-                                    case PBEMoveTarget.SingleAllySurrounding:
-                                        {
-                                            if (team.Battle.BattleFormat == PBEBattleFormat.Single || team.Battle.BattleFormat == PBEBattleFormat.Rotation)
-                                            {
-                                                pkmn.SelectedAction.FightTargets = PBETarget.AllyCenter;
-                                            }
-                                            break;
-                                        }
                                 }
                                 break;
                             }
