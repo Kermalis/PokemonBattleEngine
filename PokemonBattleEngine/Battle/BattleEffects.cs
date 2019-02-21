@@ -432,7 +432,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void UseMove(PBEPokemon user, PBEMove move, PBETarget requestedTargets)
         {
-            if (PreMoveStatusCheck(user, move))
+            if (!calledFromOtherMove && PreMoveStatusCheck(user, move))
             {
                 if (user.Status2.HasFlag(PBEStatus2.Airborne))
                 {
