@@ -891,6 +891,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             Ef_TryForceTeamStatus(user, move, PBETeamStatus.Reflect);
                             break;
                         }
+                    case PBEMoveEffect.Rest:
+                        {
+                            Ef_Rest(user, move);
+                            break;
+                        }
                     case PBEMoveEffect.RestoreTargetHP:
                         {
                             Ef_RestoreTargetHP(user, targets, move, mData.EffectParam);
@@ -2835,6 +2840,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 DoPostAttackedEffects(user, true);
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
+        }
+        void Ef_Rest(PBEPokemon user, PBEMove move)
+        {
+            PBEFailReason failReason;
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+
+            if (user.Status1 == PBEStatus1.Asleep)
+            {
+                failReason = PBEFailReason.Default;
+                BroadcastMoveFailed(user, user, PBEFailReason.Default);
+            }
+            else if (user.HP == user.MaxHP)
+            {
+                failReason = PBEFailReason.HPFull;
+                BroadcastMoveFailed(user, user, PBEFailReason.HPFull);
+            }
+            else
+            {
+                failReason = PBEFailReason.None;
+                user.Status1 = PBEStatus1.Asleep;
+                user.SleepTurns = (byte)(3 / (user.Ability == PBEAbility.EarlyBird ? 2 : 1));
+                user.Status1Counter = 0;
+                BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Added);
+                HealDamage(user, user.MaxHP);
+            }
+            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
         }
         void Ef_RestoreTargetHP(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
         {

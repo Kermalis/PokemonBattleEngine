@@ -589,17 +589,17 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Jirachi Wish Maker promotion | Wishmaker Jirachi | Channel Jirachi | 2004 Jirachi | 2005 Jirachi | 2006 Jirachi | 2007 Jirachi | 2008 Jirachi | 2010 (Korea) Jirachi
                     (
                         new byte[] { 3, 4 }, PBESpecies.Jirachi, 5, null, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Confusion/*, PBEMove.Rest*/, PBEMove.None }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Confusion, PBEMove.Rest, PBEMove.None }
                     ),
                     new PBEEventPokemon // PokéPark Jirachi
                     (
                         new byte[] { 3 }, PBESpecies.Jirachi, 30, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Psychic, PBEMove.HelpingHand/*, PBEMove.Rest*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Psychic, PBEMove.HelpingHand, PBEMove.Rest }
                     ),
                     new PBEEventPokemon // 2009 Jirachi | 2010 (rest of the world) Jirachi
                     (
                         new byte[] { 4 }, PBESpecies.Jirachi, 5, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.SereneGrace }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Confusion/*, PBEMove.Rest*/, PBEMove.DracoMeteor }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Wish, */PBEMove.Confusion, PBEMove.Rest, PBEMove.DracoMeteor }
                     ),
                     new PBEEventPokemon // Decolora Jirachi
                     (
@@ -1025,7 +1025,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Sleeping Pikachu Collection promotion
                     (
                         new byte[] { 4 }, PBESpecies.Pikachu, 50, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Relaxed },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Rest, PBEMove.SleepTalk, PBEMove.Yawn, PBEMove.Snore*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Rest/*, PBEMove.SleepTalk, PBEMove.Yawn, PBEMove.Snore*/ }
                     ),
                     new PBEEventPokemon // Character Fair Pikachu
                     (

@@ -1984,7 +1984,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Drought = 70,
         DrySkin = 87, // TODO
-        EarlyBird = 48, // TODO: Rest
+        EarlyBird = 48,
         EffectSpore = 27, // TODO
         /// <summary>
         /// The Pokémon takes less damage from incoming super-effective moves.
@@ -2747,6 +2747,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_SPE_By2_ATK_By1,
         Recoil,
         Reflect,
+        Rest,
         RestoreTargetHP,
         RestoreUserHP,
         Sandstorm,
@@ -3027,6 +3028,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Recover = 105,
         Reflect = 115,
         //RelicSong // TODO: Blocked by Metronome
+        Rest = 156, // TODO: Uproar, Insomnia, Vital Spirit, Sleep Talk, Leaf Guard
         Retaliate = 514, // TODO
         Return = 216,
         Reversal = 179,

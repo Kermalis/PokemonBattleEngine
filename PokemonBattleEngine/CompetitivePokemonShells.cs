@@ -463,7 +463,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Careful,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 0, 80, 0, 176, 0 },
-            Moves = new PBEMove[] { PBEMove.Curse, PBEMove.RockSlide, PBEMove.StealthRock, PBEMove.SeedBomb }, // Curse, Rest, Sleep Talk, Rock Slide
+            Moves = new PBEMove[] { PBEMove.Curse, PBEMove.RockSlide, PBEMove.StealthRock, PBEMove.Rest }, // Curse, Rest, Sleep Talk, Rock Slide
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Cresselia_VGC { get; } = new PBEPokemonShell
@@ -1600,7 +1600,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Careful,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 252, 4, 0, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.StoneEdge, PBEMove.Superpower, PBEMove.Earthquake, PBEMove.Curse }, // Stone Edge, Rest, Sleep Talk, Curse
+            Moves = new PBEMove[] { PBEMove.StoneEdge, PBEMove.Superpower, PBEMove.Rest, PBEMove.Curse }, // Stone Edge, Rest, Sleep Talk, Curse
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Reshiram_Uber { get; } = new PBEPokemonShell

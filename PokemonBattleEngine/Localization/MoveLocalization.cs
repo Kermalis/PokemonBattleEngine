@@ -164,7 +164,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.Explosion, new PBELocalizedString("だいばくはつ", "대폭발", "Explosion", "Explosion", "Explosión", "Esplosione", "Explosion") },
             // { PBEMove.154, new PBELocalizedString("みだれひっかき", "마구할퀴기", "Combo-Griffe", "Kratzfurie", "Golpes Furia", "Sfuriate", "Fury Swipes") },
             // { PBEMove.155, new PBELocalizedString("ホネブーメラン", "뼈다귀부메랑", "Osmerang", "Knochmerang", "Huesomerang", "Ossomerang", "Bonemerang") },
-            // { PBEMove.156, new PBELocalizedString("ねむる", "잠자기", "Repos", "Erholung", "Descanso", "Riposo", "Rest") },
+            { PBEMove.Rest, new PBELocalizedString("ねむる", "잠자기", "Repos", "Erholung", "Descanso", "Riposo", "Rest") },
             { PBEMove.RockSlide, new PBELocalizedString("いわなだれ", "스톤샤워", "Éboulement", "Steinhagel", "Avalancha", "Frana", "Rock Slide") },
             { PBEMove.HyperFang, new PBELocalizedString("ひっさつまえば", "필살앞니", "Croc de Mort", "Hyperzahn", "Hip. Colmillo", "Iperzanna", "Hyper Fang") },
             { PBEMove.Sharpen, new PBELocalizedString("かくばる", "각지기", "Affûtage", "Schärfer", "Afilar", "Affilatore", "Sharpen") },
