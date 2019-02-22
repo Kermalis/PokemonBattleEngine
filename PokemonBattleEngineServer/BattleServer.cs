@@ -338,9 +338,10 @@ namespace Kermalis.PokemonBattleEngineServer
                         spectatorPackets.Add(hiddenId);
                         Player teamOwner = battlers[pfp.PokemonTeam.Id];
                         teamOwner.Send(pfp);
-                        SendTo(readyToReceivePackets.Except(new[] { teamOwner }), hiddenId);
-                        foreach (Player player in readyToReceivePackets)
+                        teamOwner.ResetEvent.WaitOne();
+                        foreach (Player player in readyToReceivePackets.Except(new[] { teamOwner }))
                         {
+                            player.Send(hiddenId);
                             player.ResetEvent.WaitOne();
                         }
                         break;
@@ -351,9 +352,10 @@ namespace Kermalis.PokemonBattleEngineServer
                         spectatorPackets.Add(hiddenId);
                         Player teamOwner = battlers[phcp.PokemonTeam.Id];
                         teamOwner.Send(phcp);
-                        SendTo(readyToReceivePackets.Except(new[] { teamOwner }), hiddenId);
-                        foreach (Player player in readyToReceivePackets)
+                        teamOwner.ResetEvent.WaitOne();
+                        foreach (Player player in readyToReceivePackets.Except(new[] { teamOwner }))
                         {
+                            player.Send(hiddenId);
                             player.ResetEvent.WaitOne();
                         }
                         break;
@@ -364,9 +366,10 @@ namespace Kermalis.PokemonBattleEngineServer
                         spectatorPackets.Add(hiddenId);
                         Player teamOwner = battlers[psip.Team.Id];
                         teamOwner.Send(psip);
-                        SendTo(readyToReceivePackets.Except(new[] { teamOwner }), hiddenId);
-                        foreach (Player player in readyToReceivePackets)
+                        teamOwner.ResetEvent.WaitOne();
+                        foreach (Player player in readyToReceivePackets.Except(new[] { teamOwner }))
                         {
+                            player.Send(hiddenId);
                             player.ResetEvent.WaitOne();
                         }
                         break;
@@ -377,9 +380,10 @@ namespace Kermalis.PokemonBattleEngineServer
                         spectatorPackets.Add(hiddenId);
                         Player teamOwner = battlers[psop.PokemonTeam.Id];
                         teamOwner.Send(psop);
-                        SendTo(readyToReceivePackets.Except(new[] { teamOwner }), hiddenId);
-                        foreach (Player player in readyToReceivePackets)
+                        teamOwner.ResetEvent.WaitOne();
+                        foreach (Player player in readyToReceivePackets.Except(new[] { teamOwner }))
                         {
+                            player.Send(hiddenId);
                             player.ResetEvent.WaitOne();
                         }
                         break;
@@ -401,9 +405,9 @@ namespace Kermalis.PokemonBattleEngineServer
                 default:
                     {
                         spectatorPackets.Add(packet);
-                        SendToAll(packet);
                         foreach (Player player in readyToReceivePackets)
                         {
+                            player.Send(packet);
                             player.ResetEvent.WaitOne();
                         }
                         break;
