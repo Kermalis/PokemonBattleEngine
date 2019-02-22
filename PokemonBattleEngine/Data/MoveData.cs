@@ -2550,6 +2550,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Snore,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 3, 40, 100,
+                    PBEMoveEffect.Snore, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                )
+            },
+            {
                 PBEMove.Softboiled,
                 new PBEMoveData
                 (

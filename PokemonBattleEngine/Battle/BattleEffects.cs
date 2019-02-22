@@ -931,6 +931,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             Ef_TryForceStatus1(user, targets, move, PBEStatus1.Asleep);
                             break;
                         }
+                    case PBEMoveEffect.Snore:
+                        {
+                            Ef_Snore(user, targets, move);
+                            break;
+                        }
                     case PBEMoveEffect.Spikes:
                         {
                             Ef_TryForceTeamStatus(user, move, PBETeamStatus.Spikes);
@@ -1010,7 +1015,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Broadcasts status ending events & status causing immobility events
         bool PreMoveStatusCheck(PBEPokemon user, PBEMove move)
         {
+            PBEMoveData mData = PBEMoveData.Data[move];
+
             // Verified: Sleep and Freeze don't interact with Flinch unless they come out of the status
+            // Sleep causes Flinch and Confusion to activate if the user is trying to use Snore
             if (user.Status1 == PBEStatus1.Asleep)
             {
                 user.Status1Counter++;
@@ -1020,7 +1028,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     user.Status1Counter = user.SleepTurns = 0;
                     BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Ended);
                 }
-                else
+                else if (mData.Effect != PBEMoveEffect.Snore)
                 {
                     BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Activated);
                     return true;
@@ -1028,7 +1036,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else if (user.Status1 == PBEStatus1.Frozen)
             {
-                if (PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.RNG.ApplyChance(20, 100))
+                if (mData.Flags.HasFlag(PBEMoveFlag.DefrostsUser) || PBEUtils.RNG.ApplyChance(20, 100))
                 {
                     user.Status1 = PBEStatus1.None;
                     BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Ended);
@@ -2479,6 +2487,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 failReason = PBEFailReason.NoTarget;
                 BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
+            }
+            else
+            {
+                failReason = PBEFailReason.None;
+                BasicHit(user, targets, move, ref targetSuccess);
+            }
+            RecordExecutedMove(user, move, failReason, targetSuccess);
+        }
+        void Ef_Snore(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
+            PBEFailReason failReason;
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                failReason = PBEFailReason.NoTarget;
+                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
+            }
+            else if (user.Status1 != PBEStatus1.Asleep)
+            {
+                failReason = PBEFailReason.Default;
+                BroadcastMoveFailed(user, user, PBEFailReason.Default);
             }
             else
             {

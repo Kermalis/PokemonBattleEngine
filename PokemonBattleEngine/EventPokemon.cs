@@ -1025,7 +1025,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Sleeping Pikachu Collection promotion
                     (
                         new byte[] { 4 }, PBESpecies.Pikachu, 50, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Static }, new PBENature[] { PBENature.Relaxed },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Rest/*, PBEMove.SleepTalk, PBEMove.Yawn, PBEMove.Snore*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Rest/*, PBEMove.SleepTalk, PBEMove.Yawn*/, PBEMove.Snore }
                     ),
                     new PBEEventPokemon // Character Fair Pikachu
                     (

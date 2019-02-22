@@ -181,7 +181,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             // { PBEMove.170, new PBELocalizedString("こころのめ", "마음의눈", "Lire-Esprit", "Willensleser", "Telépata", "Leggimente", "Mind Reader") },
             // { PBEMove.171, new PBELocalizedString("あくむ", "악몽", "Cauchemar", "Nachtmahr", "Pesadilla", "Incubo", "Nightmare") },
             { PBEMove.FlameWheel, new PBELocalizedString("かえんぐるま", "화염자동차", "Roue de Feu", "Flammenrad", "Rueda Fuego", "Ruotafuoco", "Flame Wheel") },
-            // { PBEMove.173, new PBELocalizedString("いびき", "코골기", "Ronflement", "Schnarcher", "Ronquido", "Russare", "Snore") },
+            { PBEMove.Snore, new PBELocalizedString("いびき", "코골기", "Ronflement", "Schnarcher", "Ronquido", "Russare", "Snore") },
             { PBEMove.Curse, new PBELocalizedString("のろい", "저주", "Malédiction", "Fluch", "Maldición", "Maledizione", "Curse") },
             { PBEMove.Flail, new PBELocalizedString("じたばた", "바둥바둥", "Fléau", "Dreschflegel", "Azote", "Flagello", "Flail") },
             // { PBEMove.176, new PBELocalizedString("テクスチャー２", "텍스처2", "Conversion 2", "Umwandlung2", "Conversión2", "Conversione2", "Conversion 2") },
