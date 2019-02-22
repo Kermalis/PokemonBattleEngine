@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,6 +31,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte WeatherCounter { get; set; }
         public PBEBattleStatus BattleStatus { get; set; }
         public byte TrickRoomCount { get; set; }
+
+        public List<INetPacket> Events { get; } = new List<INetPacket>();
 
         /// <summary>
         /// Gets a specific Pokémon participating in this battle by its ID.

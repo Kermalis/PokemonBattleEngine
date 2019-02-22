@@ -14,75 +14,211 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public event BattleEvent OnNewEvent;
 
         void BroadcastAbility(PBEPokemon abilityOwner, PBEPokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
-            => OnNewEvent?.Invoke(this, new PBEAbilityPacket(abilityOwner, pokemon2, ability, abilityAction));
+        {
+            var p = new PBEAbilityPacket(abilityOwner, pokemon2, ability, abilityAction);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastBattleStatus(PBEBattleStatus battleStatus, PBEBattleStatusAction battleStatusAction)
-            => OnNewEvent?.Invoke(this, new PBEBattleStatusPacket(battleStatus, battleStatusAction));
+        {
+            var p = new PBEBattleStatusPacket(battleStatus, battleStatusAction);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastIllusion(PBEPokemon pokemon)
-            => OnNewEvent?.Invoke(this, new PBEIllusionPacket(pokemon));
+        {
+            var p = new PBEIllusionPacket(pokemon);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastItem(PBEPokemon itemHolder, PBEPokemon pokemon2, PBEItem item, PBEItemAction itemAction)
-            => OnNewEvent?.Invoke(this, new PBEItemPacket(itemHolder, pokemon2, item, itemAction));
+        {
+            var p = new PBEItemPacket(itemHolder, pokemon2, item, itemAction);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastMoveCrit()
-            => OnNewEvent?.Invoke(this, new PBEMoveCritPacket());
+        {
+            var p = new PBEMoveCritPacket();
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastEffectiveness(PBEPokemon victim, PBEEffectiveness effectiveness)
-            => OnNewEvent?.Invoke(this, new PBEMoveEffectivenessPacket(victim, effectiveness));
+        {
+            var p = new PBEMoveEffectivenessPacket(victim, effectiveness);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastMoveFailed(PBEPokemon moveUser, PBEPokemon pokemon2, PBEFailReason failReason)
-            => OnNewEvent?.Invoke(this, new PBEMoveFailedPacket(moveUser, pokemon2, failReason));
+        {
+            var p = new PBEMoveFailedPacket(moveUser, pokemon2, failReason);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastMoveLock(PBEPokemon moveUser, PBEMove lockedMove, PBETarget lockedTargets, PBEMoveLockType moveLockType)
-            => OnNewEvent?.Invoke(this, new PBEMoveLockPacket(moveUser, lockedMove, lockedTargets, moveLockType));
+        {
+            var p = new PBEMoveLockPacket(moveUser, lockedMove, lockedTargets, moveLockType);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastMoveMissed(PBEPokemon moveUser, PBEPokemon pokemon2)
-            => OnNewEvent?.Invoke(this, new PBEMoveMissedPacket(moveUser, pokemon2));
+        {
+            var p = new PBEMoveMissedPacket(moveUser, pokemon2);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, byte oldValue, byte newValue)
-            => OnNewEvent?.Invoke(this, new PBEMovePPChangedPacket(moveUser.FieldPosition, moveUser.Team, move, oldValue, newValue));
+        {
+            var p = new PBEMovePPChangedPacket(moveUser.FieldPosition, moveUser.Team, move, oldValue, newValue);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastMoveUsed(PBEPokemon moveUser, PBEMove move)
-            => OnNewEvent?.Invoke(this, new PBEMoveUsedPacket(moveUser, move, calledFromOtherMove));
+        {
+            var p = new PBEMoveUsedPacket(moveUser, move, calledFromOtherMove);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastPkmnFainted(PBEPokemon pokemon, PBEFieldPosition oldPosition)
-            => OnNewEvent?.Invoke(this, new PBEPkmnFaintedPacket(pokemon.Id, oldPosition, pokemon.Team));
+        {
+            var p = new PBEPkmnFaintedPacket(pokemon.Id, oldPosition, pokemon.Team);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastPkmnHPChanged(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)
-            => OnNewEvent?.Invoke(this, new PBEPkmnHPChangedPacket(pokemon.FieldPosition, pokemon.Team, oldHP, pokemon.HP, oldHPPercentage, pokemon.HPPercentage));
+        {
+            var p = new PBEPkmnHPChangedPacket(pokemon.FieldPosition, pokemon.Team, oldHP, pokemon.HP, oldHPPercentage, pokemon.HPPercentage);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastPkmnStatChanged(PBEPokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
-            => OnNewEvent?.Invoke(this, new PBEPkmnStatChangedPacket(pokemon, stat, oldValue, newValue));
+        {
+            var p = new PBEPkmnStatChangedPacket(pokemon, stat, oldValue, newValue);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastPkmnSwitchIn(PBETeam team, IEnumerable<PBEPkmnSwitchInPacket.PBESwitchInInfo> switchIns, bool forced)
-            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchInPacket(team, switchIns, forced));
+        {
+            var p = new PBEPkmnSwitchInPacket(team, switchIns, forced);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastPkmnSwitchOut(PBEPokemon pokemon, PBEFieldPosition oldPosition, bool forced)
-            => OnNewEvent?.Invoke(this, new PBEPkmnSwitchOutPacket(pokemon.Id, oldPosition, pokemon.Team, forced));
+        {
+            var p = new PBEPkmnSwitchOutPacket(pokemon.Id, oldPosition, pokemon.Team, forced);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastPsychUp(PBEPokemon user, PBEPokemon target)
-            => OnNewEvent?.Invoke(this, new PBEPsychUpPacket(user, target));
+        {
+            var p = new PBEPsychUpPacket(user, target);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
 
         void BroadcastDraggedOut(PBEPokemon pokemon)
-            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, pokemon));
+        {
+            var p = new PBESpecialMessagePacket(PBESpecialMessage.DraggedOut, pokemon);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastEndure(PBEPokemon pokemon)
-            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Endure, pokemon));
+        {
+            var p = new PBESpecialMessagePacket(PBESpecialMessage.Endure, pokemon);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastHPDrained(PBEPokemon pokemon)
-            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.HPDrained, pokemon));
+        {
+            var p = new PBESpecialMessagePacket(PBESpecialMessage.HPDrained, pokemon);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastMagnitude(byte magnitude)
-            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude));
+        {
+            var p = new PBESpecialMessagePacket(PBESpecialMessage.Magnitude, magnitude);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastOneHitKnockout()
-            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.OneHitKnockout));
+        {
+            var p = new PBESpecialMessagePacket(PBESpecialMessage.OneHitKnockout);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastPainSplit(PBEPokemon user, PBEPokemon target)
-            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.PainSplit, user, target));
+        {
+            var p = new PBESpecialMessagePacket(PBESpecialMessage.PainSplit, user, target);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastRecoil(PBEPokemon pokemon)
-            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Recoil, pokemon));
+        {
+            var p = new PBESpecialMessagePacket(PBESpecialMessage.Recoil, pokemon);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastStruggle(PBEPokemon pokemon)
-            => OnNewEvent?.Invoke(this, new PBESpecialMessagePacket(PBESpecialMessage.Struggle, pokemon));
+        {
+            var p = new PBESpecialMessagePacket(PBESpecialMessage.Struggle, pokemon);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
 
         void BroadcastStatus1(PBEPokemon status1Receiver, PBEPokemon pokemon2, PBEStatus1 status1, PBEStatusAction statusAction)
-            => OnNewEvent?.Invoke(this, new PBEStatus1Packet(status1Receiver, pokemon2, status1, statusAction));
+        {
+            var p = new PBEStatus1Packet(status1Receiver, pokemon2, status1, statusAction);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastStatus2(PBEPokemon status2Receiver, PBEPokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
-            => OnNewEvent?.Invoke(this, new PBEStatus2Packet(status2Receiver, pokemon2, status2, statusAction));
+        {
+            var p = new PBEStatus2Packet(status2Receiver, pokemon2, status2, statusAction);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastTeamStatus(PBETeam team, PBETeamStatus teamStatus, PBETeamStatusAction teamStatusAction, PBEPokemon damageVictim = null)
-            => OnNewEvent?.Invoke(this, new PBETeamStatusPacket(team, teamStatus, teamStatusAction, damageVictim));
+        {
+            var p = new PBETeamStatusPacket(team, teamStatus, teamStatusAction, damageVictim);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastTransform(PBEPokemon user, PBEPokemon target)
-            => OnNewEvent?.Invoke(this, new PBETransformPacket(user, target));
+        {
+            var p = new PBETransformPacket(user, target);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastWeather(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon damageVictim = null)
-            => OnNewEvent?.Invoke(this, new PBEWeatherPacket(weather, weatherAction, damageVictim));
+        {
+            var p = new PBEWeatherPacket(weather, weatherAction, damageVictim);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastWinner(PBETeam winningTeam)
-            => OnNewEvent?.Invoke(this, new PBEWinnerPacket(winningTeam));
+        {
+            var p = new PBEWinnerPacket(winningTeam);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastActionsRequest(PBETeam team)
-            => OnNewEvent?.Invoke(this, new PBEActionsRequestPacket(team));
+        {
+            var p = new PBEActionsRequestPacket(team);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastSwitchInRequest(PBETeam team)
-            => OnNewEvent?.Invoke(this, new PBESwitchInRequestPacket(team));
+        {
+            var p = new PBESwitchInRequestPacket(team);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastTurnBegan()
-            => OnNewEvent?.Invoke(this, new PBETurnBeganPacket(TurnNumber));
+        {
+            var p = new PBETurnBeganPacket(TurnNumber);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
 
 
         /// <summary>
