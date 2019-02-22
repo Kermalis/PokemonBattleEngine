@@ -2,6 +2,7 @@
 using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -12,8 +13,19 @@ namespace Kermalis.PokemonBattleEngineServer
     {
         public ManualResetEvent ResetEvent { get; } = new ManualResetEvent(true);
         public string PlayerName { get; set; }
-        public int BattleId { get; set; }
+        public int BattleId { get; set; } = int.MaxValue;
         public IEnumerable<PBEPokemonShell> Party { get; private set; }
+
+        public bool WaitForResponse()
+        {
+            bool receivedResponseInTime = ResetEvent.WaitOne(1000 * 5);
+            if (!receivedResponseInTime)
+            {
+                Console.WriteLine($"Kicking client ({BattleId} {PlayerName})");
+                Server.DisconnectClient(Id);
+            }
+            return receivedResponseInTime;
+        }
 
         public override void Send(INetPacket packet)
         {
@@ -22,7 +34,12 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         public override void HandleMessage(INetPacket packet)
         {
-            Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({Id})");
+            if (Socket == null)
+            {
+                return;
+            }
+            Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({BattleId})");
+            ResetEvent.Set();
 
             if (BattleId < 2)
             {
@@ -47,8 +64,6 @@ namespace Kermalis.PokemonBattleEngineServer
                         }
                 }
             }
-
-            ResetEvent.Set();
         }
     }
 }
