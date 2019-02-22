@@ -1984,7 +1984,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Drought = 70,
         DrySkin = 87, // TODO
-        EarlyBird = 48, // TODO
+        EarlyBird = 48, // TODO: Rest
         EffectSpore = 27, // TODO
         /// <summary>
         /// The Pokémon takes less damage from incoming super-effective moves.

@@ -1462,7 +1462,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (status == PBEStatus1.Asleep)
             {
-                target.SleepTurns = (byte)PBEUtils.RNG.Next(Settings.SleepMinTurns, Settings.SleepMaxTurns + 1);
+                target.SleepTurns = (byte)(PBEUtils.RNG.Next(Settings.SleepMinTurns, Settings.SleepMaxTurns + 1) / (target.Ability == PBEAbility.EarlyBird ? 2 : 1));
             }
             BroadcastStatus1(target, user, status, PBEStatusAction.Added);
             return PBEFailReason.None;
