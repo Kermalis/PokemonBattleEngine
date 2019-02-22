@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngineClient
 
         public PBEBattle Battle { get; }
         public BattleView BattleView { get; set; }
-        public byte Index { get; private set; }
+        public int BattleId { get; private set; }
         readonly IEnumerable<PBEPokemonShell> partyShells;
 
         public BattleClient(string host, int port, PBEBattleFormat battleFormat, PBESettings settings, IEnumerable<PBEPokemonShell> party)
@@ -39,7 +39,6 @@ namespace Kermalis.PokemonBattleEngineClient
             packetTimer.Start();
         }
 
-        List<INetPacket> receivedPackets = new List<INetPacket>();
         int currentPacket = -1;
         Timer packetTimer = new Timer(2000);
         public override void HandleMessage(INetPacket packet)
@@ -51,15 +50,15 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         if (pjp.IsMe)
                         {
-                            Index = pjp.Index;
+                            BattleId = pjp.BattleId;
                         }
                         else
                         {
                             BattleView.AddMessage(string.Format("{0} joined the game.", pjp.TrainerName), false, true);
                         }
-                        if (pjp.Index < 2)
+                        if (pjp.BattleId < 2)
                         {
-                            Battle.Teams[pjp.Index].TrainerName = pjp.TrainerName;
+                            Battle.Teams[pjp.BattleId].TrainerName = pjp.TrainerName;
                         }
                         Send(new PBEResponsePacket());
                         break;
@@ -79,7 +78,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                 default:
                     {
-                        receivedPackets.Add(packet);
+                        Battle.Events.Add(packet);
                         Send(new PBEResponsePacket());
                         break;
                     }
@@ -91,10 +90,10 @@ namespace Kermalis.PokemonBattleEngineClient
             do
             {
                 runImmediately = false;
-                if (currentPacket != receivedPackets.Count - 1)
+                if (currentPacket != Battle.Events.Count - 1)
                 {
                     currentPacket++;
-                    runImmediately = ProcessPacket(receivedPackets[currentPacket]);
+                    runImmediately = ProcessPacket(Battle.Events[currentPacket]);
                 }
             } while (runImmediately);
         }
@@ -107,7 +106,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     return string.Empty;
                 }
-                if (Index >= 2)
+                if (BattleId >= 2)
                 {
                     return $"{pkmn.Team.TrainerName}'s {pkmn.VisualNickname}";
                 }
@@ -116,7 +115,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     string prefix;
                     if (firstLetterCapitalized)
                     {
-                        if (pkmn.Team.Id == Index)
+                        if (pkmn.Team.Id == BattleId)
                         {
                             prefix = string.Empty;
                         }
@@ -127,7 +126,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     else
                     {
-                        if (pkmn.Team.Id == Index)
+                        if (pkmn.Team.Id == BattleId)
                         {
                             prefix = string.Empty;
                         }
@@ -527,7 +526,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PBEMoveUsedPacket mup:
                     {
                         PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
-                        if (moveUser.Team.Id != Index && !mup.CalledFromOtherMove && !moveUser.Moves.Contains(mup.Move))
+                        if (moveUser.Team.Id != BattleId && !mup.CalledFromOtherMove && !moveUser.Moves.Contains(mup.Move))
                         {
                             moveUser.Moves[Array.IndexOf(moveUser.Moves, PBEMove.MAX)] = mup.Move;
                         }
@@ -622,7 +621,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
                         {
                             PBEPokemon pokemon;
-                            if (psip.Team.Id != Index)
+                            if (psip.Team.Id != BattleId)
                             {
                                 pokemon = new PBEPokemon(psip.Team, info);
                             }
@@ -1066,10 +1065,10 @@ namespace Kermalis.PokemonBattleEngineClient
                             default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatus));
                         }
                         BattleView.AddMessage(string.Format(message,
-                            Index >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == Index ? "your" : "the opposing",
-                            Index >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == Index ? "Your" : "The opposing",
-                            Index >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == Index ? "your" : "the foe's",
-                            Index >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == Index ? "your" : "your foe's",
+                            BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "your" : "the opposing",
+                            BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "Your" : "The opposing",
+                            BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "your" : "the foe's",
+                            BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "your" : "your foe's",
                             NameForTrainer(damageVictim, damageVictimCaps)
                             ), true, true);
                         break;
@@ -1173,11 +1172,11 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                 case PBEActionsRequestPacket arp:
                     {
-                        if (arp.Team.Id == Index)
+                        if (arp.Team.Id == BattleId)
                         {
                             ActionsLoop(true);
                         }
-                        else if (Index >= 2)
+                        else if (BattleId >= 2)
                         {
                             BattleView.AddMessage("Waiting for players...", true, false);
                         }
@@ -1186,17 +1185,17 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PBESwitchInRequestPacket sirp:
                     {
                         sirp.Team.SwitchInsRequired = sirp.Amount;
-                        if (sirp.Team.Id == Index)
+                        if (sirp.Team.Id == BattleId)
                         {
                             SwitchesLoop(true);
                         }
-                        else if (Index >= 2)
+                        else if (BattleId >= 2)
                         {
                             BattleView.AddMessage("Waiting for players...", true, false);
                         }
-                        else if (Battle.Teams[Index].SwitchInsRequired == 0) // Don't display this message if we're in switchesloop because it'd overwrite the messages we need to see.
+                        else if (Battle.Teams[BattleId].SwitchInsRequired == 0) // Don't display this message if we're in switchesloop because it'd overwrite the messages we need to see.
                         {
-                            BattleView.AddMessage($"Waiting for {Battle.Teams[Index == 0 ? 1 : 0].TrainerName}...", true, false);
+                            BattleView.AddMessage($"Waiting for {Battle.Teams[BattleId == 0 ? 1 : 0].TrainerName}...", true, false);
                         }
                         return true;
                     }
@@ -1215,18 +1214,18 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             if (begin)
             {
-                foreach (PBEPokemon pkmn in Battle.Teams[Index].Party)
+                foreach (PBEPokemon pkmn in Battle.Teams[BattleId].Party)
                 {
                     pkmn.SelectedAction.Decision = PBEDecision.None;
                 }
                 actions.Clear();
-                actions.AddRange(Battle.Teams[Index].ActiveBattlers);
+                actions.AddRange(Battle.Teams[BattleId].ActiveBattlers);
                 StandBy.Clear();
             }
             int i = actions.FindIndex(p => p.SelectedAction.Decision == PBEDecision.None);
             if (i == -1)
             {
-                BattleView.AddMessage($"Waiting for {Battle.Teams[Index == 0 ? 1 : 0].TrainerName}...", true, false);
+                BattleView.AddMessage($"Waiting for {Battle.Teams[BattleId == 0 ? 1 : 0].TrainerName}...", true, false);
                 Send(new PBEActionsResponsePacket(actions.Select(p => p.SelectedAction)));
             }
             else
@@ -1247,16 +1246,16 @@ namespace Kermalis.PokemonBattleEngineClient
             }
             else
             {
-                Battle.Teams[Index].SwitchInsRequired--;
+                Battle.Teams[BattleId].SwitchInsRequired--;
             }
-            if (Battle.Teams[Index].SwitchInsRequired == 0)
+            if (Battle.Teams[BattleId].SwitchInsRequired == 0)
             {
-                BattleView.AddMessage($"Waiting for {(Battle.Teams[Index == 0 ? 1 : 0].SwitchInsRequired > 0 ? Battle.Teams[Index == 0 ? 1 : 0].TrainerName : "server")}...", true, false);
+                BattleView.AddMessage($"Waiting for {(Battle.Teams[BattleId == 0 ? 1 : 0].SwitchInsRequired > 0 ? Battle.Teams[BattleId == 0 ? 1 : 0].TrainerName : "server")}...", true, false);
                 Send(new PBESwitchInResponsePacket(Switches));
             }
             else
             {
-                BattleView.AddMessage($"You must send in {Battle.Teams[Index].SwitchInsRequired} Pokémon.", true, false);
+                BattleView.AddMessage($"You must send in {Battle.Teams[BattleId].SwitchInsRequired} Pokémon.", true, false);
                 BattleView.Actions.DisplaySwitches();
             }
         }

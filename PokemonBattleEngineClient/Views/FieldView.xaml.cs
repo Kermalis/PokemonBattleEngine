@@ -189,7 +189,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
                 HPBarView hpView;
                 PokemonView pkmnView;
-                bool backSprite = (pkmn.Team.Id == 0 && battleView.Client.Index != 1) || (pkmn.Team.Id == 1 && battleView.Client.Index == 1);
+                bool backSprite = (pkmn.Team.Id == 0 && battleView.Client.BattleId != 1) || (pkmn.Team.Id == 1 && battleView.Client.BattleId == 1);
                 if (oldPosition != PBEFieldPosition.None)
                 {
                     hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");

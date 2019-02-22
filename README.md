@@ -21,7 +21,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Add lots of items and most moves, Pokémon, and secondary statuses (underwater, cursed, mud sport, etc.)
 * Add timeouts for waiting for a client. A modified client can remove response packets to troll and the server will currently wait infinitely
 * Protect from corrupt packets (if they are even a problem)
-* Allow spectators to join mid-game instead of having to be present when the game begins
 * Watchable replays
 * Mobile HP bars
 

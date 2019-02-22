@@ -7,10 +7,11 @@ using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineServer
 {
-    sealed class BattleServer : NetServer<Player>
+    class BattleServer : NetServer<Player>
     {
         private enum ServerState
         {
@@ -27,6 +28,10 @@ namespace Kermalis.PokemonBattleEngineServer
         ServerState state = ServerState.Startup;
         readonly PBEBattle battle;
         Player[] battlers;
+        int idCounter;
+        readonly List<INetPacket> spectatorPackets = new List<INetPacket>();
+        readonly List<Player> upToDateSpectators = new List<Player>();
+        readonly ManualResetEvent resetEvent = new ManualResetEvent(true);
 
         public override IPacketProcessor PacketProcessor { get; }
         public static void Main(string[] args)
@@ -41,7 +46,7 @@ namespace Kermalis.PokemonBattleEngineServer
             Configuration.Backlog = 50;
             Configuration.Host = host;
             Configuration.Port = port;
-            Configuration.MaximumNumberOfConnections = 2; // Spectators allowed but not yet
+            Configuration.MaximumNumberOfConnections = 100;
             Configuration.BufferSize = 1024;
             Configuration.Blocking = true;
 
@@ -58,48 +63,88 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         protected override void OnClientConnected(Player client)
         {
-            // Set new player's info
-            client.Index = (byte)(Clients.Count() - 1);
-            client.PlayerName = PBEUtils.Sample(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
-            // Send all already connected players to this client
-            foreach (Player player in Clients)
+            // Need to spawn a new thread so "WaitOne()" doesn't block the thread that receives client packets
+            new Thread(() =>
             {
-                player.Send(new PBEPlayerJoinedPacket(player == client, client.Index, client.PlayerName));
-                if (player != client)
+                lock (this)
                 {
-                    client.Send(new PBEPlayerJoinedPacket(false, player.Index, player.PlayerName));
+                    // Wait for the server to be in a state where no events will be sent
+                    resetEvent.WaitOne();
+
+                    // Set new player's info
+                    client.BattleId = idCounter++;
+                    client.PlayerName = PBEUtils.Sample(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
+                    Console.WriteLine($"Client connected ({client.Id} {client.BattleId} {client.PlayerName})");
+
+                    foreach (Player player in Clients)
+                    {
+                        // Alert all other players that this new player joined
+                        player.Send(new PBEPlayerJoinedPacket(player == client, client.BattleId, client.PlayerName));
+                        player.ResetEvent.WaitOne();
+                        // Alert new player of all other players that have already joined
+                        if (player != client)
+                        {
+                            client.Send(new PBEPlayerJoinedPacket(false, player.BattleId, player.PlayerName));
+                            client.ResetEvent.WaitOne();
+                        }
+                    }
+
+                    if (battlers != null) // Catch up spectators
+                    {
+                        foreach (INetPacket packet in spectatorPackets)
+                        {
+                            client.Send(packet);
+                            client.ResetEvent.WaitOne();
+                        }
+                        upToDateSpectators.Add(client);
+                    }
+                    else if (battlers == null && Clients.Count() == 2) // Try to start the battle
+                    {
+                        Console.WriteLine("Two players connected!");
+                        state = ServerState.WaitingForParties;
+                        Console.WriteLine("Waiting for parties...");
+                        battlers = Clients.OrderBy(c => c.BattleId).Take(2).ToArray();
+                        battle.Teams[0].TrainerName = battlers[0].PlayerName;
+                        battle.Teams[1].TrainerName = battlers[1].PlayerName;
+                        SendTo(battlers, new PBEPartyRequestPacket());
+                    }
                 }
-            }
-            Console.WriteLine($"Client connected ({client.Id} {client.Index} {client.PlayerName})");
-            if (battlers == null && Clients.Count() == 2)
+            })
             {
-                Console.WriteLine("Two players connected!");
-                state = ServerState.WaitingForParties;
-                Console.WriteLine("Waiting for parties...");
-                battlers = Clients.OrderBy(c => c.Index).Take(2).ToArray();
-                battle.Teams[0].TrainerName = battlers[0].PlayerName;
-                battle.Teams[1].TrainerName = battlers[1].PlayerName;
-                SendTo(battlers, new PBEPartyRequestPacket());
-            }
+                Name = "Client Connected Thread"
+            }.Start();
         }
         protected override void OnClientDisconnected(Player client)
         {
-            Console.WriteLine($"Client disconnected ({client.Id})");
-            // Temporarily ignore spectators
-            if (client.Index >= 2)
+            // Need to spawn a new thread so "WaitOne()" doesn't block the thread that receives client packets
+            new Thread(() =>
             {
-                return;
-            }
-            switch (state)
+                lock (this)
+                {
+                    // Wait for the server to be in a state where no events will be sent
+                    resetEvent.WaitOne();
+
+                    Console.WriteLine($"Client disconnected ({client.Id})");
+                    if (client.BattleId < 2)
+                    {
+                        switch (state)
+                        {
+                            case ServerState.Startup:
+                            case ServerState.Resetting:
+                            case ServerState.Cancelling: break;
+                            default: CancelMatch(); break;
+                        }
+                    }
+                    else
+                    {
+                        // Temporarily ignore spectators
+                        upToDateSpectators.Remove(client);
+                    }
+                }
+            })
             {
-                case ServerState.Startup:
-                case ServerState.Resetting:
-                case ServerState.Cancelling:
-                    break;
-                default:
-                    CancelMatch();
-                    break;
-            }
+                Name = "Client Disconnected Thread"
+            }.Start();
         }
         protected override void OnError(Exception e)
         {
@@ -137,14 +182,19 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
+                resetEvent.Reset();
                 state = ServerState.Resetting;
                 foreach (Player c in Clients)
                 {
                     c.ResetEvent.Close();
                     DisconnectClient(c.Id);
                 }
+                // TODO: Create a new battle
                 battlers = null;
+                idCounter = 0;
+                spectatorPackets.Clear();
                 state = ServerState.WaitingForPlayers;
+                resetEvent.Set();
             }
         }
         public void PartySubmitted(Player player)
@@ -159,7 +209,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                PBEBattle.CreateTeamParty(battle.Teams[player.Index], player.Party);
+                PBEBattle.CreateTeamParty(battle.Teams[player.BattleId], player.Party);
             }
         }
         public void ActionsSubmitted(Player player, IEnumerable<PBEAction> actions)
@@ -174,7 +224,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                PBETeam team = battle.Teams[player.Index];
+                PBETeam team = battle.Teams[player.BattleId];
                 Console.WriteLine($"Received actions from {team.TrainerName}!");
                 if (!PBEBattle.SelectActionsIfValid(team, actions))
                 {
@@ -195,7 +245,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                PBETeam team = battle.Teams[player.Index];
+                PBETeam team = battle.Teams[player.BattleId];
                 Console.WriteLine($"Received switches from {team.TrainerName}!");
                 if (!PBEBattle.SelectSwitchesIfValid(team, switches))
                 {
@@ -235,33 +285,37 @@ namespace Kermalis.PokemonBattleEngineServer
                         battlers[1].Send(new PBESetPartyPacket(battle.Teams[1]));
                         battlers[0].ResetEvent.WaitOne();
                         battlers[1].ResetEvent.WaitOne();
-                        battle.Begin();
-                        break;
+                        new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
+                        return;
                     }
                 case PBEBattleState.Processing:
                     {
+                        resetEvent.Reset();
                         state = ServerState.BattleProcessing;
-                        break;
+                        return;
                     }
                 case PBEBattleState.ReadyToRunTurn:
                     {
-                        battle.RunTurn();
-                        break;
+                        new Thread(battle.RunTurn) { Name = "Battle Thread" }.Start();
+                        return;
                     }
                 case PBEBattleState.WaitingForActions:
                     {
                         state = ServerState.WaitingForActions;
-                        break;
+                        resetEvent.Set();
+                        return;
                     }
                 case PBEBattleState.WaitingForSwitchIns:
                     {
                         state = ServerState.WaitingForSwitchIns;
-                        break;
+                        resetEvent.Set();
+                        return;
                     }
             }
         }
         void BattleEventHandler(PBEBattle battle, INetPacket packet)
         {
+            IEnumerable<Player> readyToReceivePackets = upToDateSpectators.Concat(battlers);
             switch (packet)
             {
                 case PBEMoveLockPacket mlp:
@@ -281,10 +335,11 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBEPkmnFaintedPacket pfp:
                     {
                         var hiddenId = new PBEPkmnFaintedPacket(byte.MaxValue, pfp.PokemonPosition, pfp.PokemonTeam);
+                        spectatorPackets.Add(hiddenId);
                         Player teamOwner = battlers[pfp.PokemonTeam.Id];
                         teamOwner.Send(pfp);
-                        SendTo(Clients.Except(new[] { teamOwner }), hiddenId);
-                        foreach (Player player in Clients)
+                        SendTo(readyToReceivePackets.Except(new[] { teamOwner }), hiddenId);
+                        foreach (Player player in readyToReceivePackets)
                         {
                             player.ResetEvent.WaitOne();
                         }
@@ -293,10 +348,11 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBEPkmnHPChangedPacket phcp:
                     {
                         var hiddenId = new PBEPkmnHPChangedPacket(phcp.Pokemon, phcp.PokemonTeam, 0, 0, phcp.OldHPPercentage, phcp.NewHPPercentage);
+                        spectatorPackets.Add(hiddenId);
                         Player teamOwner = battlers[phcp.PokemonTeam.Id];
                         teamOwner.Send(phcp);
-                        SendTo(Clients.Except(new[] { teamOwner }), hiddenId);
-                        foreach (Player player in Clients)
+                        SendTo(readyToReceivePackets.Except(new[] { teamOwner }), hiddenId);
+                        foreach (Player player in readyToReceivePackets)
                         {
                             player.ResetEvent.WaitOne();
                         }
@@ -305,10 +361,11 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBEPkmnSwitchInPacket psip:
                     {
                         var hiddenId = new PBEPkmnSwitchInPacket(psip.Team, psip.SwitchIns.Select(s => new PBEPkmnSwitchInPacket.PBESwitchInInfo(byte.MaxValue, byte.MaxValue, s.Species, s.Nickname, s.Level, s.Shiny, s.Gender, 0, 0, s.HPPercentage, s.Status1, s.FieldPosition)), psip.Forced);
+                        spectatorPackets.Add(hiddenId);
                         Player teamOwner = battlers[psip.Team.Id];
                         teamOwner.Send(psip);
-                        SendTo(Clients.Except(new[] { teamOwner }), hiddenId);
-                        foreach (Player player in Clients)
+                        SendTo(readyToReceivePackets.Except(new[] { teamOwner }), hiddenId);
+                        foreach (Player player in readyToReceivePackets)
                         {
                             player.ResetEvent.WaitOne();
                         }
@@ -317,10 +374,11 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBEPkmnSwitchOutPacket psop:
                     {
                         var hiddenId = new PBEPkmnSwitchOutPacket(byte.MaxValue, psop.PokemonPosition, psop.PokemonTeam, psop.Forced);
+                        spectatorPackets.Add(hiddenId);
                         Player teamOwner = battlers[psop.PokemonTeam.Id];
                         teamOwner.Send(psop);
-                        SendTo(Clients.Except(new[] { teamOwner }), hiddenId);
-                        foreach (Player player in Clients)
+                        SendTo(readyToReceivePackets.Except(new[] { teamOwner }), hiddenId);
+                        foreach (Player player in readyToReceivePackets)
                         {
                             player.ResetEvent.WaitOne();
                         }
@@ -342,8 +400,9 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                 default:
                     {
+                        spectatorPackets.Add(packet);
                         SendToAll(packet);
-                        foreach (Player player in Clients)
+                        foreach (Player player in readyToReceivePackets)
                         {
                             player.ResetEvent.WaitOne();
                         }

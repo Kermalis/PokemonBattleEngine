@@ -8,37 +8,43 @@ using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineServer
 {
-    sealed class Player : NetUser
+    class Player : NetUser
     {
-        public readonly ManualResetEvent ResetEvent = new ManualResetEvent(true);
+        public ManualResetEvent ResetEvent { get; } = new ManualResetEvent(true);
         public string PlayerName { get; set; }
-        public byte Index { get; set; }
+        public int BattleId { get; set; }
         public IEnumerable<PBEPokemonShell> Party { get; private set; }
 
         public override void Send(INetPacket packet)
         {
-            base.Send(packet);
             ResetEvent.Reset();
+            base.Send(packet);
         }
         public override void HandleMessage(INetPacket packet)
         {
             Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({Id})");
 
-            if (Index < 2)
+            if (BattleId < 2)
             {
                 var ser = (BattleServer)Server;
                 switch (packet)
                 {
                     case PBEActionsResponsePacket arp:
-                        ser.ActionsSubmitted(this, arp.Actions);
-                        break;
+                        {
+                            ser.ActionsSubmitted(this, arp.Actions);
+                            break;
+                        }
                     case PBEPartyResponsePacket prp:
-                        Party = prp.Party;
-                        ser.PartySubmitted(this);
-                        break;
+                        {
+                            Party = prp.Party;
+                            ser.PartySubmitted(this);
+                            break;
+                        }
                     case PBESwitchInResponsePacket sirp:
-                        ser.SwitchesSubmitted(this, sirp.Switches);
-                        break;
+                        {
+                            ser.SwitchesSubmitted(this, sirp.Switches);
+                            break;
+                        }
                 }
             }
 

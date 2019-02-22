@@ -398,7 +398,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public void DisplaySwitches()
         {
-            Party = BattleView.Client.Battle.Teams[BattleView.Client.Index].Party.Select(p => new PokemonInfo(p, BattleView.Client.StandBy.Contains(p), SelectSwitch));
+            Party = BattleView.Client.Battle.Teams[BattleView.Client.BattleId].Party.Select(p => new PokemonInfo(p, BattleView.Client.StandBy.Contains(p), SelectSwitch));
             SwitchesVisible = true;
         }
 
@@ -460,12 +460,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             else // Double / Triple
             {
-                TargetAllyLeft = BattleView.Client.Battle.Teams[BattleView.Client.Index].TryGetPokemon(PBEFieldPosition.Left);
-                TargetAllyCenter = BattleView.Client.Battle.Teams[BattleView.Client.Index].TryGetPokemon(PBEFieldPosition.Center);
-                TargetAllyRight = BattleView.Client.Battle.Teams[BattleView.Client.Index].TryGetPokemon(PBEFieldPosition.Right);
-                TargetFoeLeft = BattleView.Client.Battle.Teams[BattleView.Client.Index == 0 ? 1 : 0].TryGetPokemon(PBEFieldPosition.Left);
-                TargetFoeCenter = BattleView.Client.Battle.Teams[BattleView.Client.Index == 0 ? 1 : 0].TryGetPokemon(PBEFieldPosition.Center);
-                TargetFoeRight = BattleView.Client.Battle.Teams[BattleView.Client.Index == 0 ? 1 : 0].TryGetPokemon(PBEFieldPosition.Right);
+                TargetAllyLeft = BattleView.Client.Battle.Teams[BattleView.Client.BattleId].TryGetPokemon(PBEFieldPosition.Left);
+                TargetAllyCenter = BattleView.Client.Battle.Teams[BattleView.Client.BattleId].TryGetPokemon(PBEFieldPosition.Center);
+                TargetAllyRight = BattleView.Client.Battle.Teams[BattleView.Client.BattleId].TryGetPokemon(PBEFieldPosition.Right);
+                TargetFoeLeft = BattleView.Client.Battle.Teams[BattleView.Client.BattleId == 0 ? 1 : 0].TryGetPokemon(PBEFieldPosition.Left);
+                TargetFoeCenter = BattleView.Client.Battle.Teams[BattleView.Client.BattleId == 0 ? 1 : 0].TryGetPokemon(PBEFieldPosition.Center);
+                TargetFoeRight = BattleView.Client.Battle.Teams[BattleView.Client.BattleId == 0 ? 1 : 0].TryGetPokemon(PBEFieldPosition.Right);
 
                 if (BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Double)
                 {
@@ -895,8 +895,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                 case PBEBattleFormat.Double:
                     {
-                        LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Battle.Teams[BattleView.Client.Index].TryGetPokemon(PBEFieldPosition.Left) == null;
-                        RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Battle.Teams[BattleView.Client.Index].TryGetPokemon(PBEFieldPosition.Right) == null;
+                        LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Battle.Teams[BattleView.Client.BattleId].TryGetPokemon(PBEFieldPosition.Left) == null;
+                        RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Battle.Teams[BattleView.Client.BattleId].TryGetPokemon(PBEFieldPosition.Right) == null;
                         if (leftPositionEnabled && !rightPositionEnabled)
                         {
                             SelectPosition("Left");
@@ -915,9 +915,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 case PBEBattleFormat.Triple:
                 case PBEBattleFormat.Rotation:
                     {
-                        LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Battle.Teams[BattleView.Client.Index].TryGetPokemon(PBEFieldPosition.Left) == null;
-                        CenterPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Center) && BattleView.Client.Battle.Teams[BattleView.Client.Index].TryGetPokemon(PBEFieldPosition.Center) == null;
-                        RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Battle.Teams[BattleView.Client.Index].TryGetPokemon(PBEFieldPosition.Right) == null;
+                        LeftPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Left) && BattleView.Client.Battle.Teams[BattleView.Client.BattleId].TryGetPokemon(PBEFieldPosition.Left) == null;
+                        CenterPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Center) && BattleView.Client.Battle.Teams[BattleView.Client.BattleId].TryGetPokemon(PBEFieldPosition.Center) == null;
+                        RightPositionEnabled = !BattleView.Client.PositionStandBy.Contains(PBEFieldPosition.Right) && BattleView.Client.Battle.Teams[BattleView.Client.BattleId].TryGetPokemon(PBEFieldPosition.Right) == null;
                         if (leftPositionEnabled && !centerPositionEnabled && !rightPositionEnabled)
                         {
                             SelectPosition("Left");

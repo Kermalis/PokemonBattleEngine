@@ -25,7 +25,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void AddMessage(string message, bool messageBox, bool messageLog)
         {
-            Field.SetMessage(messageBox ? message : string.Empty);
+            if (messageBox)
+            {
+                Field.SetMessage(message);
+            }
             if (messageLog)
             {
                 messages.AddMessage(message);
