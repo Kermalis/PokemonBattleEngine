@@ -2216,7 +2216,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// When the Pokémon has low HP, its Water-type moves get a power boost.
         /// </summary>
         Torrent = 67,
-        ToxicBoost = 137, // TODO
+        ToxicBoost = 137,
         Trace = 36, // TODO
         Truant = 54, // TODO
         Turboblaze = 163, // TODO

@@ -714,6 +714,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 basePower *= 1.5;
             }
+            if (user.Ability == PBEAbility.ToxicBoost && mData.Category == PBEMoveCategory.Physical && (user.Status1 == PBEStatus1.Poisoned || user.Status1 == PBEStatus1.BadlyPoisoned))
+            {
+                basePower *= 1.5;
+            }
             if (user.Item == PBEItem.LifeOrb)
             {
                 basePower *= 1.3;
