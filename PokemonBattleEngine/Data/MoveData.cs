@@ -2554,7 +2554,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Special, 0, 3, 40, 100,
-                    PBEMoveEffect.Snore, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveEffect.Snore, 30, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
                 )
             },

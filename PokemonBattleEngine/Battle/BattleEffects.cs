@@ -933,7 +933,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     case PBEMoveEffect.Snore:
                         {
-                            Ef_Snore(user, targets, move);
+                            Ef_Snore(user, targets, move, mData.EffectParam);
                             break;
                         }
                     case PBEMoveEffect.Spikes:
@@ -1756,6 +1756,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             lifeOrbDamage = true;
                         }
                         // Target's statuses are assigned and target's stats are changed before post-hit effects
+                        // Snore has a chance to flinch
                         beforePostHit?.Invoke(target);
                         DoPostHitEffects(user, target, move, moveType);
                         // HP-draining moves restore HP after post-hit effects
@@ -2495,7 +2496,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Snore(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        void Ef_Snore(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int chanceToFlinch)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2514,7 +2515,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 failReason = PBEFailReason.None;
-                BasicHit(user, targets, move, ref targetSuccess);
+                void BeforePostHit(PBEPokemon target)
+                {
+                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RNG.ApplyChance(chanceToFlinch, 100))
+                    {
+                        ApplyStatus2IfPossible(user, target, PBEStatus2.Flinching, false);
+                    }
+                }
+                BasicHit(user, targets, move, ref targetSuccess, beforePostHit: BeforePostHit);
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
