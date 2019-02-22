@@ -2228,7 +2228,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         VoltAbsorb = 10, // TODO
         WaterAbsorb = 11, // TODO
         WaterVeil = 41, // TODO
-        WeakArmor = 133, // TODO
+        WeakArmor = 133,
         WhiteSmoke = 73, // TODO
         /// <summary>
         /// The Pokémon is immune to all damaging moves except for moves that would deal super-effective damage.

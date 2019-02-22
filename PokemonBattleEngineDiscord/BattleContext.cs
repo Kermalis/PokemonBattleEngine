@@ -156,6 +156,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 }
                             case PBEAbility.Justified:
                             case PBEAbility.Rattled:
+                            case PBEAbility.WeakArmor:
                                 {
                                     switch (ap.AbilityAction)
                                     {

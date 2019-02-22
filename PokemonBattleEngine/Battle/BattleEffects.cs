@@ -131,6 +131,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="moveType">The type that the move was.</param>
         void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move, PBEType moveType)
         {
+            PBEMoveData mData = PBEMoveData.Data[move];
+
             // TODO: Move Limber to the proper place (DoPostAttackedEffects)
             LimberCheck(victim);
             if (victim.Status2.HasFlag(PBEStatus2.Substitute))
@@ -154,8 +156,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastAbility(victim, user, PBEAbility.Rattled, PBEAbilityAction.Damage);
                     ApplyStatChange(victim, PBEStat.Speed, +1);
                 }
+                if (user.HP > 0 && victim.Ability == PBEAbility.WeakArmor && mData.Category == PBEMoveCategory.Physical) // Verified: Weak Armor before Rocky Helmet
+                {
+                    BroadcastAbility(victim, user, PBEAbility.WeakArmor, PBEAbilityAction.Damage);
+                    ApplyStatChange(victim, PBEStat.Defense, -1);
+                    ApplyStatChange(victim, PBEStat.Speed, +1);
+                }
 
-                if (PBEMoveData.Data[move].Flags.HasFlag(PBEMoveFlag.MakesContact))
+                if (mData.Flags.HasFlag(PBEMoveFlag.MakesContact))
                 {
                     if (user.HP > 0 && victim.Ability == PBEAbility.Mummy && user.Ability != PBEAbility.Multitype && user.Ability != PBEAbility.Mummy && user.Ability != PBEAbility.ZenMode)
                     {

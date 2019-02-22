@@ -209,6 +209,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                                 }
                             case PBEAbility.Justified:
                             case PBEAbility.Rattled:
+                            case PBEAbility.WeakArmor:
                                 {
                                     switch (ap.AbilityAction)
                                     {
