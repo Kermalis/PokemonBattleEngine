@@ -2220,7 +2220,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Trace = 36, // TODO
         Truant = 54, // TODO
         Turboblaze = 163, // TODO
-        Unaware = 109, // TODO
+        Unaware = 109,
         Unburden = 84, // TODO
         Unnerve = 127, // TODO
         VictoryStar = 162,

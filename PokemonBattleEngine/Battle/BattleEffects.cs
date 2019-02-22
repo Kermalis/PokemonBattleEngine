@@ -1150,7 +1150,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     }
             }
-            chance *= GetStatChangeModifier(user.AccuracyChange, true) / GetStatChangeModifier(target.EvasionChange, true);
+            chance *= (target.Ability == PBEAbility.Unaware ? 1.0 : GetStatChangeModifier(user.AccuracyChange, true)) / (user.Ability == PBEAbility.Unaware ? 1.0 : GetStatChangeModifier(target.EvasionChange, true));
             if (user.Ability == PBEAbility.Compoundeyes)
             {
                 chance *= 1.3;

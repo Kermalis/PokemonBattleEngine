@@ -991,33 +991,44 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort damage;
             double a = 0, d = 0;
 
+            bool unawareA = user != target && target.Ability == PBEAbility.Unaware;
+            bool unawareD = user != target && user.Ability == PBEAbility.Unaware;
+
             switch (move)
             {
                 case PBEMove.FoulPlay:
                     {
-                        a = CalculateAttack(user, target, moveType, target.Attack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, target.AttackChange) : target.AttackChange, false));
-                        d = CalculateDefense(user, target, target.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false));
+                        double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, target.AttackChange) : target.AttackChange, false);
+                        a = CalculateAttack(user, target, moveType, target.Attack * aMod);
+                        double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                        d = CalculateDefense(user, target, target.Defense * dMod);
                         break;
                     }
                 case PBEMove.Psyshock:
                 case PBEMove.Psystrike:
                 case PBEMove.SecretSword:
                     {
-                        a = CalculateSpAttack(user, target, moveType, user.SpAttack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false));
-                        d = CalculateDefense(user, target, target.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false));
+                        double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
+                        a = CalculateSpAttack(user, target, moveType, user.SpAttack * aMod);
+                        double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                        d = CalculateDefense(user, target, target.Defense * dMod);
                         break;
                     }
                 default:
                     {
                         if (moveCategory == PBEMoveCategory.Physical)
                         {
-                            a = CalculateAttack(user, target, moveType, user.Attack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false));
-                            d = CalculateDefense(user, target, target.Defense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false));
+                            double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
+                            a = CalculateAttack(user, target, moveType, user.Attack * aMod);
+                            double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                            d = CalculateDefense(user, target, target.Defense * dMod);
                         }
                         else if (moveCategory == PBEMoveCategory.Special)
                         {
-                            a = CalculateSpAttack(user, target, moveType, user.SpAttack * GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false));
-                            d = CalculateSpDefense(user, target, target.SpDefense * GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false));
+                            double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
+                            a = CalculateSpAttack(user, target, moveType, user.SpAttack * aMod);
+                            double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
+                            d = CalculateSpDefense(user, target, target.SpDefense * dMod);
                         }
                         break;
                     }
