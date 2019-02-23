@@ -1646,7 +1646,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
-            if (failReason != PBEFailReason.None && broadcastFailOrEffectiveness)
+            if (failReason != PBEFailReason.None && failReason != PBEFailReason.Ineffective && broadcastFailOrEffectiveness)
             {
                 BroadcastMoveFailed(user, target, failReason);
             }
