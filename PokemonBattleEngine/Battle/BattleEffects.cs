@@ -2496,7 +2496,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             DealDamage(user, user, user.MaxHP, true, ignoreSturdy: true);
-            FaintCheck(user);
             if (targets.Length == 0) // You still faint if there are no targets
             {
                 failReason = PBEFailReason.NoTarget;
@@ -2507,6 +2506,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 BasicHit(user, targets, move, ref targetSuccess);
             }
+            FaintCheck(user);
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
         void Ef_Snore(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int chanceToFlinch)
