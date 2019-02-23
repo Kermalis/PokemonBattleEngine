@@ -32,6 +32,7 @@
     <None Remove="Views\HPBarView.xaml" />
     <None Remove="Views\MessageView.xaml" />
     <None Remove="Views\PokemonView.xaml" />
+    <None Remove="Views\TeamBuilderView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,6 +65,9 @@
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\PokemonView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\TeamBuilderView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
