@@ -50,7 +50,17 @@ namespace Kermalis.PokemonBattleEngine
                         {
                             Console.SetOut(oldWriter);
                             writer.Close();
-                            Console.WriteLine($"Test battle ended. \"{logFile}\" contains the battle.");
+                            try
+                            {
+                                battle.SaveReplay();
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Error saving replay:");
+                                Console.WriteLine(e.Message);
+                                Console.WriteLine(e.StackTrace);
+                            }
+                            Console.WriteLine("Test battle ended. \"{0}\" contains the battle.", logFile);
                             Console.ReadKey();
                             break;
                         }
@@ -105,7 +115,7 @@ namespace Kermalis.PokemonBattleEngine
                 Console.WriteLine(e.StackTrace);
                 Console.SetOut(oldWriter);
                 writer.Close();
-                Console.WriteLine($"Test battle threw an exception, check \"{logFile}\" for details.");
+                Console.WriteLine("Test battle threw an exception, check \"{0}\" for details.", logFile);
                 Console.ReadKey();
                 Environment.Exit(-1);
             }

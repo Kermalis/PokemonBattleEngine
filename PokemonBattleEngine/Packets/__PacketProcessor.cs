@@ -15,7 +15,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             this.battle = battle;
         }
 
-        public int GetMessageLength(byte[] buffer) => BitConverter.ToInt16(buffer, 0);
+        /// <inheritdoc />
+        public int GetMessageLength(byte[] buffer)
+        {
+            return BitConverter.ToInt16(buffer, 0);
+        }
+        /// <inheritdoc />
         public INetPacket CreatePacket(byte[] buffer)
         {
             INetPacket packet;
