@@ -3108,6 +3108,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.WideGuard,
+                new PBEMoveData
+                (
+                    PBEType.Rock, PBEMoveCategory.Status, +3, 2, 0, 0,
+                    PBEMoveEffect.WideGuard, 0, PBEMoveTarget.AllTeam,
+                    PBEMoveFlag.AffectedBySnatch | PBEMoveFlag.BlockedByMetronome
+                )
+            },
+            {
                 PBEMove.WildCharge,
                 new PBEMoveData
                 (

@@ -620,7 +620,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// Grounded Pokémon that switch in will be <see cref="PBEStatus1.Poisoned"/> if <see cref="PBETeam.ToxicSpikeCount"/> is 1 or <see cref="PBEStatus1.BadlyPoisoned"/> if it is 2.
         /// Grounded <see cref="PBEType.Poison"/> Pokémon will remove toxic spikes.
         /// </summary>
-        ToxicSpikes = 1 << 5 // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
+        ToxicSpikes = 1 << 5, // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
+        /// <summary>
+        /// The team is protected from spread moves for a turn.
+        /// </summary>
+        WideGuard = 1 << 6
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEAbility"/>.
@@ -2769,7 +2773,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         Transform,
         TrickRoom,
         VoltTackle,
-        Whirlwind
+        Whirlwind,
+        WideGuard
     }
     public enum PBEMove : ushort
     {
@@ -3144,7 +3149,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WaterSpout = 323,
         WeatherBall = 311,
         Whirlwind = 18, // TODO: Suction Cups, Ingrain
-        //WideGuard // TODO: Blocked by Metronome
+        WideGuard = 469,
         WildCharge = 528,
         WillOWisp = 261,
         WingAttack = 17,

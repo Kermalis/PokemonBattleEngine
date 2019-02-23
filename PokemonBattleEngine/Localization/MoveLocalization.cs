@@ -477,7 +477,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEMove.OminousWind, new PBELocalizedString("あやしいかぜ", "괴상한바람", "Vent Mauvais", "Unheilböen", "Vien. Aciago", "Funestovento", "Ominous Wind") },
             // { PBEMove.467, new PBELocalizedString("シャドーダイブ", "섀도다이브", "Revenant", "Schemenkraft", "Golpe Umbrío", "Oscurotuffo", "Shadow Force") },
             { PBEMove.HoneClaws, new PBELocalizedString("つめとぎ", "손톱갈기", "Aiguisage", "Klauenwetzer", "Afilagarras", "Unghiaguzze", "Hone Claws") },
-            // { PBEMove.469, new PBELocalizedString("ワイドガード", "와이드가드", "Garde Large", "Rundumschutz", "Vastaguardia", "Bodyguard", "Wide Guard") },
+            { PBEMove.WideGuard, new PBELocalizedString("ワイドガード", "와이드가드", "Garde Large", "Rundumschutz", "Vastaguardia", "Bodyguard", "Wide Guard") },
             // { PBEMove.470, new PBELocalizedString("ガードシェア", "가드셰어", "PartageGarde", "Schutzteiler", "Isoguardia", "Paridifesa", "Guard Split") },
             // { PBEMove.471, new PBELocalizedString("パワーシェア", "파워셰어", "PartageForce", "Kraftteiler", "Isofuerza", "Pariattacco", "Power Split") },
             // { PBEMove.472, new PBELocalizedString("ワンダールーム", "원더룸", "Zone Étrange", "Wunderraum", "Zona Extraña", "Mirabilzona", "Wonder Room") },

@@ -479,6 +479,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 (ChoiceLockedMove != PBEMove.None && PP[Array.IndexOf(Moves, ChoiceLockedMove)] == 0)
                 || PP.All(p => p == 0);
         }
+        /// <summary>
+        /// Gets the chance of a protection move succeeding, out of <see cref="ushort.MaxValue"/>.
+        /// </summary>
+        public ushort GetProtectionChance()
+        {
+            ushort chance = ushort.MaxValue;
+            for (int i = ExecutedMoves.Count - 1; i >= 0; i--)
+            {
+                PBEExecutedMove ex = ExecutedMoves[i];
+                if ((ex.Move == PBEMove.Detect || ex.Move == PBEMove.Protect || ex.Move == PBEMove.WideGuard) && ex.FailReason == PBEFailReason.None)
+                {
+                    chance /= 2;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return chance;
+        }
 
         // ToBytes() and FromBytes() will only be used when the server sends you your team Ids, so they do not need to contain all info
         internal byte[] ToBytes()

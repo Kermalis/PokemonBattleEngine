@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Careful,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 0, 4, 252, 0, 252, 0 },
-            Moves = new PBEMove[] { PBEMove.HelpingHand, PBEMove.HealPulse, PBEMove.Waterfall, PBEMove.Protect }, // Helping Hand, Heal Pulse, Waterfall, Wide Guard
+            Moves = new PBEMove[] { PBEMove.HelpingHand, PBEMove.HealPulse, PBEMove.Waterfall, PBEMove.WideGuard },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Amoonguss_VGC { get; } = new PBEPokemonShell
@@ -1387,7 +1387,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Jolly,
             IVs = new byte[] { 31, 31, 31, 31, 31, 31 }, // Hidden Power: Dark/70
             EVs = new byte[] { 4, 252, 0, 0, 0, 252 },
-            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.DrainPunch, PBEMove.Acrobatics, PBEMove.Detect }, // Fake Out, Drain Punch, Acrobatics, Wide Guard
+            Moves = new PBEMove[] { PBEMove.Facade, PBEMove.DrainPunch, PBEMove.Acrobatics, PBEMove.WideGuard }, // Fake Out, Drain Punch, Acrobatics, Wide Guard
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Minun_NU { get; } = new PBEPokemonShell
@@ -1975,7 +1975,7 @@ namespace Kermalis.PokemonBattleEngine
             Nature = PBENature.Brave,
             IVs = new byte[] { 31, 31, 31, 31, 31, 0 }, // Hidden Power: Ice/64
             EVs = new byte[] { 252, 252, 4, 0, 0, 0 },
-            Moves = new PBEMove[] { PBEMove.SeedBomb, PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.Protect }, // Seed Bomb, Earthquake, Rock Slide, Wide Guard
+            Moves = new PBEMove[] { PBEMove.SeedBomb, PBEMove.Earthquake, PBEMove.RockSlide, PBEMove.WideGuard },
             PPUps = new byte[] { 3, 3, 3, 3 }
         };
         public static PBEPokemonShell Tropius_NU { get; } = new PBEPokemonShell

@@ -1023,6 +1023,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                     break;
                                 }
+                            case PBETeamStatus.WideGuard:
+                                {
+                                    switch (tsp.TeamStatusAction)
+                                    {
+                                        case PBETeamStatusAction.Added: message = "Wide Guard protected {0}'s team!"; break;
+                                        case PBETeamStatusAction.Damage: message = "Wide Guard protected {1}!"; break;
+                                        case PBETeamStatusAction.Ended: return;
+                                        default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                                    }
+                                    break;
+                                }
                             default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatus));
                         }
                         Console.WriteLine(message, tsp.Team.TrainerName, NameForTrainer(damageVictim));

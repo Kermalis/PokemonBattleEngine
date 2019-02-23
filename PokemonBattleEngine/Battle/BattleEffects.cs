@@ -1006,6 +1006,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             Ef_Whirlwind(user, targets, move);
                             break;
                         }
+                    case PBEMoveEffect.WideGuard:
+                        {
+                            Ef_TryForceTeamStatus(user, move, PBETeamStatus.WideGuard);
+                            break;
+                        }
                     default: throw new ArgumentOutOfRangeException(nameof(mData.Effect));
                 }
             }
@@ -1095,6 +1100,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (target.Status2.HasFlag(PBEStatus2.Protected) && mData.Flags.HasFlag(PBEMoveFlag.AffectedByProtect))
             {
                 BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Activated);
+                return true;
+            }
+            PBEMoveTarget targets = user.GetMoveTargets(move);
+            if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && mData.Category != PBEMoveCategory.Status
+                && (targets == PBEMoveTarget.All || targets == PBEMoveTarget.AllFoes || targets == PBEMoveTarget.AllFoesSurrounding || targets == PBEMoveTarget.AllSurrounding || targets == PBEMoveTarget.AllTeam))
+            {
+                BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Damage, target);
                 return true;
             }
             if (user.Ability == PBEAbility.NoGuard || target.Ability == PBEAbility.NoGuard)
@@ -1570,20 +1582,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEStatus2.Protected:
                     {
                         // TODO: If the user goes last, fail
-                        ushort chance = ushort.MaxValue;
-                        for (int i = user.ExecutedMoves.Count - 1; i >= 0; i--)
-                        {
-                            PBEExecutedMove ex = user.ExecutedMoves[i];
-                            if ((ex.Move == PBEMove.Detect || ex.Move == PBEMove.Protect) && ex.FailReason == PBEFailReason.None)
-                            {
-                                chance /= 2;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        if (PBEUtils.RNG.ApplyChance(chance, ushort.MaxValue))
+                        if (PBEUtils.RNG.ApplyChance(user.GetProtectionChance(), ushort.MaxValue))
                         {
                             user.Status2 |= PBEStatus2.Protected;
                             BroadcastStatus2(user, user, PBEStatus2.Protected, PBEStatusAction.Added);
@@ -2048,6 +2047,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             opposingTeam.TeamStatus |= PBETeamStatus.ToxicSpikes;
                             opposingTeam.ToxicSpikeCount++;
                             BroadcastTeamStatus(opposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
+                            failReason = PBEFailReason.None;
+                        }
+                        else
+                        {
+                            failReason = PBEFailReason.Default;
+                        }
+                        break;
+                    }
+                case PBETeamStatus.WideGuard:
+                    {
+                        if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && PBEUtils.RNG.ApplyChance(user.GetProtectionChance(), ushort.MaxValue))
+                        {
+                            user.Team.TeamStatus |= PBETeamStatus.WideGuard;
+                            BroadcastTeamStatus(user.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Added);
                             failReason = PBEFailReason.None;
                         }
                         else
