@@ -6,8 +6,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEPacketProcessor : IPacketProcessor
     {
-        public int HeaderSize => 2;
-        public bool IncludeHeader => false;
         readonly PBEBattle battle;
 
         public PBEPacketProcessor(PBEBattle battle)
@@ -15,11 +13,6 @@ namespace Kermalis.PokemonBattleEngine.Packets
             this.battle = battle;
         }
 
-        /// <inheritdoc />
-        public int GetMessageLength(byte[] buffer)
-        {
-            return BitConverter.ToInt16(buffer, 0);
-        }
         /// <inheritdoc />
         public INetPacket CreatePacket(byte[] buffer)
         {

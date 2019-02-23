@@ -536,23 +536,6 @@
             Defines the behavior of a <see cref="T:Ether.Network.Packets.IPacketProcessor"/>.
             </summary>
         </member>
-        <member name="P:Ether.Network.Packets.IPacketProcessor.HeaderSize">
-            <summary>
-            Gets the packet header size.
-            </summary>
-        </member>
-        <member name="P:Ether.Network.Packets.IPacketProcessor.IncludeHeader">
-            <summary>
-            Gets a value indicating whether to put the packet header in front of the packet <see cref="P:Ether.Network.Packets.INetPacket.Buffer"/>.
-            </summary>
-        </member>
-        <member name="M:Ether.Network.Packets.IPacketProcessor.GetMessageLength(System.Byte[])">
-            <summary>
-            Gets the packet message length.
-            </summary>
-            <param name="buffer">Header buffer</param>
-            <returns>Packet message data length</returns>
-        </member>
         <member name="M:Ether.Network.Packets.IPacketProcessor.CreatePacket(System.Byte[])">
             <summary>
             Creates a new <see cref="T:Ether.Network.Packets.INetPacket"/> packet instance.

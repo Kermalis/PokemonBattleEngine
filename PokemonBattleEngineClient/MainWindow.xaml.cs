@@ -1,26 +1,37 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Kermalis.PokemonBattleEngine;
+using Avalonia.Threading;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
-using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using Kermalis.PokemonBattleEngineClient.Views;
 using ReactiveUI;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Reactive.Subjects;
+using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
     public class MainWindow : Window, INotifyPropertyChanged
     {
+        void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        public new event PropertyChangedEventHandler PropertyChanged;
+
+        string connectText = "Connect";
+        public string ConnectText
+        {
+            get => connectText; set
+            {
+                connectText = value;
+                OnPropertyChanged(nameof(ConnectText));
+            }
+        }
+        readonly Subject<bool> connectEnabled;
+
         readonly List<BattleClient> battles = new List<BattleClient>();
-        readonly TeamBuilderView teamBuilder;
+
         readonly TabControl tabs;
+        readonly TeamBuilderView teamBuilder;
         readonly TextBox ip;
         readonly NumericUpDown port;
 
@@ -29,11 +40,13 @@ namespace Kermalis.PokemonBattleEngineClient
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
 
-            this.FindControl<Button>("Connect").Command = ReactiveCommand.Create(Connect);
+            tabs = this.FindControl<TabControl>("Tabs");
             teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder");
             ip = this.FindControl<TextBox>("IP");
             port = this.FindControl<NumericUpDown>("Port");
-            tabs = this.FindControl<TabControl>("Tabs");
+            connectEnabled = new Subject<bool>();
+            this.FindControl<Button>("Connect").Command = ReactiveCommand.Create(Connect, connectEnabled);
+            connectEnabled.OnNext(true);
         }
         byte shows = 0;
         public override void Show()
@@ -47,16 +60,34 @@ namespace Kermalis.PokemonBattleEngineClient
 
         void Connect()
         {
+            connectEnabled.OnNext(false);
+            ConnectText = "Connecting...";
             var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.settings, teamBuilder.team.Item2);
-            battles.Add(client);
-            var pages = tabs.Items.Cast<object>().ToList();
-            pages.Add(new TabItem
+            var battleView = new BattleView(client);
+
+            new Thread(() =>
             {
-                Header = "Battle " + battles.Count,
-                Content = new BattleView(client)
-            });
-            tabs.Items = pages;
-            client.Connect();
+                client.Connect();
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (client.IsConnected)
+                    {
+                        battles.Add(client);
+                        var pages = tabs.Items.Cast<object>().ToList();
+                        pages.Add(new TabItem
+                        {
+                            Header = "Battle " + battles.Count,
+                            Content = battleView
+                        });
+                        tabs.Items = pages;
+                    }
+                    ConnectText = "Connect";
+                    connectEnabled.OnNext(true);
+                });
+            })
+            {
+                Name = "Connect Thread"
+            }.Start();
         }
     }
 }

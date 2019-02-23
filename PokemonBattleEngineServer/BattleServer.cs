@@ -86,7 +86,7 @@ namespace Kermalis.PokemonBattleEngineServer
                                 return;
                             }
                         }
-                        // Alert all other players that this new player joined
+                        // Alert all players that this new player joined (including him/herself)
                         if (player.Socket != null)
                         {
                             player.Send(new PBEPlayerJoinedPacket(player == client, client.BattleId, client.PlayerName));

@@ -13,7 +13,7 @@
           <NumericUpDown Name="Port" Width="100" Value="8888"/>
           <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Name="Connect">
             <StackPanel>
-              <Image Source="{Binding Source='Connect', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+              <Image Source="{Binding ConnectText, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
             </StackPanel>
           </Button>
         </StackPanel>
