@@ -114,6 +114,18 @@ namespace Kermalis.PokemonBattleEngine
                 source[b] = value;
             }
         }
+        /// <summary>
+        /// Takes a string and removes all invalid file name characters from it.
+        /// </summary>
+        /// <param name="fileName">The string to clean.</param>
+        public static string ToSafeFileName(string fileName)
+        {
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                fileName = fileName.Replace(c, '-');
+            }
+            return fileName;
+        }
 
         internal static byte[] StringToBytes(string str)
         {

@@ -20,9 +20,9 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Rotation battles, triple battle shifting, and triple battle auto-center
 * Add lots of items and most moves, Pokémon, and secondary statuses (underwater, cursed, mud sport, etc.)
 * Protect from corrupt packets (if they are even a problem)
-* Watchable replays
 * Mobile HP bars
 * Player left packet
+* Make replay loader throw an exception if the hash is incorrect
 
 ----
 # PokemonBattleEngine Uses:

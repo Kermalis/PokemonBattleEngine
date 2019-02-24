@@ -10,7 +10,8 @@ namespace Kermalis.PokemonBattleEngine
 {
     class PBETestProgram
     {
-        static readonly string logFile = "Test Log.txt";
+        static readonly string logFile = "Test Log.txt",
+            replayFile = "Test Replay.pbereplay";
         static StreamWriter writer;
         static TextWriter oldWriter;
 
@@ -21,7 +22,7 @@ namespace Kermalis.PokemonBattleEngine
             PBESettings settings = PBESettings.DefaultSettings;
             PBEPokemonShell[] team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
             PBEPokemonShell[] team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
-            var battle = new PBEBattle(PBEBattleFormat.Triple, settings, team0Party, team1Party);
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, team0Party, team1Party);
             battle.Teams[0].TrainerName = "Team 1";
             battle.Teams[1].TrainerName = "Team 2";
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
@@ -52,7 +53,7 @@ namespace Kermalis.PokemonBattleEngine
                             writer.Close();
                             try
                             {
-                                battle.SaveReplay();
+                                battle.SaveReplay(replayFile);
                             }
                             catch (Exception e)
                             {
@@ -60,7 +61,7 @@ namespace Kermalis.PokemonBattleEngine
                                 Console.WriteLine(e.Message);
                                 Console.WriteLine(e.StackTrace);
                             }
-                            Console.WriteLine("Test battle ended. \"{0}\" contains the battle.", logFile);
+                            Console.WriteLine("Test battle ended. The battle was saved to \"{0}\" and \"{1}\".", logFile, replayFile);
                             Console.ReadKey();
                             break;
                         }

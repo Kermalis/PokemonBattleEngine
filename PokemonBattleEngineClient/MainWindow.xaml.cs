@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Views;
 using ReactiveUI;
@@ -88,6 +89,24 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 Name = "Connect Thread"
             }.Start();
+        }
+        void WatchReplay()
+        {
+            var battle = PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngine\bin\Debug\netstandard2.0\Test Replay.pbereplay");
+
+            var client = new BattleClient(ip.Text, (int)port.Value, battle.BattleFormat, teamBuilder.settings, teamBuilder.team.Item2);
+            var battleView = new BattleView(client);
+
+            battles.Add(client);
+            var pages = tabs.Items.Cast<object>().ToList();
+            pages.Add(new TabItem
+            {
+                Header = "Battle " + battles.Count,
+                Content = battleView
+            });
+            tabs.Items = pages;
+
+            client.Battle = battle;
         }
     }
 }

@@ -14,12 +14,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public void SaveReplay()
         {
+            // "12-30-2020 11-59-59 PM - Team 1 vs Team 2.pbereplay"
+            string path = PBEUtils.ToSafeFileName(new string(string.Format("{0} - {1} vs {2}", DateTime.Now.ToLocalTime(), Teams[0].TrainerName, Teams[1].TrainerName).Take(200).ToArray())) + ".pbereplay";
+            SaveReplay(path);
+        }
+        public void SaveReplay(string path)
+        {
             if (BattleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
             }
 
-            string path = "Test" + ".pbereplay";
             using (var s = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
             {
                 // Write current replay version
@@ -27,18 +32,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Write battle format
                 s.Write(BitConverter.GetBytes((byte)BattleFormat), 0, sizeof(byte));
 
-                // Write team 0 party
-                var team0Size = (sbyte)Teams[0].Party.Count;
-                s.Write(BitConverter.GetBytes(team0Size), 0, sizeof(sbyte));
-                for (int i = 0; i < team0Size; i++)
+                // Write team 0
+                byte[] name = PBEUtils.StringToBytes(Teams[0].TrainerName);
+                s.Write(name, 0, name.Length);
+                sbyte size = (sbyte)Teams[0].Party.Count;
+                s.Write(BitConverter.GetBytes(size), 0, sizeof(sbyte));
+                for (int i = 0; i < size; i++)
                 {
                     byte[] shell = Teams[0].Party[i].Shell.ToBytes();
                     s.Write(shell, 0, shell.Length);
                 }
-                // Write team 1 party
-                var team1Size = (sbyte)Teams[1].Party.Count;
-                s.Write(BitConverter.GetBytes(team1Size), 0, sizeof(sbyte));
-                for (int i = 0; i < team1Size; i++)
+                // Write team 1
+                name = PBEUtils.StringToBytes(Teams[1].TrainerName);
+                s.Write(name, 0, name.Length);
+                size = (sbyte)Teams[1].Party.Count;
+                s.Write(BitConverter.GetBytes(size), 0, sizeof(sbyte));
+                for (int i = 0; i < size; i++)
                 {
                     byte[] shell = Teams[1].Party[i].Shell.ToBytes();
                     s.Write(shell, 0, shell.Length);
@@ -60,40 +69,42 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        public static void LoadReplay(string path)
+        public static PBEBattle LoadReplay(string path)
         {
             using (var s = new FileStream(path, FileMode.Open))
             using (var r = new BinaryReader(s))
             {
-                Console.WriteLine("Replay version: {0}", r.ReadUInt16());
-                var battleFormat = (PBEBattleFormat)r.ReadByte();
-                Console.WriteLine("Battle format: {0}", battleFormat);
+                ushort version = r.ReadUInt16();
 
-                sbyte team0Size = r.ReadSByte();
-                Console.WriteLine("Team 0 size: {0}", team0Size);
-                for (int i = 0; i < team0Size; i++)
-                {
-                    var shell = PBEPokemonShell.FromBytes(r);
-                    Console.WriteLine("\t{0}/{1}", shell.Nickname, shell.Species);
-                }
-                sbyte team1Size = r.ReadSByte();
-                Console.WriteLine("Team 1 size: {0}", team1Size);
-                for (int i = 0; i < team1Size; i++)
-                {
-                    var shell = PBEPokemonShell.FromBytes(r);
-                    Console.WriteLine("\t{0}/{1}", shell.Nickname, shell.Species);
-                }
+                var battle = new PBEBattle((PBEBattleFormat)r.ReadByte(), PBESettings.DefaultSettings);
+                var processor = new PBEPacketProcessor(battle);
 
-                var processor = new PBEPacketProcessor(new PBEBattle(battleFormat, PBESettings.DefaultSettings));
+                battle.Teams[0].TrainerName = PBEUtils.StringFromBytes(r);
+                var party = new PBEPokemonShell[r.ReadSByte()];
+                for (int i = 0; i < party.Length; i++)
+                {
+                    party[i] = PBEPokemonShell.FromBytes(r);
+                }
+                battle.Teams[0].CreateParty(party, ref battle.pkmnIdCounter);
+                battle.Teams[1].TrainerName = PBEUtils.StringFromBytes(r);
+                party = new PBEPokemonShell[r.ReadSByte()];
+                for (int i = 0; i < party.Length; i++)
+                {
+                    party[i] = PBEPokemonShell.FromBytes(r);
+                }
+                battle.Teams[1].CreateParty(party, ref battle.pkmnIdCounter);
+
                 INetPacket packet;
                 do
                 {
                     byte[] buffer = r.ReadBytes(r.ReadInt16());
                     packet = processor.CreatePacket(buffer);
-                    Console.WriteLine(packet.GetType().Name);
+                    battle.Events.Add(packet);
                 } while (!(packet is PBEWinnerPacket));
 
                 Console.WriteLine("Hash: {0}", BitConverter.ToString(r.ReadBytes(16)).Replace("-", string.Empty).ToLower());
+
+                return battle;
             }
         }
     }

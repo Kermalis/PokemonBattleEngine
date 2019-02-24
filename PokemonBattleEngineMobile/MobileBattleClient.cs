@@ -20,9 +20,9 @@ namespace Kermalis.PokemonBattleEngineMobile
         readonly PBEPacketProcessor packetProcessor;
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
-        public PBEBattle Battle { get; }
+        public PBEBattle Battle { get; set; }
         public BattleView BattleView { get; set; }
-        public int BattleId { get; private set; }
+        public int BattleId { get; private set; } = int.MaxValue;
 
         public MobileBattleClient(string host, int port, PBEBattleFormat battleFormat, PBESettings settings)
         {
@@ -523,7 +523,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                 case PBEMoveUsedPacket mup:
                     {
                         PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
-                        if (moveUser.Team.Id != BattleId && !mup.CalledFromOtherMove && !moveUser.Moves.Contains(mup.Move))
+                        if (BattleId != int.MaxValue && moveUser.Team.Id != BattleId && !mup.CalledFromOtherMove && !moveUser.Moves.Contains(mup.Move))
                         {
                             moveUser.Moves[Array.IndexOf(moveUser.Moves, PBEMove.MAX)] = mup.Move;
                         }
@@ -618,7 +618,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                         foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
                         {
                             PBEPokemon pokemon;
-                            if (psip.Team.Id != BattleId)
+                            if (BattleId != int.MaxValue && psip.Team.Id != BattleId)
                             {
                                 pokemon = new PBEPokemon(psip.Team, info);
                             }
@@ -1184,7 +1184,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                         {
                             ActionsLoop(true);
                         }
-                        else if (BattleId >= 2)
+                        else if (BattleId != int.MaxValue && BattleId >= 2)
                         {
                             BattleView.AddMessage("Waiting for players...", true, false);
                         }
@@ -1196,6 +1196,10 @@ namespace Kermalis.PokemonBattleEngineMobile
                         if (sirp.Team.Id == BattleId)
                         {
                             SwitchesLoop(true);
+                        }
+                        else if (BattleId == int.MaxValue)
+                        {
+
                         }
                         else if (BattleId >= 2)
                         {
