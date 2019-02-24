@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Kermalis.PokemonBattleEngine</RootNamespace>
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>

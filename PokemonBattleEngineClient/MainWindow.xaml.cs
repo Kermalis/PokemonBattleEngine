@@ -92,7 +92,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         void WatchReplay()
         {
-            var battle = PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngine\bin\Debug\netstandard2.0\Test Replay.pbereplay");
+            var battle = PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineTesting\bin\Debug\netcoreapp2.1\Test Replay.pbereplay");
 
             var client = new BattleClient(ip.Text, (int)port.Value, battle.BattleFormat, teamBuilder.settings, teamBuilder.team.Item2);
             var battleView = new BattleView(client);

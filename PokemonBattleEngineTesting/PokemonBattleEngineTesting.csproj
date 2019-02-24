@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Kermalis.PokemonBattleEngineTesting</RootNamespace>
+    <Authors>Kermalis</Authors>
+    <Copyright>Kermalis</Copyright>
+    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+    <Reference Include="Ether.Network">
+      <HintPath>..\Shared Dependencies\Ether.Network.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

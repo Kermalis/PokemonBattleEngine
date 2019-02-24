@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.AI;
+﻿using Kermalis.PokemonBattleEngine;
+using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
@@ -6,16 +7,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Kermalis.PokemonBattleEngine
+namespace Kermalis.PokemonBattleEngineTesting
 {
-    class PBETestProgram
+    class AIBattle
     {
         static readonly string logFile = "Test Log.txt",
             replayFile = "Test Replay.pbereplay";
         static StreamWriter writer;
         static TextWriter oldWriter;
 
-        public static void Main(string[] args)
+        public static void Test()
         {
             Console.WriteLine("----- Pokémon Battle Engine Test -----");
 
