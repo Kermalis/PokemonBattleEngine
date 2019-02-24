@@ -20,9 +20,27 @@ namespace Kermalis.PokemonBattleEngine
             Console.WriteLine("----- Pokémon Battle Engine Test -----");
 
             PBESettings settings = PBESettings.DefaultSettings;
-            PBEPokemonShell[] team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
-            PBEPokemonShell[] team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
-            var battle = new PBEBattle(PBEBattleFormat.Double, settings, team0Party, team1Party);
+            //PBEPokemonShell[] team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize);
+            //PBEPokemonShell[] team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize);
+            PBEPokemonShell[] team0Party = new PBEPokemonShell[]
+            {
+                PBECompetitivePokemonShells.Zoroark_VGC,
+                PBECompetitivePokemonShells.Volcarona_VGC,
+                PBECompetitivePokemonShells.Vaporeon_VGC,
+                PBECompetitivePokemonShells.Thundurus_VGC,
+                PBECompetitivePokemonShells.Vanilluxe_VGC,
+                PBECompetitivePokemonShells.Chandelure_VGC
+            };
+            PBEPokemonShell[] team1Party = new PBEPokemonShell[]
+            {
+                PBECompetitivePokemonShells.Arceus_Uber,
+                PBECompetitivePokemonShells.Darkrai_Uber,
+                PBECompetitivePokemonShells.Kyurem_White_Uber,
+                PBECompetitivePokemonShells.Latias_VGC,
+                PBECompetitivePokemonShells.Metagross_VGC,
+                PBECompetitivePokemonShells.Victini_Uber
+            };
+            var battle = new PBEBattle(PBEBattleFormat.Single, settings, team0Party, team1Party);
             battle.Teams[0].TrainerName = "Team 1";
             battle.Teams[1].TrainerName = "Team 2";
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
@@ -84,7 +102,7 @@ namespace Kermalis.PokemonBattleEngine
                         {
                             foreach (PBETeam team in battle.Teams)
                             {
-                                IEnumerable<PBEAction> actions = AIManager.CreateActions(team);
+                                IEnumerable<PBEAction> actions = PBEAIManager.CreateActions(team);
                                 bool valid = PBEBattle.AreActionsValid(team, actions);
                                 if (!valid)
                                 {
@@ -98,7 +116,7 @@ namespace Kermalis.PokemonBattleEngine
                         {
                             foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
                             {
-                                IEnumerable<Tuple<byte, PBEFieldPosition>> switches = AIManager.CreateSwitches(team);
+                                IEnumerable<Tuple<byte, PBEFieldPosition>> switches = PBEAIManager.CreateSwitches(team);
                                 bool valid = PBEBattle.AreSwitchesValid(team, switches);
                                 if (!valid)
                                 {

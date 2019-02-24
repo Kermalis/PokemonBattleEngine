@@ -99,7 +99,10 @@ namespace Kermalis.PokemonBattleEngine
             }
             return str;
         }
-        public static T Sample<T>(this IEnumerable<T> source) => source.ElementAt(RNG.Next(0, source.Count()));
+        public static T Sample<T>(this IEnumerable<T> source)
+        {
+            return source.ElementAt(RNG.Next(0, source.Count()));
+        }
         /// <summary>
         /// Shuffles the items in a list using the Fisher-Yates Shuffle algorithm.
         /// </summary>

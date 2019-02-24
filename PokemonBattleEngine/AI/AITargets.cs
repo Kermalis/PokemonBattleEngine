@@ -4,7 +4,7 @@ using System;
 
 namespace Kermalis.PokemonBattleEngine.AI
 {
-    public static partial class AIManager
+    public static partial class PBEAIManager
     {
         static PBETarget DecideTargets(PBEPokemon pkmn, PBEMove move)
         {

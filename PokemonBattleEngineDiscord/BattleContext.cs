@@ -933,14 +933,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         SocketUser guy = context.Battlers[Array.IndexOf(context.Battle.Teams, arp.Team)];
                         await guy.SendMessageAsync($"Actions for turn {context.Battle.TurnNumber}");
-                        PBEBattle.SelectActionsIfValid(arp.Team, PokemonBattleEngine.AI.AIManager.CreateActions(arp.Team));
+                        PBEBattle.SelectActionsIfValid(arp.Team, PokemonBattleEngine.AI.PBEAIManager.CreateActions(arp.Team));
                         break;
                     }
                 case PBESwitchInRequestPacket sirp:
                     {
                         SocketUser guy = context.Battlers[Array.IndexOf(context.Battle.Teams, sirp.Team)];
                         await guy.SendMessageAsync("Switches");
-                        PBEBattle.SelectSwitchesIfValid(sirp.Team, PokemonBattleEngine.AI.AIManager.CreateSwitches(sirp.Team));
+                        PBEBattle.SelectSwitchesIfValid(sirp.Team, PokemonBattleEngine.AI.PBEAIManager.CreateSwitches(sirp.Team));
                         break;
                     }
             }
