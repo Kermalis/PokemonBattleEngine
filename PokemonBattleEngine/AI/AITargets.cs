@@ -43,24 +43,14 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                 }
                             case PBEMoveTarget.AllTeam:
+                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.Self:
                             case PBEMoveTarget.SelfOrAllySurrounding:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Center)
-                                    {
-                                        return PBETarget.AllyCenter;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.SingleAllySurrounding:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                     {
-                                        return PBETarget.None;
+                                        return PBETarget.AllyCenter;
                                     }
                                     else
                                     {
@@ -123,6 +113,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
+                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.Self:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Left)
@@ -229,17 +220,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
-                            case PBEMoveTarget.RandomFoeSurrounding:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return PBETarget.None;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
                             default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                         }
                     }
@@ -318,6 +298,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
+                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.Self:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Left)
@@ -595,17 +576,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
-                            case PBEMoveTarget.RandomFoeSurrounding:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return PBETarget.None;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
                             default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
                         }
                     }
@@ -641,24 +611,14 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                 }
                             case PBEMoveTarget.AllTeam:
+                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.Self:
                             case PBEMoveTarget.SelfOrAllySurrounding:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return PBETarget.AllyCenter;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.RandomFoeSurrounding:
                             case PBEMoveTarget.SingleAllySurrounding:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
                                     {
-                                        return PBETarget.None;
+                                        return PBETarget.AllyCenter;
                                     }
                                     else
                                     {
