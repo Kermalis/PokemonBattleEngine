@@ -53,7 +53,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static Color GetColor(PBEPokemon pkmn)
         {
-            return GetColor(pkmn.KnownSpecies);
+            return GetColor(pkmn.KnownType1, pkmn.KnownType2);
         }
 
         // https://stackoverflow.com/questions/1979915/can-i-check-if-a-file-exists-at-a-url

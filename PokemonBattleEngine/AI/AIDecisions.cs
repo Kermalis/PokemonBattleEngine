@@ -166,13 +166,11 @@ namespace Kermalis.PokemonBattleEngine.AI
                                             else
                                             {
                                                 // TODO: Put type checking somewhere in PBEPokemon (levitate, wonder guard, etc)
-                                                // TODO: Put "KnownType1" etc so the AI doesn't cheat (using species types for now)
                                                 // TODO: Check items
                                                 // TODO: Stat changes and accuracy
                                                 // TODO: Check base power specifically against hp remaining (include spread move damage reduction)
-                                                PBEPokemonData pData = PBEPokemonData.Data[target.KnownSpecies];
-                                                double typeEffectiveness = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)pData.Type1];
-                                                typeEffectiveness *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)pData.Type2];
+                                                double typeEffectiveness = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.KnownType1];
+                                                typeEffectiveness *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.KnownType2];
                                                 if (typeEffectiveness <= 0.0) // (-infinity, 0.0] Ineffective
                                                 {
                                                     score += target.Team == opposingTeam ? -60 : -1;

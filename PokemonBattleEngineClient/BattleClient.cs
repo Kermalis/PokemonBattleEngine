@@ -314,10 +314,10 @@ namespace Kermalis.PokemonBattleEngineClient
                         pokemon.Shell.Nickname = pokemon.KnownNickname = ilp.ActualNickname;
                         pokemon.Shell.Shiny = pokemon.KnownShiny = ilp.ActualShiny;
                         pokemon.Shell.Species = pokemon.KnownSpecies = ilp.ActualSpecies;
+                        pokemon.Type1 = pokemon.KnownType1 = ilp.ActualType1;
+                        pokemon.Type2 = pokemon.KnownType2 = ilp.ActualType2;
 
                         PBEPokemonData pData = PBEPokemonData.Data[ilp.ActualSpecies];
-                        pokemon.Type1 = pData.Type1; // TODO: If modified (soak heatcrash etc)
-                        pokemon.Type2 = pData.Type2; // TODO: If modified
                         pokemon.Weight = pData.Weight; // TODO: If modified (autotomize etc)
                         BattleView.Field.UpdatePokemon(pokemon);
                         break;
@@ -637,6 +637,9 @@ namespace Kermalis.PokemonBattleEngineClient
                                     pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Shell.Nickname;
                                     pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shell.Shiny;
                                     pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.Shell.Species;
+                                    PBEPokemonData pData = PBEPokemonData.Data[pokemon.DisguisedAsPokemon.Shell.Species];
+                                    pokemon.KnownType1 = pData.Type1;
+                                    pokemon.KnownType2 = pData.Type2;
                                 }
                             }
                             Battle.ActiveBattlers.Add(pokemon);

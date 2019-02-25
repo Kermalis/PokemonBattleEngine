@@ -1289,6 +1289,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 pkmn.KnownNickname = pkmn.Shell.Nickname;
                 pkmn.KnownShiny = pkmn.Shell.Shiny;
                 pkmn.KnownSpecies = pkmn.Shell.Species;
+                pkmn.KnownType1 = pkmn.Type1;
+                pkmn.KnownType2 = pkmn.Type2;
                 BroadcastIllusion(pkmn);
                 BroadcastAbility(pkmn, breaker, PBEAbility.Illusion, PBEAbilityAction.ChangedAppearance);
             }
@@ -1664,6 +1666,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     pkmn.KnownNickname = last.Shell.Nickname;
                     pkmn.KnownShiny = last.Shell.Shiny;
                     pkmn.KnownSpecies = last.Shell.Species;
+                    PBEPokemonData pData = PBEPokemonData.Data[last.Shell.Species]; // If "last" is on the field and its types changed then we wouldn't want to use last.Type1
+                    pkmn.KnownType1 = pData.Type1;
+                    pkmn.KnownType2 = pData.Type2;
                     return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.Shell.Species, last.Shell.Nickname, pkmn.Shell.Level, last.Shell.Shiny, last.Shell.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
                 }
             }

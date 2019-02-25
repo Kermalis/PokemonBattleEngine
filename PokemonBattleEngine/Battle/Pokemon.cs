@@ -85,6 +85,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public string KnownNickname { get; set; }
         public bool KnownShiny { get; set; }
         public PBESpecies KnownSpecies { get; set; }
+        public PBEType KnownType1 { get; set; }
+        public PBEType KnownType2 { get; set; }
 
         public sbyte AttackChange { get; set; }
         public sbyte DefenseChange { get; set; }
@@ -167,8 +169,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
             PBEPokemonData pData = PBEPokemonData.Data[Shell.Species];
-            Type1 = pData.Type1;
-            Type2 = pData.Type2;
+            KnownType1 = Type1 = pData.Type1;
+            KnownType2 = Type2 = pData.Type2;
             Weight = pData.Weight;
             Team.Party.Add(this);
         }
@@ -205,8 +207,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             HPPercentage = info.HPPercentage;
             Status1 = info.Status1;
             PBEPokemonData pData = PBEPokemonData.Data[Shell.Species];
-            Type1 = pData.Type1;
-            Type2 = pData.Type2;
+            KnownType1 = Type1 = pData.Type1;
+            KnownType2 = Type2 = pData.Type2;
             Weight = pData.Weight;
             Team.Party.Add(this);
         }
@@ -270,6 +272,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownNickname = Shell.Nickname;
             KnownShiny = Shell.Shiny;
             KnownSpecies = Shell.Species;
+            PBEPokemonData pData = PBEPokemonData.Data[Shell.Species];
+            KnownType1 = Type1 = pData.Type1;
+            KnownType2 = Type2 = pData.Type2;
 
             AttackChange = DefenseChange = SpAttackChange = SpDefenseChange = SpeedChange = AccuracyChange = EvasionChange = 0;
 
@@ -306,12 +311,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <remarks>Frees the Pokémon of its <see cref="ChoiceLockedMove"/>.</remarks>
         public void Transform(PBEPokemon target)
         {
-            KnownSpecies = target.Shell.Species;
-            KnownShiny = target.Shell.Shiny;
-            KnownGender = target.Shell.Gender;
             Ability = target.Ability;
-            Type1 = target.Type1;
-            Type2 = target.Type2;
+            KnownGender = target.Shell.Gender;
+            KnownShiny = target.Shell.Shiny;
+            KnownSpecies = target.Shell.Species;
+            KnownType1 = Type1 = target.Type1;
+            KnownType2 = Type2 = target.Type2;
             Weight = target.Weight;
             Attack = target.Attack;
             Defense = target.Defense;

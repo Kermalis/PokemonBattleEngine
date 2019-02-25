@@ -19,6 +19,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public bool ActualShiny { get; }
         public string ActualNickname { get; }
         public PBESpecies ActualSpecies { get; }
+        public PBEType ActualType1 { get; }
+        public PBEType ActualType2 { get; }
 
         public PBEIllusionPacket(PBEPokemon pokemon)
         {
@@ -30,6 +32,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(PBEUtils.StringToBytes(ActualNickname = pokemon.Shell.Nickname));
             bytes.Add((byte)((ActualShiny = pokemon.Shell.Shiny) ? 1 : 0));
             bytes.AddRange(BitConverter.GetBytes((ushort)(ActualSpecies = pokemon.Shell.Species)));
+            bytes.Add((byte)(ActualType1 = pokemon.Type1));
+            bytes.Add((byte)(ActualType2 = pokemon.Type2));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEIllusionPacket(byte[] buffer, PBEBattle battle)
@@ -44,6 +48,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 ActualNickname = PBEUtils.StringFromBytes(r);
                 ActualShiny = r.ReadBoolean();
                 ActualSpecies = (PBESpecies)r.ReadUInt16();
+                ActualType1 = (PBEType)r.ReadByte();
+                ActualType2 = (PBEType)r.ReadByte();
             }
         }
 
