@@ -6,14 +6,15 @@ namespace Kermalis.PokemonBattleEngine.AI
 {
     public static partial class PBEAIManager
     {
-        static PBETarget DecideTargets(PBEPokemon pkmn, PBEMove move)
+        // TODO: Move these to battle targets and make them public, this file doesn't have to exist
+
+        static PBETarget GetSpreadMoveTargets(PBEPokemon pkmn, PBEMoveTarget targets)
         {
-            PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(move);
             switch (pkmn.Team.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
                     {
-                        switch (possibleTargets)
+                        switch (targets)
                         {
                             case PBEMoveTarget.All:
                                 {
@@ -29,9 +30,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                             case PBEMoveTarget.AllFoes:
                             case PBEMoveTarget.AllFoesSurrounding:
                             case PBEMoveTarget.AllSurrounding:
-                            case PBEMoveTarget.SingleFoeSurrounding:
-                            case PBEMoveTarget.SingleNotSelf:
-                            case PBEMoveTarget.SingleSurrounding:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                     {
@@ -43,10 +41,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                 }
                             case PBEMoveTarget.AllTeam:
-                            case PBEMoveTarget.RandomFoeSurrounding:
-                            case PBEMoveTarget.Self:
-                            case PBEMoveTarget.SelfOrAllySurrounding:
-                            case PBEMoveTarget.SingleAllySurrounding:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                     {
@@ -57,12 +51,12 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
-                            default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                            default: throw new ArgumentOutOfRangeException(nameof(targets));
                         }
                     }
                 case PBEBattleFormat.Double:
                     {
-                        switch (possibleTargets)
+                        switch (targets)
                         {
                             case PBEMoveTarget.All:
                                 {
@@ -113,119 +107,12 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
-                            case PBEMoveTarget.RandomFoeSurrounding:
-                            case PBEMoveTarget.Self:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                    {
-                                        return PBETarget.AllyLeft;
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return PBETarget.AllyRight;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.SelfOrAllySurrounding: // TODO
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        if (PBEUtils.RNG.NextBoolean())
-                                        {
-                                            return PBETarget.AllyLeft;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.AllyRight;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.SingleAllySurrounding:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                    {
-                                        return PBETarget.AllyRight;
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return PBETarget.AllyLeft;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.SingleFoeSurrounding: // TODO
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        if (PBEUtils.RNG.NextBoolean())
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.SingleNotSelf:
-                            case PBEMoveTarget.SingleSurrounding: // TODO
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 3);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.AllyRight;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 3);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.AllyLeft;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                            default: throw new ArgumentOutOfRangeException(nameof(targets));
                         }
                     }
                 case PBEBattleFormat.Triple:
                     {
-                        switch (possibleTargets)
+                        switch (targets)
                         {
                             case PBEMoveTarget.All:
                                 {
@@ -298,290 +185,12 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
-                            case PBEMoveTarget.RandomFoeSurrounding:
-                            case PBEMoveTarget.Self:
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                    {
-                                        return PBETarget.AllyLeft;
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
-                                    {
-                                        return PBETarget.AllyCenter;
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return PBETarget.AllyRight;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.SelfOrAllySurrounding: // TODO
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                    {
-                                        if (PBEUtils.RNG.NextBoolean())
-                                        {
-                                            return PBETarget.AllyLeft;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.AllyCenter;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 3);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.AllyLeft;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.AllyCenter;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.AllyRight;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        if (PBEUtils.RNG.NextBoolean())
-                                        {
-                                            return PBETarget.AllyCenter;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.AllyRight;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.SingleAllySurrounding: // TODO
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                    {
-                                        return PBETarget.AllyCenter;
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
-                                    {
-                                        if (PBEUtils.RNG.NextBoolean())
-                                        {
-                                            return PBETarget.AllyLeft;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.AllyRight;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return PBETarget.AllyCenter;
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.SingleFoeSurrounding: // TODO
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                    {
-                                        if (PBEUtils.RNG.NextBoolean())
-                                        {
-                                            return PBETarget.FoeCenter;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 3);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.FoeCenter;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        if (PBEUtils.RNG.NextBoolean())
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeCenter;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.SingleNotSelf: // TODO
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 5);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.AllyCenter;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.AllyRight;
-                                        }
-                                        else if (val == 2)
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else if (val == 3)
-                                        {
-                                            return PBETarget.FoeCenter;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 5);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.AllyLeft;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.AllyRight;
-                                        }
-                                        else if (val == 2)
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else if (val == 3)
-                                        {
-                                            return PBETarget.FoeCenter;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 5);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.AllyLeft;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.AllyCenter;
-                                        }
-                                        else if (val == 2)
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else if (val == 3)
-                                        {
-                                            return PBETarget.FoeCenter;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            case PBEMoveTarget.SingleSurrounding: // TODO
-                                {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 3);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.AllyCenter;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.FoeCenter;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 5);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.AllyLeft;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.AllyRight;
-                                        }
-                                        else if (val == 2)
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else if (val == 3)
-                                        {
-                                            return PBETarget.FoeCenter;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeRight;
-                                        }
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        int val = PBEUtils.RNG.Next(0, 3);
-                                        if (val == 0)
-                                        {
-                                            return PBETarget.AllyCenter;
-                                        }
-                                        else if (val == 1)
-                                        {
-                                            return PBETarget.FoeLeft;
-                                        }
-                                        else
-                                        {
-                                            return PBETarget.FoeCenter;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
-                                    }
-                                }
-                            default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                            default: throw new ArgumentOutOfRangeException(nameof(targets));
                         }
                     }
                 case PBEBattleFormat.Rotation:
                     {
-                        switch (possibleTargets)
+                        switch (targets)
                         {
                             case PBEMoveTarget.All:
                                 {
@@ -597,9 +206,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                             case PBEMoveTarget.AllFoes:
                             case PBEMoveTarget.AllFoesSurrounding:
                             case PBEMoveTarget.AllSurrounding:
-                            case PBEMoveTarget.SingleFoeSurrounding:
-                            case PBEMoveTarget.SingleNotSelf:
-                            case PBEMoveTarget.SingleSurrounding:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
                                     {
@@ -611,10 +217,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     }
                                 }
                             case PBEMoveTarget.AllTeam:
-                            case PBEMoveTarget.RandomFoeSurrounding:
-                            case PBEMoveTarget.Self:
-                            case PBEMoveTarget.SelfOrAllySurrounding:
-                            case PBEMoveTarget.SingleAllySurrounding:
                                 {
                                     if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
                                     {
@@ -625,7 +227,277 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
                                     }
                                 }
-                            default: throw new ArgumentOutOfRangeException(nameof(possibleTargets));
+                            default: throw new ArgumentOutOfRangeException(nameof(targets));
+                        }
+                    }
+                default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));
+            }
+        }
+
+        static PBETarget[] GetPossibleTargets(PBEPokemon pkmn, PBEMoveTarget targets)
+        {
+            switch (pkmn.Team.Battle.BattleFormat)
+            {
+                case PBEBattleFormat.Single:
+                    {
+                        switch (targets)
+                        {
+                            case PBEMoveTarget.SingleFoeSurrounding:
+                            case PBEMoveTarget.SingleNotSelf:
+                            case PBEMoveTarget.SingleSurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                    {
+                                        return new PBETarget[] { PBETarget.FoeCenter };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.RandomFoeSurrounding:
+                            case PBEMoveTarget.Self:
+                            case PBEMoveTarget.SelfOrAllySurrounding:
+                            case PBEMoveTarget.SingleAllySurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyCenter };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            default: throw new ArgumentOutOfRangeException(nameof(targets));
+                        }
+                    }
+                case PBEBattleFormat.Double:
+                    {
+                        switch (targets)
+                        {
+                            case PBEMoveTarget.RandomFoeSurrounding:
+                            case PBEMoveTarget.Self:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyRight };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.SelfOrAllySurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft, PBETarget.AllyRight };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.SingleAllySurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyRight };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.SingleFoeSurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.FoeLeft, PBETarget.FoeRight };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.SingleNotSelf:
+                            case PBEMoveTarget.SingleSurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyRight, PBETarget.FoeLeft, PBETarget.FoeRight };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft, PBETarget.FoeLeft, PBETarget.FoeRight };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            default: throw new ArgumentOutOfRangeException(nameof(targets));
+                        }
+                    }
+                case PBEBattleFormat.Triple:
+                    {
+                        switch (targets)
+                        {
+                            case PBEMoveTarget.RandomFoeSurrounding:
+                            case PBEMoveTarget.Self:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyCenter };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyRight };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.SelfOrAllySurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft, PBETarget.AllyCenter };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft, PBETarget.AllyCenter, PBETarget.AllyRight };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyCenter, PBETarget.AllyRight };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.SingleAllySurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyCenter };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft, PBETarget.AllyRight };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.SingleFoeSurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                    {
+                                        return new PBETarget[] { PBETarget.FoeCenter, PBETarget.FoeRight };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                    {
+                                        return new PBETarget[] { PBETarget.FoeLeft, PBETarget.FoeCenter, PBETarget.FoeRight };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.FoeLeft, PBETarget.FoeCenter };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.SingleNotSelf:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyCenter, PBETarget.AllyRight, PBETarget.FoeLeft, PBETarget.FoeCenter, PBETarget.FoeRight };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft, PBETarget.AllyRight, PBETarget.FoeLeft, PBETarget.FoeCenter, PBETarget.FoeRight };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft, PBETarget.AllyCenter, PBETarget.FoeLeft, PBETarget.FoeCenter, PBETarget.FoeRight };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.SingleSurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyCenter, PBETarget.FoeCenter, PBETarget.FoeRight };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyLeft, PBETarget.AllyRight, PBETarget.FoeLeft, PBETarget.FoeCenter, PBETarget.FoeRight };
+                                    }
+                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyCenter, PBETarget.FoeLeft, PBETarget.FoeCenter };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            default: throw new ArgumentOutOfRangeException(nameof(targets));
+                        }
+                    }
+                case PBEBattleFormat.Rotation:
+                    {
+                        switch (targets)
+                        {
+                            case PBEMoveTarget.SingleFoeSurrounding:
+                            case PBEMoveTarget.SingleNotSelf:
+                            case PBEMoveTarget.SingleSurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.FoeCenter };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            case PBEMoveTarget.RandomFoeSurrounding:
+                            case PBEMoveTarget.Self:
+                            case PBEMoveTarget.SelfOrAllySurrounding:
+                            case PBEMoveTarget.SingleAllySurrounding:
+                                {
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Center || pkmn.FieldPosition == PBEFieldPosition.Right)
+                                    {
+                                        return new PBETarget[] { PBETarget.AllyCenter };
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentOutOfRangeException(nameof(pkmn.FieldPosition));
+                                    }
+                                }
+                            default: throw new ArgumentOutOfRangeException(nameof(targets));
                         }
                     }
                 default: throw new ArgumentOutOfRangeException(nameof(pkmn.Team.Battle.BattleFormat));

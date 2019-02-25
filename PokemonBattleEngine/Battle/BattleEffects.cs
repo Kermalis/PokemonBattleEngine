@@ -1102,9 +1102,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus2(target, user, PBEStatus2.Protected, PBEStatusAction.Activated);
                 return true;
             }
-            PBEMoveTarget targets = user.GetMoveTargets(move);
-            if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && mData.Category != PBEMoveCategory.Status
-                && (targets == PBEMoveTarget.All || targets == PBEMoveTarget.AllFoes || targets == PBEMoveTarget.AllFoesSurrounding || targets == PBEMoveTarget.AllSurrounding || targets == PBEMoveTarget.AllTeam))
+            if (target.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && mData.Category != PBEMoveCategory.Status && PBEMoveData.IsSpreadMove(user.GetMoveTargets(move)))
             {
                 BroadcastTeamStatus(target.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Damage, target);
                 return true;

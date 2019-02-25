@@ -605,17 +605,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 }
                             case PBEMoveTarget.SingleAllySurrounding:
                                 {
-                                    if (pkmn.FieldPosition == PBEFieldPosition.Left)
+                                    if (pkmn.FieldPosition == PBEFieldPosition.Left || pkmn.FieldPosition == PBEFieldPosition.Right)
                                     {
                                         return targets == PBETarget.AllyCenter;
                                     }
                                     else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                     {
                                         return targets == PBETarget.AllyLeft || targets == PBETarget.AllyRight;
-                                    }
-                                    else if (pkmn.FieldPosition == PBEFieldPosition.Right)
-                                    {
-                                        return targets == PBETarget.AllyCenter;
                                     }
                                     else
                                     {

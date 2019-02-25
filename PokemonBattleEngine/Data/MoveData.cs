@@ -45,6 +45,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             return sb.ToString();
         }
 
+        public static bool IsSpreadMove(PBEMoveTarget targets)
+        {
+            return targets == PBEMoveTarget.All || targets == PBEMoveTarget.AllFoes || targets == PBEMoveTarget.AllFoesSurrounding || targets == PBEMoveTarget.AllSurrounding || targets == PBEMoveTarget.AllTeam;
+        }
+
         public static ReadOnlyDictionary<PBEMove, PBEMoveData> Data { get; } = new ReadOnlyDictionary<PBEMove, PBEMoveData>(new Dictionary<PBEMove, PBEMoveData>
         {
             {

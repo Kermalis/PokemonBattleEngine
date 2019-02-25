@@ -45,7 +45,9 @@ namespace Kermalis.PokemonBattleEngine.AI
                 {
                     actions[i].Decision = PBEDecision.Fight;
                     actions[i].FightMove = PBEMove.Struggle;
-                    actions[i].FightTargets = DecideTargets(pkmn, PBEMove.Struggle);
+                    // Next line should be "actions[i].FightTargets = GetSpreadMoveTargets(pkmn, pkmn.GetMoveTargets(PBEMove.Struggle));"
+                    // But I instead have it get a random target with Metronome logic in case someone edits PBEMove.Struggle's targets
+                    actions[i].FightTargets = PBEBattle.GetRandomTargetForMetronome(pkmn, PBEMove.Struggle);
                 }
                 // If a Pokémon has a temp locked move (Dig, Dive, Shadow Force) it must be used
                 else if (pkmn.TempLockedMove != PBEMove.None)
@@ -79,13 +81,28 @@ namespace Kermalis.PokemonBattleEngine.AI
                     for (int m = 0; m < movesToChooseFrom.Count; m++) // Score moves
                     {
                         PBEMove move = movesToChooseFrom[m];
-                        var mAction = new PBEAction
+                        PBEType moveType = pkmn.GetMoveType(move);
+                        PBEMoveTarget targets = pkmn.GetMoveTargets(move);
+                        PBETarget[] possibleTargets;
+                        if (PBEMoveData.IsSpreadMove(targets))
                         {
-                            Decision = PBEDecision.Fight,
-                            FightMove = move,
-                            FightTargets = DecideTargets(pkmn, move)
-                        };
-                        possibleActions.Add(Tuple.Create(mAction, PBEUtils.RNG.Next()));
+                            possibleTargets = new PBETarget[] { GetSpreadMoveTargets(pkmn, targets) };
+                        }
+                        else
+                        {
+                            possibleTargets = GetPossibleTargets(pkmn, targets);
+                        }
+                        foreach (PBETarget possibleTarget in possibleTargets)
+                        {
+                            int score = PBEUtils.RNG.Next();
+                            var mAction = new PBEAction
+                            {
+                                Decision = PBEDecision.Fight,
+                                FightMove = move,
+                                FightTargets = possibleTarget
+                            };
+                            possibleActions.Add(Tuple.Create(mAction, score));
+                        }
                     }
                     for (int s = 0; s < availableForSwitch.Length; s++) // Score switches
                     {
