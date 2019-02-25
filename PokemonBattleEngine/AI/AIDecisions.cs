@@ -170,7 +170,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                                 // TODO: Check items
                                                 // TODO: Stat changes and accuracy
                                                 // TODO: Check base power specifically against hp remaining (include spread move damage reduction)
-                                                PBEPokemonData pData = PBEPokemonData.Data[target.VisualSpecies];
+                                                PBEPokemonData pData = PBEPokemonData.Data[target.KnownSpecies];
                                                 double typeEffectiveness = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)pData.Type1];
                                                 typeEffectiveness *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)pData.Type2];
                                                 if (typeEffectiveness <= 0.0) // (-infinity, 0.0] Ineffective

@@ -1285,10 +1285,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 pkmn.Status2 &= ~PBEStatus2.Disguised;
                 pkmn.DisguisedAsPokemon = null;
-                pkmn.VisualGender = pkmn.Shell.Gender;
-                pkmn.VisualNickname = pkmn.Shell.Nickname;
-                pkmn.VisualShiny = pkmn.Shell.Shiny;
-                pkmn.VisualSpecies = pkmn.Shell.Species;
+                pkmn.KnownGender = pkmn.Shell.Gender;
+                pkmn.KnownNickname = pkmn.Shell.Nickname;
+                pkmn.KnownShiny = pkmn.Shell.Shiny;
+                pkmn.KnownSpecies = pkmn.Shell.Species;
                 BroadcastIllusion(pkmn);
                 BroadcastAbility(pkmn, breaker, PBEAbility.Illusion, PBEAbilityAction.ChangedAppearance);
             }
@@ -1660,10 +1660,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     pkmn.Status2 |= PBEStatus2.Disguised;
                     pkmn.DisguisedAsPokemon = last;
-                    pkmn.VisualGender = last.Shell.Gender;
-                    pkmn.VisualNickname = last.Shell.Nickname;
-                    pkmn.VisualShiny = last.Shell.Shiny;
-                    pkmn.VisualSpecies = last.Shell.Species;
+                    pkmn.KnownGender = last.Shell.Gender;
+                    pkmn.KnownNickname = last.Shell.Nickname;
+                    pkmn.KnownShiny = last.Shell.Shiny;
+                    pkmn.KnownSpecies = last.Shell.Species;
                     return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.Shell.Species, last.Shell.Nickname, pkmn.Shell.Level, last.Shell.Shiny, last.Shell.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
                 }
             }

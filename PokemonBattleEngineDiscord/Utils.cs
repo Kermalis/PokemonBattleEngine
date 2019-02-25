@@ -53,7 +53,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static Color GetColor(PBEPokemon pkmn)
         {
-            return GetColor(pkmn.VisualSpecies);
+            return GetColor(pkmn.KnownSpecies);
         }
 
         // https://stackoverflow.com/questions/1979915/can-i-check-if-a-file-exists-at-a-url
@@ -81,7 +81,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static string GetPokemonSprite(PBEPokemon pokemon)
         {
-            return GetPokemonSprite(pokemon.VisualSpecies, pokemon.VisualShiny, pokemon.VisualGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), false);
+            return GetPokemonSprite(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), false);
         }
         public static string GetPokemonSprite(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {

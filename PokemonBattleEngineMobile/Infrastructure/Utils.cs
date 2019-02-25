@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
 
         public static ImageSource GetPokemonSprite(PBEPokemon pokemon, bool backSprite, out short width, out short height)
         {
-            return GetPokemonSprite(pokemon.VisualSpecies, pokemon.VisualShiny, pokemon.VisualGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite, out width, out height);
+            return GetPokemonSprite(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite, out width, out height);
         }
         public static ImageSource GetPokemonSprite(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite, out short width, out short height)
         {

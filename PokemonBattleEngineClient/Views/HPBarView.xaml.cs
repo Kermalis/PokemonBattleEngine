@@ -71,7 +71,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     Bitmap hpBar = Utils.UriToBitmap(new Uri(bar));
                     ctx.DrawImage(hpBar.PlatformImpl, 1.0, new Rect(0, 0, hpBar.PixelSize.Width, hpBar.PixelSize.Height), new Rect(0, 11 + yOffset, hpBar.PixelSize.Width, hpBar.PixelSize.Height));
 
-                    Bitmap nickname = Utils.RenderString(pkmn.VisualNickname, Utils.StringRenderStyle.BattleName);
+                    Bitmap nickname = Utils.RenderString(pkmn.KnownNickname, Utils.StringRenderStyle.BattleName);
                     ctx.DrawImage(nickname.PlatformImpl, 1.0, new Rect(0, 0, nickname.PixelSize.Width, nickname.PixelSize.Height), new Rect(72 - Math.Max(54, nickname.PixelSize.Width), yOffset, nickname.PixelSize.Width, nickname.PixelSize.Height));
 
                     PBEPokemon disguisedAs = pkmn.DisguisedAsPokemon ?? pkmn; // Don't use visual gender because of transform

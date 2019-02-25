@@ -81,6 +81,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEType Type2 { get; set; }
         public double Weight { get; set; }
 
+        public PBEGender KnownGender { get; set; }
+        public string KnownNickname { get; set; }
+        public bool KnownShiny { get; set; }
+        public PBESpecies KnownSpecies { get; set; }
+
         public sbyte AttackChange { get; set; }
         public sbyte DefenseChange { get; set; }
         public sbyte SpAttackChange { get; set; }
@@ -115,11 +120,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// The amount of HP the Pokémon's <see cref="PBEStatus2.Substitute"/> has left.
         /// </summary>
         public ushort SubstituteHP { get; set; }
-
-        public PBEGender VisualGender { get; set; } // Transform - visual
-        public string VisualNickname { get; set; } // Illusion - visual
-        public bool VisualShiny { get; set; } // Transform - visual
-        public PBESpecies VisualSpecies { get; set; } // Transform - visual
         #endregion
 
         #region Actions
@@ -145,10 +145,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Team = team;
             SelectedAction.PokemonId = Id = id;
             Shell = shell;
-            VisualGender = Shell.Gender;
-            VisualNickname = Shell.Nickname;
-            VisualShiny = Shell.Shiny;
-            VisualSpecies = Shell.Species;
+            KnownGender = Shell.Gender;
+            KnownNickname = Shell.Nickname;
+            KnownShiny = Shell.Shiny;
+            KnownSpecies = Shell.Species;
             Ability = Shell.Ability;
             Item = Shell.Item;
             CalculateStats();
@@ -179,11 +179,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Id = info.PokemonId;
             Shell = new PBEPokemonShell
             {
-                Species = VisualSpecies = info.Species,
-                Shiny = VisualShiny = info.Shiny,
-                Nickname = VisualNickname = info.Nickname,
+                Species = KnownSpecies = info.Species,
+                Shiny = KnownShiny = info.Shiny,
+                Nickname = KnownNickname = info.Nickname,
                 Level = info.Level,
-                Gender = VisualGender = info.Gender,
+                Gender = KnownGender = info.Gender,
                 Ability = Ability = PBEAbility.MAX,
                 Item = Item = (PBEItem)ushort.MaxValue,
                 Nature = PBENature.MAX,
@@ -266,10 +266,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
             }
             Ability = Shell.Ability;
-            VisualGender = Shell.Gender;
-            VisualNickname = Shell.Nickname;
-            VisualShiny = Shell.Shiny;
-            VisualSpecies = Shell.Species;
+            KnownGender = Shell.Gender;
+            KnownNickname = Shell.Nickname;
+            KnownShiny = Shell.Shiny;
+            KnownSpecies = Shell.Species;
 
             AttackChange = DefenseChange = SpAttackChange = SpDefenseChange = SpeedChange = AccuracyChange = EvasionChange = 0;
 
@@ -306,9 +306,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <remarks>Frees the Pokémon of its <see cref="ChoiceLockedMove"/>.</remarks>
         public void Transform(PBEPokemon target)
         {
-            VisualSpecies = target.Shell.Species;
-            VisualShiny = target.Shell.Shiny;
-            VisualGender = target.Shell.Gender;
+            KnownSpecies = target.Shell.Species;
+            KnownShiny = target.Shell.Shiny;
+            KnownGender = target.Shell.Gender;
             Ability = target.Ability;
             Type1 = target.Type1;
             Type2 = target.Type2;

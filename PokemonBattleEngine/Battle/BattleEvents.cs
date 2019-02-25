@@ -230,7 +230,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             string NameForTrainer(PBEPokemon pkmn)
             {
-                return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.VisualNickname}";
+                return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}";
             }
 
             switch (packet)
@@ -679,7 +679,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 pokemon = battle.TryGetPokemon(psop.PokemonId);
                             }
-                            Console.WriteLine("{1} withdrew {0}!", pokemon.VisualNickname, pokemon.Team.TrainerName);
+                            Console.WriteLine("{1} withdrew {0}!", pokemon.KnownNickname, pokemon.Team.TrainerName);
                         }
                         break;
                     }

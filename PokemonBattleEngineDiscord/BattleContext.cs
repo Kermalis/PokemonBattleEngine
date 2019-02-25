@@ -65,7 +65,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             string NameForTrainer(PBEPokemon pkmn)
             {
-                return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.VisualNickname}";
+                return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}";
             }
             async Task CreateAndSendEmbed(string message, PBEPokemon pkmn = null)
             {
@@ -495,7 +495,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
                             {
                                 PBEPokemon pokemon = context.Battle.TryGetPokemon(info.PokemonId);
-                                await CreateAndSendEmbed(string.Format("{1} sent out {0}!", pokemon.VisualNickname, psip.Team.TrainerName), pokemon);
+                                await CreateAndSendEmbed(string.Format("{1} sent out {0}!", pokemon.KnownNickname, psip.Team.TrainerName), pokemon);
                             }
                         }
                         break;
@@ -505,7 +505,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         if (!psop.Forced)
                         {
                             PBEPokemon pokemon = context.Battle.TryGetPokemon(psop.PokemonId);
-                            await CreateAndSendEmbed(string.Format("{1} withdrew {0}!", pokemon.VisualNickname, pokemon.Team.TrainerName), pokemon);
+                            await CreateAndSendEmbed(string.Format("{1} withdrew {0}!", pokemon.KnownNickname, pokemon.Team.TrainerName), pokemon);
                         }
                         break;
                     }

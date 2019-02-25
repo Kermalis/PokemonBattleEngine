@@ -108,7 +108,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
                 if (BattleId >= 2)
                 {
-                    return $"{pkmn.Team.TrainerName}'s {pkmn.VisualNickname}";
+                    return $"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}";
                 }
                 else
                 {
@@ -135,7 +135,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             prefix = "the foe's ";
                         }
                     }
-                    return prefix + pkmn.VisualNickname;
+                    return prefix + pkmn.KnownNickname;
                 }
             }
 
@@ -310,10 +310,10 @@ namespace Kermalis.PokemonBattleEngineClient
                         pokemon.Status2 &= ~PBEStatus2.Disguised;
                         pokemon.DisguisedAsPokemon = null;
                         pokemon.Shell.Ability = pokemon.Ability = PBEAbility.Illusion;
-                        pokemon.Shell.Gender = pokemon.VisualGender = ilp.ActualGender;
-                        pokemon.Shell.Nickname = pokemon.VisualNickname = ilp.ActualNickname;
-                        pokemon.Shell.Shiny = pokemon.VisualShiny = ilp.ActualShiny;
-                        pokemon.Shell.Species = pokemon.VisualSpecies = ilp.ActualSpecies;
+                        pokemon.Shell.Gender = pokemon.KnownGender = ilp.ActualGender;
+                        pokemon.Shell.Nickname = pokemon.KnownNickname = ilp.ActualNickname;
+                        pokemon.Shell.Shiny = pokemon.KnownShiny = ilp.ActualShiny;
+                        pokemon.Shell.Species = pokemon.KnownSpecies = ilp.ActualSpecies;
 
                         PBEPokemonData pData = PBEPokemonData.Data[ilp.ActualSpecies];
                         pokemon.Type1 = pData.Type1; // TODO: If modified (soak heatcrash etc)
@@ -633,10 +633,10 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     pokemon.Status2 |= PBEStatus2.Disguised;
                                     pokemon.DisguisedAsPokemon = Battle.TryGetPokemon(info.DisguisedAsId);
-                                    pokemon.VisualGender = pokemon.DisguisedAsPokemon.Shell.Gender;
-                                    pokemon.VisualNickname = pokemon.DisguisedAsPokemon.Shell.Nickname;
-                                    pokemon.VisualShiny = pokemon.DisguisedAsPokemon.Shell.Shiny;
-                                    pokemon.VisualSpecies = pokemon.DisguisedAsPokemon.Shell.Species;
+                                    pokemon.KnownGender = pokemon.DisguisedAsPokemon.Shell.Gender;
+                                    pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Shell.Nickname;
+                                    pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shell.Shiny;
+                                    pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.Shell.Species;
                                 }
                             }
                             Battle.ActiveBattlers.Add(pokemon);
@@ -664,7 +664,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         BattleView.Field.UpdatePokemon(pokemon, psop.PokemonPosition);
                         if (!psop.Forced)
                         {
-                            BattleView.AddMessage(string.Format("{1} withdrew {0}!", pokemon.VisualNickname, pokemon.Team.TrainerName), true, true);
+                            BattleView.AddMessage(string.Format("{1} withdrew {0}!", pokemon.KnownNickname, pokemon.Team.TrainerName), true, true);
                         }
                         break;
                     }
