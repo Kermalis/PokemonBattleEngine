@@ -8,7 +8,7 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngine.AI
 {
     /// <summary>
-    /// Creates valid decisions for a team in a battle.
+    /// Creates valid decisions for a team in a battle. Decisions may not be valid for custom settings and/or move changes.
     /// </summary>
     public static partial class PBEAIManager
     {
@@ -30,6 +30,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 throw new InvalidOperationException($"{nameof(team)} must have at least one active battler.");
             }
 
+            PBETeam opposingTeam = team == team.Battle.Teams[0] ? team.Battle.Teams[1] : team.Battle.Teams[0];
             var actions = new PBEAction[team.ActionsRequired.Count];
             var standBy = new List<PBEPokemon>();
             for (int i = 0; i < actions.Length; i++)
@@ -45,9 +46,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 {
                     actions[i].Decision = PBEDecision.Fight;
                     actions[i].FightMove = PBEMove.Struggle;
-                    // Next line should be "actions[i].FightTargets = GetSpreadMoveTargets(pkmn, pkmn.GetMoveTargets(PBEMove.Struggle));"
-                    // But I instead have it get a random target with Metronome logic in case someone edits PBEMove.Struggle's targets
-                    actions[i].FightTargets = PBEBattle.GetRandomTargetForMetronome(pkmn, PBEMove.Struggle);
+                    actions[i].FightTargets = GetSpreadMoveTargets(pkmn, pkmn.GetMoveTargets(PBEMove.Struggle));
                 }
                 // If a Pokémon has a temp locked move (Dig, Dive, Shadow Force) it must be used
                 else if (pkmn.TempLockedMove != PBEMove.None)
@@ -77,24 +76,255 @@ namespace Kermalis.PokemonBattleEngine.AI
                         }
                     }
 
-                    var possibleActions = new List<Tuple<PBEAction, int>>(); // Associate specific actions with a score
+                    var possibleActions = new List<Tuple<PBEAction, double>>(); // Associate specific actions with a score
                     for (int m = 0; m < movesToChooseFrom.Count; m++) // Score moves
                     {
                         PBEMove move = movesToChooseFrom[m];
                         PBEType moveType = pkmn.GetMoveType(move);
-                        PBEMoveTarget targets = pkmn.GetMoveTargets(move);
+                        PBEMoveTarget moveTargets = pkmn.GetMoveTargets(move);
                         PBETarget[] possibleTargets;
-                        if (PBEMoveData.IsSpreadMove(targets))
+                        if (PBEMoveData.IsSpreadMove(moveTargets))
                         {
-                            possibleTargets = new PBETarget[] { GetSpreadMoveTargets(pkmn, targets) };
+                            possibleTargets = new PBETarget[] { GetSpreadMoveTargets(pkmn, moveTargets) };
                         }
                         else
                         {
-                            possibleTargets = GetPossibleTargets(pkmn, targets);
+                            possibleTargets = GetPossibleTargets(pkmn, moveTargets);
                         }
                         foreach (PBETarget possibleTarget in possibleTargets)
                         {
-                            int score = PBEUtils.RNG.Next();
+                            // TODO: RandomFoeSurrounding (probably just account for the specific effects that use this target type)
+                            var targets = new List<PBEPokemon>();
+                            if (possibleTarget.HasFlag(PBETarget.AllyLeft))
+                            {
+                                targets.Add(team.TryGetPokemon(PBEFieldPosition.Left));
+                            }
+                            if (possibleTarget.HasFlag(PBETarget.AllyCenter))
+                            {
+                                targets.Add(team.TryGetPokemon(PBEFieldPosition.Center));
+                            }
+                            if (possibleTarget.HasFlag(PBETarget.AllyRight))
+                            {
+                                targets.Add(team.TryGetPokemon(PBEFieldPosition.Right));
+                            }
+                            if (possibleTarget.HasFlag(PBETarget.FoeLeft))
+                            {
+                                targets.Add(opposingTeam.TryGetPokemon(PBEFieldPosition.Left));
+                            }
+                            if (possibleTarget.HasFlag(PBETarget.FoeCenter))
+                            {
+                                targets.Add(opposingTeam.TryGetPokemon(PBEFieldPosition.Center));
+                            }
+                            if (possibleTarget.HasFlag(PBETarget.FoeRight))
+                            {
+                                targets.Add(opposingTeam.TryGetPokemon(PBEFieldPosition.Right));
+                            }
+
+                            double score = 0.0;
+                            switch (PBEMoveData.Data[move].Effect)
+                            {
+                                case PBEMoveEffect.Hail:
+                                    {
+                                        if (team.Battle.Weather == PBEWeather.Hailstorm)
+                                        {
+                                            score -= 100;
+                                        }
+                                        break;
+                                    }
+                                case PBEMoveEffect.Hit:
+                                case PBEMoveEffect.Hit__MaybeBurn:
+                                case PBEMoveEffect.Hit__MaybeConfuse:
+                                case PBEMoveEffect.Hit__MaybeFlinch:
+                                case PBEMoveEffect.Hit__MaybeFreeze:
+                                case PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1:
+                                case PBEMoveEffect.Hit__MaybeLowerTarget_ATK_By1:
+                                case PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1:
+                                case PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1:
+                                case PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1:
+                                case PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2:
+                                case PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1:
+                                case PBEMoveEffect.Hit__MaybeLowerUser_ATK_DEF_By1:
+                                case PBEMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1:
+                                case PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2:
+                                case PBEMoveEffect.Hit__MaybeLowerUser_SPE_By1:
+                                case PBEMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1:
+                                case PBEMoveEffect.Hit__MaybeParalyze:
+                                case PBEMoveEffect.Hit__MaybePoison:
+                                case PBEMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
+                                case PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1:
+                                case PBEMoveEffect.Hit__MaybeRaiseUser_DEF_By1:
+                                case PBEMoveEffect.Hit__MaybeRaiseUser_SPATK_By1:
+                                case PBEMoveEffect.Hit__MaybeRaiseUser_SPE_By1:
+                                case PBEMoveEffect.Hit__MaybeToxic:
+                                    {
+                                        foreach (PBEPokemon target in targets)
+                                        {
+                                            if (target == null)
+                                            {
+                                                // TODO: If all targets are null, this should give a bad score
+                                            }
+                                            else
+                                            {
+                                                // TODO: Put type checking somewhere in PBEPokemon (levitate, wonder guard, etc)
+                                                // TODO: Put "KnownType1" etc so the AI doesn't cheat (using species types for now)
+                                                // TODO: Check items
+                                                // TODO: Stat changes and accuracy
+                                                // TODO: Check base power specifically against hp remaining (include spread move damage reduction)
+                                                PBEPokemonData pData = PBEPokemonData.Data[target.VisualSpecies];
+                                                double typeEffectiveness = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)pData.Type1];
+                                                typeEffectiveness *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)pData.Type2];
+                                                if (typeEffectiveness <= 0.0) // (-infinity, 0.0] Ineffective
+                                                {
+                                                    score += target.Team == opposingTeam ? -60 : -1;
+                                                }
+                                                else if (typeEffectiveness <= 0.25) // (0.0, 0.25] NotVeryEffective
+                                                {
+                                                    score += target.Team == opposingTeam ? -30 : -5;
+                                                }
+                                                else if (typeEffectiveness < 1.0) // (0.25, 1.0) NotVeryEffective
+                                                {
+                                                    score += target.Team == opposingTeam ? -10 : -10;
+                                                }
+                                                else if (typeEffectiveness == 1.0) // [1.0, 1.0] Normal
+                                                {
+                                                    score += target.Team == opposingTeam ? +5 : -15;
+                                                }
+                                                else if (typeEffectiveness < 4.0) // (1.0, 4.0) SuperEffective
+                                                {
+                                                    score += target.Team == opposingTeam ? +20 : -20;
+                                                }
+                                                else // [4.0, infinity) SuperEffective
+                                                {
+                                                    score += target.Team == opposingTeam ? +40 : -30;
+                                                }
+                                                if (pkmn.HasType(moveType) && typeEffectiveness > 0.0) // STAB
+                                                {
+                                                    score += (pkmn.Ability == PBEAbility.Adaptability ? 20 : 15) * (target.Team == opposingTeam ? +1 : -1);
+                                                }
+                                            }
+                                        }
+
+                                        break;
+                                    }
+                                case PBEMoveEffect.RestoreTargetHP:
+                                    {
+                                        PBEPokemon target = targets[0];
+                                        if (target == null || target.Team == opposingTeam)
+                                        {
+                                            score -= 100;
+                                        }
+                                        else // Ally
+                                        {
+                                            // 0% = +45, 25% = +30, 50% = +15, 75% = 0, 100% = -15
+                                            score -= (60 * target.HPPercentage) - 45;
+                                        }
+                                        break;
+                                    }
+                                case PBEMoveEffect.RainDance:
+                                    {
+                                        if (team.Battle.Weather == PBEWeather.Rain)
+                                        {
+                                            score -= 100;
+                                        }
+                                        break;
+                                    }
+                                case PBEMoveEffect.Sandstorm:
+                                    {
+                                        if (team.Battle.Weather == PBEWeather.Sandstorm)
+                                        {
+                                            score -= 100;
+                                        }
+                                        break;
+                                    }
+                                case PBEMoveEffect.SunnyDay:
+                                    {
+                                        if (team.Battle.Weather == PBEWeather.HarshSunlight)
+                                        {
+                                            score -= 100;
+                                        }
+                                        break;
+                                    }
+                                case PBEMoveEffect.BrickBreak:
+                                case PBEMoveEffect.Burn:
+                                case PBEMoveEffect.ChangeTarget_ACC:
+                                case PBEMoveEffect.ChangeTarget_ATK:
+                                case PBEMoveEffect.ChangeTarget_DEF:
+                                case PBEMoveEffect.ChangeTarget_EVA:
+                                case PBEMoveEffect.ChangeTarget_SPDEF:
+                                case PBEMoveEffect.ChangeTarget_SPE:
+                                case PBEMoveEffect.ChangeUser_ATK:
+                                case PBEMoveEffect.ChangeUser_DEF:
+                                case PBEMoveEffect.ChangeUser_EVA:
+                                case PBEMoveEffect.ChangeUser_SPATK:
+                                case PBEMoveEffect.ChangeUser_SPDEF:
+                                case PBEMoveEffect.ChangeUser_SPE:
+                                case PBEMoveEffect.Confuse:
+                                case PBEMoveEffect.Curse:
+                                case PBEMoveEffect.Dig:
+                                case PBEMoveEffect.Dive:
+                                case PBEMoveEffect.Endeavor:
+                                case PBEMoveEffect.Fail:
+                                case PBEMoveEffect.FinalGambit:
+                                case PBEMoveEffect.FlareBlitz:
+                                case PBEMoveEffect.Flatter:
+                                case PBEMoveEffect.Fly:
+                                case PBEMoveEffect.FocusEnergy:
+                                case PBEMoveEffect.GastroAcid:
+                                case PBEMoveEffect.Growth:
+                                case PBEMoveEffect.HelpingHand:
+                                case PBEMoveEffect.HPDrain:
+                                case PBEMoveEffect.LeechSeed:
+                                case PBEMoveEffect.LightScreen:
+                                case PBEMoveEffect.LowerTarget_ATK_DEF_By1:
+                                case PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
+                                case PBEMoveEffect.LuckyChant:
+                                case PBEMoveEffect.Metronome:
+                                case PBEMoveEffect.Moonlight:
+                                case PBEMoveEffect.OneHitKnockout:
+                                case PBEMoveEffect.PainSplit:
+                                case PBEMoveEffect.Paralyze:
+                                case PBEMoveEffect.Poison:
+                                case PBEMoveEffect.Protect:
+                                case PBEMoveEffect.PsychUp:
+                                case PBEMoveEffect.Psywave:
+                                case PBEMoveEffect.RaiseUser_ATK_ACC_By1:
+                                case PBEMoveEffect.RaiseUser_ATK_DEF_By1:
+                                case PBEMoveEffect.RaiseUser_ATK_DEF_ACC_By1:
+                                case PBEMoveEffect.RaiseUser_ATK_SPATK_By1:
+                                case PBEMoveEffect.RaiseUser_ATK_SPE_By1:
+                                case PBEMoveEffect.RaiseUser_DEF_SPDEF_By1:
+                                case PBEMoveEffect.RaiseUser_SPATK_SPDEF_By1:
+                                case PBEMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1:
+                                case PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1:
+                                case PBEMoveEffect.Recoil:
+                                case PBEMoveEffect.Reflect:
+                                case PBEMoveEffect.Rest:
+                                case PBEMoveEffect.RestoreUserHP:
+                                case PBEMoveEffect.SeismicToss:
+                                case PBEMoveEffect.Selfdestruct:
+                                case PBEMoveEffect.SetDamage:
+                                case PBEMoveEffect.Sleep:
+                                case PBEMoveEffect.Snore:
+                                case PBEMoveEffect.Spikes:
+                                case PBEMoveEffect.StealthRock:
+                                case PBEMoveEffect.Struggle:
+                                case PBEMoveEffect.Substitute:
+                                case PBEMoveEffect.SuckerPunch:
+                                case PBEMoveEffect.SuperFang:
+                                case PBEMoveEffect.Swagger:
+                                case PBEMoveEffect.Toxic:
+                                case PBEMoveEffect.ToxicSpikes:
+                                case PBEMoveEffect.Transform:
+                                case PBEMoveEffect.TrickRoom:
+                                case PBEMoveEffect.VoltTackle:
+                                case PBEMoveEffect.Whirlwind:
+                                case PBEMoveEffect.WideGuard:
+                                    {
+                                        // TODO Moves
+                                        score -= 200;
+                                        break;
+                                    }
+                            }
                             var mAction = new PBEAction
                             {
                                 Decision = PBEDecision.Fight,
@@ -107,30 +337,36 @@ namespace Kermalis.PokemonBattleEngine.AI
                     for (int s = 0; s < availableForSwitch.Length; s++) // Score switches
                     {
                         PBEPokemon switchPkmn = availableForSwitch[s];
+                        // TODO: Entry hazards
+                        // TODO: Known moves of active battlers
+                        // TODO: Type effectiveness
+                        double score = 0.0;
                         var sAction = new PBEAction
                         {
                             Decision = PBEDecision.SwitchOut,
                             SwitchPokemonId = switchPkmn.Id
                         };
-                        possibleActions.Add(Tuple.Create(sAction, PBEUtils.RNG.Next()));
+                        possibleActions.Add(Tuple.Create(sAction, score));
                     }
 
-                    string ToDebugString(Tuple<PBEAction, int> a)
+                    string ToDebugString(Tuple<PBEAction, double> a)
                     {
-                        string str;
+                        string str = "{";
                         if (a.Item1.Decision == PBEDecision.Fight)
                         {
-                            str = string.Format("Fight {0} {1}", a.Item1.FightMove, a.Item1.FightTargets);
+                            str += string.Format("Fight {0} {1}", a.Item1.FightMove, a.Item1.FightTargets);
                         }
                         else
                         {
-                            str = string.Format("Switch {0}", team.TryGetPokemon(a.Item1.SwitchPokemonId).Shell.Nickname);
+                            str += string.Format("Switch {0}", team.TryGetPokemon(a.Item1.SwitchPokemonId).Shell.Nickname);
                         }
-                        str += " [" + a.Item2 + "]";
+                        str += " [" + a.Item2 + "]}";
                         return str;
                     }
-                    Debug.WriteLine("{0}'s possible actions: {1}", pkmn.Shell.Nickname, possibleActions.Select(a => ToDebugString(a)).Print());
-                    actions[i] = possibleActions.OrderByDescending(a => a.Item2).First().Item1;
+                    IOrderedEnumerable<Tuple<PBEAction, double>> byScore = possibleActions.OrderByDescending(a => a.Item2);
+                    Debug.WriteLine("{0}'s possible actions: {1}", pkmn.Shell.Nickname, byScore.Select(a => ToDebugString(a)).Print());
+                    double bestScore = byScore.First().Item2;
+                    actions[i] = byScore.Where(a => a.Item2 == bestScore).Sample().Item1; // Pick random action of the ones that tied for best score
                 }
 
                 // Action was chosen, finish up for this Pokémon

@@ -21,9 +21,9 @@ namespace Kermalis.PokemonBattleEngineTesting
             Console.WriteLine("----- Pokémon Battle Engine Test -----");
 
             PBESettings settings = PBESettings.DefaultSettings;
-            //PBEPokemonShell[] team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize);
-            //PBEPokemonShell[] team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize);
-            PBEPokemonShell[] team0Party = new PBEPokemonShell[]
+            PBEPokemonShell[] team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
+            PBEPokemonShell[] team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
+            /*PBEPokemonShell[] team0Party = new PBEPokemonShell[]
             {
                 PBECompetitivePokemonShells.Zoroark_VGC,
                 PBECompetitivePokemonShells.Volcarona_VGC,
@@ -40,8 +40,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                 PBECompetitivePokemonShells.Latias_VGC,
                 PBECompetitivePokemonShells.Metagross_VGC,
                 PBECompetitivePokemonShells.Victini_Uber
-            };
-            var battle = new PBEBattle(PBEBattleFormat.Single, settings, team0Party, team1Party);
+            };*/
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, team0Party, team1Party);
             battle.Teams[0].TrainerName = "Team 1";
             battle.Teams[1].TrainerName = "Team 2";
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;

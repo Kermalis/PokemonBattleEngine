@@ -18,7 +18,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 ----
 # To Do:
 * Rotation battles, triple battle shifting, and triple battle auto-center
-* Add lots of items and most moves, Pokémon, and secondary statuses (underwater, cursed, mud sport, etc.)
+* Add lots of items and most moves, Pokémon, and secondary statuses (torment, infatuated, etc.)
 * Protect from corrupt packets (if they are even a problem)
 * Mobile HP bars
 * Player left packet
