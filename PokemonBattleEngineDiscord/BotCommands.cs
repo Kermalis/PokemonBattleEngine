@@ -152,12 +152,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Gender Ratio", ratio, true)
                         .AddField("Weight", $"{pData.Weight:N1} kg", true)
                         .AddField("Abilities", string.Join(", ", pData.Abilities.Select(a => PBEAbilityLocalization.Names[a].English)), false)
-                        .AddField("HP", pData.HP, true)
-                        .AddField("Attack", pData.Attack, true)
-                        .AddField("Defense", pData.Defense, true)
-                        .AddField("Special Attack", pData.SpAttack, true)
-                        .AddField("Special Defense", pData.SpDefense, true)
-                        .AddField("Speed", pData.Speed, true);
+                        .AddField("HP", pData.BaseStats[0], true)
+                        .AddField("Attack", pData.BaseStats[1], true)
+                        .AddField("Defense", pData.BaseStats[2], true)
+                        .AddField("Special Attack", pData.BaseStats[3], true)
+                        .AddField("Special Defense", pData.BaseStats[4], true)
+                        .AddField("Speed", pData.BaseStats[5], true);
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                     return;
                 }

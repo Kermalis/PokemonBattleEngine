@@ -153,7 +153,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownSpecies = Shell.Species;
             Ability = Shell.Ability;
             Item = Shell.Item;
-            CalculateStats();
+            SetStats();
             HP = MaxHP;
             HPPercentage = 1.0;
             Moves = Shell.Moves;
@@ -222,28 +222,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return Type1 == type || Type2 == type;
         }
 
-        /// <summary>
-        /// Calculates and sets the Pokémon's stats based on its level, IVs, EVs, nature, and species.
-        /// </summary>
-        void CalculateStats()
+        void SetStats()
         {
-            PBEPokemonData pData = PBEPokemonData.Data[Shell.Species];
-
-            MaxHP = (ushort)(Shell.Species == PBESpecies.Shedinja ? 1 : (((2 * pData.HP + Shell.IVs[0] + (Shell.EVs[0] / 4)) * Shell.Level / Team.Battle.Settings.MaxLevel) + Shell.Level + 10));
-
-            int i = 0;
-            ushort OtherStat(byte baseVal)
-            {
-                double natureMultiplier = 1.0 + (PBEPokemonData.NatureBoosts[Shell.Nature][i] * Team.Battle.Settings.NatureStatBoost);
-                ushort val = (ushort)((((2 * baseVal + Shell.IVs[i + 1] + (Shell.EVs[i + 1] / 4)) * Shell.Level / Team.Battle.Settings.MaxLevel) + 5) * natureMultiplier);
-                i++;
-                return val;
-            }
-            Attack = OtherStat(pData.Attack);
-            Defense = OtherStat(pData.Defense);
-            SpAttack = OtherStat(pData.SpAttack);
-            SpDefense = OtherStat(pData.SpDefense);
-            Speed = OtherStat(pData.Speed);
+            MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Shell.Species, Shell.Nature, Shell.EVs[0], Shell.IVs[0], Shell.Level, Team.Battle.Settings);
+            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, Shell.Species, Shell.Nature, Shell.EVs[1], Shell.IVs[1], Shell.Level, Team.Battle.Settings);
+            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, Shell.Species, Shell.Nature, Shell.EVs[2], Shell.IVs[2], Shell.Level, Team.Battle.Settings);
+            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, Shell.Species, Shell.Nature, Shell.EVs[3], Shell.IVs[3], Shell.Level, Team.Battle.Settings);
+            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, Shell.Species, Shell.Nature, Shell.EVs[4], Shell.IVs[4], Shell.Level, Team.Battle.Settings);
+            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, Shell.Species, Shell.Nature, Shell.EVs[5], Shell.IVs[5], Shell.Level, Team.Battle.Settings);
         }
 
         /// <summary>
@@ -300,7 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (Id != byte.MaxValue)
             {
-                CalculateStats();
+                SetStats();
             }
         }
 
@@ -518,6 +504,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return new PBEPokemon(team, r.ReadByte(), PBEPokemonShell.FromBytes(r));
         }
 
+        // Most of this is only for BattleClient and will be removed soon
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -534,7 +521,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sb.AppendLine($"Type1: {Type1}");
             sb.AppendLine($"Type2: {Type2}");
             sb.AppendLine($"Status1: {Status1}");
+            if (Id != byte.MaxValue && Status1 == PBEStatus1.Asleep)
+            {
+                sb.AppendLine($"Sleep turns: {Status1Counter}/{SleepTurns}");
+            }
+            else if (Id != byte.MaxValue && Status1 == PBEStatus1.BadlyPoisoned)
+            {
+                sb.AppendLine($"Toxic Counter: {Status1Counter}");
+            }
             sb.AppendLine($"Status2: {Status2}");
+            if (Id != byte.MaxValue && Status2.HasFlag(PBEStatus2.Confused))
+            {
+                sb.AppendLine($"Confusion turns: {ConfusionCounter}/{ConfusionTurns}");
+            }
+            if (Id != byte.MaxValue && Status2.HasFlag(PBEStatus2.Disguised))
+            {
+                sb.AppendLine($"Disguised as: {DisguisedAsPokemon.Shell.Nickname}");
+            }
+            if (Id != byte.MaxValue && Status2.HasFlag(PBEStatus2.LeechSeed))
+            {
+                sb.AppendLine($"Seeded position: {SeededPosition}");
+            }
             if (Id != byte.MaxValue && Status2.HasFlag(PBEStatus2.Substitute))
             {
                 sb.AppendLine($"Substitute HP: {SubstituteHP}");
@@ -543,12 +550,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 sb.AppendLine($"Stats: A: {Attack} D: {Defense} SA: {SpAttack} SD: {SpDefense} S: {Speed}");
             }
+            else
+            {
+                PBEPokemonData.GetStatRange(PBEStat.HP, Shell.Species, Shell.Level, Team.Battle.Settings, out ushort lowHP, out ushort highHP);
+                PBEPokemonData.GetStatRange(PBEStat.Attack, Shell.Species, Shell.Level, Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
+                PBEPokemonData.GetStatRange(PBEStat.Defense, Shell.Species, Shell.Level, Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
+                PBEPokemonData.GetStatRange(PBEStat.SpAttack, Shell.Species, Shell.Level, Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
+                PBEPokemonData.GetStatRange(PBEStat.SpDefense, Shell.Species, Shell.Level, Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
+                PBEPokemonData.GetStatRange(PBEStat.Speed, Shell.Species, Shell.Level, Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
+                sb.AppendLine($"Stat range: HP: {lowHP}-{highHP} A: {lowAttack}-{highAttack} D: {lowDefense}-{highDefense} SA: {lowSpAttack}-{highSpAttack} SD: {lowSpDefense}-{highSpDefense} S: {lowSpeed}-{highSpeed}");
+            }
             sb.AppendLine($"Stat changes: A: {AttackChange} D: {DefenseChange} SA: {SpAttackChange} SD: {SpDefenseChange} S: {SpeedChange} AC: {AccuracyChange} E: {EvasionChange}");
             sb.AppendLine($"Item: {(Item == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[Item].English)}");
-            sb.AppendLine($"Ability: {(Ability == PBEAbility.MAX ? "???" : PBEAbilityLocalization.Names[Ability].English)}");
+            if (Ability == PBEAbility.MAX)
+            {
+                PBEPokemonData pData = PBEPokemonData.Data[KnownSpecies];
+                sb.AppendLine($"Possible abilities: {string.Join(", ", pData.Abilities.Select(a => PBEAbilityLocalization.Names[a].English))}");
+            }
+            else
+            {
+                sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[Ability].English}");
+            }
             if (Id != byte.MaxValue)
             {
-                sb.AppendLine($"Nature: {(Shell.Nature == PBENature.MAX ? "???" : Shell.Nature.ToString())}");
+                sb.AppendLine($"Nature: {Shell.Nature}");
             }
             if (Id != byte.MaxValue)
             {
