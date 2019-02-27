@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngine
                 EVs = new byte[6],
                 Friendship = byte.MaxValue,
                 Item = PBEItem.None,
-                Nickname = PBEPokemonLocalization.Names[Species].English,
+                Nickname = PBEPokemonLocalization.Names[(PBESpecies)((int)Species & 0xFFFF)].FromUICultureInfo(),
                 PPUps = new byte[PBESettings.DefaultSettings.NumMoves]
             };
         }

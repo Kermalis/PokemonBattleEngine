@@ -7,12 +7,13 @@
             AIBattle,
             AbilityGenerator,
             ItemGenerator,
-            MoveGenerator
+            MoveGenerator,
+            PokemonGenerator
         }
 
         static void Main(string[] args)
         {
-            TestType t = TestType.MoveGenerator;
+            TestType t = TestType.AIBattle;
 
             switch (t)
             {
@@ -20,6 +21,7 @@
                 case TestType.AbilityGenerator: new LocalizationGenerator().GenerateAbilities(); break;
                 case TestType.ItemGenerator: new LocalizationGenerator().GenerateItems(); break;
                 case TestType.MoveGenerator: new LocalizationGenerator().GenerateMoves(); break;
+                case TestType.PokemonGenerator: new LocalizationGenerator().GeneratePokemon(); break;
             }
         }
     }

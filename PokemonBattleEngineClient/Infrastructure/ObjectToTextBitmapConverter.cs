@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 case PBEAbility ability: localized = PBEAbilityLocalization.Names[ability]; break;
                 case PBEItem item: localized = PBEItemLocalization.Names[item]; break;
                 case PBEMove move: localized = PBEMoveLocalization.Names[move]; break;
-                case PBESpecies species: localized = PBEPokemonLocalization.Names[species]; break;
+                case PBESpecies species: localized = PBEPokemonLocalization.Names[(PBESpecies)((int)species & 0xFFFF)]; break;
             }
             Enum.TryParse(parameter?.ToString(), out Utils.StringRenderStyle style);
             return Utils.RenderString(localized == null ? value?.ToString() : localized.FromUICultureInfo(), style);

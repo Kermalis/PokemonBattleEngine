@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
         readonly IEnumerable<PBEItem> allItems = PBEItemLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
 
-        public IEnumerable<PBESpecies> AvailableSpecies { get; } = PBEPokemonLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
+        public IEnumerable<PBESpecies> AvailableSpecies { get; } = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().OrderBy(s => PBEPokemonLocalization.Names[(PBESpecies)((int)s & 0xFFFF)].FromUICultureInfo());
         IEnumerable<PBEAbility> availableAbilities;
         public IEnumerable<PBEAbility> AvailableAbilities
         {
@@ -239,7 +239,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             team.Item2.Add(new PBEPokemonShell
             {
                 Species = species,
-                Nickname = PBEPokemonLocalization.Names[species].FromUICultureInfo(),
+                Nickname = PBEPokemonLocalization.Names[(PBESpecies)((int)species & 0xFFFF)].FromUICultureInfo(),
                 Level = settings.MinLevel,
                 EVs = new byte[6],
                 IVs = new byte[6],
@@ -295,7 +295,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 return;
             }
 
-            string prevSpeciesName = PBEPokemonLocalization.Names[shell.Species].FromUICultureInfo();
+            string prevSpeciesName = PBEPokemonLocalization.Names[(PBESpecies)((int)shell.Species & 0xFFFF)].FromUICultureInfo();
 
             if (updateShell)
             {
@@ -306,7 +306,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
                 else if ((!illegal.IsChecked.Value && string.IsNullOrWhiteSpace(nickname.Text)) || prevSpeciesName.Equals(nickname.Text))
                 {
-                    nickname.Text = PBEPokemonLocalization.Names[shell.Species].FromUICultureInfo();
+                    nickname.Text = PBEPokemonLocalization.Names[(PBESpecies)((int)shell.Species & 0xFFFF)].FromUICultureInfo();
                 }
                 shell.Nickname = nickname.Text;
                 shell.Level = (byte)level.Value;

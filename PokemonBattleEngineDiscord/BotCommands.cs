@@ -145,7 +145,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     var embed = new EmbedBuilder()
                         .WithColor(Utils.GetColor(species))
                         .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
-                        .WithTitle(PBEPokemonLocalization.Names[species].English)
+                        .WithTitle(PBEPokemonLocalization.Names[(PBESpecies)((int)species & 0xFFFF)].English)
                         .WithAuthor(Context.User)
                         .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEUtils.RNG.NextGender(species), false, false))
                         .AddField("Types", types, true)
