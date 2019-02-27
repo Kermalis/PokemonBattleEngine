@@ -10,17 +10,19 @@ namespace Kermalis.PokemonBattleEngine.Localization
         public string French { get; }
         public string German { get; }
         public string Italian { get; }
-        public string Japanese { get; }
+        public string Japanese_Kana { get; }
+        public string Japanese_Kanji { get; }
         public string Korean { get; }
         public string Spanish { get; }
 
-        internal PBELocalizedString(string japanese, string korean, string french, string german, string spanish, string italian, string english)
+        internal PBELocalizedString(string english, string french, string german, string italian, string japanese_kana, string japanese_kanji, string korean, string spanish)
         {
             English = english;
             French = french;
             German = german;
             Italian = italian;
-            Japanese = japanese;
+            Japanese_Kana = japanese_kana;
+            Japanese_Kanji = japanese_kanji;
             Korean = korean;
             Spanish = spanish;
         }
@@ -31,7 +33,8 @@ namespace Kermalis.PokemonBattleEngine.Localization
                 || French.Equals(str, comparisonType)
                 || German.Equals(str, comparisonType)
                 || Italian.Equals(str, comparisonType)
-                || Japanese.Equals(str, comparisonType)
+                || Japanese_Kana.Equals(str, comparisonType)
+                || Japanese_Kanji.Equals(str, comparisonType)
                 || Korean.Equals(str, comparisonType)
                 || Spanish.Equals(str, comparisonType))
             {
@@ -55,7 +58,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
                 case "fr": return French;
                 case "de": return German;
                 case "it": return Italian;
-                case "ja": return Japanese;
+                case "ja": return Japanese_Kana;
                 case "ko": return Korean;
                 case "es": return Spanish;
                 default: throw new InvalidOperationException();

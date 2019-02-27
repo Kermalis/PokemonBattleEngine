@@ -5,10 +5,7 @@
         private enum TestType
         {
             AIBattle,
-            AbilityGenerator,
-            ItemGenerator,
-            MoveGenerator,
-            PokemonGenerator
+            LocalizationGenerator
         }
 
         static void Main(string[] args)
@@ -18,10 +15,15 @@
             switch (t)
             {
                 case TestType.AIBattle: AIBattle.Test(); break;
-                case TestType.AbilityGenerator: new LocalizationGenerator().GenerateAbilities(); break;
-                case TestType.ItemGenerator: new LocalizationGenerator().GenerateItems(); break;
-                case TestType.MoveGenerator: new LocalizationGenerator().GenerateMoves(); break;
-                case TestType.PokemonGenerator: new LocalizationGenerator().GeneratePokemon(); break;
+                case TestType.LocalizationGenerator:
+                    {
+                        var generator = new LocalizationGenerator();
+                        generator.GenerateAbilities();
+                        generator.GenerateItems();
+                        generator.GenerateMoves();
+                        generator.GeneratePokemon();
+                        break;
+                    }
             }
         }
     }
