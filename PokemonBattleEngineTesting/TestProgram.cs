@@ -4,16 +4,18 @@
     {
         private enum TestType
         {
-            AIBattle
+            AIBattle,
+            MoveGenerator
         }
 
         static void Main(string[] args)
         {
-            TestType t = TestType.AIBattle;
+            TestType t = TestType.MoveGenerator;
 
             switch (t)
             {
                 case TestType.AIBattle: AIBattle.Test(); break;
+                case TestType.MoveGenerator: new LocalizationGenerator().GenerateMoves(); break;
             }
         }
     }
