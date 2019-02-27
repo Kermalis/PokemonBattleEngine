@@ -181,7 +181,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                             }
                             else
                             {
-                                texts[i][j] += (char)c;
+                                char car = (char)c;
+                                texts[i][j] += car == '"' ? "\\\"" : car.ToString();
                             }
                         }
                     }

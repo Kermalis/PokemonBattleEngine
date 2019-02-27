@@ -24,11 +24,10 @@ namespace Kermalis.PokemonBattleEngineTesting
             spanish = new NARC(@"../../../\LocalizedData\Spanish.narc");
         }
 
-        public static void GenerateAbilities()
+        public void GenerateAbilities()
         {
-            string[][] names = new WebClient().DownloadString("https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/ability_names.csv").Split('\n').Skip(1).Select(s => s.Split(',')).ToArray();
-            IEnumerable<PBEAbility> allAbilities = Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }).OrderBy(e => e.ToString());
-
+            IEnumerable<PBEAbility> allAbilities = new[] { PBEAbility.None }.Concat(Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }).OrderBy(e => e.ToString()));
+            PBEAbility lastAbility = allAbilities.Last();
             var sb = new StringBuilder();
             sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
             sb.AppendLine("using System.Collections.Generic;");
@@ -38,48 +37,36 @@ namespace Kermalis.PokemonBattleEngineTesting
             sb.AppendLine("{");
             sb.AppendLine("    public static class PBEAbilityLocalization");
             sb.AppendLine("    {");
+            // Names
             sb.AppendLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
             sb.AppendLine("        {");
-            sb.AppendLine($"            {{ PBEAbility.None, new PBELocalizedString(\"{nop}\", \"{nop}\", \"{nop}\", \"{nop}\", \"{nop}\", \"{nop}\", \"{nop}\") }},");
+            string[][] eng = english.ReadTextFile(374);
+            string[][] fre = french.ReadTextFile(374);
+            string[][] ger = german.ReadTextFile(374);
+            string[][] ita = italian.ReadTextFile(374);
+            string[][] jap = japanese.ReadTextFile(374);
+            string[][] kor = korean.ReadTextFile(374);
+            string[][] spa = spanish.ReadTextFile(374);
             foreach (PBEAbility ability in allAbilities)
             {
-                string abilityID = ((byte)ability).ToString();
-                string japanese = names.Single(s => s[0] == abilityID && s[1] == "1")[2];
-                string korean = names.Single(s => s[0] == abilityID && s[1] == "3")[2];
-                string french = names.Single(s => s[0] == abilityID && s[1] == "5")[2];
-                string german = names.Single(s => s[0] == abilityID && s[1] == "6")[2];
-                string spanish = names.Single(s => s[0] == abilityID && s[1] == "7")[2];
-                string italian = names.Single(s => s[0] == abilityID && s[1] == "8")[2];
-                string english = names.Single(s => s[0] == abilityID && s[1] == "9")[2];
-                switch (ability)
-                {
-                    case PBEAbility.Analytic: spanish = "Cálc. Final"; break;
-                    case PBEAbility.ArenaTrap: french = "Piège"; break;
-                    case PBEAbility.BattleArmor: spanish = "Armad. Bat."; break;
-                    case PBEAbility.Chlorophyll: french = "Chlorophyle"; break;
-                    case PBEAbility.Compoundeyes: spanish = "Ojocompuesto"; english = "Compoundeyes"; break;
-                    case PBEAbility.CursedBody: spanish = "Cue. Maldito"; break;
-                    case PBEAbility.EffectSpore: spanish = "Efec. Espora"; break;
-                    case PBEAbility.FlareBoost: spanish = "Ím. Ardiente"; break;
-                    case PBEAbility.FlashFire: spanish = "Absor. Fuego"; break;
-                    case PBEAbility.HeavyMetal: spanish = "Met. Pesado"; break;
-                    case PBEAbility.InnerFocus: italian = "Fuocodentro"; break;
-                    case PBEAbility.LeafGuard: french = "Feuil. Garde"; break;
-                    case PBEAbility.LightMetal: spanish = "Met. Liviano"; break;
-                    case PBEAbility.Lightningrod: english = "Lightningrod"; break;
-                    case PBEAbility.MagicBounce: spanish = "Espejomágico"; break;
-                    case PBEAbility.MarvelScale: french = "Écaille Spé."; spanish = "Escama Esp."; break;
-                    case PBEAbility.ShadowTag: spanish = "Sombratrampa"; break;
-                    case PBEAbility.SheerForce: spanish = "Pot. Bruta"; break;
-                    case PBEAbility.Sniper: spanish = "Francotirad."; break;
-                    case PBEAbility.Static: spanish = "Elec. Estát."; break;
-                    case PBEAbility.ToxicBoost: spanish = "Ím. Tóxico"; break;
-                    case PBEAbility.VitalSpirit: spanish = "Espír. Vital"; break;
-                    case PBEAbility.VoltAbsorb: spanish = "Absor. Elec."; break;
-                    case PBEAbility.WaterAbsorb: spanish = "Absor. Agua"; break;
-                    case PBEAbility.WeakArmor: spanish = "Arm. Frágil"; break;
-                }
-                sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{japanese}\", \"{korean}\", \"{french}\", \"{german}\", \"{spanish}\", \"{italian}\", \"{english}\") }}{(ability == allAbilities.Last() ? string.Empty : ",")}");
+                byte i = (byte)ability;
+                sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{jap[0][i]}\", \"{kor[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{spa[0][i]}\", \"{ita[0][i]}\", \"{eng[0][i]}\") }}{(ability == lastAbility ? string.Empty : ",")}");
+            }
+            sb.AppendLine("        });");
+            // Descriptions
+            sb.AppendLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
+            sb.AppendLine("        {");
+            eng = english.ReadTextFile(375);
+            fre = french.ReadTextFile(375);
+            ger = german.ReadTextFile(375);
+            ita = italian.ReadTextFile(375);
+            jap = japanese.ReadTextFile(375);
+            kor = korean.ReadTextFile(375);
+            spa = spanish.ReadTextFile(375);
+            foreach (PBEAbility ability in allAbilities)
+            {
+                byte i = (byte)ability;
+                sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{jap[0][i]}\", \"{kor[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{spa[0][i]}\", \"{ita[0][i]}\", \"{eng[0][i]}\") }}{(ability == lastAbility ? string.Empty : ",")}");
             }
             sb.AppendLine("        });");
             sb.AppendLine("    }");
@@ -248,6 +235,7 @@ namespace Kermalis.PokemonBattleEngineTesting
 
         public void GenerateMoves()
         {
+            ushort lastMove = (ushort)(PBEMove.MAX - 1);
             var sb = new StringBuilder();
             sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
             sb.AppendLine("using System.Collections.Generic;");
@@ -269,7 +257,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             sb.AppendLine("        {");
             for (ushort i = 0; i < (ushort)PBEMove.MAX; i++)
             {
-                sb.AppendLine($"            {(Enum.IsDefined(typeof(PBEMove), i) ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{jap[0][i]}\", \"{kor[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{spa[0][i]}\", \"{ita[0][i]}\", \"{eng[0][i]}\") }}{(i == (ushort)(PBEMove.MAX - 1) ? string.Empty : ",")}");
+                sb.AppendLine($"            {(Enum.IsDefined(typeof(PBEMove), i) ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{jap[0][i]}\", \"{kor[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{spa[0][i]}\", \"{ita[0][i]}\", \"{eng[0][i]}\") }}{(i == lastMove ? string.Empty : ",")}");
             }
             sb.AppendLine("        });");
             // Descriptions
@@ -285,7 +273,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             sb.AppendLine("        {");
             for (ushort i = 0; i < (ushort)PBEMove.MAX; i++)
             {
-                sb.AppendLine($"            {(Enum.IsDefined(typeof(PBEMove), i) ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{jap[0][i]}\", \"{kor[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{spa[0][i]}\", \"{ita[0][i]}\", \"{eng[0][i]}\") }}{(i == (ushort)(PBEMove.MAX - 1) ? string.Empty : ",")}");
+                sb.AppendLine($"            {(Enum.IsDefined(typeof(PBEMove), i) ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{jap[0][i]}\", \"{kor[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{spa[0][i]}\", \"{ita[0][i]}\", \"{eng[0][i]}\") }}{(i == lastMove ? string.Empty : ",")}");
             }
             sb.AppendLine("        });");
             sb.AppendLine("    }");
