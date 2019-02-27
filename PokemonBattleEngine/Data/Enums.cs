@@ -1531,7 +1531,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// No effect.
         /// </summary>
-        ParalyzeHeal = 22,
+        ParalyzHeal = 22,
         /// <summary>
         /// No effect.
         /// </summary>

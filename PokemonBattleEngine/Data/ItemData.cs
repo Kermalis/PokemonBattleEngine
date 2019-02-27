@@ -249,7 +249,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             { PBEItem.OranBerry, new PBEItemData(10, 60, PBEType.Poison) },
             { PBEItem.OvalStone, new PBEItemData(80) },
             { PBEItem.PamtreBerry, new PBEItemData(10, 70, PBEType.Steel) },
-            { PBEItem.ParalyzeHeal, new PBEItemData(30) },
+            { PBEItem.ParalyzHeal, new PBEItemData(30) },
             { PBEItem.ParkBall, new PBEItemData() },
             { PBEItem.PasshoBerry, new PBEItemData(10, 60, PBEType.Water) },
             { PBEItem.PassOrb, new PBEItemData(30) },

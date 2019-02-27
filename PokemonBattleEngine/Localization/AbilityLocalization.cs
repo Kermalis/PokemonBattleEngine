@@ -174,6 +174,7 @@ namespace Kermalis.PokemonBattleEngine.Localization
             { PBEAbility.WonderSkin, new PBELocalizedString("ミラクルスキン", "미라클스킨", "Peau Miracle", "Wunderhaut", "Piel Milagro", "Splendicute", "Wonder Skin") },
             { PBEAbility.ZenMode, new PBELocalizedString("ダルマモード", "달마모드", "Mode Transe", "Trance-Modus", "Modo Daruma", "Stato Zen", "Zen Mode") }
         });
+
         public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()
         {
             { PBEAbility.None, new PBELocalizedString("―\n―", "-\n-", " -", " -", " -", " -", " -") },
