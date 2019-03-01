@@ -123,6 +123,34 @@ namespace Kermalis.PokemonBattleEngine.AI
                             double score = 0.0;
                             switch (PBEMoveData.Data[move].Effect)
                             {
+                                case PBEMoveEffect.Burn:
+                                case PBEMoveEffect.Paralyze:
+                                case PBEMoveEffect.Poison:
+                                case PBEMoveEffect.Sleep:
+                                case PBEMoveEffect.Toxic:
+                                    {
+                                        foreach (PBEPokemon target in targets)
+                                        {
+                                            if (target == null)
+                                            {
+                                                // TODO: If all targets are null, this should give a bad score
+                                            }
+                                            else
+                                            {
+                                                // TODO: Effectiveness check
+                                                // TODO: Favor sleep with Bad Dreams (unless ally)
+                                                if (target.Status1 != PBEStatus1.None)
+                                                {
+                                                    score += target.Team == opposingTeam ? -60 : 0;
+                                                }
+                                                else
+                                                {
+                                                    score += target.Team == opposingTeam ? +40 : -20;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    }
                                 case PBEMoveEffect.Hail:
                                     {
                                         if (team.Battle.Weather == PBEWeather.Hailstorm)
@@ -131,6 +159,10 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
+                                case PBEMoveEffect.BrickBreak:
+                                case PBEMoveEffect.Dig:
+                                case PBEMoveEffect.Dive:
+                                case PBEMoveEffect.Fly:
                                 case PBEMoveEffect.Hit:
                                 case PBEMoveEffect.Hit__MaybeBurn:
                                 case PBEMoveEffect.Hit__MaybeConfuse:
@@ -156,6 +188,11 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 case PBEMoveEffect.Hit__MaybeRaiseUser_SPATK_By1:
                                 case PBEMoveEffect.Hit__MaybeRaiseUser_SPE_By1:
                                 case PBEMoveEffect.Hit__MaybeToxic:
+                                case PBEMoveEffect.HPDrain:
+                                case PBEMoveEffect.Recoil:
+                                case PBEMoveEffect.FlareBlitz:
+                                case PBEMoveEffect.SuckerPunch:
+                                case PBEMoveEffect.VoltTackle:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -166,6 +203,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                             else
                                             {
                                                 // TODO: Put type checking somewhere in PBEPokemon (levitate, wonder guard, etc)
+                                                // TODO: Favor hitting ally with move if it absorbs it
                                                 // TODO: Check items
                                                 // TODO: Stat changes and accuracy
                                                 // TODO: Check base power specifically against hp remaining (include spread move damage reduction)
@@ -185,11 +223,11 @@ namespace Kermalis.PokemonBattleEngine.AI
                                                 }
                                                 else if (typeEffectiveness == 1.0) // [1.0, 1.0] Normal
                                                 {
-                                                    score += target.Team == opposingTeam ? +5 : -15;
+                                                    score += target.Team == opposingTeam ? +10 : -15;
                                                 }
                                                 else if (typeEffectiveness < 4.0) // (1.0, 4.0) SuperEffective
                                                 {
-                                                    score += target.Team == opposingTeam ? +20 : -20;
+                                                    score += target.Team == opposingTeam ? +25 : -20;
                                                 }
                                                 else // [4.0, infinity) SuperEffective
                                                 {
@@ -197,14 +235,17 @@ namespace Kermalis.PokemonBattleEngine.AI
                                                 }
                                                 if (pkmn.HasType(moveType) && typeEffectiveness > 0.0) // STAB
                                                 {
-                                                    score += (pkmn.Ability == PBEAbility.Adaptability ? 20 : 15) * (target.Team == opposingTeam ? +1 : -1);
+                                                    score += (pkmn.Ability == PBEAbility.Adaptability ? 15 : 10) * (target.Team == opposingTeam ? +1 : -1);
                                                 }
                                             }
                                         }
 
                                         break;
                                     }
+                                case PBEMoveEffect.Moonlight:
+                                case PBEMoveEffect.Rest:
                                 case PBEMoveEffect.RestoreTargetHP:
+                                case PBEMoveEffect.RestoreUserHP:
                                     {
                                         PBEPokemon target = targets[0];
                                         if (target == null || target.Team == opposingTeam)
@@ -242,8 +283,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                case PBEMoveEffect.BrickBreak:
-                                case PBEMoveEffect.Burn:
                                 case PBEMoveEffect.ChangeTarget_ACC:
                                 case PBEMoveEffect.ChangeTarget_ATK:
                                 case PBEMoveEffect.ChangeTarget_DEF:
@@ -258,30 +297,22 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 case PBEMoveEffect.ChangeUser_SPE:
                                 case PBEMoveEffect.Confuse:
                                 case PBEMoveEffect.Curse:
-                                case PBEMoveEffect.Dig:
-                                case PBEMoveEffect.Dive:
                                 case PBEMoveEffect.Endeavor:
                                 case PBEMoveEffect.Fail:
                                 case PBEMoveEffect.FinalGambit:
-                                case PBEMoveEffect.FlareBlitz:
                                 case PBEMoveEffect.Flatter:
-                                case PBEMoveEffect.Fly:
                                 case PBEMoveEffect.FocusEnergy:
                                 case PBEMoveEffect.GastroAcid:
                                 case PBEMoveEffect.Growth:
                                 case PBEMoveEffect.HelpingHand:
-                                case PBEMoveEffect.HPDrain:
                                 case PBEMoveEffect.LeechSeed:
                                 case PBEMoveEffect.LightScreen:
                                 case PBEMoveEffect.LowerTarget_ATK_DEF_By1:
                                 case PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
                                 case PBEMoveEffect.LuckyChant:
                                 case PBEMoveEffect.Metronome:
-                                case PBEMoveEffect.Moonlight:
                                 case PBEMoveEffect.OneHitKnockout:
                                 case PBEMoveEffect.PainSplit:
-                                case PBEMoveEffect.Paralyze:
-                                case PBEMoveEffect.Poison:
                                 case PBEMoveEffect.Protect:
                                 case PBEMoveEffect.PsychUp:
                                 case PBEMoveEffect.Psywave:
@@ -294,32 +325,23 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 case PBEMoveEffect.RaiseUser_SPATK_SPDEF_By1:
                                 case PBEMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1:
                                 case PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1:
-                                case PBEMoveEffect.Recoil:
                                 case PBEMoveEffect.Reflect:
-                                case PBEMoveEffect.Rest:
-                                case PBEMoveEffect.RestoreUserHP:
                                 case PBEMoveEffect.SeismicToss:
                                 case PBEMoveEffect.Selfdestruct:
                                 case PBEMoveEffect.SetDamage:
-                                case PBEMoveEffect.Sleep:
                                 case PBEMoveEffect.Snore:
                                 case PBEMoveEffect.Spikes:
                                 case PBEMoveEffect.StealthRock:
-                                case PBEMoveEffect.Struggle:
                                 case PBEMoveEffect.Substitute:
-                                case PBEMoveEffect.SuckerPunch:
                                 case PBEMoveEffect.SuperFang:
                                 case PBEMoveEffect.Swagger:
-                                case PBEMoveEffect.Toxic:
                                 case PBEMoveEffect.ToxicSpikes:
                                 case PBEMoveEffect.Transform:
                                 case PBEMoveEffect.TrickRoom:
-                                case PBEMoveEffect.VoltTackle:
                                 case PBEMoveEffect.Whirlwind:
                                 case PBEMoveEffect.WideGuard:
                                     {
                                         // TODO Moves
-                                        score -= 200;
                                         break;
                                     }
                             }
