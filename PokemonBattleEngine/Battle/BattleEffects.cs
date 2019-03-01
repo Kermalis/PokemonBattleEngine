@@ -25,6 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         continue;
                     }
+                    HealingBerryCheck(pkmn);
                 }
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                 {
@@ -37,6 +38,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         continue;
                     }
+                    HealingBerryCheck(pkmn);
                 }
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
                 {
@@ -175,18 +177,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         BroadcastAbility(victim, user, victim.Ability, PBEAbilityAction.Damage);
                         DealDamage(victim, user, (ushort)(user.MaxHP / 8), true);
-                        FaintCheck(user);
+                        if (!FaintCheck(user))
+                        {
+                            HealingBerryCheck(user);
+                        }
                     }
                     if (user.HP > 0 && victim.Item == PBEItem.RockyHelmet)
                     {
                         BroadcastItem(victim, user, PBEItem.RockyHelmet, PBEItemAction.Damage);
                         DealDamage(victim, user, (ushort)(user.MaxHP / 6), true);
-                        FaintCheck(user);
+                        if (!FaintCheck(user))
+                        {
+                            HealingBerryCheck(user);
+                        }
                     }
                 }
             }
 
-            // TODO: Weak Armor, Justified, Stench, Effect Spore
+            if (victim.HP > 0)
+            {
+                HealingBerryCheck(victim); // Verified: Berry after Rough Skin (for victim)
+            }
+
+            // TODO: King's Rock, Stench, Effect Spore, Static, etc
             // TODO?: Cell Battery
         }
         /// <summary>
@@ -203,7 +216,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastRecoil(user);
                 DealDamage(user, user, recoilDamage, true, ignoreSturdy: true);
-                FaintCheck(user);
+                if (!FaintCheck(user))
+                {
+                    HealingBerryCheck(user);
+                }
             }
 
             if (user.HP > 0 && !ignoreLifeOrb && user.Item == PBEItem.LifeOrb)
@@ -240,7 +256,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
                                     DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), true);
-                                    FaintCheck(pkmn);
+                                    if (!FaintCheck(pkmn))
+                                    {
+                                        HealingBerryCheck(pkmn);
+                                    }
                                 }
                                 break;
                             }
@@ -250,7 +269,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     BroadcastAbility(pkmn, pkmn, PBEAbility.SolarPower, PBEAbilityAction.Damage);
                                     DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / 8), true);
-                                    FaintCheck(pkmn);
+                                    if (!FaintCheck(pkmn))
+                                    {
+                                        HealingBerryCheck(pkmn);
+                                    }
                                 }
                                 break;
                             }
@@ -277,7 +299,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
                                     DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.SandstormDamageDenominator), true);
-                                    FaintCheck(pkmn);
+                                    if (!FaintCheck(pkmn))
+                                    {
+                                        HealingBerryCheck(pkmn);
+                                    }
                                 }
                                 break;
                             }
@@ -353,7 +378,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastStatus2(suck, pkmn, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
                         ushort amtDealt = DealDamage(pkmn, suck, (ushort)(suck.MaxHP / Settings.LeechSeedDenominator), true);
                         HealDamage(pkmn, amtDealt);
-                        FaintCheck(suck);
+                        if (!FaintCheck(suck))
+                        {
+                            HealingBerryCheck(suck);
+                        }
                     }
                 }
             }
@@ -374,27 +402,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     damage /= 2;
                                 }
                                 DealDamage(pkmn, pkmn, (ushort)damage, true);
-                                FaintCheck(pkmn);
+                                if (!FaintCheck(pkmn))
+                                {
+                                    HealingBerryCheck(pkmn);
+                                }
                                 break;
                             }
                         case PBEStatus1.Poisoned:
                             {
                                 BroadcastStatus1(pkmn, pkmn, PBEStatus1.Poisoned, PBEStatusAction.Damage);
                                 DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.PoisonDamageDenominator), true);
-                                FaintCheck(pkmn);
+                                if (!FaintCheck(pkmn))
+                                {
+                                    HealingBerryCheck(pkmn);
+                                }
                                 break;
                             }
                         case PBEStatus1.BadlyPoisoned:
                             {
                                 BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Damage);
                                 DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator), true);
-                                if (FaintCheck(pkmn))
-                                {
-                                    pkmn.Status1Counter = 0;
-                                }
-                                else
+                                if (!FaintCheck(pkmn))
                                 {
                                     pkmn.Status1Counter++;
+                                    HealingBerryCheck(pkmn);
                                 }
                                 break;
                             }
@@ -409,7 +440,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     BroadcastStatus2(pkmn, pkmn, PBEStatus2.Cursed, PBEStatusAction.Damage);
                     DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.CurseDenominator), true);
-                    FaintCheck(pkmn);
+                    if (!FaintCheck(pkmn))
+                    {
+                        HealingBerryCheck(pkmn);
+                    }
                 }
             }
 
@@ -1076,7 +1110,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastStatus2(user, user, PBEStatus2.Confused, PBEStatusAction.Damage);
                         ushort damage = CalculateDamage(user, user, PBEMove.None, PBEType.None, PBEMoveCategory.Physical, 40, false);
                         DealDamage(user, user, damage, true);
-                        FaintCheck(user);
+                        if (!FaintCheck(user))
+                        {
+                            //HealingBerryCheck(user); // BUG: In generation 5+, confusion damage does not activate these berries
+                        }
                         return true;
                     }
                 }
@@ -1316,6 +1353,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
+        void HealingBerryCheck(PBEPokemon pkmn)
+        {
+            switch (pkmn.Item)
+            {
+                case PBEItem.SitrusBerry:
+                    {
+                        if (pkmn.HP <= pkmn.MaxHP / 2)
+                        {
+                            pkmn.Item = PBEItem.None;
+                            BroadcastItem(pkmn, pkmn, PBEItem.SitrusBerry, PBEItemAction.Consumed);
+                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / 4));
+                        }
+                        break;
+                    }
+            }
+        }
 
         void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason, IList<PBEExecutedMove.PBETargetSuccess> targets)
         {
@@ -1520,7 +1573,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             target.Status2 |= PBEStatus2.Cursed;
                             BroadcastStatus2(target, user, PBEStatus2.Cursed, PBEStatusAction.Added);
                             DealDamage(user, user, (ushort)(user.MaxHP / 2), true);
-                            FaintCheck(user);
+                            if (!FaintCheck(user))
+                            {
+                                HealingBerryCheck(user);
+                            }
                             failReason = PBEFailReason.None;
                         }
                         else
@@ -1615,6 +1671,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         if (!alreadyHasSubstitute && hpRequired > 0 && user.HP > hpRequired)
                         {
                             DealDamage(user, user, hpRequired, true);
+                            HealingBerryCheck(user);
                             user.Status2 |= PBEStatus2.Substitute;
                             user.SubstituteHP = hpRequired;
                             BroadcastStatus2(user, user, PBEStatus2.Substitute, PBEStatusAction.Added);
@@ -2881,10 +2938,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 else
                                 {
                                     DealDamage(user, pkmn, (ushort)(pkmn.HP - hp), true);
-                                    DoPostHitEffects(user, pkmn, move, user.GetMoveType(move));
+                                    HealingBerryCheck(pkmn);
+                                    // Verified: Sitrus is activated but no illusion breaking
+                                    // TODO: Check if color change activates
                                 }
                             }
-
                             BroadcastPainSplit(user, target);
                         }
                     }
@@ -3007,7 +3065,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 int RecoilFunc(int totalDamageDealt)
                 {
-                    return user.Ability == PBEAbility.RockHead ? 0 : Math.Max(1, totalDamageDealt / denominator);
+                    return user.Ability == PBEAbility.RockHead || totalDamageDealt == 0 ? 0 : Math.Max(1, totalDamageDealt / denominator);
                 }
                 BasicHit(user, targets, move, ref targetSuccess, recoilFunc: RecoilFunc);
             }
@@ -3029,7 +3087,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 int RecoilFunc(int totalDamageDealt)
                 {
-                    return user.Ability == PBEAbility.RockHead ? 0 : Math.Max(1, totalDamageDealt / 3);
+                    return user.Ability == PBEAbility.RockHead || totalDamageDealt == 0 ? 0 : Math.Max(1, totalDamageDealt / 3);
                 }
                 void BeforePostHit(PBEPokemon target)
                 {

@@ -1767,7 +1767,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ShucaBerry = 191, // TODO
         SilkScarf = 251,
         SilverPowder = 222,
-        SitrusBerry = 158, // TODO
+        SitrusBerry = 158,
         /// <summary>
         /// No effect.
         /// </summary>

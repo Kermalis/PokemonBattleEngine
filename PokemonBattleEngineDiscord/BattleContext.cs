@@ -353,6 +353,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     }
                                     break;
                                 }
+                            case PBEItem.SitrusBerry:
+                                {
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.Consumed: message = "{0} restored its health using its {2}!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
+                                }
                             case PBEItem.ToxicOrb:
                                 {
                                     switch (ip.ItemAction)
