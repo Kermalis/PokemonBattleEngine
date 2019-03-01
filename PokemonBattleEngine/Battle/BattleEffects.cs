@@ -3007,7 +3007,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 int RecoilFunc(int totalDamageDealt)
                 {
-                    return user.Ability == PBEAbility.RockHead ? 0 : totalDamageDealt / denominator;
+                    return user.Ability == PBEAbility.RockHead ? 0 : Math.Max(1, totalDamageDealt / denominator);
                 }
                 BasicHit(user, targets, move, ref targetSuccess, recoilFunc: RecoilFunc);
             }
@@ -3029,7 +3029,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 int RecoilFunc(int totalDamageDealt)
                 {
-                    return user.Ability == PBEAbility.RockHead ? 0 : totalDamageDealt / 3;
+                    return user.Ability == PBEAbility.RockHead ? 0 : Math.Max(1, totalDamageDealt / 3);
                 }
                 void BeforePostHit(PBEPokemon target)
                 {
@@ -3058,7 +3058,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 int RecoilFunc(int totalDamageDealt)
                 {
-                    return user.MaxHP / 4;
+                    return Math.Max(1, user.MaxHP / 4);
                 }
                 BasicHit(user, targets, move, ref targetSuccess, overridingMoveType: PBEType.None, recoilFunc: RecoilFunc);
             }
