@@ -44,6 +44,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Location));
             }
         }
+        public string Description => Utils.CustomPokemonToString(pokemon);
 
         public PokemonView()
         {

@@ -8,7 +8,7 @@
   </UserControl.RenderTransform>
   <Image Name="Sprite" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Bottom">
     <ToolTip.Tip>
-      <Image Source="{Binding Pokemon, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+      <Image Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
     </ToolTip.Tip>
   </Image>
 </UserControl>

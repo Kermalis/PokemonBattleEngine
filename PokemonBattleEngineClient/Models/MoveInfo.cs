@@ -1,10 +1,12 @@
 ﻿using Avalonia.Media;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Localization;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Reactive.Subjects;
+using System.Text;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
@@ -48,6 +50,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public MoveInfo(int i, PBEPokemon pkmn, Action<MoveInfo> clickAction)
         {
             bool enabled;
+            var sb = new StringBuilder();
             if (pkmn.IsForcedToStruggle())
             {
                 Move = PBEMove.Struggle;
@@ -71,7 +74,33 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             Tuple<SolidColorBrush, SolidColorBrush> ttb = Move == PBEMove.None ? typeToBrush[PBEType.Normal] : typeToBrush[pkmn.GetMoveType(Move)];
             Brush = ttb.Item1;
             BorderBrush = ttb.Item2;
-            Description = Move == PBEMove.None ? string.Empty : PBEMoveData.Data[Move].ToString();
+
+            if (Move != PBEMove.None)
+            {
+                PBEMoveData mData = PBEMoveData.Data[Move];
+                sb.AppendLine($"Type: {mData.Type}");
+                sb.AppendLine($"Category: {mData.Category}");
+                int moveIndex = Array.IndexOf(pkmn.Moves, Move);
+                if (moveIndex != -1)
+                {
+                    sb.AppendLine($"PP: {pkmn.PP[moveIndex]}/{pkmn.MaxPP[moveIndex]}");
+                }
+                sb.AppendLine($"Priority: {mData.Priority}");
+                sb.AppendLine($"Power: {(mData.Power == 0 ? "--" : mData.Power.ToString())}");
+                sb.AppendLine($"Accuracy: {(mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString())}");
+                switch (mData.Effect)
+                {
+                    case PBEMoveEffect.FlareBlitz: sb.AppendLine($"Recoil: 1/3 damage dealt"); break;
+                    case PBEMoveEffect.Recoil: sb.AppendLine($"Recoil: 1/{mData.EffectParam} damage dealt"); break;
+                    case PBEMoveEffect.Struggle: sb.AppendLine($"Recoil: 1/4 user's max HP"); break;
+                    case PBEMoveEffect.VoltTackle: sb.AppendLine($"Recoil: 1/3 damage dealt"); break;
+                }
+                sb.AppendLine($"Targets: {mData.Targets}");
+                sb.AppendLine($"Flags: {mData.Flags}");
+                sb.AppendLine();
+                sb.Append(PBEMoveLocalization.Descriptions[Move].FromUICultureInfo().Replace('\n', ' '));
+            }
+            Description = sb.ToString();
 
             var sub = new Subject<bool>();
             SelectMoveCommand = ReactiveCommand.Create(() => clickAction(this), sub);

@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using ReactiveUI;
 using System;
 using System.Reactive.Subjects;
@@ -11,6 +12,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public ReactiveCommand SelectPokemonCommand { get; }
 
         public PBEPokemon Pokemon { get; }
+        public string Description => Utils.CustomPokemonToString(Pokemon);
 
         public PokemonInfo(PBEPokemon pkmn, bool locked, Action<PokemonInfo> clickAction)
         {

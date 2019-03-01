@@ -889,7 +889,12 @@ namespace Kermalis.PokemonBattleEngineMobile
                                 {
                                     switch (s2p.StatusAction)
                                     {
-                                        case PBEStatusAction.Added: message = "{0} was seeded!"; break;
+                                        case PBEStatusAction.Added:
+                                            {
+                                                status2Receiver.SeededPosition = pokemon2.FieldPosition;
+                                                message = "{0} was seeded!";
+                                                break;
+                                            }
                                         case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
