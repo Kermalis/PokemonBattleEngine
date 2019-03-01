@@ -202,7 +202,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.HP > 0 && recoilDamage > 0)
             {
                 BroadcastRecoil(user);
-                DealDamage(user, user, recoilDamage, true);
+                DealDamage(user, user, recoilDamage, true, ignoreSturdy: true);
                 FaintCheck(user);
             }
 
