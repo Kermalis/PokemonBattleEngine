@@ -19,8 +19,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 // Verified: Spikes then StealthRock then ToxicSpikes before ability
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
                 {
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))), true);
                     BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))), true, ignoreSturdy: true);
                     if (FaintCheck(pkmn))
                     {
                         continue;
@@ -31,8 +31,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     double effectiveness = 0.125;
                     effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type1];
                     effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type2];
-                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * effectiveness), true);
                     BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn);
+                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * effectiveness), true, ignoreSturdy: true);
                     if (FaintCheck(pkmn))
                     {
                         continue;
