@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 else
                 {
                     // Gather all options of switching and moves
-                    PBEPokemon[] availableForSwitch = team.Party.Except(standBy).Except(active).Where(p => p.HP > 0).ToArray();
+                    PBEPokemon[] availableForSwitch = team.Party.Except(standBy).Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
                     var movesToChooseFrom = new List<PBEMove>();
                     if (pkmn.ChoiceLockedMove != PBEMove.None)
                     {
