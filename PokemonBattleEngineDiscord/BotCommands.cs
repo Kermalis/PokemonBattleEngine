@@ -16,6 +16,40 @@ namespace Kermalis.PokemonBattleEngineDiscord
     {
         static readonly Emoji theEmojiItself = new Emoji("👍");
 
+        [Group("ability")]
+        public class AbilityCommands : ModuleBase<SocketCommandContext>
+        {
+            [Command("info")]
+            [Alias("data")]
+            public async Task Info([Remainder] string abilityName)
+            {
+                PBEAbility ability = PBEAbility.None;
+                PBELocalizedString localized = PBEAbilityLocalization.Names.Values.FirstOrDefault(l => l.Contains(abilityName));
+                if (localized != null)
+                {
+                    ability = PBEAbilityLocalization.Names.First(p => p.Value == localized).Key;
+                }
+                else
+                {
+                    Enum.TryParse(abilityName, true, out ability);
+                }
+                if (ability == PBEAbility.None)
+                {
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid ability!");
+                }
+                else
+                {
+                    var embed = new EmbedBuilder()
+                        .WithAuthor(Context.User)
+                        .WithColor(PBEUtils.Sample(Utils.TypeToColor).Value)
+                        .WithTitle(PBEAbilityLocalization.Names[ability].English)
+                        .WithUrl(Utils.URL)
+                        .WithDescription(PBEAbilityLocalization.Descriptions[ability].English.Replace('\n', ' '));
+                    await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+                }
+            }
+        }
+
         [Group("battle")]
         public class BattleCommands : ModuleBase<SocketCommandContext>
         {
@@ -42,7 +76,55 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
         }
 
+        [Group("item")]
+        public class ItemCommands : ModuleBase<SocketCommandContext>
+        {
+            [Command("info")]
+            [Alias("data")]
+            public async Task Info([Remainder] string itemName)
+            {
+                PBEItem item = PBEItem.None;
+                PBELocalizedString localized = PBEItemLocalization.Names.Values.FirstOrDefault(l => l.Contains(itemName));
+                if (localized != null)
+                {
+                    item = PBEItemLocalization.Names.First(p => p.Value == localized).Key;
+                }
+                else
+                {
+                    Enum.TryParse(itemName, true, out item);
+                }
+                if (item == PBEItem.None)
+                {
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid item!");
+                }
+                else
+                {
+                    PBEItemData iData = PBEItemData.Data[item];
+                    var embed = new EmbedBuilder()
+                        .WithAuthor(Context.User)
+                        .WithColor(iData.NaturalGiftType == PBEType.None ? Utils.RandomColor() : Utils.TypeToColor[iData.NaturalGiftType])
+                        .WithTitle(PBEItemLocalization.Names[item].English)
+                        .WithUrl(Utils.URL)
+                        .WithDescription(PBEItemLocalization.Descriptions[item].English.Replace('\n', ' '));
+                    if (iData.FlingPower > 0)
+                    {
+                        embed.AddField("Fling Power", iData.FlingPower, true);
+                    }
+                    if (iData.NaturalGiftPower > 0)
+                    {
+                        embed.AddField("Natural Gift Power", iData.NaturalGiftPower, true);
+                    }
+                    if (iData.NaturalGiftType != PBEType.None)
+                    {
+                        embed.AddField("Natural Gift Type", iData.NaturalGiftType, true);
+                    }
+                    await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+                }
+            }
+        }
+
         [Group("move")]
+        [Alias("attack")]
         public class MoveCommands : ModuleBase<SocketCommandContext>
         {
             PBEMove TryGetMove(string moveName)
@@ -61,6 +143,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
 
             [Command("info")]
+            [Alias("data")]
             public async Task Info([Remainder] string moveName)
             {
                 PBEMove move = TryGetMove(moveName);
@@ -75,7 +158,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .WithAuthor(Context.User)
                         .WithColor(Utils.TypeToColor[mData.Type])
                         .WithTitle(PBEMoveLocalization.Names[move].English)
-                        .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
+                        .WithUrl(Utils.URL)
                         .WithDescription(PBEMoveLocalization.Descriptions[move].English.Replace('\n', ' '))
                         .AddField("Type", mData.Type, true)
                         .AddField("Category", mData.Category, true)
@@ -113,7 +196,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 PBEMove move = TryGetMove(moveName);
                 if (move == PBEMove.None)
                 {
-                    await Context.Channel.SendMessageAsync($"Invalid move!");
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid move!");
                 }
                 else
                 {
@@ -195,6 +278,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public class PokemonCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
+            [Alias("data")]
             public async Task Info([Remainder] string speciesName)
             {
                 PBESpecies species = 0;
@@ -238,7 +322,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .WithAuthor(Context.User)
                         .WithColor(Utils.GetColor(species))
                         .WithTitle($"{PBEPokemonLocalization.Names[noForme].English} - {PBEPokemonLocalization.Categories[noForme].English}")
-                        .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
+                        .WithUrl(Utils.URL)
                         .WithDescription(PBEPokemonLocalization.Entries[noForme].English.Replace('\n', ' '))
                         .AddField("Types", types, true)
                         .AddField("Gender Ratio", ratio, true)

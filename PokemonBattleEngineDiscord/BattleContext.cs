@@ -157,14 +157,21 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     title += $" (Turn {context.Battle.TurnNumber})";
                 }
+
                 var embed = new EmbedBuilder()
-                    .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
+                    .WithUrl(Utils.URL)
                     .WithTitle(title)
                     .WithDescription(message);
-                if (pkmn != null)
+                if (pkmn == null)
                 {
-                    embed.WithColor(Utils.GetColor(pkmn)).WithImageUrl(Utils.GetPokemonSprite(pkmn));
+                    embed.WithColor(Utils.RandomColor());
                 }
+                else
+                {
+                    embed.WithColor(Utils.GetColor(pkmn))
+                        .WithImageUrl(Utils.GetPokemonSprite(pkmn));
+                }
+
                 if (userToSendTo != null)
                 {
                     await userToSendTo.SendMessageAsync(string.Empty, embed: embed.Build());

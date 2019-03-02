@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 {
     static class Utils
     {
+        public const string URL = "https://github.com/Kermalis/PokemonBattleEngine";
         public static Dictionary<PBEType, Color> TypeToColor { get; } = new Dictionary<PBEType, Color>
         {
             { PBEType.Bug, new Color(173, 189, 31) },
@@ -54,6 +56,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public static Color GetColor(PBEPokemon pkmn)
         {
             return GetColor(pkmn.KnownType1, pkmn.KnownType2);
+        }
+        public static Color RandomColor()
+        {
+            return PBEUtils.Sample(TypeToColor.Values);
         }
 
         // https://stackoverflow.com/questions/1979915/can-i-check-if-a-file-exists-at-a-url
