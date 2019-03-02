@@ -6,6 +6,7 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Localization;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,24 +14,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 {
     public class BotCommands : ModuleBase<SocketCommandContext>
     {
-        /*[Command("player")]
-        public async Task Player(byte i)
-        {
-            if (i < 2)
-            {
-                await Context.Channel.SendMessageAsync(Context.BattleContext.Battlers[i].Mention);
-            }
-        }
-
-        [Command("what")]
-        public async Task What(byte i)
-        {
-            int pIndex = Context.BattleContext.GetBattlerIndex(Context.User.Id);
-            if (pIndex != -1 && i < PBESettings.NumMoves)
-            {
-                await Context.Channel.SendMessageAsync(Context.BattleContext.Battle.Teams[pIndex].Party[0].Moves[i].ToString());
-            }
-        }*/
+        static readonly Emoji theEmojiItself = new Emoji("👍");
 
         [Group("battle")]
         public class BattleCommands : ModuleBase<SocketCommandContext>
@@ -38,11 +22,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Command("challenge")]
             public async Task Challenge(SocketUser battler1)
             {
-                if (BattleContext.ActiveBattles.Any(b => b.Battlers.Contains(battler1)))
+                if (BattleContext.GetBattleContext(battler1) != null)
                 {
                     await Context.Channel.SendMessageAsync($"{battler1.Username} is already participating in a battle.");
                 }
-                else if (BattleContext.ActiveBattles.Any(b => b.Battlers.Contains(Context.User)))
+                else if (BattleContext.GetBattleContext(Context.User) != null)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Username} is already participating in a battle.");
                 }
@@ -61,10 +45,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
         [Group("move")]
         public class MoveCommands : ModuleBase<SocketCommandContext>
         {
-            [Command("info")]
-            public async Task Info([Remainder] string moveName)
+            PBEMove TryGetMove(string moveName)
             {
-                PBEMove move = 0;
+                PBEMove move = PBEMove.None;
                 PBELocalizedString localized = PBEMoveLocalization.Names.Values.FirstOrDefault(l => l.Contains(moveName));
                 if (localized != null)
                 {
@@ -74,12 +57,19 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     Enum.TryParse(moveName, true, out move);
                 }
-                if (move != 0)
+                return move;
+            }
+
+            [Command("info")]
+            public async Task Info([Remainder] string moveName)
+            {
+                PBEMove move = TryGetMove(moveName);
+                if (move == PBEMove.None)
                 {
-                    if (move == PBEMove.None)
-                    {
-                        goto invalid;
-                    }
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid move!");
+                }
+                else
+                {
                     PBEMoveData mData = PBEMoveData.Data[move];
                     var embed = new EmbedBuilder()
                         .WithColor(Utils.TypeToColor[mData.Type])
@@ -97,14 +87,105 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Targets", mData.Targets, true)
                         .AddField("Flags", mData.Flags, true);
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+                }
+            }
+
+            [Command("use")]
+            public async Task Use([Remainder] string moveName)
+            {
+                var battleContext = BattleContext.GetBattleContext(Context.User);
+                if (battleContext == null)
+                {
                     return;
                 }
-            invalid:
-                await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid move!");
+                PBETeam team = battleContext.Battle.Teams[battleContext.IndexOf(Context.User)];
+                if (team.ActionsRequired.Count == 0)
+                {
+                    return;
+                }
+
+                PBEMove move = TryGetMove(moveName);
+                if (move == PBEMove.None)
+                {
+                    await Context.Channel.SendMessageAsync($"Invalid move!");
+                }
+                else
+                {
+                    PBEPokemon pkmn = team.ActionsRequired[0];
+                    var useableMoves = new List<PBEMove>(pkmn.Moves.Length);
+                    if (pkmn.IsForcedToStruggle())
+                    {
+                        useableMoves.Add(PBEMove.Struggle);
+                    }
+                    else if (pkmn.TempLockedMove != PBEMove.None)
+                    {
+                        useableMoves.Add(pkmn.TempLockedMove);
+                    }
+                    else if (pkmn.ChoiceLockedMove != PBEMove.None)
+                    {
+                        useableMoves.Add(pkmn.ChoiceLockedMove);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < pkmn.Moves.Length; i++)
+                        {
+                            if (pkmn.PP[i] > 0)
+                            {
+                                useableMoves.Add(pkmn.Moves[i]);
+                            }
+                        }
+                    }
+
+                    if (useableMoves.IndexOf(move) == -1)
+                    {
+                        await Context.Channel.SendMessageAsync($"{pkmn.Shell.Nickname} cannot use {PBEMoveLocalization.Names[move].English}!");
+                    }
+                    else
+                    {
+                        await Context.Message.AddReactionAsync(theEmojiItself); // Put this here so it happens before RunTurn() takes its time
+
+                        PBEMoveTarget possibleTargets = pkmn.GetMoveTargets(move);
+                        var action = new PBEAction
+                        {
+                            Decision = PBEDecision.Fight,
+                            FightMove = move,
+                            PokemonId = pkmn.Id
+                        };
+                        switch (possibleTargets)
+                        {
+                            case PBEMoveTarget.All:
+                                {
+                                    action.FightTargets = PBETarget.AllyCenter | PBETarget.FoeCenter;
+                                    break;
+                                }
+                            case PBEMoveTarget.AllFoes:
+                            case PBEMoveTarget.AllFoesSurrounding:
+                            case PBEMoveTarget.AllSurrounding:
+                            case PBEMoveTarget.RandomFoeSurrounding:
+                            case PBEMoveTarget.SingleFoeSurrounding:
+                            case PBEMoveTarget.SingleNotSelf:
+                            case PBEMoveTarget.SingleSurrounding:
+                                {
+                                    action.FightTargets = PBETarget.FoeCenter;
+                                    break;
+                                }
+                            case PBEMoveTarget.AllTeam:
+                            case PBEMoveTarget.Self:
+                            case PBEMoveTarget.SelfOrAllySurrounding:
+                            case PBEMoveTarget.SingleAllySurrounding:
+                                {
+                                    action.FightTargets = PBETarget.AllyCenter;
+                                    break;
+                                }
+                        }
+                        PBEBattle.SelectActionsIfValid(team, new[] { action });
+                    }
+                }
             }
         }
 
         [Group("pokemon")]
+        [Alias("pokémon", "species", "pkmn", "poke", "poké")]
         public class PokemonCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]

@@ -1,7 +1,7 @@
 ﻿using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
 using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Localization;
@@ -9,24 +9,14 @@ using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
-    public class BattleCommandContext : SocketCommandContext
-    {
-        public BattleContext BattleContext { get; }
-
-        public BattleCommandContext(BattleContext battleContext, DiscordSocketClient client, SocketUserMessage msg)
-            : base(client, msg)
-        {
-            BattleContext = battleContext;
-        }
-    }
-
     public class BattleContext
     {
-        public static List<BattleContext> ActiveBattles { get; } = new List<BattleContext>();
+        static readonly List<BattleContext> activeBattles = new List<BattleContext>();
 
         public PBEBattle Battle { get; }
         public SocketUser[] Battlers { get; }
@@ -34,15 +24,108 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
         public BattleContext(PBEBattle battle, SocketUser battler0, SocketUser battler1, ISocketMessageChannel channel)
         {
-            ActiveBattles.Add(this);
+            activeBattles.Add(this);
 
             Battle = battle;
             Battlers = new SocketUser[] { battler0, battler1 };
             Channel = channel;
 
-            battle.OnNewEvent += (b, p) => Battle_OnNewEvent(ActiveBattles.Single(a => a.Battle == b), p).GetAwaiter().GetResult();
-            battle.OnStateChanged += (b) => Battle_OnStateChanged(ActiveBattles.Single(a => a.Battle == b)).GetAwaiter().GetResult();
+            battle.OnNewEvent += (b, p) => Battle_OnNewEvent(activeBattles.Single(a => a.Battle == b), p).GetAwaiter().GetResult();
+            battle.OnStateChanged += (b) => Battle_OnStateChanged(activeBattles.Single(a => a.Battle == b)).GetAwaiter().GetResult();
             Battle.Begin();
+        }
+
+        public static BattleContext GetBattleContext(SocketUser user)
+        {
+            return activeBattles.SingleOrDefault(b => b.IndexOf(user) != -1);
+        }
+        public int IndexOf(SocketUser user)
+        {
+            if (Battlers[0].Id == user.Id)
+            {
+                return 0;
+            }
+            else if (Battlers[1].Id == user.Id)
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        static string CustomPokemonToString(PBEPokemon pkmn)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{pkmn.Shell.Nickname}/{pkmn.Shell.Species} {pkmn.GenderSymbol} Lv.{pkmn.Shell.Level}");
+            sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
+            sb.AppendLine($"Types: {pkmn.Type1}/{pkmn.Type2}");
+            sb.AppendLine($"Status1: {pkmn.Status1}");
+            if (pkmn.Status1 == PBEStatus1.Asleep)
+            {
+                sb.AppendLine($"Sleep turns: {pkmn.Status1Counter}");
+            }
+            else if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
+            {
+                sb.AppendLine($"Toxic Counter: {pkmn.Status1Counter}");
+            }
+            sb.AppendLine($"Status2: {pkmn.Status2}");
+            if (pkmn.Status2.HasFlag(PBEStatus2.Confused))
+            {
+                sb.AppendLine($"Confusion turns: {pkmn.ConfusionCounter}");
+            }
+            if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
+            {
+                sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Shell.Nickname}");
+            }
+            if (pkmn.Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                sb.AppendLine($"Substitute HP: {pkmn.SubstituteHP}");
+            }
+            sb.AppendLine($"Stats: A: {pkmn.Attack} D: {pkmn.Defense} SA: {pkmn.SpAttack} SD: {pkmn.SpDefense} S: {pkmn.Speed}");
+            sb.AppendLine($"Stat changes: A: {pkmn.AttackChange} D: {pkmn.DefenseChange} SA: {pkmn.SpAttackChange} SD: {pkmn.SpDefenseChange} S: {pkmn.SpeedChange} AC: {pkmn.AccuracyChange} E: {pkmn.EvasionChange}");
+            sb.AppendLine($"Item: {PBEItemLocalization.Names[pkmn.Item].English}");
+            sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[pkmn.Ability].English}");
+            sb.AppendLine($"Nature: {pkmn.Shell.Nature}");
+            sb.AppendLine($"Hidden Power: {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
+            var useableMoves = new List<PBEMove>(pkmn.Moves.Length);
+            if (pkmn.IsForcedToStruggle())
+            {
+                useableMoves.Add(PBEMove.Struggle);
+            }
+            else if (pkmn.TempLockedMove != PBEMove.None)
+            {
+                useableMoves.Add(pkmn.TempLockedMove);
+            }
+            else if (pkmn.ChoiceLockedMove != PBEMove.None)
+            {
+                useableMoves.Add(pkmn.ChoiceLockedMove);
+            }
+            else
+            {
+                for (int i = 0; i < pkmn.Moves.Length; i++)
+                {
+                    if (pkmn.PP[i] > 0)
+                    {
+                        useableMoves.Add(pkmn.Moves[i]);
+                    }
+                }
+            }
+            string[] moveStrs = new string[useableMoves.Count];
+            for (int i = 0; i < useableMoves.Count; i++)
+            {
+                PBEMove move = useableMoves[i];
+                string str = PBEMoveLocalization.Names[move].English;
+                int moveIndex = Array.IndexOf(pkmn.Moves, move);
+                if (moveIndex != -1)
+                {
+                    str += $" {pkmn.PP[moveIndex]}/{pkmn.MaxPP[moveIndex]}";
+                }
+                moveStrs[i] = str;
+            }
+            sb.Append($"Useable moves: {string.Join(", ", moveStrs)}");
+            return sb.ToString();
         }
 
         static async Task Battle_OnStateChanged(BattleContext context)
@@ -56,7 +139,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                 case PBEBattleState.Ended:
                     {
-                        ActiveBattles.Remove(context);
+                        activeBattles.Remove(context);
                         break;
                     }
             }
@@ -67,7 +150,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}";
             }
-            async Task CreateAndSendEmbed(string message, PBEPokemon pkmn = null)
+            async Task CreateAndSendEmbed(string message, PBEPokemon pkmn = null, SocketUser userToSendTo = null)
             {
                 string title = $"{context.Battlers[0].Username} vs {context.Battlers[1].Username}";
                 if (context.Battle.TurnNumber > 0)
@@ -82,7 +165,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     embed = embed.WithColor(Utils.GetColor(pkmn)).WithImageUrl(Utils.GetPokemonSprite(pkmn));
                 }
-                await context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+                if (userToSendTo != null)
+                {
+                    await userToSendTo.SendMessageAsync(string.Empty, embed: embed.Build());
+                }
+                else
+                {
+                    await context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
+                }
             }
 
             switch (packet)
@@ -940,15 +1030,16 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                 case PBEActionsRequestPacket arp:
                     {
-                        SocketUser guy = context.Battlers[Array.IndexOf(context.Battle.Teams, arp.Team)];
-                        await guy.SendMessageAsync($"Actions for turn {context.Battle.TurnNumber}");
-                        PBEBattle.SelectActionsIfValid(arp.Team, PokemonBattleEngine.AI.PBEAIManager.CreateActions(arp.Team));
+                        SocketUser user = context.Battlers[Array.IndexOf(context.Battle.Teams, arp.Team)];
+                        PBEPokemon pkmn = arp.Team.ActionsRequired[0];
+                        string randMove = PBEUtils.Sample(PBEMoveLocalization.Names).Value.English;
+                        await CreateAndSendEmbed($"{CustomPokemonToString(pkmn)}\nTo use a move: `!move use {randMove}`\nTo check a move: `!move info {randMove}`", pkmn, user);
                         break;
                     }
                 case PBESwitchInRequestPacket sirp:
                     {
-                        SocketUser guy = context.Battlers[Array.IndexOf(context.Battle.Teams, sirp.Team)];
-                        await guy.SendMessageAsync("Switches");
+                        SocketUser user = context.Battlers[Array.IndexOf(context.Battle.Teams, sirp.Team)];
+                        await user.SendMessageAsync("Automatically choosing your switches...");
                         PBEBattle.SelectSwitchesIfValid(sirp.Team, PokemonBattleEngine.AI.PBEAIManager.CreateSwitches(sirp.Team));
                         break;
                     }
