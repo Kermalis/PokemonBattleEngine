@@ -72,20 +72,26 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     PBEMoveData mData = PBEMoveData.Data[move];
                     var embed = new EmbedBuilder()
-                        .WithColor(Utils.TypeToColor[mData.Type])
-                        .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
-                        .WithTitle(PBEMoveLocalization.Names[move].English)
                         .WithAuthor(Context.User)
+                        .WithColor(Utils.TypeToColor[mData.Type])
+                        .WithTitle(PBEMoveLocalization.Names[move].English)
+                        .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
+                        .WithDescription(PBEMoveLocalization.Descriptions[move].English.Replace('\n', ' '))
                         .AddField("Type", mData.Type, true)
                         .AddField("Category", mData.Category, true)
                         .AddField("Priority", mData.Priority, true)
                         .AddField("PP", mData.PPTier * PBESettings.DefaultSettings.PPMultiplier, true)
                         .AddField("Power", mData.Power == 0 ? "--" : mData.Power.ToString(), true)
-                        .AddField("Accuracy", mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString(), true)
-                        .AddField("Effect", mData.Effect, true)
-                        .AddField("Effect Param", mData.EffectParam, true)
-                        .AddField("Targets", mData.Targets, true)
-                        .AddField("Flags", mData.Flags, true);
+                        .AddField("Accuracy", mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString(), true);
+                    switch (mData.Effect)
+                    {
+                        case PBEMoveEffect.FlareBlitz: embed.AddField("Recoil", "1/3 damage dealt", true); break; // TODO: Burn chance
+                        case PBEMoveEffect.Recoil: embed.AddField("Recoil", $"1/{mData.EffectParam} damage dealt", true); break;
+                        case PBEMoveEffect.Struggle: embed.AddField("Recoil", "1/4 user's max HP", true); break;
+                        case PBEMoveEffect.VoltTackle: embed.AddField("Recoil", "1/3 damage dealt", true); break; // TODO: Paralyze chance
+                    }
+                    embed.AddField("Targets", mData.Targets, true)
+                    .AddField("Flags", mData.Flags, true);
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }
@@ -201,7 +207,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     Enum.TryParse(speciesName, true, out species);
                 }
-                if (species != 0)
+                if (species == 0)
+                {
+                    await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid species!");
+                }
+                else
                 {
                     PBEPokemonData pData = PBEPokemonData.Data[species];
                     string types = pData.Type1.ToString();
@@ -223,12 +233,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio));
                     }
 
+                    var noForme = (PBESpecies)((int)species & 0xFFFF);
                     var embed = new EmbedBuilder()
-                        .WithColor(Utils.GetColor(species))
-                        .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
-                        .WithTitle(PBEPokemonLocalization.Names[(PBESpecies)((int)species & 0xFFFF)].English)
                         .WithAuthor(Context.User)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEUtils.RNG.NextGender(species), false, false))
+                        .WithColor(Utils.GetColor(species))
+                        .WithTitle($"{PBEPokemonLocalization.Names[noForme].English} - {PBEPokemonLocalization.Categories[noForme].English}")
+                        .WithUrl("https://github.com/Kermalis/PokemonBattleEngine")
+                        .WithDescription(PBEPokemonLocalization.Entries[noForme].English.Replace('\n', ' '))
                         .AddField("Types", types, true)
                         .AddField("Gender Ratio", ratio, true)
                         .AddField("Weight", $"{pData.Weight:N1} kg", true)
@@ -238,11 +249,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Defense", pData.BaseStats[2], true)
                         .AddField("Special Attack", pData.BaseStats[3], true)
                         .AddField("Special Defense", pData.BaseStats[4], true)
-                        .AddField("Speed", pData.BaseStats[5], true);
+                        .AddField("Speed", pData.BaseStats[5], true)
+                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEUtils.RNG.NextGender(species), false, false));
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
-                    return;
                 }
-                await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid species!");
             }
         }
     }

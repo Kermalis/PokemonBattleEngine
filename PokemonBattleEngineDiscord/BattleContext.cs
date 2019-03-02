@@ -163,7 +163,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     .WithDescription(message);
                 if (pkmn != null)
                 {
-                    embed = embed.WithColor(Utils.GetColor(pkmn)).WithImageUrl(Utils.GetPokemonSprite(pkmn));
+                    embed.WithColor(Utils.GetColor(pkmn)).WithImageUrl(Utils.GetPokemonSprite(pkmn));
                 }
                 if (userToSendTo != null)
                 {

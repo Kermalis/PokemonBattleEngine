@@ -90,10 +90,10 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 sb.AppendLine($"Accuracy: {(mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString())}");
                 switch (mData.Effect)
                 {
-                    case PBEMoveEffect.FlareBlitz: sb.AppendLine($"Recoil: 1/3 damage dealt"); break;
+                    case PBEMoveEffect.FlareBlitz: sb.AppendLine("Recoil: 1/3 damage dealt"); break; // TODO: Burn chance
                     case PBEMoveEffect.Recoil: sb.AppendLine($"Recoil: 1/{mData.EffectParam} damage dealt"); break;
-                    case PBEMoveEffect.Struggle: sb.AppendLine($"Recoil: 1/4 user's max HP"); break;
-                    case PBEMoveEffect.VoltTackle: sb.AppendLine($"Recoil: 1/3 damage dealt"); break;
+                    case PBEMoveEffect.Struggle: sb.AppendLine("Recoil: 1/4 user's max HP"); break;
+                    case PBEMoveEffect.VoltTackle: sb.AppendLine("Recoil: 1/3 damage dealt"); break; // TODO: Paralyze chance
                 }
                 sb.AppendLine($"Targets: {mData.Targets}");
                 sb.AppendLine($"Flags: {mData.Flags}");
