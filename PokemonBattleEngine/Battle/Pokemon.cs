@@ -122,6 +122,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// The amount of HP the Pokémon's <see cref="PBEStatus2.Substitute"/> has left.
         /// </summary>
         public ushort SubstituteHP { get; set; }
+        public PBEMove[] PreTransformMoves { get; set; }
+        public byte[] PreTransformPP { get; set; }
+        public byte[] PreTransformMaxPP { get; set; }
         #endregion
 
         #region Actions
@@ -156,12 +159,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             SetStats();
             HP = MaxHP;
             HPPercentage = 1.0;
-            Moves = Shell.Moves;
+            Moves = (PBEMove[])Shell.Moves.Clone();
             PP = new byte[Moves.Length];
             MaxPP = new byte[Moves.Length];
             for (int i = 0; i < Moves.Length; i++)
             {
-                PBEMove move = Shell.Moves[i];
+                PBEMove move = Moves[i];
                 if (move != PBEMove.None)
                 {
                     byte tier = PBEMoveData.Data[move].PPTier;
@@ -194,10 +197,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 EVs = new byte[6],
                 IVs = new byte[6]
             };
-            Moves = new PBEMove[Shell.Moves.Length];
-            PP = new byte[Moves.Length];
-            MaxPP = new byte[Moves.Length];
-            for (int i = 0; i < Moves.Length; i++)
+            Moves = new PBEMove[Team.Battle.Settings.NumMoves];
+            PP = new byte[Team.Battle.Settings.NumMoves];
+            MaxPP = new byte[Team.Battle.Settings.NumMoves];
+            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
             {
                 Shell.Moves[i] = Moves[i] = PBEMove.MAX;
             }
@@ -273,11 +276,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 Status1Counter = 1;
             }
 
-            Status2 = PBEStatus2.None;
             ConfusionCounter = ConfusionTurns = 0;
             DisguisedAsPokemon = null;
             SeededPosition = PBEFieldPosition.None;
             SubstituteHP = 0;
+            if (Status2.HasFlag(PBEStatus2.Transformed))
+            {
+                Moves = (PBEMove[])PreTransformMoves.Clone();
+                PP = (byte[])PreTransformPP.Clone();
+                MaxPP = (byte[])PreTransformMaxPP.Clone();
+                PreTransformMoves = null;
+                PreTransformPP = null;
+                PreTransformMaxPP = null;
+            }
+            Status2 = PBEStatus2.None;
 
             TempLockedMove = ChoiceLockedMove = PBEMove.None;
             TempLockedTargets = PBETarget.None;
@@ -316,7 +328,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             SpeedChange = target.SpeedChange;
             AccuracyChange = target.AccuracyChange;
             EvasionChange = target.EvasionChange;
-            Moves = (PBEMove[])target.Moves.Clone();
+            PreTransformMoves = (PBEMove[])Moves.Clone();
+            PreTransformPP = (byte[])PP.Clone();
+            PreTransformMaxPP = (byte[])MaxPP.Clone();
+            for (int i = 0; i < target.Moves.Length; i++)
+            {
+                Moves[i] = target.Moves[i];
+            }
             if (Id != byte.MaxValue)
             {
                 for (int i = 0; i < Moves.Length; i++)
