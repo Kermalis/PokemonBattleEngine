@@ -10,9 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="LocalizedData\**" />
-    <EmbeddedResource Remove="LocalizedData\**" />
-    <None Remove="LocalizedData\**" />
+    <Compile Remove="Dumped Data\**" />
+    <EmbeddedResource Remove="Dumped Data\**" />
+    <None Remove="Dumped Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.6.0-preview.19073.11" />
   </ItemGroup>
 
   <ItemGroup>

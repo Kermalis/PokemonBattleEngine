@@ -13,25 +13,96 @@ namespace Kermalis.PokemonBattleEngineTesting
 
         public LocalizationGenerator()
         {
-            english = new NARC(@"../../../\LocalizedData\English.narc");
-            french = new NARC(@"../../../\LocalizedData\French.narc");
-            german = new NARC(@"../../../\LocalizedData\German.narc");
-            italian = new NARC(@"../../../\LocalizedData\Italian.narc");
-            japanese = new NARC(@"../../../\LocalizedData\Japanese.narc");
-            korean = new NARC(@"../../../\LocalizedData\Korean.narc");
-            spanish = new NARC(@"../../../\LocalizedData\Spanish.narc");
+            english = new NARC(@"../../../\Dumped Data\English.narc");
+            french = new NARC(@"../../../\Dumped Data\French.narc");
+            german = new NARC(@"../../../\Dumped Data\German.narc");
+            italian = new NARC(@"../../../\Dumped Data\Italian.narc");
+            japanese = new NARC(@"../../../\Dumped Data\Japanese.narc");
+            korean = new NARC(@"../../../\Dumped Data\Korean.narc");
+            spanish = new NARC(@"../../../\Dumped Data\Spanish.narc");
         }
 
         string[][] eng, fre, ger, ita, jap, kor, spa;
         void LoadTexts(int fileNum)
         {
-            eng = english.ReadTextFile(fileNum);
-            fre = french.ReadTextFile(fileNum);
-            ger = german.ReadTextFile(fileNum);
-            ita = italian.ReadTextFile(fileNum);
-            jap = japanese.ReadTextFile(fileNum);
-            kor = korean.ReadTextFile(fileNum);
-            spa = spanish.ReadTextFile(fileNum);
+            string[][] ReadTextFile(NARC narc)
+            {
+                using (var r = new BinaryReader(narc.Files[fileNum]))
+                {
+                    ushort numBlocks = r.ReadUInt16();
+                    ushort numEntries = r.ReadUInt16();
+                    r.ReadUInt32(); // fileSize
+                    r.ReadUInt32(); // padding
+                    var texts = new string[numBlocks][];
+                    var blockOffsets = new uint[numBlocks];
+                    for (int i = 0; i < numBlocks; i++)
+                    {
+                        texts[i] = new string[numEntries];
+                        blockOffsets[i] = r.ReadUInt32();
+                    }
+                    for (int i = 0; i < numBlocks; i++)
+                    {
+                        r.BaseStream.Position = blockOffsets[i];
+                        r.ReadUInt32(); // blockSize
+                        var stringOffsets = new uint[numEntries];
+                        var stringLengths = new ushort[numEntries];
+                        for (int j = 0; j < numEntries; j++)
+                        {
+                            stringOffsets[j] = r.ReadUInt32();
+                            stringLengths[j] = r.ReadUInt16();
+                            r.ReadUInt16(); // textFlags[j]
+                        }
+                        for (int j = 0; j < numEntries; j++)
+                        {
+                            r.BaseStream.Position = blockOffsets[i] + stringOffsets[j];
+                            var encoded = new ushort[stringLengths[j]];
+                            for (int k = 0; k < stringLengths[j]; k++)
+                            {
+                                encoded[k] = r.ReadUInt16();
+                            }
+                            int key = encoded[stringLengths[j] - 1] ^ 0xFFFF;
+                            var decoded = new int[stringLengths[j]];
+                            for (int k = stringLengths[j] - 1; k >= 0; k--)
+                            {
+                                decoded[k] = encoded[k] ^ key;
+                                key = ((key >> 3) | (key << 13)) & 0xFFFF;
+                            }
+                            for (int k = 0; k < stringLengths[j]; k++)
+                            {
+                                int c = decoded[k];
+                                if (c == 0xFFFF)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    string car;
+                                    switch (c)
+                                    {
+                                        case '"': car = "\\\""; break;
+                                        case 0x246D: car = "♂"; break;
+                                        case 0x246E: car = "♀"; break;
+                                        case 0x2486: car = "[PK]"; break;
+                                        case 0x2487: car = "[MN]"; break;
+                                        case 0xFFFE: car = "\\n"; break;
+                                        default: car = ((char)c).ToString(); break;
+                                    }
+                                    texts[i][j] += car;
+                                }
+                            }
+                        }
+                    }
+                    return texts;
+                }
+            }
+
+            eng = ReadTextFile(english);
+            fre = ReadTextFile(french);
+            ger = ReadTextFile(german);
+            ita = ReadTextFile(italian);
+            jap = ReadTextFile(japanese);
+            kor = ReadTextFile(korean);
+            spa = ReadTextFile(spanish);
         }
 
         public void GenerateAbilities()

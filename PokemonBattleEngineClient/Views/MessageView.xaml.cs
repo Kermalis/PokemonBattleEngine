@@ -21,7 +21,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
             public Message(string message)
             {
-                Bitmap = Utils.RenderString(message, Utils.StringRenderStyle.MenuBlack);
+                Bitmap = StringRendering.RenderString(message, "MenuBlack")
                 MatchCollection matches = Regex.Matches(message, @"Turn \d{1,}");
                 if (matches.Count == 1 && matches[0].Value == message)
                 {

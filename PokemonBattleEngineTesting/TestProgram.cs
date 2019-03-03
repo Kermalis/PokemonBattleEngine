@@ -5,6 +5,7 @@
         private enum TestType
         {
             AIBattle,
+            FontDumper,
             LocalizationGenerator
         }
 
@@ -15,6 +16,7 @@
             switch (t)
             {
                 case TestType.AIBattle: AIBattle.Test(); break;
+                case TestType.FontDumper: FontDumper.Dump(); break;
                 case TestType.LocalizationGenerator:
                     {
                         var generator = new LocalizationGenerator();
