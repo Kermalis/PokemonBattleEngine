@@ -31,6 +31,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public sbyte TargetAccuracyChange { get; }
         public sbyte TargetEvasionChange { get; }
         public PBEAbility TargetAbility { get; }
+        public PBESpecies TargetSpecies { get; }
         public PBEType TargetType1 { get; }
         public PBEType TargetType2 { get; }
         public double TargetWeight { get; }
@@ -57,6 +58,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)(TargetAccuracyChange = target.AccuracyChange));
             bytes.Add((byte)(TargetEvasionChange = target.EvasionChange));
             bytes.Add((byte)(TargetAbility = target.Ability));
+            bytes.AddRange(BitConverter.GetBytes((ushort)(TargetSpecies = target.Species)));
             bytes.Add((byte)(TargetType1 = target.Type1));
             bytes.Add((byte)(TargetType2 = target.Type2));
             bytes.AddRange(BitConverter.GetBytes(TargetWeight = target.Weight));
@@ -90,6 +92,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 TargetAccuracyChange = r.ReadSByte();
                 TargetEvasionChange = r.ReadSByte();
                 TargetAbility = (PBEAbility)r.ReadByte();
+                TargetSpecies = (PBESpecies)r.ReadUInt16();
                 TargetType1 = (PBEType)r.ReadByte();
                 TargetType2 = (PBEType)r.ReadByte();
                 TargetWeight = r.ReadDouble();

@@ -74,8 +74,18 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     Bitmap nickname = StringRendering.RenderString(pkmn.KnownNickname, "BattleName");
                     ctx.DrawImage(nickname.PlatformImpl, 1.0, new Rect(0, 0, nickname.PixelSize.Width, nickname.PixelSize.Height), new Rect(72 - Math.Max(54, nickname.PixelSize.Width), yOffset, nickname.PixelSize.Width, nickname.PixelSize.Height));
 
-                    PBEPokemon disguisedAs = pkmn.DisguisedAsPokemon ?? pkmn; // Don't use visual gender because of transform
-                    Bitmap level = StringRendering.RenderString($"{(disguisedAs.Shell.Gender == PBEGender.Female ? "♀" : disguisedAs.Shell.Gender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Shell.Level}", "BattleLevel");
+                    string gender;
+                    if (pkmn.Id == byte.MaxValue)
+                    {
+                        gender = pkmn.KnownGender == PBEGender.Female ? "♀" : pkmn.KnownGender == PBEGender.Male ? "♂" : " ";
+                    }
+                    else
+                    {
+                        PBEPokemon disguisedAs = pkmn.DisguisedAsPokemon ?? pkmn;
+                        // Use Gender because if the disguisedAs Pokémon transformed on the field, the KnownGender will be incorrect
+                        gender = disguisedAs.Gender == PBEGender.Female ? "♀" : disguisedAs.Gender == PBEGender.Male ? "♂" : " ";
+                    }
+                    Bitmap level = StringRendering.RenderString($"{gender}[LV]{pkmn.Level}", "BattleLevel");
                     ctx.DrawImage(level.PlatformImpl, 1.0, new Rect(0, 0, level.PixelSize.Width, level.PixelSize.Height), new Rect(70, 1 + yOffset, level.PixelSize.Width, level.PixelSize.Height));
 
                     if (pkmn.Status1 != PBEStatus1.None)

@@ -964,7 +964,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
                         {
                             const double baseX = 142;
                             SetLocations(baseX + 0, baseX + 128);
-                            BattleView.AddMessage($"Send {Pokemon.Shell.Nickname} where?", true, false);
+                            BattleView.AddMessage($"Send {Pokemon.Nickname} where?", true, false);
                             PositionsVisible = true;
                         }
                         break;
@@ -991,7 +991,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
                         {
                             const double baseX = 78;
                             SetLocations(baseX + 0, baseX + 256);
-                            BattleView.AddMessage($"Send {Pokemon.Shell.Nickname} where?", true, false);
+                            BattleView.AddMessage($"Send {Pokemon.Nickname} where?", true, false);
                             PositionsVisible = true;
                         }
                         break;

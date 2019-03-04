@@ -28,8 +28,6 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
             }
             else
             {
-                //Level = $"{(pkmn.Shell.Gender == PBEGender.Genderless ? " " : pkmn.GenderSymbol)}[LV]{pkmn.Shell.Level}";
-                //HP = pkmn.HP;
                 Status1.Source = pkmn.Status1 == PBEStatus1.None ? null : ImageSource.FromResource($"Kermalis.PokemonBattleEngineMobile.MISC.STATUS1_{pkmn.Status1}.png");
 
                 if (pkmn.HPPercentage <= 0.20)

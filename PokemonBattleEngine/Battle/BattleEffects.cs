@@ -170,7 +170,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (user.HP > 0 && victim.Ability == PBEAbility.Mummy && user.Ability != PBEAbility.Multitype && user.Ability != PBEAbility.Mummy && user.Ability != PBEAbility.ZenMode)
                     {
                         BroadcastAbility(victim, user, PBEAbility.Mummy, PBEAbilityAction.Damage);
-                        user.Ability = PBEAbility.Mummy;
                         BroadcastAbility(user, victim, PBEAbility.Mummy, PBEAbilityAction.Changed);
                     }
                     if (user.HP > 0 && (victim.Ability == PBEAbility.IronBarbs || victim.Ability == PBEAbility.RoughSkin))
@@ -1181,7 +1180,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.HornDrill:
                 case PBEMove.SheerCold:
                     {
-                        chance = user.Shell.Level - target.Shell.Level + 30;
+                        chance = user.Level - target.Level + 30;
                         goto roll; // Skip all modifiers
                     }
                 case PBEMove.Hurricane:
@@ -1294,11 +1293,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 stage += 2;
             }
-            if (user.Shell.Species == PBESpecies.Chansey && user.Item == PBEItem.LuckyPunch)
+            if (user.OriginalSpecies == PBESpecies.Chansey && user.Item == PBEItem.LuckyPunch)
             {
                 stage += 2;
             }
-            if (user.Shell.Species == PBESpecies.Farfetchd && user.Item == PBEItem.Stick)
+            if (user.OriginalSpecies == PBESpecies.Farfetchd && user.Item == PBEItem.Stick)
             {
                 stage += 2;
             }
@@ -1322,10 +1321,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 pkmn.Status2 &= ~PBEStatus2.Disguised;
                 pkmn.DisguisedAsPokemon = null;
-                pkmn.KnownGender = pkmn.Shell.Gender;
-                pkmn.KnownNickname = pkmn.Shell.Nickname;
-                pkmn.KnownShiny = pkmn.Shell.Shiny;
-                pkmn.KnownSpecies = pkmn.Shell.Species;
+                pkmn.KnownGender = pkmn.Gender;
+                pkmn.KnownNickname = pkmn.Nickname;
+                pkmn.KnownShiny = pkmn.Shiny;
+                pkmn.KnownSpecies = pkmn.OriginalSpecies;
                 pkmn.KnownType1 = pkmn.Type1;
                 pkmn.KnownType2 = pkmn.Type2;
                 BroadcastIllusion(pkmn);
@@ -1347,7 +1346,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.Item == PBEItem.PowerHerb)
             {
-                pkmn.Item = PBEItem.None;
                 BroadcastItem(pkmn, pkmn, PBEItem.PowerHerb, PBEItemAction.Consumed);
                 return true;
             }
@@ -1361,7 +1359,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (pkmn.HP <= pkmn.MaxHP / 2)
                         {
-                            pkmn.Item = PBEItem.None;
                             BroadcastItem(pkmn, pkmn, PBEItem.SitrusBerry, PBEItemAction.Consumed);
                             HealDamage(pkmn, (ushort)(pkmn.MaxHP / 4));
                         }
@@ -1715,21 +1712,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (pkmn.Ability == PBEAbility.Illusion)
             {
                 PBEPokemon last = pkmn.Team.Party.Last();
-                if (last.HP > 0 && last.Shell.Species != pkmn.Shell.Species)
+                if (last.HP > 0 && last.OriginalSpecies != pkmn.OriginalSpecies)
                 {
                     pkmn.Status2 |= PBEStatus2.Disguised;
                     pkmn.DisguisedAsPokemon = last;
-                    pkmn.KnownGender = last.Shell.Gender;
-                    pkmn.KnownNickname = last.Shell.Nickname;
-                    pkmn.KnownShiny = last.Shell.Shiny;
-                    pkmn.KnownSpecies = last.Shell.Species;
-                    PBEPokemonData pData = PBEPokemonData.Data[last.Shell.Species]; // If "last" is on the field and its types changed then we wouldn't want to use last.Type1
+                    pkmn.KnownGender = last.Gender;
+                    pkmn.KnownNickname = last.Nickname;
+                    pkmn.KnownShiny = last.Shiny;
+                    pkmn.KnownSpecies = last.OriginalSpecies;
+                    PBEPokemonData pData = PBEPokemonData.Data[last.OriginalSpecies]; // If "last" is on the field and its types changed then we wouldn't want to use last.Type1
                     pkmn.KnownType1 = pData.Type1;
                     pkmn.KnownType2 = pData.Type2;
-                    return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.Shell.Species, last.Shell.Nickname, pkmn.Shell.Level, last.Shell.Shiny, last.Shell.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
+                    return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.OriginalSpecies, last.Nickname, pkmn.Level, last.Shiny, last.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
                 }
             }
-            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Shell.Species, pkmn.Shell.Nickname, pkmn.Shell.Level, pkmn.Shell.Shiny, pkmn.Shell.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
+            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.OriginalSpecies, pkmn.Nickname, pkmn.Level, pkmn.Shiny, pkmn.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
         }
         void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
         {
@@ -2708,7 +2705,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 PBEFailReason BeforeMissCheck(PBEPokemon target)
                 {
-                    if (target.Shell.Level > user.Shell.Level)
+                    if (target.Level > user.Level)
                     {
                         BroadcastMoveFailed(user, target, PBEFailReason.OneHitKnockoutUnaffected);
                         return PBEFailReason.OneHitKnockoutUnaffected;
@@ -2745,7 +2742,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 ushort DamageFunc(PBEPokemon target)
                 {
-                    return (ushort)(user.Shell.Level * (PBEUtils.RNG.Next(0, Settings.MaxLevel + 1) + (Settings.MaxLevel / 2)) / Settings.MaxLevel);
+                    return (ushort)(user.Level * (PBEUtils.RNG.Next(0, Settings.MaxLevel + 1) + (Settings.MaxLevel / 2)) / Settings.MaxLevel);
                 }
                 FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
             }
@@ -2767,7 +2764,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 ushort DamageFunc(PBEPokemon target)
                 {
-                    return user.Shell.Level;
+                    return user.Level;
                 }
                 FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
             }
@@ -3281,7 +3278,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            target.Ability = PBEAbility.None;
                             BroadcastAbility(target, user, PBEAbility.None, PBEAbilityAction.Changed);
                             IllusionBreak(target, user);
                         }

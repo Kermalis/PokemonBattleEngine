@@ -142,7 +142,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                     {
                         PBEPokemon abilityOwner = ap.AbilityOwnerTeam.TryGetPokemon(ap.AbilityOwner),
                             pokemon2 = ap.Pokemon2Team.TryGetPokemon(ap.Pokemon2);
-                        abilityOwner.Ability = ap.Ability;
+                        abilityOwner.Ability = abilityOwner.KnownAbility = ap.Ability;
                         string message;
                         switch (ap.Ability)
                         {
@@ -303,19 +303,16 @@ namespace Kermalis.PokemonBattleEngineMobile
                 case PBEIllusionPacket ilp:
                     {
                         PBEPokemon pokemon = ilp.PokemonTeam.TryGetPokemon(ilp.Pokemon);
-
                         pokemon.Status2 &= ~PBEStatus2.Disguised;
                         pokemon.DisguisedAsPokemon = null;
-                        pokemon.Shell.Ability = pokemon.Ability = PBEAbility.Illusion;
-                        pokemon.Shell.Gender = pokemon.KnownGender = ilp.ActualGender;
-                        pokemon.Shell.Nickname = pokemon.KnownNickname = ilp.ActualNickname;
-                        pokemon.Shell.Shiny = pokemon.KnownShiny = ilp.ActualShiny;
-                        pokemon.Shell.Species = pokemon.KnownSpecies = ilp.ActualSpecies;
-                        pokemon.Type1 = pokemon.KnownType1 = ilp.ActualType1;
-                        pokemon.Type2 = pokemon.KnownType2 = ilp.ActualType2;
-
-                        PBEPokemonData pData = PBEPokemonData.Data[ilp.ActualSpecies];
-                        pokemon.Weight = pData.Weight; // TODO: If modified (autotomize etc)
+                        pokemon.KnownAbility = PBEAbility.Illusion;
+                        pokemon.KnownGender = ilp.ActualGender;
+                        pokemon.KnownNickname = ilp.ActualNickname;
+                        pokemon.KnownShiny = ilp.ActualShiny;
+                        pokemon.KnownSpecies = ilp.ActualSpecies;
+                        pokemon.KnownType1 = ilp.ActualType1;
+                        pokemon.KnownType2 = ilp.ActualType2;
+                        pokemon.KnownWeight = ilp.ActualWeight;
                         BattleView.Field.UpdatePokemon(pokemon);
                         break;
                     }
@@ -325,8 +322,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                             pokemon2 = ip.Pokemon2Team.TryGetPokemon(ip.Pokemon2);
                         switch (ip.ItemAction)
                         {
-                            case PBEItemAction.Consumed: itemHolder.Item = PBEItem.None; break;
-                            default: itemHolder.Item = ip.Item; break;
+                            case PBEItemAction.Consumed: itemHolder.Item = itemHolder.KnownItem = PBEItem.None; break;
+                            default: itemHolder.Item = itemHolder.KnownItem = ip.Item; break;
                         }
                         bool itemHolderCaps = true,
                             pokemon2Caps = false;
@@ -532,9 +529,9 @@ namespace Kermalis.PokemonBattleEngineMobile
                 case PBEMoveUsedPacket mup:
                     {
                         PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
-                        if (BattleId != int.MaxValue && moveUser.Team.Id != BattleId && !mup.CalledFromOtherMove && !moveUser.Moves.Contains(mup.Move))
+                        if (BattleId != int.MaxValue && moveUser.Team.Id != BattleId && !mup.CalledFromOtherMove && !moveUser.KnownMoves.Contains(mup.Move))
                         {
-                            moveUser.Moves[Array.IndexOf(moveUser.Moves, PBEMove.MAX)] = mup.Move;
+                            moveUser.KnownMoves[Array.IndexOf(moveUser.KnownMoves, PBEMove.MAX)] = mup.Move;
                         }
                         BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(moveUser, true), PBEMoveLocalization.Names[mup.Move].FromUICultureInfo()), true, true);
                         break;
@@ -639,11 +636,11 @@ namespace Kermalis.PokemonBattleEngineMobile
                                 {
                                     pokemon.Status2 |= PBEStatus2.Disguised;
                                     pokemon.DisguisedAsPokemon = Battle.TryGetPokemon(info.DisguisedAsId);
-                                    pokemon.KnownGender = pokemon.DisguisedAsPokemon.Shell.Gender;
-                                    pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Shell.Nickname;
-                                    pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shell.Shiny;
-                                    pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.Shell.Species;
-                                    PBEPokemonData pData = PBEPokemonData.Data[pokemon.DisguisedAsPokemon.Shell.Species];
+                                    pokemon.KnownGender = pokemon.DisguisedAsPokemon.Gender;
+                                    pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Nickname;
+                                    pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;
+                                    pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.OriginalSpecies;
+                                    PBEPokemonData pData = PBEPokemonData.Data[pokemon.DisguisedAsPokemon.OriginalSpecies];
                                     pokemon.KnownType1 = pData.Type1;
                                     pokemon.KnownType2 = pData.Type2;
                                 }
@@ -1114,11 +1111,12 @@ namespace Kermalis.PokemonBattleEngineMobile
                         target.SpeedChange = tp.TargetSpeedChange;
                         target.AccuracyChange = tp.TargetAccuracyChange;
                         target.EvasionChange = tp.TargetEvasionChange;
-                        target.Ability = tp.TargetAbility;
-                        target.Type1 = tp.TargetType1;
-                        target.Type2 = tp.TargetType2;
-                        target.Weight = tp.TargetWeight;
+                        target.Ability = target.KnownAbility = tp.TargetAbility;
                         target.Moves = tp.TargetMoves.ToArray();
+                        target.Species = target.KnownSpecies = tp.TargetSpecies;
+                        target.Type1 = target.KnownType1 = tp.TargetType1;
+                        target.Type2 = target.KnownType2 = tp.TargetType2;
+                        target.Weight = target.KnownWeight = tp.TargetWeight;
                         return true;
                     }
                 case PBEWeatherPacket wp:
@@ -1259,7 +1257,7 @@ namespace Kermalis.PokemonBattleEngineMobile
             }
             else
             {
-                BattleView.AddMessage($"What will {actions[i].Shell.Nickname} do?", true, false);
+                BattleView.AddMessage($"What will {actions[i].Nickname} do?", true, false);
                 BattleView.Actions.DisplayActions(actions[i]);
             }
         }

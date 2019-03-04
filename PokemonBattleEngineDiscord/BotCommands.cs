@@ -227,7 +227,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
                     if (useableMoves.IndexOf(move) == -1)
                     {
-                        await Context.Channel.SendMessageAsync($"{pkmn.Shell.Nickname} cannot use {PBEMoveLocalization.Names[move].English}!");
+                        await Context.Channel.SendMessageAsync($"{pkmn.Nickname} cannot use {PBEMoveLocalization.Names[move].English}!");
                     }
                     else
                     {

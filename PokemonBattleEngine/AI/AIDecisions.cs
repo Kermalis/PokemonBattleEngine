@@ -38,7 +38,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 PBEPokemon pkmn = team.ActionsRequired[i];
                 if (pkmn.Moves.All(m => m == PBEMove.None))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(pkmn.Moves), $"{pkmn.Shell.Nickname} has no moves.");
+                    throw new ArgumentOutOfRangeException(nameof(pkmn.Moves), $"{pkmn.Nickname} has no moves.");
                 }
 
                 // If a Pokémon is forced to struggle, it is best that it just stays in until it faints
@@ -378,13 +378,13 @@ namespace Kermalis.PokemonBattleEngine.AI
                         }
                         else
                         {
-                            str += string.Format("Switch {0}", team.TryGetPokemon(a.Item1.SwitchPokemonId).Shell.Nickname);
+                            str += string.Format("Switch {0}", team.TryGetPokemon(a.Item1.SwitchPokemonId).Nickname);
                         }
                         str += " [" + a.Item2 + "]}";
                         return str;
                     }
                     IOrderedEnumerable<Tuple<PBEAction, double>> byScore = possibleActions.OrderByDescending(a => a.Item2);
-                    Debug.WriteLine("{0}'s possible actions: {1}", pkmn.Shell.Nickname, byScore.Select(a => ToDebugString(a)).Print());
+                    Debug.WriteLine("{0}'s possible actions: {1}", pkmn.Nickname, byScore.Select(a => ToDebugString(a)).Print());
                     double bestScore = byScore.First().Item2;
                     actions[i] = byScore.Where(a => a.Item2 == bestScore).Sample().Item1; // Pick random action of the ones that tied for best score
                 }

@@ -374,7 +374,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     case PBEItem.QuickPowder:
                         {
-                            if (pkmn.Shell.Species == PBESpecies.Ditto && !pkmn.Status2.HasFlag(PBEStatus2.Transformed))
+                            if (pkmn.OriginalSpecies == PBESpecies.Ditto && !pkmn.Status2.HasFlag(PBEStatus2.Transformed))
                             {
                                 speed *= 2.0;
                             }
@@ -406,7 +406,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     speed *= 0.25;
                 }
 
-                Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Shell.Nickname, speed);
+                Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Nickname, speed);
                 Tuple<PBEPokemon, double> tup = Tuple.Create(pkmn, speed);
                 if (evaluated.Count == 0)
                 {
@@ -446,7 +446,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                Debug.WriteLine(evaluated.Select(t => $"{t.Item1.Team.Id} {t.Item1.Shell.Nickname} {t.Item2}").Print());
+                Debug.WriteLine(evaluated.Select(t => $"{t.Item1.Team.Id} {t.Item1.Nickname} {t.Item2}").Print());
             }
             return evaluated.Select(t => t.Item1);
         }

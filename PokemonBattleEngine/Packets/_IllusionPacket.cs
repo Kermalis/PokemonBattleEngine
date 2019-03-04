@@ -21,6 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBESpecies ActualSpecies { get; }
         public PBEType ActualType1 { get; }
         public PBEType ActualType2 { get; }
+        public double ActualWeight { get; }
 
         public PBEIllusionPacket(PBEPokemon pokemon)
         {
@@ -28,12 +29,13 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Pokemon = pokemon.FieldPosition));
             bytes.Add((PokemonTeam = pokemon.Team).Id);
-            bytes.Add((byte)(ActualGender = pokemon.Shell.Gender));
-            bytes.AddRange(PBEUtils.StringToBytes(ActualNickname = pokemon.Shell.Nickname));
-            bytes.Add((byte)((ActualShiny = pokemon.Shell.Shiny) ? 1 : 0));
-            bytes.AddRange(BitConverter.GetBytes((ushort)(ActualSpecies = pokemon.Shell.Species)));
+            bytes.Add((byte)(ActualGender = pokemon.Gender));
+            bytes.AddRange(PBEUtils.StringToBytes(ActualNickname = pokemon.Nickname));
+            bytes.Add((byte)((ActualShiny = pokemon.Shiny) ? 1 : 0));
+            bytes.AddRange(BitConverter.GetBytes((ushort)(ActualSpecies = pokemon.Species)));
             bytes.Add((byte)(ActualType1 = pokemon.Type1));
             bytes.Add((byte)(ActualType2 = pokemon.Type2));
+            bytes.AddRange(BitConverter.GetBytes(ActualWeight = pokemon.Weight));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEIllusionPacket(byte[] buffer, PBEBattle battle)
@@ -50,6 +52,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 ActualSpecies = (PBESpecies)r.ReadUInt16();
                 ActualType1 = (PBEType)r.ReadByte();
                 ActualType2 = (PBEType)r.ReadByte();
+                ActualWeight = r.ReadDouble();
             }
         }
 

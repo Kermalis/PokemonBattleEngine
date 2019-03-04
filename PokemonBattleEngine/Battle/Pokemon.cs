@@ -30,11 +30,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>
         /// The Pokémon's nickname with its gender attached.
         /// </summary>
-        public string NameWithGender => Shell.Nickname + GenderSymbol;
+        public string NameWithGender => Nickname + GenderSymbol;
         /// <summary>
         /// The Pokémon's gender as a string.
         /// </summary>
-        public string GenderSymbol => Shell.Gender == PBEGender.Female ? "♀" : Shell.Gender == PBEGender.Male ? "♂" : string.Empty;
+        public string GenderSymbol => Gender == PBEGender.Female ? "♀" : Gender == PBEGender.Male ? "♂" : string.Empty;
+        /// <summary>
+        /// The Pokémon's known nickname with its known gender attached.
+        /// </summary>
+        public string KnownNameWithKnownGender => KnownNickname + KnownGenderSymbol;
+        /// <summary>
+        /// The Pokémon's known gender as a string.
+        /// </summary>
+        public string KnownGenderSymbol => KnownGender == PBEGender.Female ? "♀" : KnownGender == PBEGender.Male ? "♂" : string.Empty;
 
         /// <summary>
         /// The Pokémon's current HP.
@@ -52,49 +60,132 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// The Pokémon's attack stat.
         /// </summary>
         public ushort Attack { get; set; }
+        public sbyte AttackChange { get; set; }
         /// <summary>
         /// The Pokémon's defense stat.
         /// </summary>
         public ushort Defense { get; set; }
+        public sbyte DefenseChange { get; set; }
         /// <summary>
         /// The Pokémon's special attack stat.
         /// </summary>
         public ushort SpAttack { get; set; }
+        public sbyte SpAttackChange { get; set; }
         /// <summary>
         /// The Pokémon's special defense stat.
         /// </summary>
         public ushort SpDefense { get; set; }
+        public sbyte SpDefenseChange { get; set; }
         /// <summary>
         /// The Pokémon's speed stat.
         /// </summary>
         public ushort Speed { get; set; }
-        public PBEMove[] Moves { get; set; }
-        public byte[] PP { get; set; }
-        public byte[] MaxPP { get; set; }
-
-        public PBEFieldPosition FieldPosition { get; set; }
-        public PBEAbility Ability { get; set; }
-        public PBEItem Item { get; set; }
-        public PBEStatus1 Status1 { get; set; }
-        public PBEStatus2 Status2 { get; set; }
-        public PBEType Type1 { get; set; }
-        public PBEType Type2 { get; set; }
-        public double Weight { get; set; }
-
-        public PBEGender KnownGender { get; set; }
-        public string KnownNickname { get; set; }
-        public bool KnownShiny { get; set; }
-        public PBESpecies KnownSpecies { get; set; }
-        public PBEType KnownType1 { get; set; }
-        public PBEType KnownType2 { get; set; }
-
-        public sbyte AttackChange { get; set; }
-        public sbyte DefenseChange { get; set; }
-        public sbyte SpAttackChange { get; set; }
-        public sbyte SpDefenseChange { get; set; }
         public sbyte SpeedChange { get; set; }
         public sbyte AccuracyChange { get; set; }
         public sbyte EvasionChange { get; set; }
+        public byte[] EVs { get; set; }
+        public byte Friendship { get; set; }
+        public byte[] IVs { get; set; }
+        /// <summary>
+        /// The Pokémon's level.
+        /// </summary>
+        public byte Level { get; set; }
+        /// <summary>
+        /// The Pokémon's nature.
+        /// </summary>
+        public PBENature Nature { get; set; }
+        public byte[] PPUps { get; set; }
+
+        /// <summary>
+        /// The Pokémon's field position.
+        /// </summary>
+        public PBEFieldPosition FieldPosition { get; set; }
+        /// <summary>
+        /// The Pokémon's current ability.
+        /// </summary>
+        public PBEAbility Ability { get; set; }
+        /// <summary>
+        /// The Pokémon's normal ability.
+        /// </summary>
+        public PBEAbility OriginalAbility { get; set; }
+        /// <summary>
+        /// The ability the Pokémon is known to have.
+        /// </summary>
+        public PBEAbility KnownAbility { get; set; }
+        /// <summary>
+        /// The Pokémon's gender.
+        /// </summary>
+        public PBEGender Gender { get; set; }
+        /// <summary>
+        /// The gender the Pokémon looks like (affected by transforming and disguising).
+        /// </summary>
+        public PBEGender KnownGender { get; set; }
+        /// <summary>
+        /// The Pokémon's current item.
+        /// </summary>
+        public PBEItem Item { get; set; }
+        /// <summary>
+        /// The item the Pokémon is known to have.
+        /// </summary>
+        public PBEItem KnownItem { get; set; }
+        /// <summary>
+        /// The moves the Pokémon currently has.
+        /// </summary>
+        public PBEMove[] Moves { get; set; }
+        /// <summary>
+        /// The moves the Pokémon is known to have.
+        /// </summary>
+        public PBEMove[] KnownMoves { get; set; }
+        public byte[] PP { get; set; }
+        public byte[] MaxPP { get; set; }
+        /// <summary>
+        /// The nickname the Pokémon normally has.
+        /// </summary>
+        public string Nickname { get; set; }
+        /// <summary>
+        /// The nickname the Pokémon is known to have.
+        /// </summary>
+        public string KnownNickname { get; set; }
+        /// <summary>
+        /// The shininess the Pokémon normally has.
+        /// </summary>
+        public bool Shiny { get; set; }
+        /// <summary>
+        /// The shininess everyone sees the Pokémon has.
+        /// </summary>
+        public bool KnownShiny { get; set; }
+        /// <summary>
+        /// The current species of the Pokémon (affected by transforming or forme changing).
+        /// </summary>
+        public PBESpecies Species { get; set; }
+        /// <summary>
+        /// The species the Pokémon normally is.
+        /// </summary>
+        public PBESpecies OriginalSpecies { get; set; }
+        /// <summary>
+        /// The species everyone sees the Pokémon as (affected by transforming, disguising, or forme changing).
+        /// </summary>
+        public PBESpecies KnownSpecies { get; set; }
+        public PBEStatus1 Status1 { get; set; }
+        public PBEStatus2 Status2 { get; set; }
+        /// <summary>
+        /// The Pokémon's first type.
+        /// </summary>
+        public PBEType Type1 { get; set; }
+        /// <summary>
+        /// The first type everyone believes the Pokémon has.
+        /// </summary>
+        public PBEType KnownType1 { get; set; }
+        /// <summary>
+        /// The Pokémon's second type.
+        /// </summary>
+        public PBEType Type2 { get; set; }
+        /// <summary>
+        /// The second type everyone believes the Pokémon has.
+        /// </summary>
+        public PBEType KnownType2 { get; set; }
+        public double Weight { get; set; }
+        public double KnownWeight { get; set; }
 
         #region Statuses
         /// <summary>
@@ -145,24 +236,40 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #endregion
 
         // Stats & PP are set from the shell info
-        public PBEPokemon(PBETeam team, byte id, PBEPokemonShell shell)
+        internal PBEPokemon(PBETeam team, byte id, PBEPokemonShell shell)
         {
             Team = team;
             SelectedAction.PokemonId = Id = id;
             Shell = shell;
-            KnownGender = Shell.Gender;
-            KnownNickname = Shell.Nickname;
-            KnownShiny = Shell.Shiny;
-            KnownSpecies = Shell.Species;
-            Ability = Shell.Ability;
+            Ability = OriginalAbility = Shell.Ability;
+            KnownAbility = PBEAbility.MAX;
+            Gender = KnownGender = Shell.Gender;
             Item = Shell.Item;
+            KnownItem = (PBEItem)ushort.MaxValue;
+            Moves = (PBEMove[])Shell.Moves.Clone();
+            KnownMoves = new PBEMove[Team.Battle.Settings.NumMoves];
+            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
+            {
+                KnownMoves[i] = PBEMove.MAX;
+            }
+            Nickname = KnownNickname = Shell.Nickname;
+            Shiny = KnownShiny = Shell.Shiny;
+            Species = OriginalSpecies = KnownSpecies = Shell.Species;
+            PBEPokemonData pData = PBEPokemonData.Data[Species];
+            KnownType1 = Type1 = pData.Type1;
+            KnownType2 = Type2 = pData.Type2;
+            KnownWeight = Weight = pData.Weight;
+            EVs = (byte[])Shell.EVs.Clone();
+            Friendship = Shell.Friendship;
+            IVs = (byte[])Shell.IVs.Clone();
+            Level = Shell.Level;
+            Nature = Shell.Nature;
             SetStats();
             HP = MaxHP;
             HPPercentage = 1.0;
-            Moves = (PBEMove[])Shell.Moves.Clone();
-            PP = new byte[Moves.Length];
-            MaxPP = new byte[Moves.Length];
-            for (int i = 0; i < Moves.Length; i++)
+            PP = new byte[Team.Battle.Settings.NumMoves];
+            MaxPP = new byte[Team.Battle.Settings.NumMoves];
+            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
             {
                 PBEMove move = Moves[i];
                 if (move != PBEMove.None)
@@ -171,10 +278,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     PP[i] = MaxPP[i] = (byte)Math.Max(1, (tier * Team.Battle.Settings.PPMultiplier) + (tier * Shell.PPUps[i]));
                 }
             }
-            PBEPokemonData pData = PBEPokemonData.Data[Shell.Species];
-            KnownType1 = Type1 = pData.Type1;
-            KnownType2 = Type2 = pData.Type2;
-            Weight = pData.Weight;
             Team.Party.Add(this);
         }
         // This constructor is to define a remote Pokémon
@@ -182,37 +285,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             Team = team;
             Id = info.PokemonId;
-            Shell = new PBEPokemonShell
-            {
-                Species = KnownSpecies = info.Species,
-                Shiny = KnownShiny = info.Shiny,
-                Nickname = KnownNickname = info.Nickname,
-                Level = info.Level,
-                Gender = KnownGender = info.Gender,
-                Ability = Ability = PBEAbility.MAX,
-                Item = Item = (PBEItem)ushort.MaxValue,
-                Nature = PBENature.MAX,
-                Moves = new PBEMove[Team.Battle.Settings.NumMoves],
-                PPUps = new byte[Team.Battle.Settings.NumMoves],
-                EVs = new byte[6],
-                IVs = new byte[6]
-            };
-            Moves = new PBEMove[Team.Battle.Settings.NumMoves];
-            PP = new byte[Team.Battle.Settings.NumMoves];
-            MaxPP = new byte[Team.Battle.Settings.NumMoves];
-            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
-            {
-                Shell.Moves[i] = Moves[i] = PBEMove.MAX;
-            }
             FieldPosition = info.FieldPosition;
             HP = info.HP;
             MaxHP = info.MaxHP;
             HPPercentage = info.HPPercentage;
             Status1 = info.Status1;
-            PBEPokemonData pData = PBEPokemonData.Data[Shell.Species];
+            Level = info.Level;
+            KnownAbility = PBEAbility.MAX;
+            KnownGender = info.Gender;
+            KnownItem = (PBEItem)ushort.MaxValue;
+            Moves = new PBEMove[Team.Battle.Settings.NumMoves];
+            KnownMoves = new PBEMove[Team.Battle.Settings.NumMoves];
+            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
+            {
+                KnownMoves[i] = Moves[i] = PBEMove.MAX;
+            }
+            PP = new byte[Team.Battle.Settings.NumMoves];
+            MaxPP = new byte[Team.Battle.Settings.NumMoves];
+            KnownNickname = info.Nickname;
+            KnownShiny = info.Shiny;
+            Species = KnownSpecies = info.Species;
+            PBEPokemonData pData = PBEPokemonData.Data[KnownSpecies];
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
-            Weight = pData.Weight;
+            KnownWeight = Weight = pData.Weight;
             Team.Party.Add(this);
         }
 
@@ -227,12 +323,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void SetStats()
         {
-            MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Shell.Species, Shell.Nature, Shell.EVs[0], Shell.IVs[0], Shell.Level, Team.Battle.Settings);
-            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, Shell.Species, Shell.Nature, Shell.EVs[1], Shell.IVs[1], Shell.Level, Team.Battle.Settings);
-            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, Shell.Species, Shell.Nature, Shell.EVs[2], Shell.IVs[2], Shell.Level, Team.Battle.Settings);
-            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, Shell.Species, Shell.Nature, Shell.EVs[3], Shell.IVs[3], Shell.Level, Team.Battle.Settings);
-            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, Shell.Species, Shell.Nature, Shell.EVs[4], Shell.IVs[4], Shell.Level, Team.Battle.Settings);
-            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, Shell.Species, Shell.Nature, Shell.EVs[5], Shell.IVs[5], Shell.Level, Team.Battle.Settings);
+            MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Species, Nature, EVs[0], IVs[0], Level, Team.Battle.Settings);
+            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, Species, Nature, EVs[1], IVs[1], Level, Team.Battle.Settings);
+            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, Species, Nature, EVs[2], IVs[2], Level, Team.Battle.Settings);
+            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, Species, Nature, EVs[3], IVs[3], Level, Team.Battle.Settings);
+            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, Species, Nature, EVs[4], IVs[4], Level, Team.Battle.Settings);
+            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, Species, Nature, EVs[5], IVs[5], Level, Team.Battle.Settings);
         }
 
         /// <summary>
@@ -256,12 +352,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     }
             }
-            Ability = Shell.Ability;
-            KnownGender = Shell.Gender;
-            KnownNickname = Shell.Nickname;
-            KnownShiny = Shell.Shiny;
-            KnownSpecies = Shell.Species;
-            PBEPokemonData pData = PBEPokemonData.Data[Shell.Species];
+            Ability = OriginalAbility;
+            KnownAbility = PBEAbility.MAX;
+            KnownGender = Gender;
+            KnownItem = (PBEItem)ushort.MaxValue;
+            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
+            {
+                KnownMoves[i] = PBEMove.MAX;
+            }
+            KnownNickname = Nickname;
+            KnownShiny = Shiny;
+            Species = KnownSpecies = OriginalSpecies;
+            PBEPokemonData pData = PBEPokemonData.Data[Species];
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
 
@@ -309,13 +411,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <remarks>Frees the Pokémon of its <see cref="ChoiceLockedMove"/>.</remarks>
         public void Transform(PBEPokemon target)
         {
-            Ability = target.Ability;
-            KnownGender = target.Shell.Gender;
-            KnownShiny = target.Shell.Shiny;
-            KnownSpecies = target.Shell.Species;
-            KnownType1 = Type1 = target.Type1;
-            KnownType2 = Type2 = target.Type2;
-            Weight = target.Weight;
+            if (Team != target.Team)
+            {
+                KnownAbility = target.KnownAbility = Ability = target.Ability;
+                KnownType1 = target.KnownType1 = Type1 = target.Type1;
+                KnownType2 = target.KnownType2 = Type2 = target.Type2;
+                KnownWeight = target.KnownWeight = Weight = target.Weight;
+            }
+            else
+            {
+                Ability = target.Ability;
+                KnownAbility = target.KnownAbility;
+                Type1 = target.Type1;
+                KnownType1 = target.KnownType1;
+                Type2 = target.Type2;
+                KnownType2 = target.KnownType2;
+                Weight = target.Weight;
+                KnownWeight = target.KnownWeight;
+            }
+            KnownGender = target.KnownGender = target.Gender;
+            KnownShiny = target.KnownShiny = target.Shiny;
+            KnownSpecies = target.KnownSpecies = Species = target.Species;
             Attack = target.Attack;
             Defense = target.Defense;
             SpAttack = target.SpAttack;
@@ -331,13 +447,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PreTransformMoves = (PBEMove[])Moves.Clone();
             PreTransformPP = (byte[])PP.Clone();
             PreTransformMaxPP = (byte[])MaxPP.Clone();
-            for (int i = 0; i < target.Moves.Length; i++)
+            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
             {
-                Moves[i] = target.Moves[i];
-            }
-            if (Id != byte.MaxValue)
-            {
-                for (int i = 0; i < Moves.Length; i++)
+                if (Team != target.Team)
+                {
+                    KnownMoves[i] = target.KnownMoves[i] = Moves[i] = target.Moves[i];
+                }
+                else
+                {
+                    Moves[i] = target.Moves[i];
+                    KnownMoves[i] = target.KnownMoves[i];
+                }
+                if (Id != byte.MaxValue)
                 {
                     PP[i] = MaxPP[i] = (byte)(Moves[i] == PBEMove.None ? 0 : PBEMoveData.Data[Moves[i]].PPTier == 0 ? 1 : Team.Battle.Settings.PPMultiplier);
                 }
@@ -354,12 +475,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// </summary>
         public PBEType GetHiddenPowerType()
         {
-            int a = Shell.IVs[0] & 1,
-                b = Shell.IVs[1] & 1,
-                c = Shell.IVs[2] & 1,
-                d = Shell.IVs[5] & 1,
-                e = Shell.IVs[3] & 1,
-                f = Shell.IVs[4] & 1;
+            int a = IVs[0] & 1,
+                b = IVs[1] & 1,
+                c = IVs[2] & 1,
+                d = IVs[5] & 1,
+                e = IVs[3] & 1,
+                f = IVs[4] & 1;
             return PBEPokemonData.HiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (PBEPokemonData.HiddenPowerTypes.Count - 1) / ((1 << 6) - 1)];
         }
         /// <summary>
@@ -369,12 +490,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             const byte mininumBasePower = 30,
                 maximumBasePower = 70;
-            int a = (Shell.IVs[0] & 2) == 2 ? 1 : 0,
-                b = (Shell.IVs[1] & 2) == 2 ? 1 : 0,
-                c = (Shell.IVs[2] & 2) == 2 ? 1 : 0,
-                d = (Shell.IVs[5] & 2) == 2 ? 1 : 0,
-                e = (Shell.IVs[3] & 2) == 2 ? 1 : 0,
-                f = (Shell.IVs[4] & 2) == 2 ? 1 : 0;
+            int a = (IVs[0] & 2) == 2 ? 1 : 0,
+                b = (IVs[1] & 2) == 2 ? 1 : 0,
+                c = (IVs[2] & 2) == 2 ? 1 : 0,
+                d = (IVs[5] & 2) == 2 ? 1 : 0,
+                e = (IVs[3] & 2) == 2 ? 1 : 0,
+                f = (IVs[4] & 2) == 2 ? 1 : 0;
             return (byte)((((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (maximumBasePower - mininumBasePower) / ((1 << 6) - 1)) + mininumBasePower);
         }
         /// <summary>
@@ -526,7 +647,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{Shell.Nickname}/{Shell.Species} {GenderSymbol} Lv.{Shell.Level}");
+            sb.AppendLine($"{Nickname}/{OriginalSpecies} {GenderSymbol} Lv.{Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
             sb.AppendLine($"Position: {FieldPosition}");
             sb.AppendLine($"Types: {Type1}/{Type2}");
@@ -546,7 +667,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Status2.HasFlag(PBEStatus2.Disguised))
             {
-                sb.AppendLine($"Disguised as: {DisguisedAsPokemon.Shell.Nickname}");
+                sb.AppendLine($"Disguised as: {DisguisedAsPokemon.Nickname}");
             }
             if (Status2.HasFlag(PBEStatus2.LeechSeed))
             {
@@ -556,18 +677,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 sb.AppendLine($"Substitute HP: {SubstituteHP}");
             }
-            sb.AppendLine($"Stats: A: {Attack} D: {Defense} SA: {SpAttack} SD: {SpDefense} S: {Speed}");
-            sb.AppendLine($"Stat changes: A: {AttackChange} D: {DefenseChange} SA: {SpAttackChange} SD: {SpDefenseChange} S: {SpeedChange} AC: {AccuracyChange} E: {EvasionChange}");
-            sb.AppendLine($"Item: {PBEItemLocalization.Names[Item].English}");
+            sb.AppendLine($"Stats: A: {Attack} D: {Defense} SA: {SpAttack} SD: {SpDefense} S: {Speed} W: {Weight:0.0}");
+            sb.AppendLine($"Stat changes: A: {PBEBattle.GetStatChangeModifier(AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(EvasionChange, true):0.00}");
             sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[Ability].English}");
-            sb.AppendLine($"Nature: {Shell.Nature}");
+            sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBEAbilityLocalization.Names[KnownAbility].English)}");
+            sb.AppendLine($"Item: {PBEItemLocalization.Names[Item].English}");
+            sb.AppendLine($"Known item: {(KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[KnownItem].English)}");
+            sb.AppendLine($"Nature: {Nature}");
             sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
             string[] moveStrs = new string[Moves.Length];
             for (int i = 0; i < moveStrs.Length; i++)
             {
                 moveStrs[i] = $"{PBEMoveLocalization.Names[Moves[i]].English} {PP[i]}/{MaxPP[i]}";
             }
-            sb.Append($"Moves: {string.Join(", ", moveStrs)}");
+            sb.AppendLine($"Moves: {string.Join(", ", moveStrs)}");
+            sb.Append($"Known moves: {string.Join(", ", KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBEMoveLocalization.Names[m].English))}");
             return sb.ToString();
         }
     }

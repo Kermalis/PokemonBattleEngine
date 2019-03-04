@@ -76,7 +76,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else if (focusSashHappened)
                 {
-                    victim.Item = PBEItem.None;
                     BroadcastItem(victim, culprit, PBEItem.FocusSash, PBEItemAction.Consumed);
                 }
                 return (ushort)(oldHP - victim.HP);
@@ -182,7 +181,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEMove.Frustration:
                     {
-                        basePower = (int)Math.Max(1, (byte.MaxValue - user.Shell.Friendship) / 2.5);
+                        basePower = (int)Math.Max(1, (byte.MaxValue - user.Friendship) / 2.5);
                         break;
                     }
                 case PBEMove.GrassKnot:
@@ -289,7 +288,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEMove.Return:
                     {
-                        basePower = (int)Math.Max(1, user.Shell.Friendship / 2.5);
+                        basePower = (int)Math.Max(1, user.Friendship / 2.5);
                         break;
                     }
             }
@@ -312,7 +311,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.BugGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.BugGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -329,7 +327,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.DarkGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.DarkGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -340,7 +337,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PBEItem.AdamantOrb:
-                            if (user.Shell.Species == PBESpecies.Dialga)
+                            if (user.OriginalSpecies == PBESpecies.Dialga)
                             {
                                 basePower *= 1.2;
                             }
@@ -350,13 +347,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             basePower *= 1.2;
                             break;
                         case PBEItem.GriseousOrb:
-                            if (user.Shell.Species == PBESpecies.Giratina_Origin)
+                            if (user.OriginalSpecies == PBESpecies.Giratina_Origin)
                             {
                                 basePower *= 1.2;
                             }
                             break;
                         case PBEItem.LustrousOrb:
-                            if (user.Shell.Species == PBESpecies.Palkia)
+                            if (user.OriginalSpecies == PBESpecies.Palkia)
                             {
                                 basePower *= 1.2;
                             }
@@ -364,7 +361,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.DragonGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.DragonGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -381,7 +377,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.ElectricGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.ElectricGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -398,7 +393,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.FightingGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.FightingGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -415,7 +409,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.FireGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.FireGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -432,7 +425,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.FlyingGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.FlyingGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -443,7 +435,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PBEItem.GriseousOrb:
-                            if (user.Shell.Species == PBESpecies.Giratina_Origin)
+                            if (user.OriginalSpecies == PBESpecies.Giratina_Origin)
                             {
                                 basePower *= 1.2;
                             }
@@ -455,7 +447,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.GhostGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.GhostGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -473,7 +464,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.GrassGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.GrassGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -490,7 +480,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.GroundGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.GroundGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -507,7 +496,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.IceGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.IceGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -523,7 +511,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.NormalGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.NormalGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -540,7 +527,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.PoisonGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.PoisonGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -558,7 +544,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.PsychicGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.PsychicGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -576,7 +561,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.RockGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.RockGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -587,7 +571,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PBEItem.AdamantOrb:
-                            if (user.Shell.Species == PBESpecies.Dialga)
+                            if (user.OriginalSpecies == PBESpecies.Dialga)
                             {
                                 basePower *= 1.2;
                             }
@@ -599,7 +583,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.SteelGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.SteelGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -610,7 +593,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (user.Item)
                     {
                         case PBEItem.LustrousOrb:
-                            if (user.Shell.Species == PBESpecies.Palkia)
+                            if (user.OriginalSpecies == PBESpecies.Palkia)
                             {
                                 basePower *= 1.2;
                             }
@@ -624,7 +607,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEItem.WaterGem:
                             if (canUseGems)
                             {
-                                user.Item = PBEItem.None;
                                 BroadcastItem(user, user, PBEItem.WaterGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
@@ -849,11 +831,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 2.0;
             }
-            if (user.Item == PBEItem.ThickClub && (user.Shell.Species == PBESpecies.Cubone || user.Shell.Species == PBESpecies.Marowak))
+            if (user.Item == PBEItem.ThickClub && (user.OriginalSpecies == PBESpecies.Cubone || user.OriginalSpecies == PBESpecies.Marowak))
             {
                 attack *= 2.0;
             }
-            if (user.Item == PBEItem.LightBall && user.Shell.Species == PBESpecies.Pikachu)
+            if (user.Item == PBEItem.LightBall && user.OriginalSpecies == PBESpecies.Pikachu)
             {
                 attack *= 2.0;
             }
@@ -896,7 +878,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             double defense = initialDefense;
 
-            if (target.Item == PBEItem.MetalPowder && target.Shell.Species == PBESpecies.Ditto && !target.Status2.HasFlag(PBEStatus2.Transformed))
+            if (target.Item == PBEItem.MetalPowder && target.OriginalSpecies == PBESpecies.Ditto && !target.Status2.HasFlag(PBEStatus2.Transformed))
             {
                 defense *= 2.0;
             }
@@ -904,7 +886,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 defense *= 1.5;
             }
-            if (target.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.Shell.Species].Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.OriginalSpecies].Evolutions.Count > 0)
             {
                 defense *= 1.5;
             }
@@ -915,11 +897,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             double spAttack = initialSpAttack;
 
-            if (user.Item == PBEItem.DeepSeaTooth && user.Shell.Species == PBESpecies.Clamperl)
+            if (user.Item == PBEItem.DeepSeaTooth && user.OriginalSpecies == PBESpecies.Clamperl)
             {
                 spAttack *= 2.0;
             }
-            if (user.Item == PBEItem.LightBall && user.Shell.Species == PBESpecies.Pikachu)
+            if (user.Item == PBEItem.LightBall && user.OriginalSpecies == PBESpecies.Pikachu)
             {
                 spAttack *= 2.0;
             }
@@ -939,7 +921,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spAttack *= 1.5;
             }
-            if (user.Item == PBEItem.SoulDew && (user.Shell.Species == PBESpecies.Latias || user.Shell.Species == PBESpecies.Latios))
+            if (user.Item == PBEItem.SoulDew && (user.OriginalSpecies == PBESpecies.Latias || user.OriginalSpecies == PBESpecies.Latios))
             {
                 spAttack *= 1.5;
             }
@@ -966,11 +948,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             double spDefense = initialSpDefense;
 
-            if (target.Item == PBEItem.DeepSeaScale && target.Shell.Species == PBESpecies.Clamperl)
+            if (target.Item == PBEItem.DeepSeaScale && target.OriginalSpecies == PBESpecies.Clamperl)
             {
                 spDefense *= 2.0;
             }
-            if (target.Item == PBEItem.SoulDew && (target.Shell.Species == PBESpecies.Latias || target.Shell.Species == PBESpecies.Latios))
+            if (target.Item == PBEItem.SoulDew && (target.OriginalSpecies == PBESpecies.Latias || target.OriginalSpecies == PBESpecies.Latios))
             {
                 spDefense *= 1.5;
             }
@@ -978,7 +960,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spDefense *= 1.5;
             }
-            if (target.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.Shell.Species].Evolutions.Count > 0)
+            if (target.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.OriginalSpecies].Evolutions.Count > 0)
             {
                 spDefense *= 1.5;
             }
@@ -1034,7 +1016,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
             }
 
-            damage = (ushort)(2 * user.Shell.Level / 5 + 2);
+            damage = (ushort)(2 * user.Level / 5 + 2);
             damage = (ushort)(damage * a * basePower / d);
             damage /= 50;
             damage += 2;

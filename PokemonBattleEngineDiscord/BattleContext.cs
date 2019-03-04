@@ -58,7 +58,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         static string CustomPokemonToString(PBEPokemon pkmn)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{pkmn.Shell.Nickname}/{pkmn.Shell.Species} {pkmn.GenderSymbol} Lv.{pkmn.Shell.Level}");
+            sb.AppendLine($"{pkmn.Nickname}/{pkmn.OriginalSpecies} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
             sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
             sb.AppendLine($"Types: {pkmn.Type1}/{pkmn.Type2}");
             sb.AppendLine($"Status1: {pkmn.Status1}");
@@ -77,17 +77,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
             {
-                sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Shell.Nickname}");
+                sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
             }
             if (pkmn.Status2.HasFlag(PBEStatus2.Substitute))
             {
                 sb.AppendLine($"Substitute HP: {pkmn.SubstituteHP}");
             }
-            sb.AppendLine($"Stats: A: {pkmn.Attack} D: {pkmn.Defense} SA: {pkmn.SpAttack} SD: {pkmn.SpDefense} S: {pkmn.Speed}");
-            sb.AppendLine($"Stat changes: A: {pkmn.AttackChange} D: {pkmn.DefenseChange} SA: {pkmn.SpAttackChange} SD: {pkmn.SpDefenseChange} S: {pkmn.SpeedChange} AC: {pkmn.AccuracyChange} E: {pkmn.EvasionChange}");
+            sb.AppendLine($"Stats: A: {pkmn.Attack} D: {pkmn.Defense} SA: {pkmn.SpAttack} SD: {pkmn.SpDefense} S: {pkmn.Speed} W: {pkmn.Weight:0.0}");
+            sb.AppendLine($"Stat changes: A: {PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
             sb.AppendLine($"Item: {PBEItemLocalization.Names[pkmn.Item].English}");
             sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[pkmn.Ability].English}");
-            sb.AppendLine($"Nature: {pkmn.Shell.Nature}");
+            sb.AppendLine($"Nature: {pkmn.Nature}");
             sb.AppendLine($"Hidden Power: {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
             var useableMoves = new List<PBEMove>(pkmn.Moves.Length);
             if (pkmn.IsForcedToStruggle())

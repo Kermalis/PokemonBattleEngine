@@ -15,6 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         void BroadcastAbility(PBEPokemon abilityOwner, PBEPokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
         {
+            abilityOwner.Ability = abilityOwner.KnownAbility = ability;
             var p = new PBEAbilityPacket(abilityOwner, pokemon2, ability, abilityAction);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
@@ -33,6 +34,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void BroadcastItem(PBEPokemon itemHolder, PBEPokemon pokemon2, PBEItem item, PBEItemAction itemAction)
         {
+            switch (itemAction)
+            {
+                case PBEItemAction.Consumed:
+                    {
+                        itemHolder.Item = itemHolder.KnownItem = PBEItem.None;
+                        break;
+                    }
+                default:
+                    {
+                        itemHolder.Item = itemHolder.KnownItem = item;
+                        break;
+                    }
+            }
             var p = new PBEItemPacket(itemHolder, pokemon2, item, itemAction);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
@@ -75,6 +89,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void BroadcastMoveUsed(PBEPokemon moveUser, PBEMove move)
         {
+            if (!calledFromOtherMove && !moveUser.KnownMoves.Contains(move))
+            {
+                moveUser.KnownMoves[Array.IndexOf(moveUser.KnownMoves, PBEMove.MAX)] = move;
+            }
             var p = new PBEMoveUsedPacket(moveUser, move, calledFromOtherMove);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
