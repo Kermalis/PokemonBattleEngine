@@ -71,10 +71,19 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 PBEPokemonData pData = PBEPokemonData.Data[pkmn.KnownSpecies];
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {pkmn.KnownGenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
-                sb.AppendLine($"Position: {pkmn.FieldPosition}");
                 sb.AppendLine($"Types: {pkmn.KnownType1}/{pkmn.KnownType2}");
-                sb.AppendLine($"Status1: {pkmn.Status1}");
-                sb.AppendLine($"Status2: {pkmn.Status2}");
+                if (pkmn.FieldPosition != PBEFieldPosition.None)
+                {
+                    sb.AppendLine($"Position: {pkmn.FieldPosition}");
+                }
+                if (pkmn.Status1 != PBEStatus1.None)
+                {
+                    sb.AppendLine($"Main status: {pkmn.Status1}");
+                }
+                if (pkmn.FieldPosition != PBEFieldPosition.None && pkmn.Status2 != PBEStatus2.None)
+                {
+                    sb.AppendLine($"Volatile status: {pkmn.Status2}");
+                }
                 PBEPokemonData.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
                 PBEPokemonData.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
                 PBEPokemonData.GetStatRange(PBEStat.Defense, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
@@ -82,7 +91,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 PBEPokemonData.GetStatRange(PBEStat.SpDefense, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
                 PBEPokemonData.GetStatRange(PBEStat.Speed, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
                 sb.AppendLine($"Stat range: HP: {lowHP}-{highHP} A: {lowAttack}-{highAttack} D: {lowDefense}-{highDefense} SA: {lowSpAttack}-{highSpAttack} SD: {lowSpDefense}-{highSpDefense} S: {lowSpeed}-{highSpeed} W: {pkmn.KnownWeight:0.0}");
-                sb.AppendLine($"Stat changes: A: {PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                if (pkmn.FieldPosition != PBEFieldPosition.None)
+                {
+                    sb.AppendLine($"Stat changes: A: {PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                }
                 if (pkmn.KnownAbility == PBEAbility.MAX)
                 {
                     sb.AppendLine($"Possible abilities: {string.Join(", ", pData.Abilities.Select(a => PBEAbilityLocalization.Names[a].English))}");
@@ -98,24 +110,42 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 sb.AppendLine($"{pkmn.Nickname}/{pkmn.OriginalSpecies} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
-                sb.AppendLine($"Position: {pkmn.FieldPosition}");
                 sb.AppendLine($"Types: {pkmn.Type1}/{pkmn.Type2}");
-                sb.AppendLine($"Status1: {pkmn.Status1}");
-                sb.AppendLine($"Status2: {pkmn.Status2}");
-                if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
+                if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
+                    sb.AppendLine($"Position: {pkmn.FieldPosition}");
                 }
-                if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
+                if (pkmn.Status1 != PBEStatus1.None)
                 {
-                    sb.AppendLine($"Seeded position: {pkmn.SeededPosition}");
+                    sb.AppendLine($"Main status: {pkmn.Status1}");
+                }
+                if (pkmn.FieldPosition != PBEFieldPosition.None)
+                {
+                    if (pkmn.Status2 != PBEStatus2.None)
+                    {
+                        sb.AppendLine($"Volatile status: {pkmn.Status2}");
+                    }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
+                    {
+                        sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
+                    }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
+                    {
+                        sb.AppendLine($"Seeded position: {pkmn.SeededPosition}");
+                    }
                 }
                 sb.AppendLine($"Stats: A: {pkmn.Attack} D: {pkmn.Defense} SA: {pkmn.SpAttack} SD: {pkmn.SpDefense} S: {pkmn.Speed} W: {pkmn.Weight:0.0}");
-                sb.AppendLine($"Stat changes: A: {PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                if (pkmn.FieldPosition != PBEFieldPosition.None)
+                {
+                    sb.AppendLine($"Stat changes: A: {PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                }
                 sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[pkmn.Ability].English}");
                 sb.AppendLine($"Item: {PBEItemLocalization.Names[pkmn.Item].English}");
-                sb.AppendLine($"Nature: {pkmn.Nature}");
-                sb.AppendLine($"Hidden Power: {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
+                // TODO: Usable moves
+                if (pkmn.Moves.Contains(PBEMove.HiddenPower))
+                {
+                    sb.AppendLine($"Hidden Power: {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
+                }
                 string[] moveStrs = new string[pkmn.Moves.Length];
                 for (int i = 0; i < moveStrs.Length; i++)
                 {

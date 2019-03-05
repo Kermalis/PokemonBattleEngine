@@ -27,6 +27,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
             client.Log += LogMessage;
             client.MessageReceived += CommandMessageReceived;
+            client.ReactionAdded += ReactionListener.Client_ReactionAdded;
 
             await client.LoginAsync(TokenType.Bot, args[0]); // Token is passed as args[0]
             await client.StartAsync();

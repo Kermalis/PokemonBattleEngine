@@ -60,10 +60,10 @@ namespace Kermalis.PokemonBattleEngine.AI
                 {
                     // Gather all options of switching and moves
                     PBEPokemon[] availableForSwitch = team.Party.Except(standBy).Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
-                    var useableMoves = new List<PBEMove>();
+                    var usableMoves = new List<PBEMove>();
                     if (pkmn.ChoiceLockedMove != PBEMove.None)
                     {
-                        useableMoves.Add(pkmn.ChoiceLockedMove);
+                        usableMoves.Add(pkmn.ChoiceLockedMove);
                     }
                     else
                     {
@@ -71,15 +71,15 @@ namespace Kermalis.PokemonBattleEngine.AI
                         {
                             if (pkmn.PP[m] > 0)
                             {
-                                useableMoves.Add(pkmn.Moves[m]);
+                                usableMoves.Add(pkmn.Moves[m]);
                             }
                         }
                     }
 
                     var possibleActions = new List<Tuple<PBEAction, double>>(); // Associate specific actions with a score
-                    for (int m = 0; m < useableMoves.Count; m++) // Score moves
+                    for (int m = 0; m < usableMoves.Count; m++) // Score moves
                     {
-                        PBEMove move = useableMoves[m];
+                        PBEMove move = usableMoves[m];
                         PBEType moveType = pkmn.GetMoveType(move);
                         PBEMoveTarget moveTargets = pkmn.GetMoveTargets(move);
                         PBETarget[] possibleTargets;

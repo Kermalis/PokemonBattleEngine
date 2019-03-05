@@ -649,8 +649,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var sb = new StringBuilder();
             sb.AppendLine($"{Nickname}/{OriginalSpecies} {GenderSymbol} Lv.{Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
-            sb.AppendLine($"Position: {FieldPosition}");
             sb.AppendLine($"Types: {Type1}/{Type2}");
+            sb.AppendLine($"Position: {FieldPosition}");
             sb.AppendLine($"Status1: {Status1}");
             if (Status1 == PBEStatus1.Asleep)
             {
@@ -683,8 +683,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBEAbilityLocalization.Names[KnownAbility].English)}");
             sb.AppendLine($"Item: {PBEItemLocalization.Names[Item].English}");
             sb.AppendLine($"Known item: {(KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[KnownItem].English)}");
-            sb.AppendLine($"Nature: {Nature}");
-            sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
+            // TODO: Usable moves
+            if (Moves.Contains(PBEMove.HiddenPower))
+            {
+                sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
+            }
             string[] moveStrs = new string[Moves.Length];
             for (int i = 0; i < moveStrs.Length; i++)
             {
