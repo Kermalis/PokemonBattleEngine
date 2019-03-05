@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             IEnumerable<PBESpecies> evolutionChain = PBEPokemonData.Data[species].PreEvolutions.Concat(new[] { species });
 
-            IEnumerable<PBEMove> moves = new PBEMove[0];
+            IEnumerable<PBEMove> moves = Array.Empty<PBEMove>();
             foreach (PBESpecies pkmn in evolutionChain)
             {
                 PBEPokemonData pData = PBEPokemonData.Data[pkmn];

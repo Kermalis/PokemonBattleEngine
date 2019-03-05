@@ -345,7 +345,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 Source = Utils.GetPokemonSpriteUri(shell);
                 // Force redraw
-                party.Items = new object[0];
+                party.Items = Array.Empty<object>();
                 party.Items = team.Item2;
                 party.InvalidateVisual();
             }

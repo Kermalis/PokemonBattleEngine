@@ -89,7 +89,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                         }
                     default: // OneHitKnockout
                         {
-                            Params = Array.AsReadOnly(new object[0]);
+                            Params = Array.AsReadOnly(Array.Empty<object>());
                             break;
                         }
                 }

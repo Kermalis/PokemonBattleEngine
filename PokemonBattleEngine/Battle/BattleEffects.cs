@@ -2012,7 +2012,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
-            RecordExecutedMove(user, move, PBEFailReason.None, new PBEExecutedMove.PBETargetSuccess[0]);
+            RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
         void Ef_TryForceTeamStatus(PBEPokemon user, PBEMove move, PBETeamStatus status)
         {
@@ -2132,7 +2132,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastMoveFailed(user, user, PBEFailReason.Default);
             }
-            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
+            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
         void Ef_TryForceWeather(PBEPokemon user, PBEMove move, PBEWeather weather)
         {
@@ -2186,7 +2186,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 WeatherCounter = (byte)(turns + (user.Item == extensionItem ? itemTurnExtension : 0));
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
             }
-            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
+            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
         void Ef_Hit__MaybeInflictStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status, int chanceToInflict)
         {
@@ -2297,7 +2297,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ApplyStatChange(user, stats[i], changes[i]);
             }
 
-            RecordExecutedMove(user, move, PBEFailReason.None, new PBEExecutedMove.PBETargetSuccess[0]);
+            RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
         void Ef_Hit__MaybeChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
@@ -2482,7 +2482,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             BroadcastMoveFailed(user, user, PBEFailReason.Default);
-            RecordExecutedMove(user, move, PBEFailReason.Default, new PBEExecutedMove.PBETargetSuccess[0]);
+            RecordExecutedMove(user, move, PBEFailReason.Default, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
         void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
@@ -2887,7 +2887,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 failReason = PBEFailReason.None;
             }
-            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
+            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
         void Ef_PainSplit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
@@ -2976,7 +2976,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Added);
                 HealDamage(user, user.MaxHP);
             }
-            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
+            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
         void Ef_RestoreTargetHP(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
         {
@@ -3043,7 +3043,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 failReason = PBEFailReason.None;
             }
-            RecordExecutedMove(user, move, failReason, new PBEExecutedMove.PBETargetSuccess[0]);
+            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
 
         void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator)
@@ -3346,7 +3346,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             // Record before the called move is recorded
-            RecordExecutedMove(user, move, PBEFailReason.None, new PBEExecutedMove.PBETargetSuccess[0]);
+            RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
 
             PBEMove calledMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).Sample();
             calledFromOtherMove = true;
