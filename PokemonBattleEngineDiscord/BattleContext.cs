@@ -16,6 +16,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 {
     public class BattleContext
     {
+        const string separator = "**--------------------**";
         static readonly Emoji switchEmoji = new Emoji("😼");
         static readonly Emoji confirmationEmoji = new Emoji("👍");
         static readonly List<BattleContext> activeBattles = new List<BattleContext>(); // TODO: Locks for accessing this
@@ -1072,6 +1073,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 case PBEActionsRequestPacket arp:
                     {
                         SocketUser user = context.battlers[Array.IndexOf(context.battle.Teams, arp.Team)];
+                        var userArray = new SocketUser[] { user };
                         PBEPokemon mainPkmn = arp.Team.ActionsRequired[0];
                         var allMessages = new List<IUserMessage>(PBESettings.DefaultSettings.MaxPartySize);
                         var reactionsToAdd = new List<Tuple<IUserMessage, IEmote>>(PBESettings.DefaultSettings.MaxPartySize - 1 + PBESettings.DefaultSettings.NumMoves); // 5 switch reactions, 4 move reactions
@@ -1092,11 +1094,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         for (int i = 0; i < switches.Length; i++)
                         {
                             PBEPokemon switchPkmn = switches[i];
-                            string prefix = i == 0 ? "**--------------------**" : string.Empty; // A nice separator
-                            IUserMessage switchMsg = await CreateAndSendEmbedAsync(CustomPokemonToString(switchPkmn, false), messageText: prefix, pkmn: switchPkmn, useUpperImage: true, userToSendTo: user);
+                            IUserMessage switchMsg = await CreateAndSendEmbedAsync(CustomPokemonToString(switchPkmn, false), messageText: i == 0 ? separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, userToSendTo: user);
                             allMessages.Add(switchMsg);
                             reactionsToAdd.Add(Tuple.Create(switchMsg, (IEmote)switchEmoji));
-                            ReactionListener.AddListener(switchMsg, allMessages, switchEmoji, new[] { user }, () => SwitchReactionClicked(switchMsg, switchPkmn));
+                            ReactionListener.AddListener(switchMsg, allMessages, switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
                         }
 
                         IUserMessage mainMsg = await CreateAndSendEmbedAsync($"{CustomPokemonToString(mainPkmn, true)}\nTo check a move: `!move info {PBEUtils.Sample(PBEMoveLocalization.Names).Value.English}`", pkmn: mainPkmn, useUpperImage: false, userToSendTo: user);
@@ -1172,7 +1173,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             PBEMove move = usableMoves[i]; // move must be evaluated before it reaches the lambda
                             var emoji = new Emoji(char.ConvertFromUtf32(0x1F1E6 + i).ToString());
                             reactionsToAdd.Add(Tuple.Create(mainMsg, (IEmote)emoji));
-                            ReactionListener.AddListener(mainMsg, allMessages, emoji, new[] { user }, () => MoveReactionClicked(move));
+                            ReactionListener.AddListener(mainMsg, allMessages, emoji, userArray, () => MoveReactionClicked(move));
                         }
 
                         // All listeners are added, so now we can send the reactions
@@ -1185,9 +1186,45 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                 case PBESwitchInRequestPacket sirp:
                     {
-                        SocketUser user = context.battlers[Array.IndexOf(context.battle.Teams, sirp.Team)];
-                        await user.SendMessageAsync("Automatically choosing your switches...");
-                        PBEBattle.SelectSwitchesIfValid(sirp.Team, PokemonBattleEngine.AI.PBEAIManager.CreateSwitches(sirp.Team));
+                        PBEPokemon[] switches = sirp.Team.Party.Where(p => p.HP > 0).ToArray();
+                        if (switches.Length == 1)
+                        {
+                            PBEBattle.SelectSwitchesIfValid(sirp.Team, new Tuple<byte, PBEFieldPosition>[] { Tuple.Create(switches[0].Id, PBEFieldPosition.Center) });
+                        }
+                        else
+                        {
+                            async Task SwitchReactionClicked(IUserMessage switchMsg, PBEPokemon switchPkmn)
+                            {
+                                await switchMsg.AddReactionAsync(confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
+                                PBEBattle.SelectSwitchesIfValid(sirp.Team, new Tuple<byte, PBEFieldPosition>[] { Tuple.Create(switchPkmn.Id, PBEFieldPosition.Center) });
+                            }
+
+                            SocketUser user = context.battlers[Array.IndexOf(context.battle.Teams, sirp.Team)];
+                            var userArray = new SocketUser[] { user };
+                            var allMessages = new IUserMessage[switches.Length];
+                            var reactionsToAdd = new Tuple<IUserMessage, IEmote>[switches.Length];
+                            for (int i = 0; i < switches.Length; i++)
+                            {
+                                PBEPokemon switchPkmn = switches[i];
+                                IUserMessage switchMsg = await CreateAndSendEmbedAsync(CustomPokemonToString(switchPkmn, false), messageText: i == 0 ? separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, userToSendTo: user);
+                                allMessages[i] = switchMsg;
+                                reactionsToAdd[i] = Tuple.Create(switchMsg, (IEmote)switchEmoji);
+                                ReactionListener.AddListener(switchMsg, allMessages, switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
+                            }
+
+                            // All listeners are added, so now we can send the reactions
+                            // Clicking a reaction will not harm reactions that are not sent yet because allMessages is sent by reference
+                            for (int i = 0; i < reactionsToAdd.Length; i++)
+                            {
+                                Tuple<IUserMessage, IEmote> tup = reactionsToAdd[i];
+                                await tup.Item1.AddReactionAsync(tup.Item2);
+                            }
+                        }
+                        break;
+                    }
+                case PBETurnBeganPacket tbp:
+                    {
+                        await context.channel.SendMessageAsync(separator);
                         break;
                     }
             }
