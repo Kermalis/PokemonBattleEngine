@@ -22,7 +22,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 * Protect from corrupt packets (if they are even a problem)
 * Mobile HP bars
 * Player left packet
-* Make replay loader throw an exception if the hash is incorrect
 
 ----
 # PokemonBattleEngine Uses:
