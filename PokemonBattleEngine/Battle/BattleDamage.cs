@@ -744,7 +744,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEMove.Steamroller:
                 case PBEMove.Stomp:
-                    if (target.ExecutedMoves.Any(m => m.Move == PBEMove.Minimize && m.FailReason == PBEFailReason.None))
+                    if (target.ExecutedMoves.Any(m => m.Move == PBEMove.Minimize)) // TODO: Could minimize ever fail?
                     {
                         damageMultiplier *= 2.0;
                     }

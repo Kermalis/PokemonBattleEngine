@@ -11,8 +11,8 @@ namespace Kermalis.PokemonBattleEngineTesting
 {
     class AIBattle
     {
-        static readonly string logFile = "Test Log.txt",
-            replayFile = "Test Replay.pbereplay";
+        const string LogFile = "Test Log.txt";
+        const string ReplayFile = "Test Replay.pbereplay";
         static StreamWriter writer;
         static TextWriter oldWriter;
 
@@ -48,11 +48,11 @@ namespace Kermalis.PokemonBattleEngineTesting
             battle.OnStateChanged += Battle_OnStateChanged;
             try
             {
-                writer = new StreamWriter(new FileStream(logFile, FileMode.Create, FileAccess.Write));
+                writer = new StreamWriter(new FileStream(LogFile, FileMode.Create, FileAccess.Write));
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Cannot open \"{logFile}\" for writing.");
+                Console.WriteLine($"Cannot open \"{LogFile}\" for writing.");
                 Console.WriteLine(e.Message);
                 return;
             }
@@ -72,7 +72,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                             writer.Close();
                             try
                             {
-                                battle.SaveReplay(replayFile);
+                                battle.SaveReplay(ReplayFile);
                             }
                             catch (Exception e)
                             {
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 Console.WriteLine(e.Message);
                                 Console.WriteLine(e.StackTrace);
                             }
-                            Console.WriteLine("Test battle ended. The battle was saved to \"{0}\" and \"{1}\".", logFile, replayFile);
+                            Console.WriteLine("Test battle ended. The battle was saved to \"{0}\" and \"{1}\".", LogFile, ReplayFile);
                             Console.ReadKey();
                             break;
                         }
@@ -104,8 +104,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                             foreach (PBETeam team in battle.Teams)
                             {
                                 IEnumerable<PBEAction> actions = PBEAIManager.CreateActions(team);
-                                bool valid = PBEBattle.AreActionsValid(team, actions);
-                                if (!valid)
+                                if (!PBEBattle.AreActionsValid(team, actions))
                                 {
                                     throw new Exception($"{team.TrainerName}'s AI created invalid actions!");
                                 }
@@ -118,8 +117,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                             foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
                             {
                                 IEnumerable<Tuple<byte, PBEFieldPosition>> switches = PBEAIManager.CreateSwitches(team);
-                                bool valid = PBEBattle.AreSwitchesValid(team, switches);
-                                if (!valid)
+                                if (!PBEBattle.AreSwitchesValid(team, switches))
                                 {
                                     throw new Exception($"{team.TrainerName}'s AI created invalid switches!");
                                 }
@@ -135,7 +133,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                 Console.WriteLine(e.StackTrace);
                 Console.SetOut(oldWriter);
                 writer.Close();
-                Console.WriteLine("Test battle threw an exception, check \"{0}\" for details.", logFile);
+                Console.WriteLine("Test battle threw an exception, check \"{0}\" for details.", LogFile);
                 Console.ReadKey();
                 Environment.Exit(-1);
             }
