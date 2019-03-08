@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                 {
                     actions[i].Decision = PBEDecision.Fight;
                     actions[i].FightMove = PBEMove.Struggle;
-                    actions[i].FightTargets = GetSpreadMoveTargets(pkmn, pkmn.GetMoveTargets(PBEMove.Struggle));
+                    actions[i].FightTargets = GetPossibleTargets(pkmn, pkmn.GetMoveTargets(PBEMove.Struggle))[0]; // Seems a little nasty just to select "Self", since this will be RandomFoeSurrounding
                 }
                 // If a Pokémon has a temp locked move (Dig, Dive, Shadow Force) it must be used
                 else if (pkmn.TempLockedMove != PBEMove.None)
