@@ -36,40 +36,18 @@ namespace Kermalis.PokemonBattleEngineMobile.Models
             }
         }
 
-        public Command SelectMoveCommand { get; }
-
         public PBEMove Move { get; }
         public Color Color { get; }
         public Color BorderColor { get; }
+        public Command SelectMoveCommand { get; }
 
-        public MoveInfo(int i, PBEPokemon pkmn, Action<MoveInfo> clickAction)
+        public MoveInfo(PBEPokemon pkmn, PBEMove move, Action<PBEMove> clickAction)
         {
-            bool enabled;
-            if (pkmn.IsForcedToStruggle())
-            {
-                Move = PBEMove.Struggle;
-                enabled = true;
-            }
-            else if (pkmn.TempLockedMove != PBEMove.None)
-            {
-                Move = pkmn.TempLockedMove;
-                enabled = true;
-            }
-            else if (pkmn.ChoiceLockedMove != PBEMove.None)
-            {
-                Move = pkmn.ChoiceLockedMove;
-                enabled = true;
-            }
-            else
-            {
-                Move = pkmn.Moves[i];
-                enabled = Move != PBEMove.None && pkmn.PP[i] > 0;
-            }
-            Tuple<Color, Color> ttc = Move == PBEMove.None ? typeToColor[PBEType.Normal] : typeToColor[pkmn.GetMoveType(Move)];
+            Move = move;
+            Tuple<Color, Color> ttc = typeToColor[pkmn.GetMoveType(move)];
             Color = ttc.Item1;
             BorderColor = ttc.Item2;
-
-            SelectMoveCommand = new Command(() => clickAction(this), () => enabled);
+            SelectMoveCommand = new Command(() => clickAction(move));
         }
     }
 }

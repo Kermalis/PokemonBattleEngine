@@ -137,14 +137,14 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.KnownAbility == PBEAbility.MAX)
                 {
-                    sb.AppendLine($"Possible abilities: {string.Join(", ", pData.Abilities.Select(a => PBEAbilityLocalization.Names[a].English))}");
+                    sb.AppendLine($"Possible abilities: {string.Join(", ", pData.Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
                 }
                 else
                 {
-                    sb.AppendLine($"Known ability: {PBEAbilityLocalization.Names[pkmn.KnownAbility].English}");
+                    sb.AppendLine($"Known ability: {PBEAbilityLocalization.Names[pkmn.KnownAbility].FromUICultureInfo()}");
                 }
-                sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[pkmn.KnownItem].English)}");
-                sb.Append($"Known moves: {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBEMoveLocalization.Names[m].English))}");
+                sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[pkmn.KnownItem].FromUICultureInfo())}");
+                sb.Append($"Known moves: {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBEMoveLocalization.Names[m].FromUICultureInfo()))}");
             }
             else
             {
@@ -179,19 +179,19 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 {
                     AddStatChangeLine();
                 }
-                sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[pkmn.Ability].English}");
-                sb.AppendLine($"Item: {PBEItemLocalization.Names[pkmn.Item].English}");
-                // TODO: Usable moves
-                if (pkmn.Moves.Contains(PBEMove.HiddenPower))
+                sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[pkmn.Ability].FromUICultureInfo()}");
+                sb.AppendLine($"Item: {PBEItemLocalization.Names[pkmn.Item].FromUICultureInfo()}");
+                if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
                 {
                     sb.AppendLine($"Hidden Power: {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
                 }
                 string[] moveStrs = new string[pkmn.Moves.Length];
                 for (int i = 0; i < moveStrs.Length; i++)
                 {
-                    moveStrs[i] = $"{PBEMoveLocalization.Names[pkmn.Moves[i]].English} {pkmn.PP[i]}/{pkmn.MaxPP[i]}";
+                    moveStrs[i] = $"{PBEMoveLocalization.Names[pkmn.Moves[i]].FromUICultureInfo()} {pkmn.PP[i]}/{pkmn.MaxPP[i]}";
                 }
-                sb.Append($"Moves: {string.Join(", ", moveStrs)}");
+                sb.AppendLine($"Moves: {string.Join(", ", moveStrs)}");
+                sb.Append($"Usable moves: {string.Join(", ", pkmn.GetUsableMoves().Select(m => PBEMoveLocalization.Names[m].FromUICultureInfo()))}");
             }
             return sb.ToString();
         }

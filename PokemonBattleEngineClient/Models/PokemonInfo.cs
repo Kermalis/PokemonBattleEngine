@@ -14,14 +14,14 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public PBEPokemon Pokemon { get; }
         public string Description => Utils.CustomPokemonToString(Pokemon);
 
-        public PokemonInfo(PBEPokemon pkmn, bool locked, Action<PokemonInfo> clickAction)
+        public PokemonInfo(PBEPokemon pkmn, bool locked, Action<PBEPokemon> clickAction)
         {
             Pokemon = pkmn;
 
             bool enabled = !locked && pkmn.FieldPosition == PBEFieldPosition.None && pkmn.HP > 0;
 
             var sub = new Subject<bool>();
-            SelectPokemonCommand = ReactiveCommand.Create(() => clickAction(this), sub);
+            SelectPokemonCommand = ReactiveCommand.Create(() => clickAction(pkmn), sub);
             sub.OnNext(enabled);
         }
     }

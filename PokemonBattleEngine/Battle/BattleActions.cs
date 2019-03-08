@@ -72,38 +72,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     case PBEDecision.Fight:
                         {
-                            if (action.FightMove == PBEMove.Struggle && pkmn.IsForcedToStruggle())
+                            if (Array.IndexOf(pkmn.GetUsableMoves(), action.FightMove) == -1
+                                || (action.FightMove == pkmn.TempLockedMove && action.FightTargets != pkmn.TempLockedTargets)
+                                || !AreTargetsValid(pkmn, action.FightMove, action.FightTargets)
+                                )
                             {
-                                continue;
-                            }
-                            else
-                            {
-                                // If Metronome calls Dig, Dig should be selected again even if the Pokémon does not know Dig.
-                                if (pkmn.TempLockedMove != PBEMove.None)
-                                {
-                                    if (pkmn.TempLockedMove != action.FightMove || pkmn.TempLockedTargets != action.FightTargets)
-                                    {
-                                        return false;
-                                    }
-                                }
-                                else
-                                {
-                                    if (action.FightMove == PBEMove.None
-                                        || !pkmn.Moves.Contains(action.FightMove)
-                                        || pkmn.PP[Array.IndexOf(pkmn.Moves, action.FightMove)] == 0
-                                        )
-                                    {
-                                        return false;
-                                    }
-                                    else if (pkmn.ChoiceLockedMove != PBEMove.None && pkmn.ChoiceLockedMove != action.FightMove)
-                                    {
-                                        return false;
-                                    }
-                                    else if (!AreTargetsValid(pkmn, action.FightMove, action.FightTargets))
-                                    {
-                                        return false;
-                                    }
-                                }
+                                return false;
                             }
                             break;
                         }

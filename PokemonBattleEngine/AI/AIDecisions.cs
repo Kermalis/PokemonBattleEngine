@@ -60,24 +60,10 @@ namespace Kermalis.PokemonBattleEngine.AI
                 {
                     // Gather all options of switching and moves
                     PBEPokemon[] availableForSwitch = team.Party.Except(standBy).Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
-                    var usableMoves = new List<PBEMove>();
-                    if (pkmn.ChoiceLockedMove != PBEMove.None)
-                    {
-                        usableMoves.Add(pkmn.ChoiceLockedMove);
-                    }
-                    else
-                    {
-                        for (int m = 0; m < pkmn.Moves.Length; m++)
-                        {
-                            if (pkmn.PP[m] > 0)
-                            {
-                                usableMoves.Add(pkmn.Moves[m]);
-                            }
-                        }
-                    }
+                    PBEMove[] usableMoves = pkmn.GetUsableMoves();
 
                     var possibleActions = new List<Tuple<PBEAction, double>>(); // Associate specific actions with a score
-                    for (int m = 0; m < usableMoves.Count; m++) // Score moves
+                    for (int m = 0; m < usableMoves.Length; m++) // Score moves
                     {
                         PBEMove move = usableMoves[m];
                         PBEType moveType = pkmn.GetMoveType(move);

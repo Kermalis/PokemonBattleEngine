@@ -11,13 +11,13 @@ namespace Kermalis.PokemonBattleEngineMobile.Models
 
         public PBEPokemon Pokemon { get; }
 
-        public PokemonInfo(PBEPokemon pkmn, bool locked, Action<PokemonInfo> clickAction)
+        public PokemonInfo(PBEPokemon pkmn, bool locked, Action<PBEPokemon> clickAction)
         {
             Pokemon = pkmn;
 
             bool enabled = !locked && pkmn.FieldPosition == PBEFieldPosition.None && pkmn.HP > 0;
 
-            SelectPokemonCommand = new Command(() => clickAction(this), () => enabled);
+            SelectPokemonCommand = new Command(() => clickAction(pkmn), () => enabled);
         }
     }
 }

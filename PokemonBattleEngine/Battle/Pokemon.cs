@@ -312,48 +312,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Team.Party.Add(this);
         }
 
-        /// <summary>
-        /// Returns True if the Pokémon has <paramref name="type"/>, False otherwise.
-        /// </summary>
-        /// <param name="type">The type to check.</param>
-        public bool HasType(PBEType type)
-        {
-            return Type1 == type || Type2 == type;
-        }
-        public PBEStat[] GetChangedStats()
-        {
-            var list = new List<PBEStat>(7);
-            if (AttackChange != 0)
-            {
-                list.Add(PBEStat.Attack);
-            }
-            if (DefenseChange != 0)
-            {
-                list.Add(PBEStat.Defense);
-            }
-            if (SpAttackChange != 0)
-            {
-                list.Add(PBEStat.SpAttack);
-            }
-            if (SpDefenseChange != 0)
-            {
-                list.Add(PBEStat.SpDefense);
-            }
-            if (SpeedChange != 0)
-            {
-                list.Add(PBEStat.Speed);
-            }
-            if (AccuracyChange != 0)
-            {
-                list.Add(PBEStat.Accuracy);
-            }
-            if (EvasionChange != 0)
-            {
-                list.Add(PBEStat.Evasion);
-            }
-            return list.ToArray();
-        }
-
         void SetStats()
         {
             MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Species, Nature, EVs[0], IVs[0], Level, Team.Battle.Settings);
@@ -504,6 +462,47 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         /// <summary>
+        /// Returns True if the Pokémon has <paramref name="type"/>, False otherwise.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        public bool HasType(PBEType type)
+        {
+            return Type1 == type || Type2 == type;
+        }
+        public PBEStat[] GetChangedStats()
+        {
+            var list = new List<PBEStat>(7);
+            if (AttackChange != 0)
+            {
+                list.Add(PBEStat.Attack);
+            }
+            if (DefenseChange != 0)
+            {
+                list.Add(PBEStat.Defense);
+            }
+            if (SpAttackChange != 0)
+            {
+                list.Add(PBEStat.SpAttack);
+            }
+            if (SpDefenseChange != 0)
+            {
+                list.Add(PBEStat.SpDefense);
+            }
+            if (SpeedChange != 0)
+            {
+                list.Add(PBEStat.Speed);
+            }
+            if (AccuracyChange != 0)
+            {
+                list.Add(PBEStat.Accuracy);
+            }
+            if (EvasionChange != 0)
+            {
+                list.Add(PBEStat.Evasion);
+            }
+            return list.ToArray();
+        }
+        /// <summary>
         /// Gets the type that <see cref="PBEMove.HiddenPower"/> will become when used by this Pokémon.
         /// </summary>
         public PBEType GetHiddenPowerType()
@@ -638,9 +637,50 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// </summary>
         public bool IsForcedToStruggle()
         {
-            return
-                (ChoiceLockedMove != PBEMove.None && PP[Array.IndexOf(Moves, ChoiceLockedMove)] == 0)
-                || PP.All(p => p == 0);
+            if (TempLockedMove != PBEMove.None) // Temp locked moves deduct PP on the first turn and don't on the second, so having a temp locked move means it is supposed to be used again for the second turn
+            {
+                return false;
+            }
+            else if ((ChoiceLockedMove != PBEMove.None && PP[Array.IndexOf(Moves, ChoiceLockedMove)] == 0) // If the choice locked move has 0 pp, it is forced to struggle
+                || Array.TrueForAll(PP, p => p == 0) // If all moves have 0 pp, then the user is forced to struggle
+                )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// Returns an array of moves the Pokémon can use.
+        /// </summary>
+        public PBEMove[] GetUsableMoves()
+        {
+            var usableMoves = new List<PBEMove>(Team.Battle.Settings.NumMoves);
+            if (IsForcedToStruggle())
+            {
+                usableMoves.Add(PBEMove.Struggle);
+            }
+            else if (TempLockedMove != PBEMove.None)
+            {
+                usableMoves.Add(TempLockedMove);
+            }
+            else if (ChoiceLockedMove != PBEMove.None)
+            {
+                usableMoves.Add(ChoiceLockedMove); // IsForcedToStruggle() being false means the choice locked move still has PP
+            }
+            else
+            {
+                for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
+                {
+                    if (PP[i] > 0)
+                    {
+                        usableMoves.Add(Moves[i]);
+                    }
+                }
+            }
+            return usableMoves.ToArray();
         }
         /// <summary>
         /// Gets the chance of a protection move succeeding, out of <see cref="ushort.MaxValue"/>.
@@ -749,8 +789,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBEAbilityLocalization.Names[KnownAbility].English)}");
             sb.AppendLine($"Item: {PBEItemLocalization.Names[Item].English}");
             sb.AppendLine($"Known item: {(KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[KnownItem].English)}");
-            // TODO: Usable moves
-            if (Moves.Contains(PBEMove.HiddenPower))
+            if (Array.IndexOf(Moves, PBEMove.HiddenPower) != -1)
             {
                 sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
             }
@@ -760,6 +799,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 moveStrs[i] = $"{PBEMoveLocalization.Names[Moves[i]].English} {PP[i]}/{MaxPP[i]}";
             }
             sb.AppendLine($"Moves: {string.Join(", ", moveStrs)}");
+            sb.AppendLine($"Usable moves: {string.Join(", ", GetUsableMoves().Select(m => PBEMoveLocalization.Names[m].English))}");
             sb.Append($"Known moves: {string.Join(", ", KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBEMoveLocalization.Names[m].English))}");
             return sb.ToString();
         }

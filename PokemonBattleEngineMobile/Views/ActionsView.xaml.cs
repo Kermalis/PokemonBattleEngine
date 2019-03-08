@@ -429,15 +429,8 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
         public void DisplayActions(PBEPokemon pkmn)
         {
             Pokemon = pkmn;
-            Party = Pokemon.Team.Party.Select(p => new PokemonInfo(p, Pokemon.TempLockedMove != PBEMove.None || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn)).ToArray();
-
-            var mInfo = new MoveInfo[pkmn.Moves.Length];
-            for (int i = 0; i < mInfo.Length; i++)
-            {
-                mInfo[i] = new MoveInfo(i, Pokemon, SelectMoveForTurn);
-            }
-            Moves = mInfo;
-
+            Party = pkmn.Team.Party.Select(p => new PokemonInfo(p, pkmn.TempLockedMove != PBEMove.None || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn)).ToArray();
+            Moves = pkmn.GetUsableMoves().Select(m => new MoveInfo(pkmn, m, SelectMoveForTurn)).ToArray();
             MovesVisible = true;
         }
         public void DisplaySwitches()
@@ -446,30 +439,30 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
             SwitchesVisible = true;
         }
 
-        void SelectPokemonForTurn(PokemonInfo pkmnInfo)
+        void SelectPokemonForTurn(PBEPokemon pkmn)
         {
             Pokemon.SelectedAction.Decision = PBEDecision.SwitchOut;
-            Pokemon.SelectedAction.SwitchPokemonId = pkmnInfo.Pokemon.Id;
-            BattleView.Client.StandBy.Add(pkmnInfo.Pokemon);
+            Pokemon.SelectedAction.SwitchPokemonId = pkmn.Id;
+            BattleView.Client.StandBy.Add(pkmn);
             MovesVisible = false;
             BattleView.Client.ActionsLoop(false);
         }
-        void SelectMoveForTurn(MoveInfo moveInfo)
+        void SelectMoveForTurn(PBEMove move)
         {
             Pokemon.SelectedAction.Decision = PBEDecision.Fight;
-            Pokemon.SelectedAction.FightMove = moveInfo.Move;
+            Pokemon.SelectedAction.FightMove = move;
             MovesVisible = false;
-            DisplayTargets(moveInfo);
+            DisplayTargets(move);
         }
-        void SelectSwitch(PokemonInfo pkmnInfo)
+        void SelectSwitch(PBEPokemon pkmn)
         {
-            Pokemon = pkmnInfo.Pokemon;
+            Pokemon = pkmn;
             SwitchesVisible = false;
             DisplayPositions();
         }
-        void DisplayTargets(MoveInfo moveInfo)
+        void DisplayTargets(PBEMove move)
         {
-            PBEMoveTarget possibleTargets = Pokemon.GetMoveTargets(moveInfo.Move);
+            PBEMoveTarget possibleTargets = Pokemon.GetMoveTargets(move);
 
             if (BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Single || BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Rotation)
             {

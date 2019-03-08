@@ -139,48 +139,34 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             sb.AppendLine($"**Item:** {PBEItemLocalization.Names[pkmn.Item].English}");
             sb.AppendLine($"**Ability:** {PBEAbilityLocalization.Names[pkmn.Ability].English}");
-            var useableMoves = new List<PBEMove>(pkmn.Moves.Length);
-            if (pkmn.IsForcedToStruggle())
-            {
-                useableMoves.Add(PBEMove.Struggle);
-            }
-            else if (pkmn.TempLockedMove != PBEMove.None)
-            {
-                useableMoves.Add(pkmn.TempLockedMove);
-            }
-            else if (pkmn.ChoiceLockedMove != PBEMove.None)
-            {
-                useableMoves.Add(pkmn.ChoiceLockedMove);
-            }
-            else
-            {
-                for (int i = 0; i < pkmn.Moves.Length; i++)
-                {
-                    if (pkmn.PP[i] > 0)
-                    {
-                        useableMoves.Add(pkmn.Moves[i]);
-                    }
-                }
-            }
-            if (useableMoves.Contains(PBEMove.HiddenPower))
+            if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
             {
                 sb.AppendLine($"**Hidden Power:** {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
             }
-            string[] moveStrs = new string[useableMoves.Count];
-            for (int i = 0; i < useableMoves.Count; i++)
+            string[] moveStrs = new string[PBESettings.DefaultSettings.NumMoves];
+            for (int i = 0; i < PBESettings.DefaultSettings.NumMoves; i++)
             {
-                PBEMove move = useableMoves[i];
+                PBEMove move = pkmn.Moves[i];
+                string str = PBEMoveLocalization.Names[move].English;
+                int moveIndex = Array.IndexOf(pkmn.Moves, move);
+                if (moveIndex != -1)
+                {
+                    str += $" {pkmn.PP[moveIndex]}/{pkmn.MaxPP[moveIndex]}";
+                }
+                moveStrs[i] = str;
+            }
+            sb.AppendLine($"**Moves:** {string.Join(", ", moveStrs)}");
+            PBEMove[] usableMoves = pkmn.GetUsableMoves();
+            moveStrs = new string[usableMoves.Length];
+            for (int i = 0; i < usableMoves.Length; i++)
+            {
+                PBEMove move = usableMoves[i];
                 string str = string.Empty;
                 if (addReactionChars)
                 {
                     str += $"{char.ConvertFromUtf32(0x1F1E6 + i)} ";
                 }
                 str += PBEMoveLocalization.Names[move].English;
-                int moveIndex = Array.IndexOf(pkmn.Moves, move);
-                if (moveIndex != -1)
-                {
-                    str += $" {pkmn.PP[moveIndex]}/{pkmn.MaxPP[moveIndex]}";
-                }
                 moveStrs[i] = str;
             }
             sb.Append($"**Usable moves:** {string.Join(", ", moveStrs)}");
@@ -1178,30 +1164,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             PBEBattle.SelectActionsIfValid(arp.Team, new[] { action });
                         }
 
-                        var usableMoves = new List<PBEMove>(mainPkmn.Moves.Length);
-                        if (mainPkmn.IsForcedToStruggle())
-                        {
-                            usableMoves.Add(PBEMove.Struggle);
-                        }
-                        else if (mainPkmn.TempLockedMove != PBEMove.None)
-                        {
-                            usableMoves.Add(mainPkmn.TempLockedMove);
-                        }
-                        else if (mainPkmn.ChoiceLockedMove != PBEMove.None)
-                        {
-                            usableMoves.Add(mainPkmn.ChoiceLockedMove);
-                        }
-                        else
-                        {
-                            for (int i = 0; i < mainPkmn.Moves.Length; i++)
-                            {
-                                if (mainPkmn.PP[i] > 0)
-                                {
-                                    usableMoves.Add(mainPkmn.Moves[i]);
-                                }
-                            }
-                        }
-                        for (int i = 0; i < usableMoves.Count; i++)
+                        PBEMove[] usableMoves = mainPkmn.GetUsableMoves();
+                        for (int i = 0; i < usableMoves.Length; i++)
                         {
                             PBEMove move = usableMoves[i]; // move must be evaluated before it reaches the lambda
                             var emoji = new Emoji(char.ConvertFromUtf32(0x1F1E6 + i).ToString());

@@ -5,7 +5,6 @@ using Kermalis.PokemonBattleEngine.Localization;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Reactive.Subjects;
 using System.Text;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
@@ -40,47 +39,26 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             }
         }
 
-        public ReactiveCommand SelectMoveCommand { get; }
-
         public PBEMove Move { get; }
         public IBrush Brush { get; }
         public IBrush BorderBrush { get; }
         public string Description { get; }
+        public ReactiveCommand SelectMoveCommand { get; }
 
-        public MoveInfo(int i, PBEPokemon pkmn, Action<MoveInfo> clickAction)
+        public MoveInfo(PBEPokemon pkmn, PBEMove move, Action<PBEMove> clickAction)
         {
-            bool enabled;
-            var sb = new StringBuilder();
-            if (pkmn.IsForcedToStruggle())
-            {
-                Move = PBEMove.Struggle;
-                enabled = true;
-            }
-            else if (pkmn.TempLockedMove != PBEMove.None)
-            {
-                Move = pkmn.TempLockedMove;
-                enabled = true;
-            }
-            else if (pkmn.ChoiceLockedMove != PBEMove.None)
-            {
-                Move = pkmn.ChoiceLockedMove;
-                enabled = true;
-            }
-            else
-            {
-                Move = pkmn.Moves[i];
-                enabled = Move != PBEMove.None && pkmn.PP[i] > 0;
-            }
-            Tuple<SolidColorBrush, SolidColorBrush> ttb = Move == PBEMove.None ? typeToBrush[PBEType.Normal] : typeToBrush[pkmn.GetMoveType(Move)];
+            Move = move;
+            Tuple<SolidColorBrush, SolidColorBrush> ttb = typeToBrush[pkmn.GetMoveType(move)];
             Brush = ttb.Item1;
             BorderBrush = ttb.Item2;
 
-            if (Move != PBEMove.None)
+            var sb = new StringBuilder();
+            if (move != PBEMove.None)
             {
-                PBEMoveData mData = PBEMoveData.Data[Move];
+                PBEMoveData mData = PBEMoveData.Data[move];
                 sb.AppendLine($"Type: {mData.Type}");
                 sb.AppendLine($"Category: {mData.Category}");
-                int moveIndex = Array.IndexOf(pkmn.Moves, Move);
+                int moveIndex = Array.IndexOf(pkmn.Moves, move);
                 if (moveIndex != -1)
                 {
                     sb.AppendLine($"PP: {pkmn.PP[moveIndex]}/{pkmn.MaxPP[moveIndex]}");
@@ -98,13 +76,11 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 sb.AppendLine($"Targets: {mData.Targets}");
                 sb.AppendLine($"Flags: {mData.Flags}");
                 sb.AppendLine();
-                sb.Append(PBEMoveLocalization.Descriptions[Move].FromUICultureInfo().Replace('\n', ' '));
+                sb.Append(PBEMoveLocalization.Descriptions[move].FromUICultureInfo().Replace('\n', ' '));
             }
             Description = sb.ToString();
 
-            var sub = new Subject<bool>();
-            SelectMoveCommand = ReactiveCommand.Create(() => clickAction(this), sub);
-            sub.OnNext(enabled);
+            SelectMoveCommand = ReactiveCommand.Create(() => clickAction(move));
         }
     }
 }
