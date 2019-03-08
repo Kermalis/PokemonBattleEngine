@@ -99,10 +99,43 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     sb.AppendLine($"**Substitute HP:** {pkmn.SubstituteHP}");
                 }
             }
-            sb.AppendLine($"**Stats:** A: {pkmn.Attack} D: {pkmn.Defense} SA: {pkmn.SpAttack} SD: {pkmn.SpDefense} S: {pkmn.Speed} W: {pkmn.Weight:0.0}");
+            sb.AppendLine($"**Stats:** [A] {pkmn.Attack}, [D] {pkmn.Defense}, [SA] {pkmn.SpAttack}, [SD] {pkmn.SpDefense}, [S] {pkmn.Speed}, [W] {pkmn.Weight:0.0}");
             if (pkmn.FieldPosition != PBEFieldPosition.None)
             {
-                sb.AppendLine($"**Stat changes:** A: {PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                PBEStat[] statChanges = pkmn.GetChangedStats();
+                if (statChanges.Length > 0)
+                {
+                    var statStrs = new List<string>(7);
+                    if (Array.IndexOf(statChanges, PBEStat.Attack) != -1)
+                    {
+                        statStrs.Add($"[A] x{PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.Defense) != -1)
+                    {
+                        statStrs.Add($"[D] x{PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.SpAttack) != -1)
+                    {
+                        statStrs.Add($"[SA] x{PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.SpDefense) != -1)
+                    {
+                        statStrs.Add($"[SD] x{PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.Speed) != -1)
+                    {
+                        statStrs.Add($"[S] x{PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.Accuracy) != -1)
+                    {
+                        statStrs.Add($"[AC] x{PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.Evasion) != -1)
+                    {
+                        statStrs.Add($"[E] x{PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                    }
+                    sb.AppendLine($"**Stat changes:** {string.Join(", ", statStrs)}");
+                }
             }
             sb.AppendLine($"**Item:** {PBEItemLocalization.Names[pkmn.Item].English}");
             sb.AppendLine($"**Ability:** {PBEAbilityLocalization.Names[pkmn.Ability].English}");

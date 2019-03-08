@@ -5,6 +5,7 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Localization;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -66,12 +67,51 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static string CustomPokemonToString(PBEPokemon pkmn)
         {
             var sb = new StringBuilder();
+
+            void AddStatChangeLine()
+            {
+                PBEStat[] statChanges = pkmn.GetChangedStats();
+                if (statChanges.Length > 0)
+                {
+                    var statStrs = new List<string>(7);
+                    if (Array.IndexOf(statChanges, PBEStat.Attack) != -1)
+                    {
+                        statStrs.Add($"[A] x{PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.Defense) != -1)
+                    {
+                        statStrs.Add($"[D] x{PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.SpAttack) != -1)
+                    {
+                        statStrs.Add($"[SA] x{PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.SpDefense) != -1)
+                    {
+                        statStrs.Add($"[SD] x{PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.Speed) != -1)
+                    {
+                        statStrs.Add($"[S] x{PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.Accuracy) != -1)
+                    {
+                        statStrs.Add($"[AC] x{PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00}");
+                    }
+                    if (Array.IndexOf(statChanges, PBEStat.Evasion) != -1)
+                    {
+                        statStrs.Add($"[E] x{PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                    }
+                    sb.AppendLine($"Stat changes: {string.Join(", ", statStrs)}");
+                }
+            }
+
             if (pkmn.Id == byte.MaxValue) // Unknown remote Pokémon
             {
                 PBEPokemonData pData = PBEPokemonData.Data[pkmn.KnownSpecies];
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {pkmn.KnownGenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
-                sb.AppendLine($"Types: {pkmn.KnownType1}/{pkmn.KnownType2}");
+                sb.AppendLine($"Known types: {pkmn.KnownType1}/{pkmn.KnownType2}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     sb.AppendLine($"Position: {pkmn.FieldPosition}");
@@ -90,10 +130,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 PBEPokemonData.GetStatRange(PBEStat.SpAttack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
                 PBEPokemonData.GetStatRange(PBEStat.SpDefense, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
                 PBEPokemonData.GetStatRange(PBEStat.Speed, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
-                sb.AppendLine($"Stat range: HP: {lowHP}-{highHP} A: {lowAttack}-{highAttack} D: {lowDefense}-{highDefense} SA: {lowSpAttack}-{highSpAttack} SD: {lowSpDefense}-{highSpDefense} S: {lowSpeed}-{highSpeed} W: {pkmn.KnownWeight:0.0}");
+                sb.AppendLine($"Stat range: [HP] {lowHP}-{highHP}, [A] {lowAttack}-{highAttack}, [D] {lowDefense}-{highDefense}, [SA] {lowSpAttack}-{highSpAttack}, [SD] {lowSpDefense}-{highSpDefense}, [S] {lowSpeed}-{highSpeed}, [W] {pkmn.KnownWeight:0.0}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    sb.AppendLine($"Stat changes: A: {PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                    AddStatChangeLine();
                 }
                 if (pkmn.KnownAbility == PBEAbility.MAX)
                 {
@@ -134,10 +174,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         sb.AppendLine($"Seeded position: {pkmn.SeededPosition}");
                     }
                 }
-                sb.AppendLine($"Stats: A: {pkmn.Attack} D: {pkmn.Defense} SA: {pkmn.SpAttack} SD: {pkmn.SpDefense} S: {pkmn.Speed} W: {pkmn.Weight:0.0}");
+                sb.AppendLine($"Stats: [A] {pkmn.Attack}, [D] {pkmn.Defense}, [SA] {pkmn.SpAttack}, [SD] {pkmn.SpDefense}, [S] {pkmn.Speed}, [W] {pkmn.Weight:0.0}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    sb.AppendLine($"Stat changes: A: {PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                    AddStatChangeLine();
                 }
                 sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[pkmn.Ability].English}");
                 sb.AppendLine($"Item: {PBEItemLocalization.Names[pkmn.Item].English}");

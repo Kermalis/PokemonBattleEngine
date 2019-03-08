@@ -320,6 +320,39 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return Type1 == type || Type2 == type;
         }
+        public PBEStat[] GetChangedStats()
+        {
+            var list = new List<PBEStat>(7);
+            if (AttackChange != 0)
+            {
+                list.Add(PBEStat.Attack);
+            }
+            if (DefenseChange != 0)
+            {
+                list.Add(PBEStat.Defense);
+            }
+            if (SpAttackChange != 0)
+            {
+                list.Add(PBEStat.SpAttack);
+            }
+            if (SpDefenseChange != 0)
+            {
+                list.Add(PBEStat.SpDefense);
+            }
+            if (SpeedChange != 0)
+            {
+                list.Add(PBEStat.Speed);
+            }
+            if (AccuracyChange != 0)
+            {
+                list.Add(PBEStat.Accuracy);
+            }
+            if (EvasionChange != 0)
+            {
+                list.Add(PBEStat.Evasion);
+            }
+            return list.ToArray();
+        }
 
         void SetStats()
         {
@@ -677,8 +710,41 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 sb.AppendLine($"Substitute HP: {SubstituteHP}");
             }
-            sb.AppendLine($"Stats: A: {Attack} D: {Defense} SA: {SpAttack} SD: {SpDefense} S: {Speed} W: {Weight:0.0}");
-            sb.AppendLine($"Stat changes: A: {PBEBattle.GetStatChangeModifier(AttackChange, false):0.00} D: {PBEBattle.GetStatChangeModifier(DefenseChange, false):0.00} SA: {PBEBattle.GetStatChangeModifier(SpAttackChange, false):0.00} SD: {PBEBattle.GetStatChangeModifier(SpDefenseChange, false):0.00} S: {PBEBattle.GetStatChangeModifier(SpeedChange, false):0.00} AC: {PBEBattle.GetStatChangeModifier(AccuracyChange, true):0.00} E: {PBEBattle.GetStatChangeModifier(EvasionChange, true):0.00}");
+            sb.AppendLine($"Stats: [A] {Attack}, [D] {Defense}, [SA] {SpAttack}, [SD] {SpDefense}, [S] {Speed}, [W] {Weight:0.0}");
+            PBEStat[] statChanges = GetChangedStats();
+            if (statChanges.Length > 0)
+            {
+                var statStrs = new List<string>(7);
+                if (Array.IndexOf(statChanges, PBEStat.Attack) != -1)
+                {
+                    statStrs.Add($"[A] x{PBEBattle.GetStatChangeModifier(AttackChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.Defense) != -1)
+                {
+                    statStrs.Add($"[D] x{PBEBattle.GetStatChangeModifier(DefenseChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.SpAttack) != -1)
+                {
+                    statStrs.Add($"[SA] x{PBEBattle.GetStatChangeModifier(SpAttackChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.SpDefense) != -1)
+                {
+                    statStrs.Add($"[SD] x{PBEBattle.GetStatChangeModifier(SpDefenseChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.Speed) != -1)
+                {
+                    statStrs.Add($"[S] x{PBEBattle.GetStatChangeModifier(SpeedChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.Accuracy) != -1)
+                {
+                    statStrs.Add($"[AC] x{PBEBattle.GetStatChangeModifier(AccuracyChange, true):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.Evasion) != -1)
+                {
+                    statStrs.Add($"[E] x{PBEBattle.GetStatChangeModifier(EvasionChange, true):0.00}");
+                }
+                sb.AppendLine($"Stat changes: {string.Join(", ", statStrs)}");
+            }
             sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[Ability].English}");
             sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBEAbilityLocalization.Names[KnownAbility].English)}");
             sb.AppendLine($"Item: {PBEItemLocalization.Names[Item].English}");
