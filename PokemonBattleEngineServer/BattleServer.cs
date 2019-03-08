@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngineServer
         public override IPacketProcessor PacketProcessor => packetProcessor;
         public static void Main(string[] args)
         {
-            using (var server = new BattleServer("127.0.0.1", 8888))
+            using (var server = new BattleServer(args[0], int.Parse(args[1])))
             {
                 server.Start();
             }
