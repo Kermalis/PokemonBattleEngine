@@ -2560,7 +2560,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Normal, PBEMoveCategory.Special, 0, 3, 40, 100,
                     PBEMoveEffect.Snore, 30, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.SoundBased
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByMetronome | PBEMoveFlag.SoundBased
                 )
             },
             {
@@ -2884,7 +2884,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Normal, PBEMoveCategory.Special, 0, 1, 85, 100,
                     PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
-                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.BlockedByMetronome
                 )
             },
             {

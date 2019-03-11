@@ -2995,6 +2995,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MudSlap = 189,
         MudShot = 341,
         NastyPlot = 417,
+        //NaturePower // TODO: Blocked by Metronome
         NeedleArm = 302,
         NightDaze = 539,
         NightShade = 101,
