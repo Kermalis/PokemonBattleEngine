@@ -502,66 +502,174 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 506, PBESpecies.Rotom_Mow },
             { 507, PBESpecies.Rotom_Wash }
         };
+        static readonly PBEMove[] gen4TMHMIndexToPBEMove = new PBEMove[100]
+        {
+            (PBEMove)264, // FocusPunch
+            PBEMove.DragonClaw,
+            PBEMove.WaterPulse,
+            PBEMove.CalmMind,
+            PBEMove.Roar,
+            PBEMove.Toxic,
+            PBEMove.Hail,
+            PBEMove.BulkUp,
+            (PBEMove)331, // BulletSeed
+            PBEMove.HiddenPower,
+            PBEMove.SunnyDay,
+            (PBEMove)269, // Taunt
+            PBEMove.IceBeam,
+            PBEMove.Blizzard,
+            (PBEMove)63, // HyperBeam
+            PBEMove.LightScreen,
+            PBEMove.Protect,
+            PBEMove.RainDance,
+            PBEMove.GigaDrain,
+            (PBEMove)219, // Safeguard
+            PBEMove.Frustration,
+            (PBEMove)76, // SolarBeam
+            PBEMove.IronTail,
+            PBEMove.Thunderbolt,
+            PBEMove.Thunder,
+            PBEMove.Earthquake,
+            PBEMove.Return,
+            PBEMove.Dig,
+            PBEMove.Psychic,
+            PBEMove.ShadowBall,
+            PBEMove.BrickBreak,
+            PBEMove.DoubleTeam,
+            PBEMove.Reflect,
+            PBEMove.ShockWave,
+            PBEMove.Flamethrower,
+            PBEMove.SludgeBomb,
+            PBEMove.Sandstorm,
+            PBEMove.FireBlast,
+            PBEMove.RockTomb,
+            PBEMove.AerialAce,
+            (PBEMove)259, // Torment
+            PBEMove.Facade,
+            (PBEMove)290, // SecretPower
+            PBEMove.Rest,
+            (PBEMove)213, // Attract
+            (PBEMove)168, // Thief
+            PBEMove.SteelWing,
+            (PBEMove)285, // SkillSwap
+            (PBEMove)289, // Snatch
+            PBEMove.Overheat,
+            (PBEMove)355, // Roost
+            PBEMove.FocusBlast,
+            PBEMove.EnergyBall,
+            (PBEMove)206, // FalseSwipe
+            PBEMove.Brine,
+            (PBEMove)374, // Fling
+            PBEMove.ChargeBeam,
+            (PBEMove)203, // Endure
+            PBEMove.DragonPulse,
+            PBEMove.DrainPunch,
+            PBEMove.WillOWisp,
+            PBEMove.SilverWind,
+            (PBEMove)373, // Embargo
+            PBEMove.Explosion,
+            PBEMove.ShadowClaw,
+            (PBEMove)371, // Payback
+            (PBEMove)278, // Recycle
+            (PBEMove)416, // GigaImpact
+            PBEMove.RockPolish,
+            PBEMove.Flash,
+            PBEMove.StoneEdge,
+            (PBEMove)419, // Avalanche
+            PBEMove.ThunderWave,
+            (PBEMove)360, // GyroBall
+            PBEMove.SwordsDance,
+            PBEMove.StealthRock,
+            PBEMove.PsychUp,
+            (PBEMove)445, // Captivate
+            PBEMove.DarkPulse,
+            PBEMove.RockSlide,
+            PBEMove.XScissor,
+            (PBEMove)214, // SleepTalk
+            (PBEMove)363, // NaturalGift
+            PBEMove.PoisonJab,
+            PBEMove.DreamEater,
+            PBEMove.GrassKnot,
+            PBEMove.Swagger,
+            (PBEMove)365, // Pluck
+            (PBEMove)369, // Uturn
+            PBEMove.Substitute,
+            PBEMove.FlashCannon,
+            PBEMove.TrickRoom,
+            PBEMove.Cut,
+            PBEMove.Fly,
+            PBEMove.Surf,
+            PBEMove.Strength,
+            PBEMove.None, // Defog/Whirlpool - code will apply the right one
+            PBEMove.RockSmash,
+            PBEMove.Waterfall,
+            PBEMove.RockClimb
+        };
 
         // You must dump everything yourself
         // The GBA ROMs must all be v1.0
         // D, P, and Pt level-up move NARC is /poketool/personal/wotbl.narc (D and P have identical level-up move NARCs)
+        // Pt TMHM moves are in the Pokémon data NARC which is /poketool/personal/pl_personal.narc for Pt (Pt changed no TMHM compatibility from DP so I use it alone)
         // HG and SS level-up move NARC is /a/0/3/3 (HG and SS have identical level-up move NARCs)
+        // HG and SS TMHM moves are in the Pokémon data NARC which is /a/0/0/2 (HG and SS have identical Pokémon data NARCs)
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8
         // TODO: Colo, XD, B, W, B2, W2
         // TODO: Move tutor, egg moves
         // TODO: Share moves across formes
         public static void Dump()
         {
-            using (var axpeFS = new FileStream(@"../../../\DumpedData\AXPE.gba", FileMode.Open))
-            using (var axveFS = new FileStream(@"../../../\DumpedData\AXVE.gba", FileMode.Open))
-            using (var bpeeFS = new FileStream(@"../../../\DumpedData\BPEE.gba", FileMode.Open))
-            using (var bpgeFS = new FileStream(@"../../../\DumpedData\BPGE.gba", FileMode.Open))
-            using (var bpreFS = new FileStream(@"../../../\DumpedData\BPRE.gba", FileMode.Open))
-            using (var axpe = new BinaryReader(axpeFS))
-            using (var axve = new BinaryReader(axveFS))
-            using (var bpee = new BinaryReader(bpeeFS))
-            using (var bpge = new BinaryReader(bpgeFS))
-            using (var bpre = new BinaryReader(bpreFS))
+            using (var rStream = new FileStream(@"../../../\DumpedData\R.gba", FileMode.Open))
+            using (var sStream = new FileStream(@"../../../\DumpedData\S.gba", FileMode.Open))
+            using (var frStream = new FileStream(@"../../../\DumpedData\FR.gba", FileMode.Open))
+            using (var lgStream = new FileStream(@"../../../\DumpedData\LG.gba", FileMode.Open))
+            using (var eStream = new FileStream(@"../../../\DumpedData\E.gba", FileMode.Open))
+            using (var r = new BinaryReader(rStream))
+            using (var s = new BinaryReader(sStream))
+            using (var fr = new BinaryReader(frStream))
+            using (var lg = new BinaryReader(lgStream))
+            using (var e = new BinaryReader(eStream))
             {
                 var dpLevelUp = new NARC(@"../../../\DumpedData\DPLevelUp.narc");
                 var ptLevelUp = new NARC(@"../../../\DumpedData\PtLevelUp.narc");
+                var ptTMHM = new NARC(@"../../../\DumpedData\PtPokedata.narc");
                 var hgssLevelUp = new NARC(@"../../../\DumpedData\HGSSLevelUp.narc");
+                var hgssTMHM = new NARC(@"../../../\DumpedData\HGSSPokedata.narc");
                 var sb = new StringBuilder();
                 var levelup = new Dictionary<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>>();
+                var tmhm = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
 
                 #region Level Up Moves
 
                 sb.AppendLine("LEVELUP");
                 // Gen 3
-                for (int s = 1; s <= 411; s++)
+                for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
-                    if (s > 251 && s < 277)
+                    if (sp > 251 && sp < 277)
                     {
                         continue;
                     }
                     // It is the same in Ruby and Sapphire, but the rest have some differences
-                    axpe.BaseStream.Position = 0x207B58 + (4 * s);
-                    axve.BaseStream.Position = 0x207BC8 + (4 * s);
-                    bpee.BaseStream.Position = 0x32937C + (4 * s);
-                    bpge.BaseStream.Position = 0x25D794 + (4 * s);
-                    bpre.BaseStream.Position = 0x25D7B4 + (4 * s);
+                    r.BaseStream.Position = 0x207BC8 + (4 * sp);
+                    s.BaseStream.Position = 0x207B58 + (4 * sp);
+                    fr.BaseStream.Position = 0x25D7B4 + (4 * sp);
+                    lg.BaseStream.Position = 0x25D794 + (4 * sp);
+                    e.BaseStream.Position = 0x32937C + (4 * sp);
 
                     void ReadLevelUpMoves(BinaryReader reader, string flag)
                     {
-                        PBESpecies species = gen3SpeciesIndexToPBESpecies[s];
+                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
                         if (species == (PBESpecies)386)
                         {
-                            if (reader == bpee)
+                            if (reader == e)
                             {
                                 species = (PBESpecies)(386 | (3 << 0x10)); // Deoxys_Speed
                             }
-                            if (reader == bpge)
+                            if (reader == lg)
                             {
                                 species = (PBESpecies)(386 | (2 << 0x10)); // Deoxys_Defense
                             }
-                            if (reader == bpre)
+                            if (reader == fr)
                             {
                                 species = (PBESpecies)(386 | (1 << 0x10)); // Deoxys_Attack
                             }
@@ -594,20 +702,20 @@ namespace Kermalis.PokemonBattleEngineTesting
                             }
                         }
                     }
-                    ReadLevelUpMoves(axpe, "PBEMoveObtainMethod.LevelUp_RS");
-                    ReadLevelUpMoves(bpre, "PBEMoveObtainMethod.LevelUp_FR");
-                    ReadLevelUpMoves(bpge, "PBEMoveObtainMethod.LevelUp_LG");
-                    ReadLevelUpMoves(bpee, "PBEMoveObtainMethod.LevelUp_E");
+                    ReadLevelUpMoves(r, "PBEMoveObtainMethod.LevelUp_RS");
+                    ReadLevelUpMoves(fr, "PBEMoveObtainMethod.LevelUp_FR");
+                    ReadLevelUpMoves(lg, "PBEMoveObtainMethod.LevelUp_LG");
+                    ReadLevelUpMoves(e, "PBEMoveObtainMethod.LevelUp_E");
                 }
                 // Gen 4
-                for (int s = 1; s <= 507; s++)
+                for (int sp = 1; sp <= 507; sp++)
                 {
-                    // 494 and 495 only learn splash at level 1, and I'm not sure what they are supposed to be, so I guess egg and bad egg
-                    if (s == 494 || s == 495)
+                    // 494 is Egg, 495 is Bad Egg
+                    if (sp == 494 || sp == 495)
                     {
                         continue;
                     }
-                    PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(s) ? gen4SpeciesIndexToPBESpecies[s] : (PBESpecies)s;
+                    PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
                     if (!levelup.ContainsKey(species))
                     {
                         levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
@@ -641,12 +749,12 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                     }
                     // DP only has 0-500
-                    if (s <= 500)
+                    if (sp <= 500)
                     {
-                        ReadLevelUpMoves(dpLevelUp.Files[s], "PBEMoveObtainMethod.LevelUp_DP");
+                        ReadLevelUpMoves(dpLevelUp.Files[sp], "PBEMoveObtainMethod.LevelUp_DP");
                     }
-                    ReadLevelUpMoves(ptLevelUp.Files[s], "PBEMoveObtainMethod.LevelUp_Pt");
-                    ReadLevelUpMoves(hgssLevelUp.Files[s], "PBEMoveObtainMethod.LevelUp_HGSS");
+                    ReadLevelUpMoves(ptLevelUp.Files[sp], "PBEMoveObtainMethod.LevelUp_Pt");
+                    ReadLevelUpMoves(hgssLevelUp.Files[sp], "PBEMoveObtainMethod.LevelUp_HGSS");
                 }
 
                 foreach (KeyValuePair<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>> speciesPair in levelup)
@@ -665,31 +773,96 @@ namespace Kermalis.PokemonBattleEngineTesting
 
                 sb.AppendLine("TMHM");
                 // Gen 3
-                for (int s = 1; s <= 411; s++)
+                for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
-                    if (s > 251 && s < 277)
+                    if (sp > 251 && sp < 277)
                     {
                         continue;
                     }
                     // It is the same in all 5 GBA games, so I will only read one
-                    axpe.BaseStream.Position = 0x1FD080 + (4 * s);
-                    axve.BaseStream.Position = 0x1FD0F0 + (4 * s);
-                    bpee.BaseStream.Position = 0x31E898 + (4 * s);
-                    bpge.BaseStream.Position = 0x252BA4 + (4 * s);
-                    bpre.BaseStream.Position = 0x252BC8 + (4 * s);
-                    byte[] axpeTMHM = axpe.ReadBytes(8);
+                    r.BaseStream.Position = 0x1FD0F0 + (4 * sp);
+                    s.BaseStream.Position = 0x1FD080 + (4 * sp);
+                    fr.BaseStream.Position = 0x252BC8 + (4 * sp);
+                    lg.BaseStream.Position = 0x252BA4 + (4 * sp);
+                    e.BaseStream.Position = 0x31E898 + (4 * sp);
+                    byte[] bytes = r.ReadBytes(8);
 
-                    sb.AppendLine($"// PBESpecies.{gen3SpeciesIndexToPBESpecies[s]}:");
+                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                    if (!tmhm.ContainsKey(species))
+                    {
+                        tmhm.Add(species, new Dictionary<PBEMove, string>());
+                    }
                     for (int i = 0; i < 58; i++) // 50 TMs, 8 HMs
                     {
-                        if ((axpeTMHM[i / 8] & (1 << (i % 8))) != 0)
+                        if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                         {
                             PBEMove move = gen3TMHMIndexToPBEMove[i];
-                            sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), move) ? string.Empty : "// ")}Tuple.Create(PBEMove.{move}, PBEMoveObtainMethod.{(i < 50 ? "TM" : "HM")}_RSFRLGE),");
+                            string flag = $"PBEMoveObtainMethod.{(i < 50 ? "TM" : "HM")}_RSFRLGE";
+                            if (tmhm[species].ContainsKey(move))
+                            {
+                                tmhm[species][move] += $" | {flag}";
+                            }
+                            else
+                            {
+                                tmhm[species].Add(move, flag);
+                            }
                         }
                     }
                     sb.AppendLine();
+                }
+                // Gen 4
+                for (int sp = 1; sp <= 507; sp++)
+                {
+                    // 494 is Egg, 495 is Bad Egg
+                    if (sp == 494 || sp == 495)
+                    {
+                        continue;
+                    }
+                    PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
+                    if (!tmhm.ContainsKey(species))
+                    {
+                        tmhm.Add(species, new Dictionary<PBEMove, string>());
+                    }
+                    void ReadTMHM(MemoryStream file, bool dppt)
+                    {
+                        using (var reader = new BinaryReader(file))
+                        {
+                            reader.BaseStream.Position = 0x1C;
+                            byte[] bytes = reader.ReadBytes(13);
+                            for (int i = 0; i < 100; i++) // 92 TMs, 8 HMs
+                            {
+                                if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                                {
+                                    PBEMove move = gen4TMHMIndexToPBEMove[i];
+                                    string flag = $"PBEMoveObtainMethod.{(i < 92 ? "TM" : "HM")}_{(dppt ? "DPPt" : "HGSS")}";
+                                    if (move == PBEMove.None)
+                                    {
+                                        move = dppt ? (PBEMove)432 : (PBEMove)250;
+                                    }
+                                    if (tmhm[species].ContainsKey(move))
+                                    {
+                                        tmhm[species][move] += $" | {flag}";
+                                    }
+                                    else
+                                    {
+                                        tmhm[species].Add(move, flag);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    ReadTMHM(ptTMHM.Files[sp], true);
+                    ReadTMHM(hgssTMHM.Files[sp], false);
+                }
+
+                foreach (KeyValuePair<PBESpecies, Dictionary<PBEMove, string>> speciesPair in tmhm)
+                {
+                    sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
+                    foreach (KeyValuePair<PBEMove, string> movePair in speciesPair.Value)
+                    {
+                        sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), movePair.Key) ? string.Empty : "// ")}Tuple.Create(PBEMove.{movePair.Key}, {movePair.Value}),");
+                    }
                 }
 
                 #endregion
