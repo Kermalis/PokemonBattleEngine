@@ -656,6 +656,58 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.RockClimb
         };
+        static readonly Dictionary<int, PBESpecies> bwSpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        {
+            { 650, (PBESpecies)(386 | (1 << 0x10)) }, // Deoxys_Attack
+            { 651, (PBESpecies)(386 | (2 << 0x10)) }, // Deoxys_Defense
+            { 652, (PBESpecies)(386 | (3 << 0x10)) }, // Deoxys_Speed
+            { 653, (PBESpecies)(413 | (1 << 0x10)) }, // Wormadam_Sandy
+            { 654, (PBESpecies)(413 | (2 << 0x10)) }, // Wormadam_Trash
+            { 655, (PBESpecies)(492 | (1 << 0x10)) }, // Shaymin_Sky
+            { 656, PBESpecies.Giratina_Origin },
+            // Not sure on the order of the Rotoms, but they all have the same level up moves & tm moves
+            { 657, PBESpecies.Rotom_Fan },
+            { 658, PBESpecies.Rotom_Frost },
+            { 659, PBESpecies.Rotom_Heat },
+            { 660, PBESpecies.Rotom_Mow },
+            { 661, PBESpecies.Rotom_Wash },
+            // Not sure on the order of the Castforms, but they all have the same level up moves & tm moves
+            { 662, (PBESpecies)(351 | (1 << 0x10)) }, // Castform_Rainy
+            { 663, (PBESpecies)(351 | (2 << 0x10)) }, // Castform_Snowy
+            { 664, (PBESpecies)(351 | (3 << 0x10)) }, // Castform_Sunny
+            { 665, PBESpecies.Basculin_Red },
+            { 666, PBESpecies.Darmanitan_Zen },
+            { 667, PBESpecies.Meloetta_Pirouette }
+        };
+        static readonly Dictionary<int, PBESpecies> b2w2SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        {
+            { 685, (PBESpecies)(386 | (1 << 0x10)) }, // Deoxys_Attack
+            { 686, (PBESpecies)(386 | (2 << 0x10)) }, // Deoxys_Defense
+            { 687, (PBESpecies)(386 | (3 << 0x10)) }, // Deoxys_Speed
+            { 688, (PBESpecies)(413 | (1 << 0x10)) }, // Wormadam_Sandy
+            { 689, (PBESpecies)(413 | (2 << 0x10)) }, // Wormadam_Trash
+            { 690, (PBESpecies)(492 | (1 << 0x10)) }, // Shaymin_Sky
+            { 691, PBESpecies.Giratina_Origin },
+            // Not sure on the order of the Rotoms, but they all have the same level up moves & tm moves
+            { 692, PBESpecies.Rotom_Fan },
+            { 693, PBESpecies.Rotom_Frost },
+            { 694, PBESpecies.Rotom_Heat },
+            { 695, PBESpecies.Rotom_Mow },
+            { 696, PBESpecies.Rotom_Wash },
+            // Not sure on the order of the Castforms, but they all have the same level up moves & tm moves
+            { 697, (PBESpecies)(351 | (1 << 0x10)) }, // Castform_Rainy
+            { 698, (PBESpecies)(351 | (2 << 0x10)) }, // Castform_Snowy
+            { 699, (PBESpecies)(351 | (3 << 0x10)) }, // Castform_Sunny
+            { 700, PBESpecies.Basculin_Red },
+            { 701, PBESpecies.Darmanitan_Zen },
+            { 702, PBESpecies.Meloetta_Pirouette },
+            { 703, PBESpecies.Kyurem_White },
+            { 704, PBESpecies.Kyurem_Black },
+            { 705, PBESpecies.Keldeo_Resolute },
+            { 706, PBESpecies.Tornadus_Therian },
+            { 707, PBESpecies.Thundurus_Therian },
+            { 708, PBESpecies.Landorus_Therian }
+        };
 
         // You must dump everything yourself
         // The GBA ROMs must all be v1.0
@@ -663,9 +715,11 @@ namespace Kermalis.PokemonBattleEngineTesting
         // Pt TMHM moves are in the Pokémon data NARC which is /poketool/personal/pl_personal.narc for Pt (Pt changed no TMHM compatibility from DP so I use it alone)
         // HG and SS level-up move NARC is /a/0/3/3 (HG and SS have identical level-up move NARCs)
         // HG and SS TMHM moves are in the Pokémon data NARC which is /a/0/0/2 (HG and SS have identical Pokémon data NARCs)
-        // B, W, B2, and W2 level-up move NARC is /a/0/1/8
-        // TODO: Colo, XD, B, W, B2, W2 - levelup & tm
-        // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - egg & tutor
+        // B, W, B2, and W2 level-up move NARC is /a/0/1/8 (B and W have identical level-up move NARCs) (B2 and W2 have identical level-up move NARCs)
+        // TODO: Colo, XD - levelup
+        // TODO: Colo, XD, B, W, B2, W2 - tmhm
+        // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - tutor
+        // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - egg
         // TODO: FRLG - blast burn, frenzy plant, and hydro cannon tutor
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Share moves across formes
@@ -811,6 +865,59 @@ namespace Kermalis.PokemonBattleEngineTesting
                         ReadLevelUpMoves(hgss.Files[sp], "PBEMoveObtainMethod.LevelUp_HGSS");
                     }
                 }
+                // Gen 5
+                using (var bw = new NARC(@"../../../\DumpedData\BWLevelUp.narc"))
+                using (var b2w2 = new NARC(@"../../../\DumpedData\B2W2LevelUp.narc"))
+                {
+                    for (int sp = 1; sp <= 708; sp++)
+                    {
+                        void ReadLevelUpMoves(MemoryStream file, bool isBW)
+                        {
+                            Dictionary<int, PBESpecies> dict = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
+                            PBESpecies species = dict.ContainsKey(sp) ? dict[sp] : (PBESpecies)sp;
+                            if (!levelup.ContainsKey(species))
+                            {
+                                levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
+                            }
+                            using (var reader = new BinaryReader(file))
+                            {
+                                while (true)
+                                {
+                                    uint val = reader.ReadUInt32();
+                                    if (val == 0xFFFFFFFF)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        int level = (int)(val >> 16);
+                                        var move = (PBEMove)(val & 0xFFFF);
+                                        string flag = $"PBEMoveObtainMethod.LevelUp_{(isBW ? "BW" : "B2W2")}";
+                                        Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
+                                        if (tupleThatExists != null)
+                                        {
+                                            levelup[species][tupleThatExists] += $" | {flag}";
+                                        }
+                                        else
+                                        {
+                                            levelup[species].Add(Tuple.Create(level, move), flag);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // BW only has 0-667 (no Egg or Bad Egg)
+                        if (sp <= 667)
+                        {
+                            ReadLevelUpMoves(bw.Files[sp], true);
+                        }
+                        // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon in B2W2
+                        if (sp <= 649 || sp >= 685)
+                        {
+                            ReadLevelUpMoves(b2w2.Files[sp], false);
+                        }
+                    }
+                }
 
                 #endregion
 
@@ -868,7 +975,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                         {
                             tmhm.Add(species, new Dictionary<PBEMove, string>());
                         }
-                        void ReadTMHM(MemoryStream file, bool isDPPt)
+                        void ReadTMHMMoves(MemoryStream file, bool isDPPt)
                         {
                             using (var reader = new BinaryReader(file))
                             {
@@ -896,8 +1003,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 }
                             }
                         }
-                        ReadTMHM(dppt.Files[sp], true);
-                        ReadTMHM(hgss.Files[sp], false);
+                        ReadTMHMMoves(dppt.Files[sp], true);
+                        ReadTMHMMoves(hgss.Files[sp], false);
                     }
                 }
 
