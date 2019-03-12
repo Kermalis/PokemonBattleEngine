@@ -124,7 +124,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                     }
 
-                    string path = @"../../../\DumpedData\Fonts\" + fileNum;
+                    string path = @"../../../\DumpedData\Dumped\Fonts\" + fileNum;
                     Directory.CreateDirectory(path);
                     foreach (KeyValuePair<ushort, ushort> pair in dict)
                     {

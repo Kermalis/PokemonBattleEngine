@@ -425,7 +425,6 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 438, PBESpecies.Unown_Exclamation },
             { 439, PBESpecies.Unown_Question }
         };
-
         static readonly PBEMove[] gen3TMHMIndexToPBEMove = new PBEMove[58]
         {
             (PBEMove)264, // FocusPunch
@@ -487,9 +486,31 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.Dive
         };
+        static readonly Dictionary<int, PBESpecies> gen4SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        {
+            { 496, (PBESpecies)(386 | (1 << 0x10)) }, // Deoxys_Attack
+            { 497, (PBESpecies)(386 | (2 << 0x10)) }, // Deoxys_Defense
+            { 498, (PBESpecies)(386 | (3 << 0x10)) }, // Deoxys_Speed
+            { 499, (PBESpecies)(413 | (1 << 0x10)) }, // Wormadam_Sandy
+            { 500, (PBESpecies)(413 | (2 << 0x10)) }, // Wormadam_Trash
+            { 501, PBESpecies.Giratina_Origin },
+            { 502, (PBESpecies)(492 | (1 << 0x10)) }, // Shaymin_Sky
+            // Not sure on the order of the Rotoms, but they all have the same level up moves
+            { 503, PBESpecies.Rotom_Fan },
+            { 504, PBESpecies.Rotom_Frost },
+            { 505, PBESpecies.Rotom_Heat },
+            { 506, PBESpecies.Rotom_Mow },
+            { 507, PBESpecies.Rotom_Wash }
+        };
 
-        // You must dump the GBA ROMs yourself (All v1.0)
-        // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2
+        // You must dump everything yourself
+        // The GBA ROMs must all be v1.0
+        // D, P, and Pt level-up move NARC is /poketool/personal/wotbl.narc (D and P have identical level-up move NARCs)
+        // HG and SS level-up move NARC is /a/0/3/3 (HG and SS have identical level-up move NARCs)
+        // B, W, B2, and W2 level-up move NARC is /a/0/1/8
+        // TODO: Colo, XD, B, W, B2, W2
+        // TODO: Move tutor, egg moves
+        // TODO: Share moves across formes
         public static void Dump()
         {
             using (var axpeFS = new FileStream(@"../../../\DumpedData\AXPE.gba", FileMode.Open))
@@ -503,26 +524,98 @@ namespace Kermalis.PokemonBattleEngineTesting
             using (var bpge = new BinaryReader(bpgeFS))
             using (var bpre = new BinaryReader(bpreFS))
             {
+                var dpLevelUp = new NARC(@"../../../\DumpedData\DPLevelUp.narc");
+                var ptLevelUp = new NARC(@"../../../\DumpedData\PtLevelUp.narc");
+                var hgssLevelUp = new NARC(@"../../../\DumpedData\HGSSLevelUp.narc");
                 var sb = new StringBuilder();
+                var levelup = new Dictionary<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>>();
 
-                // Level up Moves
+                #region Level Up Moves
+
                 sb.AppendLine("LEVELUP");
-                for (int s = 0; s < 412; s++) // Unown formes do not have level up moves defined
+                // Gen 3
+                for (int s = 1; s <= 411; s++)
                 {
-                    if (gen3SpeciesIndexToPBESpecies.ContainsKey(s))
+                    // Gen 2 Unown slots are ignored in gen 3
+                    if (s > 251 && s < 277)
                     {
-                        // It is the same in Ruby and Sapphire, but the rest have some differences
-                        axpe.BaseStream.Position = 0x207B58 + (4 * s);
-                        axve.BaseStream.Position = 0x207BC8 + (4 * s);
-                        bpee.BaseStream.Position = 0x32937C + (4 * s);
-                        bpge.BaseStream.Position = 0x25D794 + (4 * s);
-                        bpre.BaseStream.Position = 0x25D7B4 + (4 * s);
+                        continue;
+                    }
+                    // It is the same in Ruby and Sapphire, but the rest have some differences
+                    axpe.BaseStream.Position = 0x207B58 + (4 * s);
+                    axve.BaseStream.Position = 0x207BC8 + (4 * s);
+                    bpee.BaseStream.Position = 0x32937C + (4 * s);
+                    bpge.BaseStream.Position = 0x25D794 + (4 * s);
+                    bpre.BaseStream.Position = 0x25D7B4 + (4 * s);
 
-                        sb.AppendLine($"// PBESpecies.{gen3SpeciesIndexToPBESpecies[s]}:");
-                        var levelup = new Dictionary<Tuple<int, PBEMove>, string>();
-                        void ReadLevelUpMoves(BinaryReader reader, string flag)
+                    void ReadLevelUpMoves(BinaryReader reader, string flag)
+                    {
+                        PBESpecies species = gen3SpeciesIndexToPBESpecies[s];
+                        if (species == (PBESpecies)386)
                         {
-                            reader.BaseStream.Position = reader.ReadUInt32() - 0x8000000;
+                            if (reader == bpee)
+                            {
+                                species = (PBESpecies)(386 | (3 << 0x10)); // Deoxys_Speed
+                            }
+                            if (reader == bpge)
+                            {
+                                species = (PBESpecies)(386 | (2 << 0x10)); // Deoxys_Defense
+                            }
+                            if (reader == bpre)
+                            {
+                                species = (PBESpecies)(386 | (1 << 0x10)); // Deoxys_Attack
+                            }
+                        }
+                        if (!levelup.ContainsKey(species))
+                        {
+                            levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
+                        }
+                        reader.BaseStream.Position = reader.ReadUInt32() - 0x8000000;
+                        while (true)
+                        {
+                            ushort val = reader.ReadUInt16();
+                            if (val == 0xFFFF)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                int level = val >> 9;
+                                var move = (PBEMove)(val & 0x1FF);
+                                Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
+                                if (tupleThatExists != null)
+                                {
+                                    levelup[species][tupleThatExists] += $" | {flag}";
+                                }
+                                else
+                                {
+                                    levelup[species].Add(Tuple.Create(level, move), flag);
+                                }
+                            }
+                        }
+                    }
+                    ReadLevelUpMoves(axpe, "PBEMoveObtainMethod.LevelUp_RS");
+                    ReadLevelUpMoves(bpre, "PBEMoveObtainMethod.LevelUp_FR");
+                    ReadLevelUpMoves(bpge, "PBEMoveObtainMethod.LevelUp_LG");
+                    ReadLevelUpMoves(bpee, "PBEMoveObtainMethod.LevelUp_E");
+                }
+                // Gen 4
+                for (int s = 1; s <= 507; s++)
+                {
+                    // 494 and 495 only learn splash at level 1, and I'm not sure what they are supposed to be, so I guess egg and bad egg
+                    if (s == 494 || s == 495)
+                    {
+                        continue;
+                    }
+                    PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(s) ? gen4SpeciesIndexToPBESpecies[s] : (PBESpecies)s;
+                    if (!levelup.ContainsKey(species))
+                    {
+                        levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
+                    }
+                    void ReadLevelUpMoves(MemoryStream file, string flag)
+                    {
+                        using (var reader = new BinaryReader(file))
+                        {
                             while (true)
                             {
                                 ushort val = reader.ReadUInt16();
@@ -534,57 +627,73 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 {
                                     int level = val >> 9;
                                     var move = (PBEMove)(val & 0x1FF);
-                                    Tuple<int, PBEMove> tupleThatExists = levelup.Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
+                                    Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
                                     if (tupleThatExists != null)
                                     {
-                                        levelup[tupleThatExists] += $" | {flag}";
+                                        levelup[species][tupleThatExists] += $" | {flag}";
                                     }
                                     else
                                     {
-                                        levelup.Add(Tuple.Create(level, move), flag);
+                                        levelup[species].Add(Tuple.Create(level, move), flag);
                                     }
                                 }
                             }
                         }
-                        ReadLevelUpMoves(axpe, "PBEMoveObtainMethod.LevelUp_RS");
-                        ReadLevelUpMoves(bpre, "PBEMoveObtainMethod.LevelUp_FR");
-                        ReadLevelUpMoves(bpge, "PBEMoveObtainMethod.LevelUp_LG");
-                        ReadLevelUpMoves(bpee, "PBEMoveObtainMethod.LevelUp_E");
-                        foreach (KeyValuePair<Tuple<int, PBEMove>, string> kv in levelup)
-                        {
-                            sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), kv.Key.Item2) ? string.Empty : "// ")}Tuple.Create(PBEMove.{kv.Key.Item2}, {kv.Key.Item1}, {kv.Value}),");
-                        }
-                        sb.AppendLine();
                     }
-                }
-
-                // TMHM Compatibility
-                sb.AppendLine("TMHM");
-                for (int s = 0; s < 412; s++) // Unown formes do not have tmhm compatibility defined
-                {
-                    if (gen3SpeciesIndexToPBESpecies.ContainsKey(s))
+                    // DP only has 0-500
+                    if (s <= 500)
                     {
-                        // It is the same in all 5 GBA games, so I will only read one
-                        axpe.BaseStream.Position = 0x1FD080 + (4 * s);
-                        axve.BaseStream.Position = 0x1FD0F0 + (4 * s);
-                        bpee.BaseStream.Position = 0x31E898 + (4 * s);
-                        bpge.BaseStream.Position = 0x252BA4 + (4 * s);
-                        bpre.BaseStream.Position = 0x252BC8 + (4 * s);
-                        byte[] axpeTMHM = axpe.ReadBytes(8);
+                        ReadLevelUpMoves(dpLevelUp.Files[s], "PBEMoveObtainMethod.LevelUp_DP");
+                    }
+                    ReadLevelUpMoves(ptLevelUp.Files[s], "PBEMoveObtainMethod.LevelUp_Pt");
+                    ReadLevelUpMoves(hgssLevelUp.Files[s], "PBEMoveObtainMethod.LevelUp_HGSS");
+                }
 
-                        sb.AppendLine($"// PBESpecies.{gen3SpeciesIndexToPBESpecies[s]}:");
-                        for (int i = 0; i < 58; i++) // 50 TMs, 8 HMs
-                        {
-                            if ((axpeTMHM[i / 8] & (1 << (i % 8))) != 0)
-                            {
-                                PBEMove move = gen3TMHMIndexToPBEMove[i];
-                                sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), move) ? string.Empty : "// ")}Tuple.Create(PBEMove.{move}, PBEMoveObtainMethod.{(i < 50 ? "TM" : "HM")}_RSFRLGE),");
-                            }
-                        }
-                        sb.AppendLine();
+                foreach (KeyValuePair<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>> speciesPair in levelup)
+                {
+                    sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
+                    foreach (KeyValuePair<Tuple<int, PBEMove>, string> movePair in speciesPair.Value)
+                    {
+                        sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), movePair.Key.Item2) ? string.Empty : "// ")}Tuple.Create(PBEMove.{movePair.Key.Item2}, {movePair.Key.Item1}, {movePair.Value}),");
                     }
                 }
-                File.WriteAllText(@"../../../\DumpedData\Moves.txt", sb.ToString());
+                sb.AppendLine();
+
+                #endregion
+
+                #region TMHM Compatibility
+
+                sb.AppendLine("TMHM");
+                // Gen 3
+                for (int s = 1; s <= 411; s++)
+                {
+                    // Gen 2 Unown slots are ignored in gen 3
+                    if (s > 251 && s < 277)
+                    {
+                        continue;
+                    }
+                    // It is the same in all 5 GBA games, so I will only read one
+                    axpe.BaseStream.Position = 0x1FD080 + (4 * s);
+                    axve.BaseStream.Position = 0x1FD0F0 + (4 * s);
+                    bpee.BaseStream.Position = 0x31E898 + (4 * s);
+                    bpge.BaseStream.Position = 0x252BA4 + (4 * s);
+                    bpre.BaseStream.Position = 0x252BC8 + (4 * s);
+                    byte[] axpeTMHM = axpe.ReadBytes(8);
+
+                    sb.AppendLine($"// PBESpecies.{gen3SpeciesIndexToPBESpecies[s]}:");
+                    for (int i = 0; i < 58; i++) // 50 TMs, 8 HMs
+                    {
+                        if ((axpeTMHM[i / 8] & (1 << (i % 8))) != 0)
+                        {
+                            PBEMove move = gen3TMHMIndexToPBEMove[i];
+                            sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), move) ? string.Empty : "// ")}Tuple.Create(PBEMove.{move}, PBEMoveObtainMethod.{(i < 50 ? "TM" : "HM")}_RSFRLGE),");
+                        }
+                    }
+                    sb.AppendLine();
+                }
+
+                #endregion
+                File.WriteAllText(@"../../../\DumpedData\Dumped\Moves.txt", sb.ToString());
             }
         }
     }
