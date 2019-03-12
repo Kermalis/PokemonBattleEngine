@@ -486,6 +486,39 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.Dive
         };
+        static readonly PBEMove[] emeraldTutorMoves = new PBEMove[30]
+        {
+            PBEMove.MegaPunch,
+            PBEMove.SwordsDance,
+            PBEMove.MegaKick,
+            PBEMove.BodySlam,
+            PBEMove.DoubleEdge,
+            (PBEMove)68, // Counter
+            PBEMove.SeismicToss,
+            (PBEMove)102, // Mimic
+            PBEMove.Metronome,
+            PBEMove.Softboiled,
+            PBEMove.DreamEater,
+            PBEMove.ThunderWave,
+            PBEMove.Explosion,
+            PBEMove.RockSlide,
+            PBEMove.Substitute,
+            PBEMove.DynamicPunch,
+            (PBEMove)205, // Rollout
+            PBEMove.PsychUp,
+            PBEMove.Snore,
+            PBEMove.IcyWind,
+            (PBEMove)203, // Endure
+            PBEMove.MudSlap,
+            PBEMove.IcePunch,
+            PBEMove.Swagger,
+            (PBEMove)214, // SleepTalk
+            PBEMove.Swift,
+            PBEMove.DefenseCurl,
+            PBEMove.ThunderPunch,
+            PBEMove.FirePunch,
+            (PBEMove)210 // FuryCutter
+        };
         static readonly Dictionary<int, PBESpecies> gen4SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 496, (PBESpecies)(386 | (1 << 0x10)) }, // Deoxys_Attack
@@ -495,7 +528,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 500, (PBESpecies)(413 | (2 << 0x10)) }, // Wormadam_Trash
             { 501, PBESpecies.Giratina_Origin },
             { 502, (PBESpecies)(492 | (1 << 0x10)) }, // Shaymin_Sky
-            // Not sure on the order of the Rotoms, but they all have the same level up moves
+            // Not sure on the order of the Rotoms, but they all have the same level up moves & tm moves
             { 503, PBESpecies.Rotom_Fan },
             { 504, PBESpecies.Rotom_Frost },
             { 505, PBESpecies.Rotom_Heat },
@@ -613,8 +646,8 @@ namespace Kermalis.PokemonBattleEngineTesting
         // HG and SS level-up move NARC is /a/0/3/3 (HG and SS have identical level-up move NARCs)
         // HG and SS TMHM moves are in the Pokémon data NARC which is /a/0/0/2 (HG and SS have identical Pokémon data NARCs)
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8
-        // TODO: Colo, XD, B, W, B2, W2
-        // TODO: Move tutor
+        // TODO: Colo, XD, B, W, B2, W2 - levelup & tm
+        // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - egg & tutor
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Share moves across formes
         public static void Dump()
@@ -633,6 +666,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                 var sb = new StringBuilder();
                 var levelup = new Dictionary<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>>();
                 var tmhm = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
+                var tutor = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
                 var egg = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
 
                 sb.AppendLine("LEVELUP");
@@ -648,11 +682,11 @@ namespace Kermalis.PokemonBattleEngineTesting
                         continue;
                     }
                     // It is the same in Ruby and Sapphire, but the rest have some differences
-                    r.BaseStream.Position = 0x207BC8 + (4 * sp);
-                    s.BaseStream.Position = 0x207B58 + (4 * sp);
-                    fr.BaseStream.Position = 0x25D7B4 + (4 * sp);
-                    lg.BaseStream.Position = 0x25D794 + (4 * sp);
-                    e.BaseStream.Position = 0x32937C + (4 * sp);
+                    r.BaseStream.Position = 0x207BC8 + (sizeof(uint) * sp);
+                    s.BaseStream.Position = 0x207B58 + (sizeof(uint) * sp);
+                    fr.BaseStream.Position = 0x25D7B4 + (sizeof(uint) * sp);
+                    lg.BaseStream.Position = 0x25D794 + (sizeof(uint) * sp);
+                    e.BaseStream.Position = 0x32937C + (sizeof(uint) * sp);
                     void ReadLevelUpMoves(BinaryReader reader, string flag)
                     {
                         PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
@@ -783,28 +817,19 @@ namespace Kermalis.PokemonBattleEngineTesting
                         continue;
                     }
                     // It is the same in all 5 GBA games, so I will only read one
-                    r.BaseStream.Position = 0x1FD0F0 + (4 * sp);
-                    s.BaseStream.Position = 0x1FD080 + (4 * sp);
-                    fr.BaseStream.Position = 0x252BC8 + (4 * sp);
-                    lg.BaseStream.Position = 0x252BA4 + (4 * sp);
-                    e.BaseStream.Position = 0x31E898 + (4 * sp);
+                    r.BaseStream.Position = 0x1FD0F0 + (8 * sp);
+                    s.BaseStream.Position = 0x1FD080 + (8 * sp);
+                    fr.BaseStream.Position = 0x252BC8 + (8 * sp);
+                    lg.BaseStream.Position = 0x252BA4 + (8 * sp);
+                    e.BaseStream.Position = 0x31E898 + (8 * sp);
                     byte[] bytes = r.ReadBytes(8);
                     PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
                     tmhm.Add(species, new Dictionary<PBEMove, string>());
-                    for (int i = 0; i < 58; i++) // 50 TMs, 8 HMs
+                    for (int i = 0; i < gen3TMHMIndexToPBEMove.Length; i++)
                     {
                         if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                         {
-                            PBEMove move = gen3TMHMIndexToPBEMove[i];
-                            string flag = $"PBEMoveObtainMethod.{(i < 50 ? "TM" : "HM")}_RSFRLGE";
-                            if (tmhm[species].ContainsKey(move))
-                            {
-                                tmhm[species][move] += $" | {flag}";
-                            }
-                            else
-                            {
-                                tmhm[species].Add(move, flag);
-                            }
+                            tmhm[species].Add(gen3TMHMIndexToPBEMove[i], $"PBEMoveObtainMethod.{(i < 50 ? "TM" : "HM")}_RSFRLGE");
                         }
                     }
                 }
@@ -830,7 +855,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                             {
                                 reader.BaseStream.Position = 0x1C;
                                 byte[] bytes = reader.ReadBytes(13);
-                                for (int i = 0; i < 100; i++) // 92 TMs, 8 HMs
+                                for (int i = 0; i < gen4TMHMIndexToPBEMove.Length; i++)
                                 {
                                     if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                     {
@@ -860,6 +885,42 @@ namespace Kermalis.PokemonBattleEngineTesting
                 #endregion
 
                 foreach (KeyValuePair<PBESpecies, Dictionary<PBEMove, string>> speciesPair in tmhm)
+                {
+                    sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
+                    foreach (KeyValuePair<PBEMove, string> movePair in speciesPair.Value)
+                    {
+                        sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), movePair.Key) ? string.Empty : "// ")}Tuple.Create(PBEMove.{movePair.Key}, {movePair.Value}),");
+                    }
+                }
+                sb.AppendLine();
+                sb.AppendLine("TUTOR");
+
+                #region Move Tutor
+
+                // Gen 3
+                // Emerald
+                for (int sp = 1; sp <= 411; sp++)
+                {
+                    // Gen 2 Unown slots are ignored in gen 3
+                    if (sp > 251 && sp < 277)
+                    {
+                        continue;
+                    }
+                    e.BaseStream.Position = 0x615048 + (sizeof(uint) * sp);
+                    uint val = e.ReadUInt32();
+                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                    tutor.Add(species, new Dictionary<PBEMove, string>());
+                    for (int i = 0; i < emeraldTutorMoves.Length; i++)
+                    {
+                        if ((val & (1u << i)) != 0)
+                        {
+                            tutor[species].Add(emeraldTutorMoves[i], "PBEMoveObtainMethod.MoveTutor_E");
+                        }
+                    }
+                }
+
+                #endregion
+                foreach (KeyValuePair<PBESpecies, Dictionary<PBEMove, string>> speciesPair in tutor)
                 {
                     sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
                     foreach (KeyValuePair<PBEMove, string> movePair in speciesPair.Value)
