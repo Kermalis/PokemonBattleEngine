@@ -708,16 +708,121 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 707, PBESpecies.Thundurus_Therian },
             { 708, PBESpecies.Landorus_Therian }
         };
+        static readonly PBEMove[] gen5TMHMIndexToPBEMove = new PBEMove[101]
+        {
+            PBEMove.HoneClaws,
+            PBEMove.DragonClaw,
+            PBEMove.Psyshock,
+            PBEMove.CalmMind,
+            PBEMove.Roar,
+            PBEMove.Toxic,
+            PBEMove.Hail,
+            PBEMove.BulkUp,
+            PBEMove.Venoshock,
+            PBEMove.HiddenPower,
+            PBEMove.SunnyDay,
+            (PBEMove)269, // Taunt
+            PBEMove.IceBeam,
+            PBEMove.Blizzard,
+            (PBEMove)63, // HyperBeam
+            PBEMove.LightScreen,
+            PBEMove.Protect,
+            PBEMove.RainDance,
+            (PBEMove)477, // Telekinesis
+            (PBEMove)219, // Safeguard
+            PBEMove.Frustration,
+            (PBEMove)76, // SolarBeam
+            (PBEMove)479, // SmackDown
+            PBEMove.Thunderbolt,
+            PBEMove.Thunder,
+            PBEMove.Earthquake,
+            PBEMove.Return,
+            PBEMove.Dig,
+            PBEMove.Psychic,
+            PBEMove.ShadowBall,
+            PBEMove.BrickBreak,
+            PBEMove.DoubleTeam,
+            PBEMove.Reflect,
+            PBEMove.SludgeWave,
+            PBEMove.Flamethrower,
+            PBEMove.SludgeBomb,
+            PBEMove.Sandstorm,
+            PBEMove.FireBlast,
+            PBEMove.RockTomb,
+            PBEMove.AerialAce,
+            (PBEMove)259, // Torment
+            PBEMove.Facade,
+            PBEMove.FlameCharge,
+            PBEMove.Rest,
+            (PBEMove)213, // Attract
+            (PBEMove)168, // Thief
+            PBEMove.LowSweep,
+            (PBEMove)496, // Round
+            (PBEMove)497, // EchoedVoice
+            PBEMove.Overheat,
+            (PBEMove)502, // AllySwitch
+            PBEMove.FocusBlast,
+            PBEMove.EnergyBall,
+            (PBEMove)206, // FalseSwipe
+            PBEMove.Scald,
+            (PBEMove)374, // Fling
+            PBEMove.ChargeBeam,
+            (PBEMove)507, // SkyDrop
+            (PBEMove)510, // Incinerate
+            (PBEMove)511, // Quash
+            PBEMove.WillOWisp,
+            PBEMove.Acrobatics,
+            (PBEMove)373, // Embargo
+            PBEMove.Explosion,
+            PBEMove.ShadowClaw,
+            (PBEMove)371, // Payback
+            PBEMove.Retaliate,
+            (PBEMove)416, // GigaImpact
+            PBEMove.RockPolish,
+            PBEMove.Flash,
+            PBEMove.StoneEdge,
+            (PBEMove)521, // VoltSwitch
+            PBEMove.ThunderWave,
+            (PBEMove)360, // GyroBall
+            PBEMove.SwordsDance,
+            PBEMove.StruggleBug,
+            PBEMove.PsychUp,
+            PBEMove.Bulldoze,
+            PBEMove.FrostBreath,
+            PBEMove.RockSlide,
+            PBEMove.XScissor,
+            (PBEMove)525, // DragonTail
+            PBEMove.WorkUp,
+            PBEMove.PoisonJab,
+            PBEMove.DreamEater,
+            PBEMove.GrassKnot,
+            PBEMove.Swagger,
+            (PBEMove)365, // Pluck
+            (PBEMove)369, // Uturn
+            PBEMove.Substitute,
+            PBEMove.FlashCannon,
+            PBEMove.TrickRoom,
+            PBEMove.WildCharge,
+            PBEMove.RockSmash,
+            PBEMove.Snarl,
+            PBEMove.Cut,
+            PBEMove.Fly,
+            PBEMove.Surf,
+            PBEMove.Strength,
+            PBEMove.Waterfall,
+            PBEMove.Dive
+        };
 
         // You must dump everything yourself
         // The GBA ROMs must all be v1.0
         // D, P, and Pt level-up move NARC is /poketool/personal/wotbl.narc (D and P have identical level-up move NARCs)
-        // Pt TMHM moves are in the Pokémon data NARC which is /poketool/personal/pl_personal.narc for Pt (Pt changed no TMHM compatibility from DP so I use it alone)
+        // Pt TMHM moves are in the Pokémon data NARC which is /poketool/personal/pl_personal.narc (Pt changed no TMHM compatibility from DP so I use it alone)
         // HG and SS level-up move NARC is /a/0/3/3 (HG and SS have identical level-up move NARCs)
         // HG and SS TMHM moves are in the Pokémon data NARC which is /a/0/0/2 (HG and SS have identical Pokémon data NARCs)
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8 (B and W have identical level-up move NARCs) (B2 and W2 have identical level-up move NARCs)
+        // B, W, B2, and W2 TMHM moves are in the Pokémon data NARC which is /a/0/1/6 (B and W have identical Pokémon data NARCs) (B2 and W2 have identical Pokémon data NARCs)
         // TODO: Colo, XD - levelup
-        // TODO: Colo, XD, B, W, B2, W2 - tmhm
+        // TODO: Colo, XD - tmhm
         // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - tutor
         // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - egg
         // TODO: FRLG - blast burn, frenzy plant, and hydro cannon tutor
@@ -1005,6 +1110,54 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                         ReadTMHMMoves(dppt.Files[sp], true);
                         ReadTMHMMoves(hgss.Files[sp], false);
+                    }
+                }
+                // Gen 5
+                using (var bw = new NARC(@"../../../\DumpedData\BWPokedata.narc"))
+                using (var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc"))
+                {
+                    for (int sp = 1; sp <= 708; sp++)
+                    {
+                        void ReadTMHMMoves(MemoryStream file, bool isBW)
+                        {
+                            Dictionary<int, PBESpecies> dict = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
+                            PBESpecies species = dict.ContainsKey(sp) ? dict[sp] : (PBESpecies)sp;
+                            if (!tmhm.ContainsKey(species))
+                            {
+                                tmhm.Add(species, new Dictionary<PBEMove, string>());
+                            }
+                            using (var reader = new BinaryReader(file))
+                            {
+                                reader.BaseStream.Position = 0x28;
+                                byte[] bytes = reader.ReadBytes(13);
+                                for (int i = 0; i < gen5TMHMIndexToPBEMove.Length; i++)
+                                {
+                                    if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                                    {
+                                        PBEMove move = gen5TMHMIndexToPBEMove[i];
+                                        string flag = $"PBEMoveObtainMethod.{(i < 95 ? "TM" : "HM")}_{(isBW ? "BW" : "B2W2")}";
+                                        if (tmhm[species].ContainsKey(move))
+                                        {
+                                            tmhm[species][move] += $" | {flag}";
+                                        }
+                                        else
+                                        {
+                                            tmhm[species].Add(move, flag);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // BW only has 0-667 (no Egg or Bad Egg)
+                        if (sp <= 667)
+                        {
+                            ReadTMHMMoves(bw.Files[sp], true);
+                        }
+                        // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon in B2W2
+                        if (sp <= 649 || sp >= 685)
+                        {
+                            ReadTMHMMoves(b2w2.Files[sp], false);
+                        }
                     }
                 }
 
