@@ -614,7 +614,8 @@ namespace Kermalis.PokemonBattleEngineTesting
         // HG and SS TMHM moves are in the Pokémon data NARC which is /a/0/0/2 (HG and SS have identical Pokémon data NARCs)
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8
         // TODO: Colo, XD, B, W, B2, W2
-        // TODO: Move tutor, egg moves
+        // TODO: Move tutor
+        // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Share moves across formes
         public static void Dump()
         {
@@ -632,6 +633,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                 var sb = new StringBuilder();
                 var levelup = new Dictionary<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>>();
                 var tmhm = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
+                var egg = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
 
                 sb.AppendLine("LEVELUP");
 
@@ -651,7 +653,6 @@ namespace Kermalis.PokemonBattleEngineTesting
                     fr.BaseStream.Position = 0x25D7B4 + (4 * sp);
                     lg.BaseStream.Position = 0x25D794 + (4 * sp);
                     e.BaseStream.Position = 0x32937C + (4 * sp);
-
                     void ReadLevelUpMoves(BinaryReader reader, string flag)
                     {
                         PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
@@ -788,12 +789,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                     lg.BaseStream.Position = 0x252BA4 + (4 * sp);
                     e.BaseStream.Position = 0x31E898 + (4 * sp);
                     byte[] bytes = r.ReadBytes(8);
-
                     PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
-                    if (!tmhm.ContainsKey(species))
-                    {
-                        tmhm.Add(species, new Dictionary<PBEMove, string>());
-                    }
+                    tmhm.Add(species, new Dictionary<PBEMove, string>());
                     for (int i = 0; i < 58; i++) // 50 TMs, 8 HMs
                     {
                         if ((bytes[i / 8] & (1 << (i % 8))) != 0)
@@ -810,7 +807,6 @@ namespace Kermalis.PokemonBattleEngineTesting
                             }
                         }
                     }
-                    sb.AppendLine();
                 }
                 // Gen 4
                 using (var dppt = new NARC(@"../../../\DumpedData\PtPokedata.narc"))
@@ -864,6 +860,50 @@ namespace Kermalis.PokemonBattleEngineTesting
                 #endregion
 
                 foreach (KeyValuePair<PBESpecies, Dictionary<PBEMove, string>> speciesPair in tmhm)
+                {
+                    sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
+                    foreach (KeyValuePair<PBEMove, string> movePair in speciesPair.Value)
+                    {
+                        sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), movePair.Key) ? string.Empty : "// ")}Tuple.Create(PBEMove.{movePair.Key}, {movePair.Value}),");
+                    }
+                }
+                sb.AppendLine();
+                sb.AppendLine("EGG");
+
+                #region Egg Moves
+
+                // Gen 3
+                {
+                    // The table is the same in all 5 GBA games, so I will only read one
+                    // Pichu learning Volt Tackle in E is the only exception and is not in the table; it is extra code in the daycare backend
+                    r.BaseStream.Position = 0x2091DC;
+                    s.BaseStream.Position = 0x20916C;
+                    fr.BaseStream.Position = 0x25EF0C;
+                    lg.BaseStream.Position = 0x25EEEC;
+                    e.BaseStream.Position = 0x32ADD8;
+                    PBESpecies species = 0;
+                    while (true)
+                    {
+                        ushort val = r.ReadUInt16();
+                        if (val == 0xFFFF)
+                        {
+                            break;
+                        }
+                        else if (val > 20000)
+                        {
+                            species = gen3SpeciesIndexToPBESpecies[val - 20000];
+                            egg.Add(species, new Dictionary<PBEMove, string>());
+                        }
+                        else
+                        {
+                            egg[species].Add((PBEMove)val, "PBEMoveObtainMethod.EggMove_RSFRLGE");
+                        }
+                    }
+                }
+
+                #endregion
+
+                foreach (KeyValuePair<PBESpecies, Dictionary<PBEMove, string>> speciesPair in egg)
                 {
                     sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
                     foreach (KeyValuePair<PBEMove, string> movePair in speciesPair.Value)

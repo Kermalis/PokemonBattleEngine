@@ -84,8 +84,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     || method.HasFlag(PBEMoveObtainMethod.MoveTutor_FRLG)
                     || method.HasFlag(PBEMoveObtainMethod.MoveTutor_E)
                     || method.HasFlag(PBEMoveObtainMethod.MoveTutor_XD)
-                    || method.HasFlag(PBEMoveObtainMethod.EggMove_RSFRLG)
-                    || method.HasFlag(PBEMoveObtainMethod.EggMove_E);
+                    || method.HasFlag(PBEMoveObtainMethod.EggMove_RSFRLGE);
             }
             bool HasGen4Method(PBEMoveObtainMethod method)
             {
@@ -143,6 +142,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             // TODO: Check if moves make sense (example: learns a move in gen4 but was born in gen5/caught in dreamworld/is gen5 event)
             // TODO: Check if HMs were transferred
             // TODO: Check events for moves
+            // TODO: EggMove_Special
             ;
         }
 

@@ -435,29 +435,29 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         MoveTutor_B2W2 = 1u << 27,
         /// <summary>
-        /// The move can be learned by hatching a Pokémon egg in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, and Pokémon Leaf Green Version.
+        /// The move can be learned by hatching a Pokémon egg in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version, and Pokémon Emerald Version.
         /// </summary>
-        EggMove_RSFRLG = 1u << 28,
-        /// <summary>
-        /// The move can be learned by hatching a Pokémon egg in Pokémon Emerald Version.
-        /// </summary>
-        EggMove_E = 1u << 29,
+        EggMove_RSFRLGE = 1u << 28,
         /// <summary>
         /// The move can be learned by hatching a Pokémon egg in Pokémon Diamond Version, Pokémon Pearl Version, and Pokémon Platinum Version.
         /// </summary>
-        EggMove_DPPt = 1u << 30,
+        EggMove_DPPt = 1u << 29,
         /// <summary>
         /// The move can be learned by hatching a Pokémon egg in Pokémon HeartGold Version and Pokémon SoulSilver Version.
         /// </summary>
-        EggMove_HGSS = 1u << 31,
+        EggMove_HGSS = 1u << 30,
         /// <summary>
         /// The move can be learned by hatching a Pokémon egg in Pokémon Black Version, Pokémon White Version, Pokémon Black Version 2, and Pokémon White Version 2.
         /// </summary>
-        EggMove_BWB2W2 = 1u << 32,
+        EggMove_BWB2W2 = 1u << 31,
         /// <summary>
         /// The move is known by a Pokémon when found in the Dream World.
         /// </summary>
-        DreamWorld = 1u << 33,
+        DreamWorld = 1u << 32,
+        /// <summary>
+        /// The move can be learned by hatching a Pokémon egg under special conditions.
+        /// </summary>
+        EggMove_Special = 1u << 33,
         /// <summary>
         /// The move is learned by a Pokémon when changing formes.
         /// </summary>
