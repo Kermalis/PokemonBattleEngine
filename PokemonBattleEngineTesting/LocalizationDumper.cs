@@ -12,13 +12,13 @@ namespace Kermalis.PokemonBattleEngineTesting
         // You must dump the NARC files yourself (/a/0/0/2 in each language)
         public static void Dump()
         {
-            var english = new NARC(@"../../../\DumpedData\English.narc");
-            var french = new NARC(@"../../../\DumpedData\French.narc");
-            var german = new NARC(@"../../../\DumpedData\German.narc");
-            var italian = new NARC(@"../../../\DumpedData\Italian.narc");
-            var japanese = new NARC(@"../../../\DumpedData\Japanese.narc");
-            var korean = new NARC(@"../../../\DumpedData\Korean.narc");
-            var spanish = new NARC(@"../../../\DumpedData\Spanish.narc");
+            var english = new NARC(@"../../../\DumpedData\W2EnglishTexts.narc");
+            var french = new NARC(@"../../../\DumpedData\W2FrenchTexts.narc");
+            var german = new NARC(@"../../../\DumpedData\W2GermanTexts.narc");
+            var italian = new NARC(@"../../../\DumpedData\W2ItalianTexts.narc");
+            var japanese = new NARC(@"../../../\DumpedData\W2JapaneseTexts.narc");
+            var korean = new NARC(@"../../../\DumpedData\W2KoreanTexts.narc");
+            var spanish = new NARC(@"../../../\DumpedData\W2SpanishTexts.narc");
             string[][] eng, fre, ger, ita, jap, kor, spa;
             void LoadTexts(int fileNum)
             {
@@ -138,7 +138,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             // Items
             IEnumerable<PBEItem> allItems = new[] { PBEItem.None }.Concat(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>().Except(new[] { PBEItem.None }).OrderBy(e => e.ToString()));
             PBEItem lastItem = allItems.Last();
-            sb = new StringBuilder();
+            sb.Clear();
             void WriteAllItems()
             {
                 sb.AppendLine("        {");
@@ -170,7 +170,7 @@ namespace Kermalis.PokemonBattleEngineTesting
 
             // Moves
             const ushort lastMove = (ushort)(PBEMove.MAX - 1);
-            sb = new StringBuilder();
+            sb.Clear();
             void WriteAllMoves()
             {
                 sb.AppendLine("        {");
@@ -201,7 +201,7 @@ namespace Kermalis.PokemonBattleEngineTesting
 
             // Species
             const uint lastSpecies = 649;
-            sb = new StringBuilder();
+            sb.Clear();
             void WriteAllSpecies()
             {
                 sb.AppendLine("        {");

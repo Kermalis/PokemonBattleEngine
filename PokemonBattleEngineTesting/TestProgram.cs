@@ -12,13 +12,14 @@
 
         static void Main(string[] args)
         {
-            TestType t = TestType.LocalizationDumper;
+            TestType t = TestType.MovesetDumper;
 
             switch (t)
             {
                 case TestType.AIBattle: AIBattle.Test(); break;
                 case TestType.FontDumper: FontDumper.Dump(); break;
                 case TestType.LocalizationDumper: LocalizationDumper.Dump(); break;
+                case TestType.MovesetDumper: MovesetDumper.Dump(); break;
             }
         }
     }

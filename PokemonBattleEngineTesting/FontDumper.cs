@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         static readonly Color[] colors = new Color[] { Color.Transparent, Color.White, Color.Black }; // value 02 is never used
         public static void Dump()
         {
-            var narc = new NARC(@"../../../\DumpedData\Font.narc");
+            var narc = new NARC(@"../../../\DumpedData\Gen5Font.narc");
             void Save(int fileNum)
             {
                 using (var r = new BinaryReader(narc.Files[fileNum]))
