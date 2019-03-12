@@ -629,18 +629,14 @@ namespace Kermalis.PokemonBattleEngineTesting
             using (var lg = new BinaryReader(lgStream))
             using (var e = new BinaryReader(eStream))
             {
-                var dpLevelUp = new NARC(@"../../../\DumpedData\DPLevelUp.narc");
-                var ptLevelUp = new NARC(@"../../../\DumpedData\PtLevelUp.narc");
-                var ptTMHM = new NARC(@"../../../\DumpedData\PtPokedata.narc");
-                var hgssLevelUp = new NARC(@"../../../\DumpedData\HGSSLevelUp.narc");
-                var hgssTMHM = new NARC(@"../../../\DumpedData\HGSSPokedata.narc");
                 var sb = new StringBuilder();
                 var levelup = new Dictionary<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>>();
                 var tmhm = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
 
+                sb.AppendLine("LEVELUP");
+
                 #region Level Up Moves
 
-                sb.AppendLine("LEVELUP");
                 // Gen 3
                 for (int sp = 1; sp <= 411; sp++)
                 {
@@ -708,54 +704,61 @@ namespace Kermalis.PokemonBattleEngineTesting
                     ReadLevelUpMoves(e, "PBEMoveObtainMethod.LevelUp_E");
                 }
                 // Gen 4
-                for (int sp = 1; sp <= 507; sp++)
+                using (var dp = new NARC(@"../../../\DumpedData\DPLevelUp.narc"))
+                using (var pt = new NARC(@"../../../\DumpedData\PtLevelUp.narc"))
+                using (var hgss = new NARC(@"../../../\DumpedData\HGSSLevelUp.narc"))
                 {
-                    // 494 is Egg, 495 is Bad Egg
-                    if (sp == 494 || sp == 495)
+                    for (int sp = 1; sp <= 507; sp++)
                     {
-                        continue;
-                    }
-                    PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
-                    if (!levelup.ContainsKey(species))
-                    {
-                        levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
-                    }
-                    void ReadLevelUpMoves(MemoryStream file, string flag)
-                    {
-                        using (var reader = new BinaryReader(file))
+                        // 494 is Egg, 495 is Bad Egg
+                        if (sp == 494 || sp == 495)
                         {
-                            while (true)
+                            continue;
+                        }
+                        PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
+                        if (!levelup.ContainsKey(species))
+                        {
+                            levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
+                        }
+                        void ReadLevelUpMoves(MemoryStream file, string flag)
+                        {
+                            using (var reader = new BinaryReader(file))
                             {
-                                ushort val = reader.ReadUInt16();
-                                if (val == 0xFFFF)
+                                while (true)
                                 {
-                                    break;
-                                }
-                                else
-                                {
-                                    int level = val >> 9;
-                                    var move = (PBEMove)(val & 0x1FF);
-                                    Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
-                                    if (tupleThatExists != null)
+                                    ushort val = reader.ReadUInt16();
+                                    if (val == 0xFFFF)
                                     {
-                                        levelup[species][tupleThatExists] += $" | {flag}";
+                                        break;
                                     }
                                     else
                                     {
-                                        levelup[species].Add(Tuple.Create(level, move), flag);
+                                        int level = val >> 9;
+                                        var move = (PBEMove)(val & 0x1FF);
+                                        Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
+                                        if (tupleThatExists != null)
+                                        {
+                                            levelup[species][tupleThatExists] += $" | {flag}";
+                                        }
+                                        else
+                                        {
+                                            levelup[species].Add(Tuple.Create(level, move), flag);
+                                        }
                                     }
                                 }
                             }
                         }
+                        // DP only has 0-500
+                        if (sp <= 500)
+                        {
+                            ReadLevelUpMoves(dp.Files[sp], "PBEMoveObtainMethod.LevelUp_DP");
+                        }
+                        ReadLevelUpMoves(pt.Files[sp], "PBEMoveObtainMethod.LevelUp_Pt");
+                        ReadLevelUpMoves(hgss.Files[sp], "PBEMoveObtainMethod.LevelUp_HGSS");
                     }
-                    // DP only has 0-500
-                    if (sp <= 500)
-                    {
-                        ReadLevelUpMoves(dpLevelUp.Files[sp], "PBEMoveObtainMethod.LevelUp_DP");
-                    }
-                    ReadLevelUpMoves(ptLevelUp.Files[sp], "PBEMoveObtainMethod.LevelUp_Pt");
-                    ReadLevelUpMoves(hgssLevelUp.Files[sp], "PBEMoveObtainMethod.LevelUp_HGSS");
                 }
+
+                #endregion
 
                 foreach (KeyValuePair<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>> speciesPair in levelup)
                 {
@@ -766,12 +769,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                     }
                 }
                 sb.AppendLine();
-
-                #endregion
+                sb.AppendLine("TMHM");
 
                 #region TMHM Compatibility
 
-                sb.AppendLine("TMHM");
                 // Gen 3
                 for (int sp = 1; sp <= 411; sp++)
                 {
@@ -812,49 +813,55 @@ namespace Kermalis.PokemonBattleEngineTesting
                     sb.AppendLine();
                 }
                 // Gen 4
-                for (int sp = 1; sp <= 507; sp++)
+                using (var dppt = new NARC(@"../../../\DumpedData\PtPokedata.narc"))
+                using (var hgss = new NARC(@"../../../\DumpedData\HGSSPokedata.narc"))
                 {
-                    // 494 is Egg, 495 is Bad Egg
-                    if (sp == 494 || sp == 495)
+                    for (int sp = 1; sp <= 507; sp++)
                     {
-                        continue;
-                    }
-                    PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
-                    if (!tmhm.ContainsKey(species))
-                    {
-                        tmhm.Add(species, new Dictionary<PBEMove, string>());
-                    }
-                    void ReadTMHM(MemoryStream file, bool dppt)
-                    {
-                        using (var reader = new BinaryReader(file))
+                        // 494 is Egg, 495 is Bad Egg
+                        if (sp == 494 || sp == 495)
                         {
-                            reader.BaseStream.Position = 0x1C;
-                            byte[] bytes = reader.ReadBytes(13);
-                            for (int i = 0; i < 100; i++) // 92 TMs, 8 HMs
+                            continue;
+                        }
+                        PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
+                        if (!tmhm.ContainsKey(species))
+                        {
+                            tmhm.Add(species, new Dictionary<PBEMove, string>());
+                        }
+                        void ReadTMHM(MemoryStream file, bool isDPPt)
+                        {
+                            using (var reader = new BinaryReader(file))
                             {
-                                if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                                reader.BaseStream.Position = 0x1C;
+                                byte[] bytes = reader.ReadBytes(13);
+                                for (int i = 0; i < 100; i++) // 92 TMs, 8 HMs
                                 {
-                                    PBEMove move = gen4TMHMIndexToPBEMove[i];
-                                    string flag = $"PBEMoveObtainMethod.{(i < 92 ? "TM" : "HM")}_{(dppt ? "DPPt" : "HGSS")}";
-                                    if (move == PBEMove.None)
+                                    if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                     {
-                                        move = dppt ? (PBEMove)432 : (PBEMove)250;
-                                    }
-                                    if (tmhm[species].ContainsKey(move))
-                                    {
-                                        tmhm[species][move] += $" | {flag}";
-                                    }
-                                    else
-                                    {
-                                        tmhm[species].Add(move, flag);
+                                        PBEMove move = gen4TMHMIndexToPBEMove[i];
+                                        if (move == PBEMove.None)
+                                        {
+                                            move = isDPPt ? (PBEMove)432 : (PBEMove)250;
+                                        }
+                                        string flag = $"PBEMoveObtainMethod.{(i < 92 ? "TM" : "HM")}_{(isDPPt ? "DPPt" : "HGSS")}";
+                                        if (tmhm[species].ContainsKey(move))
+                                        {
+                                            tmhm[species][move] += $" | {flag}";
+                                        }
+                                        else
+                                        {
+                                            tmhm[species].Add(move, flag);
+                                        }
                                     }
                                 }
                             }
                         }
+                        ReadTMHM(dppt.Files[sp], true);
+                        ReadTMHM(hgss.Files[sp], false);
                     }
-                    ReadTMHM(ptTMHM.Files[sp], true);
-                    ReadTMHM(hgssTMHM.Files[sp], false);
                 }
+
+                #endregion
 
                 foreach (KeyValuePair<PBESpecies, Dictionary<PBEMove, string>> speciesPair in tmhm)
                 {
@@ -865,7 +872,6 @@ namespace Kermalis.PokemonBattleEngineTesting
                     }
                 }
 
-                #endregion
                 File.WriteAllText(@"../../../\DumpedData\Dumped\Moves.txt", sb.ToString());
             }
         }
