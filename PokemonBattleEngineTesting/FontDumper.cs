@@ -42,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         static readonly Color[] colors = new Color[] { Color.Transparent, Color.White, Color.Black }; // value 02 is never used
         public static void Dump()
         {
-            var narc = new NARC(@"../../../\Dumped Data\Font.narc");
+            var narc = new NARC(@"../../../\DumpedData\Font.narc");
             void Save(int fileNum)
             {
                 using (var r = new BinaryReader(narc.Files[fileNum]))
@@ -124,7 +124,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                     }
 
-                    string path = @"../../../\Dumped Data\Fonts\" + fileNum;
+                    string path = @"../../../\DumpedData\Fonts\" + fileNum;
                     Directory.CreateDirectory(path);
                     foreach (KeyValuePair<ushort, ushort> pair in dict)
                     {

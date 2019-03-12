@@ -6,26 +6,19 @@
         {
             AIBattle,
             FontDumper,
-            LocalizationGenerator
+            LocalizationDumper,
+            MovesetDumper
         }
 
         static void Main(string[] args)
         {
-            TestType t = TestType.AIBattle;
+            TestType t = TestType.LocalizationDumper;
 
             switch (t)
             {
                 case TestType.AIBattle: AIBattle.Test(); break;
                 case TestType.FontDumper: FontDumper.Dump(); break;
-                case TestType.LocalizationGenerator:
-                    {
-                        var generator = new LocalizationGenerator();
-                        generator.GenerateAbilities();
-                        generator.GenerateItems();
-                        generator.GenerateMoves();
-                        generator.GeneratePokemon();
-                        break;
-                    }
+                case TestType.LocalizationDumper: LocalizationDumper.Dump(); break;
             }
         }
     }

@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Dumped Data\**" />
-    <EmbeddedResource Remove="Dumped Data\**" />
-    <None Remove="Dumped Data\**" />
+    <Compile Remove="DumpedData\**" />
+    <EmbeddedResource Remove="DumpedData\**" />
+    <None Remove="DumpedData\**" />
   </ItemGroup>
 
   <ItemGroup>
