@@ -486,6 +486,24 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.Dive
         };
+        static readonly PBEMove[] frlgTutorMoves = new PBEMove[15]
+        {
+            PBEMove.MegaPunch,
+            PBEMove.SwordsDance,
+            PBEMove.MegaKick,
+            PBEMove.BodySlam,
+            PBEMove.DoubleEdge,
+            (PBEMove)68, // Counter
+            PBEMove.SeismicToss,
+            (PBEMove)102, // Mimic
+            PBEMove.Metronome,
+            PBEMove.Softboiled,
+            PBEMove.DreamEater,
+            PBEMove.ThunderWave,
+            PBEMove.Explosion,
+            PBEMove.RockSlide,
+            PBEMove.Substitute
+        };
         static readonly PBEMove[] emeraldTutorMoves = new PBEMove[30]
         {
             PBEMove.MegaPunch,
@@ -648,6 +666,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8
         // TODO: Colo, XD, B, W, B2, W2 - levelup & tm
         // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - egg & tutor
+        // TODO: FRLG - blast burn, frenzy plant, and hydro cannon tutor
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Share moves across formes
         public static void Dump()
@@ -898,7 +917,6 @@ namespace Kermalis.PokemonBattleEngineTesting
                 #region Move Tutor
 
                 // Gen 3
-                // Emerald
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
@@ -906,17 +924,35 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         continue;
                     }
+                    // It is the same in FR and LG, so I will only read one
+                    fr.BaseStream.Position = 0x459B7E + (sizeof(ushort) * sp);
+                    lg.BaseStream.Position = 0x45959E + (sizeof(ushort) * sp);
                     e.BaseStream.Position = 0x615048 + (sizeof(uint) * sp);
-                    uint val = e.ReadUInt32();
-                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
-                    tutor.Add(species, new Dictionary<PBEMove, string>());
-                    for (int i = 0; i < emeraldTutorMoves.Length; i++)
+                    void ReadTutorMoves(uint val, PBEMove[] tutorMoves, string flag)
                     {
-                        if ((val & (1u << i)) != 0)
+                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                        if (!tutor.ContainsKey(species))
                         {
-                            tutor[species].Add(emeraldTutorMoves[i], "PBEMoveObtainMethod.MoveTutor_E");
+                            tutor.Add(species, new Dictionary<PBEMove, string>());
+                        }
+                        for (int i = 0; i < tutorMoves.Length; i++)
+                        {
+                            if ((val & (1u << i)) != 0)
+                            {
+                                PBEMove move = tutorMoves[i];
+                                if (tutor[species].ContainsKey(move))
+                                {
+                                    tutor[species][move] += $" | {flag}";
+                                }
+                                else
+                                {
+                                    tutor[species].Add(tutorMoves[i], flag);
+                                }
+                            }
                         }
                     }
+                    ReadTutorMoves(fr.ReadUInt16(), frlgTutorMoves, "PBEMoveObtainMethod.MoveTutor_FRLG");
+                    ReadTutorMoves(e.ReadUInt32(), emeraldTutorMoves, "PBEMoveObtainMethod.MoveTutor_E");
                 }
 
                 #endregion
