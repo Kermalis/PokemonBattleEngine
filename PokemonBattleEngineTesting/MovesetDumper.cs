@@ -812,6 +812,81 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.Dive
         };
+        static readonly PBEMove[][] b2w2TutorMoves = new PBEMove[4][]
+        {
+            new PBEMove[15] // Driftveil City
+            {
+                (PBEMove)450, // BugBite
+                (PBEMove)343, // Covet
+                PBEMove.SuperFang,
+                (PBEMove)530, // DualChop
+                PBEMove.SignalBeam,
+                PBEMove.IronHead,
+                PBEMove.SeedBomb,
+                PBEMove.DrillRun,
+                (PBEMove)340, // Bounce
+                PBEMove.LowKick,
+                PBEMove.GunkShot,
+                (PBEMove)253, // Uproar
+                PBEMove.ThunderPunch,
+                PBEMove.FirePunch,
+                PBEMove.IcePunch
+            },
+            new PBEMove[17] // Lentimas Town
+            {
+                (PBEMove)277, // MagicCoat
+                (PBEMove)335, // Block
+                PBEMove.EarthPower,
+                PBEMove.FoulPlay,
+                (PBEMove)356, // Gravity
+                (PBEMove)393, // MagnetRise
+                PBEMove.IronDefense,
+                (PBEMove)387, // LastResort
+                PBEMove.Superpower,
+                PBEMove.Electroweb,
+                PBEMove.IcyWind,
+                PBEMove.AquaTail,
+                PBEMove.DarkPulse,
+                PBEMove.ZenHeadbutt,
+                PBEMove.DragonPulse,
+                PBEMove.HyperVoice,
+                PBEMove.IronTail
+            },
+            new PBEMove[13] // Humilau City
+            {
+                (PBEMove)20, // Bind
+                PBEMove.Snore,
+                (PBEMove)282, // KnockOff
+                PBEMove.Synthesis,
+                PBEMove.HeatWave,
+                (PBEMove)272, // RolePlay
+                (PBEMove)215, // HealBell
+                (PBEMove)366, // Tailwind
+                (PBEMove)143, // SkyAttack
+                PBEMove.PainSplit,
+                PBEMove.GigaDrain,
+                PBEMove.DrainPunch,
+                (PBEMove)355 // Roost
+            },
+            new PBEMove[15] // Nacrene City
+            {
+                PBEMove.GastroAcid,
+                (PBEMove)388, // WorrySeed
+                (PBEMove)180, // Spite
+                (PBEMove)495, // AfterYou
+                PBEMove.HelpingHand,
+                (PBEMove)271, // Trick
+                (PBEMove)478, // MagicRoom
+                (PBEMove)472, // WonderRoom
+                PBEMove.Endeavor,
+                (PBEMove)200, // Outrage
+                (PBEMove)278, // Recycle
+                (PBEMove)289, // Snatch
+                PBEMove.StealthRock,
+                (PBEMove)214, // SleepTalk
+                (PBEMove)285 // SkillSwap
+            }
+        };
 
         // You must dump everything yourself
         // The GBA ROMs must all be v1.0
@@ -821,11 +896,13 @@ namespace Kermalis.PokemonBattleEngineTesting
         // HG and SS TMHM moves are in the Pokémon data NARC which is /a/0/0/2 (HG and SS have identical Pokémon data NARCs)
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8 (B and W have identical level-up move NARCs) (B2 and W2 have identical level-up move NARCs)
         // B, W, B2, and W2 TMHM moves are in the Pokémon data NARC which is /a/0/1/6 (B and W have identical Pokémon data NARCs) (B2 and W2 have identical Pokémon data NARCs)
+        // B2 and W2 tutor moves are in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
         // TODO: Colo, XD - levelup
         // TODO: Colo, XD - tmhm
-        // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - tutor
+        // TODO: Colo, XD, D, P, Pt, HG, SS - tutor
         // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - egg
-        // TODO: FRLG - blast burn, frenzy plant, and hydro cannon tutor
+        // TODO: FRLG - Ultimate starter tutor moves
+        // TODO: Gen 5 - Free tutor moves
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Share moves across formes
         public static void Dump()
@@ -1213,6 +1290,46 @@ namespace Kermalis.PokemonBattleEngineTesting
                     }
                     ReadTutorMoves(fr.ReadUInt16(), frlgTutorMoves, "PBEMoveObtainMethod.MoveTutor_FRLG");
                     ReadTutorMoves(e.ReadUInt32(), emeraldTutorMoves, "PBEMoveObtainMethod.MoveTutor_E");
+                }
+                // Gen 5 - B2W2
+                using (var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc"))
+                {
+                    for (int sp = 1; sp <= 708; sp++)
+                    {
+                        // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon
+                        if (sp <= 649 || sp >= 685)
+                        {
+                            PBESpecies species = b2w2SpeciesIndexToPBESpecies.ContainsKey(sp) ? b2w2SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
+                            if (!tutor.ContainsKey(species))
+                            {
+                                tutor.Add(species, new Dictionary<PBEMove, string>());
+                            }
+                            using (var reader = new BinaryReader(b2w2.Files[sp]))
+                            {
+                                for (int i = 0; i < b2w2TutorMoves.Length; i++)
+                                {
+                                    reader.BaseStream.Position = 0x3C + (sizeof(uint) * i);
+                                    uint val = reader.ReadUInt32();
+                                    for (int j = 0; j < b2w2TutorMoves[i].Length; j++)
+                                    {
+                                        if ((val & (1u << j)) != 0)
+                                        {
+                                            PBEMove move = b2w2TutorMoves[i][j];
+                                            const string flag = "PBEMoveObtainMethod.MoveTutor_B2W2";
+                                            if (tutor[species].ContainsKey(move))
+                                            {
+                                                tutor[species][move] += $" | {flag}";
+                                            }
+                                            else
+                                            {
+                                                tutor[species].Add(move, flag);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 #endregion
