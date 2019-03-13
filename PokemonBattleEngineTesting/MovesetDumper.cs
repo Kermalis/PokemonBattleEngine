@@ -897,10 +897,11 @@ namespace Kermalis.PokemonBattleEngineTesting
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8 (B and W have identical level-up move NARCs) (B2 and W2 have identical level-up move NARCs)
         // B, W, B2, and W2 TMHM moves are in the Pokémon data NARC which is /a/0/1/6 (B and W have identical Pokémon data NARCs) (B2 and W2 have identical Pokémon data NARCs)
         // B2 and W2 tutor moves are in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
+        // B and W egg move NARC is /a/1/2/3, B2 and W2 egg move NARC is /a/1/2/4 (B, W, B2, and W2 have identical egg move NARCs)
         // TODO: Colo, XD - levelup
         // TODO: Colo, XD - tmhm
         // TODO: Colo, XD, D, P, Pt, HG, SS - tutor
-        // TODO: Colo, XD, D, P, Pt, HG, SS, B, W, B2, W2 - egg
+        // TODO: Colo, XD, D, P, Pt, HG, SS - egg
         // TODO: FRLG - Ultimate starter tutor moves
         // TODO: Gen 5 - Free tutor moves
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
@@ -1371,6 +1372,38 @@ namespace Kermalis.PokemonBattleEngineTesting
                         else
                         {
                             egg[species].Add((PBEMove)val, "PBEMoveObtainMethod.EggMove_RSFRLGE");
+                        }
+                    }
+                }
+                // Gen 5
+                using (var bwb2w2 = new NARC(@"../../../\DumpedData\BWB2W2Egg.narc"))
+                {
+                    for (int sp = 1; sp <= 649; sp++)
+                    {
+                        using (var reader = new BinaryReader(bwb2w2.Files[sp]))
+                        {
+                            ushort numEggMoves = reader.ReadUInt16();
+                            if (numEggMoves > 0)
+                            {
+                                var species = (PBESpecies)sp;
+                                if (!egg.ContainsKey(species))
+                                {
+                                    egg.Add(species, new Dictionary<PBEMove, string>());
+                                }
+                                for (int i = 0; i < numEggMoves; i++)
+                                {
+                                    var move = (PBEMove)reader.ReadUInt16();
+                                    const string flag = "PBEMoveObtainMethod.EggMove_BWB2W2";
+                                    if (egg[species].ContainsKey(move))
+                                    {
+                                        egg[species][move] += $" | {flag}";
+                                    }
+                                    else
+                                    {
+                                        egg[species].Add(move, flag);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
