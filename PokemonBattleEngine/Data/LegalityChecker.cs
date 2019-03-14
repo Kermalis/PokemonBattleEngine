@@ -73,12 +73,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             // Check generational rules
             bool HasGen3Method(PBEMoveObtainMethod method)
             {
-                return method.HasFlag(PBEMoveObtainMethod.LevelUp_RS)
+                return method.HasFlag(PBEMoveObtainMethod.LevelUp_RSColoXD)
                     || method.HasFlag(PBEMoveObtainMethod.LevelUp_FR)
                     || method.HasFlag(PBEMoveObtainMethod.LevelUp_LG)
                     || method.HasFlag(PBEMoveObtainMethod.LevelUp_E)
-                    || method.HasFlag(PBEMoveObtainMethod.LevelUp_Colo)
-                    || method.HasFlag(PBEMoveObtainMethod.LevelUp_XD)
                     || method.HasFlag(PBEMoveObtainMethod.TM_RSFRLGE)
                     || method.HasFlag(PBEMoveObtainMethod.HM_RSFRLGE)
                     || method.HasFlag(PBEMoveObtainMethod.MoveTutor_FRLG)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Kermalis.EndianBinaryIO;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -12,11 +13,11 @@ namespace Kermalis.PokemonBattleEngineTesting
             public byte Width;
             public byte[][] Bitmap;
 
-            public Character(BinaryReader brrReader, byte maxWidth, byte height)
+            public Character(EndianBinaryReader reader, byte maxWidth, byte height)
             {
-                SpaceWidth = brrReader.ReadByte(); // Width of transparency after the char
-                Width = brrReader.ReadByte(); // Width of this char
-                brrReader.ReadByte(); // ?
+                SpaceWidth = reader.ReadByte(); // Width of transparency after the char
+                Width = reader.ReadByte(); // Width of this char
+                reader.ReadByte(); // ?
                 Bitmap = new byte[height][];
                 for (int i = 0; i < height; i++)
                 {
@@ -30,7 +31,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         if (curBit == 0)
                         {
-                            curByte = brrReader.ReadByte();
+                            curByte = reader.ReadByte();
                         }
                         Bitmap[y][x] = (byte)((curByte >> (2 * (3 - curBit))) % 4);
                         curBit = (curBit + 1) % 4;
@@ -46,7 +47,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             {
                 void Save(int fileNum)
                 {
-                    using (var r = new BinaryReader(narc.Files[fileNum]))
+                    using (var r = new EndianBinaryReader(narc.Files[fileNum], Endianness.LittleEndian))
                     {
                         // PLGC
                         r.BaseStream.Position = 0x30;

@@ -21,6 +21,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+    <Reference Include="EndianBinaryIO">
+      <HintPath>..\Shared Dependencies\EndianBinaryIO.dll</HintPath>
+    </Reference>
     <Reference Include="Ether.Network">
       <HintPath>..\Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>

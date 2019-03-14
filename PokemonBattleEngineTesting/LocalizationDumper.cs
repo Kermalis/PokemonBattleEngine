@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,7 +26,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                 {
                     string[][] ReadTextFile(NARC narc)
                     {
-                        using (var r = new BinaryReader(narc.Files[fileNum]))
+                        using (var r = new EndianBinaryReader(narc.Files[fileNum], Endianness.LittleEndian))
                         {
                             ushort numBlocks = r.ReadUInt16();
                             ushort numEntries = r.ReadUInt16();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kermalis.EndianBinaryIO;
+using System;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngineTesting
@@ -9,25 +10,23 @@ namespace Kermalis.PokemonBattleEngineTesting
 
         public NARC(string path)
         {
-            using (var br = new BinaryReader(File.OpenRead(path)))
+            using (var fs = File.OpenRead(path))
+            using (var br = new EndianBinaryReader(fs, Endianness.LittleEndian))
             {
-                br.BaseStream.Position = 0x18;
-                uint numFiles = br.ReadUInt32();
+                uint numFiles = br.ReadUInt32(0x18);
                 Files = new MemoryStream[numFiles];
                 var startOffsets = new uint[numFiles];
                 var endOffsets = new uint[numFiles];
-                for (int i = 0; i < numFiles; i++)
+                for (uint i = 0; i < numFiles; i++)
                 {
                     startOffsets[i] = br.ReadUInt32();
                     endOffsets[i] = br.ReadUInt32();
                 }
                 long BTNFOffset = br.BaseStream.Position;
-                br.BaseStream.Position += 0x4;
-                long GMIFOffset = br.ReadUInt32() + BTNFOffset;
-                for (int i = 0; i < numFiles; i++)
+                long GMIFOffset = br.ReadUInt32(BTNFOffset + 0x4) + BTNFOffset;
+                for (uint i = 0; i < numFiles; i++)
                 {
-                    br.BaseStream.Position = GMIFOffset + startOffsets[i] + 0x8;
-                    Files[i] = new MemoryStream(br.ReadBytes((int)(endOffsets[i] - startOffsets[i])));
+                    Files[i] = new MemoryStream(br.ReadBytes((int)(endOffsets[i] - startOffsets[i]), GMIFOffset + startOffsets[i] + 0x8));
                 }
             }
         }

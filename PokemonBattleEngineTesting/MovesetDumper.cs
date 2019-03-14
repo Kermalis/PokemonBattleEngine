@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -889,7 +890,9 @@ namespace Kermalis.PokemonBattleEngineTesting
         };
 
         // You must dump everything yourself
-        // The GBA ROMs must all be v1.0
+        // The GBA ROMs must all be USA v1.0
+        // Colo and XD must be USA
+        // Colo and XD level-up moves are in common.fsys/common_rel.fdat
         // D, P, and Pt level-up move NARC is /poketool/personal/wotbl.narc (D and P have identical level-up move NARCs)
         // Pt TMHM moves are in the Pokémon data NARC which is /poketool/personal/pl_personal.narc (Pt changed no TMHM compatibility from DP so I use it alone)
         // HG and SS level-up move NARC is /a/0/3/3 (HG and SS have identical level-up move NARCs)
@@ -898,7 +901,6 @@ namespace Kermalis.PokemonBattleEngineTesting
         // B, W, B2, and W2 TMHM moves are in the Pokémon data NARC which is /a/0/1/6 (B and W have identical Pokémon data NARCs) (B2 and W2 have identical Pokémon data NARCs)
         // B2 and W2 tutor moves are in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
         // B and W egg move NARC is /a/1/2/3, B2 and W2 egg move NARC is /a/1/2/4 (B, W, B2, and W2 have identical egg move NARCs)
-        // TODO: Colo, XD - levelup
         // TODO: Colo, XD - tmhm
         // TODO: Colo, XD, D, P, Pt, HG, SS - tutor
         // TODO: Colo, XD, D, P, Pt, HG, SS - egg
@@ -908,16 +910,20 @@ namespace Kermalis.PokemonBattleEngineTesting
         // TODO: Share moves across formes
         public static void Dump()
         {
-            using (var rStream = new FileStream(@"../../../\DumpedData\R.gba", FileMode.Open))
-            using (var sStream = new FileStream(@"../../../\DumpedData\S.gba", FileMode.Open))
-            using (var frStream = new FileStream(@"../../../\DumpedData\FR.gba", FileMode.Open))
-            using (var lgStream = new FileStream(@"../../../\DumpedData\LG.gba", FileMode.Open))
-            using (var eStream = new FileStream(@"../../../\DumpedData\E.gba", FileMode.Open))
-            using (var r = new BinaryReader(rStream))
-            using (var s = new BinaryReader(sStream))
-            using (var fr = new BinaryReader(frStream))
-            using (var lg = new BinaryReader(lgStream))
-            using (var e = new BinaryReader(eStream))
+            using (var rStream = File.OpenRead(@"../../../\DumpedData\R.gba"))
+            using (var sStream = File.OpenRead(@"../../../\DumpedData\S.gba"))
+            using (var frStream = File.OpenRead(@"../../../\DumpedData\FR.gba"))
+            using (var lgStream = File.OpenRead(@"../../../\DumpedData\LG.gba"))
+            using (var eStream = File.OpenRead(@"../../../\DumpedData\E.gba"))
+            using (var coloCommonRelStream = File.OpenRead(@"../../../\DumpedData\Colocommon_rel.fdat"))
+            using (var xdCommonRelStream = File.OpenRead(@"../../../\DumpedData\XDcommon_rel.fdat"))
+            using (var r = new EndianBinaryReader(rStream, Endianness.LittleEndian))
+            using (var s = new EndianBinaryReader(sStream, Endianness.LittleEndian))
+            using (var fr = new EndianBinaryReader(frStream, Endianness.LittleEndian))
+            using (var lg = new EndianBinaryReader(lgStream, Endianness.LittleEndian))
+            using (var e = new EndianBinaryReader(eStream, Endianness.LittleEndian))
+            using (var coloCommonRel = new EndianBinaryReader(coloCommonRelStream, Endianness.BigEndian))
+            using (var xdCommonRel = new EndianBinaryReader(xdCommonRelStream, Endianness.BigEndian))
             {
                 var sb = new StringBuilder();
                 var levelup = new Dictionary<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>>();
@@ -937,13 +943,15 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         continue;
                     }
-                    // It is the same in Ruby and Sapphire, but the rest have some differences
+                    // It is the same in Ruby, Sapphire, Colo, and XD; the others have some differences
                     r.BaseStream.Position = 0x207BC8 + (sizeof(uint) * sp);
                     s.BaseStream.Position = 0x207B58 + (sizeof(uint) * sp);
                     fr.BaseStream.Position = 0x25D7B4 + (sizeof(uint) * sp);
                     lg.BaseStream.Position = 0x25D794 + (sizeof(uint) * sp);
                     e.BaseStream.Position = 0x32937C + (sizeof(uint) * sp);
-                    void ReadLevelUpMoves(BinaryReader reader, string flag)
+                    coloCommonRel.BaseStream.Position = 0x123250 + (0x11C * sp) + 0xBA;
+                    xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0xC4;
+                    void ReadGBALevelUpMoves(EndianBinaryReader reader, string flag)
                     {
                         PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
                         if (species == (PBESpecies)386)
@@ -989,10 +997,39 @@ namespace Kermalis.PokemonBattleEngineTesting
                             }
                         }
                     }
-                    ReadLevelUpMoves(r, "PBEMoveObtainMethod.LevelUp_RS");
-                    ReadLevelUpMoves(fr, "PBEMoveObtainMethod.LevelUp_FR");
-                    ReadLevelUpMoves(lg, "PBEMoveObtainMethod.LevelUp_LG");
-                    ReadLevelUpMoves(e, "PBEMoveObtainMethod.LevelUp_E");
+                    ReadGBALevelUpMoves(r, "PBEMoveObtainMethod.LevelUp_RSColoXD");
+                    //ReadGBALevelUpMoves(s, "PBEMoveObtainMethod.LevelUp_RSColoXD");
+                    ReadGBALevelUpMoves(fr, "PBEMoveObtainMethod.LevelUp_FR");
+                    ReadGBALevelUpMoves(lg, "PBEMoveObtainMethod.LevelUp_LG");
+                    ReadGBALevelUpMoves(e, "PBEMoveObtainMethod.LevelUp_E");
+                    void ReadGCLevelUpMoves(EndianBinaryReader reader, string flag)
+                    {
+                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                        if (!levelup.ContainsKey(species))
+                        {
+                            levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
+                        }
+                        for (int i = 0; i < 17; i++)
+                        {
+                            int level = reader.ReadByte();
+                            reader.ReadByte();
+                            var move = (PBEMove)reader.ReadUInt16();
+                            if (move != PBEMove.None)
+                            {
+                                Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
+                                if (tupleThatExists != null)
+                                {
+                                    levelup[species][tupleThatExists] += $" | {flag}";
+                                }
+                                else
+                                {
+                                    levelup[species].Add(Tuple.Create(level, move), flag);
+                                }
+                            }
+                        }
+                    }
+                    //ReadGCLevelUpMoves(coloCommonRel, "PBEMoveObtainMethod.LevelUp_RSColoXD");
+                    //ReadGCLevelUpMoves(xdCommonRel, "PBEMoveObtainMethod.LevelUp_RSColoXD");
                 }
                 // Gen 4
                 using (var dp = new NARC(@"../../../\DumpedData\DPLevelUp.narc"))
@@ -1013,7 +1050,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                         void ReadLevelUpMoves(MemoryStream file, string flag)
                         {
-                            using (var reader = new BinaryReader(file))
+                            using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
                                 while (true)
                                 {
@@ -1062,7 +1099,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                             {
                                 levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
                             }
-                            using (var reader = new BinaryReader(file))
+                            using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
                                 while (true)
                                 {
@@ -1160,10 +1197,9 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                         void ReadTMHMMoves(MemoryStream file, bool isDPPt)
                         {
-                            using (var reader = new BinaryReader(file))
+                            using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
-                                reader.BaseStream.Position = 0x1C;
-                                byte[] bytes = reader.ReadBytes(13);
+                                byte[] bytes = reader.ReadBytes(13, 0x1C);
                                 for (int i = 0; i < gen4TMHMIndexToPBEMove.Length; i++)
                                 {
                                     if ((bytes[i / 8] & (1 << (i % 8))) != 0)
@@ -1204,10 +1240,9 @@ namespace Kermalis.PokemonBattleEngineTesting
                             {
                                 tmhm.Add(species, new Dictionary<PBEMove, string>());
                             }
-                            using (var reader = new BinaryReader(file))
+                            using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
-                                reader.BaseStream.Position = 0x28;
-                                byte[] bytes = reader.ReadBytes(13);
+                                byte[] bytes = reader.ReadBytes(13, 0x28);
                                 for (int i = 0; i < gen5TMHMIndexToPBEMove.Length; i++)
                                 {
                                     if ((bytes[i / 8] & (1 << (i % 8))) != 0)
@@ -1254,7 +1289,7 @@ namespace Kermalis.PokemonBattleEngineTesting
 
                 #region Move Tutor
 
-                // Gen 3
+                // Gen 3 - FRLGE
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
@@ -1305,12 +1340,11 @@ namespace Kermalis.PokemonBattleEngineTesting
                             {
                                 tutor.Add(species, new Dictionary<PBEMove, string>());
                             }
-                            using (var reader = new BinaryReader(b2w2.Files[sp]))
+                            using (var reader = new EndianBinaryReader(b2w2.Files[sp], Endianness.LittleEndian))
                             {
                                 for (int i = 0; i < b2w2TutorMoves.Length; i++)
                                 {
-                                    reader.BaseStream.Position = 0x3C + (sizeof(uint) * i);
-                                    uint val = reader.ReadUInt32();
+                                    uint val = reader.ReadUInt32(0x3C + (sizeof(uint) * i));
                                     for (int j = 0; j < b2w2TutorMoves[i].Length; j++)
                                     {
                                         if ((val & (1u << j)) != 0)
@@ -1380,7 +1414,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                 {
                     for (int sp = 1; sp <= 649; sp++)
                     {
-                        using (var reader = new BinaryReader(bwb2w2.Files[sp]))
+                        using (var reader = new EndianBinaryReader(bwb2w2.Files[sp], Endianness.LittleEndian))
                         {
                             ushort numEggMoves = reader.ReadUInt16();
                             if (numEggMoves > 0)
