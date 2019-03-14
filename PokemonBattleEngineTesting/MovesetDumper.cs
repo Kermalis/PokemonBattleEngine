@@ -900,10 +900,12 @@ namespace Kermalis.PokemonBattleEngineTesting
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8 (B and W have identical level-up move NARCs) (B2 and W2 have identical level-up move NARCs)
         // B, W, B2, and W2 TMHM moves are in the Pokémon data NARC which is /a/0/1/6 (B and W have identical Pokémon data NARCs) (B2 and W2 have identical Pokémon data NARCs)
         // B2 and W2 tutor moves are in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
+        // D, P, and Pt egg moves are in overlay/overlay_0005.bin
+        // HG and SS egg move NARC is /a/2/2/9 (HG and SS have identical egg move NARCs)
         // B and W egg move NARC is /a/1/2/3, B2 and W2 egg move NARC is /a/1/2/4 (B, W, B2, and W2 have identical egg move NARCs)
         // TODO: Colo, XD - tmhm
-        // TODO: Colo, XD, D, P, Pt, HG, SS - tutor
-        // TODO: Colo, XD, D, P, Pt, HG, SS - egg
+        // TODO: XD, D, P, Pt, HG, SS - tutor
+        // TODO: Colo, XD - egg
         // TODO: FRLG - Ultimate starter tutor moves
         // TODO: Gen 5 - Free tutor moves
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
@@ -1162,13 +1164,17 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         continue;
                     }
-                    // It is the same in all 5 GBA games, so I will only read one
+                    // It is the same in all five GBA games, so I will only read one
                     r.BaseStream.Position = 0x1FD0F0 + (8 * sp);
                     s.BaseStream.Position = 0x1FD080 + (8 * sp);
                     fr.BaseStream.Position = 0x252BC8 + (8 * sp);
                     lg.BaseStream.Position = 0x252BA4 + (8 * sp);
                     e.BaseStream.Position = 0x31E898 + (8 * sp);
                     byte[] bytes = r.ReadBytes(8);
+                    //byte[] bytes = s.ReadBytes(8);
+                    //byte[] bytes = fr.ReadBytes(8);
+                    //byte[] bytes = lg.ReadBytes(8);
+                    //byte[] bytes = e.ReadBytes(8);
                     PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
                     tmhm.Add(species, new Dictionary<PBEMove, string>());
                     for (int i = 0; i < gen3TMHMIndexToPBEMove.Length; i++)
@@ -1325,6 +1331,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                     }
                     ReadTutorMoves(fr.ReadUInt16(), frlgTutorMoves, "PBEMoveObtainMethod.MoveTutor_FRLG");
+                    //ReadTutorMoves(lg.ReadUInt16(), frlgTutorMoves, "PBEMoveObtainMethod.MoveTutor_FRLG");
                     ReadTutorMoves(e.ReadUInt32(), emeraldTutorMoves, "PBEMoveObtainMethod.MoveTutor_E");
                 }
                 // Gen 5 - B2W2
@@ -1381,33 +1388,68 @@ namespace Kermalis.PokemonBattleEngineTesting
 
                 #region Egg Moves
 
-                // Gen 3
+                // Gen 3 & Gen 4
+                using (var dStream = File.OpenRead(@"../../../\DumpedData\Doverlay_0005.bin"))
+                using (var pStream = File.OpenRead(@"../../../\DumpedData\Poverlay_0005.bin"))
+                using (var ptStream = File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"))
+                using (var d = new EndianBinaryReader(dStream, Endianness.LittleEndian))
+                using (var p = new EndianBinaryReader(pStream, Endianness.LittleEndian))
+                using (var pt = new EndianBinaryReader(ptStream, Endianness.LittleEndian))
+                using (var hgssNARC = new NARC(@"../../../\DumpedData\HGSSEgg.narc"))
+                using (var hgss = new EndianBinaryReader(hgssNARC.Files[0], Endianness.LittleEndian))
                 {
-                    // The table is the same in all 5 GBA games, so I will only read one
-                    // Pichu learning Volt Tackle in E is the only exception and is not in the table; it is extra code in the daycare backend
+                    // The table is the same in all five GBA games, so I will only read one
                     r.BaseStream.Position = 0x2091DC;
                     s.BaseStream.Position = 0x20916C;
                     fr.BaseStream.Position = 0x25EF0C;
                     lg.BaseStream.Position = 0x25EEEC;
                     e.BaseStream.Position = 0x32ADD8;
-                    PBESpecies species = 0;
-                    while (true)
+                    // The table is the same across DPPt, so I will only read one
+                    d.BaseStream.Position = 0x20668;
+                    p.BaseStream.Position = 0x20668;
+                    pt.BaseStream.Position = 0x29222;
+                    void ReadEggMoves(EndianBinaryReader reader, bool isGen3, string flag)
                     {
-                        ushort val = r.ReadUInt16();
-                        if (val == 0xFFFF)
+                        PBESpecies species = 0;
+                        while (true)
                         {
-                            break;
-                        }
-                        else if (val > 20000)
-                        {
-                            species = gen3SpeciesIndexToPBESpecies[val - 20000];
-                            egg.Add(species, new Dictionary<PBEMove, string>());
-                        }
-                        else
-                        {
-                            egg[species].Add((PBEMove)val, "PBEMoveObtainMethod.EggMove_RSFRLGE");
+                            ushort val = reader.ReadUInt16();
+                            if (val == 0xFFFF)
+                            {
+                                break;
+                            }
+                            else if (val > 20000)
+                            {
+                                int speciesIndex = val - 20000;
+                                species = isGen3 ? gen3SpeciesIndexToPBESpecies[speciesIndex] : (PBESpecies)speciesIndex;
+                                if (!egg.ContainsKey(species))
+                                {
+                                    egg.Add(species, new Dictionary<PBEMove, string>());
+                                }
+                            }
+                            else
+                            {
+                                var move = (PBEMove)val;
+                                if (egg[species].ContainsKey(move))
+                                {
+                                    egg[species][move] += $" | {flag}";
+                                }
+                                else
+                                {
+                                    egg[species].Add(move, flag);
+                                }
+                            }
                         }
                     }
+                    ReadEggMoves(r, true, "PBEMoveObtainMethod.EggMove_RSFRLGE");
+                    //ReadEggMoves(s, true, "PBEMoveObtainMethod.EggMove_RSFRLGE");
+                    //ReadEggMoves(fr, true, "PBEMoveObtainMethod.EggMove_RSFRLGE");
+                    //ReadEggMoves(lg, true, "PBEMoveObtainMethod.EggMove_RSFRLGE");
+                    //ReadEggMoves(e, true, "PBEMoveObtainMethod.EggMove_RSFRLGE");
+                    ReadEggMoves(d, false, "PBEMoveObtainMethod.EggMove_DPPt");
+                    //ReadEggMoves(p, false, "PBEMoveObtainMethod.EggMove_DPPt");
+                    //ReadEggMoves(pt, false, "PBEMoveObtainMethod.EggMove_DPPt");
+                    ReadEggMoves(hgss, false, "PBEMoveObtainMethod.EggMove_HGSS");
                 }
                 // Gen 5
                 using (var bwb2w2 = new NARC(@"../../../\DumpedData\BWB2W2Egg.narc"))
