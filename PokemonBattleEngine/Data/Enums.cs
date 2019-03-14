@@ -359,9 +359,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         LevelUp_B2W2 = 1u << 8,
         /// <summary>
-        /// The move can be learned by using a technical machine on a Pokémon in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version, and Pokémon Emerald Version.
+        /// The move can be learned by using a technical machine on a Pokémon in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version, Pokémon Emerald Version, Pokémon Colosseum, and Pokémon XD: Gale of Darkness.
         /// </summary>
-        TM_RSFRLGE = 1u << 9,
+        TM_RSFRLGEColoXD = 1u << 9,
         /// <summary>
         /// The move can be learned by using a technical machine on a Pokémon in Pokémon Diamond Version, Pokémon Pearl Version, and Pokémon Platinum Version.
         /// </summary>
@@ -379,9 +379,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         TM_B2W2 = 1u << 13,
         /// <summary>
-        /// The move can be learned by using a hidden machine on a Pokémon in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version, and Pokémon Emerald Version.
+        /// The move can be learned by using a hidden machine on a Pokémon in Pokémon Ruby Version, Pokémon Sapphire Version, Pokémon Fire Red Version, Pokémon Leaf Green Version, Pokémon Emerald Version, Pokémon Colosseum, and Pokémon XD: Gale of Darkness.
         /// </summary>
-        HM_RSFRLGE = 1u << 14,
+        HM_RSFRLGEColoXD = 1u << 14,
         /// <summary>
         /// The move can be learned by using a hidden machine on a Pokémon in Pokémon Diamond Version, Pokémon Pearl Version, and Pokémon Platinum Version.
         /// </summary>

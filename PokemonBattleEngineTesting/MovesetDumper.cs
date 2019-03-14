@@ -903,13 +903,13 @@ namespace Kermalis.PokemonBattleEngineTesting
         // D, P, and Pt egg moves are in overlay/overlay_0005.bin
         // HG and SS egg move NARC is /a/2/2/9 (HG and SS have identical egg move NARCs)
         // B and W egg move NARC is /a/1/2/3, B2 and W2 egg move NARC is /a/1/2/4 (B, W, B2, and W2 have identical egg move NARCs)
-        // TODO: Colo, XD - tmhm
         // TODO: XD, D, P, Pt, HG, SS - tutor
         // TODO: Colo, XD - egg
         // TODO: FRLG - Ultimate starter tutor moves
         // TODO: Gen 5 - Free tutor moves
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Share moves across formes
+#pragma warning disable CS8321 // Local function is declared but never used
         public static void Dump()
         {
             using (var rStream = File.OpenRead(@"../../../\DumpedData\R.gba"))
@@ -1164,26 +1164,74 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         continue;
                     }
-                    // It is the same in all five GBA games, so I will only read one
+                    // It is the same across all of gen 3, so I will only read one
                     r.BaseStream.Position = 0x1FD0F0 + (8 * sp);
                     s.BaseStream.Position = 0x1FD080 + (8 * sp);
                     fr.BaseStream.Position = 0x252BC8 + (8 * sp);
                     lg.BaseStream.Position = 0x252BA4 + (8 * sp);
                     e.BaseStream.Position = 0x31E898 + (8 * sp);
-                    byte[] bytes = r.ReadBytes(8);
-                    //byte[] bytes = s.ReadBytes(8);
-                    //byte[] bytes = fr.ReadBytes(8);
-                    //byte[] bytes = lg.ReadBytes(8);
-                    //byte[] bytes = e.ReadBytes(8);
-                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
-                    tmhm.Add(species, new Dictionary<PBEMove, string>());
-                    for (int i = 0; i < gen3TMHMIndexToPBEMove.Length; i++)
+                    coloCommonRel.BaseStream.Position = 0x123250 + (0x11C * sp) + 0x34;
+                    xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0x34;
+                    string GetFlag(int i)
                     {
-                        if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                        return $"PBEMoveObtainMethod.{(i < 50 ? "TM" : "HM")}_RSFRLGEColoXD";
+                    }
+                    void ReadGBATMHM(EndianBinaryReader reader)
+                    {
+                        byte[] bytes = reader.ReadBytes(8);
+                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                        if (!tmhm.ContainsKey(species))
                         {
-                            tmhm[species].Add(gen3TMHMIndexToPBEMove[i], $"PBEMoveObtainMethod.{(i < 50 ? "TM" : "HM")}_RSFRLGE");
+                            tmhm.Add(species, new Dictionary<PBEMove, string>());
+                        }
+                        for (int i = 0; i < gen3TMHMIndexToPBEMove.Length; i++)
+                        {
+                            if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                            {
+                                PBEMove move = gen3TMHMIndexToPBEMove[i];
+                                string flag = GetFlag(i);
+                                if (tmhm[species].ContainsKey(move))
+                                {
+                                    tmhm[species][move] += $" | {flag}";
+                                }
+                                else
+                                {
+                                    tmhm[species].Add(move, flag);
+                                }
+                            }
                         }
                     }
+                    ReadGBATMHM(r);
+                    //ReadGBATMHM(s);
+                    //ReadGBATMHM(fr);
+                    //ReadGBATMHM(lg);
+                    //ReadGBATMHM(e);
+                    void ReadGCTMHM(EndianBinaryReader reader)
+                    {
+                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                        if (!tmhm.ContainsKey(species))
+                        {
+                            tmhm.Add(species, new Dictionary<PBEMove, string>());
+                        }
+                        for (int i = 0; i < gen3TMHMIndexToPBEMove.Length; i++)
+                        {
+                            if (reader.ReadBoolean())
+                            {
+                                PBEMove move = gen3TMHMIndexToPBEMove[i];
+                                string flag = GetFlag(i);
+                                if (tmhm[species].ContainsKey(move))
+                                {
+                                    tmhm[species][move] += $" | {flag}";
+                                }
+                                else
+                                {
+                                    tmhm[species].Add(move, flag);
+                                }
+                            }
+                        }
+                    }
+                    //ReadGCTM(coloCommonRel);
+                    //ReadGCTM(xdCommonRel);
                 }
                 // Gen 4
                 using (var dppt = new NARC(@"../../../\DumpedData\PtPokedata.narc"))
@@ -1498,5 +1546,6 @@ namespace Kermalis.PokemonBattleEngineTesting
                 File.WriteAllText(@"../../../\DumpedData\Dumped\Moves.txt", sb.ToString());
             }
         }
+#pragma warning restore CS8321 // Local function is declared but never used
     }
 }
