@@ -10,8 +10,7 @@ namespace Kermalis.PokemonBattleEngineTesting
 
         public NARC(string path)
         {
-            using (var fs = File.OpenRead(path))
-            using (var br = new EndianBinaryReader(fs, Endianness.LittleEndian))
+            using (var br = new EndianBinaryReader(File.OpenRead(path), Endianness.LittleEndian))
             {
                 uint numFiles = br.ReadUInt32(0x18);
                 Files = new MemoryStream[numFiles];

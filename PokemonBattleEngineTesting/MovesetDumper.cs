@@ -657,7 +657,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.RockClimb
         };
-        // The tutor moves are copied from overlay_0005.bin address 0x2FF64 to ram address 0x02200CE4 on each map load (USA offsets)
+        // These tutor moves are copied from overlay_0005.bin address 0x2FF64 to ram address 0x02200CE4 on each map load (USA offsets)
         // The tutor move compatibility is at the end of the table, starting with Bulbasaur and ending with Arceus (no forme entries), and each compatibility is a bitfield of 5 bytes
         // Each tutor move entry is 0xC bytes:
         // u16 moveId
@@ -708,7 +708,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Swift,
             (PBEMove)253 // Uproar
         };
-        // The tutor moves are decompressed to memory (ram address 0x022093E0 in HG, 0x022093F0 in SS) on each map load (USA offsets)
+        // These tutor moves are decompressed to memory (ram address 0x022093E0 in HG, 0x022093F0 in SS) on each map load (USA offsets)
         // Each tutor move entry is 0x4 bytes:
         // u16 moveId
         // u8 bpCost
@@ -924,7 +924,17 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.Dive
         };
-        // The tutor moves are decompressed to memory (ram address 0x021D0B38 in B2, 0x021D0B6C in W2) on each map load (USA offsets)
+        static readonly PBEMove[] gen5FreeTutorMoves = new PBEMove[7]
+        {
+            (PBEMove)520, // GrassPledge
+            (PBEMove)519, // FirePledge
+            (PBEMove)518, // WaterPledge
+            (PBEMove)338, // FrenzyPlant
+            (PBEMove)307, // BlastBurn
+            (PBEMove)308, // HydroCannon
+            PBEMove.DracoMeteor
+        };
+        // These tutor moves are decompressed to memory (ram address 0x021D0B38 in B2, 0x021D0B6C in W2) on each map load (USA offsets)
         // For some reason, the location order in this table is different from the Pokémon's compatibility (this table is [Humilau,Driftveil,Nacrene,Lentimas] but in Pokémon data it is [Driftveil,Lentimas,Humilau,Nacrene])
         // Each tutor move entry is 0xC bytes:
         // u32 moveId
@@ -1032,26 +1042,18 @@ namespace Kermalis.PokemonBattleEngineTesting
         // TODO: FRLG - Ultimate starter tutor moves
         // TODO: D, P, Pt - Free tutor moves
         // TODO: HG, SS - Free tutor moves (aside from headbutt)
-        // TODO: Gen 5 - Free tutor moves (They are actually in pokemon data: https://projectpokemon.org/home/forums/topic/22629-b2w2-general-rom-info/)
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Share moves across formes
 #pragma warning disable CS8321 // Local function is declared but never used
         public static void Dump()
         {
-            using (var rStream = File.OpenRead(@"../../../\DumpedData\R.gba"))
-            using (var sStream = File.OpenRead(@"../../../\DumpedData\S.gba"))
-            using (var frStream = File.OpenRead(@"../../../\DumpedData\FR.gba"))
-            using (var lgStream = File.OpenRead(@"../../../\DumpedData\LG.gba"))
-            using (var eStream = File.OpenRead(@"../../../\DumpedData\E.gba"))
-            using (var coloCommonRelStream = File.OpenRead(@"../../../\DumpedData\Colocommon_rel.fdat"))
-            using (var xdCommonRelStream = File.OpenRead(@"../../../\DumpedData\XDcommon_rel.fdat"))
-            using (var r = new EndianBinaryReader(rStream, Endianness.LittleEndian))
-            using (var s = new EndianBinaryReader(sStream, Endianness.LittleEndian))
-            using (var fr = new EndianBinaryReader(frStream, Endianness.LittleEndian))
-            using (var lg = new EndianBinaryReader(lgStream, Endianness.LittleEndian))
-            using (var e = new EndianBinaryReader(eStream, Endianness.LittleEndian))
-            using (var coloCommonRel = new EndianBinaryReader(coloCommonRelStream, Endianness.BigEndian))
-            using (var xdCommonRel = new EndianBinaryReader(xdCommonRelStream, Endianness.BigEndian))
+            using (var r = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\R.gba"), Endianness.LittleEndian))
+            using (var s = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\S.gba"), Endianness.LittleEndian))
+            using (var fr = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\FR.gba"), Endianness.LittleEndian))
+            using (var lg = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\LG.gba"), Endianness.LittleEndian))
+            using (var e = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\E.gba"), Endianness.LittleEndian))
+            using (var coloCommonRel = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Colocommon_rel.fdat"), Endianness.BigEndian))
+            using (var xdCommonRel = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\XDcommon_rel.fdat"), Endianness.BigEndian))
             {
                 var sb = new StringBuilder();
                 var levelup = new Dictionary<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>>();
@@ -1509,8 +1511,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                     ReadTutorMoves(e.ReadUInt32(), emeraldTutorMoves, "PBEMoveObtainMethod.MoveTutor_E");
                 }
                 // Gen 4 - Pt
-                using (var ptStream = File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"))
-                using (var pt = new EndianBinaryReader(ptStream, Endianness.LittleEndian))
+                using (var pt = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"), Endianness.LittleEndian))
                 {
                     for (int sp = 1; sp <= 493; sp++)
                     {
@@ -1538,8 +1539,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                     }
                 }
-                using (var hgssStream = File.OpenRead(@"../../../\DumpedData\HGSSTutor.bin"))
-                using (var hgss = new EndianBinaryReader(hgssStream, Endianness.LittleEndian))
+                using (var hgss = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\HGSSTutor.bin"), Endianness.LittleEndian))
                 {
                     for (int sp = 1; sp <= 505; sp++) // Includes formes, but not eggs
                     {
@@ -1567,41 +1567,81 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                     }
                 }
-                // Gen 5 - B2W2
+                // Gen 5
+                using (var bw = new NARC(@"../../../\DumpedData\BWPokedata.narc"))
                 using (var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc"))
                 {
                     for (int sp = 1; sp <= 708; sp++)
                     {
-                        // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon
-                        if (sp <= 649 || sp >= 685)
+                        void ReadFreeTutorMoves(EndianBinaryReader reader, bool isBW)
+                        {
+                            Dictionary<int, PBESpecies> dict = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
+                            PBESpecies species = dict.ContainsKey(sp) ? dict[sp] : (PBESpecies)sp;
+                            if (!tutor.ContainsKey(species))
+                            {
+                                tutor.Add(species, new Dictionary<PBEMove, string>());
+                            }
+                            byte val = reader.ReadByte(0x38);
+                            for (int i = 0; i < gen5FreeTutorMoves.Length; i++)
+                            {
+                                if ((val & (1 << i)) != 0)
+                                {
+                                    PBEMove move = gen5FreeTutorMoves[i];
+                                    string flag = $"PBEMoveObtainMethod.MoveTutor_{(isBW ? "BW" : "B2W2")}";
+                                    if (tutor[species].ContainsKey(move))
+                                    {
+                                        tutor[species][move] += $" | {flag}";
+                                    }
+                                    else
+                                    {
+                                        tutor[species].Add(move, flag);
+                                    }
+                                }
+                            }
+                        }
+                        void ReadB2W2TutorMoves(EndianBinaryReader reader)
                         {
                             PBESpecies species = b2w2SpeciesIndexToPBESpecies.ContainsKey(sp) ? b2w2SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
                             if (!tutor.ContainsKey(species))
                             {
                                 tutor.Add(species, new Dictionary<PBEMove, string>());
                             }
-                            using (var reader = new EndianBinaryReader(b2w2.Files[sp], Endianness.LittleEndian))
+                            for (int i = 0; i < b2w2TutorMoves.Length; i++)
                             {
-                                for (int i = 0; i < b2w2TutorMoves.Length; i++)
+                                uint val = reader.ReadUInt32(0x3C + (sizeof(uint) * i));
+                                for (int j = 0; j < b2w2TutorMoves[i].Length; j++)
                                 {
-                                    uint val = reader.ReadUInt32(0x3C + (sizeof(uint) * i));
-                                    for (int j = 0; j < b2w2TutorMoves[i].Length; j++)
+                                    if ((val & (1u << j)) != 0)
                                     {
-                                        if ((val & (1u << j)) != 0)
+                                        PBEMove move = b2w2TutorMoves[i][j];
+                                        const string flag = "PBEMoveObtainMethod.MoveTutor_B2W2";
+                                        if (tutor[species].ContainsKey(move))
                                         {
-                                            PBEMove move = b2w2TutorMoves[i][j];
-                                            const string flag = "PBEMoveObtainMethod.MoveTutor_B2W2";
-                                            if (tutor[species].ContainsKey(move))
-                                            {
-                                                tutor[species][move] += $" | {flag}";
-                                            }
-                                            else
-                                            {
-                                                tutor[species].Add(move, flag);
-                                            }
+                                            tutor[species][move] += $" | {flag}";
+                                        }
+                                        else
+                                        {
+                                            tutor[species].Add(move, flag);
                                         }
                                     }
                                 }
+                            }
+                        }
+                        // BW only has 0-667 (no Egg or Bad Egg)
+                        if (sp <= 667)
+                        {
+                            using (var reader = new EndianBinaryReader(bw.Files[sp], Endianness.LittleEndian))
+                            {
+                                ReadFreeTutorMoves(reader, true);
+                            }
+                        }
+                        // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon
+                        if (sp <= 649 || sp >= 685)
+                        {
+                            using (var reader = new EndianBinaryReader(b2w2.Files[sp], Endianness.LittleEndian))
+                            {
+                                ReadFreeTutorMoves(reader, false);
+                                ReadB2W2TutorMoves(reader);
                             }
                         }
                     }
@@ -1622,12 +1662,9 @@ namespace Kermalis.PokemonBattleEngineTesting
                 #region Egg Moves
 
                 // Gen 3 & Gen 4
-                using (var dStream = File.OpenRead(@"../../../\DumpedData\Doverlay_0005.bin"))
-                using (var pStream = File.OpenRead(@"../../../\DumpedData\Poverlay_0005.bin"))
-                using (var ptStream = File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"))
-                using (var d = new EndianBinaryReader(dStream, Endianness.LittleEndian))
-                using (var p = new EndianBinaryReader(pStream, Endianness.LittleEndian))
-                using (var pt = new EndianBinaryReader(ptStream, Endianness.LittleEndian))
+                using (var d = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Doverlay_0005.bin"), Endianness.LittleEndian))
+                using (var p = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Poverlay_0005.bin"), Endianness.LittleEndian))
+                using (var pt = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"), Endianness.LittleEndian))
                 using (var hgssNARC = new NARC(@"../../../\DumpedData\HGSSEgg.narc"))
                 using (var hgss = new EndianBinaryReader(hgssNARC.Files[0], Endianness.LittleEndian))
                 {
