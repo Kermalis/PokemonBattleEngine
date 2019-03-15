@@ -657,7 +657,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.RockClimb
         };
-        // The tutor moves are copied from overlay_0005.bin address 0x2FF64 to ram address 0x02200CE4 on each map load
+        // The tutor moves are copied from overlay_0005.bin address 0x2FF64 to ram address 0x02200CE4 on each map load (USA offsets)
         // The tutor move compatibility is at the end of the table, starting with Bulbasaur and ending with Arceus (no forme entries), and each compatibility is a bitfield of 5 bytes
         // Each tutor move entry is 0xC bytes:
         // u16 moveId
@@ -707,6 +707,66 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.SuckerPunch,
             PBEMove.Swift,
             (PBEMove)253 // Uproar
+        };
+        // The tutor moves are decompressed to memory (ram address 0x022093E0 in HG, 0x022093F0 in SS) on each map load (USA offsets)
+        // Each tutor move entry is 0x4 bytes:
+        // u16 moveId
+        // u8 bpCost
+        // u8 areaId (0 = Frontier Access [top left tutor], 1 = Frontier Access [top right tutor], 2 = Frontier Access [bottom right tutor], 3 = Ilex Forest [Headbutt tutor])
+        static readonly PBEMove[] hgssTutorMoves = new PBEMove[52]
+        {
+            PBEMove.Dive,
+            PBEMove.MudSlap,
+            (PBEMove)210, // FuryCutter
+            PBEMove.IcyWind,
+            (PBEMove)205, // Rollout
+            PBEMove.ThunderPunch,
+            PBEMove.FirePunch,
+            PBEMove.Superpower,
+            PBEMove.IcePunch,
+            PBEMove.IronHead,
+            PBEMove.AquaTail,
+            PBEMove.OminousWind,
+            PBEMove.GastroAcid,
+            PBEMove.Snore,
+            (PBEMove)180, // Spite
+            PBEMove.AirCutter,
+            PBEMove.HelpingHand,
+            PBEMove.Endeavor,
+            (PBEMove)200, // Outrage
+            PBEMove.AncientPower,
+            PBEMove.Synthesis,
+            PBEMove.SignalBeam,
+            PBEMove.ZenHeadbutt,
+            PBEMove.VacuumWave,
+            PBEMove.EarthPower,
+            PBEMove.GunkShot,
+            (PBEMove)239, // Twister
+            PBEMove.SeedBomb,
+            PBEMove.IronDefense,
+            (PBEMove)393, // MagnetRise
+            (PBEMove)387, // LastResort
+            (PBEMove)340, // Bounce
+            (PBEMove)271, // Trick
+            PBEMove.HeatWave,
+            (PBEMove)282, // KnockOff
+            PBEMove.SuckerPunch,
+            PBEMove.Swift,
+            (PBEMove)253, // Uproar
+            PBEMove.SuperFang,
+            PBEMove.PainSplit,
+            PBEMove.StringShot,
+            (PBEMove)366, // Tailwind
+            (PBEMove)356, // Gravity
+            (PBEMove)388, // WorrySeed
+            (PBEMove)277, // MagicCoat
+            (PBEMove)272, // RolePlay
+            (PBEMove)215, // HealBell
+            PBEMove.LowKick,
+            (PBEMove)143, // SkyAttack
+            (PBEMove)335, // Block
+            (PBEMove)450, // BugBite
+            PBEMove.Headbutt
         };
         static readonly Dictionary<int, PBESpecies> bwSpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
@@ -864,7 +924,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.Dive
         };
-        // The tutor moves are decompressed to memory (ram address 0x021D0B38 in B2, 0x021D0B6C in W2) on each map load
+        // The tutor moves are decompressed to memory (ram address 0x021D0B38 in B2, 0x021D0B6C in W2) on each map load (USA offsets)
         // For some reason, the location order in this table is different from the Pokémon's compatibility (this table is [Humilau,Driftveil,Nacrene,Lentimas] but in Pokémon data it is [Driftveil,Lentimas,Humilau,Nacrene])
         // Each tutor move entry is 0xC bytes:
         // u32 moveId
@@ -957,18 +1017,21 @@ namespace Kermalis.PokemonBattleEngineTesting
         // D, P, and Pt level-up move NARC is /poketool/personal/wotbl.narc (D and P have identical level-up move NARCs)
         // D, P, and Pt egg moves are in overlay/overlay_0005.bin
         // Pt TMHM moves are in the Pokémon data NARC which is /poketool/personal/pl_personal.narc (Pt changed no TMHM compatibility from DP so I use it alone)
+        // Pt tutor compatibility is in overlay/overlay_0005.bin
         // HG and SS level-up move NARC is /a/0/3/3 (HG and SS have identical level-up move NARCs)
         // HG and SS TMHM moves are in the Pokémon data NARC which is /a/0/0/2 (HG and SS have identical Pokémon data NARCs)
+        // HG and SS tutor compatibility is in /fielddata/wazaoshie/waza_oshie.bin (HG and SS have identical tutor compatibility)
         // HG and SS egg move NARC is /a/2/2/9 (HG and SS have identical egg move NARCs)
         //
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8 (B and W have identical level-up move NARCs) (B2 and W2 have identical level-up move NARCs)
         // B, W, B2, and W2 TMHM moves are in the Pokémon data NARC which is /a/0/1/6 (B and W have identical Pokémon data NARCs) (B2 and W2 have identical Pokémon data NARCs)
-        // B2 and W2 tutor moves are in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
+        // B2 and W2 tutor compatibility is in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
         // B and W egg move NARC is /a/1/2/3, B2 and W2 egg move NARC is /a/1/2/4 (B, W, B2, and W2 have identical egg move NARCs)
         //
-        // TODO: XD, HG, SS - tutor
-        // TODO: D, P, Pt - Free tutor moves
+        // TODO: XD - tutor
         // TODO: FRLG - Ultimate starter tutor moves
+        // TODO: D, P, Pt - Free tutor moves
+        // TODO: HG, SS - Free tutor moves (aside from headbutt)
         // TODO: Gen 5 - Free tutor moves (They are actually in pokemon data: https://projectpokemon.org/home/forums/topic/22629-b2w2-general-rom-info/)
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Share moves across formes
@@ -1463,6 +1526,35 @@ namespace Kermalis.PokemonBattleEngineTesting
                             {
                                 PBEMove move = ptTutorMoves[i];
                                 const string flag = "PBEMoveObtainMethod.MoveTutor_Pt";
+                                if (tutor[species].ContainsKey(move))
+                                {
+                                    tutor[species][move] += $" | {flag}";
+                                }
+                                else
+                                {
+                                    tutor[species].Add(move, flag);
+                                }
+                            }
+                        }
+                    }
+                }
+                using (var hgssStream = File.OpenRead(@"../../../\DumpedData\HGSSTutor.bin"))
+                using (var hgss = new EndianBinaryReader(hgssStream, Endianness.LittleEndian))
+                {
+                    for (int sp = 1; sp <= 505; sp++) // Includes formes, but not eggs
+                    {
+                        PBESpecies species = sp > 493 ? gen4SpeciesIndexToPBESpecies[sp + 2] : (PBESpecies)sp;
+                        if (!tutor.ContainsKey(species))
+                        {
+                            tutor.Add(species, new Dictionary<PBEMove, string>());
+                        }
+                        byte[] bytes = hgss.ReadBytes(8);
+                        for (int i = 0; i < hgssTutorMoves.Length; i++)
+                        {
+                            if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                            {
+                                PBEMove move = hgssTutorMoves[i];
+                                const string flag = "PBEMoveObtainMethod.MoveTutor_HGSS";
                                 if (tutor[species].ContainsKey(move))
                                 {
                                     tutor[species][move] += $" | {flag}";
