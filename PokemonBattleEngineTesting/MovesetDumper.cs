@@ -657,6 +657,57 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.RockClimb
         };
+        // The tutor moves are copied from overlay_0005.bin address 0x2FF64 to ram address 0x02200CE4 on each map load
+        // The tutor move compatibility is at the end of the table, starting with Bulbasaur and ending with Arceus (no forme entries), and each compatibility is a bitfield of 5 bytes
+        // Each tutor move entry is 0xC bytes:
+        // u16 moveId
+        // u8 redShard
+        // u8 blueShard
+        // u8 yellowShard
+        // u8 greenShard
+        // u16 unk1
+        // u32 areaId (0 = Route 212, 1 = Survival Area, 2 = Snowpoint City)
+        static readonly PBEMove[] ptTutorMoves = new PBEMove[38]
+        {
+            PBEMove.Dive,
+            PBEMove.MudSlap,
+            (PBEMove)210, // FuryCutter
+            PBEMove.IcyWind,
+            (PBEMove)205, // Rollout
+            PBEMove.ThunderPunch,
+            PBEMove.FirePunch,
+            PBEMove.Superpower,
+            PBEMove.IcePunch,
+            PBEMove.IronHead,
+            PBEMove.AquaTail,
+            PBEMove.OminousWind,
+            PBEMove.GastroAcid,
+            PBEMove.Snore,
+            (PBEMove)180, // Spite,
+            PBEMove.AirCutter,
+            PBEMove.HelpingHand,
+            PBEMove.Endeavor,
+            (PBEMove)200, // Outrage
+            PBEMove.AncientPower,
+            PBEMove.Synthesis,
+            PBEMove.SignalBeam,
+            PBEMove.ZenHeadbutt,
+            PBEMove.VacuumWave,
+            PBEMove.EarthPower,
+            PBEMove.GunkShot,
+            (PBEMove)239, // Twister
+            PBEMove.SeedBomb,
+            PBEMove.IronDefense,
+            (PBEMove)393, // MagnetRise
+            (PBEMove)387, // LastResort
+            (PBEMove)340, // Bounce
+            (PBEMove)271, // Trick
+            PBEMove.HeatWave,
+            (PBEMove)282, // KnockOff
+            PBEMove.SuckerPunch,
+            PBEMove.Swift,
+            (PBEMove)253 // Uproar
+        };
         static readonly Dictionary<int, PBESpecies> bwSpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 650, (PBESpecies)(386 | (1 << 0x10)) }, // Deoxys_Attack
@@ -813,6 +864,12 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.Dive
         };
+        // The tutor moves are decompressed to memory (ram address 0x021D0B38 in B2, 0x021D0B6C in W2) on each map load
+        // For some reason, the location order in this table is different from the Pokémon's compatibility (this table is [Humilau,Driftveil,Nacrene,Lentimas] but in Pokémon data it is [Driftveil,Lentimas,Humilau,Nacrene])
+        // Each tutor move entry is 0xC bytes:
+        // u32 moveId
+        // u32 shardCost
+        // u32 indexInList
         static readonly PBEMove[][] b2w2TutorMoves = new PBEMove[4][]
         {
             new PBEMove[15] // Driftveil City
@@ -892,21 +949,27 @@ namespace Kermalis.PokemonBattleEngineTesting
         // You must dump everything yourself
         // The GBA ROMs must all be USA v1.0
         // Colo and XD must be USA
+        // DPPt dumps use overlay files which may or may not have different offsets depending on the region, so just keep in mind I have USA versions of each game
+        // HGSS/Gen5 dumps should work across all regions
+        //
         // Colo and XD level-up moves are in common.fsys/common_rel.fdat
+        //
         // D, P, and Pt level-up move NARC is /poketool/personal/wotbl.narc (D and P have identical level-up move NARCs)
+        // D, P, and Pt egg moves are in overlay/overlay_0005.bin
         // Pt TMHM moves are in the Pokémon data NARC which is /poketool/personal/pl_personal.narc (Pt changed no TMHM compatibility from DP so I use it alone)
         // HG and SS level-up move NARC is /a/0/3/3 (HG and SS have identical level-up move NARCs)
         // HG and SS TMHM moves are in the Pokémon data NARC which is /a/0/0/2 (HG and SS have identical Pokémon data NARCs)
+        // HG and SS egg move NARC is /a/2/2/9 (HG and SS have identical egg move NARCs)
+        //
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8 (B and W have identical level-up move NARCs) (B2 and W2 have identical level-up move NARCs)
         // B, W, B2, and W2 TMHM moves are in the Pokémon data NARC which is /a/0/1/6 (B and W have identical Pokémon data NARCs) (B2 and W2 have identical Pokémon data NARCs)
         // B2 and W2 tutor moves are in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
-        // D, P, and Pt egg moves are in overlay/overlay_0005.bin
-        // HG and SS egg move NARC is /a/2/2/9 (HG and SS have identical egg move NARCs)
         // B and W egg move NARC is /a/1/2/3, B2 and W2 egg move NARC is /a/1/2/4 (B, W, B2, and W2 have identical egg move NARCs)
-        // TODO: XD, D, P, Pt, HG, SS - tutor
-        // TODO: Colo, XD - egg
+        //
+        // TODO: XD, HG, SS - tutor
+        // TODO: D, P, Pt - Free tutor moves
         // TODO: FRLG - Ultimate starter tutor moves
-        // TODO: Gen 5 - Free tutor moves
+        // TODO: Gen 5 - Free tutor moves (They are actually in pokemon data: https://projectpokemon.org/home/forums/topic/22629-b2w2-general-rom-info/)
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Share moves across formes
 #pragma warning disable CS8321 // Local function is declared but never used
@@ -1381,6 +1444,36 @@ namespace Kermalis.PokemonBattleEngineTesting
                     ReadTutorMoves(fr.ReadUInt16(), frlgTutorMoves, "PBEMoveObtainMethod.MoveTutor_FRLG");
                     //ReadTutorMoves(lg.ReadUInt16(), frlgTutorMoves, "PBEMoveObtainMethod.MoveTutor_FRLG");
                     ReadTutorMoves(e.ReadUInt32(), emeraldTutorMoves, "PBEMoveObtainMethod.MoveTutor_E");
+                }
+                // Gen 4 - Pt
+                using (var ptStream = File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"))
+                using (var pt = new EndianBinaryReader(ptStream, Endianness.LittleEndian))
+                {
+                    for (int sp = 1; sp <= 493; sp++)
+                    {
+                        var species = (PBESpecies)sp;
+                        if (!tutor.ContainsKey(species))
+                        {
+                            tutor.Add(species, new Dictionary<PBEMove, string>());
+                        }
+                        byte[] bytes = pt.ReadBytes(5, 0x3012C + (5 * sp));
+                        for (int i = 0; i < ptTutorMoves.Length; i++)
+                        {
+                            if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                            {
+                                PBEMove move = ptTutorMoves[i];
+                                const string flag = "PBEMoveObtainMethod.MoveTutor_Pt";
+                                if (tutor[species].ContainsKey(move))
+                                {
+                                    tutor[species][move] += $" | {flag}";
+                                }
+                                else
+                                {
+                                    tutor[species].Add(move, flag);
+                                }
+                            }
+                        }
+                    }
                 }
                 // Gen 5 - B2W2
                 using (var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc"))
