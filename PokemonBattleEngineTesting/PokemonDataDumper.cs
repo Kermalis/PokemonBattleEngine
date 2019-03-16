@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
-    class MovesetDumper
+    class PokemonDataDumper
     {
         static readonly Dictionary<int, PBESpecies> gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
@@ -658,7 +658,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.RockClimb
         };
         // These tutor moves are copied from overlay_0005.bin address 0x2FF64 to ram address 0x02200CE4 on each map load (USA offsets)
-        // The tutor move compatibility is at the end of the table, starting with Bulbasaur and ending with Arceus (no forme entries), and each compatibility is a bitfield of 5 bytes
+        // The tutor compatibility is at the end of the table (0x3012C and 0x02200EAC [USA offsets]), starting with Bulbasaur and ending with Arceus (no forme entries), and each compatibility is a bitfield of 5 bytes
         // Each tutor move entry is 0xC bytes:
         // u16 moveId
         // u8 redShard
@@ -1510,7 +1510,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                     //ReadTutorMoves(lg.ReadUInt16(), frlgTutorMoves, "PBEMoveObtainMethod.MoveTutor_FRLG");
                     ReadTutorMoves(e.ReadUInt32(), emeraldTutorMoves, "PBEMoveObtainMethod.MoveTutor_E");
                 }
-                // Gen 4 - Pt
+                // Gen 4
                 using (var pt = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"), Endianness.LittleEndian))
                 {
                     for (int sp = 1; sp <= 493; sp++)
