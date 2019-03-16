@@ -4,12 +4,54 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
     class PokemonDataDumper
     {
+        private class Pokemon
+        {
+            public byte HP, Attack, Defense, SpAttack, SpDefense, Speed;
+            public PBEType Type1, Type2;
+            public PBEGenderRatio GenderRatio;
+            public double Weight;
+            public List<PBESpecies> PreEvolutions = new List<PBESpecies>();
+            public List<PBESpecies> Evolutions = new List<PBESpecies>();
+            public List<PBEAbility> Abilities = new List<PBEAbility>();
+            public Dictionary<Tuple<int, PBEMove>, string> LevelUpMoves = new Dictionary<Tuple<int, PBEMove>, string>();
+            public Dictionary<PBEMove, string> OtherMoves = new Dictionary<PBEMove, string>();
+        }
+
+        static readonly PBEType[] gen5Types = new PBEType[17]
+        {
+            PBEType.Normal,
+            PBEType.Fighting,
+            PBEType.Flying,
+            PBEType.Poison,
+            PBEType.Ground,
+            PBEType.Rock,
+            PBEType.Bug,
+            PBEType.Ghost,
+            PBEType.Steel,
+            PBEType.Fire,
+            PBEType.Water,
+            PBEType.Grass,
+            PBEType.Electric,
+            PBEType.Psychic,
+            PBEType.Ice,
+            PBEType.Dragon,
+            PBEType.Dark
+        };
+        static readonly Dictionary<byte, PBEGenderRatio> gen5GenderRatios = new Dictionary<byte, PBEGenderRatio>
+        {
+            { 0x00, PBEGenderRatio.M1_F0 },
+            { 0x1F, PBEGenderRatio.M7_F1 },
+            { 0x3F, PBEGenderRatio.M3_F1 },
+            { 0x7F, PBEGenderRatio.M1_F1 },
+            { 0xBF, PBEGenderRatio.M1_F3 },
+            { 0xFE, PBEGenderRatio.M0_F1 },
+            { 0xFF, PBEGenderRatio.M0_F0 },
+        };
         static readonly Dictionary<int, PBESpecies> gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 1, PBESpecies.Bulbasaur },
@@ -426,7 +468,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 438, PBESpecies.Unown_Exclamation },
             { 439, PBESpecies.Unown_Question }
         };
-        static readonly PBEMove[] gen3TMHMIndexToPBEMove = new PBEMove[58]
+        static readonly PBEMove[] gen3TMHMs = new PBEMove[58]
         {
             (PBEMove)264, // FocusPunch
             PBEMove.DragonClaw,
@@ -554,7 +596,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 506, PBESpecies.Rotom_Mow },
             { 507, PBESpecies.Rotom_Wash }
         };
-        static readonly PBEMove[] gen4TMHMIndexToPBEMove = new PBEMove[100]
+        static readonly PBEMove[] gen4TMHMs = new PBEMove[100]
         {
             (PBEMove)264, // FocusPunch
             PBEMove.DragonClaw,
@@ -820,7 +862,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 707, PBESpecies.Thundurus_Therian },
             { 708, PBESpecies.Landorus_Therian }
         };
-        static readonly PBEMove[] gen5TMHMIndexToPBEMove = new PBEMove[101]
+        static readonly PBEMove[] gen5TMHMs = new PBEMove[101]
         {
             PBEMove.HoneClaws,
             PBEMove.DragonClaw,
@@ -1033,6 +1075,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         // HG and SS tutor compatibility is in /fielddata/wazaoshie/waza_oshie.bin (HG and SS have identical tutor compatibility)
         // HG and SS egg move NARC is /a/2/2/9 (HG and SS have identical egg move NARCs)
         //
+        // B2 and W2 evolution NARC is /a/0/1/9 (B2 and W2 have identical evolution NARCs)
         // B, W, B2, and W2 level-up move NARC is /a/0/1/8 (B and W have identical level-up move NARCs) (B2 and W2 have identical level-up move NARCs)
         // B, W, B2, and W2 TMHM moves are in the Pokémon data NARC which is /a/0/1/6 (B and W have identical Pokémon data NARCs) (B2 and W2 have identical Pokémon data NARCs)
         // B2 and W2 tutor compatibility is in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
@@ -1047,6 +1090,8 @@ namespace Kermalis.PokemonBattleEngineTesting
 #pragma warning disable CS8321 // Local function is declared but never used
         public static void Dump()
         {
+            //using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Data\PokemonData_Data.cs"))
+            using (var writer = new StreamWriter(@"../../../\DumpedData\Dumped\PokemonData.txt")) // Temporary
             using (var r = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\R.gba"), Endianness.LittleEndian))
             using (var s = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\S.gba"), Endianness.LittleEndian))
             using (var fr = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\FR.gba"), Endianness.LittleEndian))
@@ -1055,13 +1100,100 @@ namespace Kermalis.PokemonBattleEngineTesting
             using (var coloCommonRel = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Colocommon_rel.fdat"), Endianness.BigEndian))
             using (var xdCommonRel = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\XDcommon_rel.fdat"), Endianness.BigEndian))
             {
-                var sb = new StringBuilder();
-                var levelup = new Dictionary<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>>();
-                var tmhm = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
-                var tutor = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
-                var egg = new Dictionary<PBESpecies, Dictionary<PBEMove, string>>();
+                var dict = new Dictionary<PBESpecies, Pokemon>();
+                void AddSpecies(PBESpecies species)
+                {
+                    if (!dict.ContainsKey(species))
+                    {
+                        dict.Add(species, new Pokemon());
+                    }
+                }
+                void AddLevelUpMove(PBESpecies species, int level, PBEMove move, string flag)
+                {
+                    AddSpecies(species);
+                    Tuple<int, PBEMove> key = dict[species].LevelUpMoves.Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
+                    if (key != null)
+                    {
+                        dict[species].LevelUpMoves[key] += $" | {flag}";
+                    }
+                    else
+                    {
+                        dict[species].LevelUpMoves.Add(Tuple.Create(level, move), flag);
+                    }
+                }
+                void AddOtherMove(PBESpecies species, PBEMove move, string flag)
+                {
+                    AddSpecies(species);
+                    if (dict[species].OtherMoves.ContainsKey(move))
+                    {
+                        dict[species].OtherMoves[move] += $" | {flag}";
+                    }
+                    else
+                    {
+                        dict[species].OtherMoves.Add(move, flag);
+                    }
+                }
 
-                sb.AppendLine("LEVELUP");
+                #region Pokémon Data
+
+                using (var b2w2Pokedata = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc"))
+                using (var b2w2Evolution = new NARC(@"../../../\DumpedData\B2W2Evolution.narc"))
+                {
+                    for (int sp = 1; sp <= 708; sp++)
+                    {
+                        // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon
+                        if (sp <= 649 || sp >= 685)
+                        {
+                            PBESpecies species = b2w2SpeciesIndexToPBESpecies.ContainsKey(sp) ? b2w2SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
+                            AddSpecies(species);
+                            using (var pokedata = new EndianBinaryReader(b2w2Pokedata.Files[sp], Endianness.LittleEndian))
+                            using (var evolution = new EndianBinaryReader(b2w2Evolution.Files[sp], Endianness.LittleEndian))
+                            {
+                                Pokemon pkmn = dict[species];
+                                // Pokedata
+                                pkmn.HP = pokedata.ReadByte(0x0);
+                                pkmn.Attack = pokedata.ReadByte(0x1);
+                                pkmn.Defense = pokedata.ReadByte(0x2);
+                                pkmn.SpAttack = pokedata.ReadByte(0x4);
+                                pkmn.SpDefense = pokedata.ReadByte(0x5);
+                                pkmn.Speed = pokedata.ReadByte(0x3);
+                                pkmn.Type1 = gen5Types[pokedata.ReadByte(0x6)];
+                                pkmn.Type2 = gen5Types[pokedata.ReadByte(0x7)];
+                                if (pkmn.Type1 == pkmn.Type2)
+                                {
+                                    pkmn.Type2 = PBEType.None;
+                                }
+                                pkmn.GenderRatio = gen5GenderRatios[pokedata.ReadByte(0x12)];
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    var ability = (PBEAbility)pokedata.ReadByte(0x18 + i);
+                                    if (ability != PBEAbility.None && !pkmn.Abilities.Contains(ability))
+                                    {
+                                        pkmn.Abilities.Add(ability);
+                                    }
+                                }
+                                pkmn.Weight = pokedata.ReadUInt16(0x26) * 0.1;
+                                // Evolution
+                                for (int i = 0; i < 7; i++)
+                                {
+                                    ushort method = evolution.ReadUInt16();
+                                    evolution.ReadUInt16(); // Param
+                                    var evo = (PBESpecies)evolution.ReadUInt16();
+                                    if (method != 0)
+                                    {
+                                        pkmn.Evolutions.Add(evo);
+                                        AddSpecies(evo);
+                                        List<PBESpecies> evosPreEvos = dict[evo].PreEvolutions;
+                                        evosPreEvos.AddRange(pkmn.PreEvolutions);
+                                        evosPreEvos.Add(species);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                #endregion
 
                 #region Level Up Moves
 
@@ -1099,10 +1231,6 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 species = (PBESpecies)(386 | (1 << 0x10)); // Deoxys_Attack
                             }
                         }
-                        if (!levelup.ContainsKey(species))
-                        {
-                            levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
-                        }
                         reader.BaseStream.Position = reader.ReadUInt32() - 0x8000000;
                         while (true)
                         {
@@ -1113,17 +1241,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                             }
                             else
                             {
-                                int level = val >> 9;
-                                var move = (PBEMove)(val & 0x1FF);
-                                Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
-                                if (tupleThatExists != null)
-                                {
-                                    levelup[species][tupleThatExists] += $" | {flag}";
-                                }
-                                else
-                                {
-                                    levelup[species].Add(Tuple.Create(level, move), flag);
-                                }
+                                AddLevelUpMove(species, val >> 9, (PBEMove)(val & 0x1FF), flag);
                             }
                         }
                     }
@@ -1135,26 +1253,14 @@ namespace Kermalis.PokemonBattleEngineTesting
                     void ReadGCLevelUpMoves(EndianBinaryReader reader, string flag)
                     {
                         PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
-                        if (!levelup.ContainsKey(species))
-                        {
-                            levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
-                        }
                         for (int i = 0; i < 17; i++)
                         {
                             int level = reader.ReadByte();
-                            reader.ReadByte();
+                            reader.ReadByte(); // Padding
                             var move = (PBEMove)reader.ReadUInt16();
                             if (move != PBEMove.None)
                             {
-                                Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
-                                if (tupleThatExists != null)
-                                {
-                                    levelup[species][tupleThatExists] += $" | {flag}";
-                                }
-                                else
-                                {
-                                    levelup[species].Add(Tuple.Create(level, move), flag);
-                                }
+                                AddLevelUpMove(species, level, move, flag);
                             }
                         }
                     }
@@ -1174,10 +1280,6 @@ namespace Kermalis.PokemonBattleEngineTesting
                             continue;
                         }
                         PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
-                        if (!levelup.ContainsKey(species))
-                        {
-                            levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
-                        }
                         void ReadLevelUpMoves(MemoryStream file, string flag)
                         {
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
@@ -1191,17 +1293,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                                     }
                                     else
                                     {
-                                        int level = val >> 9;
-                                        var move = (PBEMove)(val & 0x1FF);
-                                        Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
-                                        if (tupleThatExists != null)
-                                        {
-                                            levelup[species][tupleThatExists] += $" | {flag}";
-                                        }
-                                        else
-                                        {
-                                            levelup[species].Add(Tuple.Create(level, move), flag);
-                                        }
+                                        AddLevelUpMove(species, val >> 9, (PBEMove)(val & 0x1FF), flag);
                                     }
                                 }
                             }
@@ -1223,12 +1315,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         void ReadLevelUpMoves(MemoryStream file, bool isBW)
                         {
-                            Dictionary<int, PBESpecies> dict = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
-                            PBESpecies species = dict.ContainsKey(sp) ? dict[sp] : (PBESpecies)sp;
-                            if (!levelup.ContainsKey(species))
-                            {
-                                levelup.Add(species, new Dictionary<Tuple<int, PBEMove>, string>());
-                            }
+                            Dictionary<int, PBESpecies> d = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
+                            PBESpecies species = d.ContainsKey(sp) ? d[sp] : (PBESpecies)sp;
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
                                 while (true)
@@ -1240,18 +1328,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                                     }
                                     else
                                     {
-                                        int level = (int)(val >> 16);
-                                        var move = (PBEMove)(val & 0xFFFF);
-                                        string flag = $"PBEMoveObtainMethod.LevelUp_{(isBW ? "BW" : "B2W2")}";
-                                        Tuple<int, PBEMove> tupleThatExists = levelup[species].Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
-                                        if (tupleThatExists != null)
-                                        {
-                                            levelup[species][tupleThatExists] += $" | {flag}";
-                                        }
-                                        else
-                                        {
-                                            levelup[species].Add(Tuple.Create(level, move), flag);
-                                        }
+                                        AddLevelUpMove(species, (int)(val >> 16), (PBEMove)(val & 0xFFFF), $"PBEMoveObtainMethod.LevelUp_{(isBW ? "BW" : "B2W2")}");
                                     }
                                 }
                             }
@@ -1271,17 +1348,6 @@ namespace Kermalis.PokemonBattleEngineTesting
 
                 #endregion
 
-                foreach (KeyValuePair<PBESpecies, Dictionary<Tuple<int, PBEMove>, string>> speciesPair in levelup)
-                {
-                    sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
-                    foreach (KeyValuePair<Tuple<int, PBEMove>, string> movePair in speciesPair.Value)
-                    {
-                        sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), movePair.Key.Item2) ? string.Empty : "// ")}Tuple.Create(PBEMove.{movePair.Key.Item2}, {movePair.Key.Item1}, {movePair.Value}),");
-                    }
-                }
-                sb.AppendLine();
-                sb.AppendLine("TMHM");
-
                 #region TMHM Compatibility
 
                 // Gen 3
@@ -1292,6 +1358,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         continue;
                     }
+                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
                     // It is the same across all of gen 3, so I will only read one
                     r.BaseStream.Position = 0x1FD0F0 + (8 * sp);
                     s.BaseStream.Position = 0x1FD080 + (8 * sp);
@@ -1307,25 +1374,11 @@ namespace Kermalis.PokemonBattleEngineTesting
                     void ReadGBATMHM(EndianBinaryReader reader)
                     {
                         byte[] bytes = reader.ReadBytes(8);
-                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
-                        if (!tmhm.ContainsKey(species))
-                        {
-                            tmhm.Add(species, new Dictionary<PBEMove, string>());
-                        }
-                        for (int i = 0; i < gen3TMHMIndexToPBEMove.Length; i++)
+                        for (int i = 0; i < gen3TMHMs.Length; i++)
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                PBEMove move = gen3TMHMIndexToPBEMove[i];
-                                string flag = GetFlag(i);
-                                if (tmhm[species].ContainsKey(move))
-                                {
-                                    tmhm[species][move] += $" | {flag}";
-                                }
-                                else
-                                {
-                                    tmhm[species].Add(move, flag);
-                                }
+                                AddOtherMove(species, gen3TMHMs[i], GetFlag(i));
                             }
                         }
                     }
@@ -1336,25 +1389,11 @@ namespace Kermalis.PokemonBattleEngineTesting
                     //ReadGBATMHM(e);
                     void ReadGCTMHM(EndianBinaryReader reader)
                     {
-                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
-                        if (!tmhm.ContainsKey(species))
-                        {
-                            tmhm.Add(species, new Dictionary<PBEMove, string>());
-                        }
-                        for (int i = 0; i < gen3TMHMIndexToPBEMove.Length; i++)
+                        for (int i = 0; i < gen3TMHMs.Length; i++)
                         {
                             if (reader.ReadBoolean())
                             {
-                                PBEMove move = gen3TMHMIndexToPBEMove[i];
-                                string flag = GetFlag(i);
-                                if (tmhm[species].ContainsKey(move))
-                                {
-                                    tmhm[species][move] += $" | {flag}";
-                                }
-                                else
-                                {
-                                    tmhm[species].Add(move, flag);
-                                }
+                                AddOtherMove(species, gen3TMHMs[i], GetFlag(i));
                             }
                         }
                     }
@@ -1373,33 +1412,21 @@ namespace Kermalis.PokemonBattleEngineTesting
                             continue;
                         }
                         PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
-                        if (!tmhm.ContainsKey(species))
-                        {
-                            tmhm.Add(species, new Dictionary<PBEMove, string>());
-                        }
                         void ReadTMHMMoves(MemoryStream file, bool isDPPt)
                         {
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
                                 byte[] bytes = reader.ReadBytes(13, 0x1C);
-                                for (int i = 0; i < gen4TMHMIndexToPBEMove.Length; i++)
+                                for (int i = 0; i < gen4TMHMs.Length; i++)
                                 {
                                     if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                     {
-                                        PBEMove move = gen4TMHMIndexToPBEMove[i];
+                                        PBEMove move = gen4TMHMs[i];
                                         if (move == PBEMove.None)
                                         {
                                             move = isDPPt ? (PBEMove)432 : (PBEMove)250;
                                         }
-                                        string flag = $"PBEMoveObtainMethod.{(i < 92 ? "TM" : "HM")}_{(isDPPt ? "DPPt" : "HGSS")}";
-                                        if (tmhm[species].ContainsKey(move))
-                                        {
-                                            tmhm[species][move] += $" | {flag}";
-                                        }
-                                        else
-                                        {
-                                            tmhm[species].Add(move, flag);
-                                        }
+                                        AddOtherMove(species, move, $"PBEMoveObtainMethod.{(i < 92 ? "TM" : "HM")}_{(isDPPt ? "DPPt" : "HGSS")}");
                                     }
                                 }
                             }
@@ -1416,29 +1443,16 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         void ReadTMHMMoves(MemoryStream file, bool isBW)
                         {
-                            Dictionary<int, PBESpecies> dict = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
-                            PBESpecies species = dict.ContainsKey(sp) ? dict[sp] : (PBESpecies)sp;
-                            if (!tmhm.ContainsKey(species))
-                            {
-                                tmhm.Add(species, new Dictionary<PBEMove, string>());
-                            }
+                            Dictionary<int, PBESpecies> d = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
+                            PBESpecies species = d.ContainsKey(sp) ? d[sp] : (PBESpecies)sp;
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
                                 byte[] bytes = reader.ReadBytes(13, 0x28);
-                                for (int i = 0; i < gen5TMHMIndexToPBEMove.Length; i++)
+                                for (int i = 0; i < gen5TMHMs.Length; i++)
                                 {
                                     if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                     {
-                                        PBEMove move = gen5TMHMIndexToPBEMove[i];
-                                        string flag = $"PBEMoveObtainMethod.{(i < 95 ? "TM" : "HM")}_{(isBW ? "BW" : "B2W2")}";
-                                        if (tmhm[species].ContainsKey(move))
-                                        {
-                                            tmhm[species][move] += $" | {flag}";
-                                        }
-                                        else
-                                        {
-                                            tmhm[species].Add(move, flag);
-                                        }
+                                        AddOtherMove(species, gen5TMHMs[i], $"PBEMoveObtainMethod.{(i < 95 ? "TM" : "HM")}_{(isBW ? "BW" : "B2W2")}");
                                     }
                                 }
                             }
@@ -1458,17 +1472,6 @@ namespace Kermalis.PokemonBattleEngineTesting
 
                 #endregion
 
-                foreach (KeyValuePair<PBESpecies, Dictionary<PBEMove, string>> speciesPair in tmhm)
-                {
-                    sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
-                    foreach (KeyValuePair<PBEMove, string> movePair in speciesPair.Value)
-                    {
-                        sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), movePair.Key) ? string.Empty : "// ")}Tuple.Create(PBEMove.{movePair.Key}, {movePair.Value}),");
-                    }
-                }
-                sb.AppendLine();
-                sb.AppendLine("TUTOR");
-
                 #region Move Tutor
 
                 // Gen 3 - FRLGE
@@ -1479,30 +1482,18 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         continue;
                     }
+                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
                     // It is the same in FR and LG, so I will only read one
                     fr.BaseStream.Position = 0x459B7E + (sizeof(ushort) * sp);
                     lg.BaseStream.Position = 0x45959E + (sizeof(ushort) * sp);
                     e.BaseStream.Position = 0x615048 + (sizeof(uint) * sp);
                     void ReadTutorMoves(uint val, PBEMove[] tutorMoves, string flag)
                     {
-                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
-                        if (!tutor.ContainsKey(species))
-                        {
-                            tutor.Add(species, new Dictionary<PBEMove, string>());
-                        }
                         for (int i = 0; i < tutorMoves.Length; i++)
                         {
                             if ((val & (1u << i)) != 0)
                             {
-                                PBEMove move = tutorMoves[i];
-                                if (tutor[species].ContainsKey(move))
-                                {
-                                    tutor[species][move] += $" | {flag}";
-                                }
-                                else
-                                {
-                                    tutor[species].Add(tutorMoves[i], flag);
-                                }
+                                AddOtherMove(species, tutorMoves[i], flag);
                             }
                         }
                     }
@@ -1516,25 +1507,12 @@ namespace Kermalis.PokemonBattleEngineTesting
                     for (int sp = 1; sp <= 493; sp++)
                     {
                         var species = (PBESpecies)sp;
-                        if (!tutor.ContainsKey(species))
-                        {
-                            tutor.Add(species, new Dictionary<PBEMove, string>());
-                        }
-                        byte[] bytes = pt.ReadBytes(5, 0x3012C + (5 * sp));
+                        byte[] bytes = pt.ReadBytes(5, 0x3012C + (5 * (sp - 1)));
                         for (int i = 0; i < ptTutorMoves.Length; i++)
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                PBEMove move = ptTutorMoves[i];
-                                const string flag = "PBEMoveObtainMethod.MoveTutor_Pt";
-                                if (tutor[species].ContainsKey(move))
-                                {
-                                    tutor[species][move] += $" | {flag}";
-                                }
-                                else
-                                {
-                                    tutor[species].Add(move, flag);
-                                }
+                                AddOtherMove(species, ptTutorMoves[i], "PBEMoveObtainMethod.MoveTutor_Pt");
                             }
                         }
                     }
@@ -1544,25 +1522,12 @@ namespace Kermalis.PokemonBattleEngineTesting
                     for (int sp = 1; sp <= 505; sp++) // Includes formes, but not eggs
                     {
                         PBESpecies species = sp > 493 ? gen4SpeciesIndexToPBESpecies[sp + 2] : (PBESpecies)sp;
-                        if (!tutor.ContainsKey(species))
-                        {
-                            tutor.Add(species, new Dictionary<PBEMove, string>());
-                        }
                         byte[] bytes = hgss.ReadBytes(8);
                         for (int i = 0; i < hgssTutorMoves.Length; i++)
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                PBEMove move = hgssTutorMoves[i];
-                                const string flag = "PBEMoveObtainMethod.MoveTutor_HGSS";
-                                if (tutor[species].ContainsKey(move))
-                                {
-                                    tutor[species][move] += $" | {flag}";
-                                }
-                                else
-                                {
-                                    tutor[species].Add(move, flag);
-                                }
+                                AddOtherMove(species, hgssTutorMoves[i], "PBEMoveObtainMethod.MoveTutor_HGSS");
                             }
                         }
                     }
@@ -1575,37 +1540,20 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         void ReadFreeTutorMoves(EndianBinaryReader reader, bool isBW)
                         {
-                            Dictionary<int, PBESpecies> dict = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
-                            PBESpecies species = dict.ContainsKey(sp) ? dict[sp] : (PBESpecies)sp;
-                            if (!tutor.ContainsKey(species))
-                            {
-                                tutor.Add(species, new Dictionary<PBEMove, string>());
-                            }
+                            Dictionary<int, PBESpecies> d = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
+                            PBESpecies species = d.ContainsKey(sp) ? d[sp] : (PBESpecies)sp;
                             byte val = reader.ReadByte(0x38);
                             for (int i = 0; i < gen5FreeTutorMoves.Length; i++)
                             {
                                 if ((val & (1 << i)) != 0)
                                 {
-                                    PBEMove move = gen5FreeTutorMoves[i];
-                                    string flag = $"PBEMoveObtainMethod.MoveTutor_{(isBW ? "BW" : "B2W2")}";
-                                    if (tutor[species].ContainsKey(move))
-                                    {
-                                        tutor[species][move] += $" | {flag}";
-                                    }
-                                    else
-                                    {
-                                        tutor[species].Add(move, flag);
-                                    }
+                                    AddOtherMove(species, gen5FreeTutorMoves[i], $"PBEMoveObtainMethod.MoveTutor_{(isBW ? "BW" : "B2W2")}");
                                 }
                             }
                         }
                         void ReadB2W2TutorMoves(EndianBinaryReader reader)
                         {
                             PBESpecies species = b2w2SpeciesIndexToPBESpecies.ContainsKey(sp) ? b2w2SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
-                            if (!tutor.ContainsKey(species))
-                            {
-                                tutor.Add(species, new Dictionary<PBEMove, string>());
-                            }
                             for (int i = 0; i < b2w2TutorMoves.Length; i++)
                             {
                                 uint val = reader.ReadUInt32(0x3C + (sizeof(uint) * i));
@@ -1613,16 +1561,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 {
                                     if ((val & (1u << j)) != 0)
                                     {
-                                        PBEMove move = b2w2TutorMoves[i][j];
-                                        const string flag = "PBEMoveObtainMethod.MoveTutor_B2W2";
-                                        if (tutor[species].ContainsKey(move))
-                                        {
-                                            tutor[species][move] += $" | {flag}";
-                                        }
-                                        else
-                                        {
-                                            tutor[species].Add(move, flag);
-                                        }
+                                        AddOtherMove(species, b2w2TutorMoves[i][j], "PBEMoveObtainMethod.MoveTutor_B2W2");
                                     }
                                 }
                             }
@@ -1648,16 +1587,6 @@ namespace Kermalis.PokemonBattleEngineTesting
                 }
 
                 #endregion
-                foreach (KeyValuePair<PBESpecies, Dictionary<PBEMove, string>> speciesPair in tutor)
-                {
-                    sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
-                    foreach (KeyValuePair<PBEMove, string> movePair in speciesPair.Value)
-                    {
-                        sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), movePair.Key) ? string.Empty : "// ")}Tuple.Create(PBEMove.{movePair.Key}, {movePair.Value}),");
-                    }
-                }
-                sb.AppendLine();
-                sb.AppendLine("EGG");
 
                 #region Egg Moves
 
@@ -1692,22 +1621,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                             {
                                 int speciesIndex = val - 20000;
                                 species = isGen3 ? gen3SpeciesIndexToPBESpecies[speciesIndex] : (PBESpecies)speciesIndex;
-                                if (!egg.ContainsKey(species))
-                                {
-                                    egg.Add(species, new Dictionary<PBEMove, string>());
-                                }
                             }
                             else
                             {
-                                var move = (PBEMove)val;
-                                if (egg[species].ContainsKey(move))
-                                {
-                                    egg[species][move] += $" | {flag}";
-                                }
-                                else
-                                {
-                                    egg[species].Add(move, flag);
-                                }
+                                AddOtherMove(species, (PBEMove)val, flag);
                             }
                         }
                     }
@@ -1732,22 +1649,9 @@ namespace Kermalis.PokemonBattleEngineTesting
                             if (numEggMoves > 0)
                             {
                                 var species = (PBESpecies)sp;
-                                if (!egg.ContainsKey(species))
-                                {
-                                    egg.Add(species, new Dictionary<PBEMove, string>());
-                                }
                                 for (int i = 0; i < numEggMoves; i++)
                                 {
-                                    var move = (PBEMove)reader.ReadUInt16();
-                                    const string flag = "PBEMoveObtainMethod.EggMove_BWB2W2";
-                                    if (egg[species].ContainsKey(move))
-                                    {
-                                        egg[species][move] += $" | {flag}";
-                                    }
-                                    else
-                                    {
-                                        egg[species].Add(move, flag);
-                                    }
+                                    AddOtherMove(species, (PBEMove)reader.ReadUInt16(), "PBEMoveObtainMethod.EggMove_BWB2W2");
                                 }
                             }
                         }
@@ -1756,16 +1660,72 @@ namespace Kermalis.PokemonBattleEngineTesting
 
                 #endregion
 
-                foreach (KeyValuePair<PBESpecies, Dictionary<PBEMove, string>> speciesPair in egg)
+                writer.WriteLine("using System;");
+                writer.WriteLine("using System.Collections.Generic;");
+                writer.WriteLine("using System.Collections.ObjectModel;");
+                writer.WriteLine();
+                writer.WriteLine("namespace Kermalis.PokemonBattleEngine.Data");
+                writer.WriteLine("{");
+                writer.WriteLine("    public sealed partial class PBEPokemonData");
+                writer.WriteLine("    {");
+                writer.WriteLine("        public static ReadOnlyDictionary<PBESpecies, PBEPokemonData> Data { get; } = new ReadOnlyDictionary<PBESpecies, PBEPokemonData>(new Dictionary<PBESpecies, PBEPokemonData>");
+                writer.WriteLine("        {");
+                KeyValuePair<PBESpecies, Pokemon> lastPkmn = dict.LastOrDefault();
+                foreach (KeyValuePair<PBESpecies, Pokemon> pkmn in dict)
                 {
-                    sb.AppendLine($"// PBESpecies.{speciesPair.Key}:");
-                    foreach (KeyValuePair<PBEMove, string> movePair in speciesPair.Value)
+                    writer.WriteLine("            {");
+                    writer.WriteLine($"                PBESpecies.{pkmn.Key},");
+                    writer.WriteLine("                new PBEPokemonData");
+                    writer.WriteLine("                (");
+                    writer.WriteLine($"                    {pkmn.Value.HP}, {pkmn.Value.Attack}, {pkmn.Value.Defense}, {pkmn.Value.SpAttack}, {pkmn.Value.SpDefense}, {pkmn.Value.Speed},");
+                    writer.WriteLine($"                    PBEType.{pkmn.Value.Type1}, PBEType.{pkmn.Value.Type2}, PBEGenderRatio.{pkmn.Value.GenderRatio}, {pkmn.Value.Weight:N1},");
+                    if (pkmn.Value.PreEvolutions.Count == 0)
                     {
-                        sb.AppendLine($"{(Enum.IsDefined(typeof(PBEMove), movePair.Key) ? string.Empty : "// ")}Tuple.Create(PBEMove.{movePair.Key}, {movePair.Value}),");
+                        writer.WriteLine($"                    Array.Empty<PBESpecies>(),");
                     }
+                    else
+                    {
+                        writer.WriteLine($"                    new PBESpecies[] {{ {string.Join(", ", pkmn.Value.PreEvolutions.Select(a => $"PBESpecies.{a}"))} }},");
+                    }
+                    if (pkmn.Value.Evolutions.Count == 0)
+                    {
+                        writer.WriteLine($"                    Array.Empty<PBESpecies>(),");
+                    }
+                    else
+                    {
+                        writer.WriteLine($"                    new PBESpecies[] {{ {string.Join(", ", pkmn.Value.Evolutions.Select(a => $"PBESpecies.{a}"))} }},");
+                    }
+                    writer.WriteLine($"                    new PBEAbility[] {{ {string.Join(", ", pkmn.Value.Abilities.Select(a => $"PBEAbility.{a}"))} }},");
+                    writer.WriteLine("                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]");
+                    writer.WriteLine("                    {");
+                    KeyValuePair<Tuple<int, PBEMove>, string> lastLevelUp = pkmn.Value.LevelUpMoves.LastOrDefault();
+                    foreach (KeyValuePair<Tuple<int, PBEMove>, string> levelup in pkmn.Value.LevelUpMoves)
+                    {
+                        writer.WriteLine($"                        {(Enum.IsDefined(typeof(PBEMove), levelup.Key.Item2) ? string.Empty : "// ")}Tuple.Create(PBEMove.{levelup.Key.Item2}, {levelup.Key.Item1}, {levelup.Value}){(levelup.Equals(lastLevelUp) ? string.Empty : ",")}");
+                    }
+                    writer.WriteLine("                    },");
+                    if (pkmn.Value.OtherMoves.Count == 0)
+                    {
+                        writer.WriteLine("                    Array.Empty<Tuple<PBEMove, PBEMoveObtainMethod>>()");
+                    }
+                    else
+                    {
+                        writer.WriteLine("                    new Tuple<PBEMove, PBEMoveObtainMethod>[]");
+                        writer.WriteLine("                    {");
+                        KeyValuePair<PBEMove, string> lastOther = pkmn.Value.OtherMoves.LastOrDefault();
+                        foreach (KeyValuePair<PBEMove, string> other in pkmn.Value.OtherMoves)
+                        {
+                            writer.WriteLine($"                        {(Enum.IsDefined(typeof(PBEMove), other.Key) ? string.Empty : "// ")}Tuple.Create(PBEMove.{other.Key}, {other.Value}){(other.Equals(lastOther) ? string.Empty : ",")}");
+                        }
+                        writer.WriteLine("                    }");
+                    }
+                    writer.WriteLine("                )");
+                    writer.WriteLine($"            }}{(pkmn.Equals(lastPkmn) ? string.Empty : ", ")}");
                 }
-
-                File.WriteAllText(@"../../../\DumpedData\Dumped\Moves.txt", sb.ToString());
+                writer.WriteLine("        });");
+                writer.WriteLine("    }");
+                writer.WriteLine("}");
+                writer.WriteLine();
             }
         }
 #pragma warning restore CS8321 // Local function is declared but never used
