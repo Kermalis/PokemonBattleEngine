@@ -36,9 +36,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.7.1-*" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.7.1-*" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.7.1-*" />
+    <PackageReference Include="Avalonia" Version="0.7.1-cibuild*" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.7.1-cibuild*" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.7.1-cibuild*" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
     <Reference Include="AvaloniaGif">
       <HintPath>Dependencies\AvaloniaGif.dll</HintPath>
