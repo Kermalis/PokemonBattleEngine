@@ -1452,7 +1452,16 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 {
                                     if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                     {
-                                        AddOtherMove(species, gen5TMHMs[i], $"PBEMoveObtainMethod.{(i < 95 ? "TM" : "HM")}_{(isBW ? "BW" : "B2W2")}");
+                                        string flag;
+                                        if (i < 95)
+                                        {
+                                            flag = $"PBEMoveObtainMethod.TM_{(isBW ? "BW" : "B2W2")}";
+                                        }
+                                        else
+                                        {
+                                            flag = "PBEMoveObtainMethod.HM_BWB2W2";
+                                        }
+                                        AddOtherMove(species, gen5TMHMs[i], flag);
                                     }
                                 }
                             }
