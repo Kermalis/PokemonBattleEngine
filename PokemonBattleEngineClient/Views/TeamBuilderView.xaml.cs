@@ -30,11 +30,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
 
+        // TODO: Legal species vs non-legal (Cherrim Sunny in a pokeball etc)
         readonly IEnumerable<PBEAbility> allAbilities = PBEAbilityLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
         readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
         readonly IEnumerable<PBEItem> allItems = PBEItemLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
 
-        public IEnumerable<PBESpecies> AvailableSpecies { get; } = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().OrderBy(s => PBEPokemonLocalization.Names[(PBESpecies)((int)s & 0xFFFF)].FromUICultureInfo());
+        public IEnumerable<PBESpecies> Species { get; } = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().OrderBy(s => PBEPokemonLocalization.Names[(PBESpecies)((int)s & 0xFFFF)].FromUICultureInfo());
         IEnumerable<PBEAbility> availableAbilities;
         public IEnumerable<PBEAbility> AvailableAbilities
         {
@@ -235,7 +236,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         void AddPartyMember()
         {
-            PBESpecies species = AvailableSpecies.First();
+            PBESpecies species = Species.First();
             team.Item2.Add(new PBEPokemonShell
             {
                 Species = species,

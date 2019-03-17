@@ -150,19 +150,27 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBEPokemonData pData;
             switch (shell.Species)
             {
+                case PBESpecies.Castform_Rainy:
+                case PBESpecies.Castform_Snowy:
+                case PBESpecies.Castform_Sunny:
+                case PBESpecies.Cherrim_Sunshine:
                 case PBESpecies.Darmanitan_Zen:
                 case PBESpecies.Meloetta_Pirouette:
-                    throw new ArgumentOutOfRangeException(nameof(shell.Species), $"{shell.Species} must be in its base forme.");
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(shell.Species), $"{shell.Species} must be in its base forme.");
+                    }
                 default:
-                    try
                     {
-                        pData = PBEPokemonData.Data[shell.Species];
+                        try
+                        {
+                            pData = PBEPokemonData.Data[shell.Species];
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Species), "Invalid species.");
+                        }
+                        break;
                     }
-                    catch (KeyNotFoundException)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Species), "Invalid species.");
-                    }
-                    break;
             }
 
             // Validate Nickname
@@ -259,25 +267,32 @@ namespace Kermalis.PokemonBattleEngine.Data
             switch (shell.Species)
             {
                 case PBESpecies.Shedinja:
-                    if (shell.EVs[0] > 0)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.EVs), $"{shell.Species} cannot have any HP EVs.");
+                        if (shell.EVs[0] > 0)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.EVs), $"{shell.Species} cannot have any HP EVs.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Giratina:
-                    if (shell.Item == PBEItem.GriseousOrb)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} cannot hold a {shell.Item}.");
+                        if (shell.Item == PBEItem.GriseousOrb)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} cannot hold a {shell.Item}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Giratina_Origin:
-                    if (shell.Item != PBEItem.GriseousOrb)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.GriseousOrb}.");
+                        if (shell.Item != PBEItem.GriseousOrb)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.GriseousOrb}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus:
-                    if (shell.Item == PBEItem.DracoPlate
+                    {
+                        if (shell.Item == PBEItem.DracoPlate
                         || shell.Item == PBEItem.DreadPlate
                         || shell.Item == PBEItem.EarthPlate
                         || shell.Item == PBEItem.FistPlate
@@ -293,139 +308,182 @@ namespace Kermalis.PokemonBattleEngine.Data
                         || shell.Item == PBEItem.StonePlate
                         || shell.Item == PBEItem.ToxicPlate
                         || shell.Item == PBEItem.ZapPlate)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} cannot hold a {shell.Item}.");
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} cannot hold a {shell.Item}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Bug:
-                    if (shell.Item != PBEItem.InsectPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.InsectPlate}.");
+                        if (shell.Item != PBEItem.InsectPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.InsectPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Dark:
-                    if (shell.Item != PBEItem.DreadPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.DreadPlate}.");
+                        if (shell.Item != PBEItem.DreadPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.DreadPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Dragon:
-                    if (shell.Item != PBEItem.DracoPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.DracoPlate}.");
+                        if (shell.Item != PBEItem.DracoPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.DracoPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Electric:
-                    if (shell.Item != PBEItem.ZapPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.ZapPlate}.");
+                        if (shell.Item != PBEItem.ZapPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.ZapPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Fighting:
-                    if (shell.Item != PBEItem.FistPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.FistPlate}.");
+                        if (shell.Item != PBEItem.FistPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.FistPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Fire:
-                    if (shell.Item != PBEItem.FlamePlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.FlamePlate}.");
+                        if (shell.Item != PBEItem.FlamePlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.FlamePlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Flying:
-                    if (shell.Item != PBEItem.SkyPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.SkyPlate}.");
+                        if (shell.Item != PBEItem.SkyPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.SkyPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Ghost:
-                    if (shell.Item != PBEItem.SpookyPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.SpookyPlate}.");
+                        if (shell.Item != PBEItem.SpookyPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.SpookyPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Grass:
-                    if (shell.Item != PBEItem.MeadowPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.MeadowPlate}.");
+                        if (shell.Item != PBEItem.MeadowPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.MeadowPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Ground:
-                    if (shell.Item != PBEItem.EarthPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.EarthPlate}.");
+                        if (shell.Item != PBEItem.EarthPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.EarthPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Ice:
-                    if (shell.Item != PBEItem.IciclePlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.IciclePlate}.");
+                        if (shell.Item != PBEItem.IciclePlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.IciclePlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Poison:
-                    if (shell.Item != PBEItem.ToxicPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.ToxicPlate}.");
+                        if (shell.Item != PBEItem.ToxicPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.ToxicPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Psychic:
-                    if (shell.Item != PBEItem.MindPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.MindPlate}.");
+                        if (shell.Item != PBEItem.MindPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.MindPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Rock:
-                    if (shell.Item != PBEItem.StonePlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.StonePlate}.");
+                        if (shell.Item != PBEItem.StonePlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.StonePlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Steel:
-                    if (shell.Item != PBEItem.IronPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.IronPlate}.");
+                        if (shell.Item != PBEItem.IronPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.IronPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Arceus_Water:
-                    if (shell.Item != PBEItem.SplashPlate)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.SplashPlate}.");
+                        if (shell.Item != PBEItem.SplashPlate)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.SplashPlate}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Genesect:
-                    if (shell.Item == PBEItem.BurnDrive
-                        || shell.Item == PBEItem.ChillDrive
-                        || shell.Item == PBEItem.DouseDrive
-                        || shell.Item == PBEItem.ShockDrive)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} cannot hold a {shell.Item}.");
+                        if (shell.Item == PBEItem.BurnDrive
+                          || shell.Item == PBEItem.ChillDrive
+                          || shell.Item == PBEItem.DouseDrive
+                          || shell.Item == PBEItem.ShockDrive)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} cannot hold a {shell.Item}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Genesect_Burn:
-                    if (shell.Item != PBEItem.BurnDrive)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.BurnDrive}.");
+                        if (shell.Item != PBEItem.BurnDrive)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.BurnDrive}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Genesect_Chill:
-                    if (shell.Item != PBEItem.ChillDrive)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.ChillDrive}.");
+                        if (shell.Item != PBEItem.ChillDrive)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.ChillDrive}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Genesect_Douse:
-                    if (shell.Item != PBEItem.DouseDrive)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.DouseDrive}.");
+                        if (shell.Item != PBEItem.DouseDrive)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.DouseDrive}.");
+                        }
+                        break;
                     }
-                    break;
                 case PBESpecies.Genesect_Shock:
-                    if (shell.Item != PBEItem.ShockDrive)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.ShockDrive}.");
+                        if (shell.Item != PBEItem.ShockDrive)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(shell.Item), $"{shell.Species} must hold a {PBEItem.ShockDrive}.");
+                        }
+                        break;
                     }
-                    break;
             }
         }
     }

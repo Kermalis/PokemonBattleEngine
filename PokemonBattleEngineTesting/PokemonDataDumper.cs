@@ -18,8 +18,8 @@ namespace Kermalis.PokemonBattleEngineTesting
             public List<PBESpecies> PreEvolutions = new List<PBESpecies>();
             public List<PBESpecies> Evolutions = new List<PBESpecies>();
             public List<PBEAbility> Abilities = new List<PBEAbility>();
-            public Dictionary<Tuple<int, PBEMove>, string> LevelUpMoves = new Dictionary<Tuple<int, PBEMove>, string>();
-            public Dictionary<PBEMove, string> OtherMoves = new Dictionary<PBEMove, string>();
+            public Dictionary<Tuple<int, PBEMove>, List<string>> LevelUpMoves = new Dictionary<Tuple<int, PBEMove>, List<string>>();
+            public Dictionary<PBEMove, List<string>> OtherMoves = new Dictionary<PBEMove, List<string>>();
         }
 
         static readonly PBEType[] gen5Types = new PBEType[17]
@@ -42,16 +42,6 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEType.Dragon,
             PBEType.Dark
         };
-        static readonly Dictionary<byte, PBEGenderRatio> gen5GenderRatios = new Dictionary<byte, PBEGenderRatio>
-        {
-            { 0x00, PBEGenderRatio.M1_F0 },
-            { 0x1F, PBEGenderRatio.M7_F1 },
-            { 0x3F, PBEGenderRatio.M3_F1 },
-            { 0x7F, PBEGenderRatio.M1_F1 },
-            { 0xBF, PBEGenderRatio.M1_F3 },
-            { 0xFE, PBEGenderRatio.M0_F1 },
-            { 0xFF, PBEGenderRatio.M0_F0 },
-        };
         static readonly Dictionary<int, PBESpecies> gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 1, PBESpecies.Bulbasaur },
@@ -69,404 +59,377 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 13, PBESpecies.Weedle },
             { 14, PBESpecies.Kakuna },
             { 15, PBESpecies.Beedrill },
-            { 16, (PBESpecies)16 },
-            { 17, (PBESpecies)17 },
-            { 18, (PBESpecies)18 },
-            { 19, (PBESpecies)19 },
-            { 20, (PBESpecies)20 },
-            { 21, (PBESpecies)21 },
-            { 22, (PBESpecies)22 },
-            { 23, (PBESpecies)23 },
-            { 24, (PBESpecies)24 },
+            { 16, PBESpecies.Pidgey },
+            { 17, PBESpecies.Pidgeotto },
+            { 18, PBESpecies.Pidgeot },
+            { 19, PBESpecies.Rattata },
+            { 20, PBESpecies.Raticate },
+            { 21, PBESpecies.Spearow },
+            { 22, PBESpecies.Fearow },
+            { 23, PBESpecies.Ekans },
+            { 24, PBESpecies.Arbok },
             { 25, PBESpecies.Pikachu },
             { 26, PBESpecies.Raichu },
-            { 27, (PBESpecies)27 },
-            { 28, (PBESpecies)28 },
-            { 29, (PBESpecies)29 },
-            { 30, (PBESpecies)30 },
-            { 31, (PBESpecies)31 },
-            { 32, (PBESpecies)32 },
-            { 33, (PBESpecies)33 },
-            { 34, (PBESpecies)34 },
-            { 35, (PBESpecies)35 },
-            { 36, (PBESpecies)36 },
+            { 27, PBESpecies.Sandshrew },
+            { 28, PBESpecies.Sandslash },
+            { 29, PBESpecies.Nidoran_F },
+            { 30, PBESpecies.Nidorina },
+            { 31, PBESpecies.Nidoqueen },
+            { 32, PBESpecies.Nidoran_M },
+            { 33, PBESpecies.Nidorino },
+            { 34, PBESpecies.Nidoking },
+            { 35, PBESpecies.Clefairy },
+            { 36, PBESpecies.Clefable },
             { 37, PBESpecies.Vulpix },
             { 38, PBESpecies.Ninetales },
-            { 39, (PBESpecies)39 },
-            { 40, (PBESpecies)40 },
+            { 39, PBESpecies.Jigglypuff },
+            { 40, PBESpecies.Wigglytuff },
             { 41, PBESpecies.Zubat },
             { 42, PBESpecies.Golbat },
-            { 43, (PBESpecies)43 },
-            { 44, (PBESpecies)44 },
-            { 45, (PBESpecies)45 },
-            { 46, (PBESpecies)46 },
-            { 47, (PBESpecies)47 },
-            { 48, (PBESpecies)48 },
-            { 49, (PBESpecies)49 },
-            { 50, (PBESpecies)50 },
-            { 51, (PBESpecies)51 },
-            { 52, (PBESpecies)52 },
-            { 53, (PBESpecies)53 },
+            { 43, PBESpecies.Oddish },
+            { 44, PBESpecies.Gloom },
+            { 45, PBESpecies.Vileplume },
+            { 46, PBESpecies.Paras },
+            { 47, PBESpecies.Parasect },
+            { 48, PBESpecies.Venonat },
+            { 49, PBESpecies.Venomoth },
+            { 50, PBESpecies.Diglett },
+            { 51, PBESpecies.Dugtrio },
+            { 52, PBESpecies.Meowth },
+            { 53, PBESpecies.Persian },
             { 54, PBESpecies.Psyduck },
             { 55, PBESpecies.Golduck },
-            { 56, (PBESpecies)56 },
-            { 57, (PBESpecies)57 },
-            { 58, (PBESpecies)58 },
-            { 59, (PBESpecies)59 },
+            { 56, PBESpecies.Mankey },
+            { 57, PBESpecies.Primeape },
+            { 58, PBESpecies.Growlithe },
+            { 59, PBESpecies.Arcanine },
             { 60, PBESpecies.Poliwag },
             { 61, PBESpecies.Poliwhirl },
             { 62, PBESpecies.Poliwrath },
-            { 63, (PBESpecies)63 },
-            { 64, (PBESpecies)64 },
-            { 65, (PBESpecies)65 },
-            { 66, (PBESpecies)66 },
-            { 67, (PBESpecies)67 },
-            { 68, (PBESpecies)68 },
-            { 69, (PBESpecies)69 },
-            { 70, (PBESpecies)70 },
-            { 71, (PBESpecies)71 },
-            { 72, (PBESpecies)72 },
-            { 73, (PBESpecies)73 },
-            { 74, (PBESpecies)74 },
-            { 75, (PBESpecies)75 },
-            { 76, (PBESpecies)76 },
-            { 77, (PBESpecies)77 },
-            { 78, (PBESpecies)78 },
-            { 79, (PBESpecies)79 },
-            { 80, (PBESpecies)80 },
-            { 81, (PBESpecies)81 },
-            { 82, (PBESpecies)82 },
+            { 63, PBESpecies.Abra },
+            { 64, PBESpecies.Kadabra },
+            { 65, PBESpecies.Alakazam },
+            { 66, PBESpecies.Machop },
+            { 67, PBESpecies.Machoke },
+            { 68, PBESpecies.Machamp },
+            { 69, PBESpecies.Bellsprout },
+            { 70, PBESpecies.Weepinbell },
+            { 71, PBESpecies.Victreebel },
+            { 72, PBESpecies.Tentacool },
+            { 73, PBESpecies.Tentacruel },
+            { 74, PBESpecies.Geodude },
+            { 75, PBESpecies.Graveler },
+            { 76, PBESpecies.Golem },
+            { 77, PBESpecies.Ponyta },
+            { 78, PBESpecies.Rapidash },
+            { 79, PBESpecies.Slowpoke },
+            { 80, PBESpecies.Slowbro },
+            { 81, PBESpecies.Magnemite },
+            { 82, PBESpecies.Magneton },
             { 83, PBESpecies.Farfetchd },
-            { 84, (PBESpecies)84 },
-            { 85, (PBESpecies)85 },
-            { 86, (PBESpecies)86 },
-            { 87, (PBESpecies)87 },
-            { 88, (PBESpecies)88 },
-            { 89, (PBESpecies)89 },
-            { 90, (PBESpecies)90 },
-            { 91, (PBESpecies)91 },
-            { 92, (PBESpecies)92 },
-            { 93, (PBESpecies)93 },
-            { 94, (PBESpecies)94 },
-            { 95, (PBESpecies)95 },
-            { 96, (PBESpecies)96 },
-            { 97, (PBESpecies)97 },
-            { 98, (PBESpecies)98 },
-            { 99, (PBESpecies)99 },
-            { 100, (PBESpecies)100 },
-            { 101, (PBESpecies)101 },
-            { 102, (PBESpecies)102 },
-            { 103, (PBESpecies)103 },
+            { 84, PBESpecies.Doduo },
+            { 85, PBESpecies.Dodrio },
+            { 86, PBESpecies.Seel },
+            { 87, PBESpecies.Dewgong },
+            { 88, PBESpecies.Grimer },
+            { 89, PBESpecies.Muk },
+            { 90, PBESpecies.Shellder },
+            { 91, PBESpecies.Cloyster },
+            { 92, PBESpecies.Gastly },
+            { 93, PBESpecies.Haunter },
+            { 94, PBESpecies.Gengar },
+            { 95, PBESpecies.Onix },
+            { 96, PBESpecies.Drowzee },
+            { 97, PBESpecies.Hypno },
+            { 98, PBESpecies.Krabby },
+            { 99, PBESpecies.Kingler },
+            { 100, PBESpecies.Voltorb },
+            { 101, PBESpecies.Electrode },
+            { 102, PBESpecies.Exeggcute },
+            { 103, PBESpecies.Exeggutor },
             { 104, PBESpecies.Cubone },
             { 105, PBESpecies.Marowak },
-            { 106, (PBESpecies)106 },
-            { 107, (PBESpecies)107 },
-            { 108, (PBESpecies)108 },
-            { 109, (PBESpecies)109 },
-            { 110, (PBESpecies)110 },
-            { 111, (PBESpecies)111 },
-            { 112, (PBESpecies)112 },
+            { 106, PBESpecies.Hitmonlee },
+            { 107, PBESpecies.Hitmonchan },
+            { 108, PBESpecies.Lickitung },
+            { 109, PBESpecies.Koffing },
+            { 110, PBESpecies.Weezing },
+            { 111, PBESpecies.Rhyhorn },
+            { 112, PBESpecies.Rhydon },
             { 113, PBESpecies.Chansey },
-            { 114, (PBESpecies)114 },
-            { 115, (PBESpecies)115 },
-            { 116, (PBESpecies)116 },
-            { 117, (PBESpecies)117 },
-            { 118, (PBESpecies)118 },
-            { 119, (PBESpecies)119 },
-            { 120, (PBESpecies)120 },
-            { 121, (PBESpecies)121 },
-            { 122, (PBESpecies)122 },
-            { 123, (PBESpecies)123 },
-            { 124, (PBESpecies)124 },
-            { 125, (PBESpecies)125 },
-            { 126, (PBESpecies)126 },
-            { 127, (PBESpecies)127 },
-            { 128, (PBESpecies)128 },
+            { 114, PBESpecies.Tangela },
+            { 115, PBESpecies.Kangaskhan },
+            { 116, PBESpecies.Horsea },
+            { 117, PBESpecies.Seadra },
+            { 118, PBESpecies.Goldeen },
+            { 119, PBESpecies.Seaking },
+            { 120, PBESpecies.Staryu },
+            { 121, PBESpecies.Starmie },
+            { 122, PBESpecies.MrMime },
+            { 123, PBESpecies.Scyther },
+            { 124, PBESpecies.Jynx },
+            { 125, PBESpecies.Electabuzz },
+            { 126, PBESpecies.Magmar },
+            { 127, PBESpecies.Pinsir },
+            { 128, PBESpecies.Tauros },
             { 129, PBESpecies.Magikarp },
             { 130, PBESpecies.Gyarados },
-            { 131, (PBESpecies)131 },
+            { 131, PBESpecies.Lapras },
             { 132, PBESpecies.Ditto },
             { 133, PBESpecies.Eevee },
             { 134, PBESpecies.Vaporeon },
             { 135, PBESpecies.Jolteon },
             { 136, PBESpecies.Flareon },
-            { 137, (PBESpecies)137 },
-            { 138, (PBESpecies)138 },
-            { 139, (PBESpecies)139 },
-            { 140, (PBESpecies)140 },
-            { 141, (PBESpecies)141 },
-            { 142, (PBESpecies)142 },
-            { 143, (PBESpecies)143 },
-            { 144, (PBESpecies)144 },
-            { 145, (PBESpecies)145 },
-            { 146, (PBESpecies)146 },
-            { 147, (PBESpecies)147 },
-            { 148, (PBESpecies)148 },
-            { 149, (PBESpecies)149 },
-            { 150, (PBESpecies)150 },
-            { 151, (PBESpecies)151 },
-            { 152, (PBESpecies)152 },
-            { 153, (PBESpecies)153 },
-            { 154, (PBESpecies)154 },
-            { 155, (PBESpecies)155 },
-            { 156, (PBESpecies)156 },
-            { 157, (PBESpecies)157 },
-            { 158, (PBESpecies)158 },
-            { 159, (PBESpecies)159 },
-            { 160, (PBESpecies)160 },
-            { 161, (PBESpecies)161 },
-            { 162, (PBESpecies)162 },
-            { 163, (PBESpecies)163 },
-            { 164, (PBESpecies)164 },
-            { 165, (PBESpecies)165 },
-            { 166, (PBESpecies)166 },
-            { 167, (PBESpecies)167 },
-            { 168, (PBESpecies)168 },
+            { 137, PBESpecies.Porygon },
+            { 138, PBESpecies.Omanyte },
+            { 139, PBESpecies.Omastar },
+            { 140, PBESpecies.Kabuto },
+            { 141, PBESpecies.Kabutops },
+            { 142, PBESpecies.Aerodactyl },
+            { 143, PBESpecies.Snorlax },
+            { 144, PBESpecies.Articuno },
+            { 145, PBESpecies.Zapdos },
+            { 146, PBESpecies.Moltres },
+            { 147, PBESpecies.Dratini },
+            { 148, PBESpecies.Dragonair },
+            { 149, PBESpecies.Dragonite },
+            { 150, PBESpecies.Mewtwo },
+            { 151, PBESpecies.Mew },
+            { 152, PBESpecies.Chikorita },
+            { 153, PBESpecies.Bayleef },
+            { 154, PBESpecies.Meganium },
+            { 155, PBESpecies.Cyndaquil },
+            { 156, PBESpecies.Quilava },
+            { 157, PBESpecies.Typhlosion },
+            { 158, PBESpecies.Totodile },
+            { 159, PBESpecies.Croconaw },
+            { 160, PBESpecies.Feraligatr },
+            { 161, PBESpecies.Sentret },
+            { 162, PBESpecies.Furret },
+            { 163, PBESpecies.Hoothoot },
+            { 164, PBESpecies.Noctowl },
+            { 165, PBESpecies.Ledyba },
+            { 166, PBESpecies.Ledian },
+            { 167, PBESpecies.Spinarak },
+            { 168, PBESpecies.Ariados },
             { 169, PBESpecies.Crobat },
-            { 170, (PBESpecies)170 },
-            { 171, (PBESpecies)171 },
+            { 170, PBESpecies.Chinchou },
+            { 171, PBESpecies.Lanturn },
             { 172, PBESpecies.Pichu },
-            { 173, (PBESpecies)173 },
-            { 174, (PBESpecies)174 },
-            { 175, (PBESpecies)175 },
-            { 176, (PBESpecies)176 },
-            { 177, (PBESpecies)177 },
-            { 178, (PBESpecies)178 },
-            { 179, (PBESpecies)179 },
-            { 180, (PBESpecies)180 },
-            { 181, (PBESpecies)181 },
-            { 182, (PBESpecies)182 },
+            { 173, PBESpecies.Cleffa },
+            { 174, PBESpecies.Igglybuff },
+            { 175, PBESpecies.Togepi },
+            { 176, PBESpecies.Togetic },
+            { 177, PBESpecies.Natu },
+            { 178, PBESpecies.Xatu },
+            { 179, PBESpecies.Mareep },
+            { 180, PBESpecies.Flaaffy },
+            { 181, PBESpecies.Ampharos },
+            { 182, PBESpecies.Bellossom },
             { 183, PBESpecies.Marill },
             { 184, PBESpecies.Azumarill },
-            { 185, (PBESpecies)185 },
+            { 185, PBESpecies.Sudowoodo },
             { 186, PBESpecies.Politoed },
-            { 187, (PBESpecies)187 },
-            { 188, (PBESpecies)188 },
-            { 189, (PBESpecies)189 },
-            { 190, (PBESpecies)190 },
-            { 191, (PBESpecies)191 },
-            { 192, (PBESpecies)192 },
-            { 193, (PBESpecies)193 },
-            { 194, (PBESpecies)194 },
-            { 195, (PBESpecies)195 },
+            { 187, PBESpecies.Hoppip },
+            { 188, PBESpecies.Skiploom },
+            { 189, PBESpecies.Jumpluff },
+            { 190, PBESpecies.Aipom },
+            { 191, PBESpecies.Sunkern },
+            { 192, PBESpecies.Sunflora },
+            { 193, PBESpecies.Yanma },
+            { 194, PBESpecies.Wooper },
+            { 195, PBESpecies.Quagsire },
             { 196, PBESpecies.Espeon },
             { 197, PBESpecies.Umbreon },
-            { 198, (PBESpecies)198 },
-            { 199, (PBESpecies)199 },
+            { 198, PBESpecies.Murkrow },
+            { 199, PBESpecies.Slowking },
             { 200, PBESpecies.Misdreavus },
             { 201, PBESpecies.Unown_A },
-            { 202, (PBESpecies)202 },
-            { 203, (PBESpecies)203 },
-            { 204, (PBESpecies)204 },
-            { 205, (PBESpecies)205 },
-            { 206, (PBESpecies)206 },
-            { 207, (PBESpecies)207 },
-            { 208, (PBESpecies)208 },
-            { 209, (PBESpecies)209 },
-            { 210, (PBESpecies)210 },
-            { 211, (PBESpecies)211 },
-            { 212, (PBESpecies)212 },
-            { 213, (PBESpecies)213 },
-            { 214, (PBESpecies)214 },
-            { 215, (PBESpecies)215 },
-            { 216, (PBESpecies)216 },
-            { 217, (PBESpecies)217 },
-            { 218, (PBESpecies)218 },
-            { 219, (PBESpecies)219 },
-            { 220, (PBESpecies)220 },
-            { 221, (PBESpecies)221 },
-            { 222, (PBESpecies)222 },
-            { 223, (PBESpecies)223 },
-            { 224, (PBESpecies)224 },
-            { 225, (PBESpecies)225 },
-            { 226, (PBESpecies)226 },
-            { 227, (PBESpecies)227 },
-            { 228, (PBESpecies)228 },
-            { 229, (PBESpecies)229 },
-            { 230, (PBESpecies)230 },
-            { 231, (PBESpecies)231 },
-            { 232, (PBESpecies)232 },
-            { 233, (PBESpecies)233 },
-            { 234, (PBESpecies)234 },
+            { 202, PBESpecies.Wobbuffet },
+            { 203, PBESpecies.Girafarig },
+            { 204, PBESpecies.Pineco },
+            { 205, PBESpecies.Forretress },
+            { 206, PBESpecies.Dunsparce },
+            { 207, PBESpecies.Gligar },
+            { 208, PBESpecies.Steelix },
+            { 209, PBESpecies.Snubbull },
+            { 210, PBESpecies.Granbull },
+            { 211, PBESpecies.Qwilfish },
+            { 212, PBESpecies.Scizor },
+            { 213, PBESpecies.Shuckle },
+            { 214, PBESpecies.Heracross },
+            { 215, PBESpecies.Sneasel },
+            { 216, PBESpecies.Teddiursa },
+            { 217, PBESpecies.Ursaring },
+            { 218, PBESpecies.Slugma },
+            { 219, PBESpecies.Magcargo },
+            { 220, PBESpecies.Swinub },
+            { 221, PBESpecies.Piloswine },
+            { 222, PBESpecies.Corsola },
+            { 223, PBESpecies.Remoraid },
+            { 224, PBESpecies.Octillery },
+            { 225, PBESpecies.Delibird },
+            { 226, PBESpecies.Mantine },
+            { 227, PBESpecies.Skarmory },
+            { 228, PBESpecies.Houndour },
+            { 229, PBESpecies.Houndoom },
+            { 230, PBESpecies.Kingdra },
+            { 231, PBESpecies.Phanpy },
+            { 232, PBESpecies.Donphan },
+            { 233, PBESpecies.Porygon2 },
+            { 234, PBESpecies.Stantler },
             { 235, PBESpecies.Smeargle },
-            { 236, (PBESpecies)236 },
-            { 237, (PBESpecies)237 },
-            { 238, (PBESpecies)238 },
-            { 239, (PBESpecies)239 },
-            { 240, (PBESpecies)240 },
-            { 241, (PBESpecies)241 },
+            { 236, PBESpecies.Tyrogue },
+            { 237, PBESpecies.Hitmontop },
+            { 238, PBESpecies.Smoochum },
+            { 239, PBESpecies.Elekid },
+            { 240, PBESpecies.Magby },
+            { 241, PBESpecies.Miltank },
             { 242, PBESpecies.Blissey },
-            { 243, (PBESpecies)243 },
-            { 244, (PBESpecies)244 },
-            { 245, (PBESpecies)245 },
-            { 246, (PBESpecies)246 },
-            { 247, (PBESpecies)247 },
-            { 248, (PBESpecies)248 },
-            { 249, (PBESpecies)249 },
-            { 250, (PBESpecies)250 },
-            { 251, (PBESpecies)251 },
-            { 277, (PBESpecies)252 },
-            { 278, (PBESpecies)253 },
-            { 279, (PBESpecies)254 },
+            { 243, PBESpecies.Raikou },
+            { 244, PBESpecies.Entei },
+            { 245, PBESpecies.Suicune },
+            { 246, PBESpecies.Larvitar },
+            { 247, PBESpecies.Pupitar },
+            { 248, PBESpecies.Tyranitar },
+            { 249, PBESpecies.Lugia },
+            { 250, PBESpecies.HoOh },
+            { 251, PBESpecies.Celebi },
+            { 277, PBESpecies.Treecko },
+            { 278, PBESpecies.Grovyle },
+            { 279, PBESpecies.Sceptile },
             { 280, PBESpecies.Torchic },
             { 281, PBESpecies.Combusken },
             { 282, PBESpecies.Blaziken },
-            { 283, (PBESpecies)258 },
-            { 284, (PBESpecies)259 },
-            { 285, (PBESpecies)260 },
-            { 286, (PBESpecies)261 },
-            { 287, (PBESpecies)262 },
-            { 288, (PBESpecies)263 },
-            { 289, (PBESpecies)264 },
-            { 290, (PBESpecies)265 },
-            { 291, (PBESpecies)266 },
-            { 292, (PBESpecies)267 },
-            { 293, (PBESpecies)268 },
-            { 294, (PBESpecies)269 },
-            { 295, (PBESpecies)270 },
-            { 296, (PBESpecies)271 },
-            { 297, (PBESpecies)272 },
-            { 298, (PBESpecies)273 },
-            { 299, (PBESpecies)274 },
-            { 300, (PBESpecies)275 },
+            { 283, PBESpecies.Mudkip },
+            { 284, PBESpecies.Marshtomp },
+            { 285, PBESpecies.Swampert },
+            { 286, PBESpecies.Poochyena },
+            { 287, PBESpecies.Mightyena },
+            { 288, PBESpecies.Zigzagoon },
+            { 289, PBESpecies.Linoone },
+            { 290, PBESpecies.Wurmple },
+            { 291, PBESpecies.Silcoon },
+            { 292, PBESpecies.Beautifly },
+            { 293, PBESpecies.Cascoon },
+            { 294, PBESpecies.Dustox },
+            { 295, PBESpecies.Lotad },
+            { 296, PBESpecies.Lombre },
+            { 297, PBESpecies.Ludicolo },
+            { 298, PBESpecies.Seedot },
+            { 299, PBESpecies.Nuzleaf },
+            { 300, PBESpecies.Shiftry },
             { 301, PBESpecies.Nincada },
             { 302, PBESpecies.Ninjask },
             { 303, PBESpecies.Shedinja },
-            { 304, (PBESpecies)276 },
-            { 305, (PBESpecies)277 },
-            { 306, (PBESpecies)285 },
-            { 307, (PBESpecies)286 },
-            { 308, (PBESpecies)327 },
-            { 309, (PBESpecies)278 },
-            { 310, (PBESpecies)279 },
-            { 311, (PBESpecies)283 },
-            { 312, (PBESpecies)284 },
-            { 313, (PBESpecies)320 },
-            { 314, (PBESpecies)321 },
+            { 304, PBESpecies.Taillow },
+            { 305, PBESpecies.Swellow },
+            { 306, PBESpecies.Shroomish },
+            { 307, PBESpecies.Breloom },
+            { 308, PBESpecies.Spinda },
+            { 309, PBESpecies.Wingull },
+            { 310, PBESpecies.Pelipper },
+            { 311, PBESpecies.Surskit },
+            { 312, PBESpecies.Masquerain },
+            { 313, PBESpecies.Wailmer },
+            { 314, PBESpecies.Wailord },
             { 315, PBESpecies.Skitty },
             { 316, PBESpecies.Delcatty },
-            { 317, (PBESpecies)352 },
-            { 318, (PBESpecies)343 },
-            { 319, (PBESpecies)344 },
-            { 320, (PBESpecies)299 },
-            { 321, (PBESpecies)324 },
-            { 322, (PBESpecies)302 },
-            { 323, (PBESpecies)339 },
-            { 324, (PBESpecies)340 },
-            { 325, (PBESpecies)370 },
-            { 326, (PBESpecies)341 },
-            { 327, (PBESpecies)342 },
-            { 328, (PBESpecies)349 },
-            { 329, (PBESpecies)350 },
-            { 330, (PBESpecies)318 },
-            { 331, (PBESpecies)319 },
-            { 332, (PBESpecies)328 },
-            { 333, (PBESpecies)329 },
-            { 334, (PBESpecies)330 },
-            { 335, (PBESpecies)296 },
-            { 336, (PBESpecies)297 },
-            { 337, (PBESpecies)309 },
-            { 338, (PBESpecies)310 },
-            { 339, (PBESpecies)322 },
-            { 340, (PBESpecies)323 },
-            { 341, (PBESpecies)363 },
-            { 342, (PBESpecies)364 },
-            { 343, (PBESpecies)365 },
-            { 344, (PBESpecies)331 },
-            { 345, (PBESpecies)332 },
-            { 346, (PBESpecies)361 },
-            { 347, (PBESpecies)362 },
-            { 348, (PBESpecies)337 },
-            { 349, (PBESpecies)338 },
+            { 317, PBESpecies.Kecleon },
+            { 318, PBESpecies.Baltoy },
+            { 319, PBESpecies.Claydol },
+            { 320, PBESpecies.Nosepass },
+            { 321, PBESpecies.Torkoal },
+            { 322, PBESpecies.Sableye },
+            { 323, PBESpecies.Barboach },
+            { 324, PBESpecies.Whiscash },
+            { 325, PBESpecies.Luvdisc },
+            { 326, PBESpecies.Corphish },
+            { 327, PBESpecies.Crawdaunt },
+            { 328, PBESpecies.Feebas },
+            { 329, PBESpecies.Milotic },
+            { 330, PBESpecies.Carvanha },
+            { 331, PBESpecies.Sharpedo },
+            { 332, PBESpecies.Trapinch },
+            { 333, PBESpecies.Vibrava },
+            { 334, PBESpecies.Flygon },
+            { 335, PBESpecies.Makuhita },
+            { 336, PBESpecies.Hariyama },
+            { 337, PBESpecies.Electrike },
+            { 338, PBESpecies.Manectric },
+            { 339, PBESpecies.Numel },
+            { 340, PBESpecies.Camerupt },
+            { 341, PBESpecies.Spheal },
+            { 342, PBESpecies.Sealeo },
+            { 343, PBESpecies.Walrein },
+            { 344, PBESpecies.Cacnea },
+            { 345, PBESpecies.Cacturne },
+            { 346, PBESpecies.Snorunt },
+            { 347, PBESpecies.Glalie },
+            { 348, PBESpecies.Lunatone },
+            { 349, PBESpecies.Solrock },
             { 350, PBESpecies.Azurill },
-            { 351, (PBESpecies)325 },
-            { 352, (PBESpecies)326 },
+            { 351, PBESpecies.Spoink },
+            { 352, PBESpecies.Grumpig },
             { 353, PBESpecies.Plusle },
             { 354, PBESpecies.Minun },
-            { 355, (PBESpecies)303 },
-            { 356, (PBESpecies)307 },
-            { 357, (PBESpecies)308 },
-            { 358, (PBESpecies)333 },
-            { 359, (PBESpecies)334 },
-            { 360, (PBESpecies)360 },
-            { 361, (PBESpecies)355 },
-            { 362, (PBESpecies)356 },
-            { 363, (PBESpecies)315 },
-            { 364, (PBESpecies)287 },
-            { 365, (PBESpecies)288 },
-            { 366, (PBESpecies)289 },
-            { 367, (PBESpecies)316 },
-            { 368, (PBESpecies)317 },
+            { 355, PBESpecies.Mawile },
+            { 356, PBESpecies.Meditite },
+            { 357, PBESpecies.Medicham },
+            { 358, PBESpecies.Swablu },
+            { 359, PBESpecies.Altaria },
+            { 360, PBESpecies.Wynaut },
+            { 361, PBESpecies.Duskull },
+            { 362, PBESpecies.Dusclops },
+            { 363, PBESpecies.Roselia },
+            { 364, PBESpecies.Slakoth },
+            { 365, PBESpecies.Vigoroth },
+            { 366, PBESpecies.Slaking },
+            { 367, PBESpecies.Gulpin },
+            { 368, PBESpecies.Swalot },
             { 369, PBESpecies.Tropius },
-            { 370, (PBESpecies)293 },
-            { 371, (PBESpecies)294 },
-            { 372, (PBESpecies)295 },
+            { 370, PBESpecies.Whismur },
+            { 371, PBESpecies.Loudred },
+            { 372, PBESpecies.Exploud },
             { 373, PBESpecies.Clamperl },
             { 374, PBESpecies.Huntail },
             { 375, PBESpecies.Gorebyss },
             { 376, PBESpecies.Absol },
-            { 377, (PBESpecies)353 },
-            { 378, (PBESpecies)354 },
-            { 379, (PBESpecies)336 },
-            { 380, (PBESpecies)335 },
-            { 381, (PBESpecies)369 },
-            { 382, (PBESpecies)304 },
-            { 383, (PBESpecies)305 },
-            { 384, (PBESpecies)306 },
-            { 385, (PBESpecies)351 },
-            { 386, (PBESpecies)313 },
-            { 387, (PBESpecies)314 },
+            { 377, PBESpecies.Shuppet },
+            { 378, PBESpecies.Banette },
+            { 379, PBESpecies.Seviper },
+            { 380, PBESpecies.Zangoose },
+            { 381, PBESpecies.Relicanth },
+            { 382, PBESpecies.Aron },
+            { 383, PBESpecies.Lairon },
+            { 384, PBESpecies.Aggron },
+            { 385, PBESpecies.Castform },
+            { 386, PBESpecies.Volbeat },
+            { 387, PBESpecies.Illumise },
             { 388, PBESpecies.Lileep },
             { 389, PBESpecies.Cradily },
-            { 390, (PBESpecies)347 },
-            { 391, (PBESpecies)348 },
-            { 392, (PBESpecies)280 },
-            { 393, (PBESpecies)281 },
-            { 394, (PBESpecies)282 },
-            { 395, (PBESpecies)371 },
-            { 396, (PBESpecies)372 },
-            { 397, (PBESpecies)373 },
+            { 390, PBESpecies.Anorith },
+            { 391, PBESpecies.Armaldo },
+            { 392, PBESpecies.Ralts },
+            { 393, PBESpecies.Kirlia },
+            { 394, PBESpecies.Gardevoir },
+            { 395, PBESpecies.Bagon },
+            { 396, PBESpecies.Shelgon },
+            { 397, PBESpecies.Salamence },
             { 398, PBESpecies.Beldum },
             { 399, PBESpecies.Metang },
             { 400, PBESpecies.Metagross },
             { 401, PBESpecies.Regirock },
-            { 402, (PBESpecies)378 },
-            { 403, (PBESpecies)379 },
-            { 404, (PBESpecies)382 },
-            { 405, (PBESpecies)383 },
-            { 406, (PBESpecies)384 },
+            { 402, PBESpecies.Regice },
+            { 403, PBESpecies.Registeel },
+            { 404, PBESpecies.Kyogre },
+            { 405, PBESpecies.Groudon },
+            { 406, PBESpecies.Rayquaza },
             { 407, PBESpecies.Latias },
             { 408, PBESpecies.Latios },
-            { 409, (PBESpecies)385 },
-            { 410, (PBESpecies)386 },
-            { 411, (PBESpecies)358 },
-            { 413, PBESpecies.Unown_B },
-            { 414, PBESpecies.Unown_C },
-            { 415, PBESpecies.Unown_D },
-            { 416, PBESpecies.Unown_E },
-            { 417, PBESpecies.Unown_F },
-            { 418, PBESpecies.Unown_G },
-            { 419, PBESpecies.Unown_H },
-            { 420, PBESpecies.Unown_I },
-            { 421, PBESpecies.Unown_J },
-            { 422, PBESpecies.Unown_K },
-            { 423, PBESpecies.Unown_L },
-            { 424, PBESpecies.Unown_M },
-            { 425, PBESpecies.Unown_N },
-            { 426, PBESpecies.Unown_O },
-            { 427, PBESpecies.Unown_P },
-            { 428, PBESpecies.Unown_Q },
-            { 429, PBESpecies.Unown_R },
-            { 430, PBESpecies.Unown_S },
-            { 431, PBESpecies.Unown_T },
-            { 432, PBESpecies.Unown_U },
-            { 433, PBESpecies.Unown_V },
-            { 434, PBESpecies.Unown_W },
-            { 435, PBESpecies.Unown_X },
-            { 436, PBESpecies.Unown_Y },
-            { 437, PBESpecies.Unown_Z },
-            { 438, PBESpecies.Unown_Exclamation },
-            { 439, PBESpecies.Unown_Question }
+            { 409, PBESpecies.Jirachi },
+            { 410, PBESpecies.Deoxys },
+            { 411, PBESpecies.Chimecho },
         };
         static readonly PBEMove[] gen3TMHMs = new PBEMove[58]
         {
@@ -582,19 +545,18 @@ namespace Kermalis.PokemonBattleEngineTesting
         };
         static readonly Dictionary<int, PBESpecies> gen4SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
-            { 496, (PBESpecies)(386 | (1 << 0x10)) }, // Deoxys_Attack
-            { 497, (PBESpecies)(386 | (2 << 0x10)) }, // Deoxys_Defense
-            { 498, (PBESpecies)(386 | (3 << 0x10)) }, // Deoxys_Speed
-            { 499, (PBESpecies)(413 | (1 << 0x10)) }, // Wormadam_Sandy
-            { 500, (PBESpecies)(413 | (2 << 0x10)) }, // Wormadam_Trash
+            { 496, PBESpecies.Deoxys_Attack },
+            { 497, PBESpecies.Deoxys_Defense },
+            { 498, PBESpecies.Deoxys_Speed },
+            { 499, PBESpecies.Wormadam_Sandy },
+            { 500, PBESpecies.Wormadam_Trash },
             { 501, PBESpecies.Giratina_Origin },
-            { 502, (PBESpecies)(492 | (1 << 0x10)) }, // Shaymin_Sky
-            // Not sure on the order of the Rotoms, but they all have the same level up moves & tm moves
-            { 503, PBESpecies.Rotom_Fan },
-            { 504, PBESpecies.Rotom_Frost },
-            { 505, PBESpecies.Rotom_Heat },
-            { 506, PBESpecies.Rotom_Mow },
-            { 507, PBESpecies.Rotom_Wash }
+            { 502, PBESpecies.Shaymin_Sky },
+            { 503, PBESpecies.Rotom_Heat },
+            { 504, PBESpecies.Rotom_Wash },
+            { 505, PBESpecies.Rotom_Frost },
+            { 506, PBESpecies.Rotom_Fan },
+            { 507, PBESpecies.Rotom_Mow }
         };
         static readonly PBEMove[] gen4TMHMs = new PBEMove[100]
         {
@@ -812,46 +774,42 @@ namespace Kermalis.PokemonBattleEngineTesting
         };
         static readonly Dictionary<int, PBESpecies> bwSpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
-            { 650, (PBESpecies)(386 | (1 << 0x10)) }, // Deoxys_Attack
-            { 651, (PBESpecies)(386 | (2 << 0x10)) }, // Deoxys_Defense
-            { 652, (PBESpecies)(386 | (3 << 0x10)) }, // Deoxys_Speed
-            { 653, (PBESpecies)(413 | (1 << 0x10)) }, // Wormadam_Sandy
-            { 654, (PBESpecies)(413 | (2 << 0x10)) }, // Wormadam_Trash
-            { 655, (PBESpecies)(492 | (1 << 0x10)) }, // Shaymin_Sky
+            { 650, PBESpecies.Deoxys_Attack },
+            { 651, PBESpecies.Deoxys_Defense },
+            { 652, PBESpecies.Deoxys_Speed },
+            { 653, PBESpecies.Wormadam_Sandy },
+            { 654, PBESpecies.Wormadam_Trash },
+            { 655, PBESpecies.Shaymin_Sky },
             { 656, PBESpecies.Giratina_Origin },
-            // Not sure on the order of the Rotoms, but they all have the same level up moves & tm moves
-            { 657, PBESpecies.Rotom_Fan },
-            { 658, PBESpecies.Rotom_Frost },
-            { 659, PBESpecies.Rotom_Heat },
-            { 660, PBESpecies.Rotom_Mow },
-            { 661, PBESpecies.Rotom_Wash },
-            // Not sure on the order of the Castforms, but they all have the same level up moves & tm moves
-            { 662, (PBESpecies)(351 | (1 << 0x10)) }, // Castform_Rainy
-            { 663, (PBESpecies)(351 | (2 << 0x10)) }, // Castform_Snowy
-            { 664, (PBESpecies)(351 | (3 << 0x10)) }, // Castform_Sunny
+            { 657, PBESpecies.Rotom_Heat },
+            { 658, PBESpecies.Rotom_Wash },
+            { 659, PBESpecies.Rotom_Frost },
+            { 660, PBESpecies.Rotom_Fan },
+            { 661, PBESpecies.Rotom_Mow },
+            { 662, PBESpecies.Castform_Sunny },
+            { 663, PBESpecies.Castform_Rainy },
+            { 664, PBESpecies.Castform_Snowy },
             { 665, PBESpecies.Basculin_Red },
             { 666, PBESpecies.Darmanitan_Zen },
             { 667, PBESpecies.Meloetta_Pirouette }
         };
         static readonly Dictionary<int, PBESpecies> b2w2SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
-            { 685, (PBESpecies)(386 | (1 << 0x10)) }, // Deoxys_Attack
-            { 686, (PBESpecies)(386 | (2 << 0x10)) }, // Deoxys_Defense
-            { 687, (PBESpecies)(386 | (3 << 0x10)) }, // Deoxys_Speed
-            { 688, (PBESpecies)(413 | (1 << 0x10)) }, // Wormadam_Sandy
-            { 689, (PBESpecies)(413 | (2 << 0x10)) }, // Wormadam_Trash
-            { 690, (PBESpecies)(492 | (1 << 0x10)) }, // Shaymin_Sky
+            { 685, PBESpecies.Deoxys_Attack },
+            { 686, PBESpecies.Deoxys_Defense },
+            { 687, PBESpecies.Deoxys_Speed },
+            { 688, PBESpecies.Wormadam_Sandy },
+            { 689, PBESpecies.Wormadam_Trash },
+            { 690, PBESpecies.Shaymin_Sky },
             { 691, PBESpecies.Giratina_Origin },
-            // Not sure on the order of the Rotoms, but they all have the same level up moves & tm moves
-            { 692, PBESpecies.Rotom_Fan },
-            { 693, PBESpecies.Rotom_Frost },
-            { 694, PBESpecies.Rotom_Heat },
-            { 695, PBESpecies.Rotom_Mow },
-            { 696, PBESpecies.Rotom_Wash },
-            // Not sure on the order of the Castforms, but they all have the same level up moves & tm moves
-            { 697, (PBESpecies)(351 | (1 << 0x10)) }, // Castform_Rainy
-            { 698, (PBESpecies)(351 | (2 << 0x10)) }, // Castform_Snowy
-            { 699, (PBESpecies)(351 | (3 << 0x10)) }, // Castform_Sunny
+            { 692, PBESpecies.Rotom_Heat },
+            { 693, PBESpecies.Rotom_Wash },
+            { 694, PBESpecies.Rotom_Frost },
+            { 695, PBESpecies.Rotom_Fan },
+            { 696, PBESpecies.Rotom_Mow },
+            { 697, PBESpecies.Castform_Sunny },
+            { 698, PBESpecies.Castform_Rainy },
+            { 699, PBESpecies.Castform_Snowy },
             { 700, PBESpecies.Basculin_Red },
             { 701, PBESpecies.Darmanitan_Zen },
             { 702, PBESpecies.Meloetta_Pirouette },
@@ -1085,13 +1043,13 @@ namespace Kermalis.PokemonBattleEngineTesting
         // TODO: FRLG - Ultimate starter tutor moves
         // TODO: D, P, Pt - Free tutor moves
         // TODO: HG, SS - Free tutor moves (aside from headbutt)
+        // TODO: Rotom special moves
+        // TODO: Arceus gets Draco Meteor from free tutor moves
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
-        // TODO: Share moves across formes
 #pragma warning disable CS8321 // Local function is declared but never used
         public static void Dump()
         {
-            //using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Data\PokemonData_Data.cs"))
-            using (var writer = new StreamWriter(@"../../../\DumpedData\Dumped\PokemonData.txt")) // Temporary
+            using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Data\PokemonData_Data.cs"))
             using (var r = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\R.gba"), Endianness.LittleEndian))
             using (var s = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\S.gba"), Endianness.LittleEndian))
             using (var fr = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\FR.gba"), Endianness.LittleEndian))
@@ -1114,11 +1072,15 @@ namespace Kermalis.PokemonBattleEngineTesting
                     Tuple<int, PBEMove> key = dict[species].LevelUpMoves.Keys.SingleOrDefault(k => k.Item1 == level && k.Item2 == move);
                     if (key != null)
                     {
-                        dict[species].LevelUpMoves[key] += $" | {flag}";
+                        List<string> list = dict[species].LevelUpMoves[key];
+                        if (!list.Contains(flag))
+                        {
+                            list.Add(flag);
+                        }
                     }
                     else
                     {
-                        dict[species].LevelUpMoves.Add(Tuple.Create(level, move), flag);
+                        dict[species].LevelUpMoves.Add(Tuple.Create(level, move), new List<string>() { flag });
                     }
                 }
                 void AddOtherMove(PBESpecies species, PBEMove move, string flag)
@@ -1126,11 +1088,59 @@ namespace Kermalis.PokemonBattleEngineTesting
                     AddSpecies(species);
                     if (dict[species].OtherMoves.ContainsKey(move))
                     {
-                        dict[species].OtherMoves[move] += $" | {flag}";
+                        List<string> list = dict[species].OtherMoves[move];
+                        if (!list.Contains(flag))
+                        {
+                            list.Add(flag);
+                        }
                     }
                     else
                     {
-                        dict[species].OtherMoves.Add(move, flag);
+                        dict[species].OtherMoves.Add(move, new List<string>() { flag });
+                    }
+                }
+                void Merge(params PBESpecies[] species)
+                {
+                    PBESpecies baseSpecies = species[0];
+                    Pokemon basePkmn = dict[baseSpecies];
+                    foreach (PBESpecies sp in species)
+                    {
+                        AddSpecies(sp);
+                        Pokemon pkmn = dict[sp];
+                        if (pkmn != basePkmn && !b2w2SpeciesIndexToPBESpecies.ContainsValue(sp)) // If the Pokémon does not have pokedata defined
+                        {
+                            pkmn.HP = basePkmn.HP;
+                            pkmn.Attack = basePkmn.Attack;
+                            pkmn.Defense = basePkmn.Defense;
+                            pkmn.SpAttack = basePkmn.SpAttack;
+                            pkmn.SpDefense = basePkmn.SpDefense;
+                            pkmn.Speed = basePkmn.Speed;
+                            pkmn.Abilities = basePkmn.Abilities;
+                            pkmn.GenderRatio = basePkmn.GenderRatio;
+                            pkmn.Type1 = basePkmn.Type1;
+                            pkmn.Type2 = basePkmn.Type2;
+                            pkmn.Weight = basePkmn.Weight;
+                        }
+                        foreach (KeyValuePair<Tuple<int, PBEMove>, List<string>> levelup in pkmn.LevelUpMoves)
+                        {
+                            foreach (string flag in levelup.Value)
+                            {
+                                AddLevelUpMove(baseSpecies, levelup.Key.Item1, levelup.Key.Item2, flag);
+                            }
+                        }
+                        foreach (KeyValuePair<PBEMove, List<string>> other in pkmn.OtherMoves)
+                        {
+                            foreach (string flag in other.Value)
+                            {
+                                AddOtherMove(baseSpecies, other.Key, flag);
+                            }
+                        }
+                    }
+                    for (int i = 1; i < species.Length; i++)
+                    {
+                        Pokemon pkmn = dict[species[i]];
+                        pkmn.LevelUpMoves = basePkmn.LevelUpMoves;
+                        pkmn.OtherMoves = basePkmn.OtherMoves;
                     }
                 }
 
@@ -1163,7 +1173,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 {
                                     pkmn.Type2 = PBEType.None;
                                 }
-                                pkmn.GenderRatio = gen5GenderRatios[pokedata.ReadByte(0x12)];
+                                pkmn.GenderRatio = (PBEGenderRatio)pokedata.ReadByte(0x12);
                                 for (int i = 0; i < 3; i++)
                                 {
                                     var ability = (PBEAbility)pokedata.ReadByte(0x18 + i);
@@ -1669,6 +1679,72 @@ namespace Kermalis.PokemonBattleEngineTesting
 
                 #endregion
 
+                #region Specific Fixes
+
+                Merge(PBESpecies.Unown_A, PBESpecies.Unown_B, PBESpecies.Unown_C, PBESpecies.Unown_D, PBESpecies.Unown_E, PBESpecies.Unown_Exclamation, PBESpecies.Unown_F, PBESpecies.Unown_G, PBESpecies.Unown_H, PBESpecies.Unown_I, PBESpecies.Unown_J, PBESpecies.Unown_K, PBESpecies.Unown_L, PBESpecies.Unown_M, PBESpecies.Unown_N, PBESpecies.Unown_O, PBESpecies.Unown_P, PBESpecies.Unown_Q, PBESpecies.Unown_Question, PBESpecies.Unown_R, PBESpecies.Unown_S, PBESpecies.Unown_T, PBESpecies.Unown_U, PBESpecies.Unown_V, PBESpecies.Unown_W, PBESpecies.Unown_X, PBESpecies.Unown_Y, PBESpecies.Unown_Z);
+                Merge(PBESpecies.Castform, PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny);
+                Merge(PBESpecies.Deoxys, PBESpecies.Deoxys_Attack, PBESpecies.Deoxys_Defense, PBESpecies.Deoxys_Speed);
+                Merge(PBESpecies.Burmy_Plant, PBESpecies.Burmy_Sandy, PBESpecies.Burmy_Trash);
+                dict[PBESpecies.Burmy_Sandy].Evolutions.Add(PBESpecies.Wormadam_Sandy);
+                dict[PBESpecies.Burmy_Sandy].Evolutions.Add(PBESpecies.Mothim);
+                dict[PBESpecies.Burmy_Trash].Evolutions.Add(PBESpecies.Wormadam_Trash);
+                dict[PBESpecies.Burmy_Trash].Evolutions.Add(PBESpecies.Mothim);
+                dict[PBESpecies.Wormadam_Sandy].PreEvolutions.Add(PBESpecies.Burmy_Sandy);
+                dict[PBESpecies.Wormadam_Trash].PreEvolutions.Add(PBESpecies.Burmy_Trash);
+                dict[PBESpecies.Mothim].PreEvolutions.Add(PBESpecies.Burmy_Sandy);
+                dict[PBESpecies.Mothim].PreEvolutions.Add(PBESpecies.Burmy_Trash);
+                dict[PBESpecies.Cherubi].Evolutions.Add(PBESpecies.Cherrim_Sunshine);
+                Merge(PBESpecies.Cherrim, PBESpecies.Cherrim_Sunshine);
+                dict[PBESpecies.Cherrim_Sunshine].PreEvolutions.Add(PBESpecies.Cherubi);
+                Merge(PBESpecies.Shellos_East, PBESpecies.Shellos_West);
+                dict[PBESpecies.Shellos_West].Evolutions.Add(PBESpecies.Gastrodon_West);
+                Merge(PBESpecies.Gastrodon_East, PBESpecies.Gastrodon_West);
+                dict[PBESpecies.Gastrodon_West].PreEvolutions.Add(PBESpecies.Shellos_West);
+                Merge(PBESpecies.Rotom, PBESpecies.Rotom_Fan, PBESpecies.Rotom_Frost, PBESpecies.Rotom_Heat, PBESpecies.Rotom_Mow, PBESpecies.Rotom_Wash);
+                Merge(PBESpecies.Giratina, PBESpecies.Giratina_Origin);
+                Merge(PBESpecies.Shaymin, PBESpecies.Shaymin_Sky);
+                Merge(PBESpecies.Arceus, PBESpecies.Arceus_Bug, PBESpecies.Arceus_Dark, PBESpecies.Arceus_Dragon, PBESpecies.Arceus_Electric, PBESpecies.Arceus_Fighting, PBESpecies.Arceus_Fire, PBESpecies.Arceus_Flying, PBESpecies.Arceus_Ghost, PBESpecies.Arceus_Grass, PBESpecies.Arceus_Ground, PBESpecies.Arceus_Ice, PBESpecies.Arceus_Poison, PBESpecies.Arceus_Psychic, PBESpecies.Arceus_Rock, PBESpecies.Arceus_Steel, PBESpecies.Arceus_Water);
+                dict[PBESpecies.Arceus_Bug].Type1 = PBEType.Bug;
+                dict[PBESpecies.Arceus_Dark].Type1 = PBEType.Dark;
+                dict[PBESpecies.Arceus_Dragon].Type1 = PBEType.Dragon;
+                dict[PBESpecies.Arceus_Electric].Type1 = PBEType.Electric;
+                dict[PBESpecies.Arceus_Fighting].Type1 = PBEType.Fighting;
+                dict[PBESpecies.Arceus_Fire].Type1 = PBEType.Fire;
+                dict[PBESpecies.Arceus_Flying].Type1 = PBEType.Flying;
+                dict[PBESpecies.Arceus_Ghost].Type1 = PBEType.Ghost;
+                dict[PBESpecies.Arceus_Grass].Type1 = PBEType.Grass;
+                dict[PBESpecies.Arceus_Ground].Type1 = PBEType.Ground;
+                dict[PBESpecies.Arceus_Ice].Type1 = PBEType.Ice;
+                dict[PBESpecies.Arceus_Poison].Type1 = PBEType.Poison;
+                dict[PBESpecies.Arceus_Psychic].Type1 = PBEType.Psychic;
+                dict[PBESpecies.Arceus_Rock].Type1 = PBEType.Rock;
+                dict[PBESpecies.Arceus_Steel].Type1 = PBEType.Steel;
+                dict[PBESpecies.Arceus_Water].Type1 = PBEType.Water;
+                dict[PBESpecies.Darumaka].Evolutions.Add(PBESpecies.Darmanitan_Zen);
+                Merge(PBESpecies.Darmanitan, PBESpecies.Darmanitan_Zen);
+                dict[PBESpecies.Darmanitan_Zen].PreEvolutions.Add(PBESpecies.Darumaka);
+                var allDeerling = new PBESpecies[] { PBESpecies.Deerling_Autumn, PBESpecies.Deerling_Spring, PBESpecies.Deerling_Summer, PBESpecies.Deerling_Winter };
+                var allSawsbuck = new PBESpecies[] { PBESpecies.Sawsbuck_Autumn, PBESpecies.Sawsbuck_Spring, PBESpecies.Sawsbuck_Summer, PBESpecies.Sawsbuck_Winter };
+                Merge(allDeerling);
+                dict[PBESpecies.Deerling_Autumn].Evolutions.AddRange(new[] { PBESpecies.Sawsbuck_Spring, PBESpecies.Sawsbuck_Summer, PBESpecies.Sawsbuck_Winter });
+                dict[PBESpecies.Deerling_Spring].Evolutions.AddRange(allSawsbuck);
+                dict[PBESpecies.Deerling_Summer].Evolutions.AddRange(allSawsbuck);
+                dict[PBESpecies.Deerling_Winter].Evolutions.AddRange(allSawsbuck);
+                Merge(allSawsbuck);
+                dict[PBESpecies.Sawsbuck_Autumn].PreEvolutions.AddRange(new[] { PBESpecies.Deerling_Spring, PBESpecies.Deerling_Summer, PBESpecies.Deerling_Winter });
+                dict[PBESpecies.Sawsbuck_Spring].PreEvolutions.AddRange(allDeerling);
+                dict[PBESpecies.Sawsbuck_Summer].PreEvolutions.AddRange(allDeerling);
+                dict[PBESpecies.Sawsbuck_Winter].PreEvolutions.AddRange(allDeerling);
+                Merge(PBESpecies.Tornadus, PBESpecies.Tornadus_Therian);
+                Merge(PBESpecies.Thundurus, PBESpecies.Thundurus_Therian);
+                Merge(PBESpecies.Landorus, PBESpecies.Landorus_Therian);
+                Merge(PBESpecies.Kyurem, PBESpecies.Kyurem_Black, PBESpecies.Kyurem_White);
+                Merge(PBESpecies.Keldeo, PBESpecies.Keldeo_Resolute);
+                Merge(PBESpecies.Meloetta, PBESpecies.Meloetta_Pirouette);
+                Merge(PBESpecies.Genesect, PBESpecies.Genesect_Burn, PBESpecies.Genesect_Chill, PBESpecies.Genesect_Douse, PBESpecies.Genesect_Shock);
+
+                #endregion
+
                 writer.WriteLine("using System;");
                 writer.WriteLine("using System.Collections.Generic;");
                 writer.WriteLine("using System.Collections.ObjectModel;");
@@ -1679,6 +1755,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                 writer.WriteLine("    {");
                 writer.WriteLine("        public static ReadOnlyDictionary<PBESpecies, PBEPokemonData> Data { get; } = new ReadOnlyDictionary<PBESpecies, PBEPokemonData>(new Dictionary<PBESpecies, PBEPokemonData>");
                 writer.WriteLine("        {");
+                dict = dict.OrderBy(k => k.Key.ToString()).ToDictionary(k => k.Key, k => k.Value);
                 KeyValuePair<PBESpecies, Pokemon> lastPkmn = dict.LastOrDefault();
                 foreach (KeyValuePair<PBESpecies, Pokemon> pkmn in dict)
                 {
@@ -1707,10 +1784,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                     writer.WriteLine($"                    new PBEAbility[] {{ {string.Join(", ", pkmn.Value.Abilities.Select(a => $"PBEAbility.{a}"))} }},");
                     writer.WriteLine("                    new Tuple<PBEMove, int, PBEMoveObtainMethod>[]");
                     writer.WriteLine("                    {");
-                    KeyValuePair<Tuple<int, PBEMove>, string> lastLevelUp = pkmn.Value.LevelUpMoves.LastOrDefault();
-                    foreach (KeyValuePair<Tuple<int, PBEMove>, string> levelup in pkmn.Value.LevelUpMoves)
+                    KeyValuePair<Tuple<int, PBEMove>, List<string>> lastLevelUp = pkmn.Value.LevelUpMoves.LastOrDefault();
+                    foreach (KeyValuePair<Tuple<int, PBEMove>, List<string>> levelup in pkmn.Value.LevelUpMoves)
                     {
-                        writer.WriteLine($"                        {(Enum.IsDefined(typeof(PBEMove), levelup.Key.Item2) ? string.Empty : "// ")}Tuple.Create(PBEMove.{levelup.Key.Item2}, {levelup.Key.Item1}, {levelup.Value}){(levelup.Equals(lastLevelUp) ? string.Empty : ",")}");
+                        writer.WriteLine($"                        {(Enum.IsDefined(typeof(PBEMove), levelup.Key.Item2) ? string.Empty : "// ")}Tuple.Create(PBEMove.{levelup.Key.Item2}, {levelup.Key.Item1}, {string.Join(" | ", levelup.Value)}){(levelup.Equals(lastLevelUp) ? string.Empty : ",")}");
                     }
                     writer.WriteLine("                    },");
                     if (pkmn.Value.OtherMoves.Count == 0)
@@ -1721,10 +1798,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         writer.WriteLine("                    new Tuple<PBEMove, PBEMoveObtainMethod>[]");
                         writer.WriteLine("                    {");
-                        KeyValuePair<PBEMove, string> lastOther = pkmn.Value.OtherMoves.LastOrDefault();
-                        foreach (KeyValuePair<PBEMove, string> other in pkmn.Value.OtherMoves)
+                        KeyValuePair<PBEMove, List<string>> lastOther = pkmn.Value.OtherMoves.LastOrDefault();
+                        foreach (KeyValuePair<PBEMove, List<string>> other in pkmn.Value.OtherMoves)
                         {
-                            writer.WriteLine($"                        {(Enum.IsDefined(typeof(PBEMove), other.Key) ? string.Empty : "// ")}Tuple.Create(PBEMove.{other.Key}, {other.Value}){(other.Equals(lastOther) ? string.Empty : ",")}");
+                            writer.WriteLine($"                        {(Enum.IsDefined(typeof(PBEMove), other.Key) ? string.Empty : "// ")}Tuple.Create(PBEMove.{other.Key}, {string.Join(" | ", other.Value)}){(other.Equals(lastOther) ? string.Empty : ",")}");
                         }
                         writer.WriteLine("                    }");
                     }
@@ -1734,7 +1811,6 @@ namespace Kermalis.PokemonBattleEngineTesting
                 writer.WriteLine("        });");
                 writer.WriteLine("    }");
                 writer.WriteLine("}");
-                writer.WriteLine();
             }
         }
 #pragma warning restore CS8321 // Local function is declared but never used

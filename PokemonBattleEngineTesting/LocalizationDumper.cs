@@ -202,14 +202,16 @@ namespace Kermalis.PokemonBattleEngineTesting
                 File.WriteAllText(@"../../../../\PokemonBattleEngine\Localization\MoveLocalization.cs", sb.ToString());
 
                 // Species
-                const uint lastSpecies = 649;
+                IEnumerable<PBESpecies> allSpecies = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Where(e => (uint)e >> 0x10 == 0).OrderBy(e => e.ToString());
+                PBESpecies lastSpecies = allSpecies.Last();
                 sb.Clear();
                 void WriteAllSpecies()
                 {
                     sb.AppendLine("        {");
-                    for (uint i = 1; i <= lastSpecies; i++)
+                    foreach (PBESpecies species in allSpecies)
                     {
-                        sb.AppendLine($"            {(Enum.IsDefined(typeof(PBESpecies), i) ? string.Empty : "// ")}{{ PBESpecies.{(PBESpecies)i}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(i == lastSpecies ? string.Empty : ",")}");
+                        uint i = (uint)species;
+                        sb.AppendLine($"            {{ PBESpecies.{(PBESpecies)i}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(species == lastSpecies ? string.Empty : ",")}");
                     }
                     sb.AppendLine("        });");
                 }

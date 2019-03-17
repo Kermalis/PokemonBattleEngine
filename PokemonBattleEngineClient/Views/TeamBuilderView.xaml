@@ -40,7 +40,7 @@
             <Image Source="{Binding Source='Shiny', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           </CheckBox>
           <Image Grid.Row="1" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Species:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <DropDown Grid.Row="1" Grid.Column="1" Name="Species" Items="{Binding AvailableSpecies}">
+          <DropDown Grid.Row="1" Grid.Column="1" Name="Species" Items="{Binding Species}">
             <DropDown.ItemTemplate>
               <DataTemplate>
                 <StackPanel Spacing="4" Orientation="Horizontal">

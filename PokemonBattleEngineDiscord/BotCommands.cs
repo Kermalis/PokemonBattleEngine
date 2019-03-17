@@ -208,7 +208,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         case PBEGenderRatio.M3_F1: ratio = "75% Male, 25% Female"; break;
                         case PBEGenderRatio.M1_F1: ratio = "50% Male, 50% Female"; break;
                         case PBEGenderRatio.M1_F3: ratio = "25% Male, 75% Female"; break;
-                        case PBEGenderRatio.M1_F7: ratio = "12.5% Male, 87.5% Female"; break;
                         case PBEGenderRatio.M0_F1: ratio = "100% Female"; break;
                         case PBEGenderRatio.M1_F0: ratio = "100% Male"; break;
                         case PBEGenderRatio.M0_F0: ratio = "Genderless Species"; break;

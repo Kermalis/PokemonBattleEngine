@@ -18,7 +18,9 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 ----
 # To Do:
 * Rotation battles, triple battle shifting, and triple battle auto-center
-* Add lots of items and most moves, Pokémon, and secondary statuses (torment, infatuated, etc.)
+* Dump Pokémon XD: Gale of Darkness move tutor compatibility
+* Separate forme-specific moves in PokemonData and instead have legality checker do some work
+* Add lots of items, moves, and secondary statuses (torment, infatuated, etc.)
 * Protect from corrupt packets (if they are even a problem)
 * Mobile HP bars
 * Player left packet
@@ -38,3 +40,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 # PokemonBattleEngineMobile Uses:
 * [Xamarin.Forms](https://github.com/xamarin/Xamarin.Forms)
 * [FFImageLoading](https://github.com/luberda-molinet/FFImageLoading)
+
+# PokemonBattleEngineTesting Uses:
+* [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)

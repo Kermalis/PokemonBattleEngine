@@ -50,7 +50,6 @@ namespace Kermalis.PokemonBattleEngine
                 case PBEGenderRatio.M3_F1: return rand.ApplyChance(750, 1000) ? PBEGender.Male : PBEGender.Female;
                 case PBEGenderRatio.M1_F1: return rand.ApplyChance(500, 1000) ? PBEGender.Male : PBEGender.Female;
                 case PBEGenderRatio.M1_F3: return rand.ApplyChance(250, 1000) ? PBEGender.Male : PBEGender.Female;
-                case PBEGenderRatio.M1_F7: return rand.ApplyChance(125, 1000) ? PBEGender.Male : PBEGender.Female;
                 case PBEGenderRatio.M0_F1: return PBEGender.Female;
                 case PBEGenderRatio.M0_F0: return PBEGender.Genderless;
                 case PBEGenderRatio.M1_F0: return PBEGender.Male;
