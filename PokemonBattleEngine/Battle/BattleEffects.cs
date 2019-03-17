@@ -286,7 +286,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         case PBEWeather.Sandstorm:
                             {
-                                if (!pkmn.HasType(PBEType.Ice)
+                                if (!pkmn.HasType(PBEType.Rock)
                                     && !pkmn.HasType(PBEType.Ground)
                                     && !pkmn.HasType(PBEType.Steel)
                                     && pkmn.Ability != PBEAbility.Overcoat
