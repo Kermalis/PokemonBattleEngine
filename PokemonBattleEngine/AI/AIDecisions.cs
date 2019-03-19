@@ -340,19 +340,22 @@ namespace Kermalis.PokemonBattleEngine.AI
                             possibleActions.Add(Tuple.Create(mAction, score));
                         }
                     }
-                    for (int s = 0; s < availableForSwitch.Length; s++) // Score switches
+                    if (pkmn.CanSwitchOut())
                     {
-                        PBEPokemon switchPkmn = availableForSwitch[s];
-                        // TODO: Entry hazards
-                        // TODO: Known moves of active battlers
-                        // TODO: Type effectiveness
-                        double score = 0.0;
-                        var sAction = new PBEAction
+                        for (int s = 0; s < availableForSwitch.Length; s++) // Score switches
                         {
-                            Decision = PBEDecision.SwitchOut,
-                            SwitchPokemonId = switchPkmn.Id
-                        };
-                        possibleActions.Add(Tuple.Create(sAction, score));
+                            PBEPokemon switchPkmn = availableForSwitch[s];
+                            // TODO: Entry hazards
+                            // TODO: Known moves of active battlers
+                            // TODO: Type effectiveness
+                            double score = 0.0;
+                            var sAction = new PBEAction
+                            {
+                                Decision = PBEDecision.SwitchOut,
+                                SwitchPokemonId = switchPkmn.Id
+                            };
+                            possibleActions.Add(Tuple.Create(sAction, score));
+                        }
                     }
 
                     string ToDebugString(Tuple<PBEAction, double> a)

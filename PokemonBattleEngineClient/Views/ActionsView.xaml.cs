@@ -385,7 +385,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public void DisplayActions(PBEPokemon pkmn)
         {
             Pokemon = pkmn;
-            Party = pkmn.Team.Party.Select(p => new PokemonInfo(p, pkmn.TempLockedMove != PBEMove.None || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn));
+            Party = pkmn.Team.Party.Select(p => new PokemonInfo(p, !pkmn.CanSwitchOut() || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn));
             Moves = pkmn.GetUsableMoves().Select(m => new MoveInfo(pkmn, m, SelectMoveForTurn));
             MovesVisible = true;
         }

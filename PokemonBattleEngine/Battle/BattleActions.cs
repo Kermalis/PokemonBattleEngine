@@ -63,7 +63,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var standBy = new List<PBEPokemon>();
             foreach (PBEAction action in actions)
             {
-                PBEPokemon pkmn = team.Battle.TryGetPokemon(action.PokemonId);
+                PBEPokemon pkmn = team.TryGetPokemon(action.PokemonId);
                 if (!team.ActionsRequired.Contains(pkmn))
                 {
                     return false;
@@ -83,13 +83,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     case PBEDecision.SwitchOut:
                         {
-                            if (pkmn.TempLockedMove != PBEMove.None)
+                            if (!pkmn.CanSwitchOut())
                             {
                                 return false;
                             }
-                            PBEPokemon switchPkmn = team.Battle.TryGetPokemon(action.SwitchPokemonId);
+                            PBEPokemon switchPkmn = team.TryGetPokemon(action.SwitchPokemonId);
                             if (switchPkmn == null
-                                || switchPkmn.Team != team
                                 || switchPkmn.HP == 0
                                 || switchPkmn.FieldPosition != PBEFieldPosition.None // Also takes care of trying to switch into yourself
                                 || standBy.Contains(switchPkmn)

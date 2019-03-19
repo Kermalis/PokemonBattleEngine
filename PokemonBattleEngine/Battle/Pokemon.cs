@@ -653,6 +653,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
         /// <summary>
+        /// Returns True if the Pokémon can switch out. Does not check if the Pokémon is on the field or if there are available Pokémon to switch into.
+        /// </summary>
+        public bool CanSwitchOut()
+        {
+            return TempLockedMove == PBEMove.None;
+        }
+        /// <summary>
         /// Returns an array of moves the Pokémon can use.
         /// </summary>
         public PBEMove[] GetUsableMoves()

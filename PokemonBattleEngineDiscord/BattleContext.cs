@@ -1097,26 +1097,29 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         var allMessages = new List<IUserMessage>(PBESettings.DefaultSettings.MaxPartySize);
                         var reactionsToAdd = new List<Tuple<IUserMessage, IEmote>>(PBESettings.DefaultSettings.MaxPartySize - 1 + PBESettings.DefaultSettings.NumMoves); // 5 switch reactions, 4 move reactions
 
-                        async Task SwitchReactionClicked(IUserMessage switchMsg, PBEPokemon switchPkmn)
+                        if (mainPkmn.CanSwitchOut())
                         {
-                            await switchMsg.AddReactionAsync(confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
-                            var action = new PBEAction
+                            async Task SwitchReactionClicked(IUserMessage switchMsg, PBEPokemon switchPkmn)
                             {
-                                Decision = PBEDecision.SwitchOut,
-                                PokemonId = mainPkmn.Id,
-                                SwitchPokemonId = switchPkmn.Id
-                            };
-                            PBEBattle.SelectActionsIfValid(arp.Team, new[] { action });
-                        }
+                                await switchMsg.AddReactionAsync(confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
+                                var action = new PBEAction
+                                {
+                                    Decision = PBEDecision.SwitchOut,
+                                    PokemonId = mainPkmn.Id,
+                                    SwitchPokemonId = switchPkmn.Id
+                                };
+                                PBEBattle.SelectActionsIfValid(arp.Team, new[] { action });
+                            }
 
-                        PBEPokemon[] switches = arp.Team.Party.Where(p => p != mainPkmn && p.HP > 0).ToArray();
-                        for (int i = 0; i < switches.Length; i++)
-                        {
-                            PBEPokemon switchPkmn = switches[i];
-                            IUserMessage switchMsg = await CreateAndSendEmbedAsync(CustomPokemonToString(switchPkmn, false), messageText: i == 0 ? separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, userToSendTo: user);
-                            allMessages.Add(switchMsg);
-                            reactionsToAdd.Add(Tuple.Create(switchMsg, (IEmote)switchEmoji));
-                            ReactionListener.AddListener(switchMsg, allMessages, switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
+                            PBEPokemon[] switches = arp.Team.Party.Where(p => p != mainPkmn && p.HP > 0).ToArray();
+                            for (int i = 0; i < switches.Length; i++)
+                            {
+                                PBEPokemon switchPkmn = switches[i];
+                                IUserMessage switchMsg = await CreateAndSendEmbedAsync(CustomPokemonToString(switchPkmn, false), messageText: i == 0 ? separator : string.Empty, pkmn: switchPkmn, useUpperImage: true, userToSendTo: user);
+                                allMessages.Add(switchMsg);
+                                reactionsToAdd.Add(Tuple.Create(switchMsg, (IEmote)switchEmoji));
+                                ReactionListener.AddListener(switchMsg, allMessages, switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
+                            }
                         }
 
                         IUserMessage mainMsg = await CreateAndSendEmbedAsync($"{CustomPokemonToString(mainPkmn, true)}\nTo check a move: `!move info {PBEUtils.Sample(PBEMoveLocalization.Names).Value.English}`", pkmn: mainPkmn, useUpperImage: false, userToSendTo: user);
