@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
@@ -104,139 +103,136 @@ namespace Kermalis.PokemonBattleEngineTesting
                     spa = ReadTextFile(spanish);
                 }
 
-                // Abilities
-                IEnumerable<PBEAbility> allAbilities = new[] { PBEAbility.None }.Concat(Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }).OrderBy(e => e.ToString()));
-                PBEAbility lastAbility = allAbilities.Last();
-                var sb = new StringBuilder();
-                void WriteAllAbilities()
+                using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Localization\AbilityLocalization.cs"))
                 {
-                    sb.AppendLine("        {");
-                    foreach (PBEAbility ability in allAbilities)
+                    IEnumerable<PBEAbility> allAbilities = new[] { PBEAbility.None }.Concat(Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }).OrderBy(e => e.ToString()));
+                    PBEAbility lastAbility = allAbilities.Last();
+                    void WriteAll()
                     {
-                        byte i = (byte)ability;
-                        sb.AppendLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(ability == lastAbility ? string.Empty : ",")}");
+                        writer.WriteLine("        {");
+                        foreach (PBEAbility ability in allAbilities)
+                        {
+                            byte i = (byte)ability;
+                            writer.WriteLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(ability == lastAbility ? string.Empty : ",")}");
+                        }
+                        writer.WriteLine("        });");
                     }
-                    sb.AppendLine("        });");
+                    writer.WriteLine("using Kermalis.PokemonBattleEngine.Data;");
+                    writer.WriteLine("using System.Collections.Generic;");
+                    writer.WriteLine("using System.Collections.ObjectModel;");
+                    writer.WriteLine();
+                    writer.WriteLine("namespace Kermalis.PokemonBattleEngine.Localization");
+                    writer.WriteLine("{");
+                    writer.WriteLine("    public static class PBEAbilityLocalization");
+                    writer.WriteLine("    {");
+                    writer.WriteLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
+                    LoadTexts(374);
+                    WriteAll();
+                    writer.WriteLine();
+                    writer.WriteLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
+                    LoadTexts(375);
+                    WriteAll();
+                    writer.WriteLine("    }");
+                    writer.WriteLine("}");
                 }
-                sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
-                sb.AppendLine("using System.Collections.Generic;");
-                sb.AppendLine("using System.Collections.ObjectModel;");
-                sb.AppendLine();
-                sb.AppendLine("namespace Kermalis.PokemonBattleEngine.Localization");
-                sb.AppendLine("{");
-                sb.AppendLine("    public static class PBEAbilityLocalization");
-                sb.AppendLine("    {");
-                sb.AppendLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
-                LoadTexts(374);
-                WriteAllAbilities();
-                sb.AppendLine();
-                sb.AppendLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
-                LoadTexts(375);
-                WriteAllAbilities();
-                sb.AppendLine("    }");
-                sb.AppendLine("}");
-                File.WriteAllText(@"../../../../\PokemonBattleEngine\Localization\AbilityLocalization.cs", sb.ToString());
-
-                // Items
-                IEnumerable<PBEItem> allItems = new[] { PBEItem.None }.Concat(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>().Except(new[] { PBEItem.None }).OrderBy(e => e.ToString()));
-                PBEItem lastItem = allItems.Last();
-                sb.Clear();
-                void WriteAllItems()
+                using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Localization\ItemLocalization.cs"))
                 {
-                    sb.AppendLine("        {");
-                    foreach (PBEItem item in allItems)
+                    IEnumerable<PBEItem> allItems = new[] { PBEItem.None }.Concat(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>().Except(new[] { PBEItem.None }).OrderBy(e => e.ToString()));
+                    PBEItem lastItem = allItems.Last();
+                    void WriteAll()
                     {
-                        ushort i = (ushort)item;
-                        sb.AppendLine($"            {{ PBEItem.{item}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(item == lastItem ? string.Empty : ",")}");
+                        writer.WriteLine("        {");
+                        foreach (PBEItem item in allItems)
+                        {
+                            ushort i = (ushort)item;
+                            writer.WriteLine($"            {{ PBEItem.{item}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(item == lastItem ? string.Empty : ",")}");
+                        }
+                        writer.WriteLine("        });");
                     }
-                    sb.AppendLine("        });");
+                    writer.WriteLine("using Kermalis.PokemonBattleEngine.Data;");
+                    writer.WriteLine("using System.Collections.Generic;");
+                    writer.WriteLine("using System.Collections.ObjectModel;");
+                    writer.WriteLine();
+                    writer.WriteLine("namespace Kermalis.PokemonBattleEngine.Localization");
+                    writer.WriteLine("{");
+                    writer.WriteLine("    public static class PBEItemLocalization");
+                    writer.WriteLine("    {");
+                    writer.WriteLine("        public static ReadOnlyDictionary<PBEItem, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEItem, PBELocalizedString>(new Dictionary<PBEItem, PBELocalizedString>()");
+                    LoadTexts(64);
+                    WriteAll();
+                    writer.WriteLine();
+                    writer.WriteLine("        public static ReadOnlyDictionary<PBEItem, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEItem, PBELocalizedString>(new Dictionary<PBEItem, PBELocalizedString>()");
+                    LoadTexts(63);
+                    WriteAll();
+                    writer.WriteLine("    }");
+                    writer.WriteLine("}");
                 }
-                sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
-                sb.AppendLine("using System.Collections.Generic;");
-                sb.AppendLine("using System.Collections.ObjectModel;");
-                sb.AppendLine();
-                sb.AppendLine("namespace Kermalis.PokemonBattleEngine.Localization");
-                sb.AppendLine("{");
-                sb.AppendLine("    public static class PBEItemLocalization");
-                sb.AppendLine("    {");
-                sb.AppendLine("        public static ReadOnlyDictionary<PBEItem, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEItem, PBELocalizedString>(new Dictionary<PBEItem, PBELocalizedString>()");
-                LoadTexts(64);
-                WriteAllItems();
-                sb.AppendLine();
-                sb.AppendLine("        public static ReadOnlyDictionary<PBEItem, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEItem, PBELocalizedString>(new Dictionary<PBEItem, PBELocalizedString>()");
-                LoadTexts(63);
-                WriteAllItems();
-                sb.AppendLine("    }");
-                sb.AppendLine("}");
-                File.WriteAllText(@"../../../../\PokemonBattleEngine\Localization\ItemLocalization.cs", sb.ToString());
-
-                // Moves
-                const ushort lastMove = (ushort)(PBEMove.MAX - 1);
-                sb.Clear();
-                void WriteAllMoves()
+                using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Localization\MoveLocalization.cs"))
                 {
-                    sb.AppendLine("        {");
-                    for (ushort i = 0; i <= lastMove; i++)
+                    const ushort lastMove = (ushort)(PBEMove.MAX - 1);
+                    void WriteAll()
                     {
-                        sb.AppendLine($"            {(Enum.IsDefined(typeof(PBEMove), i) ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(i == lastMove ? string.Empty : ",")}");
+                        writer.WriteLine("        {");
+                        for (ushort i = 0; i <= lastMove; i++)
+                        {
+                            writer.WriteLine($"            {(Enum.IsDefined(typeof(PBEMove), i) ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(i == lastMove ? string.Empty : ",")}");
+                        }
+                        writer.WriteLine("        });");
                     }
-                    sb.AppendLine("        });");
+                    writer.WriteLine("using Kermalis.PokemonBattleEngine.Data;");
+                    writer.WriteLine("using System.Collections.Generic;");
+                    writer.WriteLine("using System.Collections.ObjectModel;");
+                    writer.WriteLine();
+                    writer.WriteLine("namespace Kermalis.PokemonBattleEngine.Localization");
+                    writer.WriteLine("{");
+                    writer.WriteLine("    public static class PBEMoveLocalization");
+                    writer.WriteLine("    {");
+                    writer.WriteLine("        public static ReadOnlyDictionary<PBEMove, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEMove, PBELocalizedString>(new Dictionary<PBEMove, PBELocalizedString>()");
+                    LoadTexts(403);
+                    WriteAll();
+                    writer.WriteLine();
+                    writer.WriteLine("        public static ReadOnlyDictionary<PBEMove, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEMove, PBELocalizedString>(new Dictionary<PBEMove, PBELocalizedString>()");
+                    LoadTexts(402);
+                    WriteAll();
+                    writer.WriteLine("    }");
+                    writer.WriteLine("}");
                 }
-                sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
-                sb.AppendLine("using System.Collections.Generic;");
-                sb.AppendLine("using System.Collections.ObjectModel;");
-                sb.AppendLine();
-                sb.AppendLine("namespace Kermalis.PokemonBattleEngine.Localization");
-                sb.AppendLine("{");
-                sb.AppendLine("    public static class PBEMoveLocalization");
-                sb.AppendLine("    {");
-                sb.AppendLine("        public static ReadOnlyDictionary<PBEMove, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEMove, PBELocalizedString>(new Dictionary<PBEMove, PBELocalizedString>()");
-                LoadTexts(403);
-                WriteAllMoves();
-                sb.AppendLine();
-                sb.AppendLine("        public static ReadOnlyDictionary<PBEMove, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEMove, PBELocalizedString>(new Dictionary<PBEMove, PBELocalizedString>()");
-                LoadTexts(402);
-                WriteAllMoves();
-                sb.AppendLine("    }");
-                sb.AppendLine("}");
-                File.WriteAllText(@"../../../../\PokemonBattleEngine\Localization\MoveLocalization.cs", sb.ToString());
-
-                // Species
-                IEnumerable<PBESpecies> allSpecies = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Where(e => (uint)e >> 0x10 == 0).OrderBy(e => e.ToString());
-                PBESpecies lastSpecies = allSpecies.Last();
-                sb.Clear();
-                void WriteAllSpecies()
+                using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Localization\PokemonLocalization.cs"))
                 {
-                    sb.AppendLine("        {");
-                    foreach (PBESpecies species in allSpecies)
+                    IEnumerable<PBESpecies> allSpecies = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Where(e => (uint)e >> 0x10 == 0).OrderBy(e => e.ToString());
+                    PBESpecies lastSpecies = allSpecies.Last();
+                    void WriteAll()
                     {
-                        uint i = (uint)species;
-                        sb.AppendLine($"            {{ PBESpecies.{(PBESpecies)i}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(species == lastSpecies ? string.Empty : ",")}");
+                        writer.WriteLine("        {");
+                        foreach (PBESpecies species in allSpecies)
+                        {
+                            uint i = (uint)species;
+                            writer.WriteLine($"            {{ PBESpecies.{(PBESpecies)i}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(species == lastSpecies ? string.Empty : ",")}");
+                        }
+                        writer.WriteLine("        });");
                     }
-                    sb.AppendLine("        });");
+                    writer.WriteLine("using Kermalis.PokemonBattleEngine.Data;");
+                    writer.WriteLine("using System.Collections.Generic;");
+                    writer.WriteLine("using System.Collections.ObjectModel;");
+                    writer.WriteLine();
+                    writer.WriteLine("namespace Kermalis.PokemonBattleEngine.Localization");
+                    writer.WriteLine("{");
+                    writer.WriteLine("    public static class PBEPokemonLocalization");
+                    writer.WriteLine("    {");
+                    writer.WriteLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
+                    LoadTexts(90);
+                    WriteAll();
+                    writer.WriteLine();
+                    writer.WriteLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Entries { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
+                    LoadTexts(442);
+                    WriteAll();
+                    writer.WriteLine();
+                    writer.WriteLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Categories { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
+                    LoadTexts(464);
+                    WriteAll();
+                    writer.WriteLine("    }");
+                    writer.WriteLine("}");
                 }
-                sb.AppendLine("using Kermalis.PokemonBattleEngine.Data;");
-                sb.AppendLine("using System.Collections.Generic;");
-                sb.AppendLine("using System.Collections.ObjectModel;");
-                sb.AppendLine();
-                sb.AppendLine("namespace Kermalis.PokemonBattleEngine.Localization");
-                sb.AppendLine("{");
-                sb.AppendLine("    public static class PBEPokemonLocalization");
-                sb.AppendLine("    {");
-                sb.AppendLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
-                LoadTexts(90);
-                WriteAllSpecies();
-                sb.AppendLine();
-                sb.AppendLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Entries { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
-                LoadTexts(442);
-                WriteAllSpecies();
-                sb.AppendLine();
-                sb.AppendLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Categories { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
-                LoadTexts(464);
-                WriteAllSpecies();
-                sb.AppendLine("    }");
-                sb.AppendLine("}");
-                File.WriteAllText(@"../../../../\PokemonBattleEngine\Localization\PokemonLocalization.cs", sb.ToString());
             }
         }
     }
