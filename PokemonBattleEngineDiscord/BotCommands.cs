@@ -6,6 +6,7 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Localization;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -63,9 +64,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 else
                 {
-                    PBEPokemonShell[] team0Party = PBECompetitivePokemonShells.CreateRandomTeam(PBESettings.DefaultSettings.MaxPartySize).ToArray();
-                    PBEPokemonShell[] team1Party = PBECompetitivePokemonShells.CreateRandomTeam(PBESettings.DefaultSettings.MaxPartySize).ToArray();
-                    var battle = new PBEBattle(PBEBattleFormat.Single, PBESettings.DefaultSettings, team0Party, team1Party);
+                    PBESettings settings = PBESettings.DefaultSettings;
+                    PBEPokemonShell[] team0Party, team1Party;
+                    // Completely Randomized Pokémon
+                    team0Party = PBEUtils.CreateCompletelyRandomTeam(settings);
+                    team1Party = PBEUtils.CreateCompletelyRandomTeam(settings);
+
+                    // Randomized Competitive Pokémon
+                    /*team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
+                    team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();*/
+
+                    var battle = new PBEBattle(PBEBattleFormat.Single, settings, team0Party, team1Party);
                     battle.Teams[0].TrainerName = Context.User.Username;
                     battle.Teams[1].TrainerName = battler1.Username;
                     var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);

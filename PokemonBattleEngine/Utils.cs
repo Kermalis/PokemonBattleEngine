@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Localization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -127,6 +128,50 @@ namespace Kermalis.PokemonBattleEngine
                 fileName = fileName.Replace(c, '-');
             }
             return fileName;
+        }
+
+        public static PBEPokemonShell[] CreateCompletelyRandomTeam(PBESettings settings)
+        {
+            var team = new PBEPokemonShell[settings.MaxPartySize];
+            IEnumerable<PBESpecies> allSpecies = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.Arceus_Bug, PBESpecies.Arceus_Dark, PBESpecies.Arceus_Dragon, PBESpecies.Arceus_Electric, PBESpecies.Arceus_Fighting, PBESpecies.Arceus_Fire, PBESpecies.Arceus_Flying, PBESpecies.Arceus_Ghost, PBESpecies.Arceus_Grass, PBESpecies.Arceus_Ground, PBESpecies.Arceus_Ice, PBESpecies.Arceus_Poison, PBESpecies.Arceus_Psychic, PBESpecies.Arceus_Rock, PBESpecies.Arceus_Steel, PBESpecies.Arceus_Water, PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny, PBESpecies.Cherrim_Sunshine, PBESpecies.Darmanitan_Zen, PBESpecies.Genesect_Burn, PBESpecies.Genesect_Chill, PBESpecies.Genesect_Douse, PBESpecies.Genesect_Shock, PBESpecies.Giratina_Origin, PBESpecies.Keldeo_Resolute, PBESpecies.Meloetta_Pirouette });
+            for (int i = 0; i < settings.MaxPartySize; i++)
+            {
+                PBESpecies species = allSpecies.Sample();
+                PBEPokemonData pData = PBEPokemonData.Data[species];
+                var shell = new PBEPokemonShell
+                {
+                    Species = species,
+                    Ability = pData.Abilities.Sample(),
+                    Gender = RNG.NextGender(species),
+                    Level = settings.MaxLevel,
+                    Friendship = (byte)RNG.Next(byte.MaxValue + 1),
+                    Nature = (PBENature)RNG.Next((int)PBENature.MAX),
+                    Nickname = PBEPokemonLocalization.Names[(PBESpecies)((uint)species & 0xFFFF)].FromUICultureInfo(),
+                    Shiny = RNG.NextShiny(),
+                    EVs = new byte[6],
+                    IVs = new byte[6],
+                    PPUps = new byte[settings.NumMoves],
+                    Moves = new PBEMove[settings.NumMoves],
+                    Item = PBEItem.None
+                };
+                for (int j = 0; j < 6; j++)
+                {
+                    shell.IVs[j] = (byte)RNG.Next(settings.MaxIVs + 1);
+                }
+                var legalMoves = PBELegalityChecker.GetLegalMoves(species, shell.Level).ToList();
+                for (int j = 0; j < settings.NumMoves; j++)
+                {
+                    if (legalMoves.Count == 0)
+                    {
+                        break;
+                    }
+                    PBEMove move = legalMoves.Sample();
+                    shell.Moves[j] = move;
+                    legalMoves.Remove(move);
+                }
+                team[i] = shell;
+            }
+            return team;
         }
 
         internal static byte[] StringToBytes(string str)

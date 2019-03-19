@@ -63,7 +63,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                     }
                 case PBEPartyRequestPacket _:
                     {
-                        PBEPokemonShell[] team = PBECompetitivePokemonShells.CreateRandomTeam(Battle.Settings.MaxPartySize).ToArray();
+                        //PBEPokemonShell[] team = PBECompetitivePokemonShells.CreateRandomTeam(Battle.Settings.MaxPartySize).ToArray();
+                        PBEPokemonShell[] team = PBEUtils.CreateCompletelyRandomTeam(Battle.Settings);
                         Send(new PBEPartyResponsePacket(team));
                         break;
                     }
