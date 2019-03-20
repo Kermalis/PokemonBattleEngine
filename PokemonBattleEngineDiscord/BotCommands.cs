@@ -6,7 +6,6 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Localization;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -54,13 +53,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
             [Command("challenge")]
             public async Task Challenge(SocketUser battler1)
             {
-                if (BattleContext.GetBattleContext(battler1) != null)
+                if (battler1.Id == Context.User.Id)
                 {
-                    await Context.Channel.SendMessageAsync($"{battler1.Username} is already participating in a battle.");
+                    //
                 }
                 else if (BattleContext.GetBattleContext(Context.User) != null)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Username} is already participating in a battle.");
+                }
+                else if (BattleContext.GetBattleContext(battler1) != null)
+                {
+                    await Context.Channel.SendMessageAsync($"{battler1.Username} is already participating in a battle.");
                 }
                 else
                 {
