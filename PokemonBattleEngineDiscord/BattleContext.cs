@@ -104,6 +104,43 @@ namespace Kermalis.PokemonBattleEngineDiscord
             await CreateAndSendEmbedAsync($"{user.Username} has forfeited the match.");
         }
 
+        static void AddStatChanges(PBEPokemon pkmn, StringBuilder sb)
+        {
+            PBEStat[] statChanges = pkmn.GetChangedStats();
+            if (statChanges.Length > 0)
+            {
+                var statStrs = new List<string>(7);
+                if (Array.IndexOf(statChanges, PBEStat.Attack) != -1)
+                {
+                    statStrs.Add($"[A] x{PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.Defense) != -1)
+                {
+                    statStrs.Add($"[D] x{PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.SpAttack) != -1)
+                {
+                    statStrs.Add($"[SA] x{PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.SpDefense) != -1)
+                {
+                    statStrs.Add($"[SD] x{PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.Speed) != -1)
+                {
+                    statStrs.Add($"[S] x{PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.Accuracy) != -1)
+                {
+                    statStrs.Add($"[AC] x{PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00}");
+                }
+                if (Array.IndexOf(statChanges, PBEStat.Evasion) != -1)
+                {
+                    statStrs.Add($"[E] x{PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
+                }
+                sb.AppendLine($"**Stat changes:** {string.Join(", ", statStrs)}");
+            }
+        }
         static string CustomPokemonToString(PBEPokemon pkmn, bool addReactionChars)
         {
             var sb = new StringBuilder();
@@ -131,60 +168,27 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 if (pkmn.Status2 != PBEStatus2.None)
                 {
                     sb.AppendLine($"**Volatile status:** {pkmn.Status2}");
-                }
-                if (pkmn.Status2.HasFlag(PBEStatus2.Confused))
-                {
-                    sb.AppendLine($"**Confusion turns:** {pkmn.ConfusionCounter}");
-                }
-                if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
-                {
-                    sb.AppendLine($"**Disguised as:** {pkmn.DisguisedAsPokemon.Nickname}");
-                }
-                if (pkmn.Status2.HasFlag(PBEStatus2.Substitute))
-                {
-                    sb.AppendLine($"**Substitute HP:** {pkmn.SubstituteHP}");
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Confused))
+                    {
+                        sb.AppendLine($"**Confusion turns:** {pkmn.ConfusionCounter}");
+                    }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
+                    {
+                        sb.AppendLine($"**Disguised as:** {pkmn.DisguisedAsPokemon.Nickname}");
+                    }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Substitute))
+                    {
+                        sb.AppendLine($"**Substitute HP:** {pkmn.SubstituteHP}");
+                    }
                 }
             }
             sb.AppendLine($"**Stats:** [A] {pkmn.Attack}, [D] {pkmn.Defense}, [SA] {pkmn.SpAttack}, [SD] {pkmn.SpDefense}, [S] {pkmn.Speed}, [W] {pkmn.Weight:0.0}");
             if (pkmn.FieldPosition != PBEFieldPosition.None)
             {
-                PBEStat[] statChanges = pkmn.GetChangedStats();
-                if (statChanges.Length > 0)
-                {
-                    var statStrs = new List<string>(7);
-                    if (Array.IndexOf(statChanges, PBEStat.Attack) != -1)
-                    {
-                        statStrs.Add($"[A] x{PBEBattle.GetStatChangeModifier(pkmn.AttackChange, false):0.00}");
-                    }
-                    if (Array.IndexOf(statChanges, PBEStat.Defense) != -1)
-                    {
-                        statStrs.Add($"[D] x{PBEBattle.GetStatChangeModifier(pkmn.DefenseChange, false):0.00}");
-                    }
-                    if (Array.IndexOf(statChanges, PBEStat.SpAttack) != -1)
-                    {
-                        statStrs.Add($"[SA] x{PBEBattle.GetStatChangeModifier(pkmn.SpAttackChange, false):0.00}");
-                    }
-                    if (Array.IndexOf(statChanges, PBEStat.SpDefense) != -1)
-                    {
-                        statStrs.Add($"[SD] x{PBEBattle.GetStatChangeModifier(pkmn.SpDefenseChange, false):0.00}");
-                    }
-                    if (Array.IndexOf(statChanges, PBEStat.Speed) != -1)
-                    {
-                        statStrs.Add($"[S] x{PBEBattle.GetStatChangeModifier(pkmn.SpeedChange, false):0.00}");
-                    }
-                    if (Array.IndexOf(statChanges, PBEStat.Accuracy) != -1)
-                    {
-                        statStrs.Add($"[AC] x{PBEBattle.GetStatChangeModifier(pkmn.AccuracyChange, true):0.00}");
-                    }
-                    if (Array.IndexOf(statChanges, PBEStat.Evasion) != -1)
-                    {
-                        statStrs.Add($"[E] x{PBEBattle.GetStatChangeModifier(pkmn.EvasionChange, true):0.00}");
-                    }
-                    sb.AppendLine($"**Stat changes:** {string.Join(", ", statStrs)}");
-                }
+                AddStatChanges(pkmn, sb);
             }
-            sb.AppendLine($"**Item:** {PBEItemLocalization.Names[pkmn.Item].English}");
             sb.AppendLine($"**Ability:** {PBEAbilityLocalization.Names[pkmn.Ability].English}");
+            sb.AppendLine($"**Item:** {PBEItemLocalization.Names[pkmn.Item].English}");
             if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
             {
                 sb.AppendLine($"**Hidden Power:** {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
@@ -216,6 +220,54 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 moveStrs[i] = str;
             }
             sb.Append($"**Usable moves:** {string.Join(", ", moveStrs)}");
+            return sb.ToString();
+        }
+        static string CustomKnownPokemonToString(PBEPokemon pkmn)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {pkmn.KnownGenderSymbol} Lv.{pkmn.Level}");
+            sb.AppendLine($"**HP:** {pkmn.HPPercentage:P2}");
+            sb.AppendLine($"**Known types:** {pkmn.KnownType1}/{pkmn.KnownType2}");
+            if (pkmn.Status1 != PBEStatus1.None)
+            {
+                sb.AppendLine($"**Main status:** {pkmn.Status1}");
+            }
+            if (pkmn.Status1 == PBEStatus1.Asleep)
+            {
+                sb.AppendLine($"**Sleep turns:** {pkmn.Status1Counter}");
+            }
+            else if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
+            {
+                sb.AppendLine($"**Toxic Counter:** {pkmn.Status1Counter}");
+            }
+            if (pkmn.Status2 != PBEStatus2.None)
+            {
+                PBEStatus2 cleanStatus = pkmn.Status2;
+                cleanStatus &= ~PBEStatus2.Disguised;
+                sb.AppendLine($"**Volatile status:** {cleanStatus}");
+                if (pkmn.Status2.HasFlag(PBEStatus2.Confused))
+                {
+                    sb.AppendLine($"**Confusion turns:** {pkmn.ConfusionCounter}");
+                }
+            }
+            PBEPokemonData.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
+            PBEPokemonData.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
+            PBEPokemonData.GetStatRange(PBEStat.Defense, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowDefense, out ushort highDefense);
+            PBEPokemonData.GetStatRange(PBEStat.SpAttack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpAttack, out ushort highSpAttack);
+            PBEPokemonData.GetStatRange(PBEStat.SpDefense, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpDefense, out ushort highSpDefense);
+            PBEPokemonData.GetStatRange(PBEStat.Speed, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowSpeed, out ushort highSpeed);
+            sb.AppendLine($"**Stat range:** [HP] {lowHP}-{highHP}, [A] {lowAttack}-{highAttack}, [D] {lowDefense}-{highDefense}, [SA] {lowSpAttack}-{highSpAttack}, [SD] {lowSpDefense}-{highSpDefense}, [S] {lowSpeed}-{highSpeed}, [W] {pkmn.KnownWeight:0.0}");
+            AddStatChanges(pkmn, sb);
+            if (pkmn.KnownAbility == PBEAbility.MAX)
+            {
+                sb.AppendLine($"**Possible abilities:** {string.Join(", ", PBEPokemonData.Data[pkmn.KnownSpecies].Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
+            }
+            else
+            {
+                sb.AppendLine($"**Known ability:** {PBEAbilityLocalization.Names[pkmn.KnownAbility].FromUICultureInfo()}");
+            }
+            sb.AppendLine($"**Known item:** {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[pkmn.KnownItem].FromUICultureInfo())}");
+            sb.Append($"**Known moves:** {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBEMoveLocalization.Names[m].FromUICultureInfo()))}");
             return sb.ToString();
         }
 
@@ -1258,7 +1310,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                 case PBETurnBeganPacket tbp:
                     {
-                        await context.channel.SendMessageAsync(separator);
+                        PBEPokemon team0Pkmn = context.battle.Teams[0].ActiveBattlers.ElementAt(0);
+                        PBEPokemon team1Pkmn = context.battle.Teams[1].ActiveBattlers.ElementAt(0);
+                        await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team0Pkmn), messageText: separator, pkmn: team0Pkmn);
+                        await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team1Pkmn), pkmn: team1Pkmn);
                         break;
                     }
             }

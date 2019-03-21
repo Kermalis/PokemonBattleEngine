@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             var sb = new StringBuilder();
 
-            void AddStatChangeLine()
+            void AddStatChanges()
             {
                 PBEStat[] statChanges = pkmn.GetChangedStats();
                 if (statChanges.Length > 0)
@@ -108,7 +108,6 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
             if (pkmn.Id == byte.MaxValue) // Unknown remote Pokémon
             {
-                PBEPokemonData pData = PBEPokemonData.Data[pkmn.KnownSpecies];
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {pkmn.KnownGenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
                 sb.AppendLine($"Known types: {pkmn.KnownType1}/{pkmn.KnownType2}");
@@ -133,11 +132,11 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine($"Stat range: [HP] {lowHP}-{highHP}, [A] {lowAttack}-{highAttack}, [D] {lowDefense}-{highDefense}, [SA] {lowSpAttack}-{highSpAttack}, [SD] {lowSpDefense}-{highSpDefense}, [S] {lowSpeed}-{highSpeed}, [W] {pkmn.KnownWeight:0.0}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    AddStatChangeLine();
+                    AddStatChanges();
                 }
                 if (pkmn.KnownAbility == PBEAbility.MAX)
                 {
-                    sb.AppendLine($"Possible abilities: {string.Join(", ", pData.Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
+                    sb.AppendLine($"Possible abilities: {string.Join(", ", PBEPokemonData.Data[pkmn.KnownSpecies].Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
                 }
                 else
                 {
@@ -164,20 +163,20 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     if (pkmn.Status2 != PBEStatus2.None)
                     {
                         sb.AppendLine($"Volatile status: {pkmn.Status2}");
-                    }
-                    if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
-                    {
-                        sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
-                    }
-                    if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
-                    {
-                        sb.AppendLine($"Seeded position: {pkmn.SeededPosition}");
+                        if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
+                        {
+                            sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
+                        }
+                        if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
+                        {
+                            sb.AppendLine($"Seeded position: {pkmn.SeededPosition}");
+                        }
                     }
                 }
                 sb.AppendLine($"Stats: [A] {pkmn.Attack}, [D] {pkmn.Defense}, [SA] {pkmn.SpAttack}, [SD] {pkmn.SpDefense}, [S] {pkmn.Speed}, [W] {pkmn.Weight:0.0}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    AddStatChangeLine();
+                    AddStatChanges();
                 }
                 sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[pkmn.Ability].FromUICultureInfo()}");
                 sb.AppendLine($"Item: {PBEItemLocalization.Names[pkmn.Item].FromUICultureInfo()}");
