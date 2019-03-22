@@ -623,31 +623,31 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The ability was changed.
         /// </summary>
-        Changed,
+        Changed = 0,
         /// <summary>
         /// The ability caused a Pokémon to change its appearance.
         /// </summary>
-        ChangedAppearance,
+        ChangedAppearance = 1,
         /// <summary>
         /// The ability cured a Pokémon from a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
         /// </summary>
-        CuredStatus,
+        CuredStatus = 2,
         /// <summary>
         /// The ability was involved with damage.
         /// </summary>
-        Damage,
+        Damage = 3,
         /// <summary>
         /// The ability prevented a Pokémon from being inflicted with a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
         /// </summary>
-        PreventedStatus,
+        PreventedStatus = 4,
         /// <summary>
         /// The ability restored a Pokémon's HP.
         /// </summary>
-        RestoredHP,
+        RestoredHP = 5,
         /// <summary>
         /// The ability was involved with weather.
         /// </summary>
-        Weather
+        Weather = 6
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEItem"/>.
@@ -657,19 +657,19 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The item caused a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/> to change.
         /// </summary>
-        ChangedStatus,
+        ChangedStatus = 0,
         /// <summary>
         /// The item was consumed by a Pokémon.
         /// </summary>
-        Consumed,
+        Consumed = 1,
         /// <summary>
         /// The item was involved with damage.
         /// </summary>
-        Damage,
+        Damage = 2,
         /// <summary>
         /// The item restored HP to a Pokémon.
         /// </summary>
-        RestoredHP
+        RestoredHP = 3
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
@@ -682,41 +682,41 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <example>
         /// <see cref="PBEStatus2.Flinching"/> prevented movement.
         /// </example>
-        Activated,
+        Activated = 0,
         /// <summary>
         /// The status was added to a Pokémon.
         /// </summary>
         /// <example>
         /// The Pokémon became <see cref="PBEStatus1.Paralyzed"/>.
         /// </example>
-        Added,
+        Added = 1,
         /// <summary>
         /// The status was cured from a Pokémon.
         /// </summary>
         /// <example>
         /// <see cref="PBEAbility.Limber"/> cured a Pokémon of <see cref="PBEStatus1.Paralyzed"/>.
         /// </example>
-        Cured,
+        Cured = 2,
         /// <summary>
         /// The status was involved with damage.
         /// </summary>
         /// <example>
         /// A Pokémon's <see cref="PBEStatus2.Substitute"/> took damage.
         /// </example>
-        Damage,
+        Damage = 3,
         /// <summary>
         /// The status has ended.
         /// </summary>
         /// <example>
         /// A Pokémon with <see cref="PBEStatus2.Confused"/> regained its senses.
         /// </example>
-        Ended
+        Ended = 4
     }
     public enum PBEBattleStatusAction : byte
     {
-        Added,
-        Cleared,
-        Ended
+        Added = 0,
+        Cleared = 1,
+        Ended = 2
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBETeamStatus"/>.
@@ -729,28 +729,28 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <example>
         /// The team set up <see cref="PBETeamStatus.LightScreen"/>.
         /// </example>
-        Added,
+        Added = 0,
         /// <summary>
         /// The status was removed from a team.
         /// </summary>
         /// <example>
         /// An opponent used <see cref="PBEMove.BrickBreak"/> and destroyed <see cref="PBETeamStatus.Reflect"/>.
         /// </example>
-        Cleared,
+        Cleared = 1,
         /// <summary>
         /// The status caused a Pokémon to take damage.
         /// </summary>
         /// <example>
         /// An Pokémon switched in and took damage from <see cref="PBETeamStatus.StealthRock"/>.
         /// </example>
-        Damage,
+        Damage = 2,
         /// <summary>
         /// The status ended.
         /// </summary>
         /// <example>
         /// <see cref="PBETeamStatus.LightScreen"/> wore off.
         /// </example>
-        Ended
+        Ended = 3
     }
     /// <summary>
     /// Represents the reason for a move failing.
@@ -760,51 +760,51 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The move did not fail.
         /// </summary>
-        None,
+        None = 0,
         /// <summary>
         /// The move failed because the target already has <see cref="PBEStatus1.Asleep"/>.
         /// </summary>
-        AlreadyAsleep,
+        AlreadyAsleep = 1,
         /// <summary>
         /// The move failed because the target already has <see cref="PBEStatus1.Burned"/>.
         /// </summary>
-        AlreadyBurned,
+        AlreadyBurned = 2,
         /// <summary>
         /// The move failed because the target already has <see cref="PBEStatus2.Confused"/>.
         /// </summary>
-        AlreadyConfused,
+        AlreadyConfused = 3,
         /// <summary>
         /// The move failed because the target already has <see cref="PBEStatus1.Paralyzed"/>.
         /// </summary>
-        AlreadyParalyzed,
+        AlreadyParalyzed = 4,
         /// <summary>
         /// The move failed because the target already has <see cref="PBEStatus1.BadlyPoisoned"/> or <see cref="PBEStatus1.Poisoned"/>.
         /// </summary>
-        AlreadyPoisoned,
+        AlreadyPoisoned = 5,
         /// <summary>
         /// The move failed because the target already has <see cref="PBEStatus2.Substitute"/>.
         /// </summary>
-        AlreadySubstituted,
+        AlreadySubstituted = 6,
         /// <summary>
         /// General failure.
         /// </summary>
-        Default,
+        Default = 7,
         /// <summary>
         /// The move tried to heal a Pokémon's HP when it was already full.
         /// </summary>
-        HPFull,
+        HPFull = 8,
         /// <summary>
         /// The move failed because the Pokémon was immune to the move.
         /// </summary>
-        Ineffective,
+        Ineffective = 9,
         /// <summary>
         /// The move was used when there were no available targets to hit.
         /// </summary>
-        NoTarget,
+        NoTarget = 10,
         /// <summary>
         /// The one-hit-knockout move failed because the target was a higher level than the user.
         /// </summary>
-        OneHitKnockoutUnaffected
+        OneHitKnockoutUnaffected = 11
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEWeather"/>.
@@ -814,31 +814,31 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The weather was added to the battle.
         /// </summary>
-        Added,
+        Added = 0,
         /// <summary>
         /// The weather caused a Pokémon to take damage.
         /// </summary>
-        CausedDamage,
+        CausedDamage = 1,
         /// <summary>
         /// The weather was removed from the battle.
         /// </summary>
-        Ended
+        Ended = 2
     }
     public enum PBESpecialMessage : byte
     {
-        DraggedOut,
-        Endure,
-        HPDrained,
-        Magnitude,
-        OneHitKnockout,
-        PainSplit,
-        Recoil,
-        Struggle,
+        DraggedOut = 0,
+        Endure = 1,
+        HPDrained = 2,
+        Magnitude = 3,
+        OneHitKnockout = 4,
+        PainSplit = 5,
+        Recoil = 6,
+        Struggle = 7,
     }
     public enum PBEMoveLockType : byte
     {
-        ChoiceItem,
-        Temporary
+        ChoiceItem = 0,
+        Temporary = 1
     }
     public enum PBEType : byte
     {
