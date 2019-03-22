@@ -2,7 +2,6 @@
 using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
 using System;
 using System.Collections.Generic;
 using System.IO;

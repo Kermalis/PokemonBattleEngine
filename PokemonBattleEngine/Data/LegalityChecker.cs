@@ -238,7 +238,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.IVs), $"{nameof(shell.IVs)} array can only have a length of 6.");
             }
-            if (shell.IVs.Any(i => i > settings.MaxIVs))
+            if (Array.Exists(shell.IVs, i => i > settings.MaxIVs))
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.IVs), $"Each IV cannot exceed {settings.MaxIVs}.");
             }
@@ -258,7 +258,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.PPUps), $"{nameof(shell.PPUps)} array can only have a length of {settings.NumMoves}.");
             }
-            if (shell.PPUps.Any(p => p > settings.MaxPPUps))
+            if (Array.Exists(shell.PPUps, p => p > settings.MaxPPUps))
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.PPUps), $"Each PP-Up cannot exceed {settings.MaxPPUps}.");
             }

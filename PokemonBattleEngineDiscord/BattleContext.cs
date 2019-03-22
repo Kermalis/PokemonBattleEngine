@@ -643,7 +643,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                 case PBEPkmnFaintedPacket pfap:
                     {
-                        PBEPokemon pokemon = context.battle.TryGetPokemon(pfap.PokemonId);
+                        PBEPokemon pokemon = pfap.PokemonTeam.TryGetPokemon(pfap.PokemonId);
                         await context.CreateAndSendEmbedAsync(string.Format("{0} fainted!", NameForTrainer(pokemon)), pkmn: pokemon);
                         break;
                     }
@@ -713,7 +713,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         {
                             foreach (PBEPkmnSwitchInPacket.PBESwitchInInfo info in psip.SwitchIns)
                             {
-                                PBEPokemon pokemon = context.battle.TryGetPokemon(info.PokemonId);
+                                PBEPokemon pokemon = psip.Team.TryGetPokemon(info.PokemonId);
                                 await context.CreateAndSendEmbedAsync(string.Format("{1} sent out {0}!", pokemon.KnownNickname, psip.Team.TrainerName), pkmn: pokemon);
                             }
                         }
@@ -723,7 +723,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         if (!psop.Forced)
                         {
-                            PBEPokemon pokemon = context.battle.TryGetPokemon(psop.PokemonId);
+                            PBEPokemon pokemon = psop.PokemonTeam.TryGetPokemon(psop.PokemonId);
                             await context.CreateAndSendEmbedAsync(string.Format("{1} withdrew {0}!", pokemon.KnownNickname, pokemon.Team.TrainerName), pkmn: pokemon);
                         }
                         break;

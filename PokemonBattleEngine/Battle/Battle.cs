@@ -88,7 +88,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         // Sets BattleState to PBEBattleState.ReadyToBegin
         void CheckForReadiness()
         {
-            if (Teams.All(t => t.NumPkmnAlive > 0))
+            if (Array.TrueForAll(Teams, t => t.NumPkmnAlive > 0))
             {
                 switch (BattleFormat)
                 {

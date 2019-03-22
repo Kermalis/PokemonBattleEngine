@@ -613,7 +613,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            pokemon = battle.TryGetPokemon(pfap.PokemonId);
+                            pokemon = pfap.PokemonTeam.TryGetPokemon(pfap.PokemonId);
                         }
                         Console.WriteLine("{0} fainted!", NameForTrainer(pokemon));
                         break;
@@ -704,7 +704,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else
                             {
-                                pokemon = battle.TryGetPokemon(psop.PokemonId);
+                                pokemon = psop.PokemonTeam.TryGetPokemon(psop.PokemonId);
                             }
                             Console.WriteLine("{1} withdrew {0}!", pokemon.KnownNickname, pokemon.Team.TrainerName);
                         }

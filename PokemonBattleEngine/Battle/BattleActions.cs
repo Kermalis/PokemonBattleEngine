@@ -124,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 team.ActionsRequired.Clear();
                 foreach (PBEAction action in actions)
                 {
-                    PBEPokemon pkmn = team.Battle.TryGetPokemon(action.PokemonId);
+                    PBEPokemon pkmn = team.TryGetPokemon(action.PokemonId);
                     pkmn.SelectedAction = action;
                     switch (pkmn.SelectedAction.Decision)
                     {
@@ -207,7 +207,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                     }
                 }
-                if (team.Battle.Teams.All(t => t.ActionsRequired.Count == 0))
+                if (Array.TrueForAll(team.Battle.Teams, t => t.ActionsRequired.Count == 0))
                 {
                     team.Battle.BattleState = PBEBattleState.ReadyToRunTurn;
                     team.Battle.OnStateChanged?.Invoke(team.Battle);
@@ -236,8 +236,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             foreach (Tuple<byte, PBEFieldPosition> s in switches)
             {
-                PBEPokemon pkmn = team.Battle.TryGetPokemon(s.Item1);
-                if (pkmn == null || pkmn.Team != team || pkmn.HP == 0 || pkmn.FieldPosition != PBEFieldPosition.None)
+                PBEPokemon pkmn = team.TryGetPokemon(s.Item1);
+                if (pkmn == null || pkmn.HP == 0 || pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     return false;
                 }
@@ -262,11 +262,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 team.SwitchInsRequired = 0;
                 foreach (Tuple<byte, PBEFieldPosition> s in switches)
                 {
-                    PBEPokemon pkmn = team.Battle.TryGetPokemon(s.Item1);
+                    PBEPokemon pkmn = team.TryGetPokemon(s.Item1);
                     pkmn.FieldPosition = s.Item2;
                     team.SwitchInQueue.Add(pkmn);
                 }
-                if (team.Battle.Teams.All(t => t.SwitchInsRequired == 0))
+                if (Array.TrueForAll(team.Battle.Teams, t => t.SwitchInsRequired == 0))
                 {
                     team.Battle.SwitchesOrActions();
                 }

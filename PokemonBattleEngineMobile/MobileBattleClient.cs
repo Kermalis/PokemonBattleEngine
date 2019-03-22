@@ -631,12 +631,12 @@ namespace Kermalis.PokemonBattleEngineMobile
                             }
                             else
                             {
-                                pokemon = Battle.TryGetPokemon(info.PokemonId);
+                                pokemon = psip.Team.TryGetPokemon(info.PokemonId);
                                 pokemon.FieldPosition = info.FieldPosition;
                                 if (info.DisguisedAsId != info.PokemonId)
                                 {
                                     pokemon.Status2 |= PBEStatus2.Disguised;
-                                    pokemon.DisguisedAsPokemon = Battle.TryGetPokemon(info.DisguisedAsId);
+                                    pokemon.DisguisedAsPokemon = psip.Team.TryGetPokemon(info.DisguisedAsId);
                                     pokemon.KnownGender = pokemon.DisguisedAsPokemon.Gender;
                                     pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Nickname;
                                     pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;

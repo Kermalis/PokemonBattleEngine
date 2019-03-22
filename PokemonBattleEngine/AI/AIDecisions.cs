@@ -36,7 +36,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             for (int i = 0; i < actions.Length; i++)
             {
                 PBEPokemon pkmn = team.ActionsRequired[i];
-                if (pkmn.Moves.All(m => m == PBEMove.None))
+                if (Array.TrueForAll(pkmn.Moves, m => m == PBEMove.None))
                 {
                     throw new ArgumentOutOfRangeException(nameof(pkmn.Moves), $"{pkmn.Nickname} has no moves.");
                 }
