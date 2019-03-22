@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public ReactiveCommand SelectPokemonCommand { get; }
 
         public PBEPokemon Pokemon { get; }
-        public string Description => Utils.CustomPokemonToString(Pokemon);
+        public string Description => Utils.CustomPokemonToString(Pokemon, true);
 
         public PokemonInfo(PBEPokemon pkmn, bool locked, Action<PBEPokemon> clickAction)
         {

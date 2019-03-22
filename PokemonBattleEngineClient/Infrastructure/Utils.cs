@@ -64,7 +64,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
         }
 
-        public static string CustomPokemonToString(PBEPokemon pkmn)
+        public static string CustomPokemonToString(PBEPokemon pkmn, bool showRawValues)
         {
             var sb = new StringBuilder();
 
@@ -106,7 +106,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
             }
 
-            if (pkmn.Id == byte.MaxValue) // Unknown remote Pokémon
+            if (!showRawValues)
             {
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {pkmn.KnownGenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
@@ -121,7 +121,9 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None && pkmn.Status2 != PBEStatus2.None)
                 {
-                    sb.AppendLine($"Volatile status: {pkmn.Status2}");
+                    PBEStatus2 cleanStatus = pkmn.Status2;
+                    cleanStatus &= ~PBEStatus2.Disguised;
+                    sb.AppendLine($"Volatile status: {cleanStatus}");
                 }
                 PBEPokemonData.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
                 PBEPokemonData.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);

@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Views;
@@ -65,7 +66,6 @@ namespace Kermalis.PokemonBattleEngineClient
             ConnectText = "Connecting...";
             var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.settings, teamBuilder.team.Item2);
             var battleView = new BattleView(client);
-
             new Thread(() =>
             {
                 client.Connect();
@@ -75,12 +75,14 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         battles.Add(client);
                         var pages = tabs.Items.Cast<object>().ToList();
-                        pages.Add(new TabItem
+                        var tab = new TabItem
                         {
                             Header = "Battle " + battles.Count,
                             Content = battleView
-                        });
+                        };
+                        pages.Add(tab);
                         tabs.Items = pages;
+                        tabs.SelectedItem = tab;
                     }
                     ConnectText = "Connect";
                     connectEnabled.OnNext(true);
@@ -92,21 +94,41 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         void WatchReplay()
         {
-            var battle = PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineTesting\bin\Debug\netcoreapp2.1\Test Replay.pbereplay");
-
-            var client = new BattleClient(ip.Text, (int)port.Value, battle.BattleFormat, teamBuilder.settings, teamBuilder.team.Item2);
+            var client = new BattleClient(PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineTesting\bin\Debug\netcoreapp2.1\Test Replay.pbereplay"), BattleClient.ClientMode.Replay);
             var battleView = new BattleView(client);
-
             battles.Add(client);
             var pages = tabs.Items.Cast<object>().ToList();
-            pages.Add(new TabItem
+            var tab = new TabItem
             {
                 Header = "Battle " + battles.Count,
                 Content = battleView
-            });
+            };
+            pages.Add(tab);
             tabs.Items = pages;
-
-            client.Battle = battle;
+            tabs.SelectedItem = tab;
+        }
+        void SinglePlayer()
+        {
+            PBESettings settings = PBESettings.DefaultSettings;
+            PBEPokemonShell[] team0Party, team1Party;
+            team0Party = PBEUtils.CreateCompletelyRandomTeam(settings);
+            team1Party = PBEUtils.CreateCompletelyRandomTeam(settings);
+            var battle = new PBEBattle(PBEBattleFormat.Double, settings, team0Party, team1Party);
+            battle.Teams[0].TrainerName = "May";
+            battle.Teams[1].TrainerName = "Champion Steven";
+            var client = new BattleClient(battle, BattleClient.ClientMode.SinglePlayer);
+            var battleView = new BattleView(client);
+            battles.Add(client);
+            var pages = tabs.Items.Cast<object>().ToList();
+            var tab = new TabItem
+            {
+                Header = "Battle " + battles.Count,
+                Content = battleView
+            };
+            pages.Add(tab);
+            tabs.Items = pages;
+            tabs.SelectedItem = tab;
+            new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
         }
     }
 }
