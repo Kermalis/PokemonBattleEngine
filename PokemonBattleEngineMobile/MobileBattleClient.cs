@@ -159,6 +159,15 @@ namespace Kermalis.PokemonBattleEngineMobile
                                     }
                                     break;
                                 }
+                            case PBEAbility.Forecast:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a form changed packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
                             case PBEAbility.Healer:
                                 {
                                     switch (ap.AbilityAction)
@@ -548,6 +557,17 @@ namespace Kermalis.PokemonBattleEngineMobile
                         Battle.ActiveBattlers.Remove(pokemon);
                         BattleView.Field.UpdatePokemon(pokemon, pfap.PokemonPosition);
                         BattleView.AddMessage(string.Format("{0} fainted!", NameForTrainer(pokemon, true)), true, true);
+                        break;
+                    }
+                case PBEPkmnFormChangedPacket pfcp:
+                    {
+                        PBEPokemon pokemon = pfcp.PokemonTeam.TryGetPokemon(pfcp.Pokemon);
+                        pokemon.Species = pokemon.KnownSpecies = pfcp.NewSpecies;
+                        PBEPokemonData pData = PBEPokemonData.Data[pfcp.NewSpecies];
+                        pokemon.Type1 = pokemon.KnownType1 = pData.Type1;
+                        pokemon.Type2 = pokemon.KnownType2 = pData.Type2;
+                        BattleView.Field.UpdatePokemon(pokemon);
+                        BattleView.AddMessage(string.Format("{0} transformed!", NameForTrainer(pokemon, true)), true, true);
                         break;
                     }
                 case PBEPkmnHPChangedPacket phcp:

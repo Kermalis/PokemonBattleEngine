@@ -316,6 +316,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     }
                                     break;
                                 }
+                            case PBEAbility.Forecast:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a form changed packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
                             case PBEAbility.Healer:
                                 {
                                     switch (ap.AbilityAction)
@@ -645,6 +654,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         PBEPokemon pokemon = pfap.PokemonTeam.TryGetPokemon(pfap.PokemonId);
                         await context.CreateAndSendEmbedAsync(string.Format("{0} fainted!", NameForTrainer(pokemon)), pkmn: pokemon);
+                        break;
+                    }
+                case PBEPkmnFormChangedPacket pfcp:
+                    {
+                        PBEPokemon pokemon = pfcp.PokemonTeam.TryGetPokemon(pfcp.Pokemon);
+                        await context.CreateAndSendEmbedAsync(string.Format("{0} transformed!", NameForTrainer(pokemon)), pkmn: pokemon);
                         break;
                     }
                 case PBEPkmnHPChangedPacket phcp:

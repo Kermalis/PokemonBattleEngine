@@ -1987,7 +1987,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FlareBoost = 138, // TODO
         FlashFire = 18, // TODO
         FlowerGift = 122, // TODO
-        Forecast = 59, // TODO
+        Forecast = 59,
         Forewarn = 108, // TODO
         FriendGuard = 132, // TODO
         Frisk = 119, // TODO

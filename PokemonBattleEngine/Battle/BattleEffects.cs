@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             foreach (PBEPokemon pkmn in order)
             {
-                // Verified: Spikes then StealthRock then ToxicSpikes before ability
+                // Verified: (Spikes/StealthRock/ToxicSpikes in the order they were applied) before ability
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
                 {
                     BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn);
@@ -59,6 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
 
+                CastformCheck(pkmn);
                 LimberCheck(pkmn);
                 switch (pkmn.Ability)
                 {
@@ -231,6 +232,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void DoTurnEndedEffects()
         {
             IEnumerable<PBEPokemon> order = GetActingOrder(ActiveBattlers, true);
+
+            // Castform reverts to Normal Form when the weather clears
+            foreach (PBEPokemon pkmn in order)
+            {
+                CastformCheck(pkmn);
+            }
 
             // Verified: Weather before all
             foreach (PBEPokemon pkmn in order)
@@ -1315,6 +1322,31 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit) || PBEUtils.RNG.ApplyChance((int)(chance * 100), 100 * 100);
         }
 
+        void CastformCheck(PBEPokemon pkmn)
+        {
+            if (pkmn.OriginalSpecies == PBESpecies.Castform)
+            {
+                PBESpecies newSpecies = PBESpecies.Castform;
+                // Castform may be changing form because its ability was swapped or suppressed, so check for Forecast specifically before setting KnownAbility
+                if (pkmn.Ability == PBEAbility.Forecast)
+                {
+                    switch (Weather)
+                    {
+                        case PBEWeather.Hailstorm: newSpecies = PBESpecies.Castform_Snowy; break;
+                        case PBEWeather.HarshSunlight: newSpecies = PBESpecies.Castform_Sunny; break;
+                        case PBEWeather.Rain: newSpecies = PBESpecies.Castform_Rainy; break;
+                    }
+                    if (newSpecies != pkmn.Species)
+                    {
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.Forecast, PBEAbilityAction.ChangedAppearance);
+                    }
+                }
+                if (newSpecies != pkmn.Species)
+                {
+                    BroadcastPkmnFormChanged(pkmn, newSpecies);
+                }
+            }
+        }
         void IllusionBreak(PBEPokemon pkmn, PBEPokemon breaker)
         {
             if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
@@ -2185,6 +2217,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 Weather = weather;
                 WeatherCounter = (byte)(turns + (user.Item == extensionItem ? itemTurnExtension : 0));
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
+                foreach (PBEPokemon pkmn in GetActingOrder(ActiveBattlers, true))
+                {
+                    CastformCheck(pkmn);
+                }
             }
             RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
@@ -3279,6 +3315,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         else
                         {
                             BroadcastAbility(target, user, PBEAbility.None, PBEAbilityAction.Changed);
+                            CastformCheck(target);
                             IllusionBreak(target, user);
                         }
                     }

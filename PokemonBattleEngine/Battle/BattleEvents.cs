@@ -103,6 +103,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
+        void BroadcastPkmnFormChanged(PBEPokemon pokemon, PBESpecies newSpecies)
+        {
+            pokemon.Species = pokemon.KnownSpecies = newSpecies;
+            PBEPokemonData pData = PBEPokemonData.Data[newSpecies];
+            pokemon.Type1 = pokemon.KnownType1 = pData.Type1;
+            pokemon.Type2 = pokemon.KnownType2 = pData.Type2;
+            var p = new PBEPkmnFormChangedPacket(pokemon, newSpecies);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         void BroadcastPkmnHPChanged(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)
         {
             var p = new PBEPkmnHPChangedPacket(pokemon.FieldPosition, pokemon.Team, oldHP, pokemon.HP, oldHPPercentage, pokemon.HPPercentage);
@@ -268,6 +278,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     switch (ap.AbilityAction)
                                     {
                                         case PBEAbilityAction.Weather: message = "{0}'s {2} activated!"; break; // Message is displayed from a weather packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
+                            case PBEAbility.Forecast:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a form changed packet
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
@@ -616,6 +635,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             pokemon = pfap.PokemonTeam.TryGetPokemon(pfap.PokemonId);
                         }
                         Console.WriteLine("{0} fainted!", NameForTrainer(pokemon));
+                        break;
+                    }
+                case PBEPkmnFormChangedPacket pfcp:
+                    {
+                        PBEPokemon pokemon = pfcp.PokemonTeam.TryGetPokemon(pfcp.Pokemon);
+                        Console.WriteLine("{0} transformed!", NameForTrainer(pokemon));
                         break;
                     }
                 case PBEPkmnHPChangedPacket phcp:
