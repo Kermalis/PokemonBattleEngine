@@ -1046,6 +1046,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         // TODO: Rotom special moves
         // TODO: Arceus gets Draco Meteor from free tutor moves
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
+        // TODO: Egg move chain breeding?
 #pragma warning disable CS8321 // Local function is declared but never used
         public static void Dump()
         {
@@ -1193,9 +1194,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                                     {
                                         pkmn.Evolutions.Add(evo);
                                         AddSpecies(evo);
-                                        List<PBESpecies> evosPreEvos = dict[evo].PreEvolutions;
-                                        evosPreEvos.AddRange(pkmn.PreEvolutions);
-                                        evosPreEvos.Add(species);
+                                        dict[evo].PreEvolutions.Add(species);
                                     }
                                 }
                             }
@@ -1693,9 +1692,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                 dict[PBESpecies.Wormadam_Trash].PreEvolutions.Add(PBESpecies.Burmy_Trash);
                 dict[PBESpecies.Mothim].PreEvolutions.Add(PBESpecies.Burmy_Sandy);
                 dict[PBESpecies.Mothim].PreEvolutions.Add(PBESpecies.Burmy_Trash);
-                dict[PBESpecies.Cherubi].Evolutions.Add(PBESpecies.Cherrim_Sunshine);
                 Merge(PBESpecies.Cherrim, PBESpecies.Cherrim_Sunshine);
-                dict[PBESpecies.Cherrim_Sunshine].PreEvolutions.Add(PBESpecies.Cherubi);
                 Merge(PBESpecies.Shellos_East, PBESpecies.Shellos_West);
                 dict[PBESpecies.Shellos_West].Evolutions.Add(PBESpecies.Gastrodon_West);
                 Merge(PBESpecies.Gastrodon_East, PBESpecies.Gastrodon_West);
@@ -1720,9 +1717,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                 dict[PBESpecies.Arceus_Rock].Type1 = PBEType.Rock;
                 dict[PBESpecies.Arceus_Steel].Type1 = PBEType.Steel;
                 dict[PBESpecies.Arceus_Water].Type1 = PBEType.Water;
-                dict[PBESpecies.Darumaka].Evolutions.Add(PBESpecies.Darmanitan_Zen);
                 Merge(PBESpecies.Darmanitan, PBESpecies.Darmanitan_Zen);
-                dict[PBESpecies.Darmanitan_Zen].PreEvolutions.Add(PBESpecies.Darumaka);
                 var allDeerling = new PBESpecies[] { PBESpecies.Deerling_Autumn, PBESpecies.Deerling_Spring, PBESpecies.Deerling_Summer, PBESpecies.Deerling_Winter };
                 var allSawsbuck = new PBESpecies[] { PBESpecies.Sawsbuck_Autumn, PBESpecies.Sawsbuck_Spring, PBESpecies.Sawsbuck_Summer, PBESpecies.Sawsbuck_Winter };
                 Merge(allDeerling);

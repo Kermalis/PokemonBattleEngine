@@ -8,25 +8,39 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         // TODO: Include generation?
         // TODO: Sketch
+        // TODO: Same goals as MoveLegalityCheck
         public static IEnumerable<PBEMove> GetLegalMoves(PBESpecies species, byte level)
         {
-            IEnumerable<PBESpecies> evolutionChain = PBEPokemonData.Data[species].PreEvolutions.Concat(new[] { species });
+            var evolutionChain = new List<PBESpecies>();
+            void AddPreEvolutions(PBESpecies sp)
+            {
+                foreach (PBESpecies pkmn in PBEPokemonData.Data[sp].PreEvolutions)
+                {
+                    AddPreEvolutions(pkmn);
+                }
+                evolutionChain.Add(sp);
+            }
+            AddPreEvolutions(species);
 
-            IEnumerable<PBEMove> moves = Array.Empty<PBEMove>();
+            var moves = new List<PBEMove>();
             foreach (PBESpecies pkmn in evolutionChain)
             {
                 PBEPokemonData pData = PBEPokemonData.Data[pkmn];
-                moves = moves.Union(pData.LevelUpMoves.Where(t => t.Item2 <= level).Select(t => t.Item1)) // Add level-up moves
-                    .Union(pData.OtherMoves.Select(t => t.Item1)); // Add other moves
+                moves.AddRange(pData.LevelUpMoves.Where(t => t.Item2 <= level).Select(t => t.Item1).Union(pData.OtherMoves.Select(t => t.Item1)));
                 if (PBEEventPokemon.Events.ContainsKey(pkmn))
                 {
-                    moves = moves.Union(PBEEventPokemon.Events[pkmn].SelectMany(e => e.Moves)); // Add event Pokémons' moves (TODO)
+                    moves.AddRange(PBEEventPokemon.Events[pkmn].SelectMany(e => e.Moves));
                 }
             }
 
             return moves.Except(new[] { PBEMove.None });
         }
 
+        // TODO: Check where the species was born
+        // TODO: Check if moves make sense (example: learns a move in gen4 but was born in gen5/caught in dreamworld/is gen5 event)
+        // TODO: Check if HMs were transferred
+        // TODO: Check events for moves
+        // TODO: EggMove_Special
         public static void MoveLegalityCheck(PBESpecies species, byte level, IEnumerable<PBEMove> moves, PBESettings settings)
         {
             // Validate basic move rules first
@@ -50,13 +64,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             // Combine all moves from pre-evolutions
             IEnumerable<PBESpecies> evolutionChain = PBEPokemonData.Data[species].PreEvolutions.Concat(new[] { species });
 
-            IEnumerable<Tuple<PBEMove, byte, PBEMoveObtainMethod>> levelUp = new Tuple<PBEMove, byte, PBEMoveObtainMethod>[0];
-            IEnumerable<Tuple<PBEMove, PBEMoveObtainMethod>> other = new Tuple<PBEMove, PBEMoveObtainMethod>[0];
+            var levelUp = new List<Tuple<PBEMove, byte, PBEMoveObtainMethod>>();
+            var other = new List<Tuple<PBEMove, PBEMoveObtainMethod>>();
             foreach (PBESpecies pkmn in evolutionChain)
             {
                 PBEPokemonData pData = PBEPokemonData.Data[pkmn];
-                levelUp = levelUp.Union(pData.LevelUpMoves.Where(t => t.Item2 <= level));
-                other = other.Union(pData.OtherMoves);
+                levelUp.AddRange(pData.LevelUpMoves.Where(t => t.Item2 <= level));
+                other.AddRange(pData.OtherMoves);
             }
             // TODO:
             IEnumerable<PBEMove> allAsMoves = GetLegalMoves(species, level);
@@ -135,13 +149,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                     definitelyBeenInGeneration5 = true;
                 }
             }
-
-            // TODO: Check where the species was born
-            // TODO: Check if moves make sense (example: learns a move in gen4 but was born in gen5/caught in dreamworld/is gen5 event)
-            // TODO: Check if HMs were transferred
-            // TODO: Check events for moves
-            // TODO: EggMove_Special
-            ;
         }
 
         public static void ValidateShell(this PBEPokemonShell shell, PBESettings settings)
