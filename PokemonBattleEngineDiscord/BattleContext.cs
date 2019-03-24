@@ -316,6 +316,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     }
                                     break;
                                 }
+                            case PBEAbility.FlowerGift:
                             case PBEAbility.Forecast:
                                 {
                                     switch (ap.AbilityAction)

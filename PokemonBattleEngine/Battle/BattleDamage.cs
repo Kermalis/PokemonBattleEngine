@@ -863,6 +863,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 1.5;
             }
+            if (Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
+            {
+                attack *= 1.5;
+            }
             if ((moveType == PBEType.Fire || moveType == PBEType.Ice) && target.Ability == PBEAbility.ThickFat)
             {
                 attack *= 0.5;
@@ -961,6 +965,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 spDefense *= 1.5;
             }
             if (target.Item == PBEItem.Eviolite && PBEPokemonData.Data[target.OriginalSpecies].Evolutions.Count > 0)
+            {
+                spDefense *= 1.5;
+            }
+            if (Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
             {
                 spDefense *= 1.5;
             }

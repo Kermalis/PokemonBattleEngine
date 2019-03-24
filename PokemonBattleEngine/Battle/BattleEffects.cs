@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
 
-                CastformCheck(pkmn);
+                CastformCherrimCheck(pkmn);
                 LimberCheck(pkmn);
                 switch (pkmn.Ability)
                 {
@@ -233,10 +233,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             IEnumerable<PBEPokemon> order = GetActingOrder(ActiveBattlers, true);
 
-            // Castform reverts to Normal Form when the weather clears
             foreach (PBEPokemon pkmn in order)
             {
-                CastformCheck(pkmn);
+                CastformCherrimCheck(pkmn);
             }
 
             // Verified: Weather before all
@@ -1322,12 +1321,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit) || PBEUtils.RNG.ApplyChance((int)(chance * 100), 100 * 100);
         }
 
-        void CastformCheck(PBEPokemon pkmn)
+        void CastformCherrimCheck(PBEPokemon pkmn)
         {
+            // Castform & Cherrim may be changing form because their ability was swapped or suppressed, so check for the specific ability before setting KnownAbility
             if (pkmn.OriginalSpecies == PBESpecies.Castform)
             {
                 PBESpecies newSpecies = PBESpecies.Castform;
-                // Castform may be changing form because its ability was swapped or suppressed, so check for Forecast specifically before setting KnownAbility
                 if (pkmn.Ability == PBEAbility.Forecast)
                 {
                     switch (Weather)
@@ -1339,6 +1338,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (newSpecies != pkmn.Species)
                     {
                         BroadcastAbility(pkmn, pkmn, PBEAbility.Forecast, PBEAbilityAction.ChangedAppearance);
+                    }
+                }
+                if (newSpecies != pkmn.Species)
+                {
+                    BroadcastPkmnFormChanged(pkmn, newSpecies);
+                }
+            }
+            else if (pkmn.OriginalSpecies == PBESpecies.Cherrim)
+            {
+                PBESpecies newSpecies = PBESpecies.Cherrim;
+                if (pkmn.Ability == PBEAbility.FlowerGift)
+                {
+                    if (Weather == PBEWeather.HarshSunlight)
+                    {
+                        newSpecies = PBESpecies.Cherrim_Sunshine;
+                    }
+                    if (newSpecies != pkmn.Species)
+                    {
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.FlowerGift, PBEAbilityAction.ChangedAppearance);
                     }
                 }
                 if (newSpecies != pkmn.Species)
@@ -2219,7 +2237,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
                 foreach (PBEPokemon pkmn in GetActingOrder(ActiveBattlers, true))
                 {
-                    CastformCheck(pkmn);
+                    CastformCherrimCheck(pkmn);
                 }
             }
             RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
@@ -3315,7 +3333,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         else
                         {
                             BroadcastAbility(target, user, PBEAbility.None, PBEAbilityAction.Changed);
-                            CastformCheck(target);
+                            CastformCherrimCheck(target);
                             IllusionBreak(target, user);
                         }
                     }
