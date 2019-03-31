@@ -65,8 +65,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="..\PokemonBattleEngine\Data\PokemonData.db">
-      <Link>Assets\PokemonData.db</Link>
+    <AndroidAsset Include="..\PokemonBattleEngine\PokemonBattleEngine.db">
+      <Link>Assets\PokemonBattleEngine.db</Link>
     </AndroidAsset>
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>

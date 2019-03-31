@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Localization;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,33 +15,31 @@ namespace Kermalis.PokemonBattleEngine
     /// </summary>
     public static class PBEUtils
     {
-        static string databasePath = null;
-        public static string DatabasePath
+        static SQLiteConnection databaseConnection = null;
+        public static SQLiteConnection DatabaseConnection
         {
             get
             {
-                if (databasePath == null)
+                if (databaseConnection == null)
                 {
                     string path;
-                    if (IsOnAndroid)
+                    if (DoesNamespaceExist("Kermalis.PokemonBattleEngineMobile.Droid"))
                     {
-                        path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Data");
+                        path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
                     }
-                    else if (IsOnIOS)
+                    else if (DoesNamespaceExist("Kermalis.PokemonBattleEngineMobile.iOS"))
                     {
-                        path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Library", "Data");
+                        path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Library");
                     }
                     else
                     {
-                        path = "Data";
+                        path = string.Empty;
                     }
-                    databasePath = path;
+                    databaseConnection = new SQLiteConnection(Path.Combine(path, "PokemonBattleEngine.db"), SQLiteOpenFlags.ReadOnly);
                 }
-                return databasePath;
+                return databaseConnection;
             }
         }
-        public static bool IsOnAndroid { get; } = DoesNamespaceExist("Kermalis.PokemonBattleEngineMobile.Droid");
-        public static bool IsOnIOS { get; } = DoesNamespaceExist("Kermalis.PokemonBattleEngineMobile.iOS");
 
         /// <summary>
         /// An ordinary pseudo-random number generator.

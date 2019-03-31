@@ -96,8 +96,8 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <BundleResource Include="..\PokemonBattleEngine\Data\PokemonData.db">
-      <Link>Resources\PokemonData.db</Link>
+    <BundleResource Include="..\PokemonBattleEngine\PokemonBattleEngine.db">
+      <Link>Resources\PokemonBattleEngine.db</Link>
     </BundleResource>
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />

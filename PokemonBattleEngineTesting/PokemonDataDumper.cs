@@ -1050,7 +1050,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Egg move chain breeding?
 #pragma warning disable CS8321 // Local function is declared but never used
-        public static void Dump()
+        public static void Dump(string databasePath)
         {
             using (var r = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\R.gba"), Endianness.LittleEndian))
             using (var s = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\S.gba"), Endianness.LittleEndian))
@@ -1732,14 +1732,10 @@ namespace Kermalis.PokemonBattleEngineTesting
 
                 #region Write to Database
 
-                const string path = @"../../../../\PokemonBattleEngine\Data\PokemonData.db";
-                if (File.Exists(path))
+                using (var con = new SQLiteConnection(databasePath))
                 {
-                    File.Delete(path);
-                }
-                using (var con = new SQLiteConnection(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngine\Data\PokemonData.db"))
-                {
-                    con.Execute("CREATE TABLE Data(Id INTEGER PRIMARY KEY, Json TEXT)");
+                    con.Execute("DROP TABLE IF EXISTS PokemonData");
+                    con.Execute("CREATE TABLE PokemonData(Id INTEGER PRIMARY KEY, Json TEXT)");
                     foreach (KeyValuePair<PBESpecies, Pokemon> pkmn in dict)
                     {
                         var sw = new StringWriter();
@@ -1813,7 +1809,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                             writer.WriteEndArray();
                             writer.WriteEndObject();
 
-                            con.Execute("INSERT INTO Data VALUES(?, ?)", (uint)pkmn.Key, sw.ToString());
+                            con.Execute("INSERT INTO PokemonData VALUES(?, ?)", (uint)pkmn.Key, sw.ToString());
                         }
                     }
                 }

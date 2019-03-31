@@ -19,28 +19,20 @@ namespace Kermalis.PokemonBattleEngineMobile.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
-            CopyDatabases();
+            CopyDatabase();
             LoadApplication(new App());
             return base.FinishedLaunching(app, options);
         }
 
-        void CopyDatabases()
+        void CopyDatabase()
         {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Library", "Data");
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Library");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
-
-            void CopyIfNotExists(string dbName)
-            {
-                string dbPath = Path.Combine(path, $"{dbName}.db");
-                if (!File.Exists(dbPath))
-                {
-                    File.Copy(NSBundle.MainBundle.PathForResource(dbName, "db"), dbPath);
-                }
-            }
-            CopyIfNotExists("PokemonData");
+            const string dbName = "PokemonBattleEngine";
+            File.Copy(NSBundle.MainBundle.PathForResource(dbName, "db"), Path.Combine(path, $"{dbName}.db"));
         }
     }
 }

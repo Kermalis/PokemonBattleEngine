@@ -183,14 +183,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        static SQLiteConnection con = null;
         public static PBEPokemonData GetData(PBESpecies species)
         {
-            if (con == null)
-            {
-                con = new SQLiteConnection(Path.Combine(PBEUtils.DatabasePath, "PokemonData.db"), SQLiteOpenFlags.ReadOnly);
-            }
-            using (var reader = new JsonTextReader(new StringReader(con.ExecuteScalar<string>($"SELECT Json, * FROM Data WHERE Id={(uint)species}"))))
+            string json = PBEUtils.DatabaseConnection.ExecuteScalar<string>($"SELECT Json, * FROM PokemonData WHERE Id={(uint)species}");
+            using (var reader = new JsonTextReader(new StringReader(json)))
             {
                 reader.Read(); // {
                 reader.Read(); // "BaseStats":

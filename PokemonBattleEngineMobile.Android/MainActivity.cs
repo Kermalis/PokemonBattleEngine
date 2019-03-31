@@ -16,38 +16,30 @@ namespace Kermalis.PokemonBattleEngineMobile.Droid
             base.OnCreate(savedInstanceState);
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
-            CopyDatabases();
+            CopyDatabase();
             LoadApplication(new App());
         }
 
-        void CopyDatabases()
+        void CopyDatabase()
         {
-            string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "Data");
+            string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
-
-            void CopyDatabaseIfNotExists(string dbName)
+            const string dbName = "PokemonBattleEngine.db";
+            using (var br = new BinaryReader(Application.Context.Assets.Open(dbName)))
             {
-                string dbPath = Path.Combine(path, dbName);
-                if (!File.Exists(dbPath))
+                using (var bw = new BinaryWriter(new FileStream(Path.Combine(path, dbName), FileMode.Create)))
                 {
-                    using (var br = new BinaryReader(Application.Context.Assets.Open(dbName)))
+                    byte[] buffer = new byte[2048];
+                    int length = 0;
+                    while ((length = br.Read(buffer, 0, buffer.Length)) > 0)
                     {
-                        using (var bw = new BinaryWriter(new FileStream(dbPath, FileMode.Create)))
-                        {
-                            byte[] buffer = new byte[2048];
-                            int length = 0;
-                            while ((length = br.Read(buffer, 0, buffer.Length)) > 0)
-                            {
-                                bw.Write(buffer, 0, length);
-                            }
-                        }
+                        bw.Write(buffer, 0, length);
                     }
                 }
             }
-            CopyDatabaseIfNotExists("PokemonData.db");
         }
     }
 }

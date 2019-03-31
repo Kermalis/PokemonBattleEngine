@@ -12,6 +12,7 @@
 
         static void Main(string[] args)
         {
+            const string databasePath = @"../../../../\PokemonBattleEngine\PokemonBattleEngine.db";
             TestType t = TestType.PokemonDataDumper;
 
             switch (t)
@@ -19,7 +20,7 @@
                 case TestType.AIBattle: AIBattle.Test(); break;
                 case TestType.FontDumper: FontDumper.Dump(); break;
                 case TestType.LocalizationDumper: LocalizationDumper.Dump(); break;
-                case TestType.PokemonDataDumper: PokemonDataDumper.Dump(); break;
+                case TestType.PokemonDataDumper: PokemonDataDumper.Dump(databasePath); break;
             }
         }
     }
