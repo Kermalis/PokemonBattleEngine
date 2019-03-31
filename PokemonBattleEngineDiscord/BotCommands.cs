@@ -243,7 +243,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Special Attack", pData.BaseStats[3], true)
                         .AddField("Special Defense", pData.BaseStats[4], true)
                         .AddField("Speed", pData.BaseStats[5], true)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEUtils.RNG.NextGender(species), false, false));
+                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEUtils.RNG.NextGender(pData.GenderRatio), false, false));
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }
