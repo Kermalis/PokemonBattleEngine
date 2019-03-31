@@ -635,7 +635,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         if (Mode != ClientMode.SinglePlayer)
                         {
                             pokemon.Species = pokemon.KnownSpecies = pfcp.NewSpecies;
-                            PBEPokemonData pData = PBEPokemonData.Data[pfcp.NewSpecies];
+                            var pData = PBEPokemonData.GetData(pfcp.NewSpecies);
                             pokemon.Type1 = pokemon.KnownType1 = pData.Type1;
                             pokemon.Type2 = pokemon.KnownType2 = pData.Type2;
                         }
@@ -753,7 +753,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                         pokemon.KnownNickname = pokemon.DisguisedAsPokemon.Nickname;
                                         pokemon.KnownShiny = pokemon.DisguisedAsPokemon.Shiny;
                                         pokemon.KnownSpecies = pokemon.DisguisedAsPokemon.OriginalSpecies;
-                                        PBEPokemonData pData = PBEPokemonData.Data[pokemon.DisguisedAsPokemon.OriginalSpecies];
+                                        var pData = PBEPokemonData.GetData(pokemon.DisguisedAsPokemon.OriginalSpecies);
                                         pokemon.KnownType1 = pData.Type1;
                                         pokemon.KnownType2 = pData.Type2;
                                     }

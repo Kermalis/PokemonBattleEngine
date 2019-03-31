@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
         public static void GetGifResourceWidthAndHeight(string resource, out short width, out short height)
         {
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))
-            using (BinaryReader reader = new BinaryReader(stream))
+            using (var reader = new BinaryReader(stream))
             {
                 reader.ReadBytes(6); // Skip header
                 width = reader.ReadInt16();

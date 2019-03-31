@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static Color GetColor(PBESpecies species)
         {
-            PBEPokemonData pData = PBEPokemonData.Data[species];
+            var pData = PBEPokemonData.GetData(species);
             return GetColor(pData.Type1, pData.Type2);
         }
         public static Color GetColor(PBEPokemon pkmn)

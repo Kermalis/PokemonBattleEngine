@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Kermalis.PokemonBattleEngine
@@ -13,6 +14,34 @@ namespace Kermalis.PokemonBattleEngine
     /// </summary>
     public static class PBEUtils
     {
+        static string databasePath = null;
+        public static string DatabasePath
+        {
+            get
+            {
+                if (databasePath == null)
+                {
+                    string path;
+                    if (IsOnAndroid)
+                    {
+                        path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Data");
+                    }
+                    else if (IsOnIOS)
+                    {
+                        path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Library", "Data");
+                    }
+                    else
+                    {
+                        path = "Data";
+                    }
+                    databasePath = path;
+                }
+                return databasePath;
+            }
+        }
+        public static bool IsOnAndroid { get; } = DoesNamespaceExist("Kermalis.PokemonBattleEngineMobile.Droid");
+        public static bool IsOnIOS { get; } = DoesNamespaceExist("Kermalis.PokemonBattleEngineMobile.iOS");
+
         /// <summary>
         /// An ordinary pseudo-random number generator.
         /// </summary>
@@ -42,10 +71,9 @@ namespace Kermalis.PokemonBattleEngine
         {
             return rand.Next(0, ushort.MaxValue + 1) < 8;
         }
-        public static PBEGender NextGender(this Random rand, PBESpecies species)
+        public static PBEGender NextGender(this Random rand, PBEGenderRatio genderRatio)
         {
-            PBEPokemonData pData = PBEPokemonData.Data[species];
-            switch (pData.GenderRatio)
+            switch (genderRatio)
             {
                 case PBEGenderRatio.M7_F1: return rand.ApplyChance(875, 1000) ? PBEGender.Male : PBEGender.Female;
                 case PBEGenderRatio.M3_F1: return rand.ApplyChance(750, 1000) ? PBEGender.Male : PBEGender.Female;
@@ -54,7 +82,7 @@ namespace Kermalis.PokemonBattleEngine
                 case PBEGenderRatio.M0_F1: return PBEGender.Female;
                 case PBEGenderRatio.M0_F0: return PBEGender.Genderless;
                 case PBEGenderRatio.M1_F0: return PBEGender.Male;
-                default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio));
+                default: throw new ArgumentOutOfRangeException(nameof(genderRatio));
             }
         }
 
@@ -72,10 +100,6 @@ namespace Kermalis.PokemonBattleEngine
             {
                 return val;
             }
-        }
-        public static string Print<T>(this IEnumerable<T> source)
-        {
-            return "( " + string.Join(", ", source) + " )";
         }
         public static string Andify<T>(this IEnumerable<T> source)
         {
@@ -99,6 +123,10 @@ namespace Kermalis.PokemonBattleEngine
             }
             return str;
         }
+        public static string Print<T>(this IEnumerable<T> source)
+        {
+            return "( " + string.Join(", ", source) + " )";
+        }
         public static T Sample<T>(this IEnumerable<T> source)
         {
             return source.ElementAt(RNG.Next(0, source.Count()));
@@ -116,6 +144,18 @@ namespace Kermalis.PokemonBattleEngine
                 source[a] = source[b];
                 source[b] = value;
             }
+        }
+        public static bool DoesNamespaceExist(string @namespace)
+        {
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                TypeInfo[] array = assembly.DefinedTypes.ToArray();
+                if (array.Length > 0 && array[0].Namespace == @namespace)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         /// <summary>
         /// Takes a string and removes all invalid file name characters from it.
@@ -137,12 +177,12 @@ namespace Kermalis.PokemonBattleEngine
             for (int i = 0; i < settings.MaxPartySize; i++)
             {
                 PBESpecies species = allSpecies.Sample();
-                PBEPokemonData pData = PBEPokemonData.Data[species];
+                var pData = PBEPokemonData.GetData(species);
                 var shell = new PBEPokemonShell
                 {
                     Species = species,
                     Ability = pData.Abilities.Sample(),
-                    Gender = RNG.NextGender(species),
+                    Gender = RNG.NextGender(pData.GenderRatio),
                     Level = settings.MaxLevel,
                     Friendship = (byte)RNG.Next(byte.MaxValue + 1),
                     Nature = (PBENature)RNG.Next((int)PBENature.MAX),

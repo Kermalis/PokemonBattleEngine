@@ -138,7 +138,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.KnownAbility == PBEAbility.MAX)
                 {
-                    sb.AppendLine($"Possible abilities: {string.Join(", ", PBEPokemonData.Data[pkmn.KnownSpecies].Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
+                    sb.AppendLine($"Possible abilities: {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
                 }
                 else
                 {

@@ -260,7 +260,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             AddStatChanges(pkmn, sb);
             if (pkmn.KnownAbility == PBEAbility.MAX)
             {
-                sb.AppendLine($"**Possible abilities:** {string.Join(", ", PBEPokemonData.Data[pkmn.KnownSpecies].Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
+                sb.AppendLine($"**Possible abilities:** {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
             }
             else
             {

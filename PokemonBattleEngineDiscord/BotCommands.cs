@@ -207,7 +207,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 else
                 {
-                    PBEPokemonData pData = PBEPokemonData.Data[species];
+                    var pData = PBEPokemonData.GetData(species);
                     string types = pData.Type1.ToString();
                     if (pData.Type2 != PBEType.None)
                     {

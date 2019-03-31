@@ -106,7 +106,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BroadcastPkmnFormChanged(PBEPokemon pokemon, PBESpecies newSpecies)
         {
             pokemon.Species = pokemon.KnownSpecies = newSpecies;
-            PBEPokemonData pData = PBEPokemonData.Data[newSpecies];
+            var pData = PBEPokemonData.GetData(newSpecies);
             pokemon.Type1 = pokemon.KnownType1 = pData.Type1;
             pokemon.Type2 = pokemon.KnownType2 = pData.Type2;
             var p = new PBEPkmnFormChangedPacket(pokemon, newSpecies);

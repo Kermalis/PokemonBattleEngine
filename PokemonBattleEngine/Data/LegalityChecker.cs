@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             var evolutionChain = new List<PBESpecies>();
             void AddPreEvolutions(PBESpecies sp)
             {
-                foreach (PBESpecies pkmn in PBEPokemonData.Data[sp].PreEvolutions)
+                foreach (PBESpecies pkmn in PBEPokemonData.GetData(sp).PreEvolutions)
                 {
                     AddPreEvolutions(pkmn);
                 }
@@ -25,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             var moves = new List<PBEMove>();
             foreach (PBESpecies pkmn in evolutionChain)
             {
-                PBEPokemonData pData = PBEPokemonData.Data[pkmn];
+                PBEPokemonData pData = PBEPokemonData.GetData(pkmn);
                 moves.AddRange(pData.LevelUpMoves.Where(t => t.Item2 <= level).Select(t => t.Item1).Union(pData.OtherMoves.Select(t => t.Item1)));
                 if (PBEEventPokemon.Events.ContainsKey(pkmn))
                 {
@@ -62,13 +62,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Combine all moves from pre-evolutions
-            IEnumerable<PBESpecies> evolutionChain = PBEPokemonData.Data[species].PreEvolutions.Concat(new[] { species });
+            IEnumerable<PBESpecies> evolutionChain = PBEPokemonData.GetData(species).PreEvolutions.Concat(new[] { species });
 
             var levelUp = new List<Tuple<PBEMove, byte, PBEMoveObtainMethod>>();
             var other = new List<Tuple<PBEMove, PBEMoveObtainMethod>>();
             foreach (PBESpecies pkmn in evolutionChain)
             {
-                PBEPokemonData pData = PBEPokemonData.Data[pkmn];
+                var pData = PBEPokemonData.GetData(pkmn);
                 levelUp.AddRange(pData.LevelUpMoves.Where(t => t.Item2 <= level));
                 other.AddRange(pData.OtherMoves);
             }
@@ -170,7 +170,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         try
                         {
-                            pData = PBEPokemonData.Data[shell.Species];
+                            pData = PBEPokemonData.GetData(shell.Species);
                         }
                         catch (KeyNotFoundException)
                         {

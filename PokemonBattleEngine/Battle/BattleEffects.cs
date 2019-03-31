@@ -1770,7 +1770,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     pkmn.KnownNickname = last.Nickname;
                     pkmn.KnownShiny = last.Shiny;
                     pkmn.KnownSpecies = last.OriginalSpecies;
-                    PBEPokemonData pData = PBEPokemonData.Data[last.OriginalSpecies]; // If "last" is on the field and its types changed then we wouldn't want to use last.Type1
+                    var pData = PBEPokemonData.GetData(last.OriginalSpecies); // If "last" is on the field and its types changed then we wouldn't want to use last.Type1
                     pkmn.KnownType1 = pData.Type1;
                     pkmn.KnownType2 = pData.Type2;
                     return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.OriginalSpecies, last.Nickname, pkmn.Level, last.Shiny, last.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);

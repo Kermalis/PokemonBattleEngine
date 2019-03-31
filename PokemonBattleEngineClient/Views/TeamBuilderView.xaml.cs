@@ -216,8 +216,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         void AddTeam()
         {
-
-            Teams.Add(Tuple.Create($"Team {PBEUtils.RNG.Next()}", new ObservableCollection<PBEPokemonShell>()));
+            Teams.Add(Tuple.Create($"Team {DateTime.Now.Ticks}", new ObservableCollection<PBEPokemonShell>()));
             savedTeams.SelectedIndex = Teams.Count - 1;
             AddPartyMember();
         }
@@ -352,7 +351,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             if (updateControls)
             {
-                PBEPokemonData pData = PBEPokemonData.Data[shell.Species];
+                var pData = PBEPokemonData.GetData(shell.Species);
 
                 if (species.SelectedItem != (object)shell.Species)
                 {

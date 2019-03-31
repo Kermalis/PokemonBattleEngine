@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
@@ -18,20 +20,20 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ReadOnlyCollection<Tuple<PBEMove, byte, PBEMoveObtainMethod>> LevelUpMoves { get; }
         public ReadOnlyCollection<Tuple<PBEMove, PBEMoveObtainMethod>> OtherMoves { get; }
 
-        private PBEPokemonData(byte hp, byte attack, byte defense, byte spAttack, byte spDefense, byte speed,
+        private PBEPokemonData(byte[] baseStats,
             PBEType type1, PBEType type2, PBEGenderRatio genderRatio, double weight,
-            IList<PBESpecies> preEvolutions,
-            IList<PBESpecies> evolutions,
-            IList<PBEAbility> abilities,
-            IList<Tuple<PBEMove, int, PBEMoveObtainMethod>> levelUpMoves,
-            IList<Tuple<PBEMove, PBEMoveObtainMethod>> otherMoves)
+            List<PBESpecies> preEvolutions,
+            List<PBESpecies> evolutions,
+            List<PBEAbility> abilities,
+            List<Tuple<PBEMove, byte, PBEMoveObtainMethod>> levelUpMoves,
+            List<Tuple<PBEMove, PBEMoveObtainMethod>> otherMoves)
         {
-            BaseStats = new ReadOnlyCollection<byte>(new byte[] { hp, attack, defense, spAttack, spDefense, speed });
+            BaseStats = new ReadOnlyCollection<byte>(baseStats);
             Type1 = type1; Type2 = type2; GenderRatio = genderRatio; Weight = weight;
             PreEvolutions = new ReadOnlyCollection<PBESpecies>(preEvolutions);
             Evolutions = new ReadOnlyCollection<PBESpecies>(evolutions);
             Abilities = new ReadOnlyCollection<PBEAbility>(abilities);
-            LevelUpMoves = new ReadOnlyCollection<Tuple<PBEMove, byte, PBEMoveObtainMethod>>(levelUpMoves.Select(t => Tuple.Create(t.Item1, (byte)t.Item2, t.Item3)).ToArray());
+            LevelUpMoves = new ReadOnlyCollection<Tuple<PBEMove, byte, PBEMoveObtainMethod>>(levelUpMoves);
             OtherMoves = new ReadOnlyCollection<Tuple<PBEMove, PBEMoveObtainMethod>>(otherMoves);
         }
 
@@ -122,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 case PBEStat.HP:
                     {
-                        return (ushort)(species == PBESpecies.Shedinja ? 1 : (((2 * Data[species].BaseStats[0] + ivs + (evs / 4)) * level / settings.MaxLevel) + level + 10));
+                        return (ushort)(species == PBESpecies.Shedinja ? 1 : (((2 * GetData(species).BaseStats[0] + ivs + (evs / 4)) * level / settings.MaxLevel) + level + 10));
                     }
                 case PBEStat.Attack:
                 case PBEStat.Defense:
@@ -131,8 +133,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBEStat.Speed:
                     {
                         int statIndex = (int)stat;
-                        double natureMultiplier = 1.0 + (PBEPokemonData.NatureBoosts[nature][statIndex - 1] * settings.NatureStatBoost);
-                        return (ushort)((((2 * Data[species].BaseStats[statIndex] + ivs + (evs / 4)) * level / settings.MaxLevel) + 5) * natureMultiplier);
+                        double natureMultiplier = 1.0 + (NatureBoosts[nature][statIndex - 1] * settings.NatureStatBoost);
+                        return (ushort)((((2 * GetData(species).BaseStats[statIndex] + ivs + (evs / 4)) * level / settings.MaxLevel) + 5) * natureMultiplier);
                     }
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
@@ -178,6 +180,128 @@ namespace Kermalis.PokemonBattleEngine.Data
                         break;
                     }
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
+            }
+        }
+
+        static SQLiteConnection con = null;
+        public static PBEPokemonData GetData(PBESpecies species)
+        {
+            if (con == null)
+            {
+                con = new SQLiteConnection(Path.Combine(PBEUtils.DatabasePath, "PokemonData.db"), SQLiteOpenFlags.ReadOnly);
+            }
+            using (var reader = new JsonTextReader(new StringReader(con.ExecuteScalar<string>($"SELECT Json, * FROM Data WHERE Id={(uint)species}"))))
+            {
+                reader.Read(); // {
+                reader.Read(); // "BaseStats":
+                reader.Read(); // [
+                var baseStats = new byte[6];
+                for (int i = 0; i < 6; i++)
+                {
+                    reader.Read();
+                    baseStats[i] = Convert.ToByte(reader.Value);
+                }
+                reader.Read(); // ]
+                reader.Read(); // "Type1":
+                reader.Read();
+                var type1 = (PBEType)Convert.ToByte(reader.Value);
+                reader.Read(); // "Type2":
+                reader.Read();
+                var type2 = (PBEType)Convert.ToByte(reader.Value);
+                reader.Read(); // "GenderRatio":
+                reader.Read();
+                var genderRatio = (PBEGenderRatio)Convert.ToByte(reader.Value);
+                reader.Read(); // "Weight":
+                reader.Read();
+                double weight = Convert.ToDouble(reader.Value);
+                reader.Read(); // "PreEvolutions":
+                reader.Read(); // [
+                var preEvolutions = new List<PBESpecies>();
+                while (true)
+                {
+                    reader.Read();
+                    if (reader.TokenType == JsonToken.Integer)
+                    {
+                        preEvolutions.Add((PBESpecies)Convert.ToUInt32(reader.Value));
+                    }
+                    else if (reader.TokenType == JsonToken.EndArray) // ]
+                    {
+                        break;
+                    }
+                }
+                reader.Read(); // "Evolutions":
+                reader.Read(); // [
+                var evolutions = new List<PBESpecies>();
+                while (true)
+                {
+                    reader.Read();
+                    if (reader.TokenType == JsonToken.Integer)
+                    {
+                        evolutions.Add((PBESpecies)Convert.ToUInt32(reader.Value));
+                    }
+                    else if (reader.TokenType == JsonToken.EndArray) // ]
+                    {
+                        break;
+                    }
+                }
+                reader.Read(); // "Abilities":
+                reader.Read(); // [
+                var abilities = new List<PBEAbility>();
+                while (true)
+                {
+                    reader.Read();
+                    if (reader.TokenType == JsonToken.Integer)
+                    {
+                        abilities.Add((PBEAbility)Convert.ToByte(reader.Value));
+                    }
+                    else if (reader.TokenType == JsonToken.EndArray) // ]
+                    {
+                        break;
+                    }
+                }
+                reader.Read(); // "LevelUpMoves":
+                reader.Read(); // [
+                var levelUpMoves = new List<Tuple<PBEMove, byte, PBEMoveObtainMethod>>();
+                while (true)
+                {
+                    reader.Read();
+                    if (reader.TokenType == JsonToken.StartArray) // [
+                    {
+                        reader.Read();
+                        var move = (PBEMove)Convert.ToUInt16(reader.Value);
+                        reader.Read();
+                        byte level = Convert.ToByte(reader.Value);
+                        reader.Read();
+                        var method = (PBEMoveObtainMethod)Convert.ToUInt64(reader.Value);
+                        levelUpMoves.Add(Tuple.Create(move, level, method));
+                        reader.Read(); // ]
+                    }
+                    else if (reader.TokenType == JsonToken.EndArray) // ]
+                    {
+                        break;
+                    }
+                }
+                reader.Read(); // "OtherMoves":
+                reader.Read(); // [
+                var otherMoves = new List<Tuple<PBEMove, PBEMoveObtainMethod>>();
+                while (true)
+                {
+                    reader.Read();
+                    if (reader.TokenType == JsonToken.StartArray) // [
+                    {
+                        reader.Read();
+                        var move = (PBEMove)Convert.ToUInt16(reader.Value);
+                        reader.Read();
+                        var method = (PBEMoveObtainMethod)Convert.ToUInt64(reader.Value);
+                        otherMoves.Add(Tuple.Create(move, method));
+                        reader.Read(); // ]
+                    }
+                    else if (reader.TokenType == JsonToken.EndArray) // ]
+                    {
+                        break;
+                    }
+                }
+                return new PBEPokemonData(baseStats, type1, type2, genderRatio, weight, preEvolutions, evolutions, abilities, levelUpMoves, otherMoves); // TODO: Cache?
             }
         }
     }

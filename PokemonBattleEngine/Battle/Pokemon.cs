@@ -255,7 +255,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Nickname = KnownNickname = Shell.Nickname;
             Shiny = KnownShiny = Shell.Shiny;
             Species = OriginalSpecies = KnownSpecies = Shell.Species;
-            PBEPokemonData pData = PBEPokemonData.Data[Species];
+            var pData = PBEPokemonData.GetData(Species);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
@@ -305,7 +305,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownNickname = info.Nickname;
             KnownShiny = info.Shiny;
             Species = KnownSpecies = info.Species;
-            PBEPokemonData pData = PBEPokemonData.Data[KnownSpecies];
+            var pData = PBEPokemonData.GetData(KnownSpecies);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
@@ -354,7 +354,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownNickname = Nickname;
             KnownShiny = Shiny;
             Species = KnownSpecies = OriginalSpecies;
-            PBEPokemonData pData = PBEPokemonData.Data[Species];
+            var pData = PBEPokemonData.GetData(Species);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
 
