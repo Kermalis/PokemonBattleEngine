@@ -145,10 +145,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             var sb = new StringBuilder();
             sb.AppendLine($"{pkmn.Nickname}/{pkmn.OriginalSpecies} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
             sb.AppendLine($"**HP:** {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
-            if (pkmn.FieldPosition != PBEFieldPosition.None)
-            {
-                sb.AppendLine($"**Types:** {pkmn.Type1}/{pkmn.Type2}");
-            }
+            sb.AppendLine($"**Types:** {pkmn.Type1}/{pkmn.Type2}");
             if (pkmn.Status1 != PBEStatus1.None)
             {
                 sb.AppendLine($"**Main status:** {pkmn.Status1}");
@@ -188,6 +185,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             sb.AppendLine($"**Ability:** {PBELocalizedString.GetAbilityName(pkmn.Ability).English}");
             sb.AppendLine($"**Item:** {PBELocalizedString.GetItemName(pkmn.Item).English}");
+            if (Array.IndexOf(pkmn.Moves, PBEMove.Frustration) != -1 || Array.IndexOf(pkmn.Moves, PBEMove.Return) != -1)
+            {
+                sb.AppendLine($"**Friendship:** {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
+            }
             if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
             {
                 sb.AppendLine($"**Hidden Power:** {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");

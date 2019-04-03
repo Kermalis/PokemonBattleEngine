@@ -795,6 +795,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBELocalizedString.GetAbilityName(KnownAbility).English)}");
             sb.AppendLine($"Item: {PBELocalizedString.GetItemName(Item).English}");
             sb.AppendLine($"Known item: {(KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(KnownItem).English)}");
+            if (Array.IndexOf(Moves, PBEMove.Frustration) != -1 || Array.IndexOf(Moves, PBEMove.Return) != -1)
+            {
+                sb.AppendLine($"**Friendship:** {Friendship} ({Friendship / (double)byte.MaxValue:P2})");
+            }
             if (Array.IndexOf(Moves, PBEMove.HiddenPower) != -1)
             {
                 sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
