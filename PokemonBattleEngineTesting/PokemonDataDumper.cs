@@ -1,7 +1,7 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
+using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
-using SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1050,7 +1050,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
         // TODO: Egg move chain breeding?
 #pragma warning disable CS8321 // Local function is declared but never used
-        public static void Dump(string databasePath)
+        public static void Dump(SqliteConnection con)
         {
             using (var r = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\R.gba"), Endianness.LittleEndian))
             using (var s = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\S.gba"), Endianness.LittleEndian))
@@ -1059,6 +1059,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             using (var e = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\E.gba"), Endianness.LittleEndian))
             using (var coloCommonRel = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Colocommon_rel.fdat"), Endianness.BigEndian))
             using (var xdCommonRel = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\XDcommon_rel.fdat"), Endianness.BigEndian))
+            using (SqliteCommand cmd = con.CreateCommand())
             {
                 var dict = new Dictionary<PBESpecies, Pokemon>();
                 void AddSpecies(PBESpecies species)
@@ -1732,85 +1733,88 @@ namespace Kermalis.PokemonBattleEngineTesting
 
                 #region Write to Database
 
-                using (var con = new SQLiteConnection(databasePath))
+                cmd.CommandText = "DROP TABLE IF EXISTS PokemonData";
+                cmd.ExecuteNonQuery();
+                cmd.CommandText = "CREATE TABLE PokemonData(Id INTEGER PRIMARY KEY, Json TEXT)";
+                cmd.ExecuteNonQuery();
+                cmd.CommandText = "INSERT INTO PokemonData VALUES(@0, @1)";
+                foreach (KeyValuePair<PBESpecies, Pokemon> pkmn in dict)
                 {
-                    con.Execute("DROP TABLE IF EXISTS PokemonData");
-                    con.Execute("CREATE TABLE PokemonData(Id INTEGER PRIMARY KEY, Json TEXT)");
-                    foreach (KeyValuePair<PBESpecies, Pokemon> pkmn in dict)
+                    var sw = new StringWriter();
+                    using (var writer = new JsonTextWriter(sw))
                     {
-                        var sw = new StringWriter();
-                        using (var writer = new JsonTextWriter(sw))
+                        writer.WriteStartObject();
+                        writer.WritePropertyName(nameof(PBEPokemonData.BaseStats));
+                        writer.WriteStartArray();
+                        writer.WriteValue(pkmn.Value.HP);
+                        writer.WriteValue(pkmn.Value.Attack);
+                        writer.WriteValue(pkmn.Value.Defense);
+                        writer.WriteValue(pkmn.Value.SpAttack);
+                        writer.WriteValue(pkmn.Value.SpDefense);
+                        writer.WriteValue(pkmn.Value.Speed);
+                        writer.WriteEndArray();
+                        writer.WritePropertyName(nameof(PBEPokemonData.Type1));
+                        writer.WriteValue(pkmn.Value.Type1);
+                        writer.WritePropertyName(nameof(PBEPokemonData.Type2));
+                        writer.WriteValue(pkmn.Value.Type2);
+                        writer.WritePropertyName(nameof(PBEPokemonData.GenderRatio));
+                        writer.WriteValue(pkmn.Value.GenderRatio);
+                        writer.WritePropertyName(nameof(PBEPokemonData.Weight));
+                        writer.WriteValue(pkmn.Value.Weight);
+                        writer.WritePropertyName(nameof(PBEPokemonData.PreEvolutions));
+                        writer.WriteStartArray();
+                        foreach (PBESpecies sp in pkmn.Value.PreEvolutions)
                         {
-                            writer.WriteStartObject();
-                            writer.WritePropertyName(nameof(PBEPokemonData.BaseStats));
-                            writer.WriteStartArray();
-                            writer.WriteValue(pkmn.Value.HP);
-                            writer.WriteValue(pkmn.Value.Attack);
-                            writer.WriteValue(pkmn.Value.Defense);
-                            writer.WriteValue(pkmn.Value.SpAttack);
-                            writer.WriteValue(pkmn.Value.SpDefense);
-                            writer.WriteValue(pkmn.Value.Speed);
-                            writer.WriteEndArray();
-                            writer.WritePropertyName(nameof(PBEPokemonData.Type1));
-                            writer.WriteValue(pkmn.Value.Type1);
-                            writer.WritePropertyName(nameof(PBEPokemonData.Type2));
-                            writer.WriteValue(pkmn.Value.Type2);
-                            writer.WritePropertyName(nameof(PBEPokemonData.GenderRatio));
-                            writer.WriteValue(pkmn.Value.GenderRatio);
-                            writer.WritePropertyName(nameof(PBEPokemonData.Weight));
-                            writer.WriteValue(pkmn.Value.Weight);
-                            writer.WritePropertyName(nameof(PBEPokemonData.PreEvolutions));
-                            writer.WriteStartArray();
-                            foreach (PBESpecies sp in pkmn.Value.PreEvolutions)
-                            {
-                                writer.WriteValue(sp);
-                            }
-                            writer.WriteEndArray();
-                            writer.WritePropertyName(nameof(PBEPokemonData.Evolutions));
-                            writer.WriteStartArray();
-                            foreach (PBESpecies sp in pkmn.Value.Evolutions)
-                            {
-                                writer.WriteValue(sp);
-                            }
-                            writer.WriteEndArray();
-                            writer.WritePropertyName(nameof(PBEPokemonData.Abilities));
-                            writer.WriteStartArray();
-                            foreach (PBEAbility a in pkmn.Value.Abilities)
-                            {
-                                writer.WriteValue(a);
-                            }
-                            writer.WriteEndArray();
-                            writer.WritePropertyName(nameof(PBEPokemonData.LevelUpMoves));
-                            writer.WriteStartArray();
-                            foreach (KeyValuePair<Tuple<PBEMove, byte>, PBEMoveObtainMethod> levelUpMove in pkmn.Value.LevelUpMoves)
-                            {
-                                if (Enum.IsDefined(typeof(PBEMove), levelUpMove.Key.Item1))
-                                {
-                                    writer.WriteStartArray();
-                                    writer.WriteValue(levelUpMove.Key.Item1);
-                                    writer.WriteValue(levelUpMove.Key.Item2);
-                                    writer.WriteValue(levelUpMove.Value);
-                                    writer.WriteEndArray();
-                                }
-                            }
-                            writer.WriteEndArray();
-                            writer.WritePropertyName(nameof(PBEPokemonData.OtherMoves));
-                            writer.WriteStartArray();
-                            foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> otherMove in pkmn.Value.OtherMoves)
-                            {
-                                if (Enum.IsDefined(typeof(PBEMove), otherMove.Key))
-                                {
-                                    writer.WriteStartArray();
-                                    writer.WriteValue(otherMove.Key);
-                                    writer.WriteValue(otherMove.Value);
-                                    writer.WriteEndArray();
-                                }
-                            }
-                            writer.WriteEndArray();
-                            writer.WriteEndObject();
-
-                            con.Execute("INSERT INTO PokemonData VALUES(?, ?)", (uint)pkmn.Key, sw.ToString());
+                            writer.WriteValue(sp);
                         }
+                        writer.WriteEndArray();
+                        writer.WritePropertyName(nameof(PBEPokemonData.Evolutions));
+                        writer.WriteStartArray();
+                        foreach (PBESpecies sp in pkmn.Value.Evolutions)
+                        {
+                            writer.WriteValue(sp);
+                        }
+                        writer.WriteEndArray();
+                        writer.WritePropertyName(nameof(PBEPokemonData.Abilities));
+                        writer.WriteStartArray();
+                        foreach (PBEAbility a in pkmn.Value.Abilities)
+                        {
+                            writer.WriteValue(a);
+                        }
+                        writer.WriteEndArray();
+                        writer.WritePropertyName(nameof(PBEPokemonData.LevelUpMoves));
+                        writer.WriteStartArray();
+                        foreach (KeyValuePair<Tuple<PBEMove, byte>, PBEMoveObtainMethod> levelUpMove in pkmn.Value.LevelUpMoves)
+                        {
+                            if (Enum.IsDefined(typeof(PBEMove), levelUpMove.Key.Item1))
+                            {
+                                writer.WriteStartArray();
+                                writer.WriteValue(levelUpMove.Key.Item1);
+                                writer.WriteValue(levelUpMove.Key.Item2);
+                                writer.WriteValue(levelUpMove.Value);
+                                writer.WriteEndArray();
+                            }
+                        }
+                        writer.WriteEndArray();
+                        writer.WritePropertyName(nameof(PBEPokemonData.OtherMoves));
+                        writer.WriteStartArray();
+                        foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> otherMove in pkmn.Value.OtherMoves)
+                        {
+                            if (Enum.IsDefined(typeof(PBEMove), otherMove.Key))
+                            {
+                                writer.WriteStartArray();
+                                writer.WriteValue(otherMove.Key);
+                                writer.WriteValue(otherMove.Value);
+                                writer.WriteEndArray();
+                            }
+                        }
+                        writer.WriteEndArray();
+                        writer.WriteEndObject();
+
+                        cmd.Parameters.AddWithValue("@0", (uint)pkmn.Key);
+                        cmd.Parameters.AddWithValue("@1", sw.ToString());
+                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
                     }
                 }
 

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -183,9 +182,16 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        #region Database Querying
+
+        private class SearchResult
+        {
+            public uint Id { get; set; }
+            public string Json { get; set; }
+        }
         public static PBEPokemonData GetData(PBESpecies species)
         {
-            string json = PBEUtils.DatabaseConnection.ExecuteScalar<string>($"SELECT Json, * FROM PokemonData WHERE Id={(uint)species}");
+            string json = PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM PokemonData WHERE Id={(uint)species}")[0].Json;
             using (var reader = new JsonTextReader(new StringReader(json)))
             {
                 reader.Read(); // {
@@ -300,5 +306,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 return new PBEPokemonData(baseStats, type1, type2, genderRatio, weight, preEvolutions, evolutions, abilities, levelUpMoves, otherMoves); // TODO: Cache?
             }
         }
+
+        #endregion
     }
 }

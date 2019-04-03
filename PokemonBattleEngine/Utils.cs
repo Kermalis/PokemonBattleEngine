@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
-using SQLite;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,8 +14,20 @@ namespace Kermalis.PokemonBattleEngine
     /// </summary>
     public static class PBEUtils
     {
-        static SQLiteConnection databaseConnection = null;
-        public static SQLiteConnection DatabaseConnection
+        private static bool StrCmp(object arg0, object arg1)
+        {
+            if (Convert.IsDBNull(arg0) || Convert.IsDBNull(arg1))
+            {
+                return false;
+            }
+            else
+            {
+                return Convert.ToString(arg0).Equals(Convert.ToString(arg1), StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
+        static SqliteConnection databaseConnection = null;
+        public static SqliteConnection DatabaseConnection
         {
             get
             {
@@ -35,7 +46,10 @@ namespace Kermalis.PokemonBattleEngine
                     {
                         path = string.Empty;
                     }
-                    databaseConnection = new SQLiteConnection(Path.Combine(path, "PokemonBattleEngine.db"), SQLiteOpenFlags.ReadOnly);
+                    SQLitePCL.Batteries_V2.Init();
+                    databaseConnection = new SqliteConnection($"Filename={Path.Combine(path, "PokemonBattleEngine.db")};Mode=ReadOnly;");
+                    databaseConnection.Open();
+                    databaseConnection.CreateFunction("StrCmp", (Func<object, object, bool>)StrCmp);
                 }
                 return databaseConnection;
             }
@@ -44,7 +58,7 @@ namespace Kermalis.PokemonBattleEngine
         /// <summary>
         /// An ordinary pseudo-random number generator.
         /// </summary>
-        public static Random RNG { get; } = new Random(); // TODO: Think about the RNG prediction that comes with public RNG
+        public static Random RNG { get; } = new Random();
 
         /// <summary>
         /// Returns a random boolean from a chance.
@@ -99,6 +113,32 @@ namespace Kermalis.PokemonBattleEngine
             {
                 return val;
             }
+        }
+        public static List<T> Query<T>(this SqliteConnection databaseConnection, string commandText) where T : new()
+        {
+            var list = new List<T>();
+            Type type = typeof(T);
+            using (SqliteCommand cmd = databaseConnection.CreateCommand())
+            {
+                cmd.CommandText = commandText;
+                using (SqliteDataReader r = cmd.ExecuteReader())
+                {
+                    while (r.Read())
+                    {
+                        T obj = Activator.CreateInstance<T>();
+                        for (int i = 0; i < r.FieldCount; i++)
+                        {
+                            PropertyInfo property = type.GetProperty(r.GetName(i));
+                            if (property != null)
+                            {
+                                property.SetValue(obj, Convert.ChangeType(r.GetValue(i), property.PropertyType));
+                            }
+                        }
+                        list.Add(obj);
+                    }
+                }
+            }
+            return list;
         }
         public static string Andify<T>(this IEnumerable<T> source)
         {
@@ -185,7 +225,7 @@ namespace Kermalis.PokemonBattleEngine
                     Level = settings.MaxLevel,
                     Friendship = (byte)RNG.Next(byte.MaxValue + 1),
                     Nature = (PBENature)RNG.Next((int)PBENature.MAX),
-                    Nickname = PBEPokemonLocalization.Names[(PBESpecies)((uint)species & 0xFFFF)].FromUICultureInfo(),
+                    Nickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo(),
                     Shiny = RNG.NextShiny(),
                     EVs = new byte[6],
                     IVs = new byte[6],

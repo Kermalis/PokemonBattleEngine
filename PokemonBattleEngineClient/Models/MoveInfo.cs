@@ -1,7 +1,6 @@
 ﻿using Avalonia.Media;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -76,7 +75,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 sb.AppendLine($"Targets: {mData.Targets}");
                 sb.AppendLine($"Flags: {mData.Flags}");
                 sb.AppendLine();
-                sb.Append(PBEMoveLocalization.Descriptions[move].FromUICultureInfo().Replace('\n', ' '));
+                sb.Append(PBELocalizedString.GetMoveDescription(move).FromUICultureInfo().Replace('\n', ' '));
             }
             Description = sb.ToString();
 

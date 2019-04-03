@@ -2,7 +2,6 @@
 using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using ReactiveUI;
 using System;
@@ -31,11 +30,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         // TODO: Legal species vs non-legal (Cherrim Sunny in a pokeball etc)
-        readonly IEnumerable<PBEAbility> allAbilities = PBEAbilityLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
+        readonly IEnumerable<PBEAbility> allAbilities = Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.MAX });
         readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
-        readonly IEnumerable<PBEItem> allItems = PBEItemLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
+        readonly IEnumerable<PBEItem> allItems = Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>();
 
-        public IEnumerable<PBESpecies> Species { get; } = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().OrderBy(s => PBEPokemonLocalization.Names[(PBESpecies)((int)s & 0xFFFF)].FromUICultureInfo());
+        public IEnumerable<PBESpecies> Species { get; } = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>();
         IEnumerable<PBEAbility> availableAbilities;
         public IEnumerable<PBEAbility> AvailableAbilities
         {
@@ -67,7 +66,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(AvailableItems));
             }
         }
-        public IEnumerable<PBEMove> AvailableMoves { get; } = PBEMoveLocalization.Names.OrderBy(k => k.Value.FromUICultureInfo()).Select(k => k.Key);
+        public IEnumerable<PBEMove> AvailableMoves { get; } = Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.MAX });
 
         PBEPokemonShell shell;
         public Tuple<string, ObservableCollection<PBEPokemonShell>> team;
@@ -235,11 +234,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         void AddPartyMember()
         {
-            PBESpecies species = Species.First();
+            PBESpecies species = Species.Sample();
             team.Item2.Add(new PBEPokemonShell
             {
                 Species = species,
-                Nickname = PBEPokemonLocalization.Names[(PBESpecies)((int)species & 0xFFFF)].FromUICultureInfo(),
+                Nickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo(),
                 Level = settings.MinLevel,
                 EVs = new byte[6],
                 IVs = new byte[6],
@@ -295,7 +294,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 return;
             }
 
-            string prevSpeciesName = PBEPokemonLocalization.Names[(PBESpecies)((int)shell.Species & 0xFFFF)].FromUICultureInfo();
+            string prevSpeciesName = PBELocalizedString.GetSpeciesName(shell.Species).FromUICultureInfo();
 
             if (updateShell)
             {
@@ -306,7 +305,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
                 else if ((!illegal.IsChecked.Value && string.IsNullOrWhiteSpace(nickname.Text)) || prevSpeciesName.Equals(nickname.Text))
                 {
-                    nickname.Text = PBEPokemonLocalization.Names[(PBESpecies)((int)shell.Species & 0xFFFF)].FromUICultureInfo();
+                    nickname.Text = PBELocalizedString.GetSpeciesName(shell.Species).FromUICultureInfo();
                 }
                 shell.Nickname = nickname.Text;
                 shell.Level = (byte)level.Value;
@@ -388,7 +387,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
                 else
                 {
-                    AvailableAbilities = pData.Abilities.OrderBy(a => PBEAbilityLocalization.Names[a].FromUICultureInfo());
+                    AvailableAbilities = pData.Abilities;
                 }
                 shell.Ability = availableAbilities.Contains(shell.Ability) ? shell.Ability : availableAbilities.First();
                 if (ability.SelectedItem != (object)shell.Ability)

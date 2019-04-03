@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
@@ -792,10 +791,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 sb.AppendLine($"Stat changes: {string.Join(", ", statStrs)}");
             }
-            sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[Ability].English}");
-            sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBEAbilityLocalization.Names[KnownAbility].English)}");
-            sb.AppendLine($"Item: {PBEItemLocalization.Names[Item].English}");
-            sb.AppendLine($"Known item: {(KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[KnownItem].English)}");
+            sb.AppendLine($"Ability: {PBELocalizedString.GetAbilityName(Ability).English}");
+            sb.AppendLine($"Known ability: {(KnownAbility == PBEAbility.MAX ? "???" : PBELocalizedString.GetAbilityName(KnownAbility).English)}");
+            sb.AppendLine($"Item: {PBELocalizedString.GetItemName(Item).English}");
+            sb.AppendLine($"Known item: {(KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(KnownItem).English)}");
             if (Array.IndexOf(Moves, PBEMove.HiddenPower) != -1)
             {
                 sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
@@ -803,11 +802,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             string[] moveStrs = new string[Moves.Length];
             for (int i = 0; i < moveStrs.Length; i++)
             {
-                moveStrs[i] = $"{PBEMoveLocalization.Names[Moves[i]].English} {PP[i]}/{MaxPP[i]}";
+                moveStrs[i] = $"{PBELocalizedString.GetMoveName(Moves[i]).English} {PP[i]}/{MaxPP[i]}";
             }
             sb.AppendLine($"Moves: {string.Join(", ", moveStrs)}");
-            sb.AppendLine($"Usable moves: {string.Join(", ", GetUsableMoves().Select(m => PBEMoveLocalization.Names[m].English))}");
-            sb.Append($"Known moves: {string.Join(", ", KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBEMoveLocalization.Names[m].English))}");
+            sb.AppendLine($"Usable moves: {string.Join(", ", GetUsableMoves().Select(m => PBELocalizedString.GetMoveName(m).English))}");
+            sb.Append($"Known moves: {string.Join(", ", KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(m).English))}");
             return sb.ToString();
         }
     }

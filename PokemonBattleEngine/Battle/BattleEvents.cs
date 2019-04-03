@@ -1,6 +1,5 @@
 ﻿using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
@@ -410,7 +409,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 }
                             default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                         }
-                        Console.WriteLine(message, NameForTrainer(abilityOwner), NameForTrainer(pokemon2), PBEAbilityLocalization.Names[ap.Ability].English);
+                        Console.WriteLine(message, NameForTrainer(abilityOwner), NameForTrainer(pokemon2), PBELocalizedString.GetAbilityName(ap.Ability).English);
                         break;
                     }
                 case PBEBattleStatusPacket bsp:
@@ -559,7 +558,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 }
                             default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                         }
-                        Console.WriteLine(message, NameForTrainer(itemHolder), NameForTrainer(pokemon2), PBEItemLocalization.Names[ip.Item].English);
+                        Console.WriteLine(message, NameForTrainer(itemHolder), NameForTrainer(pokemon2), PBELocalizedString.GetItemName(ip.Item).English);
                         break;
                     }
                 case PBEMoveCritPacket _:
@@ -615,13 +614,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         PBEPokemon moveUser = mpcp.MoveUserTeam.TryGetPokemon(mpcp.MoveUser);
                         int change = mpcp.NewValue - mpcp.OldValue;
-                        Console.WriteLine("{0}'s {1} {3} {2} PP!", NameForTrainer(moveUser), PBEMoveLocalization.Names[mpcp.Move].English, Math.Abs(change), change <= 0 ? "lost" : "gained");
+                        Console.WriteLine("{0}'s {1} {3} {2} PP!", NameForTrainer(moveUser), PBELocalizedString.GetMoveName(mpcp.Move).English, Math.Abs(change), change <= 0 ? "lost" : "gained");
                         break;
                     }
                 case PBEMoveUsedPacket mup:
                     {
                         PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
-                        Console.WriteLine("{0} used {1}!", NameForTrainer(moveUser), PBEMoveLocalization.Names[mup.Move].English);
+                        Console.WriteLine("{0} used {1}!", NameForTrainer(moveUser), PBELocalizedString.GetMoveName(mup.Move).English);
                         break;
                     }
                 case PBEPkmnFaintedPacket pfap:

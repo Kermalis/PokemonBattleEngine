@@ -1,6 +1,5 @@
 ﻿using Avalonia.Data.Converters;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
 using System;
 using System.Globalization;
 
@@ -14,10 +13,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             PBELocalizedString localized = null;
             switch (value)
             {
-                case PBEAbility ability: localized = PBEAbilityLocalization.Names[ability]; break;
-                case PBEItem item: localized = PBEItemLocalization.Names[item]; break;
-                case PBEMove move: localized = PBEMoveLocalization.Names[move]; break;
-                case PBESpecies species: localized = PBEPokemonLocalization.Names[(PBESpecies)((int)species & 0xFFFF)]; break;
+                case PBEAbility ability: localized = PBELocalizedString.GetAbilityName(ability); break;
+                case PBEItem item: localized = PBELocalizedString.GetItemName(item); break;
+                case PBEMove move: localized = PBELocalizedString.GetMoveName(move); break;
+                case PBESpecies species: localized = PBELocalizedString.GetSpeciesName(species); break;
             }
             return StringRendering.RenderString(localized == null ? value?.ToString() : localized.FromUICultureInfo(), parameter?.ToString());
         }

@@ -5,7 +5,6 @@ using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
@@ -187,8 +186,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 AddStatChanges(pkmn, sb);
             }
-            sb.AppendLine($"**Ability:** {PBEAbilityLocalization.Names[pkmn.Ability].English}");
-            sb.AppendLine($"**Item:** {PBEItemLocalization.Names[pkmn.Item].English}");
+            sb.AppendLine($"**Ability:** {PBELocalizedString.GetAbilityName(pkmn.Ability).English}");
+            sb.AppendLine($"**Item:** {PBELocalizedString.GetItemName(pkmn.Item).English}");
             if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
             {
                 sb.AppendLine($"**Hidden Power:** {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
@@ -197,7 +196,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             for (int i = 0; i < PBESettings.DefaultSettings.NumMoves; i++)
             {
                 PBEMove move = pkmn.Moves[i];
-                string str = PBEMoveLocalization.Names[move].English;
+                string str = PBELocalizedString.GetMoveName(move).English;
                 int moveIndex = Array.IndexOf(pkmn.Moves, move);
                 if (moveIndex != -1)
                 {
@@ -216,7 +215,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     str += $"{char.ConvertFromUtf32(0x1F1E6 + i)} ";
                 }
-                str += PBEMoveLocalization.Names[move].English;
+                str += PBELocalizedString.GetMoveName(move).English;
                 moveStrs[i] = str;
             }
             sb.Append($"**Usable moves:** {string.Join(", ", moveStrs)}");
@@ -260,14 +259,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
             AddStatChanges(pkmn, sb);
             if (pkmn.KnownAbility == PBEAbility.MAX)
             {
-                sb.AppendLine($"**Possible abilities:** {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
+                sb.AppendLine($"**Possible abilities:** {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).FromUICultureInfo()))}");
             }
             else
             {
-                sb.AppendLine($"**Known ability:** {PBEAbilityLocalization.Names[pkmn.KnownAbility].FromUICultureInfo()}");
+                sb.AppendLine($"**Known ability:** {PBELocalizedString.GetAbilityName(pkmn.KnownAbility).FromUICultureInfo()}");
             }
-            sb.AppendLine($"**Known item:** {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[pkmn.KnownItem].FromUICultureInfo())}");
-            sb.Append($"**Known moves:** {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBEMoveLocalization.Names[m].FromUICultureInfo()))}");
+            sb.AppendLine($"**Known item:** {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).FromUICultureInfo())}");
+            sb.Append($"**Known moves:** {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(m).FromUICultureInfo()))}");
             return sb.ToString();
         }
 
@@ -444,7 +443,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 }
                             default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                         }
-                        await context.CreateAndSendEmbedAsync(string.Format(message, NameForTrainer(abilityOwner), NameForTrainer(pokemon2), PBEAbilityLocalization.Names[ap.Ability].English), pkmn: abilityOwner);
+                        await context.CreateAndSendEmbedAsync(string.Format(message, NameForTrainer(abilityOwner), NameForTrainer(pokemon2), PBELocalizedString.GetAbilityName(ap.Ability).English), pkmn: abilityOwner);
                         break;
                     }
                 case PBEBattleStatusPacket bsp:
@@ -593,7 +592,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 }
                             default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                         }
-                        await context.CreateAndSendEmbedAsync(string.Format(message, NameForTrainer(itemHolder), NameForTrainer(pokemon2), PBEItemLocalization.Names[ip.Item].English), pkmn: itemHolder);
+                        await context.CreateAndSendEmbedAsync(string.Format(message, NameForTrainer(itemHolder), NameForTrainer(pokemon2), PBELocalizedString.GetItemName(ip.Item).English), pkmn: itemHolder);
                         break;
                     }
                 case PBEMoveCritPacket _:
@@ -648,7 +647,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 case PBEMoveUsedPacket mup:
                     {
                         PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
-                        await context.CreateAndSendEmbedAsync(string.Format("{0} used {1}!", NameForTrainer(moveUser), PBEMoveLocalization.Names[mup.Move].English), pkmn: moveUser);
+                        await context.CreateAndSendEmbedAsync(string.Format("{0} used {1}!", NameForTrainer(moveUser), PBELocalizedString.GetMoveName(mup.Move).English), pkmn: moveUser);
                         break;
                     }
                 case PBEPkmnFaintedPacket pfap:
@@ -1209,7 +1208,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         IUserMessage mainMsg;
                         try
                         {
-                            mainMsg = await context.CreateAndSendEmbedAsync($"{CustomPokemonToString(mainPkmn, true)}\nTo check a move: `!move info {PBEUtils.Sample(PBEMoveLocalization.Names).Value.English}`", pkmn: mainPkmn, useUpperImage: false, userToSendTo: user);
+                            mainMsg = await context.CreateAndSendEmbedAsync($"{CustomPokemonToString(mainPkmn, true)}\nTo check a move: `!move info {PBELocalizedString.GetMoveName(PBEUtils.Sample(Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX }))).English}`", pkmn: mainPkmn, useUpperImage: false, userToSendTo: user);
                         }
                         catch (HttpException)
                         {

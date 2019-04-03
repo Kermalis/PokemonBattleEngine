@@ -28,8 +28,9 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 ----
 # PokemonBattleEngine Uses:
 * [My fork of Ether.Network](https://github.com/Kermalis/Ether.Network)
+* [Microsoft.Data.Sqlite](https://docs.microsoft.com/en-us/ef/core)
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-* [SQLite-net](https://github.com/praeclarum/sqlite-net)
+* [SQLitePCLRaw](https://github.com/ericsink/SQLitePCL.raw)
 
 # PokemonBattleEngineClient Uses:
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)

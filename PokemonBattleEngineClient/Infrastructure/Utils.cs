@@ -3,7 +3,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,14 +137,14 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.KnownAbility == PBEAbility.MAX)
                 {
-                    sb.AppendLine($"Possible abilities: {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBEAbilityLocalization.Names[a].FromUICultureInfo()))}");
+                    sb.AppendLine($"Possible abilities: {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).FromUICultureInfo()))}");
                 }
                 else
                 {
-                    sb.AppendLine($"Known ability: {PBEAbilityLocalization.Names[pkmn.KnownAbility].FromUICultureInfo()}");
+                    sb.AppendLine($"Known ability: {PBELocalizedString.GetAbilityName(pkmn.KnownAbility).FromUICultureInfo()}");
                 }
-                sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBEItemLocalization.Names[pkmn.KnownItem].FromUICultureInfo())}");
-                sb.Append($"Known moves: {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBEMoveLocalization.Names[m].FromUICultureInfo()))}");
+                sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).FromUICultureInfo())}");
+                sb.Append($"Known moves: {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(m).FromUICultureInfo()))}");
             }
             else
             {
@@ -180,8 +179,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 {
                     AddStatChanges();
                 }
-                sb.AppendLine($"Ability: {PBEAbilityLocalization.Names[pkmn.Ability].FromUICultureInfo()}");
-                sb.AppendLine($"Item: {PBEItemLocalization.Names[pkmn.Item].FromUICultureInfo()}");
+                sb.AppendLine($"Ability: {PBELocalizedString.GetAbilityName(pkmn.Ability).FromUICultureInfo()}");
+                sb.AppendLine($"Item: {PBELocalizedString.GetItemName(pkmn.Item).FromUICultureInfo()}");
                 if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
                 {
                     sb.AppendLine($"Hidden Power: {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
@@ -189,10 +188,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 string[] moveStrs = new string[pkmn.Moves.Length];
                 for (int i = 0; i < moveStrs.Length; i++)
                 {
-                    moveStrs[i] = $"{PBEMoveLocalization.Names[pkmn.Moves[i]].FromUICultureInfo()} {pkmn.PP[i]}/{pkmn.MaxPP[i]}";
+                    moveStrs[i] = $"{PBELocalizedString.GetMoveName(pkmn.Moves[i]).FromUICultureInfo()} {pkmn.PP[i]}/{pkmn.MaxPP[i]}";
                 }
                 sb.AppendLine($"Moves: {string.Join(", ", moveStrs)}");
-                sb.Append($"Usable moves: {string.Join(", ", pkmn.GetUsableMoves().Select(m => PBEMoveLocalization.Names[m].FromUICultureInfo()))}");
+                sb.Append($"Usable moves: {string.Join(", ", pkmn.GetUsableMoves().Select(m => PBELocalizedString.GetMoveName(m).FromUICultureInfo()))}");
             }
             return sb.ToString();
         }

@@ -1,8 +1,8 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineTesting
@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngineTesting
     class LocalizationDumper
     {
         // You must dump the NARC files yourself (/a/0/0/2 in each language)
-        public static void Dump()
+        public static void Dump(SqliteConnection con)
         {
             using (var english = new NARC(@"../../../\DumpedData\W2EnglishTexts.narc"))
             using (var french = new NARC(@"../../../\DumpedData\W2FrenchTexts.narc"))
@@ -19,6 +19,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             using (var japanese = new NARC(@"../../../\DumpedData\W2JapaneseTexts.narc"))
             using (var korean = new NARC(@"../../../\DumpedData\W2KoreanTexts.narc"))
             using (var spanish = new NARC(@"../../../\DumpedData\W2SpanishTexts.narc"))
+            using (SqliteCommand cmd = con.CreateCommand())
             {
                 string[][] eng, fre, ger, ita, jap, kor, spa;
                 void LoadTexts(int fileNum)
@@ -53,19 +54,21 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 for (int j = 0; j < numEntries; j++)
                                 {
                                     r.BaseStream.Position = blockOffsets[i] + stringOffsets[j];
-                                    var encoded = new ushort[stringLengths[j]];
-                                    for (int k = 0; k < stringLengths[j]; k++)
+                                    ushort len = stringLengths[j];
+                                    var encoded = new ushort[len];
+                                    for (int k = 0; k < len; k++)
                                     {
                                         encoded[k] = r.ReadUInt16();
                                     }
-                                    int key = encoded[stringLengths[j] - 1] ^ 0xFFFF;
-                                    var decoded = new int[stringLengths[j]];
-                                    for (int k = stringLengths[j] - 1; k >= 0; k--)
+                                    int key = encoded[len - 1] ^ 0xFFFF;
+                                    var decoded = new int[len];
+                                    for (int k = len - 1; k >= 0; k--)
                                     {
                                         decoded[k] = encoded[k] ^ key;
                                         key = ((key >> 3) | (key << 13)) & 0xFFFF;
                                     }
-                                    for (int k = 0; k < stringLengths[j]; k++)
+                                    string text = string.Empty; // Prevent null entries
+                                    for (int k = 0; k < len; k++)
                                     {
                                         int c = decoded[k];
                                         if (c == 0xFFFF)
@@ -77,17 +80,18 @@ namespace Kermalis.PokemonBattleEngineTesting
                                             string car;
                                             switch (c)
                                             {
-                                                case '"': car = "\\\""; break;
+                                                case '"': car = "”"; break;
                                                 case 0x246D: car = "♂"; break;
                                                 case 0x246E: car = "♀"; break;
                                                 case 0x2486: car = "[PK]"; break;
                                                 case 0x2487: car = "[MN]"; break;
-                                                case 0xFFFE: car = "\\n"; break;
+                                                case 0xFFFE: car = "\n"; break;
                                                 default: car = ((char)c).ToString(); break;
                                             }
-                                            texts[i][j] += car;
+                                            text += car;
                                         }
                                     }
+                                    texts[i][j] = text;
                                 }
                             }
                             return texts;
@@ -102,136 +106,93 @@ namespace Kermalis.PokemonBattleEngineTesting
                     kor = ReadTextFile(korean);
                     spa = ReadTextFile(spanish);
                 }
-
-                using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Localization\AbilityLocalization.cs"))
+                void CreateTable(string tableName)
                 {
-                    IEnumerable<PBEAbility> allAbilities = new[] { PBEAbility.None }.Concat(Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.None, PBEAbility.MAX }).OrderBy(e => e.ToString()));
-                    PBEAbility lastAbility = allAbilities.Last();
-                    void WriteAll()
-                    {
-                        writer.WriteLine("        {");
-                        foreach (PBEAbility ability in allAbilities)
-                        {
-                            byte i = (byte)ability;
-                            writer.WriteLine($"            {{ PBEAbility.{ability}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(ability == lastAbility ? string.Empty : ",")}");
-                        }
-                        writer.WriteLine("        });");
-                    }
-                    writer.WriteLine("using Kermalis.PokemonBattleEngine.Data;");
-                    writer.WriteLine("using System.Collections.Generic;");
-                    writer.WriteLine("using System.Collections.ObjectModel;");
-                    writer.WriteLine();
-                    writer.WriteLine("namespace Kermalis.PokemonBattleEngine.Localization");
-                    writer.WriteLine("{");
-                    writer.WriteLine("    public static class PBEAbilityLocalization");
-                    writer.WriteLine("    {");
-                    writer.WriteLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
-                    LoadTexts(374);
-                    WriteAll();
-                    writer.WriteLine();
-                    writer.WriteLine("        public static ReadOnlyDictionary<PBEAbility, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEAbility, PBELocalizedString>(new Dictionary<PBEAbility, PBELocalizedString>()");
-                    LoadTexts(375);
-                    WriteAll();
-                    writer.WriteLine("    }");
-                    writer.WriteLine("}");
+                    cmd.CommandText = $"DROP TABLE IF EXISTS {tableName}";
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandText = $"CREATE TABLE {tableName}(Id INTEGER PRIMARY KEY, English TEXT, French TEXT, German TEXT, Italian TEXT, Japanese_Kana TEXT, Japanese_Kanji TEXT, Korean TEXT, Spanish TEXT)";
+                    cmd.ExecuteNonQuery();
                 }
-                using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Localization\ItemLocalization.cs"))
+                void WriteTexts(string tableName, uint id)
                 {
-                    IEnumerable<PBEItem> allItems = new[] { PBEItem.None }.Concat(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>().Except(new[] { PBEItem.None }).OrderBy(e => e.ToString()));
-                    PBEItem lastItem = allItems.Last();
-                    void WriteAll()
+                    cmd.CommandText = $"INSERT INTO {tableName} VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)";
+                    cmd.Parameters.AddWithValue("@0", id);
+                    cmd.Parameters.AddWithValue("@1", eng[0][id]);
+                    cmd.Parameters.AddWithValue("@2", fre[0][id]);
+                    cmd.Parameters.AddWithValue("@3", ger[0][id]);
+                    cmd.Parameters.AddWithValue("@4", ita[0][id]);
+                    cmd.Parameters.AddWithValue("@5", jap[0][id]);
+                    cmd.Parameters.AddWithValue("@6", jap[1][id]);
+                    cmd.Parameters.AddWithValue("@7", kor[0][id]);
+                    cmd.Parameters.AddWithValue("@8", spa[0][id]);
+                    cmd.ExecuteNonQuery();
+                    cmd.Parameters.Clear();
+                }
+
+                // Abilities
+                {
+                    void WriteAll(string tableName)
                     {
-                        writer.WriteLine("        {");
+                        CreateTable(tableName);
+                        for (byte i = 0; i < (byte)PBEAbility.MAX; i++)
+                        {
+                            WriteTexts(tableName, i);
+                        }
+                    }
+                    LoadTexts(374);
+                    WriteAll("AbilityNames");
+                    LoadTexts(375);
+                    WriteAll("AbilityDescriptions");
+                }
+                // Items
+                {
+                    IEnumerable<PBEItem> allItems = Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>();
+                    void WriteAll(string tableName)
+                    {
+                        CreateTable(tableName);
                         foreach (PBEItem item in allItems)
                         {
-                            ushort i = (ushort)item;
-                            writer.WriteLine($"            {{ PBEItem.{item}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(item == lastItem ? string.Empty : ",")}");
+                            WriteTexts(tableName, (ushort)item);
                         }
-                        writer.WriteLine("        });");
                     }
-                    writer.WriteLine("using Kermalis.PokemonBattleEngine.Data;");
-                    writer.WriteLine("using System.Collections.Generic;");
-                    writer.WriteLine("using System.Collections.ObjectModel;");
-                    writer.WriteLine();
-                    writer.WriteLine("namespace Kermalis.PokemonBattleEngine.Localization");
-                    writer.WriteLine("{");
-                    writer.WriteLine("    public static class PBEItemLocalization");
-                    writer.WriteLine("    {");
-                    writer.WriteLine("        public static ReadOnlyDictionary<PBEItem, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEItem, PBELocalizedString>(new Dictionary<PBEItem, PBELocalizedString>()");
-                    LoadTexts(64);
-                    WriteAll();
-                    writer.WriteLine();
-                    writer.WriteLine("        public static ReadOnlyDictionary<PBEItem, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEItem, PBELocalizedString>(new Dictionary<PBEItem, PBELocalizedString>()");
                     LoadTexts(63);
-                    WriteAll();
-                    writer.WriteLine("    }");
-                    writer.WriteLine("}");
+                    WriteAll("ItemDescriptions");
+                    LoadTexts(64);
+                    WriteAll("ItemNames");
                 }
-                using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Localization\MoveLocalization.cs"))
+                // Moves
                 {
-                    const ushort lastMove = (ushort)(PBEMove.MAX - 1);
-                    void WriteAll()
+                    IEnumerable<PBEMove> allMoves = Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.MAX });
+                    void WriteAll(string tableName)
                     {
-                        writer.WriteLine("        {");
-                        for (ushort i = 0; i <= lastMove; i++)
+                        CreateTable(tableName);
+                        foreach (PBEMove move in allMoves)
                         {
-                            writer.WriteLine($"            {(Enum.IsDefined(typeof(PBEMove), i) ? string.Empty : "// ")}{{ PBEMove.{(PBEMove)i}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(i == lastMove ? string.Empty : ",")}");
+                            WriteTexts(tableName, (ushort)move);
                         }
-                        writer.WriteLine("        });");
                     }
-                    writer.WriteLine("using Kermalis.PokemonBattleEngine.Data;");
-                    writer.WriteLine("using System.Collections.Generic;");
-                    writer.WriteLine("using System.Collections.ObjectModel;");
-                    writer.WriteLine();
-                    writer.WriteLine("namespace Kermalis.PokemonBattleEngine.Localization");
-                    writer.WriteLine("{");
-                    writer.WriteLine("    public static class PBEMoveLocalization");
-                    writer.WriteLine("    {");
-                    writer.WriteLine("        public static ReadOnlyDictionary<PBEMove, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBEMove, PBELocalizedString>(new Dictionary<PBEMove, PBELocalizedString>()");
-                    LoadTexts(403);
-                    WriteAll();
-                    writer.WriteLine();
-                    writer.WriteLine("        public static ReadOnlyDictionary<PBEMove, PBELocalizedString> Descriptions { get; } = new ReadOnlyDictionary<PBEMove, PBELocalizedString>(new Dictionary<PBEMove, PBELocalizedString>()");
                     LoadTexts(402);
-                    WriteAll();
-                    writer.WriteLine("    }");
-                    writer.WriteLine("}");
+                    WriteAll("MoveDescriptions");
+                    LoadTexts(403);
+                    WriteAll("MoveNames");
                 }
-                using (var writer = new StreamWriter(@"../../../../\PokemonBattleEngine\Localization\PokemonLocalization.cs"))
+                // Species
                 {
-                    IEnumerable<PBESpecies> allSpecies = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Where(e => (uint)e >> 0x10 == 0).OrderBy(e => e.ToString());
-                    PBESpecies lastSpecies = allSpecies.Last();
-                    void WriteAll()
+                    IEnumerable<PBESpecies> allSpecies = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Where(e => (uint)e >> 0x10 == 0);
+                    void WriteAll(string tableName)
                     {
-                        writer.WriteLine("        {");
+                        CreateTable(tableName);
                         foreach (PBESpecies species in allSpecies)
                         {
-                            uint i = (uint)species;
-                            writer.WriteLine($"            {{ PBESpecies.{(PBESpecies)i}, new PBELocalizedString(\"{eng[0][i]}\", \"{fre[0][i]}\", \"{ger[0][i]}\", \"{ita[0][i]}\", \"{jap[0][i]}\", \"{jap[1][i]}\", \"{kor[0][i]}\", \"{spa[0][i]}\") }}{(species == lastSpecies ? string.Empty : ",")}");
+                            WriteTexts(tableName, (ushort)species);
                         }
-                        writer.WriteLine("        });");
                     }
-                    writer.WriteLine("using Kermalis.PokemonBattleEngine.Data;");
-                    writer.WriteLine("using System.Collections.Generic;");
-                    writer.WriteLine("using System.Collections.ObjectModel;");
-                    writer.WriteLine();
-                    writer.WriteLine("namespace Kermalis.PokemonBattleEngine.Localization");
-                    writer.WriteLine("{");
-                    writer.WriteLine("    public static class PBEPokemonLocalization");
-                    writer.WriteLine("    {");
-                    writer.WriteLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Names { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
                     LoadTexts(90);
-                    WriteAll();
-                    writer.WriteLine();
-                    writer.WriteLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Entries { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
+                    WriteAll("SpeciesNames");
                     LoadTexts(442);
-                    WriteAll();
-                    writer.WriteLine();
-                    writer.WriteLine("        public static ReadOnlyDictionary<PBESpecies, PBELocalizedString> Categories { get; } = new ReadOnlyDictionary<PBESpecies, PBELocalizedString>(new Dictionary<PBESpecies, PBELocalizedString>()");
+                    WriteAll("SpeciesEntries");
                     LoadTexts(464);
-                    WriteAll();
-                    writer.WriteLine("    }");
-                    writer.WriteLine("}");
+                    WriteAll("SpeciesCategories");
                 }
             }
         }

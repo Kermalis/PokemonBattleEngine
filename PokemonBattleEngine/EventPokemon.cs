@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using Kermalis.PokemonBattleEngine.Localization;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -42,7 +41,7 @@ namespace Kermalis.PokemonBattleEngine
                 EVs = new byte[6],
                 Friendship = byte.MaxValue,
                 Item = PBEItem.None,
-                Nickname = PBEPokemonLocalization.Names[(PBESpecies)((int)Species & 0xFFFF)].FromUICultureInfo(),
+                Nickname = PBELocalizedString.GetSpeciesName(Species).FromUICultureInfo(),
                 PPUps = new byte[PBESettings.DefaultSettings.NumMoves]
             };
         }
