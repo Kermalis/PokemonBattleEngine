@@ -90,8 +90,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         readonly NumericUpDown[] evs, ivs, ppups;
         readonly ListBox party, savedTeams;
         readonly CheckBox illegal, shiny;
-        readonly DropDown species, ability, nature, gender, item;
-        readonly DropDown[] moves;
+        readonly ComboBox species, ability, nature, gender, item;
+        readonly ComboBox[] moves;
 
         public TeamBuilderView()
         {
@@ -129,7 +129,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
             void shellOnly(object s, EventArgs e) => UpdateEditor(true, false, false);
 
-            species = this.FindControl<DropDown>("Species");
+            species = this.FindControl<ComboBox>("Species");
             species.SelectionChanged += (s, e) => UpdateEditor(true, true, true);
             nickname = this.FindControl<TextBox>("Nickname");
             nickname.LostFocus += (s, e) => UpdateEditor(true, false, true);
@@ -139,13 +139,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             friendship.ValueChanged += shellOnly;
             shiny = this.FindControl<CheckBox>("Shiny");
             shiny.Command = ReactiveCommand.Create(() => UpdateEditor(true, false, true));
-            ability = this.FindControl<DropDown>("Ability");
+            ability = this.FindControl<ComboBox>("Ability");
             ability.SelectionChanged += shellOnly;
-            nature = this.FindControl<DropDown>("Nature");
+            nature = this.FindControl<ComboBox>("Nature");
             nature.SelectionChanged += shellOnly;
-            gender = this.FindControl<DropDown>("Gender");
+            gender = this.FindControl<ComboBox>("Gender");
             gender.SelectionChanged += (s, e) => UpdateEditor(true, false, true);
-            item = this.FindControl<DropDown>("Item");
+            item = this.FindControl<ComboBox>("Item");
             item.SelectionChanged += shellOnly;
             evs = new[]
             {
@@ -172,10 +172,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             moves = new[]
             {
-                this.FindControl<DropDown>("Move0"),
-                this.FindControl<DropDown>("Move1"),
-                this.FindControl<DropDown>("Move2"),
-                this.FindControl<DropDown>("Move3")
+                this.FindControl<ComboBox>("Move0"),
+                this.FindControl<ComboBox>("Move1"),
+                this.FindControl<ComboBox>("Move2"),
+                this.FindControl<ComboBox>("Move3")
             };
             ppups = new[]
             {

@@ -4,7 +4,7 @@
              xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
              Background="#313131">
   <UserControl.Styles>
-    <Style Selector="DropDown">
+    <Style Selector="ComboBox">
       <Setter Property="Background" Value="White"/>
       <Setter Property="Height" Value="42"/>
     </Style>
@@ -40,16 +40,16 @@
             <Image Source="{Binding Source='Shiny', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           </CheckBox>
           <Image Grid.Row="1" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Species:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <DropDown Grid.Row="1" Grid.Column="1" Name="Species" Items="{Binding Species}">
-            <DropDown.ItemTemplate>
+          <ComboBox Grid.Row="1" Grid.Column="1" Name="Species" Items="{Binding Species}">
+            <ComboBox.ItemTemplate>
               <DataTemplate>
                 <StackPanel Spacing="4" Orientation="Horizontal">
                   <Image Height="32" Source="{Binding Converter={x:Static infrastructure:SpeciesToMinispriteConverter.Instance}, Mode=OneWay}"/>
                   <Image Height="15" Source="{Binding Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
                 </StackPanel>
               </DataTemplate>
-            </DropDown.ItemTemplate>
-          </DropDown>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
           <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nickname:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <TextBox Grid.Row="2" Grid.Column="1" Name="Nickname"/>
           <Image Grid.Row="3" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Level:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
@@ -57,13 +57,13 @@
           <Image Grid.Row="4" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Friendship:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <NumericUpDown Grid.Row="4" Grid.Column="1" Name="Friendship" Minimum="0" Maximum="255" ClipValueToMinMax="true"/>
           <Image Grid.Row="5" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Ability:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <DropDown Grid.Row="5" Grid.Column="1" Name="Ability" Items="{Binding AvailableAbilities}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Grid.Row="5" Grid.Column="1" Name="Ability" Items="{Binding AvailableAbilities}" ItemTemplate="{StaticResource MenuBlack}"/>
           <Image Grid.Row="6" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nature:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <DropDown Grid.Row="6" Grid.Column="1" Name="Nature" Items="{Binding Natures}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Grid.Row="6" Grid.Column="1" Name="Nature" Items="{Binding Natures}" ItemTemplate="{StaticResource MenuBlack}"/>
           <Image Grid.Row="7" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Gender:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <DropDown Grid.Row="7" Grid.Column="1" Name="Gender" Items="{Binding AvailableGenders}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Grid.Row="7" Grid.Column="1" Name="Gender" Items="{Binding AvailableGenders}" ItemTemplate="{StaticResource MenuBlack}"/>
           <Image Grid.Row="8" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Item:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <DropDown Grid.Row="8" Grid.Column="1" Name="Item" Items="{Binding AvailableItems}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Grid.Row="8" Grid.Column="1" Name="Item" Items="{Binding AvailableItems}" ItemTemplate="{StaticResource MenuBlack}"/>
         </Grid>
         <Panel Width="192" Height="192">
           <Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceUri="{Binding Source}">
@@ -104,10 +104,10 @@
         </StackPanel>
         <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Moves:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-          <DropDown Name="Move0" Width="100" Items="{Binding AvailableMoves}" ItemTemplate="{StaticResource MenuBlack}"/>
-          <DropDown Name="Move1" Width="100" Items="{Binding AvailableMoves}" ItemTemplate="{StaticResource MenuBlack}"/>
-          <DropDown Name="Move2" Width="100" Items="{Binding AvailableMoves}" ItemTemplate="{StaticResource MenuBlack}"/>
-          <DropDown Name="Move3" Width="100" Items="{Binding AvailableMoves}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Name="Move0" Width="100" Items="{Binding AvailableMoves}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Name="Move1" Width="100" Items="{Binding AvailableMoves}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Name="Move2" Width="100" Items="{Binding AvailableMoves}" ItemTemplate="{StaticResource MenuBlack}"/>
+          <ComboBox Name="Move3" Width="100" Items="{Binding AvailableMoves}" ItemTemplate="{StaticResource MenuBlack}"/>
         </StackPanel>
         <Image Grid.Row="3" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='PP-Ups:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
