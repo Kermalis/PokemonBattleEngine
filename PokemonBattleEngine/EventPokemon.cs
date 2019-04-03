@@ -31,11 +31,11 @@ namespace Kermalis.PokemonBattleEngine
             {
                 Species = Species,
                 Level = Level,
-                Shiny = Shiny == null ? PBEUtils.RNG.NextShiny() : Shiny.Value,
+                Shiny = Shiny ?? PBEUtils.RNG.NextShiny(),
                 Ability = PossibleAbilities.Sample(),
                 Nature = PossibleNatures.Sample(),
                 Gender = Gender >= PBEGender.MAX ? PBEUtils.RNG.NextGender(PBEPokemonData.GetData(Species).GenderRatio) : Gender,
-                IVs = IVs.Select(i => (byte)(i == null ? PBEUtils.RNG.Next(0, PBESettings.DefaultSettings.MaxIVs + 1) : i.Value)).ToArray(),
+                IVs = IVs.Select(i => (byte)(i ?? PBEUtils.RNG.Next(0, PBESettings.DefaultSettings.MaxIVs + 1))).ToArray(),
                 Moves = Moves.Concat(new PBEMove[PBESettings.DefaultSettings.NumMoves - Moves.Count]).ToArray(), // Fills the empty slots with PBEMove.None
 
                 EVs = new byte[6],

@@ -1807,7 +1807,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             int totalDamageDealt = 0;
             bool lifeOrbDamage = false;
             // Struggle sets overridingMoveType to PBEType.None
-            PBEType moveType = overridingMoveType == null ? user.GetMoveType(move) : overridingMoveType.Value;
+            PBEType moveType = overridingMoveType ?? user.GetMoveType(move);
             double basePower = CalculateBasePower(user, targets, move, moveType);
             foreach (PBEPokemon target in targets)
             {
