@@ -239,6 +239,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// True if the Pokémon was originally <see cref="PBESpecies.Shaymin_Sky"/> but was <see cref="PBEStatus1.Frozen"/>, therefore forcing it to remain as <see cref="PBESpecies.Shaymin"/> when switching out.
         /// </summary>
         public bool Shaymin_CannotChangeBackToSkyForm { get; set; }
+        /// <summary>
+        /// True if the Pokémon was present at the start of the turn, which would allow <see cref="PBEAbility.SpeedBoost"/> to activate.
+        /// </summary>
+        public bool SpeedBoost_AbleToSpeedBoostThisTurn { get; set; }
         #endregion
 
         // Stats & PP are set from the shell info
@@ -402,6 +406,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             TempLockedTargets = PBETarget.None;
 
             ExecutedMoves.Clear();
+
+            SpeedBoost_AbleToSpeedBoostThisTurn = false;
 
             if (Id != byte.MaxValue)
             {

@@ -453,6 +453,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
+            // Verified: Speed Boost before Orbs
+            foreach (PBEPokemon pkmn in order)
+            {
+                if (pkmn.HP > 0 && pkmn.Ability == PBEAbility.SpeedBoost && pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
+                {
+                    BroadcastAbility(pkmn, pkmn, PBEAbility.SpeedBoost, PBEAbilityAction.ChangedStats);
+                    ApplyStatChange(pkmn, PBEStat.Speed, +1);
+                }
+            }
+
             // Orbs
             foreach (PBEPokemon pkmn in order)
             {

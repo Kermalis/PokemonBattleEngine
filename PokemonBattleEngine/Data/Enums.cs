@@ -647,7 +647,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The ability was involved with weather.
         /// </summary>
-        Weather = 6
+        Weather = 6,
+        /// <summary>
+        /// The ability changed a Pokémon stats.
+        /// </summary>
+        ChangedStats = 7
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEItem"/>.
@@ -2171,7 +2175,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         SolidRock = 116,
         Soundproof = 43, // TODO
-        SpeedBoost = 3, // TODO
+        SpeedBoost = 3,
         Stall = 100, // TODO
         Static = 9, // TODO
         Steadfast = 80, // TODO
