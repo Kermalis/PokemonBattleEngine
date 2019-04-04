@@ -1106,6 +1106,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Status2.HasFlag(PBEStatus2.Flinching))
             {
                 BroadcastStatus2(user, user, PBEStatus2.Flinching, PBEStatusAction.Activated);
+                if (user.Ability == PBEAbility.Steadfast && user.SpeedChange < Settings.MaxStatChange)
+                {
+                    BroadcastAbility(user, user, PBEAbility.Steadfast, PBEAbilityAction.ChangedStats);
+                    ApplyStatChange(user, PBEStat.Speed, +1);
+                }
                 return true;
             }
             // Verified: Confusion before Paralysis

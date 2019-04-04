@@ -2178,7 +2178,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SpeedBoost = 3,
         Stall = 100, // TODO
         Static = 9, // TODO
-        Steadfast = 80, // TODO
+        Steadfast = 80,
         Stench = 1, // TODO
         StickyHold = 60, // TODO
         StormDrain = 114, // TODO

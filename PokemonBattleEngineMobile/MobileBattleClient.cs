@@ -276,6 +276,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                                     break;
                                 }
                             case PBEAbility.SpeedBoost:
+                            case PBEAbility.Steadfast:
                                 {
                                     switch (ap.AbilityAction)
                                     {

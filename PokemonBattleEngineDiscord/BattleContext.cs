@@ -434,6 +434,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     break;
                                 }
                             case PBEAbility.SpeedBoost:
+                            case PBEAbility.Steadfast:
                                 {
                                     switch (ap.AbilityAction)
                                     {

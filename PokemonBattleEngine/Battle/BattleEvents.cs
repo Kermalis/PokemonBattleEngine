@@ -405,6 +405,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     break;
                                 }
                             case PBEAbility.SpeedBoost:
+                            case PBEAbility.Steadfast:
                                 {
                                     switch (ap.AbilityAction)
                                     {
