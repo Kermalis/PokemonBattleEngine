@@ -618,7 +618,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         if (Mode != ClientMode.SinglePlayer)
                         {
                             pokemon.FieldPosition = PBEFieldPosition.None;
-                            if (Mode == ClientMode.Online)
+                            if (Mode == ClientMode.Online && pfap.PokemonTeam.Id != BattleId)
                             {
                                 pokemon.Team.Party.Remove(pokemon);
                             }
