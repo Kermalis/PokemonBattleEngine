@@ -308,6 +308,28 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         void BattleEventHandler(PBEBattle battle, INetPacket packet)
         {
+            void SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfoHAHAHAHAHA(INetPacket realPacket, INetPacket hiddenInfo, byte teamOwnerId)
+            {
+                spectatorPackets.Add(hiddenInfo);
+                Player teamOwner = battlers[teamOwnerId];
+                teamOwner.Send(realPacket);
+                if (!teamOwner.WaitForResponse())
+                {
+                    return;
+                }
+                foreach (Player player in readyPlayers.Except(new[] { teamOwner }))
+                {
+                    if (player.Socket != null)
+                    {
+                        player.Send(hiddenInfo);
+                        if (!player.WaitForResponse() && player.BattleId < 2)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
             switch (packet)
             {
                 case PBEMoveLockPacket mlp:
@@ -332,94 +354,32 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                 case PBEPkmnFaintedPacket pfp:
                     {
-                        var hiddenId = new PBEPkmnFaintedPacket(byte.MaxValue, pfp.PokemonPosition, pfp.PokemonTeam);
-                        spectatorPackets.Add(hiddenId);
-                        Player teamOwner = battlers[pfp.PokemonTeam.Id];
-                        teamOwner.Send(pfp);
-                        if (!teamOwner.WaitForResponse())
-                        {
-                            return;
-                        }
-                        foreach (Player player in readyPlayers.Except(new[] { teamOwner }))
-                        {
-                            if (player.Socket != null)
-                            {
-                                player.Send(hiddenId);
-                                if (!player.WaitForResponse() && player.BattleId < 2)
-                                {
-                                    return;
-                                }
-                            }
-                        }
+                        var hiddenInfo = new PBEPkmnFaintedPacket(byte.MaxValue, pfp.PokemonPosition, pfp.PokemonTeam);
+                        SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfoHAHAHAHAHA(pfp, hiddenInfo, pfp.PokemonTeam.Id);
+                        break;
+                    }
+                case PBEPkmnFormChangedPacket pfcp:
+                    {
+                        var hiddenInfo = new PBEPkmnFormChangedPacket(pfcp.Pokemon, pfcp.PokemonTeam, ushort.MinValue, ushort.MinValue, ushort.MinValue, ushort.MinValue, ushort.MinValue, pfcp.NewKnownAbility != PBEAbility.MAX ? pfcp.NewAbility : PBEAbility.MAX, pfcp.NewKnownAbility, pfcp.NewSpecies, pfcp.NewType1, pfcp.NewType2, pfcp.NewWeight);
+                        SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfoHAHAHAHAHA(pfcp, hiddenInfo, pfcp.PokemonTeam.Id);
                         break;
                     }
                 case PBEPkmnHPChangedPacket phcp:
                     {
-                        var hiddenId = new PBEPkmnHPChangedPacket(phcp.Pokemon, phcp.PokemonTeam, 0, 0, phcp.OldHPPercentage, phcp.NewHPPercentage);
-                        spectatorPackets.Add(hiddenId);
-                        Player teamOwner = battlers[phcp.PokemonTeam.Id];
-                        teamOwner.Send(phcp);
-                        if (!teamOwner.WaitForResponse())
-                        {
-                            return;
-                        }
-                        foreach (Player player in readyPlayers.Except(new[] { teamOwner }))
-                        {
-                            if (player.Socket != null)
-                            {
-                                player.Send(hiddenId);
-                                if (!player.WaitForResponse() && player.BattleId < 2)
-                                {
-                                    return;
-                                }
-                            }
-                        }
+                        var hiddenInfo = new PBEPkmnHPChangedPacket(phcp.Pokemon, phcp.PokemonTeam, ushort.MinValue, ushort.MinValue, phcp.OldHPPercentage, phcp.NewHPPercentage);
+                        SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfoHAHAHAHAHA(phcp, hiddenInfo, phcp.PokemonTeam.Id);
                         break;
                     }
                 case PBEPkmnSwitchInPacket psip:
                     {
-                        var hiddenId = new PBEPkmnSwitchInPacket(psip.Team, psip.SwitchIns.Select(s => new PBEPkmnSwitchInPacket.PBESwitchInInfo(byte.MaxValue, byte.MaxValue, s.Species, s.Nickname, s.Level, s.Shiny, s.Gender, 0, 0, s.HPPercentage, s.Status1, s.FieldPosition)), psip.Forced);
-                        spectatorPackets.Add(hiddenId);
-                        Player teamOwner = battlers[psip.Team.Id];
-                        teamOwner.Send(psip);
-                        if (!teamOwner.WaitForResponse())
-                        {
-                            return;
-                        }
-                        foreach (Player player in readyPlayers.Except(new[] { teamOwner }))
-                        {
-                            if (player.Socket != null)
-                            {
-                                player.Send(hiddenId);
-                                if (!player.WaitForResponse() && player.BattleId < 2)
-                                {
-                                    return;
-                                }
-                            }
-                        }
+                        var hiddenInfo = new PBEPkmnSwitchInPacket(psip.Team, psip.SwitchIns.Select(s => new PBEPkmnSwitchInPacket.PBESwitchInInfo(byte.MaxValue, byte.MaxValue, s.Species, s.Nickname, s.Level, s.Shiny, s.Gender, 0, 0, s.HPPercentage, s.Status1, s.FieldPosition)), psip.Forced);
+                        SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfoHAHAHAHAHA(psip, hiddenInfo, psip.Team.Id);
                         break;
                     }
                 case PBEPkmnSwitchOutPacket psop:
                     {
-                        var hiddenId = new PBEPkmnSwitchOutPacket(byte.MaxValue, psop.PokemonPosition, psop.PokemonTeam, psop.Forced);
-                        spectatorPackets.Add(hiddenId);
-                        Player teamOwner = battlers[psop.PokemonTeam.Id];
-                        teamOwner.Send(psop);
-                        if (!teamOwner.WaitForResponse())
-                        {
-                            return;
-                        }
-                        foreach (Player player in readyPlayers.Except(new[] { teamOwner }))
-                        {
-                            if (player.Socket != null)
-                            {
-                                player.Send(hiddenId);
-                                if (!player.WaitForResponse() && player.BattleId < 2)
-                                {
-                                    return;
-                                }
-                            }
-                        }
+                        var hiddenInfo = new PBEPkmnSwitchOutPacket(byte.MaxValue, psop.PokemonPosition, psop.PokemonTeam, psop.Forced);
+                        SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfoHAHAHAHAHA(psop, hiddenInfo, psop.PokemonTeam.Id);
                         break;
                     }
                 case PBETransformPacket tp:

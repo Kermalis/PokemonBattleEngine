@@ -148,7 +148,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
             else
             {
-                sb.AppendLine($"{pkmn.Nickname}/{pkmn.OriginalSpecies} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
+                sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
                 sb.AppendLine($"Types: {pkmn.Type1}/{pkmn.Type2}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)

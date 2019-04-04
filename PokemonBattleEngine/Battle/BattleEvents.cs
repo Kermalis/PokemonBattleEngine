@@ -102,13 +102,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        void BroadcastPkmnFormChanged(PBEPokemon pokemon, PBESpecies newSpecies)
+        void BroadcastPkmnFormChanged(PBEPokemon pokemon, PBESpecies newSpecies, PBEAbility newAbility, PBEAbility newKnownAbility)
         {
+            pokemon.Ability = newAbility;
+            pokemon.KnownAbility = newKnownAbility;
             pokemon.Species = pokemon.KnownSpecies = newSpecies;
+            ushort oldMaxHP = pokemon.MaxHP; // Store in case someone edits a form's HP base stat
+            pokemon.SetStats();
+            pokemon.MaxHP = oldMaxHP;
             var pData = PBEPokemonData.GetData(newSpecies);
             pokemon.Type1 = pokemon.KnownType1 = pData.Type1;
             pokemon.Type2 = pokemon.KnownType2 = pData.Type2;
-            var p = new PBEPkmnFormChangedPacket(pokemon, newSpecies);
+            pokemon.Weight = pokemon.KnownWeight = pData.Weight;
+            var p = new PBEPkmnFormChangedPacket(pokemon.FieldPosition, pokemon.Team, pokemon.Attack, pokemon.Defense, pokemon.SpAttack, pokemon.SpDefense, pokemon.Speed, newAbility, newKnownAbility, newSpecies, pokemon.Type1, pokemon.Type2, pokemon.Weight);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }

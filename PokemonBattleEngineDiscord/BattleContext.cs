@@ -143,7 +143,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         static string CustomPokemonToString(PBEPokemon pkmn, bool addReactionChars)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{pkmn.Nickname}/{pkmn.OriginalSpecies} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
+            sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
             sb.AppendLine($"**HP:** {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
             sb.AppendLine($"**Types:** {pkmn.Type1}/{pkmn.Type2}");
             if (pkmn.Status1 != PBEStatus1.None)

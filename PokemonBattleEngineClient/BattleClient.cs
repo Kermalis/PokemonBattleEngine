@@ -633,10 +633,21 @@ namespace Kermalis.PokemonBattleEngineClient
                         PBEPokemon pokemon = pfcp.PokemonTeam.TryGetPokemon(pfcp.Pokemon);
                         if (Mode != ClientMode.SinglePlayer)
                         {
+                            pokemon.Attack = pfcp.NewAttack;
+                            pokemon.Defense = pfcp.NewDefense;
+                            pokemon.SpAttack = pfcp.NewSpAttack;
+                            pokemon.SpDefense = pfcp.NewSpDefense;
+                            pokemon.Speed = pfcp.NewSpeed;
+                            pokemon.Ability = pfcp.NewAbility;
+                            pokemon.KnownAbility = pfcp.NewKnownAbility;
                             pokemon.Species = pokemon.KnownSpecies = pfcp.NewSpecies;
-                            var pData = PBEPokemonData.GetData(pfcp.NewSpecies);
-                            pokemon.Type1 = pokemon.KnownType1 = pData.Type1;
-                            pokemon.Type2 = pokemon.KnownType2 = pData.Type2;
+                            pokemon.Type1 = pokemon.KnownType1 = pfcp.NewType1;
+                            pokemon.Type2 = pokemon.KnownType2 = pfcp.NewType2;
+                            pokemon.Weight = pokemon.KnownWeight = pfcp.NewWeight;
+                            if (pfcp.NewSpecies == PBESpecies.Shaymin)
+                            {
+                                pokemon.Shaymin_CannotChangeBackToSkyForm = true;
+                            }
                         }
                         BattleView.Field.UpdatePokemon(pokemon);
                         BattleView.AddMessage(string.Format("{0} transformed!", NameForTrainer(pokemon, true)), true, true);

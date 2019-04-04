@@ -1342,7 +1342,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (newSpecies != pkmn.Species)
                 {
-                    BroadcastPkmnFormChanged(pkmn, newSpecies);
+                    BroadcastPkmnFormChanged(pkmn, newSpecies, pkmn.Ability, pkmn.KnownAbility);
                 }
             }
             else if (pkmn.OriginalSpecies == PBESpecies.Cherrim)
@@ -1361,8 +1361,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (newSpecies != pkmn.Species)
                 {
-                    BroadcastPkmnFormChanged(pkmn, newSpecies);
+                    BroadcastPkmnFormChanged(pkmn, newSpecies, pkmn.Ability, pkmn.KnownAbility);
                 }
+            }
+        }
+        void ShayminCheck(PBEPokemon pkmn)
+        {
+            if (pkmn.OriginalSpecies == PBESpecies.Shaymin_Sky && pkmn.Species == PBESpecies.Shaymin_Sky && pkmn.Status1 == PBEStatus1.Frozen)
+            {
+                const PBESpecies newSpecies = PBESpecies.Shaymin;
+                pkmn.Shaymin_CannotChangeBackToSkyForm = true;
+                BroadcastPkmnFormChanged(pkmn, newSpecies, PBEPokemonData.GetData(newSpecies).Abilities[0], PBEAbility.MAX);
             }
         }
         void IllusionBreak(PBEPokemon pkmn, PBEPokemon breaker)
@@ -1374,7 +1383,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 pkmn.KnownGender = pkmn.Gender;
                 pkmn.KnownNickname = pkmn.Nickname;
                 pkmn.KnownShiny = pkmn.Shiny;
-                pkmn.KnownSpecies = pkmn.OriginalSpecies;
+                pkmn.KnownSpecies = pkmn.Species;
                 pkmn.KnownType1 = pkmn.Type1;
                 pkmn.KnownType2 = pkmn.Type2;
                 BroadcastIllusion(pkmn);
@@ -1590,6 +1599,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 target.SleepTurns = (byte)(PBEUtils.RNG.Next(Settings.SleepMinTurns, Settings.SleepMaxTurns + 1) / (target.Ability == PBEAbility.EarlyBird ? 2 : 1));
             }
             BroadcastStatus1(target, user, status, PBEStatusAction.Added);
+            if (status == PBEStatus1.Frozen)
+            {
+                ShayminCheck(target);
+            }
             return PBEFailReason.None;
         }
         PBEFailReason ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastFailOrEffectiveness)
@@ -1770,13 +1783,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     pkmn.KnownNickname = last.Nickname;
                     pkmn.KnownShiny = last.Shiny;
                     pkmn.KnownSpecies = last.OriginalSpecies;
-                    var pData = PBEPokemonData.GetData(last.OriginalSpecies); // If "last" is on the field and its types changed then we wouldn't want to use last.Type1
+                    var pData = PBEPokemonData.GetData(last.OriginalSpecies);
                     pkmn.KnownType1 = pData.Type1;
                     pkmn.KnownType2 = pData.Type2;
                     return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, last.Id, last.OriginalSpecies, last.Nickname, pkmn.Level, last.Shiny, last.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
                 }
             }
-            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.OriginalSpecies, pkmn.Nickname, pkmn.Level, pkmn.Shiny, pkmn.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
+            return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Species, pkmn.Nickname, pkmn.Level, pkmn.Shiny, pkmn.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
         }
         void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
         {

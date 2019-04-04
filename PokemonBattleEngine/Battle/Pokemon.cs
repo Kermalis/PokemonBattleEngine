@@ -234,6 +234,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEMove ChoiceLockedMove { get; set; }
         #endregion
 
+        #region Special Flags
+        /// <summary>
+        /// True if the Pokémon was originally <see cref="PBESpecies.Shaymin_Sky"/> but was <see cref="PBEStatus1.Frozen"/>, therefore forcing it to remain as <see cref="PBESpecies.Shaymin"/> when switching out.
+        /// </summary>
+        public bool Shaymin_CannotChangeBackToSkyForm { get; set; }
+        #endregion
+
         // Stats & PP are set from the shell info
         internal PBEPokemon(PBETeam team, byte id, PBEPokemonShell shell)
         {
@@ -290,9 +297,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             HPPercentage = info.HPPercentage;
             Status1 = info.Status1;
             Level = info.Level;
-            KnownAbility = PBEAbility.MAX;
-            KnownGender = info.Gender;
-            KnownItem = (PBEItem)ushort.MaxValue;
+            KnownAbility = Ability = OriginalAbility = PBEAbility.MAX;
+            KnownGender = Gender = info.Gender;
+            KnownItem = Item = (PBEItem)ushort.MaxValue;
             Moves = new PBEMove[Team.Battle.Settings.NumMoves];
             KnownMoves = new PBEMove[Team.Battle.Settings.NumMoves];
             for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
@@ -301,9 +308,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             PP = new byte[Team.Battle.Settings.NumMoves];
             MaxPP = new byte[Team.Battle.Settings.NumMoves];
-            KnownNickname = info.Nickname;
-            KnownShiny = info.Shiny;
-            Species = KnownSpecies = info.Species;
+            KnownNickname = Nickname = info.Nickname;
+            KnownShiny = Shiny = info.Shiny;
+            KnownSpecies = Species = OriginalSpecies = info.Species;
             var pData = PBEPokemonData.GetData(KnownSpecies);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
@@ -311,7 +318,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Team.Party.Add(this);
         }
 
-        void SetStats()
+        public void SetStats()
         {
             MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Species, Nature, EVs[0], IVs[0], Level, Team.Battle.Settings);
             Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, Species, Nature, EVs[1], IVs[1], Level, Team.Battle.Settings);
@@ -342,7 +349,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         break;
                     }
             }
-            Ability = OriginalAbility;
+            PBEPokemonData pData;
+            if (Shaymin_CannotChangeBackToSkyForm)
+            {
+                pData = PBEPokemonData.GetData(Species = KnownSpecies = PBESpecies.Shaymin);
+                Ability = pData.Abilities[0];
+            }
+            else
+            {
+                pData = PBEPokemonData.GetData(Species = KnownSpecies = OriginalSpecies);
+                Ability = OriginalAbility;
+            }
             KnownAbility = PBEAbility.MAX;
             KnownGender = Gender;
             KnownItem = (PBEItem)ushort.MaxValue;
@@ -352,8 +369,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             KnownNickname = Nickname;
             KnownShiny = Shiny;
-            Species = KnownSpecies = OriginalSpecies;
-            var pData = PBEPokemonData.GetData(Species);
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
 
@@ -448,7 +463,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Moves[i] = target.Moves[i];
                     KnownMoves[i] = target.KnownMoves[i];
                 }
-                if (Id != byte.MaxValue)
+                if (Id != byte.MaxValue) // Don't set PP if this is a client's unknown remote Pokémon
                 {
                     PP[i] = MaxPP[i] = (byte)(Moves[i] == PBEMove.None ? 0 : PBEMoveData.Data[Moves[i]].PPTier == 0 ? 1 : Team.Battle.Settings.PPMultiplier);
                 }
@@ -726,7 +741,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{Nickname}/{OriginalSpecies} {GenderSymbol} Lv.{Level}");
+            sb.AppendLine($"{Nickname}/{Species} {GenderSymbol} Lv.{Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
             sb.AppendLine($"Types: {Type1}/{Type2}");
             sb.AppendLine($"Position: {FieldPosition}");
