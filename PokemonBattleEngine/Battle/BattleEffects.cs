@@ -172,6 +172,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         BroadcastAbility(victim, user, PBEAbility.Mummy, PBEAbilityAction.Damage);
                         BroadcastAbility(user, victim, PBEAbility.Mummy, PBEAbilityAction.Changed);
+                        CastformCherrimCheck(user);
                     }
                     if (user.HP > 0 && (victim.Ability == PBEAbility.IronBarbs || victim.Ability == PBEAbility.RoughSkin))
                     {
