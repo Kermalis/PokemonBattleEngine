@@ -183,7 +183,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine($"Item: {PBELocalizedString.GetItemName(pkmn.Item).FromUICultureInfo()}");
                 if (Array.IndexOf(pkmn.Moves, PBEMove.Frustration) != -1 || Array.IndexOf(pkmn.Moves, PBEMove.Return) != -1)
                 {
-                    sb.AppendLine($"**Friendship:** {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
+                    sb.AppendLine($"Friendship: {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
                 }
                 if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
                 {
