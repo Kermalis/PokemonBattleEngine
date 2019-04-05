@@ -69,7 +69,7 @@ namespace Kermalis.PokemonBattleEngine
         /// <param name="chanceDenominator">The denominator of the chance.</param>
         public static bool ApplyChance(this Random rand, int chanceNumerator, int chanceDenominator)
         {
-            return rand.Next(0, chanceDenominator) < chanceNumerator;
+            return rand.Next(chanceDenominator) < chanceNumerator;
         }
         /// <summary>
         /// Returns a random boolean.

@@ -316,13 +316,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     }
                                     break;
                                 }
+                            case PBEAbility.EffectSpore:
                             case PBEAbility.FlameBody:
+                            case PBEAbility.Healer:
                             case PBEAbility.PoisonPoint:
                             case PBEAbility.Static:
                                 {
                                     switch (ap.AbilityAction)
                                     {
-                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
+                                        case PBEAbilityAction.ChangedStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
@@ -333,15 +335,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     switch (ap.AbilityAction)
                                     {
                                         case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a form changed packet
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
-                            case PBEAbility.Healer:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.CuredStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
@@ -410,7 +403,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 {
                                     switch (ap.AbilityAction)
                                     {
-                                        case PBEAbilityAction.CuredStatus: // Message is displayed from a status1 packet
+                                        case PBEAbilityAction.ChangedStatus: // Message is displayed from a status1 packet
                                         case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }

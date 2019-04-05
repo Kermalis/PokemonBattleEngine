@@ -629,9 +629,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         ChangedAppearance = 1,
         /// <summary>
-        /// The ability cured a Pokémon from a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
+        /// The ability changed a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
         /// </summary>
-        CuredStatus = 2,
+        ChangedStatus = 2,
         /// <summary>
         /// The ability was involved with damage.
         /// </summary>
@@ -1982,7 +1982,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Drought = 70,
         DrySkin = 87, // TODO
         EarlyBird = 48,
-        EffectSpore = 27, // TODO
+        EffectSpore = 27,
         /// <summary>
         /// The Pokémon takes less damage from incoming super-effective moves.
         /// </summary>

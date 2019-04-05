@@ -183,23 +183,74 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             HealingBerryCheck(user);
                         }
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.Status1 == PBEStatus1.None && user.Ability != PBEAbility.Limber && PBEUtils.RNG.ApplyChance(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.EffectSpore && user.Status1 == PBEStatus1.None)
                     {
-                        BroadcastAbility(victim, user, PBEAbility.Static, PBEAbilityAction.Damage);
-                        user.Status1 = PBEStatus1.Paralyzed;
-                        BroadcastStatus1(user, victim, PBEStatus1.Paralyzed, PBEStatusAction.Added);
-                    }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.Status1 == PBEStatus1.None && user.Ability != PBEAbility.Immunity && !user.HasType(PBEType.Poison) && !user.HasType(PBEType.Steel) && PBEUtils.RNG.ApplyChance(30, 100))
-                    {
-                        BroadcastAbility(victim, user, PBEAbility.PoisonPoint, PBEAbilityAction.Damage);
-                        user.Status1 = PBEStatus1.Poisoned;
-                        BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
+                        // Spaghetti code taken from the assembly in generation 5 games
+                        int randomNum = PBEUtils.RNG.Next(100);
+                        if (randomNum < 30)
+                        {
+                            PBEStatus1 status1;
+                            if (randomNum <= 20)
+                            {
+                                if (randomNum > 10) // 11-20 (10%)
+                                {
+                                    if (user.Ability == PBEAbility.Limber || user.HasType(PBEType.Electric))
+                                    {
+                                        goto fail;
+                                    }
+                                    else
+                                    {
+                                        status1 = PBEStatus1.Paralyzed;
+                                    }
+                                }
+                                else // 0-10 (11%)
+                                {
+                                    if (user.Ability == PBEAbility.Insomnia)
+                                    {
+                                        goto fail;
+                                    }
+                                    else
+                                    {
+                                        status1 = PBEStatus1.Asleep;
+                                    }
+                                }
+                            }
+                            else // 21-29 (9%)
+                            {
+                                if (user.Ability == PBEAbility.Immunity || user.HasType(PBEType.Poison) || user.HasType(PBEType.Steel))
+                                {
+                                    goto fail;
+                                }
+                                else
+                                {
+                                    status1 = PBEStatus1.Poisoned;
+                                }
+                            }
+                            BroadcastAbility(victim, user, PBEAbility.EffectSpore, PBEAbilityAction.ChangedStatus);
+                            user.Status1 = status1;
+                            SetSleepTurns(user, Settings.SleepMinTurns, Settings.SleepMaxTurns);
+                            BroadcastStatus1(user, victim, status1, PBEStatusAction.Added);
+                        fail:
+                            ;
+                        }
                     }
                     if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.Status1 == PBEStatus1.None && user.Ability != PBEAbility.WaterVeil && !user.HasType(PBEType.Fire) && PBEUtils.RNG.ApplyChance(30, 100))
                     {
-                        BroadcastAbility(victim, user, PBEAbility.FlameBody, PBEAbilityAction.Damage);
+                        BroadcastAbility(victim, user, PBEAbility.FlameBody, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Burned;
                         BroadcastStatus1(user, victim, PBEStatus1.Burned, PBEStatusAction.Added);
+                    }
+                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.Status1 == PBEStatus1.None && user.Ability != PBEAbility.Immunity && !user.HasType(PBEType.Poison) && !user.HasType(PBEType.Steel) && PBEUtils.RNG.ApplyChance(30, 100))
+                    {
+                        BroadcastAbility(victim, user, PBEAbility.PoisonPoint, PBEAbilityAction.ChangedStatus);
+                        user.Status1 = PBEStatus1.Poisoned;
+                        BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
+                    }
+                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.Status1 == PBEStatus1.None && user.Ability != PBEAbility.Limber && PBEUtils.RNG.ApplyChance(30, 100))
+                    {
+                        BroadcastAbility(victim, user, PBEAbility.Static, PBEAbilityAction.ChangedStatus);
+                        user.Status1 = PBEStatus1.Paralyzed;
+                        BroadcastStatus1(user, victim, PBEStatus1.Paralyzed, PBEStatusAction.Added);
                     }
                     // Verified: Above abilities before Rocky Helmet
                     if (user.HP > 0 && victim.Item == PBEItem.RockyHelmet)
@@ -219,7 +270,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 HealingBerryCheck(victim); // Verified: Berry after Rough Skin (for victim)
             }
 
-            // TODO: King's Rock, Stench, Effect Spore, Static, etc
+            // TODO: King's Rock, Stench, etc
             // TODO?: Cell Battery
         }
         /// <summary>
@@ -344,7 +395,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (ally.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
                         {
-                            BroadcastAbility(pkmn, ally, PBEAbility.Healer, PBEAbilityAction.CuredStatus);
+                            BroadcastAbility(pkmn, ally, PBEAbility.Healer, PBEAbilityAction.ChangedStatus);
                             PBEStatus1 status = ally.Status1;
                             ally.Status1 = PBEStatus1.None;
                             BroadcastStatus1(ally, pkmn, status, PBEStatusAction.Cured);
@@ -1431,7 +1482,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (pkmn.Ability == PBEAbility.Limber && pkmn.Status1 == PBEStatus1.Paralyzed)
             {
                 pkmn.Status1 = PBEStatus1.None;
-                BroadcastAbility(pkmn, pkmn, PBEAbility.Limber, PBEAbilityAction.CuredStatus);
+                BroadcastAbility(pkmn, pkmn, PBEAbility.Limber, PBEAbilityAction.ChangedStatus);
                 BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cured);
             }
         }
@@ -1572,6 +1623,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
         }
 
+        void SetSleepTurns(PBEPokemon pkmn, int minTurns, int maxTurns)
+        {
+            if (pkmn.Status1 == PBEStatus1.Asleep)
+            {
+                pkmn.SleepTurns = (byte)(PBEUtils.RNG.Next(minTurns, maxTurns + 1) / (pkmn.Ability == PBEAbility.EarlyBird ? 2 : 1));
+            }
+        }
         PBEFailReason ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastFailOrEffectiveness)
         {
             if (target.Status1 != PBEStatus1.None || target.Status2.HasFlag(PBEStatus2.Substitute))
@@ -1629,10 +1687,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 target.Status1Counter = 1;
             }
-            if (status == PBEStatus1.Asleep)
-            {
-                target.SleepTurns = (byte)(PBEUtils.RNG.Next(Settings.SleepMinTurns, Settings.SleepMaxTurns + 1) / (target.Ability == PBEAbility.EarlyBird ? 2 : 1));
-            }
+            SetSleepTurns(target, Settings.SleepMinTurns, Settings.SleepMaxTurns);
             BroadcastStatus1(target, user, status, PBEStatusAction.Added);
             if (status == PBEStatus1.Frozen)
             {
@@ -3073,7 +3128,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 failReason = PBEFailReason.None;
                 user.Status1 = PBEStatus1.Asleep;
-                user.SleepTurns = (byte)(3 / (user.Ability == PBEAbility.EarlyBird ? 2 : 1));
+                SetSleepTurns(user, 3, 3);
                 user.Status1Counter = 0;
                 BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Added);
                 HealDamage(user, user.MaxHP);
