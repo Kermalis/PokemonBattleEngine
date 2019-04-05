@@ -189,6 +189,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         user.Status1 = PBEStatus1.Paralyzed;
                         BroadcastStatus1(user, victim, PBEStatus1.Paralyzed, PBEStatusAction.Added);
                     }
+                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.Status1 == PBEStatus1.None && user.Ability != PBEAbility.Immunity && !user.HasType(PBEType.Poison) && !user.HasType(PBEType.Steel) && PBEUtils.RNG.ApplyChance(30, 100))
+                    {
+                        BroadcastAbility(victim, user, PBEAbility.PoisonPoint, PBEAbilityAction.Damage);
+                        user.Status1 = PBEStatus1.Poisoned;
+                        BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
+                    }
                     // Verified: Above abilities before Rocky Helmet
                     if (user.HP > 0 && victim.Item == PBEItem.RockyHelmet)
                     {
