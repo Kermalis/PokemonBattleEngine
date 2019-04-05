@@ -183,6 +183,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             HealingBerryCheck(user);
                         }
                     }
+                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.Status1 == PBEStatus1.None && user.Ability != PBEAbility.Limber && PBEUtils.RNG.ApplyChance(30, 100))
+                    {
+                        BroadcastAbility(victim, user, PBEAbility.Static, PBEAbilityAction.Damage);
+                        user.Status1 = PBEStatus1.Paralyzed;
+                        BroadcastStatus1(user, victim, PBEStatus1.Paralyzed, PBEStatusAction.Added);
+                    }
+                    // Verified: Above abilities before Rocky Helmet
                     if (user.HP > 0 && victim.Item == PBEItem.RockyHelmet)
                     {
                         BroadcastItem(victim, user, PBEItem.RockyHelmet, PBEItemAction.Damage);

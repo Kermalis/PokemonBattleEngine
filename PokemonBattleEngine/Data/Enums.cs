@@ -2177,7 +2177,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Soundproof = 43, // TODO
         SpeedBoost = 3,
         Stall = 100, // TODO
-        Static = 9, // TODO
+        Static = 9,
         Steadfast = 80,
         Stench = 1, // TODO
         StickyHold = 60, // TODO

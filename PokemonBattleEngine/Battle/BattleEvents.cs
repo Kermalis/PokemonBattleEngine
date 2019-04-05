@@ -414,6 +414,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                     break;
                                 }
+                            case PBEAbility.Static:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
                             case PBEAbility.Sturdy:
                                 {
                                     switch (ap.AbilityAction)
