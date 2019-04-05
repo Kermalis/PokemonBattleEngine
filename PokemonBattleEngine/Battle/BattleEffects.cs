@@ -195,6 +195,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         user.Status1 = PBEStatus1.Poisoned;
                         BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
                     }
+                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.Status1 == PBEStatus1.None && user.Ability != PBEAbility.WaterVeil && !user.HasType(PBEType.Fire) && PBEUtils.RNG.ApplyChance(30, 100))
+                    {
+                        BroadcastAbility(victim, user, PBEAbility.FlameBody, PBEAbilityAction.Damage);
+                        user.Status1 = PBEStatus1.Burned;
+                        BroadcastStatus1(user, victim, PBEStatus1.Burned, PBEStatusAction.Added);
+                    }
                     // Verified: Above abilities before Rocky Helmet
                     if (user.HP > 0 && victim.Item == PBEItem.RockyHelmet)
                     {

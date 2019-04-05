@@ -212,6 +212,17 @@ namespace Kermalis.PokemonBattleEngineClient
                                     }
                                     break;
                                 }
+                            case PBEAbility.FlameBody:
+                            case PBEAbility.PoisonPoint:
+                            case PBEAbility.Static:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
                             case PBEAbility.FlowerGift:
                             case PBEAbility.Forecast:
                                 {
@@ -325,16 +336,6 @@ namespace Kermalis.PokemonBattleEngineClient
                                     switch (ap.AbilityAction)
                                     {
                                         case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
-                            case PBEAbility.PoisonPoint:
-                            case PBEAbility.Static:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
