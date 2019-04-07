@@ -13,9 +13,9 @@
     <Compile Update="**\*.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="**\*.xaml">
+    <AvaloniaResource Include="**\*.xaml">
       <SubType>Designer</SubType>
-    </EmbeddedResource>
+    </AvaloniaResource>
     <EmbeddedResource Include="../Shared Assets\**" />
   </ItemGroup>
 
@@ -26,19 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Views\ActionsView.xaml" />
-    <None Remove="Views\BattleView.xaml" />
-    <None Remove="Views\FieldView.xaml" />
-    <None Remove="Views\HPBarView.xaml" />
-    <None Remove="Views\MessageView.xaml" />
-    <None Remove="Views\PokemonView.xaml" />
-    <None Remove="Views\TeamBuilderView.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.7.1-cibuild*" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.7.1-cibuild*" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.7.1-cibuild*" />
+    <PackageReference Include="Avalonia" Version="0.8.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.8.0" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.8.0" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
     <Reference Include="AvaloniaGif">
       <HintPath>Dependencies\AvaloniaGif.dll</HintPath>
@@ -46,30 +36,6 @@
     <Reference Include="Ether.Network">
       <HintPath>../Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Views\ActionsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\BattleView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\FieldView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\HPBarView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\MessageView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\PokemonView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\TeamBuilderView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
