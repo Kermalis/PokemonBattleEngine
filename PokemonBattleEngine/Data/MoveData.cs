@@ -1415,7 +1415,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PBEMove.Inferno,
                 new PBEMoveData
                 (
-                    PBEType.Fire, PBEMoveCategory.Special, 0, 1, 10, 50,
+                    PBEType.Fire, PBEMoveCategory.Special, 0, 1, 100, 50,
                     PBEMoveEffect.Hit__MaybeBurn, 100, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
