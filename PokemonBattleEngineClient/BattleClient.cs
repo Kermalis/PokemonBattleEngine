@@ -1050,7 +1050,10 @@ namespace Kermalis.PokemonBattleEngineClient
                                     {
                                         case PBEStatusAction.Added:
                                             {
-                                                status2Receiver.SeededPosition = pokemon2.FieldPosition;
+                                                if (Mode != ClientMode.SinglePlayer)
+                                                {
+                                                    status2Receiver.SeededPosition = pokemon2.FieldPosition;
+                                                }
                                                 message = "{0} was seeded!";
                                                 break;
                                             }
@@ -1093,7 +1096,10 @@ namespace Kermalis.PokemonBattleEngineClient
                                 }
                             case PBEStatus2.Transformed:
                                 {
-                                    status2Receiver.Transform(pokemon2);
+                                    if (Mode != ClientMode.SinglePlayer)
+                                    {
+                                        status2Receiver.Transform(pokemon2);
+                                    }
                                     BattleView.Field.UpdatePokemon(status2Receiver);
                                     switch (s2p.StatusAction)
                                     {
@@ -1183,13 +1189,19 @@ namespace Kermalis.PokemonBattleEngineClient
                                     {
                                         case PBETeamStatusAction.Added:
                                             {
-                                                tsp.Team.SpikeCount++;
+                                                if (Mode != ClientMode.SinglePlayer)
+                                                {
+                                                    tsp.Team.SpikeCount++;
+                                                }
                                                 message = "Spikes were scattered all around the feet of {2} team!";
                                                 break;
                                             }
                                         case PBETeamStatusAction.Cleared:
                                             {
-                                                tsp.Team.SpikeCount = 0;
+                                                if (Mode != ClientMode.SinglePlayer)
+                                                {
+                                                    tsp.Team.SpikeCount = 0;
+                                                }
                                                 message = "The spikes disappeared from around {2} team's feet!";
                                                 break;
                                             }
@@ -1215,13 +1227,19 @@ namespace Kermalis.PokemonBattleEngineClient
                                     {
                                         case PBETeamStatusAction.Added:
                                             {
-                                                tsp.Team.ToxicSpikeCount++;
+                                                if (Mode != ClientMode.SinglePlayer)
+                                                {
+                                                    tsp.Team.ToxicSpikeCount++;
+                                                }
                                                 message = "Poison spikes were scattered all around {2} team's feet!";
                                                 break;
                                             }
                                         case PBETeamStatusAction.Cleared:
                                             {
-                                                tsp.Team.ToxicSpikeCount = 0;
+                                                if (Mode != ClientMode.SinglePlayer)
+                                                {
+                                                    tsp.Team.ToxicSpikeCount = 0;
+                                                }
                                                 message = "The poison spikes disappeared from around {2} team's feet!";
                                                 break;
                                             }
@@ -1253,10 +1271,10 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                 case PBETransformPacket tp:
                     {
-                        PBEPokemon user = tp.UserTeam.TryGetPokemon(tp.User),
-                            target = tp.TargetTeam.TryGetPokemon(tp.Target);
                         if (Mode != ClientMode.SinglePlayer)
                         {
+                            PBEPokemon user = tp.UserTeam.TryGetPokemon(tp.User),
+                                target = tp.TargetTeam.TryGetPokemon(tp.Target);
                             target.Attack = tp.TargetAttack;
                             target.Defense = tp.TargetDefense;
                             target.SpAttack = tp.TargetSpAttack;
