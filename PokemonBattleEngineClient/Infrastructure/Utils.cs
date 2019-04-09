@@ -63,7 +63,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
         }
 
-        public static string CustomPokemonToString(PBEPokemon pkmn, bool showRawValues)
+        public static string CustomPokemonToString(PBEPokemon pkmn, bool showRawValues0, bool showRawValues1)
         {
             var sb = new StringBuilder();
 
@@ -105,7 +105,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
             }
 
-            if (!showRawValues)
+            if ((pkmn.Team.Id == 0 && !showRawValues0) || (pkmn.Team.Id == 1 && !showRawValues1))
             {
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {pkmn.KnownGenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
@@ -123,6 +123,14 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     PBEStatus2 cleanStatus = pkmn.Status2;
                     cleanStatus &= ~PBEStatus2.Disguised;
                     sb.AppendLine($"Volatile status: {cleanStatus}");
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Infatuated))
+                    {
+                        sb.AppendLine($"Infatuated with: {((pkmn.InfatuatedWithPokemon.Team.Id == 0 && showRawValues0) || (pkmn.InfatuatedWithPokemon.Team.Id == 1 && showRawValues1) ? pkmn.InfatuatedWithPokemon.Nickname : pkmn.InfatuatedWithPokemon.KnownNickname)}");
+                    }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
+                    {
+                        sb.AppendLine($"Seeded position: {pkmn.SeededPosition}");
+                    }
                 }
                 PBEPokemonData.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
                 PBEPokemonData.GetStatRange(PBEStat.Attack, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowAttack, out ushort highAttack);
@@ -167,6 +175,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
                         {
                             sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
+                        }
+                        if (pkmn.Status2.HasFlag(PBEStatus2.Infatuated))
+                        {
+                            sb.AppendLine($"Infatuated with: {((pkmn.InfatuatedWithPokemon.Team.Id == 0 && showRawValues0) || (pkmn.InfatuatedWithPokemon.Team.Id == 1 && showRawValues1) ? pkmn.InfatuatedWithPokemon.Nickname : pkmn.InfatuatedWithPokemon.KnownNickname)}");
                         }
                         if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
                         {

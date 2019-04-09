@@ -203,7 +203,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// The amount of turns the Pokémon will be confused for before snapping out of it.
         /// </summary>
         public byte ConfusionTurns { get; set; }
-        public PBEPokemon DisguisedAsPokemon { get; set; } // Illusion
+        /// <summary>
+        /// The Pokémon that <see cref="PBEStatus2.Disguised"/> is disguised as.
+        /// </summary>
+        public PBEPokemon DisguisedAsPokemon { get; set; }
+        /// <summary>
+        /// The Pokémon that <see cref="PBEStatus2.Infatuated"/> is bound to.
+        /// </summary>
+        public PBEPokemon InfatuatedWithPokemon { get; set; }
         /// <summary>
         /// The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on the opposing team.
         /// </summary>
@@ -680,6 +687,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return TempLockedMove == PBEMove.None;
         }
         /// <summary>
+        /// Returns True if the Pokémon can become <see cref="PBEStatus2.Infatuated"/> with <paramref name="other"/>.
+        /// </summary>
+        // TODO: Make a different public version that uses KnownAbility? AIs should not be able to cheat
+        public bool CanBecomeInfatuatedWith(PBEPokemon other)
+        {
+            if (Status2.HasFlag(PBEStatus2.Infatuated) || (Ability == PBEAbility.Oblivious && other.Ability != PBEAbility.MoldBreaker && other.Ability != PBEAbility.Teravolt && other.Ability != PBEAbility.Turboblaze))
+            {
+                return false;
+            }
+            else
+            {
+                return (Gender == PBEGender.Male && other.Gender == PBEGender.Female) || (Gender == PBEGender.Female && other.Gender == PBEGender.Male);
+            }
+        }
+        /// <summary>
         /// Returns an array of moves the Pokémon can use.
         /// </summary>
         public PBEMove[] GetUsableMoves()
@@ -768,6 +790,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (Status2.HasFlag(PBEStatus2.Disguised))
             {
                 sb.AppendLine($"Disguised as: {DisguisedAsPokemon.Nickname}");
+            }
+            if (Status2.HasFlag(PBEStatus2.Infatuated))
+            {
+                sb.AppendLine($"Infatuated with: {InfatuatedWithPokemon.Nickname}");
             }
             if (Status2.HasFlag(PBEStatus2.LeechSeed))
             {

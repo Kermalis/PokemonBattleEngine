@@ -86,7 +86,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 Rectangle dim = this.FindControl<Rectangle>("WeatherDim");
                 Image gif = this.FindControl<Image>("WeatherGif");
-                Uri uri = new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.WEATHER_{battleView.Client.Battle.Weather}.gif?assembly=PokemonBattleEngineClient");
+                var uri = new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.WEATHER_{battleView.Client.Battle.Weather}.gif?assembly=PokemonBattleEngineClient");
                 switch (battleView.Client.Battle.Weather)
                 {
                     case PBEWeather.Hailstorm:
@@ -190,20 +190,20 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 HPBarView hpView;
                 PokemonView pkmnView;
                 bool backSprite = (pkmn.Team.Id == 0 && battleView.Client.BattleId != 1) || (pkmn.Team.Id == 1 && battleView.Client.BattleId == 1);
-                bool showRawValues = pkmn.Team.Id == battleView.Client.BattleId || battleView.Client.Mode == BattleClient.ClientMode.Replay;
+                bool hpRawValues = (pkmn.Team.Id == 0 && battleView.Client.ShowRawValues0) || (pkmn.Team.Id == 1 && battleView.Client.ShowRawValues1);
                 if (oldPosition != PBEFieldPosition.None)
                 {
                     hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
-                    hpView.Update(pkmn, showRawValues);
+                    hpView.Update(pkmn, hpRawValues);
                     pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{oldPosition}");
-                    pkmnView.Update(pkmn, backSprite, showRawValues);
+                    pkmnView.Update(pkmn, backSprite, battleView.Client.ShowRawValues0, battleView.Client.ShowRawValues1);
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    hpView.Update(pkmn, showRawValues);
+                    hpView.Update(pkmn, hpRawValues);
                     pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    pkmnView.Update(pkmn, backSprite, showRawValues);
+                    pkmnView.Update(pkmn, backSprite, battleView.Client.ShowRawValues0, battleView.Client.ShowRawValues1);
                 }
             });
         }

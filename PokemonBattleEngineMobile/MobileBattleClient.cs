@@ -703,6 +703,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                 case PBEPkmnSwitchOutPacket psop:
                     {
                         PBEPokemon pokemon = psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
+                        Battle.ActiveBattlers.Remove(pokemon);
                         if (pokemon.Id == byte.MaxValue)
                         {
                             pokemon.FieldPosition = PBEFieldPosition.None;
@@ -712,7 +713,6 @@ namespace Kermalis.PokemonBattleEngineMobile
                         {
                             pokemon.ClearForSwitch();
                         }
-                        Battle.ActiveBattlers.Remove(pokemon);
                         BattleView.Field.UpdatePokemon(pokemon, psop.PokemonPosition);
                         if (!psop.Forced)
                         {
@@ -801,8 +801,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                                 {
                                     switch (s1p.StatusAction)
                                     {
-                                        case PBEStatusAction.Activated: message = "{0} is fast asleep."; break;
                                         case PBEStatusAction.Added: message = "{0} fell asleep!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} is fast asleep."; break;
                                         case PBEStatusAction.Cured:
                                         case PBEStatusAction.Ended: message = "{0} woke up!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
@@ -846,8 +846,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                                 {
                                     switch (s1p.StatusAction)
                                     {
-                                        case PBEStatusAction.Activated: message = "{0} is frozen solid!"; break;
                                         case PBEStatusAction.Added: message = "{0} was frozen solid!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} is frozen solid!"; break;
                                         case PBEStatusAction.Cured:
                                         case PBEStatusAction.Ended: message = "{0} thawed out!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
@@ -858,8 +858,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                                 {
                                     switch (s1p.StatusAction)
                                     {
-                                        case PBEStatusAction.Activated: message = "{0} is paralyzed! It can't move!"; break;
                                         case PBEStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} is paralyzed! It can't move!"; break;
                                         case PBEStatusAction.Cured: message = "{0} was cured of paralysis."; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                                     }
@@ -921,7 +921,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                                 {
                                     switch (s2p.StatusAction)
                                     {
-                                        case PBEStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} flinched and couldn't move!"; break;
                                         case PBEStatusAction.Ended: return true;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
@@ -933,6 +933,26 @@ namespace Kermalis.PokemonBattleEngineMobile
                                     {
                                         case PBEStatusAction.Added: message = "{1} is ready to help {0}!"; status2ReceiverCaps = false; pokemon2Caps = true; break;
                                         case PBEStatusAction.Ended: return true;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
+                                }
+                            case PBEStatus2.Infatuated:
+                                {
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added:
+                                            {
+                                                status2Receiver.InfatuatedWithPokemon = pokemon2;
+                                                message = "{0} fell in love with {1}!"; break;
+                                            }
+                                        case PBEStatusAction.Activated: message = "{0} is in love with {1}!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} is immobilized by love!"; break;
+                                        case PBEStatusAction.Ended:
+                                            {
+                                                status2Receiver.InfatuatedWithPokemon = null;
+                                                return true;
+                                            }
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;

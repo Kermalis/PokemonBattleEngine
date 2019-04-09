@@ -29,10 +29,11 @@ namespace Kermalis.PokemonBattleEngineClient
         readonly PBEPacketProcessor packetProcessor;
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
-        public PBEBattle Battle { get; }
-        public BattleView BattleView { get; set; }
-        public ClientMode Mode { get; }
-        public int BattleId { get; private set; } = int.MaxValue;
+        public PBEBattle Battle;
+        public BattleView BattleView;
+        public ClientMode Mode;
+        public int BattleId = int.MaxValue;
+        public bool ShowRawValues0, ShowRawValues1;
         readonly IEnumerable<PBEPokemonShell> partyShells;
 
         public BattleClient(string host, int port, PBEBattleFormat battleFormat, PBESettings settings, IEnumerable<PBEPokemonShell> party)
@@ -57,11 +58,14 @@ namespace Kermalis.PokemonBattleEngineClient
             if (Mode == ClientMode.SinglePlayer)
             {
                 BattleId = 0;
+                ShowRawValues0 = true;
+                ShowRawValues1 = false;
                 Battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
                 Battle.OnStateChanged += SinglePlayerBattle_OnStateChanged;
             }
             else // ClientMode.Replay
             {
+                ShowRawValues0 = ShowRawValues1 = true;
                 packetTimer.Elapsed += PacketTimer_Elapsed;
                 packetTimer.Start();
             }
@@ -79,6 +83,8 @@ namespace Kermalis.PokemonBattleEngineClient
                         if (pjp.IsMe)
                         {
                             BattleId = pjp.BattleId;
+                            ShowRawValues0 = BattleId == 0;
+                            ShowRawValues1 = BattleId == 1;
                         }
                         else
                         {
@@ -631,12 +637,12 @@ namespace Kermalis.PokemonBattleEngineClient
                         PBEPokemon pokemon = Mode == ClientMode.SinglePlayer ? pfap.PokemonTeam.TryGetPokemon(pfap.PokemonId) : pfap.PokemonTeam.TryGetPokemon(pfap.PokemonPosition);
                         if (Mode != ClientMode.SinglePlayer)
                         {
+                            Battle.ActiveBattlers.Remove(pokemon);
                             pokemon.FieldPosition = PBEFieldPosition.None;
                             if (Mode == ClientMode.Online && pfap.PokemonTeam.Id != BattleId)
                             {
                                 pokemon.Team.Party.Remove(pokemon);
                             }
-                            Battle.ActiveBattlers.Remove(pokemon);
                         }
                         BattleView.Field.UpdatePokemon(pokemon, pfap.PokemonPosition);
                         BattleView.AddMessage(string.Format("{0} fainted!", NameForTrainer(pokemon, true)), true, true);
@@ -798,6 +804,10 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PBEPkmnSwitchOutPacket psop:
                     {
                         PBEPokemon pokemon = Mode == ClientMode.SinglePlayer ? psop.PokemonTeam.TryGetPokemon(psop.PokemonId) : psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
+                        if (Mode != ClientMode.SinglePlayer)
+                        {
+                            Battle.ActiveBattlers.Remove(pokemon);
+                        }
                         if (Mode == ClientMode.Online && psop.PokemonTeam.Id != BattleId)
                         {
                             pokemon.FieldPosition = PBEFieldPosition.None;
@@ -806,10 +816,6 @@ namespace Kermalis.PokemonBattleEngineClient
                         else if (Mode != ClientMode.SinglePlayer)
                         {
                             pokemon.ClearForSwitch();
-                        }
-                        if (Mode != ClientMode.SinglePlayer)
-                        {
-                            Battle.ActiveBattlers.Remove(pokemon);
                         }
                         BattleView.Field.UpdatePokemon(pokemon, psop.PokemonPosition);
                         if (!psop.Forced)
@@ -905,8 +911,8 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     switch (s1p.StatusAction)
                                     {
-                                        case PBEStatusAction.Activated: message = "{0} is fast asleep."; break;
                                         case PBEStatusAction.Added: message = "{0} fell asleep!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} is fast asleep."; break;
                                         case PBEStatusAction.Cured:
                                         case PBEStatusAction.Ended: message = "{0} woke up!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
@@ -950,8 +956,8 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     switch (s1p.StatusAction)
                                     {
-                                        case PBEStatusAction.Activated: message = "{0} is frozen solid!"; break;
                                         case PBEStatusAction.Added: message = "{0} was frozen solid!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} is frozen solid!"; break;
                                         case PBEStatusAction.Cured:
                                         case PBEStatusAction.Ended: message = "{0} thawed out!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
@@ -962,8 +968,8 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     switch (s1p.StatusAction)
                                     {
-                                        case PBEStatusAction.Activated: message = "{0} is paralyzed! It can't move!"; break;
                                         case PBEStatusAction.Added: message = "{0} is paralyzed! It may be unable to move!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} is paralyzed! It can't move!"; break;
                                         case PBEStatusAction.Cured: message = "{0} was cured of paralysis."; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(s1p.StatusAction));
                                     }
@@ -1028,7 +1034,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                 {
                                     switch (s2p.StatusAction)
                                     {
-                                        case PBEStatusAction.Activated: message = "{0} flinched and couldn't move!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} flinched and couldn't move!"; break;
                                         case PBEStatusAction.Ended: return true;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
@@ -1040,6 +1046,32 @@ namespace Kermalis.PokemonBattleEngineClient
                                     {
                                         case PBEStatusAction.Added: message = "{1} is ready to help {0}!"; status2ReceiverCaps = false; pokemon2Caps = true; break;
                                         case PBEStatusAction.Ended: return true;
+                                        default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                                    }
+                                    break;
+                                }
+                            case PBEStatus2.Infatuated:
+                                {
+                                    switch (s2p.StatusAction)
+                                    {
+                                        case PBEStatusAction.Added:
+                                            {
+                                                if (Mode != ClientMode.SinglePlayer)
+                                                {
+                                                    status2Receiver.InfatuatedWithPokemon = pokemon2;
+                                                }
+                                                message = "{0} fell in love with {1}!"; break;
+                                            }
+                                        case PBEStatusAction.Activated: message = "{0} is in love with {1}!"; break;
+                                        case PBEStatusAction.CausedImmobility: message = "{0} is immobilized by love!"; break;
+                                        case PBEStatusAction.Ended:
+                                            {
+                                                if (Mode != ClientMode.SinglePlayer)
+                                                {
+                                                    status2Receiver.InfatuatedWithPokemon = null;
+                                                }
+                                                return true;
+                                            }
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;

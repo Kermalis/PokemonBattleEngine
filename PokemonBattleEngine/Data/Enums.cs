@@ -518,9 +518,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         HelpingHand = 1 << 5,
         /// <summary>
-        /// The Pokémon is infatuated with another Pokémon and may be unable to a move this turn.
+        /// The Pokémon is infatuated with <see cref="PBEPokemon.InfatuatedWithPokemon"/> and may be unable to move this turn.
         /// </summary>
-        Infatuated = 1 << 6, // TODO
+        Infatuated = 1 << 6,
         /// <summary>
         /// The Pokémon is seeded and HP will be stolen at the end of each turn.
         /// </summary>
@@ -629,29 +629,29 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         ChangedAppearance = 1,
         /// <summary>
+        /// The ability changed a Pokémon stats.
+        /// </summary>
+        ChangedStats = 2,
+        /// <summary>
         /// The ability changed a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
         /// </summary>
-        ChangedStatus = 2,
+        ChangedStatus = 3,
         /// <summary>
         /// The ability was involved with damage.
         /// </summary>
-        Damage = 3,
+        Damage = 4,
         /// <summary>
         /// The ability prevented a Pokémon from being inflicted with a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.
         /// </summary>
-        PreventedStatus = 4,
+        PreventedStatus = 5,
         /// <summary>
         /// The ability restored a Pokémon's HP.
         /// </summary>
-        RestoredHP = 5,
+        RestoredHP = 6,
         /// <summary>
         /// The ability was involved with weather.
         /// </summary>
-        Weather = 6,
-        /// <summary>
-        /// The ability changed a Pokémon stats.
-        /// </summary>
-        ChangedStats = 7
+        Weather = 7
     }
     /// <summary>
     /// Represents an action regarding a <see cref="PBEItem"/>.
@@ -695,26 +695,30 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </example>
         Added = 1,
         /// <summary>
+        /// The status caused a Pokémon to be immobile.
+        /// </summary>
+        CausedImmobility = 2,
+        /// <summary>
         /// The status was cured from a Pokémon.
         /// </summary>
         /// <example>
         /// <see cref="PBEAbility.Limber"/> cured a Pokémon of <see cref="PBEStatus1.Paralyzed"/>.
         /// </example>
-        Cured = 2,
+        Cured = 3,
         /// <summary>
         /// The status was involved with damage.
         /// </summary>
         /// <example>
         /// A Pokémon's <see cref="PBEStatus2.Substitute"/> took damage.
         /// </example>
-        Damage = 3,
+        Damage = 4,
         /// <summary>
         /// The status has ended.
         /// </summary>
         /// <example>
         /// A Pokémon with <see cref="PBEStatus2.Confused"/> regained its senses.
         /// </example>
-        Ended = 4
+        Ended = 5
     }
     public enum PBEBattleStatusAction : byte
     {
@@ -3065,6 +3069,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     public enum PBEMoveEffect : byte
     {
+        Attract,
         BrickBreak,
         Burn,
         ChangeTarget_ACC,
@@ -3192,6 +3197,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         //Assist // TODO: Blocked by Metronome
         Astonish = 310,
         AttackOrder = 454,
+        Attract = 213,
         AuraSphere = 396,
         AuroraBeam = 62,
         Barrier = 112,

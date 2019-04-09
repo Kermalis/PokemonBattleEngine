@@ -565,11 +565,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        bool HasUsedMoveThisTurn(PBEPokemon pkmn)
-        {
-            return pkmn.ExecutedMoves.Any(e => e.TurnNumber == TurnNumber);
-        }
-
         void UseMove(PBEPokemon user, PBEMove move, PBETarget requestedTargets)
         {
             if (!calledFromOtherMove && PreMoveStatusCheck(user, move))
@@ -606,6 +601,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PBEPokemon[] targets = GetRuntimeTargets(user, requestedTargets, user.GetMoveTargets(move) == PBEMoveTarget.SingleNotSelf);
                 switch (mData.Effect)
                 {
+                    case PBEMoveEffect.Attract:
+                        {
+                            Ef_TryForceStatus2(user, targets, move, PBEStatus2.Infatuated);
+                            break;
+                        }
                     case PBEMoveEffect.BrickBreak:
                         {
                             Ef_BrickBreak(user, targets, move);
@@ -1136,14 +1136,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        // Returns true if an attack gets cancelled from a status
-        // Broadcasts status ending events & status causing immobility events
         bool PreMoveStatusCheck(PBEPokemon user, PBEMove move)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
 
             // Verified: Sleep and Freeze don't interact with Flinch unless they come out of the status
-            // Sleep causes Flinch and Confusion to activate if the user is trying to use Snore
+            // Sleep causes Confusion, Flinch, and Infatuation to activate if the user is trying to use Snore
             if (user.Status1 == PBEStatus1.Asleep)
             {
                 user.Status1Counter++;
@@ -1155,7 +1153,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else if (mData.Effect != PBEMoveEffect.Snore)
                 {
-                    BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Activated);
+                    BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.CausedImmobility);
                     return true;
                 }
             }
@@ -1168,14 +1166,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.Activated);
+                    BroadcastStatus1(user, user, PBEStatus1.Frozen, PBEStatusAction.CausedImmobility);
                     return true;
                 }
             }
-            // Verified: Flinch before Confusion and Paralysis can do anything
+            // Verified: Flinch before Confusion, Infatuation, and Paralysis can do anything
             if (user.Status2.HasFlag(PBEStatus2.Flinching))
             {
-                BroadcastStatus2(user, user, PBEStatus2.Flinching, PBEStatusAction.Activated);
+                BroadcastStatus2(user, user, PBEStatus2.Flinching, PBEStatusAction.CausedImmobility);
                 if (user.Ability == PBEAbility.Steadfast && user.SpeedChange < Settings.MaxStatChange)
                 {
                     BroadcastAbility(user, user, PBEAbility.Steadfast, PBEAbilityAction.ChangedStats);
@@ -1183,7 +1181,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 return true;
             }
-            // Verified: Confusion before Paralysis
+            // Verified: Confusion before Infatuation and Paralysis
             if (user.Status2.HasFlag(PBEStatus2.Confused))
             {
                 user.ConfusionCounter++;
@@ -1209,18 +1207,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
-            // Paralysis
+            // Verified: Paralysis before Infatuation
             if (user.Status1 == PBEStatus1.Paralyzed && PBEUtils.RNG.ApplyChance(25, 100))
             {
-                BroadcastStatus1(user, user, PBEStatus1.Paralyzed, PBEStatusAction.Activated);
+                BroadcastStatus1(user, user, PBEStatus1.Paralyzed, PBEStatusAction.CausedImmobility);
                 return true;
+            }
+            // Infatuation
+            if (user.Status2.HasFlag(PBEStatus2.Infatuated))
+            {
+                BroadcastStatus2(user, user.InfatuatedWithPokemon, PBEStatus2.Infatuated, PBEStatusAction.Activated);
+                if (PBEUtils.RNG.ApplyChance(50, 100))
+                {
+                    BroadcastStatus2(user, user.InfatuatedWithPokemon, PBEStatus2.Infatuated, PBEStatusAction.CausedImmobility);
+                    return true;
+                }
             }
             return false;
         }
-
-        // Returns true if an attack fails to hit
-        // Broadcasts the event if it missed
-        // Broadcasts protect if protect activated
         bool MissCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
@@ -1355,8 +1359,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveMissed(user, target);
             return true;
         }
-
-        // Returns true if a critical hit was determined
         bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
             if (target.Ability == PBEAbility.BattleArmor
@@ -1405,6 +1407,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             return mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit) || PBEUtils.RNG.ApplyChance((int)(chance * 100), 100 * 100);
+        }
+        bool FaintCheck(PBEPokemon pkmn)
+        {
+            if (pkmn.HP == 0)
+            {
+                if (Winner == null && pkmn.Team.NumPkmnAlive == 0)
+                {
+                    Winner = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
+                }
+                turnOrder.Remove(pkmn);
+                ActiveBattlers.Remove(pkmn);
+                PBEFieldPosition oldPos = pkmn.FieldPosition;
+                pkmn.FieldPosition = PBEFieldPosition.None;
+                RemoveInfatuations(pkmn);
+                BroadcastPkmnFainted(pkmn, oldPos);
+                return true;
+            }
+            return false;
         }
 
         void CastformCherrimCheck(PBEPokemon pkmn)
@@ -1476,7 +1496,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastAbility(pkmn, breaker, PBEAbility.Illusion, PBEAbilityAction.ChangedAppearance);
             }
         }
-        // Will cure Paralysis if the Pokémon has Limber
         void LimberCheck(PBEPokemon pkmn)
         {
             if (pkmn.Ability == PBEAbility.Limber && pkmn.Status1 == PBEStatus1.Paralyzed)
@@ -1486,7 +1505,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cured);
             }
         }
-        // Will consume a held Power Herb
         bool PowerHerbCheck(PBEPokemon pkmn)
         {
             if (pkmn.Item == PBEItem.PowerHerb)
@@ -1512,6 +1530,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
+        bool HasUsedMoveThisTurn(PBEPokemon pkmn)
+        {
+            return pkmn.ExecutedMoves.Any(e => e.TurnNumber == TurnNumber);
+        }
         void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason, IList<PBEExecutedMove.PBETargetSuccess> targets)
         {
             user.ExecutedMoves.Add(new PBEExecutedMove(TurnNumber, move, failReason, targets));
@@ -1522,8 +1544,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastMoveLock(user, move, PBETarget.None, PBEMoveLockType.ChoiceItem);
             }
         }
-
-        // Broadcasts the event
         void PPReduce(PBEPokemon pkmn, PBEMove move)
         {
             if (!calledFromOtherMove)
@@ -1535,26 +1555,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
                 BroadcastMovePPChanged(pkmn, move, oldPP, pkmn.PP[moveIndex]);
             }
-        }
-
-        // Returns true if the Pokémon fainted & removes it from activeBattlers
-        // Broadcasts the event if it fainted
-        bool FaintCheck(PBEPokemon pkmn)
-        {
-            if (pkmn.HP == 0)
-            {
-                if (Winner == null && pkmn.Team.NumPkmnAlive == 0)
-                {
-                    Winner = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
-                }
-                turnOrder.Remove(pkmn); // Necessary?
-                ActiveBattlers.Remove(pkmn);
-                PBEFieldPosition oldPos = pkmn.FieldPosition;
-                pkmn.FieldPosition = PBEFieldPosition.None;
-                BroadcastPkmnFainted(pkmn, oldPos);
-                return true;
-            }
-            return false;
         }
 
         /// <summary>
@@ -1762,14 +1762,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         break;
                     }
+                case PBEStatus2.Infatuated:
+                    {
+                        if (target.CanBecomeInfatuatedWith(user))
+                        {
+                            target.Status2 |= PBEStatus2.Infatuated;
+                            target.InfatuatedWithPokemon = user;
+                            BroadcastStatus2(target, user, PBEStatus2.Infatuated, PBEStatusAction.Added);
+                            failReason = PBEFailReason.None;
+                        }
+                        else
+                        {
+                            failReason = target.Gender == PBEGender.Genderless ? PBEFailReason.Ineffective : PBEFailReason.Default;
+                        }
+                        break;
+                    }
                 case PBEStatus2.LeechSeed:
                     {
                         if (target.HasType(PBEType.Grass))
                         {
-                            if (broadcastFailOrEffectiveness)
-                            {
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                            }
                             failReason = PBEFailReason.Ineffective;
                         }
                         else if (!target.Status2.HasFlag(PBEStatus2.LeechSeed) && !target.Status2.HasFlag(PBEStatus2.Substitute))
@@ -1853,9 +1864,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
-            if (failReason != PBEFailReason.None && failReason != PBEFailReason.Ineffective && broadcastFailOrEffectiveness)
+            if (failReason != PBEFailReason.None && broadcastFailOrEffectiveness)
             {
-                BroadcastMoveFailed(user, target, failReason);
+                if (failReason == PBEFailReason.Ineffective)
+                {
+                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                }
+                else
+                {
+                    BroadcastMoveFailed(user, target, failReason);
+                }
             }
             return failReason;
         }
@@ -1884,9 +1902,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
         {
             PBEFieldPosition pos = pkmnLeaving.FieldPosition;
-            pkmnLeaving.ClearForSwitch();
-            turnOrder.Remove(pkmnLeaving); // Necessary?
+            turnOrder.Remove(pkmnLeaving);
             ActiveBattlers.Remove(pkmnLeaving);
+            pkmnLeaving.ClearForSwitch();
+            RemoveInfatuations(pkmnLeaving);
             BroadcastPkmnSwitchOut(pkmnLeaving, pos, forced);
             pkmnComing.FieldPosition = pos;
             ActiveBattlers.Add(pkmnComing);
@@ -1896,6 +1915,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastDraggedOut(pkmnComing);
             }
             DoSwitchInEffects(new[] { pkmnComing });
+        }
+        void RemoveInfatuations(PBEPokemon pkmnLeaving)
+        {
+            foreach (PBEPokemon pkmn in ActiveBattlers)
+            {
+                if (pkmn.Status2.HasFlag(PBEStatus2.Infatuated) && pkmn.InfatuatedWithPokemon == pkmnLeaving)
+                {
+                    pkmn.Status2 &= ~PBEStatus2.Infatuated;
+                    pkmn.InfatuatedWithPokemon = null;
+                    BroadcastStatus2(pkmn, pkmnLeaving, PBEStatus2.Infatuated, PBEStatusAction.Ended);
+                }
+            }
         }
 
         void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess,

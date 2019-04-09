@@ -44,8 +44,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Location));
             }
         }
-        bool showRawValues;
-        public string Description => Utils.CustomPokemonToString(pokemon, showRawValues);
+        bool showRawValues0, showRawValues1;
+        public string Description => Utils.CustomPokemonToString(pokemon, showRawValues0, showRawValues1);
 
         public PokemonView()
         {
@@ -54,9 +54,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             IsVisible = false;
         }
 
-        public void Update(PBEPokemon pkmn, bool backSprite, bool showRawValues)
+        public void Update(PBEPokemon pkmn, bool backSprite, bool showRawValues0, bool showRawValues1)
         {
-            this.showRawValues = showRawValues;
+            this.showRawValues0 = showRawValues0;
+            this.showRawValues1 = showRawValues1;
             Pokemon = pkmn;
             if (pokemon == null || pokemon.FieldPosition == PBEFieldPosition.None)
             {

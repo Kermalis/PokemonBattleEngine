@@ -269,6 +269,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
+                                case PBEMoveEffect.Attract:
                                 case PBEMoveEffect.ChangeTarget_ACC:
                                 case PBEMoveEffect.ChangeTarget_ATK:
                                 case PBEMoveEffect.ChangeTarget_DEF:
