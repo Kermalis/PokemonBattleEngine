@@ -1352,9 +1352,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     }
                 case PBETurnBeganPacket tbp:
                     {
+                        string message = separator;
+                        if (context.battle.Weather != PBEWeather.None)
+                        {
+                            message += $"\n**Weather:** {context.battle.Weather}";
+                        }
                         PBEPokemon team0Pkmn = context.battle.Teams[0].ActiveBattlers.ElementAt(0);
                         PBEPokemon team1Pkmn = context.battle.Teams[1].ActiveBattlers.ElementAt(0);
-                        await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team0Pkmn), messageText: separator, pkmn: team0Pkmn);
+                        await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team0Pkmn), messageText: message, pkmn: team0Pkmn);
                         await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team1Pkmn), pkmn: team1Pkmn);
                         break;
                     }
