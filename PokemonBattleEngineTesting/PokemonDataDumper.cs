@@ -1059,8 +1059,11 @@ namespace Kermalis.PokemonBattleEngineTesting
             using (var e = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\E.gba"), Endianness.LittleEndian))
             using (var coloCommonRel = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Colocommon_rel.fdat"), Endianness.BigEndian))
             using (var xdCommonRel = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\XDcommon_rel.fdat"), Endianness.BigEndian))
+            using (SqliteTransaction transaction = con.BeginTransaction())
             using (SqliteCommand cmd = con.CreateCommand())
             {
+                cmd.Transaction = transaction;
+
                 var dict = new Dictionary<PBESpecies, Pokemon>();
                 void AddSpecies(PBESpecies species)
                 {
@@ -1819,6 +1822,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                 }
 
                 #endregion
+
+                transaction.Commit();
             }
 #pragma warning restore CS8321 // Local function is declared but never used
         }

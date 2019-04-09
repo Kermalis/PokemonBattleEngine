@@ -19,8 +19,11 @@ namespace Kermalis.PokemonBattleEngineTesting
             using (var japanese = new NARC(@"../../../\DumpedData\W2JapaneseTexts.narc"))
             using (var korean = new NARC(@"../../../\DumpedData\W2KoreanTexts.narc"))
             using (var spanish = new NARC(@"../../../\DumpedData\W2SpanishTexts.narc"))
+            using (SqliteTransaction transaction = con.BeginTransaction())
             using (SqliteCommand cmd = con.CreateCommand())
             {
+                cmd.Transaction = transaction;
+
                 string[][] eng, fre, ger, ita, jap, kor, spa;
                 void LoadTexts(int fileNum)
                 {
@@ -194,6 +197,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                     LoadTexts(464);
                     WriteAll("SpeciesCategories");
                 }
+
+                transaction.Commit();
             }
         }
     }
