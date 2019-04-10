@@ -2073,7 +2073,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MarvelScale = 63,
         Minus = 58,
         MoldBreaker = 104, // TODO
-        Moody = 141, // TODO
+        Moody = 141,
         MotorDrive = 78, // TODO
         Moxie = 153, // TODO
         Multiscale = 136, // TODO

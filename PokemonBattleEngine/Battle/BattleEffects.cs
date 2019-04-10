@@ -515,7 +515,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Curse before Orbs
+            // Verified: Curse before abilities
             foreach (PBEPokemon pkmn in order)
             {
                 if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.Cursed))
@@ -529,9 +529,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Speed Boost before Orbs
+            // Verified: Abilities before Orbs
             foreach (PBEPokemon pkmn in order)
             {
+                if (pkmn.HP > 0 && pkmn.Ability == PBEAbility.Moody)
+                {
+                    IEnumerable<PBEStat> allStats = Enum.GetValues(typeof(PBEStat)).Cast<PBEStat>().Except(new[] { PBEStat.HP });
+                    IEnumerable<PBEStat> statsThatCanGoUp = allStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange);
+                    PBEStat? upStat = statsThatCanGoUp.Count() == 0 ? (PBEStat?)null : statsThatCanGoUp.Sample();
+                    var statsThatCanGoDown = allStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
+                    if (upStat.HasValue)
+                    {
+                        statsThatCanGoDown.Remove(upStat.Value);
+                    }
+                    PBEStat? downStat = statsThatCanGoDown.Count() == 0 ? (PBEStat?)null : statsThatCanGoDown.Sample();
+                    if (upStat.HasValue || downStat.HasValue)
+                    {
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.Moody, PBEAbilityAction.ChangedStats);
+                        if (upStat.HasValue)
+                        {
+                            ApplyStatChange(pkmn, upStat.Value, +2);
+                        }
+                        if (downStat.HasValue)
+                        {
+                            ApplyStatChange(pkmn, downStat.Value, -1);
+                        }
+                    }
+                }
                 if (pkmn.HP > 0 && pkmn.Ability == PBEAbility.SpeedBoost && pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
                 {
                     BroadcastAbility(pkmn, pkmn, PBEAbility.SpeedBoost, PBEAbilityAction.ChangedStats);
@@ -1576,72 +1600,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        /// <summary>
-        /// Changes a Pokémon's stat.
-        /// </summary>
-        /// <param name="pkmn">The Pokémon who's stats will be changed.</param>
-        /// <param name="stat">The stat to change.</param>
-        /// <param name="value">The value to add to the stat.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="stat"/> is invalid.</exception>
-        public void ApplyStatChange(PBEPokemon pkmn, PBEStat stat, short value)
-        {
-            if (pkmn.Ability == PBEAbility.Simple)
-            {
-                value *= 2;
-            }
-
-            sbyte oldValue, newValue;
-            // I used to use unsafe pointers, and even though it was cool and compact, I decided to use properties and a more C#-styled approach
-            switch (stat)
-            {
-                case PBEStat.Attack:
-                    {
-                        oldValue = pkmn.AttackChange;
-                        newValue = pkmn.AttackChange = (sbyte)PBEUtils.Clamp(pkmn.AttackChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
-                        break;
-                    }
-                case PBEStat.Defense:
-                    {
-                        oldValue = pkmn.DefenseChange;
-                        newValue = pkmn.DefenseChange = (sbyte)PBEUtils.Clamp(pkmn.DefenseChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
-                        break;
-                    }
-                case PBEStat.SpAttack:
-                    {
-                        oldValue = pkmn.SpAttackChange;
-                        newValue = pkmn.SpAttackChange = (sbyte)PBEUtils.Clamp(pkmn.SpAttackChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
-                        break;
-                    }
-                case PBEStat.SpDefense:
-                    {
-                        oldValue = pkmn.SpDefenseChange;
-                        newValue = pkmn.SpDefenseChange = (sbyte)PBEUtils.Clamp(pkmn.SpDefenseChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
-                        break;
-                    }
-                case PBEStat.Speed:
-                    {
-                        oldValue = pkmn.SpeedChange;
-                        newValue = pkmn.SpeedChange = (sbyte)PBEUtils.Clamp(pkmn.SpeedChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
-                        break;
-                    }
-                case PBEStat.Accuracy:
-                    {
-                        oldValue = pkmn.AccuracyChange;
-                        newValue = pkmn.AccuracyChange = (sbyte)PBEUtils.Clamp(pkmn.AccuracyChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
-                        break;
-                    }
-                case PBEStat.Evasion:
-                    {
-                        oldValue = pkmn.EvasionChange;
-                        newValue = pkmn.EvasionChange = (sbyte)PBEUtils.Clamp(pkmn.EvasionChange + value, -Settings.MaxStatChange, Settings.MaxStatChange);
-                        break;
-                    }
-                default: throw new ArgumentOutOfRangeException(nameof(stat));
-            }
-
-            BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
-        }
-
         void SetSleepTurns(PBEPokemon pkmn, int minTurns, int maxTurns)
         {
             if (pkmn.Status1 == PBEStatus1.Asleep)
@@ -1893,6 +1851,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
             return failReason;
+        }
+        void ApplyStatChange(PBEPokemon pkmn, PBEStat stat, short change)
+        {
+            // Verified: Simple is silent
+            if (pkmn.Ability == PBEAbility.Simple)
+            {
+                change *= 2;
+            }
+
+            sbyte oldValue = pkmn.GetStatChange(stat);
+            sbyte newValue = pkmn.SetStatChange(stat, oldValue + change);
+            BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
         }
 
         PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEPokemon pkmn)

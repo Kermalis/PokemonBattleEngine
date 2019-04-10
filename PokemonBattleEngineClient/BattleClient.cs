@@ -298,6 +298,17 @@ namespace Kermalis.PokemonBattleEngineClient
                                     }
                                     break;
                                 }
+                            case PBEAbility.Moody:
+                            case PBEAbility.SpeedBoost:
+                            case PBEAbility.Steadfast:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.ChangedStats: message = "{0}'s {2} activated!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
                             case PBEAbility.Mummy:
                                 {
                                     switch (ap.AbilityAction)
@@ -313,16 +324,6 @@ namespace Kermalis.PokemonBattleEngineClient
                                     switch (ap.AbilityAction)
                                     {
                                         case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
-                            case PBEAbility.SpeedBoost:
-                            case PBEAbility.Steadfast:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.ChangedStats: message = "{0}'s {2} activated!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
@@ -677,21 +678,11 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PBEPkmnStatChangedPacket pscp:
                     {
                         PBEPokemon pokemon = pscp.PokemonTeam.TryGetPokemon(pscp.Pokemon);
-                        string statName, message;
                         if (Mode != ClientMode.SinglePlayer)
                         {
-                            switch (pscp.Stat)
-                            {
-                                case PBEStat.Accuracy: pokemon.AccuracyChange = pscp.NewValue; break;
-                                case PBEStat.Attack: pokemon.AttackChange = pscp.NewValue; break;
-                                case PBEStat.Defense: pokemon.DefenseChange = pscp.NewValue; break;
-                                case PBEStat.Evasion: pokemon.EvasionChange = pscp.NewValue; break;
-                                case PBEStat.SpAttack: pokemon.SpAttackChange = pscp.NewValue; break;
-                                case PBEStat.SpDefense: pokemon.SpDefenseChange = pscp.NewValue; break;
-                                case PBEStat.Speed: pokemon.SpeedChange = pscp.NewValue; break;
-                                default: throw new ArgumentOutOfRangeException(nameof(pscp.Stat));
-                            }
+                            pokemon.SetStatChange(pscp.Stat, pscp.NewValue);
                         }
+                        string statName, message;
                         switch (pscp.Stat)
                         {
                             case PBEStat.Accuracy: statName = "Accuracy"; break;

@@ -396,6 +396,17 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     }
                                     break;
                                 }
+                            case PBEAbility.Moody:
+                            case PBEAbility.SpeedBoost:
+                            case PBEAbility.Steadfast:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.ChangedStats: message = "{0}'s {2} activated!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
                             case PBEAbility.Mummy:
                                 {
                                     switch (ap.AbilityAction)
@@ -411,16 +422,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                     switch (ap.AbilityAction)
                                     {
                                         case PBEAbilityAction.Changed: message = "{0}'s Ability was suppressed!"; break;
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
-                            case PBEAbility.SpeedBoost:
-                            case PBEAbility.Steadfast:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.ChangedStats: message = "{0}'s {2} activated!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;

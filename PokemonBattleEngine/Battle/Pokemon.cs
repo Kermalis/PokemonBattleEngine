@@ -529,6 +529,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return list.ToArray();
         }
+        public sbyte GetStatChange(PBEStat stat)
+        {
+            switch (stat)
+            {
+                case PBEStat.Attack: return AttackChange;
+                case PBEStat.Defense: return DefenseChange;
+                case PBEStat.SpAttack: return SpAttackChange;
+                case PBEStat.SpDefense: return SpDefenseChange;
+                case PBEStat.Speed: return SpeedChange;
+                case PBEStat.Accuracy: return AccuracyChange;
+                case PBEStat.Evasion: return EvasionChange;
+                default: throw new ArgumentOutOfRangeException(nameof(stat));
+            }
+        }
+        public sbyte SetStatChange(PBEStat stat, int value)
+        {
+            sbyte val = (sbyte)PBEUtils.Clamp(value, -Team.Battle.Settings.MaxStatChange, Team.Battle.Settings.MaxStatChange);
+            switch (stat)
+            {
+                case PBEStat.Accuracy: return AccuracyChange = val;
+                case PBEStat.Attack: return AttackChange = val;
+                case PBEStat.Defense: return DefenseChange = val;
+                case PBEStat.Evasion: return EvasionChange = val;
+                case PBEStat.SpAttack: return SpAttackChange = val;
+                case PBEStat.SpDefense: return SpDefenseChange = val;
+                case PBEStat.Speed: return SpeedChange = val;
+                default: throw new ArgumentOutOfRangeException(nameof(stat));
+            }
+        }
         /// <summary>
         /// Gets the type that <see cref="PBEMove.HiddenPower"/> will become when used by this Pokémon.
         /// </summary>
