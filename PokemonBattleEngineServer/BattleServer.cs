@@ -179,7 +179,7 @@ namespace Kermalis.PokemonBattleEngineServer
         {
             resetEvent.Reset();
             state = ServerState.Resetting;
-            foreach (Player c in readyPlayers)
+            foreach (Player c in readyPlayers.ToArray())
             {
                 DisconnectClient(c.Id);
                 c.ResetEvent.Close();
@@ -406,7 +406,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     {
                         state = ServerState.WaitingForActions;
                         spectatorPackets.Add(packet);
-                        foreach (Player player in readyPlayers)
+                        foreach (Player player in readyPlayers.ToArray())
                         {
                             player.Send(packet);
                         }
@@ -443,7 +443,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     {
                         state = ServerState.WaitingForSwitchIns;
                         spectatorPackets.Add(packet);
-                        foreach (Player player in readyPlayers)
+                        foreach (Player player in readyPlayers.ToArray())
                         {
                             player.Send(packet);
                         }
@@ -453,7 +453,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 default:
                     {
                         spectatorPackets.Add(packet);
-                        foreach (Player player in readyPlayers.ToArray()) // Copy so a disconnect doesn't cause an exception
+                        foreach (Player player in readyPlayers.ToArray())
                         {
                             if (player.Socket != null)
                             {

@@ -34,11 +34,11 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         public override void HandleMessage(INetPacket packet)
         {
-            if (Socket == null)
+            Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({BattleId})");
+            if (Socket == null || ResetEvent.SafeWaitHandle.IsClosed)
             {
                 return;
             }
-            Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({BattleId})");
             ResetEvent.Set();
 
             if (BattleId < 2)
