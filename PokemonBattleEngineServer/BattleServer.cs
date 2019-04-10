@@ -20,7 +20,8 @@ namespace Kermalis.PokemonBattleEngineServer
             WaitingForParties,   // Server is waiting for both players to send their party
             WaitingForActions,   // Server is waiting for players to select actions
             WaitingForSwitchIns, // Server is waiting for players to switch in new Pokémon
-            BattleProcessing     // Battle is running and sending events
+            BattleProcessing,    // Battle is running and sending events
+            BattleEnded          // Battle ended
         }
         ServerState state = ServerState.Resetting;
         PBEBattle battle;
@@ -302,6 +303,12 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBEBattleState.ReadyToRunTurn:
                     {
                         new Thread(battle.RunTurn) { Name = "Battle Thread" }.Start();
+                        break;
+                    }
+                case PBEBattleState.Ended:
+                    {
+                        resetEvent.Set();
+                        state = ServerState.BattleEnded;
                         break;
                     }
             }
