@@ -1971,7 +1971,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Compoundeyes = 14,
         Contrary = 126, // TODO
         CursedBody = 130, // TODO
-        CuteCharm = 56, // TODO
+        CuteCharm = 56,
         Damp = 6, // TODO
         Defeatist = 129,
         Defiant = 128, // TODO

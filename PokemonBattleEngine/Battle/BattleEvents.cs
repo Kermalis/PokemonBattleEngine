@@ -281,18 +281,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         string message;
                         switch (ap.Ability)
                         {
-                            case PBEAbility.Drizzle:
-                            case PBEAbility.Drought:
-                            case PBEAbility.SandStream:
-                            case PBEAbility.SnowWarning:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.Weather: message = "{0}'s {2} activated!"; break; // Message is displayed from a weather packet
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
+                            case PBEAbility.CuteCharm:
                             case PBEAbility.EffectSpore:
                             case PBEAbility.FlameBody:
                             case PBEAbility.Healer:
@@ -301,17 +290,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     switch (ap.AbilityAction)
                                     {
-                                        case PBEAbilityAction.ChangedStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from a status1 packet
+                                        case PBEAbilityAction.ChangedStatus: message = "{0}'s {2} activated!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
+                            case PBEAbility.Drizzle:
+                            case PBEAbility.Drought:
+                            case PBEAbility.SandStream:
+                            case PBEAbility.SnowWarning:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Weather: message = "{0}'s {2} activated!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
                                 }
                             case PBEAbility.FlowerGift:
                             case PBEAbility.Forecast:
+                            case PBEAbility.Imposter:
                                 {
                                     switch (ap.AbilityAction)
                                     {
-                                        case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a form changed packet
+                                        case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
@@ -321,7 +323,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     switch (ap.AbilityAction)
                                     {
-                                        case PBEAbilityAction.RestoredHP: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
+                                        case PBEAbilityAction.RestoredHP: message = "{0}'s {2} activated!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
@@ -335,43 +337,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                     break;
                                 }
-                            case PBEAbility.Imposter:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.ChangedAppearance: message = "{0}'s {2} activated!"; break; // Message is displayed from a status2 packet
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
                             case PBEAbility.IronBarbs:
+                            case PBEAbility.Justified:
+                            case PBEAbility.Levitate:
+                            case PBEAbility.Rattled:
                             case PBEAbility.RoughSkin:
                             case PBEAbility.SolarPower:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a hp changed packet
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
-                            case PBEAbility.Justified:
-                            case PBEAbility.Rattled:
+                            case PBEAbility.Sturdy:
                             case PBEAbility.WeakArmor:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a stat changed packet
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
-                            case PBEAbility.Levitate:
                             case PBEAbility.WonderGuard:
                                 {
                                     switch (ap.AbilityAction)
                                     {
-                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
+                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
@@ -380,8 +358,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     switch (ap.AbilityAction)
                                     {
-                                        case PBEAbilityAction.ChangedStatus: // Message is displayed from a status1 packet
-                                        case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break; // Message is displayed from an effectiveness packet
+                                        case PBEAbilityAction.ChangedStatus:
+                                        case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
@@ -419,16 +397,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     switch (ap.AbilityAction)
                                     {
-                                        case PBEAbilityAction.ChangedStats: message = "{0}'s {2} activated!"; break; // Message is displayed from a stat changed packet
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
-                            case PBEAbility.Sturdy:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break; // Message is displayed from a special message packet
+                                        case PBEAbilityAction.ChangedStats: message = "{0}'s {2} activated!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;

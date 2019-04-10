@@ -183,6 +183,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             HealingBerryCheck(user);
                         }
                     }
+                    // Verified: Cute Charm can activate when victim is about to faint
+                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.CanBecomeInfatuatedWith(victim) && PBEUtils.RNG.ApplyChance(30, 100))
+                    {
+                        BroadcastAbility(victim, user, PBEAbility.CuteCharm, PBEAbilityAction.ChangedStatus);
+                        user.Status2 |= PBEStatus2.Infatuated;
+                        user.InfatuatedWithPokemon = victim;
+                        BroadcastStatus2(user, victim, PBEStatus2.Infatuated, PBEStatusAction.Added);
+                    }
                     if (user.HP > 0 && victim.Ability == PBEAbility.EffectSpore && user.Status1 == PBEStatus1.None)
                     {
                         // Spaghetti code taken from the assembly in generation 5 games
