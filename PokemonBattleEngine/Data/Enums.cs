@@ -1149,7 +1149,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         DawnStone = 109,
         DeepSeaScale = 227,
         DeepSeaTooth = 226,
-        DestinyKnot = 280, // TODO
+        DestinyKnot = 280,
         /// <summary>
         /// No effect.
         /// </summary>

@@ -424,6 +424,15 @@ namespace Kermalis.PokemonBattleEngineClient
                                     }
                                     break;
                                 }
+                            case PBEItem.DestinyKnot:
+                                {
+                                    switch (ip.ItemAction)
+                                    {
+                                        case PBEItemAction.ChangedStatus: message = "{0}'s {2} activated!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ip.ItemAction));
+                                    }
+                                    break;
+                                }
                             case PBEItem.FlameOrb:
                                 {
                                     switch (ip.ItemAction)

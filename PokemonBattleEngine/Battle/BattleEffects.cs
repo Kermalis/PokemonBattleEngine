@@ -187,9 +187,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.CanBecomeInfatuatedWith(victim) && PBEUtils.RNG.ApplyChance(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.CuteCharm, PBEAbilityAction.ChangedStatus);
-                        user.Status2 |= PBEStatus2.Infatuated;
-                        user.InfatuatedWithPokemon = victim;
-                        BroadcastStatus2(user, victim, PBEStatus2.Infatuated, PBEStatusAction.Added);
+                        CauseInfatuation(user, victim);
                     }
                     if (user.HP > 0 && victim.Ability == PBEAbility.EffectSpore && user.Status1 == PBEStatus1.None)
                     {
@@ -1513,6 +1511,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cured);
             }
         }
+        void CauseInfatuation(PBEPokemon target, PBEPokemon other)
+        {
+            target.Status2 |= PBEStatus2.Infatuated;
+            target.InfatuatedWithPokemon = other;
+            BroadcastStatus2(target, other, PBEStatus2.Infatuated, PBEStatusAction.Added);
+            if (target.Item == PBEItem.DestinyKnot && other.CanBecomeInfatuatedWith(target))
+            {
+                BroadcastItem(target, other, PBEItem.DestinyKnot, PBEItemAction.ChangedStatus);
+                other.Status2 |= PBEStatus2.Infatuated;
+                other.InfatuatedWithPokemon = target;
+                BroadcastStatus2(other, target, PBEStatus2.Infatuated, PBEStatusAction.Added);
+            }
+        }
         bool PowerHerbCheck(PBEPokemon pkmn)
         {
             if (pkmn.Item == PBEItem.PowerHerb)
@@ -1774,9 +1785,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (target.CanBecomeInfatuatedWith(user))
                         {
-                            target.Status2 |= PBEStatus2.Infatuated;
-                            target.InfatuatedWithPokemon = user;
-                            BroadcastStatus2(target, user, PBEStatus2.Infatuated, PBEStatusAction.Added);
+                            CauseInfatuation(target, user);
                             failReason = PBEFailReason.None;
                         }
                         else
