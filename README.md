@@ -17,13 +17,12 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 
 ----
 # To Do:
-* Rotation battles, triple battle shifting, and triple battle auto-center
+* Rotation battles and triple battle shifting
 * Dump Pokémon XD: Gale of Darkness move tutor compatibility
 * Separate forme-specific moves in PokemonData and instead have legality checker do some work
-* Add lots of items, moves, and secondary statuses (torment, infatuated, etc.)
+* Add lots of items, moves, and secondary statuses (taunt, torment, etc.)
 * Protect from corrupt packets (if they are even a problem)
 * Mobile HP bars
-* Player left packet
 
 ----
 # PokemonBattleEngine Uses:

@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
 
         public void Update(PBEPokemon pkmn, bool backSprite)
         {
-            if (pkmn == null || pkmn.FieldPosition == PBEFieldPosition.None)
+            if (pkmn == null)
             {
                 IsVisible = false;
             }

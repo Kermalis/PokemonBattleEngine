@@ -1185,11 +1185,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         await context.CreateAndSendEmbedAsync(string.Format(message, NameForTrainer(damageVictim)), pkmn: damageVictim);
                         break;
                     }
-                case PBEWinnerPacket win:
-                    {
-                        await context.CreateAndSendEmbedAsync(string.Format("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == context.battle.Teams[0] ? context.battle.Teams[1] : context.battle.Teams[0]).TrainerName));
-                        break;
-                    }
                 case PBEActionsRequestPacket arp:
                     {
                         SocketUser user = context.battlers[Array.IndexOf(context.battle.Teams, arp.Team)];
@@ -1303,6 +1298,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         }
                         break;
                     }
+                case PBEAutoCenterPacket _: // Currently unused
+                    {
+                        await context.CreateAndSendEmbedAsync("The battlers shifted to the center!");
+                        break;
+                    }
                 case PBESwitchInRequestPacket sirp:
                     {
                         PBEPokemon[] switches = sirp.Team.Party.Where(p => p.HP > 0).ToArray();
@@ -1361,6 +1361,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         PBEPokemon team1Pkmn = context.battle.Teams[1].ActiveBattlers.ElementAt(0);
                         await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team0Pkmn), messageText: message, pkmn: team0Pkmn);
                         await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team1Pkmn), pkmn: team1Pkmn);
+                        break;
+                    }
+                case PBEWinnerPacket win:
+                    {
+                        await context.CreateAndSendEmbedAsync(string.Format("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == context.battle.Teams[0] ? context.battle.Teams[1] : context.battle.Teams[0]).TrainerName));
                         break;
                     }
             }

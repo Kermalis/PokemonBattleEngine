@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void Update(PBEPokemon pkmn, bool showRawValues)
         {
-            if (pkmn == null || pkmn.FieldPosition == PBEFieldPosition.None)
+            if (pkmn == null)
             {
                 IsVisible = false;
             }

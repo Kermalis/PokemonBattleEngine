@@ -1394,15 +1394,6 @@ namespace Kermalis.PokemonBattleEngineClient
                         BattleView.AddMessage(string.Format(message, NameForTrainer(damageVictim, true)), true, true);
                         break;
                     }
-                case PBEWinnerPacket win:
-                    {
-                        if (Mode != ClientMode.SinglePlayer)
-                        {
-                            Battle.Winner = win.WinningTeam;
-                        }
-                        BattleView.AddMessage(string.Format("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == Battle.Teams[0] ? Battle.Teams[1] : Battle.Teams[0]).TrainerName), true, true);
-                        break;
-                    }
                 case PBEActionsRequestPacket arp:
                     {
                         switch (Mode)
@@ -1433,6 +1424,26 @@ namespace Kermalis.PokemonBattleEngineClient
                                 }
                         }
                         return true;
+                    }
+                case PBEAutoCenterPacket acp:
+                    {
+                        PBEPokemon pokemon1,
+                            pokemon2;
+                        if (Mode == ClientMode.SinglePlayer)
+                        {
+                            pokemon1 = acp.Pokemon1Team.TryGetPokemon(acp.Pokemon1Id);
+                            pokemon2 = acp.Pokemon2Team.TryGetPokemon(acp.Pokemon2Id);
+                        }
+                        else
+                        {
+                            pokemon1 = acp.Pokemon1Team.TryGetPokemon(acp.Pokemon1Position);
+                            pokemon2 = acp.Pokemon2Team.TryGetPokemon(acp.Pokemon2Position);
+                            pokemon2.FieldPosition = pokemon1.FieldPosition = PBEFieldPosition.Center;
+                        }
+                        BattleView.Field.UpdatePokemon(pokemon1, acp.Pokemon1Position);
+                        BattleView.Field.UpdatePokemon(pokemon2, acp.Pokemon2Position);
+                        BattleView.AddMessage("The battlers shifted to the center!", true, true);
+                        break;
                     }
                 case PBESwitchInRequestPacket sirp:
                     {
@@ -1476,6 +1487,15 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         BattleView.AddMessage($"Turn {Battle.TurnNumber = tbp.TurnNumber}", false, true);
                         return true;
+                    }
+                case PBEWinnerPacket win:
+                    {
+                        if (Mode != ClientMode.SinglePlayer)
+                        {
+                            Battle.Winner = win.WinningTeam;
+                        }
+                        BattleView.AddMessage(string.Format("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == Battle.Teams[0] ? Battle.Teams[1] : Battle.Teams[0]).TrainerName), true, true);
+                        break;
                     }
             }
             return false;

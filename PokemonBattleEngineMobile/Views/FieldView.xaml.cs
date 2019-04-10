@@ -182,9 +182,9 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
                 if (oldPosition != PBEFieldPosition.None)
                 {
                     hpView = this.FindByName<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
-                    hpView.Update(pkmn);
+                    hpView.Update(null);
                     pkmnView = this.FindByName<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{oldPosition}");
-                    pkmnView.Update(pkmn, backSprite);
+                    pkmnView.Update(null, false);
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {

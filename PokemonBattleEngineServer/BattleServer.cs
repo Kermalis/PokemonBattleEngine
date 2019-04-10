@@ -413,6 +413,32 @@ namespace Kermalis.PokemonBattleEngineServer
                         resetEvent.Set();
                         break;
                     }
+                case PBEAutoCenterPacket acp:
+                    {
+                        var team0 = new PBEAutoCenterPacket(acp.Pokemon1Id, acp.Pokemon1Position, acp.Pokemon1Team, byte.MaxValue, acp.Pokemon2Position, acp.Pokemon2Team);
+                        var team1 = new PBEAutoCenterPacket(byte.MaxValue, acp.Pokemon1Position, acp.Pokemon1Team, acp.Pokemon2Id, acp.Pokemon2Position, acp.Pokemon2Team);
+                        var spectators = new PBEAutoCenterPacket(byte.MaxValue, acp.Pokemon1Position, acp.Pokemon1Team, byte.MaxValue, acp.Pokemon2Position, acp.Pokemon2Team);
+                        spectatorPackets.Add(spectators);
+                        battlers[0].Send(team0);
+                        if (!battlers[0].WaitForResponse())
+                        {
+                            return;
+                        }
+                        battlers[1].Send(team1);
+                        if (!battlers[1].WaitForResponse())
+                        {
+                            return;
+                        }
+                        foreach (Player player in readyPlayers.Except(battlers))
+                        {
+                            if (player.Socket != null)
+                            {
+                                player.Send(spectators);
+                                player.WaitForResponse();
+                            }
+                        }
+                        break;
+                    }
                 case PBESwitchInRequestPacket _:
                     {
                         state = ServerState.WaitingForSwitchIns;

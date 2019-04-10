@@ -56,6 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PBETurnBeganPacket.Code: packet = new PBETurnBeganPacket(buffer, battle); break;
                 case PBEMoveLockPacket.Code: packet = new PBEMoveLockPacket(buffer, battle); break;
                 case PBEPkmnFormChangedPacket.Code: packet = new PBEPkmnFormChangedPacket(buffer, battle); break;
+                case PBEAutoCenterPacket.Code: packet = new PBEAutoCenterPacket(buffer, battle); break;
                 default: throw new ArgumentException($"Invalid packet code: {code}");
             }
             return packet;

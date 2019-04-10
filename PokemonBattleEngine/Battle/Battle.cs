@@ -338,6 +338,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     team.ActionsRequired.AddRange(team.ActiveBattlers);
                 }
 
+                if (BattleFormat == PBEBattleFormat.Triple && Teams.All(t => t.NumPkmnAlive == 1))
+                {
+                    PBEPokemon pkmn1 = ActiveBattlers[0],
+                        pkmn2 = ActiveBattlers[1];
+                    if ((pkmn1.FieldPosition == PBEFieldPosition.Left && pkmn2.FieldPosition == PBEFieldPosition.Right) || (pkmn1.FieldPosition == PBEFieldPosition.Right && pkmn2.FieldPosition == PBEFieldPosition.Left))
+                    {
+                        PBEFieldPosition pkmn1OldPos = pkmn1.FieldPosition,
+                            pkmn2OldPos = pkmn2.FieldPosition;
+                        pkmn2.FieldPosition = pkmn1.FieldPosition = PBEFieldPosition.Center;
+                        BroadcastAutoCenter(pkmn1.Id, pkmn1OldPos, pkmn1.Team, pkmn2.Id, pkmn2OldPos, pkmn2.Team);
+                    }
+                }
+
                 TurnNumber++;
                 BroadcastTurnBegan();
                 BattleState = PBEBattleState.WaitingForActions;

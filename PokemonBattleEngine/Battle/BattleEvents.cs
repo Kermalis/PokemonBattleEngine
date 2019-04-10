@@ -228,15 +228,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        void BroadcastWinner(PBETeam winningTeam)
-        {
-            var p = new PBEWinnerPacket(winningTeam);
-            Events.Add(p);
-            OnNewEvent?.Invoke(this, p);
-        }
         void BroadcastActionsRequest(PBETeam team)
         {
             var p = new PBEActionsRequestPacket(team);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
+        void BroadcastAutoCenter(byte pokemon1Id, PBEFieldPosition pokemon1Position, PBETeam pokemon1Team, byte pokemon2Id, PBEFieldPosition pokemon2Position, PBETeam pokemon2Team)
+        {
+            var p = new PBEAutoCenterPacket(pokemon1Id, pokemon1Position, pokemon1Team, pokemon2Id, pokemon2Position, pokemon2Team);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -249,6 +249,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         void BroadcastTurnBegan()
         {
             var p = new PBETurnBeganPacket(TurnNumber);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
+        void BroadcastWinner(PBETeam winningTeam)
+        {
+            var p = new PBEWinnerPacket(winningTeam);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -1176,14 +1182,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Console.WriteLine(message, NameForTrainer(damageVictim));
                         break;
                     }
-                case PBEWinnerPacket win:
-                    {
-                        Console.WriteLine("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == battle.Teams[0] ? battle.Teams[1] : battle.Teams[0]).TrainerName);
-                        break;
-                    }
                 case PBEActionsRequestPacket arp:
                     {
                         Console.WriteLine("{0} must submit actions for {1} Pokémon.", arp.Team.TrainerName, arp.Pokemon.Count);
+                        break;
+                    }
+                case PBEAutoCenterPacket _:
+                    {
+                        Console.WriteLine("The battlers shifted to the center!");
                         break;
                     }
                 case PBESwitchInRequestPacket sirp:
@@ -1194,6 +1200,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBETurnBeganPacket tbp:
                     {
                         Console.WriteLine("Turn {0} is starting.", tbp.TurnNumber);
+                        break;
+                    }
+                case PBEWinnerPacket win:
+                    {
+                        Console.WriteLine("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == battle.Teams[0] ? battle.Teams[1] : battle.Teams[0]).TrainerName);
                         break;
                     }
             }

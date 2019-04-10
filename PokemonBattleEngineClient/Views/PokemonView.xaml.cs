@@ -15,15 +15,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public new event PropertyChangedEventHandler PropertyChanged;
 
         PBEPokemon pokemon;
-        public PBEPokemon Pokemon
-        {
-            get => pokemon;
-            set
-            {
-                pokemon = value;
-                OnPropertyChanged(nameof(Pokemon));
-            }
-        }
         double scale;
         public double Scale
         {
@@ -58,8 +49,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             this.showRawValues0 = showRawValues0;
             this.showRawValues1 = showRawValues1;
-            Pokemon = pkmn;
-            if (pokemon == null || pokemon.FieldPosition == PBEFieldPosition.None)
+            pokemon = pkmn;
+            if (pokemon == null)
             {
                 IsVisible = false;
             }

@@ -190,18 +190,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 HPBarView hpView;
                 PokemonView pkmnView;
                 bool backSprite = (pkmn.Team.Id == 0 && battleView.Client.BattleId != 1) || (pkmn.Team.Id == 1 && battleView.Client.BattleId == 1);
-                bool hpRawValues = (pkmn.Team.Id == 0 && battleView.Client.ShowRawValues0) || (pkmn.Team.Id == 1 && battleView.Client.ShowRawValues1);
                 if (oldPosition != PBEFieldPosition.None)
                 {
                     hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
-                    hpView.Update(pkmn, hpRawValues);
+                    hpView.Update(null, false);
                     pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{oldPosition}");
-                    pkmnView.Update(pkmn, backSprite, battleView.Client.ShowRawValues0, battleView.Client.ShowRawValues1);
+                    pkmnView.Update(null, false, false, false);
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    hpView.Update(pkmn, hpRawValues);
+                    hpView.Update(pkmn, (pkmn.Team.Id == 0 && battleView.Client.ShowRawValues0) || (pkmn.Team.Id == 1 && battleView.Client.ShowRawValues1));
                     pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
                     pkmnView.Update(pkmn, backSprite, battleView.Client.ShowRawValues0, battleView.Client.ShowRawValues1);
                 }
