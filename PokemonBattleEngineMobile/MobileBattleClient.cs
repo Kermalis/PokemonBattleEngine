@@ -151,6 +151,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                             case PBEAbility.FlameBody:
                             case PBEAbility.Healer:
                             case PBEAbility.PoisonPoint:
+                            case PBEAbility.ShedSkin:
                             case PBEAbility.Static:
                                 {
                                     switch (ap.AbilityAction)

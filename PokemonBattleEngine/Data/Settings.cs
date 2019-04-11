@@ -116,7 +116,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         public byte CurseDenominator = 4;
         /// <summary>
-        /// A Pokémon holding a <see cref="PBEItem.Leftovers"/> gains (1/LeftoversHealDenominator) HP at the end of every turn.
+        /// A Pokémon holding a <see cref="PBEItem.Leftovers"/> restores (1/LeftoversHealDenominator) HP at the end of every turn.
         /// </summary>
         public byte LeftoversHealDenominator = 16;
         /// <summary>
@@ -124,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         public byte BlackSludgeDamageDenominator = 8;
         /// <summary>
-        /// A Pokémon holding a <see cref="PBEItem.BlackSludge"/> with <see cref="PBEType.Poison"/> gains (1/BlackSludgeHealDenominator) HP at the end of every turn.
+        /// A Pokémon holding a <see cref="PBEItem.BlackSludge"/> with <see cref="PBEType.Poison"/> restores (1/BlackSludgeHealDenominator) HP at the end of every turn.
         /// </summary>
         public byte BlackSludgeHealDenominator = 16;
         /// <summary>
@@ -152,7 +152,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         public byte IcyRockTurnExtension = 3;
         /// <summary>
-        /// A Pokémon with <see cref="PBEAbility.IceBody"/> in <see cref="PBEWeather.Hailstorm"/> gains (1/IceBodyHealDenominator) HP at the end of every turn.
+        /// A Pokémon with <see cref="PBEAbility.IceBody"/> in <see cref="PBEWeather.Hailstorm"/> restores (1/IceBodyHealDenominator) HP at the end of every turn.
         /// </summary>
         public byte IceBodyHealDenominator = 16;
         /// <summary>

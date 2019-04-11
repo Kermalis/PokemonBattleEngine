@@ -2145,7 +2145,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Scrappy = 113, // TODO
         SereneGrace = 32, // TODO
         ShadowTag = 23, // TODO
-        ShedSkin = 61, // TODO
+        ShedSkin = 61,
         SheerForce = 125, // TODO
         /// <summary>
         /// The Pokémon takes no critical hits.

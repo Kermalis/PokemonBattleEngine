@@ -315,7 +315,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 CastformCherrimCheck(pkmn);
             }
 
-            // Verified: Weather before all
+            // Verified: Hailstorm/Sandstorm/IceBody/RainDish/SolarPower before all
             foreach (PBEPokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
@@ -392,29 +392,39 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Healer before Leftovers
-            foreach (PBEPokemon pkmn in order)
-            {
-                if (pkmn.HP > 0 && pkmn.Ability == PBEAbility.Healer)
-                {
-                    foreach (PBEPokemon ally in GetRuntimeSurrounding(pkmn, true, false))
-                    {
-                        if (ally.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
-                        {
-                            BroadcastAbility(pkmn, ally, PBEAbility.Healer, PBEAbilityAction.ChangedStatus);
-                            PBEStatus1 status = ally.Status1;
-                            ally.Status1 = PBEStatus1.None;
-                            BroadcastStatus1(ally, pkmn, status, PBEStatusAction.Cured);
-                        }
-                    }
-                }
-            }
-
-            // Verified: Leftovers before Leech Seed
+            // Verified: Healer/ShedSkin/BlackSludge/Leftovers before LeechSeed
             foreach (PBEPokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
                 {
+                    switch (pkmn.Ability)
+                    {
+                        case PBEAbility.Healer:
+                            {
+                                foreach (PBEPokemon ally in GetRuntimeSurrounding(pkmn, true, false))
+                                {
+                                    if (ally.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
+                                    {
+                                        BroadcastAbility(pkmn, ally, PBEAbility.Healer, PBEAbilityAction.ChangedStatus);
+                                        PBEStatus1 status1 = ally.Status1;
+                                        ally.Status1 = PBEStatus1.None;
+                                        BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cured);
+                                    }
+                                }
+                                break;
+                            }
+                        case PBEAbility.ShedSkin:
+                            {
+                                if (pkmn.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
+                                {
+                                    BroadcastAbility(pkmn, pkmn, PBEAbility.ShedSkin, PBEAbilityAction.ChangedStatus);
+                                    PBEStatus1 status1 = pkmn.Status1;
+                                    pkmn.Status1 = PBEStatus1.None;
+                                    BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cured);
+                                }
+                                break;
+                            }
+                    }
                     switch (pkmn.Item)
                     {
                         case PBEItem.BlackSludge:
@@ -431,7 +441,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.Damage);
                                     DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), true);
-                                    FaintCheck(pkmn);
+                                    FaintCheck(pkmn); // No need to call HealingBerryCheck() because if you are holding BlackSludge you are not holding a healing berry
                                 }
                                 break;
                             }
@@ -448,21 +458,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Leech Seed before Status1
+            // Verified: LeechSeed before Status1
             foreach (PBEPokemon pkmn in order)
             {
-                if (pkmn.HP > 0)
+                if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
                 {
                     PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
-                    IEnumerable<PBEPokemon> peopleToSuck = opposingTeam.ActiveBattlers.Where(p => p.Status2.HasFlag(PBEStatus2.LeechSeed) && p.SeededPosition == pkmn.FieldPosition);
-                    foreach (PBEPokemon suck in peopleToSuck)
+                    PBEPokemon sucker = opposingTeam.TryGetPokemon(pkmn.SeededPosition);
+                    if (sucker != null)
                     {
-                        BroadcastStatus2(suck, pkmn, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
-                        ushort amtDealt = DealDamage(pkmn, suck, (ushort)(suck.MaxHP / Settings.LeechSeedDenominator), true);
-                        HealDamage(pkmn, amtDealt);
-                        if (!FaintCheck(suck))
+                        BroadcastStatus2(pkmn, sucker, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
+                        ushort amtDealt = DealDamage(sucker, pkmn, (ushort)(pkmn.MaxHP / Settings.LeechSeedDenominator), true);
+                        HealDamage(sucker, amtDealt);
+                        if (!FaintCheck(pkmn))
                         {
-                            HealingBerryCheck(suck);
+                            HealingBerryCheck(pkmn);
                         }
                     }
                 }
@@ -515,7 +525,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Curse before abilities
+            // Verified: Curse before Moody/SpeedBoost
             foreach (PBEPokemon pkmn in order)
             {
                 if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.Cursed))
@@ -529,37 +539,48 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Abilities before Orbs
+            // Verified: Moody/SpeedBoost before Orbs
             foreach (PBEPokemon pkmn in order)
             {
-                if (pkmn.HP > 0 && pkmn.Ability == PBEAbility.Moody)
+                if (pkmn.HP > 0)
                 {
-                    IEnumerable<PBEStat> allStats = Enum.GetValues(typeof(PBEStat)).Cast<PBEStat>().Except(new[] { PBEStat.HP });
-                    IEnumerable<PBEStat> statsThatCanGoUp = allStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange);
-                    PBEStat? upStat = statsThatCanGoUp.Count() == 0 ? (PBEStat?)null : statsThatCanGoUp.Sample();
-                    var statsThatCanGoDown = allStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
-                    if (upStat.HasValue)
+                    switch (pkmn.Ability)
                     {
-                        statsThatCanGoDown.Remove(upStat.Value);
+                        case PBEAbility.Moody:
+                            {
+                                IEnumerable<PBEStat> allStats = Enum.GetValues(typeof(PBEStat)).Cast<PBEStat>().Except(new[] { PBEStat.HP });
+                                IEnumerable<PBEStat> statsThatCanGoUp = allStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange);
+                                PBEStat? upStat = statsThatCanGoUp.Count() == 0 ? (PBEStat?)null : statsThatCanGoUp.Sample();
+                                var statsThatCanGoDown = allStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
+                                if (upStat.HasValue)
+                                {
+                                    statsThatCanGoDown.Remove(upStat.Value);
+                                }
+                                PBEStat? downStat = statsThatCanGoDown.Count() == 0 ? (PBEStat?)null : statsThatCanGoDown.Sample();
+                                if (upStat.HasValue || downStat.HasValue)
+                                {
+                                    BroadcastAbility(pkmn, pkmn, PBEAbility.Moody, PBEAbilityAction.ChangedStats);
+                                    if (upStat.HasValue)
+                                    {
+                                        ApplyStatChange(pkmn, upStat.Value, +2);
+                                    }
+                                    if (downStat.HasValue)
+                                    {
+                                        ApplyStatChange(pkmn, downStat.Value, -1);
+                                    }
+                                }
+                                break;
+                            }
+                        case PBEAbility.SpeedBoost:
+                            {
+                                if (pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
+                                {
+                                    BroadcastAbility(pkmn, pkmn, PBEAbility.SpeedBoost, PBEAbilityAction.ChangedStats);
+                                    ApplyStatChange(pkmn, PBEStat.Speed, +1);
+                                }
+                                break;
+                            }
                     }
-                    PBEStat? downStat = statsThatCanGoDown.Count() == 0 ? (PBEStat?)null : statsThatCanGoDown.Sample();
-                    if (upStat.HasValue || downStat.HasValue)
-                    {
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.Moody, PBEAbilityAction.ChangedStats);
-                        if (upStat.HasValue)
-                        {
-                            ApplyStatChange(pkmn, upStat.Value, +2);
-                        }
-                        if (downStat.HasValue)
-                        {
-                            ApplyStatChange(pkmn, downStat.Value, -1);
-                        }
-                    }
-                }
-                if (pkmn.HP > 0 && pkmn.Ability == PBEAbility.SpeedBoost && pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
-                {
-                    BroadcastAbility(pkmn, pkmn, PBEAbility.SpeedBoost, PBEAbilityAction.ChangedStats);
-                    ApplyStatChange(pkmn, PBEStat.Speed, +1);
                 }
             }
 
