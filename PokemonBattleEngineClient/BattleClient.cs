@@ -1055,6 +1055,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                                 if (Mode != ClientMode.SinglePlayer)
                                                 {
                                                     status2Receiver.SeededPosition = pokemon2.FieldPosition;
+                                                    status2Receiver.SeededTeam = pokemon2.Team;
                                                 }
                                                 message = "{0} was seeded!";
                                                 break;

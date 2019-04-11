@@ -945,6 +945,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                                         case PBEStatusAction.Added:
                                             {
                                                 status2Receiver.SeededPosition = pokemon2.FieldPosition;
+                                                status2Receiver.SeededTeam = pokemon2.Team;
                                                 message = "{0} was seeded!";
                                                 break;
                                             }

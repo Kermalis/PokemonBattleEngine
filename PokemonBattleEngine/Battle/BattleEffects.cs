@@ -463,8 +463,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
                 {
-                    PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
-                    PBEPokemon sucker = opposingTeam.TryGetPokemon(pkmn.SeededPosition);
+                    PBEPokemon sucker = pkmn.SeededTeam.TryGetPokemon(pkmn.SeededPosition);
                     if (sucker != null)
                     {
                         BroadcastStatus2(pkmn, sucker, PBEStatus2.LeechSeed, PBEStatusAction.Damage);
@@ -1783,6 +1782,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             target.Status2 |= PBEStatus2.LeechSeed;
                             target.SeededPosition = user.FieldPosition;
+                            target.SeededTeam = user.Team;
                             BroadcastStatus2(target, user, PBEStatus2.LeechSeed, PBEStatusAction.Added);
                             failReason = PBEFailReason.None;
                         }

@@ -112,7 +112,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine($"Known types: {pkmn.KnownType1}/{pkmn.KnownType2}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    sb.AppendLine($"Position: {pkmn.FieldPosition}");
+                    sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
                 }
                 if (pkmn.Status1 != PBEStatus1.None)
                 {
@@ -129,7 +129,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     }
                     if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
                     {
-                        sb.AppendLine($"Seeded position: {pkmn.SeededPosition}");
+                        sb.AppendLine($"Seeded position: {pkmn.SeededTeam.TrainerName}'s {pkmn.SeededPosition}");
                     }
                 }
                 PBEPokemonData.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
@@ -161,7 +161,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.AppendLine($"Types: {pkmn.Type1}/{pkmn.Type2}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    sb.AppendLine($"Position: {pkmn.FieldPosition}");
+                    sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
                 }
                 if (pkmn.Status1 != PBEStatus1.None)
                 {
@@ -182,7 +182,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         }
                         if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
                         {
-                            sb.AppendLine($"Seeded position: {pkmn.SeededPosition}");
+                            sb.AppendLine($"Seeded position: {pkmn.SeededTeam.TrainerName}'s {pkmn.SeededPosition}");
                         }
                     }
                 }

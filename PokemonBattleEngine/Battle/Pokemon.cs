@@ -212,9 +212,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// </summary>
         public PBEPokemon InfatuatedWithPokemon { get; set; }
         /// <summary>
-        /// The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on the opposing team.
+        /// The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on <see cref="SeededTeam"/>.
         /// </summary>
         public PBEFieldPosition SeededPosition { get; set; }
+        /// <summary>
+        /// The team responsible for <see cref="PBEStatus2.LeechSeed"/>.
+        /// </summary>
+        public PBETeam SeededTeam { get; set; }
         /// <summary>
         /// The amount of HP the Pokémon's <see cref="PBEStatus2.Substitute"/> has left.
         /// </summary>
@@ -397,6 +401,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ConfusionCounter = ConfusionTurns = 0;
             DisguisedAsPokemon = null;
             SeededPosition = PBEFieldPosition.None;
+            SeededTeam = null;
             SubstituteHP = 0;
             if (Status2.HasFlag(PBEStatus2.Transformed))
             {
@@ -801,7 +806,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sb.AppendLine($"{Nickname}/{Species} {GenderSymbol} Lv.{Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
             sb.AppendLine($"Types: {Type1}/{Type2}");
-            sb.AppendLine($"Position: {FieldPosition}");
+            sb.AppendLine($"Position: {Team.TrainerName}'s {FieldPosition}");
             sb.AppendLine($"Status1: {Status1}");
             if (Status1 == PBEStatus1.Asleep)
             {
@@ -826,7 +831,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Status2.HasFlag(PBEStatus2.LeechSeed))
             {
-                sb.AppendLine($"Seeded position: {SeededPosition}");
+                sb.AppendLine($"Seeded position: {SeededTeam.TrainerName}'s {SeededPosition}");
             }
             if (Status2.HasFlag(PBEStatus2.Substitute))
             {
