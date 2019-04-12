@@ -82,7 +82,7 @@ namespace Kermalis.PokemonBattleEngine
 
         public static bool NextShiny(this Random rand)
         {
-            return rand.Next(0, ushort.MaxValue + 1) < 8;
+            return rand.ApplyChance(8, ushort.MaxValue + 1);
         }
         public static PBEGender NextGender(this Random rand, PBEGenderRatio genderRatio)
         {
@@ -212,10 +212,31 @@ namespace Kermalis.PokemonBattleEngine
         public static PBEPokemonShell[] CreateCompletelyRandomTeam(PBESettings settings)
         {
             var team = new PBEPokemonShell[settings.MaxPartySize];
-            IEnumerable<PBESpecies> allSpecies = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.Arceus_Bug, PBESpecies.Arceus_Dark, PBESpecies.Arceus_Dragon, PBESpecies.Arceus_Electric, PBESpecies.Arceus_Fighting, PBESpecies.Arceus_Fire, PBESpecies.Arceus_Flying, PBESpecies.Arceus_Ghost, PBESpecies.Arceus_Grass, PBESpecies.Arceus_Ground, PBESpecies.Arceus_Ice, PBESpecies.Arceus_Poison, PBESpecies.Arceus_Psychic, PBESpecies.Arceus_Rock, PBESpecies.Arceus_Steel, PBESpecies.Arceus_Water, PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny, PBESpecies.Cherrim_Sunshine, PBESpecies.Darmanitan_Zen, PBESpecies.Genesect_Burn, PBESpecies.Genesect_Chill, PBESpecies.Genesect_Douse, PBESpecies.Genesect_Shock, PBESpecies.Giratina_Origin, PBESpecies.Keldeo_Resolute, PBESpecies.Meloetta_Pirouette });
+            IEnumerable<PBESpecies> allSpecies = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Where(s => ((uint)s >> 0x10) == 0); // All species with form ID 0
             for (int i = 0; i < settings.MaxPartySize; i++)
             {
                 PBESpecies species = allSpecies.Sample();
+                int numForms;
+                switch (species)
+                {
+                    case PBESpecies.Basculin_Blue: numForms = 2; break;
+                    case PBESpecies.Burmy_Plant: numForms = 3; break;
+                    case PBESpecies.Deerling_Autumn: numForms = 4; break;
+                    case PBESpecies.Deoxys: numForms = 4; break;
+                    case PBESpecies.Gastrodon_East: numForms = 2; break;
+                    case PBESpecies.Kyurem: numForms = 3; break;
+                    case PBESpecies.Landorus: numForms = 2; break;
+                    case PBESpecies.Rotom: numForms = 6; break;
+                    case PBESpecies.Sawsbuck_Autumn: numForms = 4; break;
+                    case PBESpecies.Shaymin: numForms = 2; break;
+                    case PBESpecies.Shellos_East: numForms = 2; break;
+                    case PBESpecies.Thundurus: numForms = 2; break;
+                    case PBESpecies.Tornadus: numForms = 2; break;
+                    case PBESpecies.Unown_A: numForms = 28; break;
+                    case PBESpecies.Wormadam_Plant: numForms = 3; break;
+                    default: numForms = 1; break;
+                }
+                species = (PBESpecies)(((uint)species & 0xFFFF) | (uint)(RNG.Next(numForms) << 0x10)); // Change form ID to a random form
                 var pData = PBEPokemonData.GetData(species);
                 var shell = new PBEPokemonShell
                 {
