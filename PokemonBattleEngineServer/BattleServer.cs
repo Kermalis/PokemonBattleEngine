@@ -385,7 +385,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                 case PBEPkmnSwitchOutPacket psop:
                     {
-                        var hiddenInfo = new PBEPkmnSwitchOutPacket(byte.MaxValue, psop.PokemonPosition, psop.PokemonTeam, psop.Forced);
+                        var hiddenInfo = new PBEPkmnSwitchOutPacket(byte.MaxValue, byte.MaxValue, psop.PokemonPosition, psop.PokemonTeam, psop.Forced);
                         SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfoHAHAHAHAHA(psop, hiddenInfo, psop.PokemonTeam.Id);
                         break;
                     }

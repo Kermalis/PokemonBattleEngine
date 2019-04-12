@@ -136,9 +136,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        void BroadcastPkmnSwitchOut(PBEPokemon pokemon, PBEFieldPosition oldPosition, bool forced)
+        void BroadcastPkmnSwitchOut(PBEPokemon pokemon, PBEPokemon disguisedAsPokemon, PBEFieldPosition oldPosition, bool forced)
         {
-            var p = new PBEPkmnSwitchOutPacket(pokemon.Id, oldPosition, pokemon.Team, forced);
+            var p = new PBEPkmnSwitchOutPacket(pokemon.Id, disguisedAsPokemon.Id, oldPosition, pokemon.Team, forced);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -728,16 +728,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (!psop.Forced)
                         {
-                            PBEPokemon pokemon;
-                            if (psop.PokemonId == byte.MaxValue)
-                            {
-                                pokemon = psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
-                            }
-                            else
-                            {
-                                pokemon = psop.PokemonTeam.TryGetPokemon(psop.PokemonId);
-                            }
-                            Console.WriteLine("{1} withdrew {0}!", pokemon.KnownNickname, pokemon.Team.TrainerName);
+                            PBEPokemon disguisedAsPokemon = psop.DisguisedAsPokemonId != byte.MaxValue ? psop.PokemonTeam.TryGetPokemon(psop.DisguisedAsPokemonId) : psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
+                            Console.WriteLine("{1} withdrew {0}!", disguisedAsPokemon.Nickname, psop.PokemonTeam.TrainerName);
                         }
                         break;
                     }

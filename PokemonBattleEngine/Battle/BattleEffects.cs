@@ -1912,9 +1912,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEFieldPosition pos = pkmnLeaving.FieldPosition;
             turnOrder.Remove(pkmnLeaving);
             ActiveBattlers.Remove(pkmnLeaving);
+            PBEPokemon disguisedAsPokemon = pkmnLeaving.Status2.HasFlag(PBEStatus2.Disguised) ? pkmnLeaving.DisguisedAsPokemon : pkmnLeaving;
             pkmnLeaving.ClearForSwitch();
             RemoveInfatuations(pkmnLeaving);
-            BroadcastPkmnSwitchOut(pkmnLeaving, pos, forced);
+            BroadcastPkmnSwitchOut(pkmnLeaving, disguisedAsPokemon, pos, forced);
             pkmnComing.FieldPosition = pos;
             ActiveBattlers.Add(pkmnComing);
             BroadcastPkmnSwitchIn(pkmnComing.Team, new[] { CreateSwitchInInfo(pkmnComing) }, forced);

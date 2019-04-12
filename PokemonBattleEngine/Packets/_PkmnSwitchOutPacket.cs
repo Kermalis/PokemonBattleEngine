@@ -14,15 +14,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public IEnumerable<byte> Buffer { get; }
 
         public byte PokemonId { get; }
+        public byte DisguisedAsPokemonId { get; }
         public PBEFieldPosition PokemonPosition { get; }
         public PBETeam PokemonTeam { get; }
         public bool Forced { get; }
 
-        public PBEPkmnSwitchOutPacket(byte pokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam, bool forced)
+        public PBEPkmnSwitchOutPacket(byte pokemonId, byte disguisedAsPokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam, bool forced)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add(PokemonId = pokemonId);
+            bytes.Add(DisguisedAsPokemonId = disguisedAsPokemonId);
             bytes.Add((byte)(PokemonPosition = pokemonPosition));
             bytes.Add((PokemonTeam = pokemonTeam).Id);
             bytes.Add((byte)((Forced = forced) ? 1 : 0));
@@ -35,6 +37,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 PokemonId = r.ReadByte();
+                DisguisedAsPokemonId = r.ReadByte();
                 PokemonPosition = (PBEFieldPosition)r.ReadByte();
                 PokemonTeam = battle.Teams[r.ReadByte()];
                 Forced = r.ReadBoolean();

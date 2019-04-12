@@ -300,14 +300,14 @@ namespace Kermalis.PokemonBattleEngineMobile
                         PBEPokemon pokemon = ilp.PokemonTeam.TryGetPokemon(ilp.Pokemon);
                         pokemon.Status2 &= ~PBEStatus2.Disguised;
                         pokemon.DisguisedAsPokemon = null;
-                        pokemon.KnownAbility = PBEAbility.Illusion;
-                        pokemon.KnownGender = ilp.ActualGender;
-                        pokemon.KnownNickname = ilp.ActualNickname;
-                        pokemon.KnownShiny = ilp.ActualShiny;
-                        pokemon.KnownSpecies = ilp.ActualSpecies;
-                        pokemon.KnownType1 = ilp.ActualType1;
-                        pokemon.KnownType2 = ilp.ActualType2;
-                        pokemon.KnownWeight = ilp.ActualWeight;
+                        pokemon.OriginalAbility = pokemon.Ability = pokemon.KnownAbility = PBEAbility.Illusion;
+                        pokemon.Gender = pokemon.KnownGender = ilp.ActualGender;
+                        pokemon.Nickname = pokemon.KnownNickname = ilp.ActualNickname;
+                        pokemon.Shiny = pokemon.KnownShiny = ilp.ActualShiny;
+                        pokemon.OriginalSpecies = pokemon.Species = pokemon.KnownSpecies = ilp.ActualSpecies;
+                        pokemon.Type1 = pokemon.KnownType1 = ilp.ActualType1;
+                        pokemon.Type2 = pokemon.KnownType2 = ilp.ActualType2;
+                        pokemon.Weight = pokemon.KnownWeight = ilp.ActualWeight;
                         BattleView.Field.UpdatePokemon(pokemon);
                         break;
                     }
@@ -683,7 +683,8 @@ namespace Kermalis.PokemonBattleEngineMobile
                     }
                 case PBEPkmnSwitchOutPacket psop:
                     {
-                        PBEPokemon pokemon = psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
+                        PBEPokemon pokemon = psop.PokemonId != byte.MaxValue ? psop.PokemonTeam.TryGetPokemon(psop.PokemonId) : psop.PokemonTeam.TryGetPokemon(psop.PokemonPosition);
+                        PBEPokemon disguisedAsPokemon = psop.DisguisedAsPokemonId != byte.MaxValue ? psop.PokemonTeam.TryGetPokemon(psop.DisguisedAsPokemonId) : pokemon;
                         Battle.ActiveBattlers.Remove(pokemon);
                         if (pokemon.Id == byte.MaxValue)
                         {
@@ -697,7 +698,7 @@ namespace Kermalis.PokemonBattleEngineMobile
                         BattleView.Field.UpdatePokemon(pokemon, psop.PokemonPosition);
                         if (!psop.Forced)
                         {
-                            BattleView.AddMessage(string.Format("{1} withdrew {0}!", pokemon.KnownNickname, pokemon.Team.TrainerName), true, true);
+                            BattleView.AddMessage(string.Format("{1} withdrew {0}!", disguisedAsPokemon.Nickname, psop.PokemonTeam.TrainerName), true, true);
                         }
                         break;
                     }

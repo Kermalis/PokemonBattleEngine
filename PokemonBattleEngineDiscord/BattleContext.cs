@@ -733,8 +733,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         if (!psop.Forced)
                         {
-                            PBEPokemon pokemon = psop.PokemonTeam.TryGetPokemon(psop.PokemonId);
-                            await context.CreateAndSendEmbedAsync(string.Format("{1} withdrew {0}!", pokemon.KnownNickname, pokemon.Team.TrainerName), pkmn: pokemon);
+                            PBEPokemon disguisedAsPokemon = psop.PokemonTeam.TryGetPokemon(psop.DisguisedAsPokemonId);
+                            await context.CreateAndSendEmbedAsync(string.Format("{1} withdrew {0}!", disguisedAsPokemon.Nickname, psop.PokemonTeam.TrainerName), pkmn: disguisedAsPokemon);
                         }
                         break;
                     }
