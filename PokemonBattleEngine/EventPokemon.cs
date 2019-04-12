@@ -387,7 +387,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Eevee collection promotion
                     (
                         new byte[] { 4 }, PBESpecies.Eevee, 10, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Adaptability }, new PBENature[] { PBENature.Lonely },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Covet, */PBEMove.Bite, PBEMove.HelpingHand/*, PBEMove.Attract*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Covet, */PBEMove.Bite, PBEMove.HelpingHand, PBEMove.Attract }
                     ),
                     new PBEEventPokemon // World championships 2010
                     (
@@ -397,7 +397,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Ikimono-gakari promotion
                     (
                         new byte[] { 5 }, PBESpecies.Eevee, 50, false, PBEGender.Female, new PBEAbility[] { PBEAbility.Adaptability }, new PBENature[] { PBENature.Hardy },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Sing, PBEMove.Return/*, PBEMove.EchoedVoice, PBEMove.Attract*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Sing, PBEMove.Return/*, PBEMove.EchoedVoice*/, PBEMove.Attract }
                     )
                 })
             },
@@ -1300,7 +1300,7 @@ namespace Kermalis.PokemonBattleEngine
                     new PBEEventPokemon // Gather more Pokémon
                     (
                         new byte[] { 3 }, PBESpecies.Skitty, 10, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.CuteCharm }, allNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.Tackle, PBEMove.TailWhip/*, PBEMove.Attract*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Growl, PBEMove.Tackle, PBEMove.TailWhip, PBEMove.Attract }
                     ),
                     new PBEEventPokemon // Pokémon Box bonus egg
                     (
