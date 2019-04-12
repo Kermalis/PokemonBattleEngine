@@ -391,7 +391,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (Status1 == PBEStatus1.Asleep)
             {
-                Status1Counter = SleepTurns;
+                Status1Counter = 0;
             }
             else if (Status1 == PBEStatus1.BadlyPoisoned)
             {
