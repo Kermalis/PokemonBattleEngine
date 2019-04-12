@@ -118,18 +118,21 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 {
                     sb.AppendLine($"Main status: {pkmn.Status1}");
                 }
-                if (pkmn.FieldPosition != PBEFieldPosition.None && pkmn.Status2 != PBEStatus2.None)
+                if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    PBEStatus2 cleanStatus = pkmn.Status2;
-                    cleanStatus &= ~PBEStatus2.Disguised;
-                    sb.AppendLine($"Volatile status: {cleanStatus}");
-                    if (pkmn.Status2.HasFlag(PBEStatus2.Infatuated))
+                    PBEStatus2 cleanStatus2 = pkmn.Status2;
+                    cleanStatus2 &= ~PBEStatus2.Disguised;
+                    if (cleanStatus2 != PBEStatus2.None)
                     {
-                        sb.AppendLine($"Infatuated with: {((pkmn.InfatuatedWithPokemon.Team.Id == 0 && showRawValues0) || (pkmn.InfatuatedWithPokemon.Team.Id == 1 && showRawValues1) ? pkmn.InfatuatedWithPokemon.Nickname : pkmn.InfatuatedWithPokemon.KnownNickname)}");
-                    }
-                    if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
-                    {
-                        sb.AppendLine($"Seeded position: {pkmn.SeededTeam.TrainerName}'s {pkmn.SeededPosition}");
+                        sb.AppendLine($"Volatile status: {cleanStatus2}");
+                        if (cleanStatus2.HasFlag(PBEStatus2.Infatuated))
+                        {
+                            sb.AppendLine($"Infatuated with: {((pkmn.InfatuatedWithPokemon.Team.Id == 0 && showRawValues0) || (pkmn.InfatuatedWithPokemon.Team.Id == 1 && showRawValues1) ? pkmn.InfatuatedWithPokemon.Nickname : pkmn.InfatuatedWithPokemon.KnownNickname)}");
+                        }
+                        if (cleanStatus2.HasFlag(PBEStatus2.LeechSeed))
+                        {
+                            sb.AppendLine($"Seeded position: {pkmn.SeededTeam.TrainerName}'s {pkmn.SeededPosition}");
+                        }
                     }
                 }
                 PBEPokemonData.GetStatRange(PBEStat.HP, pkmn.KnownSpecies, pkmn.Level, pkmn.Team.Battle.Settings, out ushort lowHP, out ushort highHP);
@@ -167,23 +170,20 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 {
                     sb.AppendLine($"Main status: {pkmn.Status1}");
                 }
-                if (pkmn.FieldPosition != PBEFieldPosition.None)
+                if (pkmn.FieldPosition != PBEFieldPosition.None && pkmn.Status2 != PBEStatus2.None)
                 {
-                    if (pkmn.Status2 != PBEStatus2.None)
+                    sb.AppendLine($"Volatile status: {pkmn.Status2}");
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
                     {
-                        sb.AppendLine($"Volatile status: {pkmn.Status2}");
-                        if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
-                        {
-                            sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
-                        }
-                        if (pkmn.Status2.HasFlag(PBEStatus2.Infatuated))
-                        {
-                            sb.AppendLine($"Infatuated with: {((pkmn.InfatuatedWithPokemon.Team.Id == 0 && showRawValues0) || (pkmn.InfatuatedWithPokemon.Team.Id == 1 && showRawValues1) ? pkmn.InfatuatedWithPokemon.Nickname : pkmn.InfatuatedWithPokemon.KnownNickname)}");
-                        }
-                        if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
-                        {
-                            sb.AppendLine($"Seeded position: {pkmn.SeededTeam.TrainerName}'s {pkmn.SeededPosition}");
-                        }
+                        sb.AppendLine($"Disguised as: {pkmn.DisguisedAsPokemon.Nickname}");
+                    }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Infatuated))
+                    {
+                        sb.AppendLine($"Infatuated with: {((pkmn.InfatuatedWithPokemon.Team.Id == 0 && showRawValues0) || (pkmn.InfatuatedWithPokemon.Team.Id == 1 && showRawValues1) ? pkmn.InfatuatedWithPokemon.Nickname : pkmn.InfatuatedWithPokemon.KnownNickname)}");
+                    }
+                    if (pkmn.Status2.HasFlag(PBEStatus2.LeechSeed))
+                    {
+                        sb.AppendLine($"Seeded position: {pkmn.SeededTeam.TrainerName}'s {pkmn.SeededPosition}");
                     }
                 }
                 sb.AppendLine($"Stats: [A] {pkmn.Attack}, [D] {pkmn.Defense}, [SA] {pkmn.SpAttack}, [SD] {pkmn.SpDefense}, [S] {pkmn.Speed}, [W] {pkmn.Weight:0.0}");

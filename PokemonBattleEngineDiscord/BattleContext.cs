@@ -160,7 +160,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     sb.AppendLine($"**Toxic Counter:** {pkmn.Status1Counter}");
                 }
-
                 if (pkmn.Status2 != PBEStatus2.None)
                 {
                     sb.AppendLine($"**Volatile status:** {pkmn.Status2}");
@@ -240,12 +239,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 sb.AppendLine($"**Toxic Counter:** {pkmn.Status1Counter}");
             }
-            if (pkmn.Status2 != PBEStatus2.None)
+            PBEStatus2 cleanStatus2 = pkmn.Status2;
+            cleanStatus2 &= ~PBEStatus2.Disguised;
+            if (cleanStatus2 != PBEStatus2.None)
             {
-                PBEStatus2 cleanStatus = pkmn.Status2;
-                cleanStatus &= ~PBEStatus2.Disguised;
-                sb.AppendLine($"**Volatile status:** {cleanStatus}");
-                if (pkmn.Status2.HasFlag(PBEStatus2.Confused))
+                sb.AppendLine($"**Volatile status:** {cleanStatus2}");
+                if (cleanStatus2.HasFlag(PBEStatus2.Confused))
                 {
                     sb.AppendLine($"**Confusion turns:** {pkmn.ConfusionCounter}");
                 }
