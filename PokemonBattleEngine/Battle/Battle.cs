@@ -491,7 +491,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             foreach (PBEPokemon pkmn in turnOrder.ToArray()) // Copy the list so a faint or ejection does not cause a collection modified exception
             {
-                if (ActiveBattlers.Contains(pkmn))
+                if (Winner != null) // Do not broadcast winner by calling WinCheck() in here; do it in TurnEnded()
+                {
+                    return;
+                }
+                else if (ActiveBattlers.Contains(pkmn))
                 {
                     switch (pkmn.SelectedAction.Decision)
                     {
