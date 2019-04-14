@@ -1760,74 +1760,77 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEFailReason.Ineffective;
             }
 
-            switch (target.Ability)
+            if (!user.HasCancellingAbility())
             {
-                case PBEAbility.Immunity:
-                    {
-                        if ((status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned) && !user.HasCancellingAbility())
+                switch (target.Ability)
+                {
+                    case PBEAbility.Immunity:
                         {
-                            if (broadcastFailOrEffectiveness)
+                            if (status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned)
                             {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                if (broadcastFailOrEffectiveness)
+                                {
+                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                }
+                                return PBEFailReason.Ineffective;
                             }
-                            return PBEFailReason.Ineffective;
+                            break;
                         }
-                        break;
-                    }
-                case PBEAbility.Insomnia:
-                case PBEAbility.VitalSpirit:
-                    {
-                        if (status == PBEStatus1.Asleep && !user.HasCancellingAbility())
+                    case PBEAbility.Insomnia:
+                    case PBEAbility.VitalSpirit:
                         {
-                            if (broadcastFailOrEffectiveness)
+                            if (status == PBEStatus1.Asleep)
                             {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                if (broadcastFailOrEffectiveness)
+                                {
+                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                }
+                                return PBEFailReason.Ineffective;
                             }
-                            return PBEFailReason.Ineffective;
+                            break;
                         }
-                        break;
-                    }
-                case PBEAbility.Limber:
-                    {
-                        if (status == PBEStatus1.Paralyzed && !user.HasCancellingAbility())
+                    case PBEAbility.Limber:
                         {
-                            if (broadcastFailOrEffectiveness)
+                            if (status == PBEStatus1.Paralyzed)
                             {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                if (broadcastFailOrEffectiveness)
+                                {
+                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                }
+                                return PBEFailReason.Ineffective;
                             }
-                            return PBEFailReason.Ineffective;
+                            break;
                         }
-                        break;
-                    }
-                case PBEAbility.MagmaArmor:
-                    {
-                        if (status == PBEStatus1.Frozen && !user.HasCancellingAbility())
+                    case PBEAbility.MagmaArmor:
                         {
-                            if (broadcastFailOrEffectiveness)
+                            if (status == PBEStatus1.Frozen)
                             {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                if (broadcastFailOrEffectiveness)
+                                {
+                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                }
+                                return PBEFailReason.Ineffective;
                             }
-                            return PBEFailReason.Ineffective;
+                            break;
                         }
-                        break;
-                    }
-                case PBEAbility.WaterVeil:
-                    {
-                        if (status == PBEStatus1.Burned && !user.HasCancellingAbility())
+                    case PBEAbility.WaterVeil:
                         {
-                            if (broadcastFailOrEffectiveness)
+                            if (status == PBEStatus1.Burned)
                             {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                if (broadcastFailOrEffectiveness)
+                                {
+                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
+                                }
+                                return PBEFailReason.Ineffective;
                             }
-                            return PBEFailReason.Ineffective;
+                            break;
                         }
-                        break;
-                    }
+                }
             }
 
             target.Status1 = status;
