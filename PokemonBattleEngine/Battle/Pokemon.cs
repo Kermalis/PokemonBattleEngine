@@ -648,14 +648,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 case PBEMove.WeatherBall:
                     {
-                        switch (Team.Battle.Weather)
+                        if (Team.Battle.ShouldDoWeatherEffects())
                         {
-                            case PBEWeather.Hailstorm: return PBEType.Ice;
-                            case PBEWeather.HarshSunlight: return PBEType.Fire;
-                            case PBEWeather.Rain: return PBEType.Water;
-                            case PBEWeather.Sandstorm: return PBEType.Rock;
-                            default: return PBEMoveData.Data[PBEMove.WeatherBall].Type;
+                            switch (Team.Battle.Weather)
+                            {
+                                case PBEWeather.Hailstorm: return PBEType.Ice;
+                                case PBEWeather.HarshSunlight: return PBEType.Fire;
+                                case PBEWeather.Rain: return PBEType.Water;
+                                case PBEWeather.Sandstorm: return PBEType.Rock;
+                            }
                         }
+                        return PBEMoveData.Data[PBEMove.WeatherBall].Type;
                     }
                 default:
                     {

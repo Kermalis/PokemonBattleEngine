@@ -655,41 +655,52 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEMove.WeatherBall:
-                    if (Weather != PBEWeather.None)
                     {
-                        basePower *= 2.0;
+                        if (ShouldDoWeatherEffects() && Weather != PBEWeather.None)
+                        {
+                            basePower *= 2.0;
+                        }
+                        break;
                     }
-                    break;
             }
 
-            switch (Weather)
+            if (ShouldDoWeatherEffects())
             {
-                case PBEWeather.HarshSunlight:
-                    if (moveType == PBEType.Fire)
-                    {
-                        basePower *= 1.5;
-                    }
-                    else if (moveType == PBEType.Water)
-                    {
-                        basePower *= 0.5;
-                    }
-                    break;
-                case PBEWeather.Rain:
-                    if (moveType == PBEType.Water)
-                    {
-                        basePower *= 1.5;
-                    }
-                    else if (moveType == PBEType.Fire)
-                    {
-                        basePower *= 0.5;
-                    }
-                    break;
-                case PBEWeather.Sandstorm:
-                    if (user.Ability == PBEAbility.SandForce && (user.HasType(PBEType.Rock) || user.HasType(PBEType.Ground) || user.HasType(PBEType.Steel)))
-                    {
-                        basePower *= 1.3;
-                    }
-                    break;
+                switch (Weather)
+                {
+                    case PBEWeather.HarshSunlight:
+                        {
+                            if (moveType == PBEType.Fire)
+                            {
+                                basePower *= 1.5;
+                            }
+                            else if (moveType == PBEType.Water)
+                            {
+                                basePower *= 0.5;
+                            }
+                            break;
+                        }
+                    case PBEWeather.Rain:
+                        {
+                            if (moveType == PBEType.Water)
+                            {
+                                basePower *= 1.5;
+                            }
+                            else if (moveType == PBEType.Fire)
+                            {
+                                basePower *= 0.5;
+                            }
+                            break;
+                        }
+                    case PBEWeather.Sandstorm:
+                        {
+                            if (user.Ability == PBEAbility.SandForce && (user.HasType(PBEType.Rock) || user.HasType(PBEType.Ground) || user.HasType(PBEType.Steel)))
+                            {
+                                basePower *= 1.3;
+                            }
+                            break;
+                        }
+                }
             }
 
             if (user.Status2.HasFlag(PBEStatus2.HelpingHand))
@@ -863,7 +874,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 1.5;
             }
-            if (Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
+            if (ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
             {
                 attack *= 1.5;
             }
@@ -921,7 +932,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spAttack *= 1.5;
             }
-            if (Weather == PBEWeather.HarshSunlight && user.Ability == PBEAbility.SolarPower)
+            if (ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && user.Ability == PBEAbility.SolarPower)
             {
                 spAttack *= 1.5;
             }
@@ -960,17 +971,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spDefense *= 1.5;
             }
-            if (Weather == PBEWeather.Sandstorm && target.HasType(PBEType.Rock))
-            {
-                spDefense *= 1.5;
-            }
             if (target.Item == PBEItem.Eviolite && PBEPokemonData.GetData(target.OriginalSpecies).Evolutions.Count > 0)
             {
                 spDefense *= 1.5;
             }
-            if (Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
+            if (ShouldDoWeatherEffects())
             {
-                spDefense *= 1.5;
+                if (Weather == PBEWeather.Sandstorm && target.HasType(PBEType.Rock))
+                {
+                    spDefense *= 1.5;
+                }
+                if (Weather == PBEWeather.HarshSunlight && user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.FlowerGift))
+                {
+                    spDefense *= 1.5;
+                }
             }
 
             return spDefense;

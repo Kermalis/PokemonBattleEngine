@@ -1943,7 +1943,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Adaptability = 91,
         Aftermath = 106, // TODO
-        AirLock = 76, // TODO
+        AirLock = 76,
         Analytic = 148, // TODO
         AngerPoint = 83, // TODO
         Anticipation = 107, // TODO
@@ -1963,7 +1963,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Chlorophyll = 34,
         ClearBody = 29, // TODO
-        CloudNine = 13, // TODO
+        CloudNine = 13,
         ColorChange = 16, // TODO
         /// <summary>
         /// The Pokémon accuracy is boosted.

@@ -63,13 +63,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 AntiStatusAbilityCheck(pkmn);
                 switch (pkmn.Ability)
                 {
+                    case PBEAbility.AirLock:
+                    case PBEAbility.CloudNine:
+                        {
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                            CastformCherrimCheckAll();
+                            break;
+                        }
                     case PBEAbility.Drizzle:
                         {
                             if (Weather != PBEWeather.Rain || WeatherCounter != 0)
                             {
                                 Weather = PBEWeather.Rain;
                                 WeatherCounter = 0;
-                                BroadcastAbility(pkmn, pkmn, PBEAbility.Drizzle, PBEAbilityAction.Weather);
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                                 BroadcastWeather(PBEWeather.Rain, PBEWeatherAction.Added);
                             }
                             break;
@@ -80,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 Weather = PBEWeather.HarshSunlight;
                                 WeatherCounter = 0;
-                                BroadcastAbility(pkmn, pkmn, PBEAbility.Drought, PBEAbilityAction.Weather);
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                                 BroadcastWeather(PBEWeather.HarshSunlight, PBEWeatherAction.Added);
                             }
                             break;
@@ -95,7 +102,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 && !target.Status2.HasFlag(PBEStatus2.Substitute)
                                 && !target.Status2.HasFlag(PBEStatus2.Transformed))
                             {
-                                BroadcastAbility(pkmn, target, PBEAbility.Imposter, PBEAbilityAction.ChangedAppearance);
+                                BroadcastAbility(pkmn, target, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
                                 ApplyStatus2IfPossible(pkmn, target, PBEStatus2.Transformed, false);
                             }
                             break;
@@ -106,7 +113,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 Weather = PBEWeather.Sandstorm;
                                 WeatherCounter = 0;
-                                BroadcastAbility(pkmn, pkmn, PBEAbility.SandStream, PBEAbilityAction.Weather);
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                                 BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.Added);
                             }
                             break;
@@ -117,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 Weather = PBEWeather.Hailstorm;
                                 WeatherCounter = 0;
-                                BroadcastAbility(pkmn, pkmn, PBEAbility.SnowWarning, PBEAbilityAction.Weather);
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                                 BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.Added);
                             }
                             break;
@@ -313,84 +320,98 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             IEnumerable<PBEPokemon> order = GetActingOrder(ActiveBattlers, true);
 
-            foreach (PBEPokemon pkmn in order)
+            // Verified: Weather stops before doing damage
+            if (WeatherCounter > 0)
             {
-                CastformCherrimCheck(pkmn);
+                WeatherCounter--;
+                if (WeatherCounter == 0)
+                {
+                    PBEWeather w = Weather;
+                    Weather = PBEWeather.None;
+                    BroadcastWeather(w, PBEWeatherAction.Ended);
+                    foreach (PBEPokemon pkmn in order)
+                    {
+                        CastformCherrimCheck(pkmn);
+                    }
+                }
             }
 
             // Verified: Hailstorm/Sandstorm/IceBody/RainDish/SolarPower before all
-            foreach (PBEPokemon pkmn in order)
+            if (ShouldDoWeatherEffects())
             {
-                if (pkmn.HP > 0)
+                foreach (PBEPokemon pkmn in order)
                 {
-                    switch (Weather)
+                    if (pkmn.HP > 0)
                     {
-                        case PBEWeather.Hailstorm:
-                            {
-                                if (pkmn.Ability == PBEAbility.IceBody)
+                        switch (Weather)
+                        {
+                            case PBEWeather.Hailstorm:
                                 {
-                                    if (pkmn.HP < pkmn.MaxHP)
+                                    if (pkmn.Ability == PBEAbility.IceBody)
                                     {
-                                        BroadcastAbility(pkmn, pkmn, PBEAbility.IceBody, PBEAbilityAction.RestoredHP);
-                                        HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.IceBodyHealDenominator));
+                                        if (pkmn.HP < pkmn.MaxHP)
+                                        {
+                                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
+                                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.IceBodyHealDenominator));
+                                        }
                                     }
-                                }
-                                else if (!pkmn.HasType(PBEType.Ice)
-                                    && pkmn.Ability != PBEAbility.Overcoat
-                                    && pkmn.Ability != PBEAbility.SnowCloak)
-                                {
-                                    BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), true);
-                                    if (!FaintCheck(pkmn))
+                                    else if (!pkmn.HasType(PBEType.Ice)
+                                        && pkmn.Ability != PBEAbility.Overcoat
+                                        && pkmn.Ability != PBEAbility.SnowCloak)
                                     {
-                                        HealingBerryCheck(pkmn);
+                                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
+                                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), true);
+                                        if (!FaintCheck(pkmn))
+                                        {
+                                            HealingBerryCheck(pkmn);
+                                        }
                                     }
+                                    break;
                                 }
-                                break;
-                            }
-                        case PBEWeather.HarshSunlight:
-                            {
-                                if (pkmn.Ability == PBEAbility.SolarPower)
+                            case PBEWeather.HarshSunlight:
                                 {
-                                    BroadcastAbility(pkmn, pkmn, PBEAbility.SolarPower, PBEAbilityAction.Damage);
-                                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / 8), true);
-                                    if (!FaintCheck(pkmn))
+                                    if (pkmn.Ability == PBEAbility.SolarPower)
                                     {
-                                        HealingBerryCheck(pkmn);
+                                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Damage);
+                                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / 8), true);
+                                        if (!FaintCheck(pkmn))
+                                        {
+                                            HealingBerryCheck(pkmn);
+                                        }
                                     }
+                                    break;
                                 }
-                                break;
-                            }
-                        case PBEWeather.Rain:
-                            {
-                                if (pkmn.Ability == PBEAbility.RainDish && pkmn.HP < pkmn.MaxHP)
+                            case PBEWeather.Rain:
                                 {
-                                    BroadcastAbility(pkmn, pkmn, PBEAbility.RainDish, PBEAbilityAction.RestoredHP);
-                                    HealDamage(pkmn, (ushort)(pkmn.MaxHP / 16));
-                                }
-                                break;
-                            }
-                        case PBEWeather.Sandstorm:
-                            {
-                                if (!pkmn.HasType(PBEType.Rock)
-                                    && !pkmn.HasType(PBEType.Ground)
-                                    && !pkmn.HasType(PBEType.Steel)
-                                    && pkmn.Ability != PBEAbility.Overcoat
-                                    && pkmn.Ability != PBEAbility.SandForce
-                                    && pkmn.Ability != PBEAbility.SandRush
-                                    && pkmn.Ability != PBEAbility.SandVeil
-                                    && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
-                                    && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
-                                {
-                                    BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.SandstormDamageDenominator), true);
-                                    if (!FaintCheck(pkmn))
+                                    if (pkmn.Ability == PBEAbility.RainDish && pkmn.HP < pkmn.MaxHP)
                                     {
-                                        HealingBerryCheck(pkmn);
+                                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
+                                        HealDamage(pkmn, (ushort)(pkmn.MaxHP / 16));
                                     }
+                                    break;
                                 }
-                                break;
-                            }
+                            case PBEWeather.Sandstorm:
+                                {
+                                    if (!pkmn.HasType(PBEType.Rock)
+                                        && !pkmn.HasType(PBEType.Ground)
+                                        && !pkmn.HasType(PBEType.Steel)
+                                        && pkmn.Ability != PBEAbility.Overcoat
+                                        && pkmn.Ability != PBEAbility.SandForce
+                                        && pkmn.Ability != PBEAbility.SandRush
+                                        && pkmn.Ability != PBEAbility.SandVeil
+                                        && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
+                                        && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
+                                    {
+                                        BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
+                                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.SandstormDamageDenominator), true);
+                                        if (!FaintCheck(pkmn))
+                                        {
+                                            HealingBerryCheck(pkmn);
+                                        }
+                                    }
+                                    break;
+                                }
+                        }
                     }
                 }
             }
@@ -408,7 +429,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     if (ally.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
                                     {
-                                        BroadcastAbility(pkmn, ally, PBEAbility.Healer, PBEAbilityAction.ChangedStatus);
+                                        BroadcastAbility(pkmn, ally, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                         PBEStatus1 status1 = ally.Status1;
                                         ally.Status1 = PBEStatus1.None;
                                         BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cured);
@@ -420,7 +441,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 if (pkmn.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
                                 {
-                                    BroadcastAbility(pkmn, pkmn, PBEAbility.ShedSkin, PBEAbilityAction.ChangedStatus);
+                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                                     PBEStatus1 status1 = pkmn.Status1;
                                     pkmn.Status1 = PBEStatus1.None;
                                     BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cured);
@@ -436,13 +457,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 {
                                     if (pkmn.HP < pkmn.MaxHP)
                                     {
-                                        BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.RestoredHP);
+                                        BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
                                         HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator));
                                     }
                                 }
                                 else
                                 {
-                                    BroadcastItem(pkmn, pkmn, PBEItem.BlackSludge, PBEItemAction.Damage);
+                                    BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Damage);
                                     DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), true);
                                     FaintCheck(pkmn); // No need to call HealingBerryCheck() because if you are holding BlackSludge you are not holding a healing berry
                                 }
@@ -452,7 +473,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 if (pkmn.HP < pkmn.MaxHP)
                                 {
-                                    BroadcastItem(pkmn, pkmn, PBEItem.Leftovers, PBEItemAction.RestoredHP);
+                                    BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
                                     HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator));
                                 }
                                 break;
@@ -561,7 +582,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 PBEStat? downStat = statsThatCanGoDown.Count() == 0 ? (PBEStat?)null : statsThatCanGoDown.Sample();
                                 if (upStat.HasValue || downStat.HasValue)
                                 {
-                                    BroadcastAbility(pkmn, pkmn, PBEAbility.Moody, PBEAbilityAction.ChangedStats);
+                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
                                     if (upStat.HasValue)
                                     {
                                         ApplyStatChange(pkmn, upStat.Value, +2);
@@ -577,7 +598,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 if (pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
                                 {
-                                    BroadcastAbility(pkmn, pkmn, PBEAbility.SpeedBoost, PBEAbilityAction.ChangedStats);
+                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
                                     ApplyStatChange(pkmn, PBEStat.Speed, +1);
                                 }
                                 break;
@@ -587,6 +608,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Orbs
+            // TODO: Possible to get burned with water veil?
             foreach (PBEPokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
@@ -598,7 +620,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Fire))
                                 {
                                     pkmn.Status1 = PBEStatus1.Burned;
-                                    BroadcastItem(pkmn, pkmn, PBEItem.FlameOrb, PBEItemAction.ChangedStatus);
+                                    BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
                                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Added);
                                 }
                                 break;
@@ -608,7 +630,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel))
                                 {
                                     pkmn.Status1 = PBEStatus1.BadlyPoisoned;
-                                    BroadcastItem(pkmn, pkmn, PBEItem.ToxicOrb, PBEItemAction.ChangedStatus);
+                                    BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
                                     BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Added);
                                 }
                                 break;
@@ -616,6 +638,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
+        }
+        public bool ShouldDoWeatherEffects()
+        {
+            // If HP is needed to be above 0, use HPPercentage so clients can continue to use this
+            // However, I see no instance of this getting called where an ActiveBattler has 0 hp
+            return !ActiveBattlers.Any(p => p.Ability == PBEAbility.AirLock || p.Ability == PBEAbility.CloudNine);
         }
 
         void UseMove(PBEPokemon user, PBEMove move, PBETarget requestedTargets)
@@ -1314,7 +1342,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEMove.Blizzard:
                     {
-                        if (Weather == PBEWeather.Hailstorm)
+                        if (ShouldDoWeatherEffects() && Weather == PBEWeather.Hailstorm)
                         {
                             return false;
                         }
@@ -1335,11 +1363,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.Hurricane:
                 case PBEMove.Thunder:
                     {
-                        if (Weather == PBEWeather.Rain)
+                        bool doWeather = ShouldDoWeatherEffects();
+                        if (doWeather && Weather == PBEWeather.Rain)
                         {
                             return false;
                         }
-                        else if (Weather == PBEWeather.HarshSunlight)
+                        else if (doWeather && Weather == PBEWeather.HarshSunlight)
                         {
                             chance = 50.0;
                         }
@@ -1379,13 +1408,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 0.8;
             }
-            if (Weather == PBEWeather.Sandstorm && target.Ability == PBEAbility.SandVeil)
+            if (ShouldDoWeatherEffects())
             {
-                chance *= 0.8;
-            }
-            if (Weather == PBEWeather.Hailstorm && target.Ability == PBEAbility.SnowCloak)
-            {
-                chance *= 0.8;
+                if (Weather == PBEWeather.Sandstorm && target.Ability == PBEAbility.SandVeil)
+                {
+                    chance *= 0.8;
+                }
+                if (Weather == PBEWeather.Hailstorm && target.Ability == PBEAbility.SnowCloak)
+                {
+                    chance *= 0.8;
+                }
             }
             if (target.Item == PBEItem.BrightPowder)
             {
@@ -1475,11 +1507,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 pkmn.FieldPosition = PBEFieldPosition.None;
                 RemoveInfatuations(pkmn);
                 BroadcastPkmnFainted(pkmn, oldPos);
+                CastformCherrimCheckAll();
                 return true;
             }
             return false;
         }
 
+        void CastformCherrimCheckAll()
+        {
+            foreach (PBEPokemon pkmn in GetActingOrder(ActiveBattlers, true))
+            {
+                CastformCherrimCheck(pkmn);
+            }
+        }
         void CastformCherrimCheck(PBEPokemon pkmn)
         {
             // Castform & Cherrim may be changing form because their ability was swapped or suppressed, so check for the specific ability before setting KnownAbility
@@ -1488,15 +1528,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PBESpecies newSpecies = PBESpecies.Castform;
                 if (pkmn.Ability == PBEAbility.Forecast)
                 {
-                    switch (Weather)
+                    if (ShouldDoWeatherEffects())
                     {
-                        case PBEWeather.Hailstorm: newSpecies = PBESpecies.Castform_Snowy; break;
-                        case PBEWeather.HarshSunlight: newSpecies = PBESpecies.Castform_Sunny; break;
-                        case PBEWeather.Rain: newSpecies = PBESpecies.Castform_Rainy; break;
-                    }
-                    if (newSpecies != pkmn.Species)
-                    {
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.Forecast, PBEAbilityAction.ChangedAppearance);
+                        switch (Weather)
+                        {
+                            case PBEWeather.Hailstorm: newSpecies = PBESpecies.Castform_Snowy; break;
+                            case PBEWeather.HarshSunlight: newSpecies = PBESpecies.Castform_Sunny; break;
+                            case PBEWeather.Rain: newSpecies = PBESpecies.Castform_Rainy; break;
+                        }
+                        if (newSpecies != pkmn.Species)
+                        {
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
+                        }
                     }
                 }
                 if (newSpecies != pkmn.Species)
@@ -1509,13 +1552,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 PBESpecies newSpecies = PBESpecies.Cherrim;
                 if (pkmn.Ability == PBEAbility.FlowerGift)
                 {
-                    if (Weather == PBEWeather.HarshSunlight)
+                    if (ShouldDoWeatherEffects())
                     {
-                        newSpecies = PBESpecies.Cherrim_Sunshine;
-                    }
-                    if (newSpecies != pkmn.Species)
-                    {
-                        BroadcastAbility(pkmn, pkmn, PBEAbility.FlowerGift, PBEAbilityAction.ChangedAppearance);
+                        if (Weather == PBEWeather.HarshSunlight)
+                        {
+                            newSpecies = PBESpecies.Cherrim_Sunshine;
+                        }
+                        if (newSpecies != pkmn.Species)
+                        {
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
+                        }
                     }
                 }
                 if (newSpecies != pkmn.Species)
@@ -2111,6 +2157,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastDraggedOut(pkmnComing);
             }
             DoSwitchInEffects(new[] { pkmnComing });
+            CastformCherrimCheckAll();
         }
         void RemoveInfatuations(PBEPokemon pkmnLeaving)
         {
@@ -2565,10 +2612,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 Weather = weather;
                 WeatherCounter = (byte)(turns + (user.Item == extensionItem ? itemTurnExtension : 0));
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
-                foreach (PBEPokemon pkmn in GetActingOrder(ActiveBattlers, true))
-                {
-                    CastformCherrimCheck(pkmn);
-                }
+                CastformCherrimCheckAll();
             }
             RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
@@ -3255,11 +3299,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PPReduce(user, move);
 
             double percentage;
-            switch (Weather)
+            if (ShouldDoWeatherEffects())
             {
-                case PBEWeather.None: percentage = 0.50; break;
-                case PBEWeather.HarshSunlight: percentage = 0.66; break;
-                default: percentage = 0.25; break;
+                switch (Weather)
+                {
+                    case PBEWeather.None: percentage = 0.50; break;
+                    case PBEWeather.HarshSunlight: percentage = 0.66; break;
+                    default: percentage = 0.25; break;
+                }
+            }
+            else
+            {
+                percentage = 0.50;
             }
             ushort amtRestored = HealDamage(user, (ushort)(user.MaxHP * percentage));
             if (amtRestored == 0)
@@ -3682,7 +3733,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         void Ef_Growth(PBEPokemon user, PBEMove move)
         {
-            short change = (short)(Weather == PBEWeather.HarshSunlight ? +2 : +1);
+            short change = (short)(ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight ? +2 : +1);
             Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { change, change });
         }
         void Ef_HelpingHand(PBEPokemon user, PBEPokemon[] targets, PBEMove move)

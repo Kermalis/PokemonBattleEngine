@@ -206,6 +206,16 @@ namespace Kermalis.PokemonBattleEngineClient
                         string message;
                         switch (ap.Ability)
                         {
+                            case PBEAbility.AirLock:
+                            case PBEAbility.CloudNine:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.Weather: message = "{0}'s {2} causes the effects of weather to disappear!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
                             case PBEAbility.CuteCharm:
                             case PBEAbility.EffectSpore:
                             case PBEAbility.FlameBody:

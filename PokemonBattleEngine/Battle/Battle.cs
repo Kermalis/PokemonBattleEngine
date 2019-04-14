@@ -395,17 +395,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                         }
                 }
-                if (Weather == PBEWeather.HarshSunlight && pkmn.Ability == PBEAbility.Chlorophyll)
+                if (ShouldDoWeatherEffects())
                 {
-                    speed *= 2.0;
-                }
-                if (Weather == PBEWeather.Rain && pkmn.Ability == PBEAbility.SwiftSwim)
-                {
-                    speed *= 2.0;
-                }
-                if (Weather == PBEWeather.Sandstorm && pkmn.Ability == PBEAbility.SandRush)
-                {
-                    speed *= 2.0;
+                    if (Weather == PBEWeather.HarshSunlight && pkmn.Ability == PBEAbility.Chlorophyll)
+                    {
+                        speed *= 2.0;
+                    }
+                    if (Weather == PBEWeather.Rain && pkmn.Ability == PBEAbility.SwiftSwim)
+                    {
+                        speed *= 2.0;
+                    }
+                    if (Weather == PBEWeather.Sandstorm && pkmn.Ability == PBEAbility.SandRush)
+                    {
+                        speed *= 2.0;
+                    }
                 }
 
                 if (pkmn.Ability == PBEAbility.QuickFeet)
@@ -522,17 +525,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
 
-            // Verified: Weather stops before doing damage
-            if (WeatherCounter > 0)
-            {
-                WeatherCounter--;
-                if (WeatherCounter == 0)
-                {
-                    PBEWeather w = Weather;
-                    Weather = PBEWeather.None;
-                    BroadcastWeather(w, PBEWeatherAction.Ended);
-                }
-            }
             // Verified: Effects before Reflect/LightScreen/LuckyChant
             DoTurnEndedEffects();
 
