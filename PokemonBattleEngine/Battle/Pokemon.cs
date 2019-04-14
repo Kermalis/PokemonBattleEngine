@@ -815,7 +815,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             for (int i = ExecutedMoves.Count - 1; i >= 0; i--)
             {
                 PBEExecutedMove ex = ExecutedMoves[i];
-                if ((ex.Move == PBEMove.Detect || ex.Move == PBEMove.Protect || ex.Move == PBEMove.WideGuard) && ex.Targets[0].FailReason == PBEFailReason.None)
+                if ((ex.Move == PBEMove.Detect || ex.Move == PBEMove.Protect || ex.Move == PBEMove.WideGuard) && ex.FailReason == PBEFailReason.None && ex.Targets.All(t => t.FailReason == PBEFailReason.None))
                 {
                     chance /= 2;
                 }
