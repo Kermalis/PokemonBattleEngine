@@ -2034,14 +2034,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         Illuminate = 35,
         Illusion = 149,
-        Immunity = 17, // TODO
+        Immunity = 17,
         /// <summary>
         /// The Pokémon transforms into the foe across from it when switching in.
         /// </summary>
         Imposter = 150,
         Infiltrator = 151, // TODO
-        InnerFocus = 39, // TODO
-        Insomnia = 15, // TODO
+        InnerFocus = 39,
+        Insomnia = 15,
         Intimidate = 22, // TODO
         IronBarbs = 160,
         /// <summary>
@@ -2061,11 +2061,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// The Pokémon cannot be paralyzed.
         /// </summary>
-        Limber = 7, // TODO: Skill Swap calls LimberCure right away.
+        Limber = 7,
         LiquidOoze = 64,
         MagicBounce = 156, // TODO
         MagicGuard = 98, // TODO
-        MagmaArmor = 40, // TODO
+        MagmaArmor = 40,
         MagnetPull = 42, // TODO
         /// <summary>
         /// The Pokémon's defense is boosted when it is afflicted with a <see cref="PBEStatus1"/>.
@@ -2088,7 +2088,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </summary>
         NoGuard = 99,
         Normalize = 96,
-        Oblivious = 12, // TODO
+        Oblivious = 12,
         /// <summary>
         /// The Pokémon takes no damage from a hailstorm or sandstorm.
         /// </summary>
@@ -2097,7 +2097,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// When the Pokémon has low HP, its Grass-type moves get a power boost.
         /// </summary>
         Overgrow = 65,
-        OwnTempo = 20, // TODO
+        OwnTempo = 20,
         Pickpocket = 124, // TODO
         Pickup = 53, // TODO
         Plus = 57,
@@ -2225,10 +2225,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         Unburden = 84, // TODO
         Unnerve = 127, // TODO
         VictoryStar = 162,
-        VitalSpirit = 72, // TODO
+        VitalSpirit = 72,
         VoltAbsorb = 10, // TODO
         WaterAbsorb = 11, // TODO
-        WaterVeil = 41, // TODO
+        WaterVeil = 41,
         WeakArmor = 133,
         WhiteSmoke = 73, // TODO
         /// <summary>

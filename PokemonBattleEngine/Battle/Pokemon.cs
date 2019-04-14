@@ -501,6 +501,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return Type1 == type || Type2 == type;
         }
+        public bool HasCancellingAbility()
+        {
+            return Ability == PBEAbility.MoldBreaker || Ability == PBEAbility.Teravolt || Ability == PBEAbility.Turboblaze;
+        }
         public PBEStat[] GetChangedStats()
         {
             var list = new List<PBEStat>(7);
@@ -723,17 +727,51 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>
         /// Returns True if the Pokémon can become <see cref="PBEStatus2.Infatuated"/> with <paramref name="other"/>.
         /// </summary>
-        // TODO: Make a different public version that uses KnownAbility? AIs should not be able to cheat
+        // TODO: Make different public versions that use Known*? AIs should not be able to cheat
+        public bool CanBecomeBurnedBy(PBEPokemon other)
+        {
+            return Status1 == PBEStatus1.None
+                && !HasType(PBEType.Fire)
+                && !(Ability == PBEAbility.WaterVeil && !other.HasCancellingAbility());
+        }
+        public bool CanBecomeConfusedBy(PBEPokemon other)
+        {
+            return !Status2.HasFlag(PBEStatus2.Confused)
+                && !(Ability == PBEAbility.OwnTempo && !other.HasCancellingAbility());
+        }
+        public bool CanBecomeFrozenBy(PBEPokemon other)
+        {
+            return Status1 == PBEStatus1.None
+                && !HasType(PBEType.Ice)
+                && !(Ability == PBEAbility.MagmaArmor && !other.HasCancellingAbility());
+        }
         public bool CanBecomeInfatuatedWith(PBEPokemon other)
         {
-            if (Status2.HasFlag(PBEStatus2.Infatuated) || (Ability == PBEAbility.Oblivious && other.Ability != PBEAbility.MoldBreaker && other.Ability != PBEAbility.Teravolt && other.Ability != PBEAbility.Turboblaze))
-            {
-                return false;
-            }
-            else
-            {
-                return (Gender == PBEGender.Male && other.Gender == PBEGender.Female) || (Gender == PBEGender.Female && other.Gender == PBEGender.Male);
-            }
+            return !Status2.HasFlag(PBEStatus2.Infatuated)
+                && ((Gender == PBEGender.Male && other.Gender == PBEGender.Female) || (Gender == PBEGender.Female && other.Gender == PBEGender.Male))
+                && !(Ability == PBEAbility.Oblivious && !other.HasCancellingAbility());
+        }
+        public bool CanBecomeParalyzedBy(PBEPokemon other)
+        {
+            return Status1 == PBEStatus1.None
+                && !(Ability == PBEAbility.Limber && !other.HasCancellingAbility());
+        }
+        public bool CanBecomePoisonedBy(PBEPokemon other)
+        {
+            return Status1 == PBEStatus1.None
+                && !HasType(PBEType.Poison)
+                && !HasType(PBEType.Steel)
+                && !(Ability == PBEAbility.Immunity && !other.HasCancellingAbility());
+        }
+        public bool CanFallAsleepFrom(PBEPokemon other)
+        {
+            return Status1 == PBEStatus1.None
+                && !(Ability == PBEAbility.Insomnia && !other.HasCancellingAbility());
+        }
+        public bool CanFlinchFrom(PBEPokemon other)
+        {
+            return !Status2.HasFlag(PBEStatus2.Flinching)
+                && !(Ability == PBEAbility.InnerFocus && !other.HasCancellingAbility());
         }
         /// <summary>
         /// Returns an array of moves the Pokémon can use.

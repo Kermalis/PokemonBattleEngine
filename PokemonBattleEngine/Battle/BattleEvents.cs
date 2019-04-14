@@ -338,6 +338,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     }
                                     break;
                                 }
+                            case PBEAbility.Immunity:
+                            case PBEAbility.Insomnia:
+                            case PBEAbility.Limber:
+                            case PBEAbility.MagmaArmor:
+                            case PBEAbility.Oblivious:
+                            case PBEAbility.OwnTempo:
+                            case PBEAbility.VitalSpirit:
+                            case PBEAbility.WaterVeil:
+                                {
+                                    switch (ap.AbilityAction)
+                                    {
+                                        case PBEAbilityAction.ChangedStatus:
+                                        case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break;
+                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                                    }
+                                    break;
+                                }
                             case PBEAbility.IronBarbs:
                             case PBEAbility.Justified:
                             case PBEAbility.Levitate:
@@ -351,16 +368,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     switch (ap.AbilityAction)
                                     {
                                         case PBEAbilityAction.Damage: message = "{0}'s {2} activated!"; break;
-                                        default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
-                                    }
-                                    break;
-                                }
-                            case PBEAbility.Limber:
-                                {
-                                    switch (ap.AbilityAction)
-                                    {
-                                        case PBEAbilityAction.ChangedStatus:
-                                        case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                                     }
                                     break;
@@ -892,8 +899,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                     {
                                         case PBEStatusAction.Activated: message = "{0} is confused!"; break;
                                         case PBEStatusAction.Added: message = "{0} became confused!"; break;
-                                        case PBEStatusAction.Damage: message = "It hurt itself in its confusion!"; break;
+                                        case PBEStatusAction.Cured:
                                         case PBEStatusAction.Ended: message = "{0} snapped out of its confusion."; break;
+                                        case PBEStatusAction.Damage: message = "It hurt itself in its confusion!"; break;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
                                     break;
@@ -935,6 +943,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         case PBEStatusAction.Added: message = "{0} fell in love with {1}!"; break;
                                         case PBEStatusAction.Activated: message = "{0} is in love with {1}!"; break;
                                         case PBEStatusAction.CausedImmobility: message = "{0} is immobilized by love!"; break;
+                                        case PBEStatusAction.Cured: message = "{0} got over its infatuation."; break;
                                         case PBEStatusAction.Ended: return;
                                         default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                                     }
