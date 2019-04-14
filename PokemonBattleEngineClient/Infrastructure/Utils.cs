@@ -33,8 +33,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             uint speciesID = (uint)species & 0xFFFF;
             uint formeID = (uint)species >> 0x10;
             string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{(shiny ? "_S" : string.Empty)}";
-            bool spriteIsGenderNeutral = DoesResourceExist($"Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}.png");
-            string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "_F" : "_M";
+            string genderStr = gender == PBEGender.Female && DoesResourceExist($"Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}_F.png") ? "_F" : string.Empty;
             return UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}{genderStr}.png?assembly=PokemonBattleEngineClient"));
         }
         public static Uri GetPokemonSpriteUri(PBEPokemon pokemon, bool backSprite)
@@ -57,8 +56,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 uint speciesID = (uint)species & 0xFFFF;
                 uint formeID = (uint)species >> 0x10;
                 string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{orientation}{(shiny ? "_S" : string.Empty)}";
-                bool spriteIsGenderNeutral = DoesResourceExist($"Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}.gif");
-                string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "_F" : "_M";
+                string genderStr = gender == PBEGender.Female && DoesResourceExist($"Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}_F.gif") ? "_F" : string.Empty;
                 return new Uri($"resm:Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}{genderStr}.gif?assembly=PokemonBattleEngineClient");
             }
         }

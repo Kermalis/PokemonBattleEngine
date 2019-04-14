@@ -101,8 +101,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 uint speciesID = (uint)species & 0xFFFF;
                 uint formeID = (uint)species >> 0x10;
                 string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{orientation}{(shiny ? "_S" : string.Empty)}";
-                bool spriteIsGenderNeutral = URLExists($"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/PKMN_{sss}.gif");
-                string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "_F" : "_M";
+                string genderStr = gender == PBEGender.Female && URLExists($"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/PKMN_{sss}_F.gif") ? "_F" : string.Empty;
                 return $"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/PKMN_{sss}{genderStr}.gif";
             }
         }

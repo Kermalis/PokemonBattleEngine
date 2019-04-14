@@ -34,7 +34,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 # PokemonBattleEngineClient Uses:
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)
 * [AvaloniaGif](https://github.com/jmacato/AvaloniaGif)
-* [pokecheck.org ripped sprites](http://sprites.pokecheck.org)
+* [pokecheck.org sprites](http://sprites.pokecheck.org)
 
 # PokemonBattleEngineDiscord Uses:
 * [Discord.Net](https://github.com/RogueException/Discord.Net)

@@ -57,8 +57,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
                 uint speciesID = (uint)species & 0xFFFF;
                 uint formeID = (uint)species >> 0x10;
                 string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{orientation}{(shiny ? "_S" : string.Empty)}";
-                bool spriteIsGenderNeutral = DoesResourceExist($"Kermalis.PokemonBattleEngineMobile.PKMN.PKMN_{sss}.gif");
-                string genderStr = spriteIsGenderNeutral ? string.Empty : gender == PBEGender.Female ? "_F" : "_M";
+                string genderStr = gender == PBEGender.Female && DoesResourceExist($"Kermalis.PokemonBattleEngineMobile.PKMN.PKMN_{sss}_F.gif") ? "_F" : string.Empty;
                 resource = $"Kermalis.PokemonBattleEngineMobile.PKMN.PKMN_{sss}{genderStr}.gif";
             }
             GetGifResourceWidthAndHeight(resource, out width, out height);
