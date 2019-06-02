@@ -71,37 +71,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (action.Decision)
                 {
                     case PBEDecision.Fight:
+                    {
+                        if (Array.IndexOf(pkmn.GetUsableMoves(), action.FightMove) == -1
+                            || (action.FightMove == pkmn.TempLockedMove && action.FightTargets != pkmn.TempLockedTargets)
+                            || !AreTargetsValid(pkmn, action.FightMove, action.FightTargets)
+                            )
                         {
-                            if (Array.IndexOf(pkmn.GetUsableMoves(), action.FightMove) == -1
-                                || (action.FightMove == pkmn.TempLockedMove && action.FightTargets != pkmn.TempLockedTargets)
-                                || !AreTargetsValid(pkmn, action.FightMove, action.FightTargets)
-                                )
-                            {
-                                return false;
-                            }
-                            break;
+                            return false;
                         }
+                        break;
+                    }
                     case PBEDecision.SwitchOut:
+                    {
+                        if (!pkmn.CanSwitchOut())
                         {
-                            if (!pkmn.CanSwitchOut())
-                            {
-                                return false;
-                            }
-                            PBEPokemon switchPkmn = team.TryGetPokemon(action.SwitchPokemonId);
-                            if (switchPkmn == null
-                                || switchPkmn.HP == 0
-                                || switchPkmn.FieldPosition != PBEFieldPosition.None // Also takes care of trying to switch into yourself
-                                || standBy.Contains(switchPkmn)
-                                )
-                            {
-                                return false;
-                            }
-                            else
-                            {
-                                standBy.Add(switchPkmn);
-                            }
-                            break;
+                            return false;
                         }
+                        PBEPokemon switchPkmn = team.TryGetPokemon(action.SwitchPokemonId);
+                        if (switchPkmn == null
+                            || switchPkmn.HP == 0
+                            || switchPkmn.FieldPosition != PBEFieldPosition.None // Also takes care of trying to switch into yourself
+                            || standBy.Contains(switchPkmn)
+                            )
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            standBy.Add(switchPkmn);
+                        }
+                        break;
+                    }
                 }
             }
             return true;
@@ -129,82 +129,82 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (pkmn.SelectedAction.Decision)
                     {
                         case PBEDecision.Fight:
+                        {
+                            switch (pkmn.GetMoveTargets(pkmn.SelectedAction.FightMove))
                             {
-                                switch (pkmn.GetMoveTargets(pkmn.SelectedAction.FightMove))
+                                case PBEMoveTarget.RandomFoeSurrounding:
                                 {
-                                    case PBEMoveTarget.RandomFoeSurrounding:
+                                    switch (team.Battle.BattleFormat)
+                                    {
+                                        case PBEBattleFormat.Single:
+                                        case PBEBattleFormat.Rotation:
                                         {
-                                            switch (team.Battle.BattleFormat)
+                                            pkmn.SelectedAction.FightTargets = PBETarget.FoeCenter;
+                                            break;
+                                        }
+                                        case PBEBattleFormat.Double:
+                                        {
+                                            pkmn.SelectedAction.FightTargets = PBEUtils.RNG.NextBoolean() ? PBETarget.FoeLeft : PBETarget.FoeRight;
+                                            break;
+                                        }
+                                        case PBEBattleFormat.Triple:
+                                        {
+                                            if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                             {
-                                                case PBEBattleFormat.Single:
-                                                case PBEBattleFormat.Rotation:
+                                                pkmn.SelectedAction.FightTargets = PBEUtils.RNG.NextBoolean() ? PBETarget.FoeCenter : PBETarget.FoeRight;
+                                            }
+                                            else if (pkmn.FieldPosition == PBEFieldPosition.Center)
+                                            {
+                                                PBETeam opposingTeam = team == team.Battle.Teams[0] ? team.Battle.Teams[1] : team.Battle.Teams[0];
+                                                int r; // Keep randomly picking until a non-fainted foe is selected
+                                            roll:
+                                                r = PBEUtils.RNG.Next(3);
+                                                if (r == 0)
+                                                {
+                                                    if (opposingTeam.TryGetPokemon(PBEFieldPosition.Left) != null)
+                                                    {
+                                                        pkmn.SelectedAction.FightTargets = PBETarget.FoeLeft;
+                                                    }
+                                                    else
+                                                    {
+                                                        goto roll;
+                                                    }
+                                                }
+                                                else if (r == 1)
+                                                {
+                                                    if (opposingTeam.TryGetPokemon(PBEFieldPosition.Center) != null)
                                                     {
                                                         pkmn.SelectedAction.FightTargets = PBETarget.FoeCenter;
-                                                        break;
                                                     }
-                                                case PBEBattleFormat.Double:
+                                                    else
                                                     {
-                                                        pkmn.SelectedAction.FightTargets = PBEUtils.RNG.NextBoolean() ? PBETarget.FoeLeft : PBETarget.FoeRight;
-                                                        break;
+                                                        goto roll;
                                                     }
-                                                case PBEBattleFormat.Triple:
+                                                }
+                                                else
+                                                {
+                                                    if (opposingTeam.TryGetPokemon(PBEFieldPosition.Right) != null)
                                                     {
-                                                        if (pkmn.FieldPosition == PBEFieldPosition.Left)
-                                                        {
-                                                            pkmn.SelectedAction.FightTargets = PBEUtils.RNG.NextBoolean() ? PBETarget.FoeCenter : PBETarget.FoeRight;
-                                                        }
-                                                        else if (pkmn.FieldPosition == PBEFieldPosition.Center)
-                                                        {
-                                                            PBETeam opposingTeam = team == team.Battle.Teams[0] ? team.Battle.Teams[1] : team.Battle.Teams[0];
-                                                            int r; // Keep randomly picking until a non-fainted foe is selected
-                                                        roll:
-                                                            r = PBEUtils.RNG.Next(3);
-                                                            if (r == 0)
-                                                            {
-                                                                if (opposingTeam.TryGetPokemon(PBEFieldPosition.Left) != null)
-                                                                {
-                                                                    pkmn.SelectedAction.FightTargets = PBETarget.FoeLeft;
-                                                                }
-                                                                else
-                                                                {
-                                                                    goto roll;
-                                                                }
-                                                            }
-                                                            else if (r == 1)
-                                                            {
-                                                                if (opposingTeam.TryGetPokemon(PBEFieldPosition.Center) != null)
-                                                                {
-                                                                    pkmn.SelectedAction.FightTargets = PBETarget.FoeCenter;
-                                                                }
-                                                                else
-                                                                {
-                                                                    goto roll;
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                if (opposingTeam.TryGetPokemon(PBEFieldPosition.Right) != null)
-                                                                {
-                                                                    pkmn.SelectedAction.FightTargets = PBETarget.FoeRight;
-                                                                }
-                                                                else
-                                                                {
-                                                                    goto roll;
-                                                                }
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            pkmn.SelectedAction.FightTargets = PBEUtils.RNG.NextBoolean() ? PBETarget.FoeLeft : PBETarget.FoeCenter;
-                                                        }
-                                                        break;
+                                                        pkmn.SelectedAction.FightTargets = PBETarget.FoeRight;
                                                     }
+                                                    else
+                                                    {
+                                                        goto roll;
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                pkmn.SelectedAction.FightTargets = PBEUtils.RNG.NextBoolean() ? PBETarget.FoeLeft : PBETarget.FoeCenter;
                                             }
                                             break;
                                         }
+                                    }
+                                    break;
                                 }
-                                break;
                             }
+                            break;
+                        }
                     }
                 }
                 if (Array.TrueForAll(team.Battle.Teams, t => t.ActionsRequired.Count == 0))

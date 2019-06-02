@@ -4,7 +4,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
 {
     public class Canvas : Layout<View>
     {
-        const double autoSize = -1.0;
+        private const double autoSize = -1.0;
 
         public static readonly BindableProperty IntendedWidthProperty = BindableProperty.Create("IntendedWidth", typeof(double), typeof(Canvas), autoSize, propertyChanged: OnIntendedWidthPropertyChanged);
         public static readonly BindableProperty IntendedHeightProperty = BindableProperty.Create("IntendedHeight", typeof(double), typeof(Canvas), autoSize, propertyChanged: OnIntendedHeightPropertyChanged);
@@ -14,20 +14,20 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
 
         public double IntendedWidth
         {
-            get { return (double)GetValue(IntendedWidthProperty); }
-            set { SetValue(IntendedWidthProperty, value); }
+            get => (double)GetValue(IntendedWidthProperty);
+            set => SetValue(IntendedWidthProperty, value);
         }
         public double IntendedHeight
         {
-            get { return (double)GetValue(IntendedHeightProperty); }
-            set { SetValue(IntendedHeightProperty, value); }
+            get => (double)GetValue(IntendedHeightProperty);
+            set => SetValue(IntendedHeightProperty, value);
         }
 
-        static void OnIntendedWidthPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+        private static void OnIntendedWidthPropertyChanged(BindableObject bindable, object oldValue, object newValue)
         {
             ((Canvas)bindable)?.InvalidateMeasure();
         }
-        static void OnIntendedHeightPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+        private static void OnIntendedHeightPropertyChanged(BindableObject bindable, object oldValue, object newValue)
         {
             ((Canvas)bindable)?.InvalidateMeasure();
         }
@@ -63,7 +63,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
             base.OnChildRemoved(child);
             Children.Remove((View)child);
         }
-        void ChildOnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ChildOnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == LocationProperty.PropertyName || e.PropertyName == SizeProperty.PropertyName)
             {
@@ -96,7 +96,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
             }
         }
 
-        Rectangle ComputeLayoutForRegion(View view)
+        private Rectangle ComputeLayoutForRegion(View view)
         {
             double xScale = Width / (IntendedWidth == autoSize ? Width : IntendedWidth),
                 yScale = Height / (IntendedHeight == autoSize ? Height : IntendedHeight);

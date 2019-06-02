@@ -8,9 +8,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        bool calledFromOtherMove = false;
+        private bool calledFromOtherMove = false;
 
-        void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers)
+        private void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers)
         {
             IEnumerable<PBEPokemon> order = GetActingOrder(battlers, true);
 
@@ -65,70 +65,70 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     case PBEAbility.AirLock:
                     case PBEAbility.CloudNine:
-                        {
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                            CastformCherrimCheckAll();
-                            break;
-                        }
+                    {
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                        CastformCherrimCheckAll();
+                        break;
+                    }
                     case PBEAbility.Drizzle:
+                    {
+                        if (Weather != PBEWeather.Rain || WeatherCounter != 0)
                         {
-                            if (Weather != PBEWeather.Rain || WeatherCounter != 0)
-                            {
-                                Weather = PBEWeather.Rain;
-                                WeatherCounter = 0;
-                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                                BroadcastWeather(PBEWeather.Rain, PBEWeatherAction.Added);
-                            }
-                            break;
+                            Weather = PBEWeather.Rain;
+                            WeatherCounter = 0;
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                            BroadcastWeather(PBEWeather.Rain, PBEWeatherAction.Added);
                         }
+                        break;
+                    }
                     case PBEAbility.Drought:
+                    {
+                        if (Weather != PBEWeather.HarshSunlight || WeatherCounter != 0)
                         {
-                            if (Weather != PBEWeather.HarshSunlight || WeatherCounter != 0)
-                            {
-                                Weather = PBEWeather.HarshSunlight;
-                                WeatherCounter = 0;
-                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                                BroadcastWeather(PBEWeather.HarshSunlight, PBEWeatherAction.Added);
-                            }
-                            break;
+                            Weather = PBEWeather.HarshSunlight;
+                            WeatherCounter = 0;
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                            BroadcastWeather(PBEWeather.HarshSunlight, PBEWeatherAction.Added);
                         }
+                        break;
+                    }
                     case PBEAbility.Imposter:
+                    {
+                        PBEFieldPosition targetPos = GetPositionAcross(BattleFormat, pkmn.FieldPosition);
+                        PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
+                        PBEPokemon target = opposingTeam.TryGetPokemon(targetPos);
+                        if (target != null
+                            && !target.Status2.HasFlag(PBEStatus2.Disguised)
+                            && !target.Status2.HasFlag(PBEStatus2.Substitute)
+                            && !target.Status2.HasFlag(PBEStatus2.Transformed))
                         {
-                            PBEFieldPosition targetPos = GetPositionAcross(BattleFormat, pkmn.FieldPosition);
-                            PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
-                            PBEPokemon target = opposingTeam.TryGetPokemon(targetPos);
-                            if (target != null
-                                && !target.Status2.HasFlag(PBEStatus2.Disguised)
-                                && !target.Status2.HasFlag(PBEStatus2.Substitute)
-                                && !target.Status2.HasFlag(PBEStatus2.Transformed))
-                            {
-                                BroadcastAbility(pkmn, target, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
-                                ApplyStatus2IfPossible(pkmn, target, PBEStatus2.Transformed, false);
-                            }
-                            break;
+                            BroadcastAbility(pkmn, target, pkmn.Ability, PBEAbilityAction.ChangedAppearance);
+                            ApplyStatus2IfPossible(pkmn, target, PBEStatus2.Transformed, false);
                         }
+                        break;
+                    }
                     case PBEAbility.SandStream:
+                    {
+                        if (Weather != PBEWeather.Sandstorm || WeatherCounter != 0)
                         {
-                            if (Weather != PBEWeather.Sandstorm || WeatherCounter != 0)
-                            {
-                                Weather = PBEWeather.Sandstorm;
-                                WeatherCounter = 0;
-                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                                BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.Added);
-                            }
-                            break;
+                            Weather = PBEWeather.Sandstorm;
+                            WeatherCounter = 0;
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                            BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.Added);
                         }
+                        break;
+                    }
                     case PBEAbility.SnowWarning:
+                    {
+                        if (Weather != PBEWeather.Hailstorm || WeatherCounter != 0)
                         {
-                            if (Weather != PBEWeather.Hailstorm || WeatherCounter != 0)
-                            {
-                                Weather = PBEWeather.Hailstorm;
-                                WeatherCounter = 0;
-                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
-                                BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.Added);
-                            }
-                            break;
+                            Weather = PBEWeather.Hailstorm;
+                            WeatherCounter = 0;
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
+                            BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.Added);
                         }
+                        break;
+                    }
                 }
             }
         }
@@ -139,7 +139,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="victim">The Pokémon who was affected by <paramref name="move"/>.</param>
         /// <param name="move">The move <paramref name="user"/> used.</param>
         /// <param name="moveType">The type that the move was.</param>
-        void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move, PBEType moveType)
+        private void DoPostHitEffects(PBEPokemon user, PBEPokemon victim, PBEMove move, PBEType moveType)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
 
@@ -295,7 +295,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="user">The Pokémon who used the attack.</param>
         /// <param name="ignoreLifeOrb">Whether <see cref="PBEItem.LifeOrb"/> should damage the user or not.</param>
         /// <param name="recoilDamage">The amount of recoil damage <paramref name="user"/> will take.</param>
-        void DoPostAttackedEffects(PBEPokemon user, bool ignoreLifeOrb, ushort recoilDamage = 0)
+        private void DoPostAttackedEffects(PBEPokemon user, bool ignoreLifeOrb, ushort recoilDamage = 0)
         {
             // TODO: Color Change
 
@@ -316,7 +316,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 FaintCheck(user);
             }
         }
-        void DoTurnEndedEffects()
+        private void DoTurnEndedEffects()
         {
             IEnumerable<PBEPokemon> order = GetActingOrder(ActiveBattlers, true);
 
@@ -346,71 +346,71 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         switch (Weather)
                         {
                             case PBEWeather.Hailstorm:
+                            {
+                                if (pkmn.Ability == PBEAbility.IceBody)
                                 {
-                                    if (pkmn.Ability == PBEAbility.IceBody)
-                                    {
-                                        if (pkmn.HP < pkmn.MaxHP)
-                                        {
-                                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
-                                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.IceBodyHealDenominator));
-                                        }
-                                    }
-                                    else if (!pkmn.HasType(PBEType.Ice)
-                                        && pkmn.Ability != PBEAbility.Overcoat
-                                        && pkmn.Ability != PBEAbility.SnowCloak)
-                                    {
-                                        BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), true);
-                                        if (!FaintCheck(pkmn))
-                                        {
-                                            HealingBerryCheck(pkmn);
-                                        }
-                                    }
-                                    break;
-                                }
-                            case PBEWeather.HarshSunlight:
-                                {
-                                    if (pkmn.Ability == PBEAbility.SolarPower)
-                                    {
-                                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Damage);
-                                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / 8), true);
-                                        if (!FaintCheck(pkmn))
-                                        {
-                                            HealingBerryCheck(pkmn);
-                                        }
-                                    }
-                                    break;
-                                }
-                            case PBEWeather.Rain:
-                                {
-                                    if (pkmn.Ability == PBEAbility.RainDish && pkmn.HP < pkmn.MaxHP)
+                                    if (pkmn.HP < pkmn.MaxHP)
                                     {
                                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
-                                        HealDamage(pkmn, (ushort)(pkmn.MaxHP / 16));
+                                        HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.IceBodyHealDenominator));
                                     }
-                                    break;
                                 }
-                            case PBEWeather.Sandstorm:
+                                else if (!pkmn.HasType(PBEType.Ice)
+                                    && pkmn.Ability != PBEAbility.Overcoat
+                                    && pkmn.Ability != PBEAbility.SnowCloak)
                                 {
-                                    if (!pkmn.HasType(PBEType.Rock)
-                                        && !pkmn.HasType(PBEType.Ground)
-                                        && !pkmn.HasType(PBEType.Steel)
-                                        && pkmn.Ability != PBEAbility.Overcoat
-                                        && pkmn.Ability != PBEAbility.SandForce
-                                        && pkmn.Ability != PBEAbility.SandRush
-                                        && pkmn.Ability != PBEAbility.SandVeil
-                                        && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
-                                        && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
+                                    BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.CausedDamage, pkmn);
+                                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.HailDamageDenominator), true);
+                                    if (!FaintCheck(pkmn))
                                     {
-                                        BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
-                                        DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.SandstormDamageDenominator), true);
-                                        if (!FaintCheck(pkmn))
-                                        {
-                                            HealingBerryCheck(pkmn);
-                                        }
+                                        HealingBerryCheck(pkmn);
                                     }
-                                    break;
                                 }
+                                break;
+                            }
+                            case PBEWeather.HarshSunlight:
+                            {
+                                if (pkmn.Ability == PBEAbility.SolarPower)
+                                {
+                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Damage);
+                                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / 8), true);
+                                    if (!FaintCheck(pkmn))
+                                    {
+                                        HealingBerryCheck(pkmn);
+                                    }
+                                }
+                                break;
+                            }
+                            case PBEWeather.Rain:
+                            {
+                                if (pkmn.Ability == PBEAbility.RainDish && pkmn.HP < pkmn.MaxHP)
+                                {
+                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.RestoredHP);
+                                    HealDamage(pkmn, (ushort)(pkmn.MaxHP / 16));
+                                }
+                                break;
+                            }
+                            case PBEWeather.Sandstorm:
+                            {
+                                if (!pkmn.HasType(PBEType.Rock)
+                                    && !pkmn.HasType(PBEType.Ground)
+                                    && !pkmn.HasType(PBEType.Steel)
+                                    && pkmn.Ability != PBEAbility.Overcoat
+                                    && pkmn.Ability != PBEAbility.SandForce
+                                    && pkmn.Ability != PBEAbility.SandRush
+                                    && pkmn.Ability != PBEAbility.SandVeil
+                                    && !pkmn.Status2.HasFlag(PBEStatus2.Underground)
+                                    && !pkmn.Status2.HasFlag(PBEStatus2.Underwater))
+                                {
+                                    BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.CausedDamage, pkmn);
+                                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.SandstormDamageDenominator), true);
+                                    if (!FaintCheck(pkmn))
+                                    {
+                                        HealingBerryCheck(pkmn);
+                                    }
+                                }
+                                break;
+                            }
                         }
                     }
                 }
@@ -424,60 +424,60 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (pkmn.Ability)
                     {
                         case PBEAbility.Healer:
+                        {
+                            foreach (PBEPokemon ally in GetRuntimeSurrounding(pkmn, true, false))
                             {
-                                foreach (PBEPokemon ally in GetRuntimeSurrounding(pkmn, true, false))
+                                if (ally.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
                                 {
-                                    if (ally.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
-                                    {
-                                        BroadcastAbility(pkmn, ally, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                                        PBEStatus1 status1 = ally.Status1;
-                                        ally.Status1 = PBEStatus1.None;
-                                        BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cured);
-                                    }
+                                    BroadcastAbility(pkmn, ally, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                                    PBEStatus1 status1 = ally.Status1;
+                                    ally.Status1 = PBEStatus1.None;
+                                    BroadcastStatus1(ally, pkmn, status1, PBEStatusAction.Cured);
                                 }
-                                break;
                             }
+                            break;
+                        }
                         case PBEAbility.ShedSkin:
+                        {
+                            if (pkmn.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
                             {
-                                if (pkmn.Status1 != PBEStatus1.None && PBEUtils.RNG.ApplyChance(30, 100))
-                                {
-                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                                    PBEStatus1 status1 = pkmn.Status1;
-                                    pkmn.Status1 = PBEStatus1.None;
-                                    BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cured);
-                                }
-                                break;
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                                PBEStatus1 status1 = pkmn.Status1;
+                                pkmn.Status1 = PBEStatus1.None;
+                                BroadcastStatus1(pkmn, pkmn, status1, PBEStatusAction.Cured);
                             }
+                            break;
+                        }
                     }
                     switch (pkmn.Item)
                     {
                         case PBEItem.BlackSludge:
-                            {
-                                if (pkmn.HasType(PBEType.Poison))
-                                {
-                                    if (pkmn.HP < pkmn.MaxHP)
-                                    {
-                                        BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
-                                        HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator));
-                                    }
-                                }
-                                else
-                                {
-                                    BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Damage);
-                                    DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), true);
-                                    FaintCheck(pkmn); // No need to call HealingBerryCheck() because if you are holding BlackSludge you are not holding a healing berry
-                                }
-                                break;
-                            }
-                        case PBEItem.Leftovers:
+                        {
+                            if (pkmn.HasType(PBEType.Poison))
                             {
                                 if (pkmn.HP < pkmn.MaxHP)
                                 {
                                     BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
-                                    HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator));
+                                    HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeHealDenominator));
                                 }
-                                break;
                             }
+                            else
+                            {
+                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.Damage);
+                                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.BlackSludgeDamageDenominator), true);
+                                FaintCheck(pkmn); // No need to call HealingBerryCheck() because if you are holding BlackSludge you are not holding a healing berry
+                            }
+                            break;
+                        }
+                        case PBEItem.Leftovers:
+                        {
+                            if (pkmn.HP < pkmn.MaxHP)
+                            {
+                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.RestoredHP);
+                                HealDamage(pkmn, (ushort)(pkmn.MaxHP / Settings.LeftoversHealDenominator));
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -509,41 +509,41 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (pkmn.Status1)
                     {
                         case PBEStatus1.Burned:
+                        {
+                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Damage);
+                            int damage = pkmn.MaxHP / Settings.BurnDamageDenominator;
+                            if (pkmn.Ability == PBEAbility.Heatproof)
                             {
-                                BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Damage);
-                                int damage = pkmn.MaxHP / Settings.BurnDamageDenominator;
-                                if (pkmn.Ability == PBEAbility.Heatproof)
-                                {
-                                    damage /= 2;
-                                }
-                                DealDamage(pkmn, pkmn, (ushort)damage, true);
-                                if (!FaintCheck(pkmn))
-                                {
-                                    HealingBerryCheck(pkmn);
-                                }
-                                break;
+                                damage /= 2;
                             }
+                            DealDamage(pkmn, pkmn, (ushort)damage, true);
+                            if (!FaintCheck(pkmn))
+                            {
+                                HealingBerryCheck(pkmn);
+                            }
+                            break;
+                        }
                         case PBEStatus1.Poisoned:
+                        {
+                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.Poisoned, PBEStatusAction.Damage);
+                            DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.PoisonDamageDenominator), true);
+                            if (!FaintCheck(pkmn))
                             {
-                                BroadcastStatus1(pkmn, pkmn, PBEStatus1.Poisoned, PBEStatusAction.Damage);
-                                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / Settings.PoisonDamageDenominator), true);
-                                if (!FaintCheck(pkmn))
-                                {
-                                    HealingBerryCheck(pkmn);
-                                }
-                                break;
+                                HealingBerryCheck(pkmn);
                             }
+                            break;
+                        }
                         case PBEStatus1.BadlyPoisoned:
+                        {
+                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Damage);
+                            DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator), true);
+                            if (!FaintCheck(pkmn))
                             {
-                                BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Damage);
-                                DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * pkmn.Status1Counter / Settings.ToxicDamageDenominator), true);
-                                if (!FaintCheck(pkmn))
-                                {
-                                    pkmn.Status1Counter++;
-                                    HealingBerryCheck(pkmn);
-                                }
-                                break;
+                                pkmn.Status1Counter++;
+                                HealingBerryCheck(pkmn);
                             }
+                            break;
+                        }
                     }
                 }
             }
@@ -570,39 +570,39 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (pkmn.Ability)
                     {
                         case PBEAbility.Moody:
+                        {
+                            IEnumerable<PBEStat> allStats = Enum.GetValues(typeof(PBEStat)).Cast<PBEStat>().Except(new[] { PBEStat.HP });
+                            IEnumerable<PBEStat> statsThatCanGoUp = allStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange);
+                            PBEStat? upStat = statsThatCanGoUp.Count() == 0 ? (PBEStat?)null : statsThatCanGoUp.Sample();
+                            var statsThatCanGoDown = allStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
+                            if (upStat.HasValue)
                             {
-                                IEnumerable<PBEStat> allStats = Enum.GetValues(typeof(PBEStat)).Cast<PBEStat>().Except(new[] { PBEStat.HP });
-                                IEnumerable<PBEStat> statsThatCanGoUp = allStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange);
-                                PBEStat? upStat = statsThatCanGoUp.Count() == 0 ? (PBEStat?)null : statsThatCanGoUp.Sample();
-                                var statsThatCanGoDown = allStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
+                                statsThatCanGoDown.Remove(upStat.Value);
+                            }
+                            PBEStat? downStat = statsThatCanGoDown.Count() == 0 ? (PBEStat?)null : statsThatCanGoDown.Sample();
+                            if (upStat.HasValue || downStat.HasValue)
+                            {
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
                                 if (upStat.HasValue)
                                 {
-                                    statsThatCanGoDown.Remove(upStat.Value);
+                                    ApplyStatChange(pkmn, upStat.Value, +2);
                                 }
-                                PBEStat? downStat = statsThatCanGoDown.Count() == 0 ? (PBEStat?)null : statsThatCanGoDown.Sample();
-                                if (upStat.HasValue || downStat.HasValue)
+                                if (downStat.HasValue)
                                 {
-                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
-                                    if (upStat.HasValue)
-                                    {
-                                        ApplyStatChange(pkmn, upStat.Value, +2);
-                                    }
-                                    if (downStat.HasValue)
-                                    {
-                                        ApplyStatChange(pkmn, downStat.Value, -1);
-                                    }
+                                    ApplyStatChange(pkmn, downStat.Value, -1);
                                 }
-                                break;
                             }
+                            break;
+                        }
                         case PBEAbility.SpeedBoost:
+                        {
+                            if (pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
                             {
-                                if (pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
-                                {
-                                    BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
-                                    ApplyStatChange(pkmn, PBEStat.Speed, +1);
-                                }
-                                break;
+                                BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
+                                ApplyStatChange(pkmn, PBEStat.Speed, +1);
                             }
+                            break;
+                        }
                     }
                 }
             }
@@ -616,25 +616,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (pkmn.Item)
                     {
                         case PBEItem.FlameOrb:
+                        {
+                            if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Fire))
                             {
-                                if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Fire))
-                                {
-                                    pkmn.Status1 = PBEStatus1.Burned;
-                                    BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
-                                    BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Added);
-                                }
-                                break;
+                                pkmn.Status1 = PBEStatus1.Burned;
+                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
+                                BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Added);
                             }
+                            break;
+                        }
                         case PBEItem.ToxicOrb:
+                        {
+                            if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel))
                             {
-                                if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel))
-                                {
-                                    pkmn.Status1 = PBEStatus1.BadlyPoisoned;
-                                    BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
-                                    BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Added);
-                                }
-                                break;
+                                pkmn.Status1 = PBEStatus1.BadlyPoisoned;
+                                BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
+                                BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Added);
                             }
+                            break;
+                        }
                     }
                 }
             }
@@ -646,7 +646,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return !ActiveBattlers.Any(p => p.Ability == PBEAbility.AirLock || p.Ability == PBEAbility.CloudNine);
         }
 
-        void UseMove(PBEPokemon user, PBEMove move, PBETarget requestedTargets)
+        private void UseMove(PBEPokemon user, PBEMove move, PBETarget requestedTargets)
         {
             if (!calledFromOtherMove && PreMoveStatusCheck(user, move))
             {
@@ -683,541 +683,541 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (mData.Effect)
                 {
                     case PBEMoveEffect.Attract:
-                        {
-                            Ef_TryForceStatus2(user, targets, move, PBEStatus2.Infatuated);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.Infatuated);
+                        break;
+                    }
                     case PBEMoveEffect.BrickBreak:
-                        {
-                            Ef_BrickBreak(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_BrickBreak(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Burn:
-                        {
-                            Ef_TryForceStatus1(user, targets, move, PBEStatus1.Burned);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus1(user, targets, move, PBEStatus1.Burned);
+                        break;
+                    }
                     case PBEMoveEffect.ChangeTarget_ACC:
-                        {
-                            Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Accuracy }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Accuracy }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeTarget_ATK:
-                        {
-                            Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeTarget_DEF:
-                        {
-                            Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Defense }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Defense }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeTarget_EVA:
-                        {
-                            Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Evasion }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Evasion }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeTarget_SPDEF:
-                        {
-                            Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeTarget_SPE:
-                        {
-                            Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeUser_ATK:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeUser_DEF:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeUser_EVA:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Evasion }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Evasion }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeUser_SPATK:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeUser_SPDEF:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.ChangeUser_SPE:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Speed }, new short[] { (short)mData.EffectParam });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Speed }, new short[] { (short)mData.EffectParam });
+                        break;
+                    }
                     case PBEMoveEffect.Confuse:
-                        {
-                            Ef_TryForceStatus2(user, targets, move, PBEStatus2.Confused);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.Confused);
+                        break;
+                    }
                     case PBEMoveEffect.Curse:
-                        {
-                            Ef_Curse(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_Curse(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Dig:
-                        {
-                            Ef_Dig(user, targets, move, requestedTargets);
-                            break;
-                        }
+                    {
+                        Ef_Dig(user, targets, move, requestedTargets);
+                        break;
+                    }
                     case PBEMoveEffect.Dive:
-                        {
-                            Ef_Dive(user, targets, move, requestedTargets);
-                            break;
-                        }
+                    {
+                        Ef_Dive(user, targets, move, requestedTargets);
+                        break;
+                    }
                     case PBEMoveEffect.Endeavor:
-                        {
-                            Ef_Endeavor(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_Endeavor(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Fail:
-                        {
-                            Ef_Fail(user, move);
-                            break;
-                        }
+                    {
+                        Ef_Fail(user, move);
+                        break;
+                    }
                     case PBEMoveEffect.FinalGambit:
-                        {
-                            Ef_FinalGambit(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_FinalGambit(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.FlareBlitz:
-                        {
-                            Ef_Recoil3__MaybeInflictStatus1With10PercentChance(user, targets, move, PBEStatus1.Burned);
-                            break;
-                        }
+                    {
+                        Ef_Recoil3__MaybeInflictStatus1With10PercentChance(user, targets, move, PBEStatus1.Burned);
+                        break;
+                    }
                     case PBEMoveEffect.Flatter:
-                        {
-                            Ef_Flatter(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_Flatter(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Fly:
-                        {
-                            Ef_Fly(user, targets, move, requestedTargets);
-                            break;
-                        }
+                    {
+                        Ef_Fly(user, targets, move, requestedTargets);
+                        break;
+                    }
                     case PBEMoveEffect.FocusEnergy:
-                        {
-                            Ef_TryForceStatus2(user, targets, move, PBEStatus2.Pumped);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.Pumped);
+                        break;
+                    }
                     case PBEMoveEffect.GastroAcid:
-                        {
-                            Ef_GastroAcid(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_GastroAcid(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Growth:
-                        {
-                            Ef_Growth(user, move);
-                            break;
-                        }
+                    {
+                        Ef_Growth(user, move);
+                        break;
+                    }
                     case PBEMoveEffect.Hail:
-                        {
-                            Ef_TryForceWeather(user, move, PBEWeather.Hailstorm);
-                            break;
-                        }
+                    {
+                        Ef_TryForceWeather(user, move, PBEWeather.Hailstorm);
+                        break;
+                    }
                     case PBEMoveEffect.HelpingHand:
-                        {
-                            Ef_HelpingHand(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_HelpingHand(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Hit:
-                        {
-                            Ef_Hit(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_Hit(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeBurn:
-                        {
-                            Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.Burned, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.Burned, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeConfuse:
-                        {
-                            Ef_Hit__MaybeInflictStatus2(user, targets, move, PBEStatus2.Confused, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeInflictStatus2(user, targets, move, PBEStatus2.Confused, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeFlinch:
-                        {
-                            Ef_Hit__MaybeInflictStatus2(user, targets, move, PBEStatus2.Flinching, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeInflictStatus2(user, targets, move, PBEStatus2.Flinching, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeFreeze:
-                        {
-                            Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.Frozen, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.Frozen, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1:
-                        {
-                            Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Accuracy }, new short[] { -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Accuracy }, new short[] { -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerTarget_ATK_By1:
-                        {
-                            Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack }, new short[] { -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack }, new short[] { -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1:
-                        {
-                            Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Defense }, new short[] { -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Defense }, new short[] { -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerTarget_SPATK_By1:
-                        {
-                            Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By1:
-                        {
-                            Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerTarget_SPDEF_By2:
-                        {
-                            Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { -2 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new short[] { -2 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1:
-                        {
-                            Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeParalyze:
-                        {
-                            Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.Paralyzed, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.Paralyzed, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybePoison:
-                        {
-                            Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.Poisoned, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.Poisoned, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerUser_ATK_DEF_By1:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new short[] { -1, -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new short[] { -1, -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerUser_DEF_SPDEF_By1:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense }, new short[] { -1, -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense }, new short[] { -1, -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerUser_SPATK_By2:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { -2 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { -2 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerUser_SPE_By1:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Speed, PBEStat.Defense, PBEStat.SpDefense }, new short[] { -1, -1, -1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Speed, PBEStat.Defense, PBEStat.SpDefense }, new short[] { -1, -1, -1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Attack }, new short[] { +1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Attack }, new short[] { +1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed }, new short[] { +1, +1, +1, +1, +1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed }, new short[] { +1, +1, +1, +1, +1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeRaiseUser_DEF_By1:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Defense }, new short[] { +1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Defense }, new short[] { +1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeRaiseUser_SPATK_By1:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { +1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new short[] { +1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeRaiseUser_SPE_By1:
-                        {
-                            Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { +1 }, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeChangeUserStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new short[] { +1 }, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Hit__MaybeToxic:
-                        {
-                            Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.BadlyPoisoned, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Hit__MaybeInflictStatus1(user, targets, move, PBEStatus1.BadlyPoisoned, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.HPDrain:
-                        {
-                            Ef_HPDrain(user, targets, move, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_HPDrain(user, targets, move, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.LeechSeed:
-                        {
-                            Ef_TryForceStatus2(user, targets, move, PBEStatus2.LeechSeed);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.LeechSeed);
+                        break;
+                    }
                     case PBEMoveEffect.LightScreen:
-                        {
-                            Ef_TryForceTeamStatus(user, move, PBETeamStatus.LightScreen);
-                            break;
-                        }
+                    {
+                        Ef_TryForceTeamStatus(user, move, PBETeamStatus.LightScreen);
+                        break;
+                    }
                     case PBEMoveEffect.LowerTarget_ATK_DEF_By1:
-                        {
-                            Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new short[] { -1, -1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new short[] { -1, -1 });
+                        break;
+                    }
                     case PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense, PBEStat.Attack, PBEStat.SpAttack, PBEStat.Speed }, new short[] { -1, -1, +2, +2, +2 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense, PBEStat.Attack, PBEStat.SpAttack, PBEStat.Speed }, new short[] { -1, -1, +2, +2, +2 });
+                        break;
+                    }
                     case PBEMoveEffect.LuckyChant:
-                        {
-                            Ef_TryForceTeamStatus(user, move, PBETeamStatus.LuckyChant);
-                            break;
-                        }
+                    {
+                        Ef_TryForceTeamStatus(user, move, PBETeamStatus.LuckyChant);
+                        break;
+                    }
                     case PBEMoveEffect.Metronome:
-                        {
-                            Ef_Metronome(user, move);
-                            break;
-                        }
+                    {
+                        Ef_Metronome(user, move);
+                        break;
+                    }
                     case PBEMoveEffect.Moonlight:
-                        {
-                            Ef_Moonlight(user, move);
-                            break;
-                        }
+                    {
+                        Ef_Moonlight(user, move);
+                        break;
+                    }
                     case PBEMoveEffect.OneHitKnockout:
-                        {
-                            Ef_OneHitKnockout(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_OneHitKnockout(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.PainSplit:
-                        {
-                            Ef_PainSplit(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_PainSplit(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Paralyze:
-                        {
-                            Ef_TryForceStatus1(user, targets, move, PBEStatus1.Paralyzed);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus1(user, targets, move, PBEStatus1.Paralyzed);
+                        break;
+                    }
                     case PBEMoveEffect.Poison:
-                        {
-                            Ef_TryForceStatus1(user, targets, move, PBEStatus1.Poisoned);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus1(user, targets, move, PBEStatus1.Poisoned);
+                        break;
+                    }
                     case PBEMoveEffect.Protect:
-                        {
-                            Ef_TryForceStatus2(user, targets, move, PBEStatus2.Protected);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.Protected);
+                        break;
+                    }
                     case PBEMoveEffect.PsychUp:
-                        {
-                            Ef_PsychUp(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_PsychUp(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Psywave:
-                        {
-                            Ef_Psywave(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_Psywave(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.RainDance:
-                        {
-                            Ef_TryForceWeather(user, move, PBEWeather.Rain);
-                            break;
-                        }
+                    {
+                        Ef_TryForceWeather(user, move, PBEWeather.Rain);
+                        break;
+                    }
                     case PBEMoveEffect.RaiseUser_ATK_ACC_By1:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Accuracy }, new short[] { +1, +1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Accuracy }, new short[] { +1, +1 });
+                        break;
+                    }
                     case PBEMoveEffect.RaiseUser_ATK_DEF_By1:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new short[] { +1, +1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new short[] { +1, +1 });
+                        break;
+                    }
                     case PBEMoveEffect.RaiseUser_ATK_DEF_ACC_By1:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.Accuracy }, new short[] { +1, +1, +1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.Accuracy }, new short[] { +1, +1, +1 });
+                        break;
+                    }
                     case PBEMoveEffect.RaiseUser_ATK_SPATK_By1:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { +1, +1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { +1, +1 });
+                        break;
+                    }
                     case PBEMoveEffect.RaiseUser_ATK_SPE_By1:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Speed }, new short[] { +1, +1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Speed }, new short[] { +1, +1 });
+                        break;
+                    }
                     case PBEMoveEffect.RaiseUser_DEF_SPDEF_By1:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense }, new short[] { +1, +1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense }, new short[] { +1, +1 });
+                        break;
+                    }
                     case PBEMoveEffect.RaiseUser_SPATK_SPDEF_By1:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense }, new short[] { +1, +1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense }, new short[] { +1, +1 });
+                        break;
+                    }
                     case PBEMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed }, new short[] { +1, +1, +1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed }, new short[] { +1, +1, +1 });
+                        break;
+                    }
                     case PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1:
-                        {
-                            Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Speed, PBEStat.Attack }, new short[] { +2, +1 });
-                            break;
-                        }
+                    {
+                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Speed, PBEStat.Attack }, new short[] { +2, +1 });
+                        break;
+                    }
                     case PBEMoveEffect.Recoil:
-                        {
-                            Ef_Recoil(user, targets, move, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Recoil(user, targets, move, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Reflect:
-                        {
-                            Ef_TryForceTeamStatus(user, move, PBETeamStatus.Reflect);
-                            break;
-                        }
+                    {
+                        Ef_TryForceTeamStatus(user, move, PBETeamStatus.Reflect);
+                        break;
+                    }
                     case PBEMoveEffect.Rest:
-                        {
-                            Ef_Rest(user, move);
-                            break;
-                        }
+                    {
+                        Ef_Rest(user, move);
+                        break;
+                    }
                     case PBEMoveEffect.RestoreTargetHP:
-                        {
-                            Ef_RestoreTargetHP(user, targets, move, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_RestoreTargetHP(user, targets, move, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.RestoreUserHP:
-                        {
-                            Ef_RestoreUserHP(user, move, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_RestoreUserHP(user, move, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Sandstorm:
-                        {
-                            Ef_TryForceWeather(user, move, PBEWeather.Sandstorm);
-                            break;
-                        }
+                    {
+                        Ef_TryForceWeather(user, move, PBEWeather.Sandstorm);
+                        break;
+                    }
                     case PBEMoveEffect.SeismicToss:
-                        {
-                            Ef_SeismicToss(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_SeismicToss(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Selfdestruct:
-                        {
-                            Ef_Selfdestruct(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_Selfdestruct(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.SetDamage:
-                        {
-                            Ef_SetDamage(user, targets, move, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_SetDamage(user, targets, move, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Sleep:
-                        {
-                            Ef_TryForceStatus1(user, targets, move, PBEStatus1.Asleep);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus1(user, targets, move, PBEStatus1.Asleep);
+                        break;
+                    }
                     case PBEMoveEffect.Snore:
-                        {
-                            Ef_Snore(user, targets, move, mData.EffectParam);
-                            break;
-                        }
+                    {
+                        Ef_Snore(user, targets, move, mData.EffectParam);
+                        break;
+                    }
                     case PBEMoveEffect.Spikes:
-                        {
-                            Ef_TryForceTeamStatus(user, move, PBETeamStatus.Spikes);
-                            break;
-                        }
+                    {
+                        Ef_TryForceTeamStatus(user, move, PBETeamStatus.Spikes);
+                        break;
+                    }
                     case PBEMoveEffect.StealthRock:
-                        {
-                            Ef_TryForceTeamStatus(user, move, PBETeamStatus.StealthRock);
-                            break;
-                        }
+                    {
+                        Ef_TryForceTeamStatus(user, move, PBETeamStatus.StealthRock);
+                        break;
+                    }
                     case PBEMoveEffect.Struggle:
-                        {
-                            Ef_Struggle(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_Struggle(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Substitute:
-                        {
-                            Ef_TryForceStatus2(user, targets, move, PBEStatus2.Substitute);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.Substitute);
+                        break;
+                    }
                     case PBEMoveEffect.SuckerPunch:
-                        {
-                            Ef_SuckerPunch(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_SuckerPunch(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.SunnyDay:
-                        {
-                            Ef_TryForceWeather(user, move, PBEWeather.HarshSunlight);
-                            break;
-                        }
+                    {
+                        Ef_TryForceWeather(user, move, PBEWeather.HarshSunlight);
+                        break;
+                    }
                     case PBEMoveEffect.SuperFang:
-                        {
-                            Ef_SuperFang(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_SuperFang(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Swagger:
-                        {
-                            Ef_Swagger(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_Swagger(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Toxic:
-                        {
-                            Ef_TryForceStatus1(user, targets, move, PBEStatus1.BadlyPoisoned);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus1(user, targets, move, PBEStatus1.BadlyPoisoned);
+                        break;
+                    }
                     case PBEMoveEffect.ToxicSpikes:
-                        {
-                            Ef_TryForceTeamStatus(user, move, PBETeamStatus.ToxicSpikes);
-                            break;
-                        }
+                    {
+                        Ef_TryForceTeamStatus(user, move, PBETeamStatus.ToxicSpikes);
+                        break;
+                    }
                     case PBEMoveEffect.Transform:
-                        {
-                            Ef_TryForceStatus2(user, targets, move, PBEStatus2.Transformed);
-                            break;
-                        }
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.Transformed);
+                        break;
+                    }
                     case PBEMoveEffect.TrickRoom:
-                        {
-                            Ef_TryForceBattleStatus(user, move, PBEBattleStatus.TrickRoom);
-                            break;
-                        }
+                    {
+                        Ef_TryForceBattleStatus(user, move, PBEBattleStatus.TrickRoom);
+                        break;
+                    }
                     case PBEMoveEffect.VoltTackle:
-                        {
-                            Ef_Recoil3__MaybeInflictStatus1With10PercentChance(user, targets, move, PBEStatus1.Paralyzed);
-                            break;
-                        }
+                    {
+                        Ef_Recoil3__MaybeInflictStatus1With10PercentChance(user, targets, move, PBEStatus1.Paralyzed);
+                        break;
+                    }
                     case PBEMoveEffect.Whirlwind:
-                        {
-                            Ef_Whirlwind(user, targets, move);
-                            break;
-                        }
+                    {
+                        Ef_Whirlwind(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.WideGuard:
-                        {
-                            Ef_TryForceTeamStatus(user, move, PBETeamStatus.WideGuard);
-                            break;
-                        }
+                    {
+                        Ef_TryForceTeamStatus(user, move, PBETeamStatus.WideGuard);
+                        break;
+                    }
                     default: throw new ArgumentOutOfRangeException(nameof(mData.Effect));
                 }
             }
         }
 
-        bool PreMoveStatusCheck(PBEPokemon user, PBEMove move)
+        private bool PreMoveStatusCheck(PBEPokemon user, PBEMove move)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
 
@@ -1306,7 +1306,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-        bool MissCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
+        private bool MissCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
 
@@ -1341,59 +1341,59 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (move)
             {
                 case PBEMove.Blizzard:
+                {
+                    if (ShouldDoWeatherEffects() && Weather == PBEWeather.Hailstorm)
                     {
-                        if (ShouldDoWeatherEffects() && Weather == PBEWeather.Hailstorm)
-                        {
-                            return false;
-                        }
-                        else
-                        {
-                            chance = mData.Accuracy;
-                        }
-                        break;
+                        return false;
                     }
+                    else
+                    {
+                        chance = mData.Accuracy;
+                    }
+                    break;
+                }
                 case PBEMove.Fissure:
                 case PBEMove.Guillotine:
                 case PBEMove.HornDrill:
                 case PBEMove.SheerCold:
-                    {
-                        chance = user.Level - target.Level + 30;
-                        goto roll; // Skip all modifiers
-                    }
+                {
+                    chance = user.Level - target.Level + 30;
+                    goto roll; // Skip all modifiers
+                }
                 case PBEMove.Hurricane:
                 case PBEMove.Thunder:
+                {
+                    bool doWeather = ShouldDoWeatherEffects();
+                    if (doWeather && Weather == PBEWeather.Rain)
                     {
-                        bool doWeather = ShouldDoWeatherEffects();
-                        if (doWeather && Weather == PBEWeather.Rain)
-                        {
-                            return false;
-                        }
-                        else if (doWeather && Weather == PBEWeather.HarshSunlight)
-                        {
-                            chance = 50.0;
-                        }
-                        else
-                        {
-                            chance = mData.Accuracy;
-                        }
-                        break;
+                        return false;
                     }
+                    else if (doWeather && Weather == PBEWeather.HarshSunlight)
+                    {
+                        chance = 50.0;
+                    }
+                    else
+                    {
+                        chance = mData.Accuracy;
+                    }
+                    break;
+                }
                 default:
+                {
+                    if (target.Ability == PBEAbility.WonderSkin && mData.Category == PBEMoveCategory.Status)
                     {
-                        if (target.Ability == PBEAbility.WonderSkin && mData.Category == PBEMoveCategory.Status)
-                        {
-                            chance = 50;
-                        }
-                        else if (mData.Accuracy == 0)
-                        {
-                            return false;
-                        }
-                        else
-                        {
-                            chance = mData.Accuracy;
-                        }
-                        break;
+                        chance = 50;
                     }
+                    else if (mData.Accuracy == 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        chance = mData.Accuracy;
+                    }
+                    break;
+                }
             }
             chance *= (target.Ability == PBEAbility.Unaware ? 1.0 : GetStatChangeModifier(user.AccuracyChange, true)) / (user.Ability == PBEAbility.Unaware ? 1.0 : GetStatChangeModifier(target.EvasionChange, true));
             if (user.Ability == PBEAbility.Compoundeyes)
@@ -1444,7 +1444,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveMissed(user, target);
             return true;
         }
-        bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
+        private bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
             if (target.Ability == PBEAbility.BattleArmor
                 || target.Ability == PBEAbility.ShellArmor
@@ -1493,7 +1493,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit) || PBEUtils.RNG.ApplyChance((int)(chance * 100), 100 * 100);
         }
-        bool FaintCheck(PBEPokemon pkmn)
+        private bool FaintCheck(PBEPokemon pkmn)
         {
             if (pkmn.HP == 0)
             {
@@ -1513,14 +1513,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return false;
         }
 
-        void CastformCherrimCheckAll()
+        private void CastformCherrimCheckAll()
         {
             foreach (PBEPokemon pkmn in GetActingOrder(ActiveBattlers, true))
             {
                 CastformCherrimCheck(pkmn);
             }
         }
-        void CastformCherrimCheck(PBEPokemon pkmn)
+        private void CastformCherrimCheck(PBEPokemon pkmn)
         {
             // Castform & Cherrim may be changing form because their ability was swapped or suppressed, so check for the specific ability before setting KnownAbility
             if (pkmn.OriginalSpecies == PBESpecies.Castform)
@@ -1570,7 +1570,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        void ShayminCheck(PBEPokemon pkmn)
+        private void ShayminCheck(PBEPokemon pkmn)
         {
             if (pkmn.OriginalSpecies == PBESpecies.Shaymin_Sky && pkmn.Species == PBESpecies.Shaymin_Sky && pkmn.Status1 == PBEStatus1.Frozen)
             {
@@ -1579,7 +1579,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastPkmnFormChanged(pkmn, newSpecies, PBEPokemonData.GetData(newSpecies).Abilities[0], PBEAbility.MAX);
             }
         }
-        void IllusionBreak(PBEPokemon pkmn, PBEPokemon breaker)
+        private void IllusionBreak(PBEPokemon pkmn, PBEPokemon breaker)
         {
             if (pkmn.Status2.HasFlag(PBEStatus2.Disguised))
             {
@@ -1597,89 +1597,89 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         // TODO: SkillSwap calls this
         // TODO: Does Trace call this?
-        void AntiStatusAbilityCheck(PBEPokemon pkmn)
+        private void AntiStatusAbilityCheck(PBEPokemon pkmn)
         {
             switch (pkmn.Ability)
             {
                 case PBEAbility.Immunity:
+                {
+                    if (pkmn.Status1 == PBEStatus1.BadlyPoisoned || pkmn.Status1 == PBEStatus1.Poisoned)
                     {
-                        if (pkmn.Status1 == PBEStatus1.BadlyPoisoned || pkmn.Status1 == PBEStatus1.Poisoned)
-                        {
-                            PBEStatus1 oldStatus1 = pkmn.Status1;
-                            pkmn.Status1 = PBEStatus1.None;
-                            pkmn.Status1Counter = 0;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                            BroadcastStatus1(pkmn, pkmn, oldStatus1, PBEStatusAction.Cured);
-                        }
-                        break;
+                        PBEStatus1 oldStatus1 = pkmn.Status1;
+                        pkmn.Status1 = PBEStatus1.None;
+                        pkmn.Status1Counter = 0;
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                        BroadcastStatus1(pkmn, pkmn, oldStatus1, PBEStatusAction.Cured);
                     }
+                    break;
+                }
                 case PBEAbility.Insomnia:
                 case PBEAbility.VitalSpirit:
+                {
+                    if (pkmn.Status1 == PBEStatus1.Asleep)
                     {
-                        if (pkmn.Status1 == PBEStatus1.Asleep)
-                        {
-                            pkmn.Status1 = PBEStatus1.None;
-                            pkmn.Status1Counter = pkmn.SleepTurns = 0;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.Asleep, PBEStatusAction.Cured);
-                        }
-                        break;
+                        pkmn.Status1 = PBEStatus1.None;
+                        pkmn.Status1Counter = pkmn.SleepTurns = 0;
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Asleep, PBEStatusAction.Cured);
                     }
+                    break;
+                }
                 case PBEAbility.Limber:
+                {
+                    if (pkmn.Status1 == PBEStatus1.Paralyzed)
                     {
-                        if (pkmn.Status1 == PBEStatus1.Paralyzed)
-                        {
-                            pkmn.Status1 = PBEStatus1.None;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cured);
-                        }
-                        break;
+                        pkmn.Status1 = PBEStatus1.None;
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Paralyzed, PBEStatusAction.Cured);
                     }
+                    break;
+                }
                 case PBEAbility.MagmaArmor:
+                {
+                    if (pkmn.Status1 == PBEStatus1.Frozen)
                     {
-                        if (pkmn.Status1 == PBEStatus1.Frozen)
-                        {
-                            pkmn.Status1 = PBEStatus1.None;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.Frozen, PBEStatusAction.Cured);
-                        }
-                        break;
+                        pkmn.Status1 = PBEStatus1.None;
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Frozen, PBEStatusAction.Cured);
                     }
+                    break;
+                }
                 case PBEAbility.Oblivious:
+                {
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Infatuated))
                     {
-                        if (pkmn.Status2.HasFlag(PBEStatus2.Infatuated))
-                        {
-                            pkmn.Status2 &= ~PBEStatus2.Infatuated;
-                            pkmn.InfatuatedWithPokemon = null;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                            BroadcastStatus2(pkmn, pkmn, PBEStatus2.Infatuated, PBEStatusAction.Cured);
-                        }
-                        break;
+                        pkmn.Status2 &= ~PBEStatus2.Infatuated;
+                        pkmn.InfatuatedWithPokemon = null;
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Infatuated, PBEStatusAction.Cured);
                     }
+                    break;
+                }
                 case PBEAbility.OwnTempo:
+                {
+                    if (pkmn.Status2.HasFlag(PBEStatus2.Confused))
                     {
-                        if (pkmn.Status2.HasFlag(PBEStatus2.Confused))
-                        {
-                            pkmn.Status2 &= ~PBEStatus2.Confused;
-                            pkmn.ConfusionCounter = pkmn.ConfusionTurns = 0;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                            BroadcastStatus2(pkmn, pkmn, PBEStatus2.Confused, PBEStatusAction.Cured);
-                        }
-                        break;
+                        pkmn.Status2 &= ~PBEStatus2.Confused;
+                        pkmn.ConfusionCounter = pkmn.ConfusionTurns = 0;
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                        BroadcastStatus2(pkmn, pkmn, PBEStatus2.Confused, PBEStatusAction.Cured);
                     }
+                    break;
+                }
                 case PBEAbility.WaterVeil:
+                {
+                    if (pkmn.Status1 == PBEStatus1.Burned)
                     {
-                        if (pkmn.Status1 == PBEStatus1.Burned)
-                        {
-                            pkmn.Status1 = PBEStatus1.None;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
-                            BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Cured);
-                        }
-                        break;
+                        pkmn.Status1 = PBEStatus1.None;
+                        BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
+                        BroadcastStatus1(pkmn, pkmn, PBEStatus1.Burned, PBEStatusAction.Cured);
                     }
+                    break;
+                }
             }
         }
-        void CauseInfatuation(PBEPokemon target, PBEPokemon other)
+        private void CauseInfatuation(PBEPokemon target, PBEPokemon other)
         {
             target.Status2 |= PBEStatus2.Infatuated;
             target.InfatuatedWithPokemon = other;
@@ -1693,7 +1693,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             AntiStatusAbilityCheck(target);
         }
-        bool PowerHerbCheck(PBEPokemon pkmn)
+        private bool PowerHerbCheck(PBEPokemon pkmn)
         {
             if (pkmn.Item == PBEItem.PowerHerb)
             {
@@ -1702,27 +1702,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-        void HealingBerryCheck(PBEPokemon pkmn)
+        private void HealingBerryCheck(PBEPokemon pkmn)
         {
             switch (pkmn.Item)
             {
                 case PBEItem.SitrusBerry:
+                {
+                    if (pkmn.HP <= pkmn.MaxHP / 2)
                     {
-                        if (pkmn.HP <= pkmn.MaxHP / 2)
-                        {
-                            BroadcastItem(pkmn, pkmn, PBEItem.SitrusBerry, PBEItemAction.Consumed);
-                            HealDamage(pkmn, (ushort)(pkmn.MaxHP / 4));
-                        }
-                        break;
+                        BroadcastItem(pkmn, pkmn, PBEItem.SitrusBerry, PBEItemAction.Consumed);
+                        HealDamage(pkmn, (ushort)(pkmn.MaxHP / 4));
                     }
+                    break;
+                }
             }
         }
 
-        bool HasUsedMoveThisTurn(PBEPokemon pkmn)
+        private bool HasUsedMoveThisTurn(PBEPokemon pkmn)
         {
             return pkmn.ExecutedMoves.Any(e => e.TurnNumber == TurnNumber);
         }
-        void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason, IList<PBEExecutedMove.PBETargetSuccess> targets)
+        private void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason, IList<PBEExecutedMove.PBETargetSuccess> targets)
         {
             user.ExecutedMoves.Add(new PBEExecutedMove(TurnNumber, move, failReason, targets));
             // Doesn't care if there is a Choice Locked move already. As long as the user knows it, it will become locked. (Metronome calling a move the user knows, Ditto transforming into someone else with transform)
@@ -1732,7 +1732,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastMoveLock(user, move, PBETarget.None, PBEMoveLockType.ChoiceItem);
             }
         }
-        void PPReduce(PBEPokemon pkmn, PBEMove move)
+        private void PPReduce(PBEPokemon pkmn, PBEMove move)
         {
             if (!calledFromOtherMove)
             {
@@ -1745,14 +1745,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        void SetSleepTurns(PBEPokemon pkmn, int minTurns, int maxTurns)
+        private void SetSleepTurns(PBEPokemon pkmn, int minTurns, int maxTurns)
         {
             if (pkmn.Status1 == PBEStatus1.Asleep)
             {
                 pkmn.SleepTurns = (byte)(PBEUtils.RNG.Next(minTurns, maxTurns + 1) / (pkmn.Ability == PBEAbility.EarlyBird ? 2 : 1));
             }
         }
-        PBEFailReason ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastFailOrEffectiveness)
+        private PBEFailReason ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastFailOrEffectiveness)
         {
             if (target.Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -1811,71 +1811,71 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (target.Ability)
                 {
                     case PBEAbility.Immunity:
+                    {
+                        if (status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned)
                         {
-                            if (status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned)
+                            if (broadcastFailOrEffectiveness)
                             {
-                                if (broadcastFailOrEffectiveness)
-                                {
-                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                                }
-                                return PBEFailReason.Ineffective;
+                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                             }
-                            break;
+                            return PBEFailReason.Ineffective;
                         }
+                        break;
+                    }
                     case PBEAbility.Insomnia:
                     case PBEAbility.VitalSpirit:
+                    {
+                        if (status == PBEStatus1.Asleep)
                         {
-                            if (status == PBEStatus1.Asleep)
+                            if (broadcastFailOrEffectiveness)
                             {
-                                if (broadcastFailOrEffectiveness)
-                                {
-                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                                }
-                                return PBEFailReason.Ineffective;
+                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                             }
-                            break;
+                            return PBEFailReason.Ineffective;
                         }
+                        break;
+                    }
                     case PBEAbility.Limber:
+                    {
+                        if (status == PBEStatus1.Paralyzed)
                         {
-                            if (status == PBEStatus1.Paralyzed)
+                            if (broadcastFailOrEffectiveness)
                             {
-                                if (broadcastFailOrEffectiveness)
-                                {
-                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                                }
-                                return PBEFailReason.Ineffective;
+                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                             }
-                            break;
+                            return PBEFailReason.Ineffective;
                         }
+                        break;
+                    }
                     case PBEAbility.MagmaArmor:
+                    {
+                        if (status == PBEStatus1.Frozen)
                         {
-                            if (status == PBEStatus1.Frozen)
+                            if (broadcastFailOrEffectiveness)
                             {
-                                if (broadcastFailOrEffectiveness)
-                                {
-                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                                }
-                                return PBEFailReason.Ineffective;
+                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                             }
-                            break;
+                            return PBEFailReason.Ineffective;
                         }
+                        break;
+                    }
                     case PBEAbility.WaterVeil:
+                    {
+                        if (status == PBEStatus1.Burned)
                         {
-                            if (status == PBEStatus1.Burned)
+                            if (broadcastFailOrEffectiveness)
                             {
-                                if (broadcastFailOrEffectiveness)
-                                {
-                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                    BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                                }
-                                return PBEFailReason.Ineffective;
+                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                             }
-                            break;
+                            return PBEFailReason.Ineffective;
                         }
+                        break;
+                    }
                 }
             }
 
@@ -1894,203 +1894,203 @@ namespace Kermalis.PokemonBattleEngine.Battle
             AntiStatusAbilityCheck(target);
             return PBEFailReason.None;
         }
-        PBEFailReason ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastFailOrEffectiveness)
+        private PBEFailReason ApplyStatus2IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus2 status, bool broadcastFailOrEffectiveness)
         {
             PBEFailReason failReason;
             switch (status)
             {
                 case PBEStatus2.Confused:
+                {
+                    bool sub = target.Status2.HasFlag(PBEStatus2.Substitute);
+                    if (target.CanBecomeConfusedBy(user) && !sub)
                     {
-                        bool sub = target.Status2.HasFlag(PBEStatus2.Substitute);
-                        if (target.CanBecomeConfusedBy(user) && !sub)
+                        target.Status2 |= PBEStatus2.Confused;
+                        target.ConfusionTurns = (byte)PBEUtils.RNG.Next(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns + 1);
+                        BroadcastStatus2(target, user, PBEStatus2.Confused, PBEStatusAction.Added);
+                        AntiStatusAbilityCheck(target);
+                        failReason = PBEFailReason.None;
+                    }
+                    else
+                    {
+                        if (sub)
                         {
-                            target.Status2 |= PBEStatus2.Confused;
-                            target.ConfusionTurns = (byte)PBEUtils.RNG.Next(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns + 1);
-                            BroadcastStatus2(target, user, PBEStatus2.Confused, PBEStatusAction.Added);
-                            AntiStatusAbilityCheck(target);
-                            failReason = PBEFailReason.None;
+                            failReason = PBEFailReason.Default;
+                        }
+                        else if (target.Ability == PBEAbility.OwnTempo)
+                        {
+                            if (broadcastFailOrEffectiveness)
+                            {
+                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                            }
+                            failReason = PBEFailReason.Ineffective;
                         }
                         else
                         {
-                            if (sub)
-                            {
-                                failReason = PBEFailReason.Default;
-                            }
-                            else if (target.Ability == PBEAbility.OwnTempo)
-                            {
-                                if (broadcastFailOrEffectiveness)
-                                {
-                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                }
-                                failReason = PBEFailReason.Ineffective;
-                            }
-                            else
-                            {
-                                failReason = target.Status2.HasFlag(PBEStatus2.Confused) ? PBEFailReason.AlreadyConfused : PBEFailReason.Default;
-                            }
+                            failReason = target.Status2.HasFlag(PBEStatus2.Confused) ? PBEFailReason.AlreadyConfused : PBEFailReason.Default;
                         }
-                        break;
                     }
+                    break;
+                }
                 case PBEStatus2.Cursed:
+                {
+                    if (!target.Status2.HasFlag(PBEStatus2.Cursed))
                     {
-                        if (!target.Status2.HasFlag(PBEStatus2.Cursed))
+                        target.Status2 |= PBEStatus2.Cursed;
+                        BroadcastStatus2(target, user, PBEStatus2.Cursed, PBEStatusAction.Added);
+                        DealDamage(user, user, (ushort)(user.MaxHP / 2), true);
+                        if (!FaintCheck(user))
                         {
-                            target.Status2 |= PBEStatus2.Cursed;
-                            BroadcastStatus2(target, user, PBEStatus2.Cursed, PBEStatusAction.Added);
-                            DealDamage(user, user, (ushort)(user.MaxHP / 2), true);
-                            if (!FaintCheck(user))
-                            {
-                                HealingBerryCheck(user);
-                            }
-                            failReason = PBEFailReason.None;
+                            HealingBerryCheck(user);
                         }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBEStatus2.Flinching:
+                {
+                    if (target.CanFlinchFrom(user) && !target.Status2.HasFlag(PBEStatus2.Substitute))
                     {
-                        if (target.CanFlinchFrom(user) && !target.Status2.HasFlag(PBEStatus2.Substitute))
-                        {
-                            target.Status2 |= PBEStatus2.Flinching;
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default; // broadcastFailOrEffectiveness is always false for Flinching, so this doesn't get broadcast
-                        }
-                        break;
+                        target.Status2 |= PBEStatus2.Flinching;
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default; // broadcastFailOrEffectiveness is always false for Flinching, so this doesn't get broadcast
+                    }
+                    break;
+                }
                 case PBEStatus2.HelpingHand:
+                {
+                    if (!HasUsedMoveThisTurn(target))
                     {
-                        if (!HasUsedMoveThisTurn(target))
-                        {
-                            target.Status2 |= PBEStatus2.HelpingHand;
-                            BroadcastStatus2(target, user, PBEStatus2.HelpingHand, PBEStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        target.Status2 |= PBEStatus2.HelpingHand;
+                        BroadcastStatus2(target, user, PBEStatus2.HelpingHand, PBEStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBEStatus2.Infatuated:
+                {
+                    if (target.CanBecomeInfatuatedWith(user))
                     {
-                        if (target.CanBecomeInfatuatedWith(user))
-                        {
-                            CauseInfatuation(target, user);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            if (target.Gender == PBEGender.Genderless)
-                            {
-                                failReason = PBEFailReason.Ineffective;
-                            }
-                            else if (target.Ability == PBEAbility.Oblivious)
-                            {
-                                if (broadcastFailOrEffectiveness)
-                                {
-                                    BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                }
-                                failReason = PBEFailReason.Ineffective;
-                            }
-                            else
-                            {
-                                failReason = PBEFailReason.Default;
-                            }
-                        }
-                        break;
+                        CauseInfatuation(target, user);
+                        failReason = PBEFailReason.None;
                     }
-                case PBEStatus2.LeechSeed:
+                    else
                     {
-                        if (target.HasType(PBEType.Grass))
+                        if (target.Gender == PBEGender.Genderless)
                         {
                             failReason = PBEFailReason.Ineffective;
                         }
-                        else if (!target.Status2.HasFlag(PBEStatus2.LeechSeed) && !target.Status2.HasFlag(PBEStatus2.Substitute))
+                        else if (target.Ability == PBEAbility.Oblivious)
                         {
-                            target.Status2 |= PBEStatus2.LeechSeed;
-                            target.SeededPosition = user.FieldPosition;
-                            target.SeededTeam = user.Team;
-                            BroadcastStatus2(target, user, PBEStatus2.LeechSeed, PBEStatusAction.Added);
-                            failReason = PBEFailReason.None;
+                            if (broadcastFailOrEffectiveness)
+                            {
+                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                            }
+                            failReason = PBEFailReason.Ineffective;
                         }
                         else
                         {
                             failReason = PBEFailReason.Default;
                         }
-                        break;
                     }
+                    break;
+                }
+                case PBEStatus2.LeechSeed:
+                {
+                    if (target.HasType(PBEType.Grass))
+                    {
+                        failReason = PBEFailReason.Ineffective;
+                    }
+                    else if (!target.Status2.HasFlag(PBEStatus2.LeechSeed) && !target.Status2.HasFlag(PBEStatus2.Substitute))
+                    {
+                        target.Status2 |= PBEStatus2.LeechSeed;
+                        target.SeededPosition = user.FieldPosition;
+                        target.SeededTeam = user.Team;
+                        BroadcastStatus2(target, user, PBEStatus2.LeechSeed, PBEStatusAction.Added);
+                        failReason = PBEFailReason.None;
+                    }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBEStatus2.Protected:
+                {
+                    // TODO: If the user goes last, fail
+                    if (PBEUtils.RNG.ApplyChance(user.GetProtectionChance(), ushort.MaxValue))
                     {
-                        // TODO: If the user goes last, fail
-                        if (PBEUtils.RNG.ApplyChance(user.GetProtectionChance(), ushort.MaxValue))
-                        {
-                            user.Status2 |= PBEStatus2.Protected;
-                            BroadcastStatus2(user, user, PBEStatus2.Protected, PBEStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        user.Status2 |= PBEStatus2.Protected;
+                        BroadcastStatus2(user, user, PBEStatus2.Protected, PBEStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBEStatus2.Pumped:
+                {
+                    if (!user.Status2.HasFlag(PBEStatus2.Pumped))
                     {
-                        if (!user.Status2.HasFlag(PBEStatus2.Pumped))
-                        {
-                            user.Status2 |= PBEStatus2.Pumped;
-                            BroadcastStatus2(user, user, PBEStatus2.Pumped, PBEStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        user.Status2 |= PBEStatus2.Pumped;
+                        BroadcastStatus2(user, user, PBEStatus2.Pumped, PBEStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBEStatus2.Substitute:
+                {
+                    bool alreadyHasSubstitute = user.Status2.HasFlag(PBEStatus2.Substitute);
+                    ushort hpRequired = (ushort)(user.MaxHP / 4);
+                    if (!alreadyHasSubstitute && hpRequired > 0 && user.HP > hpRequired)
                     {
-                        bool alreadyHasSubstitute = user.Status2.HasFlag(PBEStatus2.Substitute);
-                        ushort hpRequired = (ushort)(user.MaxHP / 4);
-                        if (!alreadyHasSubstitute && hpRequired > 0 && user.HP > hpRequired)
-                        {
-                            DealDamage(user, user, hpRequired, true);
-                            HealingBerryCheck(user);
-                            user.Status2 |= PBEStatus2.Substitute;
-                            user.SubstituteHP = hpRequired;
-                            BroadcastStatus2(user, user, PBEStatus2.Substitute, PBEStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = alreadyHasSubstitute ? PBEFailReason.AlreadySubstituted : PBEFailReason.Default;
-                        }
-                        break;
+                        DealDamage(user, user, hpRequired, true);
+                        HealingBerryCheck(user);
+                        user.Status2 |= PBEStatus2.Substitute;
+                        user.SubstituteHP = hpRequired;
+                        BroadcastStatus2(user, user, PBEStatus2.Substitute, PBEStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = alreadyHasSubstitute ? PBEFailReason.AlreadySubstituted : PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBEStatus2.Transformed:
+                {
+                    if (!target.Status2.HasFlag(PBEStatus2.Disguised)
+                        && !target.Status2.HasFlag(PBEStatus2.Substitute)
+                        && !user.Status2.HasFlag(PBEStatus2.Transformed)
+                        && !target.Status2.HasFlag(PBEStatus2.Transformed))
                     {
-                        if (!target.Status2.HasFlag(PBEStatus2.Disguised)
-                            && !target.Status2.HasFlag(PBEStatus2.Substitute)
-                            && !user.Status2.HasFlag(PBEStatus2.Transformed)
-                            && !target.Status2.HasFlag(PBEStatus2.Transformed))
-                        {
-                            user.Transform(target);
-                            BroadcastTransform(user, target);
-                            BroadcastStatus2(user, target, PBEStatus2.Transformed, PBEStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        user.Transform(target);
+                        BroadcastTransform(user, target);
+                        BroadcastStatus2(user, target, PBEStatus2.Transformed, PBEStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
             if (failReason != PBEFailReason.None && broadcastFailOrEffectiveness)
@@ -2106,7 +2106,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return failReason;
         }
-        void ApplyStatChange(PBEPokemon pkmn, PBEStat stat, short change)
+        private void ApplyStatChange(PBEPokemon pkmn, PBEStat stat, short change)
         {
             // Verified: Simple is silent
             if (pkmn.Ability == PBEAbility.Simple)
@@ -2119,7 +2119,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
         }
 
-        PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEPokemon pkmn)
+        private PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEPokemon pkmn)
         {
             if (pkmn.Ability == PBEAbility.Illusion)
             {
@@ -2140,7 +2140,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Species, pkmn.Nickname, pkmn.Level, pkmn.Shiny, pkmn.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
         }
-        void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
+        private void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
         {
             PBEFieldPosition pos = pkmnLeaving.FieldPosition;
             turnOrder.Remove(pkmnLeaving);
@@ -2159,7 +2159,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             DoSwitchInEffects(new[] { pkmnComing });
             CastformCherrimCheckAll();
         }
-        void RemoveInfatuations(PBEPokemon pkmnLeaving)
+        private void RemoveInfatuations(PBEPokemon pkmnLeaving)
         {
             foreach (PBEPokemon pkmn in ActiveBattlers)
             {
@@ -2172,7 +2172,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess,
+        private void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess,
             PBEType? overridingMoveType = null,
             Func<int, int> recoilFunc = null,
             Func<PBEPokemon, PBEFailReason> beforeDoingDamage = null,
@@ -2264,7 +2264,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort recoilDamage = (ushort)(recoilFunc == null ? 0 : recoilFunc.Invoke(totalDamageDealt));
             DoPostAttackedEffects(user, !lifeOrbDamage, recoilDamage);
         }
-        void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess, Func<PBEPokemon, ushort> damageFunc,
+        private void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess, Func<PBEPokemon, ushort> damageFunc,
             Func<PBEPokemon, PBEFailReason> beforeMissCheck = null,
             Action beforeTargetsFaint = null)
         {
@@ -2328,7 +2328,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             DoPostAttackedEffects(user, true);
         }
 
-        void Ef_TryForceStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
+        private void Ef_TryForceStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2377,7 +2377,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move, PBEFailReason.NoTarget, targetSuccess);
             return;
         }
-        void Ef_TryForceStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status)
+        private void Ef_TryForceStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2414,7 +2414,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_TryForceBattleStatus(PBEPokemon user, PBEMove move, PBEBattleStatus status)
+        private void Ef_TryForceBattleStatus(PBEPokemon user, PBEMove move, PBEBattleStatus status)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2422,26 +2422,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (status)
             {
                 case PBEBattleStatus.TrickRoom:
+                {
+                    if (!BattleStatus.HasFlag(PBEBattleStatus.TrickRoom))
                     {
-                        if (!BattleStatus.HasFlag(PBEBattleStatus.TrickRoom))
-                        {
-                            BattleStatus |= PBEBattleStatus.TrickRoom;
-                            TrickRoomCount = 5;
-                            BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Added);
-                        }
-                        else
-                        {
-                            BattleStatus &= ~PBEBattleStatus.TrickRoom;
-                            TrickRoomCount = 0;
-                            BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Cleared);
-                        }
-                        break;
+                        BattleStatus |= PBEBattleStatus.TrickRoom;
+                        TrickRoomCount = 5;
+                        BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Added);
                     }
+                    else
+                    {
+                        BattleStatus &= ~PBEBattleStatus.TrickRoom;
+                        TrickRoomCount = 0;
+                        BroadcastBattleStatus(PBEBattleStatus.TrickRoom, PBEBattleStatusAction.Cleared);
+                    }
+                    break;
+                }
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
             RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
-        void Ef_TryForceTeamStatus(PBEPokemon user, PBEMove move, PBETeamStatus status)
+        private void Ef_TryForceTeamStatus(PBEPokemon user, PBEMove move, PBETeamStatus status)
         {
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
@@ -2451,108 +2451,108 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (status)
             {
                 case PBETeamStatus.LightScreen:
+                {
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
                     {
-                        if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
-                        {
-                            user.Team.TeamStatus |= PBETeamStatus.LightScreen;
-                            user.Team.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
-                            BroadcastTeamStatus(user.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        user.Team.TeamStatus |= PBETeamStatus.LightScreen;
+                        user.Team.LightScreenCount = (byte)(Settings.LightScreenTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
+                        BroadcastTeamStatus(user.Team, PBETeamStatus.LightScreen, PBETeamStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBETeamStatus.LuckyChant:
+                {
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
                     {
-                        if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
-                        {
-                            user.Team.TeamStatus |= PBETeamStatus.LuckyChant;
-                            user.Team.LuckyChantCount = 5;
-                            BroadcastTeamStatus(user.Team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        user.Team.TeamStatus |= PBETeamStatus.LuckyChant;
+                        user.Team.LuckyChantCount = 5;
+                        BroadcastTeamStatus(user.Team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBETeamStatus.Reflect:
+                {
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
                     {
-                        if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
-                        {
-                            user.Team.TeamStatus |= PBETeamStatus.Reflect;
-                            user.Team.ReflectCount = (byte)(Settings.ReflectTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
-                            BroadcastTeamStatus(user.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        user.Team.TeamStatus |= PBETeamStatus.Reflect;
+                        user.Team.ReflectCount = (byte)(Settings.ReflectTurns + (user.Item == PBEItem.LightClay ? Settings.LightClayTurnExtension : 0));
+                        BroadcastTeamStatus(user.Team, PBETeamStatus.Reflect, PBETeamStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBETeamStatus.Spikes:
+                {
+                    if (opposingTeam.SpikeCount < 3)
                     {
-                        if (opposingTeam.SpikeCount < 3)
-                        {
-                            opposingTeam.TeamStatus |= PBETeamStatus.Spikes;
-                            opposingTeam.SpikeCount++;
-                            BroadcastTeamStatus(opposingTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        opposingTeam.TeamStatus |= PBETeamStatus.Spikes;
+                        opposingTeam.SpikeCount++;
+                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBETeamStatus.StealthRock:
+                {
+                    if (!opposingTeam.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                     {
-                        if (!opposingTeam.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
-                        {
-                            opposingTeam.TeamStatus |= PBETeamStatus.StealthRock;
-                            BroadcastTeamStatus(opposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        opposingTeam.TeamStatus |= PBETeamStatus.StealthRock;
+                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBETeamStatus.ToxicSpikes:
+                {
+                    if (opposingTeam.ToxicSpikeCount < 2)
                     {
-                        if (opposingTeam.ToxicSpikeCount < 2)
-                        {
-                            opposingTeam.TeamStatus |= PBETeamStatus.ToxicSpikes;
-                            opposingTeam.ToxicSpikeCount++;
-                            BroadcastTeamStatus(opposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        opposingTeam.TeamStatus |= PBETeamStatus.ToxicSpikes;
+                        opposingTeam.ToxicSpikeCount++;
+                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 case PBETeamStatus.WideGuard:
+                {
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && PBEUtils.RNG.ApplyChance(user.GetProtectionChance(), ushort.MaxValue))
                     {
-                        if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && PBEUtils.RNG.ApplyChance(user.GetProtectionChance(), ushort.MaxValue))
-                        {
-                            user.Team.TeamStatus |= PBETeamStatus.WideGuard;
-                            BroadcastTeamStatus(user.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Added);
-                            failReason = PBEFailReason.None;
-                        }
-                        else
-                        {
-                            failReason = PBEFailReason.Default;
-                        }
-                        break;
+                        user.Team.TeamStatus |= PBETeamStatus.WideGuard;
+                        BroadcastTeamStatus(user.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Added);
+                        failReason = PBEFailReason.None;
                     }
+                    else
+                    {
+                        failReason = PBEFailReason.Default;
+                    }
+                    break;
+                }
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
             if (failReason != PBEFailReason.None)
@@ -2561,7 +2561,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
-        void Ef_TryForceWeather(PBEPokemon user, PBEMove move, PBEWeather weather)
+        private void Ef_TryForceWeather(PBEPokemon user, PBEMove move, PBEWeather weather)
         {
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
@@ -2580,33 +2580,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (weather)
                 {
                     case PBEWeather.Hailstorm:
-                        {
-                            turns = Settings.HailTurns;
-                            extensionItem = PBEItem.IcyRock;
-                            itemTurnExtension = Settings.IcyRockTurnExtension;
-                            break;
-                        }
+                    {
+                        turns = Settings.HailTurns;
+                        extensionItem = PBEItem.IcyRock;
+                        itemTurnExtension = Settings.IcyRockTurnExtension;
+                        break;
+                    }
                     case PBEWeather.HarshSunlight:
-                        {
-                            turns = Settings.SunTurns;
-                            extensionItem = PBEItem.HeatRock;
-                            itemTurnExtension = Settings.HeatRockTurnExtension;
-                            break;
-                        }
+                    {
+                        turns = Settings.SunTurns;
+                        extensionItem = PBEItem.HeatRock;
+                        itemTurnExtension = Settings.HeatRockTurnExtension;
+                        break;
+                    }
                     case PBEWeather.Rain:
-                        {
-                            turns = Settings.RainTurns;
-                            extensionItem = PBEItem.DampRock;
-                            itemTurnExtension = Settings.DampRockTurnExtension;
-                            break;
-                        }
+                    {
+                        turns = Settings.RainTurns;
+                        extensionItem = PBEItem.DampRock;
+                        itemTurnExtension = Settings.DampRockTurnExtension;
+                        break;
+                    }
                     case PBEWeather.Sandstorm:
-                        {
-                            turns = Settings.SandstormTurns;
-                            extensionItem = PBEItem.SmoothRock;
-                            itemTurnExtension = Settings.SmoothRockTurnExtension;
-                            break;
-                        }
+                    {
+                        turns = Settings.SandstormTurns;
+                        extensionItem = PBEItem.SmoothRock;
+                        itemTurnExtension = Settings.SmoothRockTurnExtension;
+                        break;
+                    }
                     default: throw new ArgumentOutOfRangeException(nameof(weather));
                 }
                 Weather = weather;
@@ -2616,7 +2616,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
-        void Ef_Hit__MaybeInflictStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status, int chanceToInflict)
+        private void Ef_Hit__MaybeInflictStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status, int chanceToInflict)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2641,7 +2641,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Hit__MaybeInflictStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status, int chanceToInflict)
+        private void Ef_Hit__MaybeInflictStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status, int chanceToInflict)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2667,7 +2667,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
-        void Ef_ChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes)
+        private void Ef_ChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2715,7 +2715,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_ChangeUserStats(PBEPokemon user, PBEMove move, PBEStat[] stats, short[] changes)
+        private void Ef_ChangeUserStats(PBEPokemon user, PBEMove move, PBEStat[] stats, short[] changes)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2727,7 +2727,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
-        void Ef_Hit__MaybeChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
+        private void Ef_Hit__MaybeChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2755,7 +2755,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Hit__MaybeChangeUserStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
+        private void Ef_Hit__MaybeChangeUserStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2784,7 +2784,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
-        void Ef_BrickBreak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_BrickBreak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2819,7 +2819,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
+        private void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2862,7 +2862,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
+        private void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2905,14 +2905,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Fail(PBEPokemon user, PBEMove move)
+        private void Ef_Fail(PBEPokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             BroadcastMoveFailed(user, user, PBEFailReason.Default);
             RecordExecutedMove(user, move, PBEFailReason.Default, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
-        void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
+        private void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2955,7 +2955,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Hit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Hit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2973,7 +2973,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Selfdestruct(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Selfdestruct(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             // TODO: Damp
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
@@ -2994,7 +2994,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             FaintCheck(user);
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Snore(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int chanceToFlinch)
+        private void Ef_Snore(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int chanceToFlinch)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3024,7 +3024,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_SuckerPunch(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_SuckerPunch(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3057,7 +3057,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
-        void Ef_Endeavor(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Endeavor(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3088,7 +3088,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_FinalGambit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_FinalGambit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3113,7 +3113,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_OneHitKnockout(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_OneHitKnockout(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3154,7 +3154,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Psywave(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Psywave(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3176,7 +3176,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_SeismicToss(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_SeismicToss(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3198,7 +3198,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_SetDamage(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int damage)
+        private void Ef_SetDamage(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int damage)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3220,7 +3220,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_SuperFang(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_SuperFang(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3243,7 +3243,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
-        void Ef_HPDrain(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
+        private void Ef_HPDrain(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3292,7 +3292,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Moonlight(PBEPokemon user, PBEMove move)
+        private void Ef_Moonlight(PBEPokemon user, PBEMove move)
         {
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
@@ -3324,7 +3324,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
-        void Ef_PainSplit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_PainSplit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3386,7 +3386,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Rest(PBEPokemon user, PBEMove move)
+        private void Ef_Rest(PBEPokemon user, PBEMove move)
         {
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
@@ -3419,7 +3419,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
-        void Ef_RestoreTargetHP(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
+        private void Ef_RestoreTargetHP(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3469,7 +3469,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_RestoreUserHP(PBEPokemon user, PBEMove move, int percentRestored)
+        private void Ef_RestoreUserHP(PBEPokemon user, PBEMove move, int percentRestored)
         {
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
@@ -3487,7 +3487,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
 
-        void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator)
+        private void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3509,7 +3509,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Recoil3__MaybeInflictStatus1With10PercentChance(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
+        private void Ef_Recoil3__MaybeInflictStatus1With10PercentChance(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3538,7 +3538,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Struggle(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Struggle(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3561,7 +3561,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
 
-        void Ef_Curse(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Curse(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3646,7 +3646,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Flatter(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Flatter(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3684,7 +3684,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_GastroAcid(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_GastroAcid(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3731,12 +3731,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Growth(PBEPokemon user, PBEMove move)
+        private void Ef_Growth(PBEPokemon user, PBEMove move)
         {
             short change = (short)(ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight ? +2 : +1);
             Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { change, change });
         }
-        void Ef_HelpingHand(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_HelpingHand(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3783,7 +3783,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Metronome(PBEPokemon user, PBEMove move)
+        private void Ef_Metronome(PBEPokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3795,7 +3795,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
             calledFromOtherMove = false;
         }
-        void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3839,7 +3839,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Swagger(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Swagger(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -3877,7 +3877,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        void Ef_Whirlwind(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        private void Ef_Whirlwind(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;

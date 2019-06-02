@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
 {
     public class MoveInfo
     {
-        static Dictionary<PBEType, Tuple<SolidColorBrush, SolidColorBrush>> typeToBrush;
+        private static Dictionary<PBEType, Tuple<SolidColorBrush, SolidColorBrush>> typeToBrush;
         public static void CreateBrushes()
         {
             if (typeToBrush == null)

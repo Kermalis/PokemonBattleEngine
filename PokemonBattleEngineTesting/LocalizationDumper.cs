@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
-    class LocalizationDumper
+    internal class LocalizationDumper
     {
         // You must dump the NARC files yourself (/a/0/0/2 in each language)
         public static void Dump(SqliteConnection con)
@@ -35,8 +35,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                             ushort numEntries = r.ReadUInt16();
                             r.ReadUInt32(); // fileSize
                             r.ReadUInt32(); // padding
-                            var texts = new string[numBlocks][];
-                            var blockOffsets = new uint[numBlocks];
+                            string[][] texts = new string[numBlocks][];
+                            uint[] blockOffsets = new uint[numBlocks];
                             for (int i = 0; i < numBlocks; i++)
                             {
                                 texts[i] = new string[numEntries];
@@ -46,8 +46,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                             {
                                 r.BaseStream.Position = blockOffsets[i];
                                 r.ReadUInt32(); // blockSize
-                                var stringOffsets = new uint[numEntries];
-                                var stringLengths = new ushort[numEntries];
+                                uint[] stringOffsets = new uint[numEntries];
+                                ushort[] stringLengths = new ushort[numEntries];
                                 for (int j = 0; j < numEntries; j++)
                                 {
                                     stringOffsets[j] = r.ReadUInt32();
@@ -58,13 +58,13 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 {
                                     r.BaseStream.Position = blockOffsets[i] + stringOffsets[j];
                                     ushort len = stringLengths[j];
-                                    var encoded = new ushort[len];
+                                    ushort[] encoded = new ushort[len];
                                     for (int k = 0; k < len; k++)
                                     {
                                         encoded[k] = r.ReadUInt16();
                                     }
                                     int key = encoded[len - 1] ^ 0xFFFF;
-                                    var decoded = new int[len];
+                                    int[] decoded = new int[len];
                                     for (int k = len - 1; k >= 0; k--)
                                     {
                                         decoded[k] = encoded[k] ^ key;

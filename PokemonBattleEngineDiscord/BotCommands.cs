@@ -27,7 +27,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 else
                 {
                     PBEAbility ability = nAbility.Value;
-                    var embed = new EmbedBuilder()
+                    EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(PBEUtils.Sample(Utils.TypeToColor).Value)
                         .WithTitle(PBELocalizedString.GetAbilityName(ability).English)
@@ -92,7 +92,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     PBEItem item = nItem.Value;
                     PBEItemData iData = PBEItemData.Data[item];
-                    var embed = new EmbedBuilder()
+                    EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(iData.NaturalGiftType == PBEType.None ? Utils.RandomColor() : Utils.TypeToColor[iData.NaturalGiftType])
                         .WithTitle(PBELocalizedString.GetItemName(item).English)
@@ -132,7 +132,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 {
                     PBEMove move = nMove.Value;
                     PBEMoveData mData = PBEMoveData.Data[move];
-                    var embed = new EmbedBuilder()
+                    EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.TypeToColor[mData.Type])
                         .WithTitle(PBELocalizedString.GetMoveName(move).English)
@@ -193,7 +193,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         default: throw new ArgumentOutOfRangeException(nameof(pData.GenderRatio));
                     }
 
-                    var embed = new EmbedBuilder()
+                    EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
                         .WithColor(Utils.GetColor(species))
                         .WithTitle($"{PBELocalizedString.GetSpeciesName(species).English} - {PBELocalizedString.GetSpeciesCategory(species).English}")

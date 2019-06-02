@@ -14,10 +14,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 {
     public class HPBarView : UserControl, INotifyPropertyChanged
     {
-        void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+
+        }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        Point location;
+        private Point location;
         public Point Location
         {
             get => location;
@@ -28,7 +32,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
 
-        readonly SolidColorBrush greenSides, greenMid, yellowSides, yellowMid, redSides, redMid;
+        private readonly SolidColorBrush greenSides, greenMid, yellowSides, yellowMid, redSides, redMid;
 
         public HPBarView()
         {

@@ -8,14 +8,14 @@ namespace Kermalis.PokemonBattleEngineMobile
 {
     public partial class MainPage : TabbedPage
     {
-        readonly List<MobileBattleClient> battles = new List<MobileBattleClient>();
+        private readonly List<MobileBattleClient> battles = new List<MobileBattleClient>();
 
         public MainPage()
         {
             InitializeComponent();
         }
 
-        void Connect(object sender, EventArgs e)
+        private void Connect(object sender, EventArgs e)
         {
             var client = new MobileBattleClient(IP.Text, 8888, PBEBattleFormat.Double, PBESettings.DefaultSettings);
             battles.Add(client);

@@ -6,14 +6,20 @@ namespace Kermalis.PokemonBattleEngineClient
 {
     public class App : Application
     {
-        static void Main(string[] args)
-            => BuildAvaloniaApp().Start<MainWindow>();
+        public static void Main()
+        {
+            BuildAvaloniaApp().Start<MainWindow>();
+        }
         public static AppBuilder BuildAvaloniaApp()
-           => AppBuilder.Configure<App>()
-               .UsePlatformDetect()
-               .UseReactiveUI()
-               .LogToDebug();
-        public override void Initialize() =>
+        {
+            return AppBuilder.Configure<App>()
+                          .UsePlatformDetect()
+                          .UseReactiveUI()
+                          .LogToDebug();
+        }
+        public override void Initialize()
+        {
             AvaloniaXamlLoader.Load(this);
+        }
     }
 }

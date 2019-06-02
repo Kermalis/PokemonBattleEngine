@@ -62,8 +62,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// </summary>
         /// <param name="pos">The position of the Pokémon you want to get.</param>
         /// <returns>null if no Pokémon was found was found at <paramref name="pos"/>; otherwise the <see cref="PBEPokemon"/>.</returns>
-        public PBEPokemon TryGetPokemon(PBEFieldPosition pos) => ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
-        public PBEPokemon TryGetPokemon(byte id) => Party.SingleOrDefault(p => p.Id == id);
+        public PBEPokemon TryGetPokemon(PBEFieldPosition pos)
+        {
+            return ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
+        }
+        public PBEPokemon TryGetPokemon(byte id)
+        {
+            return Party.SingleOrDefault(p => p.Id == id);
+        }
 
         public override string ToString()
         {

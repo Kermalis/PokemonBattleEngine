@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Droid
             LoadApplication(new App());
         }
 
-        void CopyDatabase()
+        private void CopyDatabase()
         {
             string path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             if (!Directory.Exists(path))

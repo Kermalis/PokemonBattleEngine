@@ -11,11 +11,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 {
     public class PokemonView : UserControl, INotifyPropertyChanged
     {
-        void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        PBEPokemon pokemon;
-        double scale;
+        private PBEPokemon pokemon;
+        private double scale;
         public double Scale
         {
             get => scale;
@@ -25,7 +28,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Scale));
             }
         }
-        Point location;
+        private Point location;
         public Point Location
         {
             get => location;
@@ -35,7 +38,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Location));
             }
         }
-        bool showRawValues0, showRawValues1;
+        private bool showRawValues0, showRawValues1;
         public string Description => Utils.CustomPokemonToString(pokemon, showRawValues0, showRawValues1);
 
         public PokemonView()

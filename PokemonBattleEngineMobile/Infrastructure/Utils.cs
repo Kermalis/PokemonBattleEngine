@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
 {
-    static class Utils
+    internal static class Utils
     {
         public static bool DoesResourceExist(string resource)
         {

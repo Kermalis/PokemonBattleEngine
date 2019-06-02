@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
-    class NARC : IDisposable
+    internal class NARC : IDisposable
     {
         public MemoryStream[] Files;
 
@@ -14,8 +14,8 @@ namespace Kermalis.PokemonBattleEngineTesting
             {
                 uint numFiles = br.ReadUInt32(0x18);
                 Files = new MemoryStream[numFiles];
-                var startOffsets = new uint[numFiles];
-                var endOffsets = new uint[numFiles];
+                uint[] startOffsets = new uint[numFiles];
+                uint[] endOffsets = new uint[numFiles];
                 for (uint i = 0; i < numFiles; i++)
                 {
                     startOffsets[i] = br.ReadUInt32();

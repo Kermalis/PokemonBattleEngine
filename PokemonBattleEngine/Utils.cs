@@ -26,7 +26,7 @@ namespace Kermalis.PokemonBattleEngine
             }
         }
 
-        static SqliteConnection databaseConnection = null;
+        private static SqliteConnection databaseConnection = null;
         public static SqliteConnection DatabaseConnection
         {
             get

@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
-    static class Utils
+    internal static class Utils
     {
         public const string URL = "https://github.com/Kermalis/PokemonBattleEngine";
         public static Dictionary<PBEType, Color> TypeToColor { get; } = new Dictionary<PBEType, Color>
@@ -66,7 +66,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         public static bool URLExists(string url)
         {
             bool result = false;
-            WebRequest webRequest = WebRequest.Create(url);
+            var webRequest = WebRequest.Create(url);
             webRequest.Timeout = 2000;
             webRequest.Method = "HEAD";
             HttpWebResponse response = null;

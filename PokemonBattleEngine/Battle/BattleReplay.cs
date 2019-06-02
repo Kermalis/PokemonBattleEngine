@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        const ushort CurrentReplayVersion = 0;
+        private const ushort CurrentReplayVersion = 0;
 
         public void SaveReplay()
         {

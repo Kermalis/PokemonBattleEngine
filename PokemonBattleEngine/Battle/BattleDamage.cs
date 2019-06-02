@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="ignoreSubstitute">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEStatus2.Substitute"/>.</param>
         /// <param name="ignoreSturdy">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEAbility.Sturdy"/>, <see cref="PBEItem.FocusBand"/>, or <see cref="PBEItem.FocusSash"/>.</param>
         /// <returns>The amount of damage dealt.</returns>
-        ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute, bool ignoreSturdy = false)
+        private ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute, bool ignoreSturdy = false)
         {
             if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -87,7 +87,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="pkmn">The Pokémon receiving the HP.</param>
         /// <param name="hp">The amount of HP <paramref name="pkmn"/> will try to gain.</param>
         /// <returns>The amount of HP restored.</returns>
-        ushort HealDamage(PBEPokemon pkmn, ushort hp)
+        private ushort HealDamage(PBEPokemon pkmn, ushort hp)
         {
             ushort oldHP = pkmn.HP;
             double oldPercentage = pkmn.HPPercentage;
@@ -100,7 +100,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return healAmt;
         }
-        void TypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEEffectiveness moveEffectiveness, ref double moveEffectivenessMultiplier, bool ignoreWonderGuard)
+        private void TypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEEffectiveness moveEffectiveness, ref double moveEffectivenessMultiplier, bool ignoreWonderGuard)
         {
             double m = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.Type1];
             m *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.Type2];
@@ -135,7 +135,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        double CalculateBasePower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEType moveType)
+        private double CalculateBasePower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEType moveType)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
             double basePower = mData.Power;
@@ -145,152 +145,152 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEMove.Eruption:
                 case PBEMove.WaterSpout:
-                    {
-                        basePower = Math.Max(1, 150 * user.HP / user.MaxHP);
-                        break;
-                    }
+                {
+                    basePower = Math.Max(1, 150 * user.HP / user.MaxHP);
+                    break;
+                }
                 case PBEMove.Flail:
                 case PBEMove.Reversal:
+                {
+                    int val = 48 * user.HP / user.MaxHP;
+                    if (val < 2)
                     {
-                        int val = 48 * user.HP / user.MaxHP;
-                        if (val < 2)
-                        {
-                            basePower = 200;
-                        }
-                        else if (val < 4)
-                        {
-                            basePower = 150;
-                        }
-                        else if (val < 9)
-                        {
-                            basePower = 100;
-                        }
-                        else if (val < 16)
-                        {
-                            basePower = 80;
-                        }
-                        else if (val < 32)
-                        {
-                            basePower = 40;
-                        }
-                        else
-                        {
-                            basePower = 20;
-                        }
-                        break;
+                        basePower = 200;
                     }
+                    else if (val < 4)
+                    {
+                        basePower = 150;
+                    }
+                    else if (val < 9)
+                    {
+                        basePower = 100;
+                    }
+                    else if (val < 16)
+                    {
+                        basePower = 80;
+                    }
+                    else if (val < 32)
+                    {
+                        basePower = 40;
+                    }
+                    else
+                    {
+                        basePower = 20;
+                    }
+                    break;
+                }
                 case PBEMove.Frustration:
-                    {
-                        basePower = (int)Math.Max(1, (byte.MaxValue - user.Friendship) / 2.5);
-                        break;
-                    }
+                {
+                    basePower = (int)Math.Max(1, (byte.MaxValue - user.Friendship) / 2.5);
+                    break;
+                }
                 case PBEMove.GrassKnot:
                 case PBEMove.LowKick:
+                {
+                    if (targets[0].Weight >= 200.0)
                     {
-                        if (targets[0].Weight >= 200.0)
-                        {
-                            basePower = 120;
-                        }
-                        else if (targets[0].Weight >= 100.0)
-                        {
-                            basePower = 100;
-                        }
-                        else if (targets[0].Weight >= 50.0)
-                        {
-                            basePower = 80;
-                        }
-                        else if (targets[0].Weight >= 25.0)
-                        {
-                            basePower = 60;
-                        }
-                        else if (targets[0].Weight >= 10.0)
-                        {
-                            basePower = 40;
-                        }
-                        else
-                        {
-                            basePower = 20;
-                        }
-                        break;
+                        basePower = 120;
                     }
+                    else if (targets[0].Weight >= 100.0)
+                    {
+                        basePower = 100;
+                    }
+                    else if (targets[0].Weight >= 50.0)
+                    {
+                        basePower = 80;
+                    }
+                    else if (targets[0].Weight >= 25.0)
+                    {
+                        basePower = 60;
+                    }
+                    else if (targets[0].Weight >= 10.0)
+                    {
+                        basePower = 40;
+                    }
+                    else
+                    {
+                        basePower = 20;
+                    }
+                    break;
+                }
                 case PBEMove.HeatCrash:
                 case PBEMove.HeavySlam:
+                {
+                    double relative = user.Weight / targets[0].Weight;
+                    if (relative < 2)
                     {
-                        double relative = user.Weight / targets[0].Weight;
-                        if (relative < 2)
-                        {
-                            basePower = 40;
-                        }
-                        else if (relative < 3)
-                        {
-                            basePower = 60;
-                        }
-                        else if (relative < 4)
-                        {
-                            basePower = 80;
-                        }
-                        else if (relative < 5)
-                        {
-                            basePower = 100;
-                        }
-                        else
-                        {
-                            basePower = 120;
-                        }
-                        break;
+                        basePower = 40;
                     }
+                    else if (relative < 3)
+                    {
+                        basePower = 60;
+                    }
+                    else if (relative < 4)
+                    {
+                        basePower = 80;
+                    }
+                    else if (relative < 5)
+                    {
+                        basePower = 100;
+                    }
+                    else
+                    {
+                        basePower = 120;
+                    }
+                    break;
+                }
                 case PBEMove.HiddenPower:
-                    {
-                        basePower = user.GetHiddenPowerBasePower();
-                        break;
-                    }
+                {
+                    basePower = user.GetHiddenPowerBasePower();
+                    break;
+                }
                 case PBEMove.Magnitude:
+                {
+                    int val = PBEUtils.RNG.Next(0, 100);
+                    byte magnitude;
+                    if (val < 5) // Magnitude 4 - 5%
                     {
-                        int val = PBEUtils.RNG.Next(0, 100);
-                        byte magnitude;
-                        if (val < 5) // Magnitude 4 - 5%
-                        {
-                            magnitude = 4;
-                            basePower = 10;
-                        }
-                        else if (val < 15) // Magnitude 5 - 10%
-                        {
-                            magnitude = 5;
-                            basePower = 30;
-                        }
-                        else if (val < 35) // Magnitude 6 - 20%
-                        {
-                            magnitude = 6;
-                            basePower = 50;
-                        }
-                        else if (val < 65) // Magnitude 7 - 30%
-                        {
-                            magnitude = 7;
-                            basePower = 70;
-                        }
-                        else if (val < 85) // Magnitude 8 - 20%
-                        {
-                            magnitude = 8;
-                            basePower = 90;
-                        }
-                        else if (val < 95) // Magnitude 9 - 10%
-                        {
-                            magnitude = 9;
-                            basePower = 110;
-                        }
-                        else // Magnitude 10 - 5%
-                        {
-                            magnitude = 10;
-                            basePower = 150;
-                        }
-                        BroadcastMagnitude(magnitude);
-                        break;
+                        magnitude = 4;
+                        basePower = 10;
                     }
+                    else if (val < 15) // Magnitude 5 - 10%
+                    {
+                        magnitude = 5;
+                        basePower = 30;
+                    }
+                    else if (val < 35) // Magnitude 6 - 20%
+                    {
+                        magnitude = 6;
+                        basePower = 50;
+                    }
+                    else if (val < 65) // Magnitude 7 - 30%
+                    {
+                        magnitude = 7;
+                        basePower = 70;
+                    }
+                    else if (val < 85) // Magnitude 8 - 20%
+                    {
+                        magnitude = 8;
+                        basePower = 90;
+                    }
+                    else if (val < 95) // Magnitude 9 - 10%
+                    {
+                        magnitude = 9;
+                        basePower = 110;
+                    }
+                    else // Magnitude 10 - 5%
+                    {
+                        magnitude = 10;
+                        basePower = 150;
+                    }
+                    BroadcastMagnitude(magnitude);
+                    break;
+                }
                 case PBEMove.Return:
-                    {
-                        basePower = (int)Math.Max(1, user.Friendship / 2.5);
-                        break;
-                    }
+                {
+                    basePower = (int)Math.Max(1, user.Friendship / 2.5);
+                    break;
+                }
             }
 
             // Item-specific power boosts
@@ -655,13 +655,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEMove.WeatherBall:
+                {
+                    if (ShouldDoWeatherEffects() && Weather != PBEWeather.None)
                     {
-                        if (ShouldDoWeatherEffects() && Weather != PBEWeather.None)
-                        {
-                            basePower *= 2.0;
-                        }
-                        break;
+                        basePower *= 2.0;
                     }
+                    break;
+                }
             }
 
             if (ShouldDoWeatherEffects())
@@ -669,37 +669,37 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 switch (Weather)
                 {
                     case PBEWeather.HarshSunlight:
+                    {
+                        if (moveType == PBEType.Fire)
                         {
-                            if (moveType == PBEType.Fire)
-                            {
-                                basePower *= 1.5;
-                            }
-                            else if (moveType == PBEType.Water)
-                            {
-                                basePower *= 0.5;
-                            }
-                            break;
+                            basePower *= 1.5;
                         }
+                        else if (moveType == PBEType.Water)
+                        {
+                            basePower *= 0.5;
+                        }
+                        break;
+                    }
                     case PBEWeather.Rain:
+                    {
+                        if (moveType == PBEType.Water)
                         {
-                            if (moveType == PBEType.Water)
-                            {
-                                basePower *= 1.5;
-                            }
-                            else if (moveType == PBEType.Fire)
-                            {
-                                basePower *= 0.5;
-                            }
-                            break;
+                            basePower *= 1.5;
                         }
+                        else if (moveType == PBEType.Fire)
+                        {
+                            basePower *= 0.5;
+                        }
+                        break;
+                    }
                     case PBEWeather.Sandstorm:
+                    {
+                        if (user.Ability == PBEAbility.SandForce && (user.HasType(PBEType.Rock) || user.HasType(PBEType.Ground) || user.HasType(PBEType.Steel)))
                         {
-                            if (user.Ability == PBEAbility.SandForce && (user.HasType(PBEType.Rock) || user.HasType(PBEType.Ground) || user.HasType(PBEType.Steel)))
-                            {
-                                basePower *= 1.3;
-                            }
-                            break;
+                            basePower *= 1.3;
                         }
+                        break;
+                    }
                 }
             }
 
@@ -734,7 +734,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return basePower;
         }
-        double CalculateDamageMultiplier(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEEffectiveness moveEffectiveness, bool criticalHit)
+        private double CalculateDamageMultiplier(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEEffectiveness moveEffectiveness, bool criticalHit)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
             double damageMultiplier = 1;
@@ -834,7 +834,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return damageMultiplier;
         }
 
-        double CalculateAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, double initialAttack)
+        private double CalculateAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, double initialAttack)
         {
             double attack = initialAttack;
 
@@ -889,7 +889,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return attack;
         }
-        double CalculateDefense(PBEPokemon user, PBEPokemon target, double initialDefense)
+        private double CalculateDefense(PBEPokemon user, PBEPokemon target, double initialDefense)
         {
             double defense = initialDefense;
 
@@ -908,7 +908,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return defense;
         }
-        double CalculateSpAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, double initialSpAttack)
+        private double CalculateSpAttack(PBEPokemon user, PBEPokemon target, PBEType moveType, double initialSpAttack)
         {
             double spAttack = initialSpAttack;
 
@@ -959,7 +959,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return spAttack;
         }
-        double CalculateSpDefense(PBEPokemon user, PBEPokemon target, double initialSpDefense)
+        private double CalculateSpDefense(PBEPokemon user, PBEPokemon target, double initialSpDefense)
         {
             double spDefense = initialSpDefense;
 
@@ -990,7 +990,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return spDefense;
         }
 
-        ushort CalculateDamage(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, double basePower, bool criticalHit)
+        private ushort CalculateDamage(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEMoveCategory moveCategory, double basePower, bool criticalHit)
         {
             ushort damage;
             double a = 0, d = 0;
@@ -1001,44 +1001,44 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (move)
             {
                 case PBEMove.FoulPlay:
-                    {
-                        double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, target.AttackChange) : target.AttackChange, false);
-                        a = CalculateAttack(user, target, moveType, target.Attack * aMod);
-                        double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
-                        d = CalculateDefense(user, target, target.Defense * dMod);
-                        break;
-                    }
+                {
+                    double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, target.AttackChange) : target.AttackChange, false);
+                    a = CalculateAttack(user, target, moveType, target.Attack * aMod);
+                    double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                    d = CalculateDefense(user, target, target.Defense * dMod);
+                    break;
+                }
                 case PBEMove.Psyshock:
                 case PBEMove.Psystrike:
                 case PBEMove.SecretSword:
+                {
+                    double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
+                    a = CalculateSpAttack(user, target, moveType, user.SpAttack * aMod);
+                    double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                    d = CalculateDefense(user, target, target.Defense * dMod);
+                    break;
+                }
+                default:
+                {
+                    if (moveCategory == PBEMoveCategory.Physical)
+                    {
+                        double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
+                        a = CalculateAttack(user, target, moveType, user.Attack * aMod);
+                        double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                        d = CalculateDefense(user, target, target.Defense * dMod);
+                    }
+                    else if (moveCategory == PBEMoveCategory.Special)
                     {
                         double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
                         a = CalculateSpAttack(user, target, moveType, user.SpAttack * aMod);
-                        double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
-                        d = CalculateDefense(user, target, target.Defense * dMod);
-                        break;
+                        double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
+                        d = CalculateSpDefense(user, target, target.SpDefense * dMod);
                     }
-                default:
-                    {
-                        if (moveCategory == PBEMoveCategory.Physical)
-                        {
-                            double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
-                            a = CalculateAttack(user, target, moveType, user.Attack * aMod);
-                            double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
-                            d = CalculateDefense(user, target, target.Defense * dMod);
-                        }
-                        else if (moveCategory == PBEMoveCategory.Special)
-                        {
-                            double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
-                            a = CalculateSpAttack(user, target, moveType, user.SpAttack * aMod);
-                            double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
-                            d = CalculateSpDefense(user, target, target.SpDefense * dMod);
-                        }
-                        break;
-                    }
+                    break;
+                }
             }
 
-            damage = (ushort)(2 * user.Level / 5 + 2);
+            damage = (ushort)((2 * user.Level / 5) + 2);
             damage = (ushort)(damage * a * basePower / d);
             damage /= 50;
             damage += 2;

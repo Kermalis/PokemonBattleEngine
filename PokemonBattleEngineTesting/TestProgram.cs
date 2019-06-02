@@ -2,7 +2,7 @@
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
-    class TestProgram
+    internal class TestProgram
     {
         private enum TestType
         {
@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PokemonDataDumper
         }
 
-        static void Main(string[] args)
+        public static void Main()
         {
             SqliteConnection GetConnection()
             {
@@ -29,23 +29,23 @@ namespace Kermalis.PokemonBattleEngineTesting
                 case TestType.AIBattle: AIBattle.Test(); break;
                 case TestType.FontDumper: FontDumper.Dump(); break;
                 case TestType.LocalizationDumper:
+                {
+                    using (SqliteConnection con = GetConnection())
                     {
-                        using (SqliteConnection con = GetConnection())
-                        {
-                            LocalizationDumper.Dump(con);
-                            con.Close();
-                        }
-                        break;
+                        LocalizationDumper.Dump(con);
+                        con.Close();
                     }
+                    break;
+                }
                 case TestType.PokemonDataDumper:
+                {
+                    using (SqliteConnection con = GetConnection())
                     {
-                        using (SqliteConnection con = GetConnection())
-                        {
-                            PokemonDataDumper.Dump(con);
-                            con.Close();
-                        }
-                        break;
+                        PokemonDataDumper.Dump(con);
+                        con.Close();
                     }
+                    break;
+                }
             }
         }
     }

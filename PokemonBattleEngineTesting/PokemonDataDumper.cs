@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
-    class PokemonDataDumper
+    internal class PokemonDataDumper
     {
         private class Pokemon
         {
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
         }
 
-        static readonly PBEType[] gen5Types = new PBEType[17]
+        private static readonly PBEType[] gen5Types = new PBEType[17]
         {
             PBEType.Normal,
             PBEType.Fighting,
@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEType.Dragon,
             PBEType.Dark
         };
-        static readonly Dictionary<int, PBESpecies> gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, PBESpecies> gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 1, PBESpecies.Bulbasaur },
             { 2, PBESpecies.Ivysaur },
@@ -433,7 +433,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 410, PBESpecies.Deoxys },
             { 411, PBESpecies.Chimecho },
         };
-        static readonly PBEMove[] gen3TMHMs = new PBEMove[58]
+        private static readonly PBEMove[] gen3TMHMs = new PBEMove[58]
         {
             (PBEMove)264, // FocusPunch
             PBEMove.DragonClaw,
@@ -494,7 +494,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.Dive
         };
-        static readonly PBEMove[] frlgTutorMoves = new PBEMove[15]
+        private static readonly PBEMove[] frlgTutorMoves = new PBEMove[15]
         {
             PBEMove.MegaPunch,
             PBEMove.SwordsDance,
@@ -512,7 +512,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.RockSlide,
             PBEMove.Substitute
         };
-        static readonly PBEMove[] emeraldTutorMoves = new PBEMove[30]
+        private static readonly PBEMove[] emeraldTutorMoves = new PBEMove[30]
         {
             PBEMove.MegaPunch,
             PBEMove.SwordsDance,
@@ -545,7 +545,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.FirePunch,
             (PBEMove)210 // FuryCutter
         };
-        static readonly Dictionary<int, PBESpecies> gen4SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, PBESpecies> gen4SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 496, PBESpecies.Deoxys_Attack },
             { 497, PBESpecies.Deoxys_Defense },
@@ -560,7 +560,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 506, PBESpecies.Rotom_Fan },
             { 507, PBESpecies.Rotom_Mow }
         };
-        static readonly PBEMove[] gen4TMHMs = new PBEMove[100]
+        private static readonly PBEMove[] gen4TMHMs = new PBEMove[100]
         {
             (PBEMove)264, // FocusPunch
             PBEMove.DragonClaw,
@@ -673,7 +673,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         // u8 greenShard
         // u16 unk1
         // u32 areaId (0 = Route 212, 1 = Survival Area, 2 = Snowpoint City)
-        static readonly PBEMove[] ptTutorMoves = new PBEMove[38]
+        private static readonly PBEMove[] ptTutorMoves = new PBEMove[38]
         {
             PBEMove.Dive,
             PBEMove.MudSlap,
@@ -719,7 +719,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         // u16 moveId
         // u8 bpCost
         // u8 areaId (0 = Frontier Access [top left tutor], 1 = Frontier Access [top right tutor], 2 = Frontier Access [bottom right tutor], 3 = Ilex Forest [Headbutt tutor])
-        static readonly PBEMove[] hgssTutorMoves = new PBEMove[52]
+        private static readonly PBEMove[] hgssTutorMoves = new PBEMove[52]
         {
             PBEMove.Dive,
             PBEMove.MudSlap,
@@ -774,7 +774,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             (PBEMove)450, // BugBite
             PBEMove.Headbutt
         };
-        static readonly Dictionary<int, PBESpecies> bwSpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, PBESpecies> bwSpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 650, PBESpecies.Deoxys_Attack },
             { 651, PBESpecies.Deoxys_Defense },
@@ -795,7 +795,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 666, PBESpecies.Darmanitan_Zen },
             { 667, PBESpecies.Meloetta_Pirouette }
         };
-        static readonly Dictionary<int, PBESpecies> b2w2SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, PBESpecies> b2w2SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 685, PBESpecies.Deoxys_Attack },
             { 686, PBESpecies.Deoxys_Defense },
@@ -822,7 +822,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             { 707, PBESpecies.Thundurus_Therian },
             { 708, PBESpecies.Landorus_Therian }
         };
-        static readonly PBEMove[] gen5TMHMs = new PBEMove[101]
+        private static readonly PBEMove[] gen5TMHMs = new PBEMove[101]
         {
             PBEMove.HoneClaws,
             PBEMove.DragonClaw,
@@ -926,7 +926,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.Waterfall,
             PBEMove.Dive
         };
-        static readonly PBEMove[] gen5FreeTutorMoves = new PBEMove[7]
+        private static readonly PBEMove[] gen5FreeTutorMoves = new PBEMove[7]
         {
             (PBEMove)520, // GrassPledge
             (PBEMove)519, // FirePledge
@@ -942,7 +942,7 @@ namespace Kermalis.PokemonBattleEngineTesting
         // u32 moveId
         // u32 shardCost
         // u32 indexInList
-        static readonly PBEMove[][] b2w2TutorMoves = new PBEMove[4][]
+        private static readonly PBEMove[][] b2w2TutorMoves = new PBEMove[4][]
         {
             new PBEMove[15] // Driftveil City
             {
@@ -1219,19 +1219,19 @@ namespace Kermalis.PokemonBattleEngineTesting
                     void ReadGBALevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
                     {
                         PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
-                        if (species == (PBESpecies)386)
+                        if (species == PBESpecies.Deoxys)
                         {
                             if (reader == e)
                             {
-                                species = (PBESpecies)(386 | (3 << 0x10)); // Deoxys_Speed
+                                species = PBESpecies.Deoxys_Speed;
                             }
                             if (reader == lg)
                             {
-                                species = (PBESpecies)(386 | (2 << 0x10)); // Deoxys_Defense
+                                species = PBESpecies.Deoxys_Defense;
                             }
                             if (reader == fr)
                             {
-                                species = (PBESpecies)(386 | (1 << 0x10)); // Deoxys_Attack
+                                species = PBESpecies.Deoxys_Attack;
                             }
                         }
                         reader.BaseStream.Position = reader.ReadUInt32() - 0x8000000;
@@ -1261,7 +1261,11 @@ namespace Kermalis.PokemonBattleEngineTesting
                             byte level = reader.ReadByte();
                             reader.ReadByte(); // Padding
                             var move = (PBEMove)reader.ReadUInt16();
-                            if (move != PBEMove.None)
+                            if (move == PBEMove.None)
+                            {
+                                break;
+                            }
+                            else
                             {
                                 AddLevelUpMove(species, move, level, flag);
                             }
@@ -1400,8 +1404,8 @@ namespace Kermalis.PokemonBattleEngineTesting
                             }
                         }
                     }
-                    //ReadGCTM(coloCommonRel);
-                    //ReadGCTM(xdCommonRel);
+                    //ReadGCTMHM(coloCommonRel);
+                    //ReadGCTMHM(xdCommonRel);
                 }
                 // Gen 4
                 using (var dppt = new NARC(@"../../../\DumpedData\PtPokedata.narc"))

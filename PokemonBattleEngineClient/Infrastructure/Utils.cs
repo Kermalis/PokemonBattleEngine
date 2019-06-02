@@ -11,9 +11,9 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
-    static class Utils
+    internal static class Utils
     {
-        static string[] resources = null;
+        private static string[] resources = null;
         public static bool DoesResourceExist(string resource)
         {
             if (resources == null)
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         }
         public static Bitmap UriToBitmap(Uri uri)
         {
-            var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
+            IAssetLoader assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
             return new Bitmap(assets.Open(uri));
         }
 

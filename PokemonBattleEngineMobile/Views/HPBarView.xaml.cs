@@ -7,7 +7,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
 {
     public partial class HPBarView : ContentView
     {
-        readonly Color green, yellow, red;
+        private readonly Color green, yellow, red;
 
         public HPBarView()
         {

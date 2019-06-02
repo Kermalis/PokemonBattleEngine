@@ -8,16 +8,18 @@ using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
-    class DiscordBot
+    internal class DiscordBot
     {
-        DiscordSocketClient client;
-        IServiceProvider services;
-        CommandService commands;
-        const char commandPrefix = '!';
+        private DiscordSocketClient client;
+        private IServiceProvider services;
+        private CommandService commands;
+        private const char commandPrefix = '!';
 
         public static void Main(string[] args)
-            => new DiscordBot().MainAsync(args).GetAwaiter().GetResult();
-        public async Task MainAsync(string[] args)
+        {
+            new DiscordBot().MainAsync(args).GetAwaiter().GetResult();
+        }
+        private async Task MainAsync(string[] args)
         {
             client = new DiscordSocketClient(new DiscordSocketConfig { WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance });
 
@@ -32,13 +34,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             client.MessageReceived += CommandMessageReceived;
             client.ReactionAdded += ReactionListener.Client_ReactionAdded;
 
-            await client.LoginAsync(TokenType.Bot, args[0]); // Token is passed as args[0]
+            await client.LoginAsync(TokenType.Bot, args[0]); // Token is passed in as args[0]
             await client.StartAsync();
 
             await Task.Delay(-1);
         }
 
-        async Task CommandMessageReceived(SocketMessage arg)
+        private async Task CommandMessageReceived(SocketMessage arg)
         {
             int argPos = 0;
             if (!(arg is SocketUserMessage message)
@@ -54,7 +56,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 Console.WriteLine(result.ErrorReason);
             }
         }
-        Task LogMessage(LogMessage arg)
+        private Task LogMessage(LogMessage arg)
         {
             Console.WriteLine(arg.Message);
             return Task.CompletedTask;

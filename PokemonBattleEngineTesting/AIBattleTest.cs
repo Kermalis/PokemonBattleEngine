@@ -9,12 +9,12 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
-    class AIBattle
+    internal class AIBattle
     {
-        const string LogFile = "Test Log.txt";
-        const string ReplayFile = "Test Replay.pbereplay";
-        static StreamWriter writer;
-        static TextWriter oldWriter;
+        private const string LogFile = "Test Log.txt";
+        private const string ReplayFile = "Test Replay.pbereplay";
+        private static StreamWriter writer;
+        private static TextWriter oldWriter;
 
         public static void Test()
         {
@@ -70,71 +70,71 @@ namespace Kermalis.PokemonBattleEngineTesting
             Console.SetOut(writer);
             battle.Begin();
         }
-        static void Battle_OnStateChanged(PBEBattle battle)
+        private static void Battle_OnStateChanged(PBEBattle battle)
         {
             try
             {
                 switch (battle.BattleState)
                 {
                     case PBEBattleState.Ended:
+                    {
+                        Console.SetOut(oldWriter);
+                        writer.Close();
+                        try
                         {
-                            Console.SetOut(oldWriter);
-                            writer.Close();
-                            try
-                            {
-                                battle.SaveReplay(ReplayFile);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Error saving replay:");
-                                Console.WriteLine(e.Message);
-                                Console.WriteLine(e.StackTrace);
-                            }
-                            Console.WriteLine("Test battle ended. The battle was saved to \"{0}\" and \"{1}\".", LogFile, ReplayFile);
-                            Console.ReadKey();
-                            break;
+                            battle.SaveReplay(ReplayFile);
                         }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Error saving replay:");
+                            Console.WriteLine(e.Message);
+                            Console.WriteLine(e.StackTrace);
+                        }
+                        Console.WriteLine("Test battle ended. The battle was saved to \"{0}\" and \"{1}\".", LogFile, ReplayFile);
+                        Console.ReadKey();
+                        break;
+                    }
                     case PBEBattleState.ReadyToRunTurn:
+                    {
+                        foreach (PBETeam team in battle.Teams)
                         {
-                            foreach (PBETeam team in battle.Teams)
+                            Console.WriteLine();
+                            Console.WriteLine("{0}'s team:", team.TrainerName);
+                            foreach (PBEPokemon pkmn in team.ActiveBattlers)
                             {
+                                Console.WriteLine(pkmn);
                                 Console.WriteLine();
-                                Console.WriteLine("{0}'s team:", team.TrainerName);
-                                foreach (PBEPokemon pkmn in team.ActiveBattlers)
-                                {
-                                    Console.WriteLine(pkmn);
-                                    Console.WriteLine();
-                                }
                             }
-                            battle.RunTurn();
-                            break;
                         }
+                        battle.RunTurn();
+                        break;
+                    }
                     case PBEBattleState.WaitingForActions:
+                    {
+                        foreach (PBETeam team in battle.Teams)
                         {
-                            foreach (PBETeam team in battle.Teams)
+                            IEnumerable<PBEAction> actions = PBEAIManager.CreateActions(team);
+                            if (!PBEBattle.AreActionsValid(team, actions))
                             {
-                                IEnumerable<PBEAction> actions = PBEAIManager.CreateActions(team);
-                                if (!PBEBattle.AreActionsValid(team, actions))
-                                {
-                                    throw new Exception($"{team.TrainerName}'s AI created invalid actions!");
-                                }
-                                PBEBattle.SelectActionsIfValid(team, actions);
+                                throw new Exception($"{team.TrainerName}'s AI created invalid actions!");
                             }
-                            break;
+                            PBEBattle.SelectActionsIfValid(team, actions);
                         }
+                        break;
+                    }
                     case PBEBattleState.WaitingForSwitchIns:
+                    {
+                        foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
                         {
-                            foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
+                            IEnumerable<Tuple<byte, PBEFieldPosition>> switches = PBEAIManager.CreateSwitches(team);
+                            if (!PBEBattle.AreSwitchesValid(team, switches))
                             {
-                                IEnumerable<Tuple<byte, PBEFieldPosition>> switches = PBEAIManager.CreateSwitches(team);
-                                if (!PBEBattle.AreSwitchesValid(team, switches))
-                                {
-                                    throw new Exception($"{team.TrainerName}'s AI created invalid switches!");
-                                }
-                                PBEBattle.SelectSwitchesIfValid(team, switches);
+                                throw new Exception($"{team.TrainerName}'s AI created invalid switches!");
                             }
-                            break;
+                            PBEBattle.SelectSwitchesIfValid(team, switches);
                         }
+                        break;
+                    }
                 }
             }
             catch (Exception e)

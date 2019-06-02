@@ -6,7 +6,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEPacketProcessor : IPacketProcessor
     {
-        readonly PBEBattle battle;
+        private readonly PBEBattle battle;
 
         public PBEPacketProcessor(PBEBattle battle)
         {

@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
-    class FontDumper
+    internal class FontDumper
     {
         private class Character
         {
@@ -40,7 +40,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             }
         }
 
-        static readonly Color[] colors = new Color[] { Color.Transparent, Color.White, Color.Black }; // value 02 is never used
+        private static readonly Color[] colors = new Color[] { Color.Transparent, Color.White, Color.Black }; // value 02 is never used
         public static void Dump()
         {
             using (var narc = new NARC(@"../../../\DumpedData\Gen5Font.narc"))
@@ -98,31 +98,31 @@ namespace Kermalis.PokemonBattleEngineTesting
                             switch (type)
                             {
                                 case 0:
+                                {
+                                    ushort charIndex = r.ReadUInt16();
+                                    for (ushort i = firstCharCode; i <= lastCharCode; i++)
                                     {
-                                        ushort charIndex = r.ReadUInt16();
-                                        for (ushort i = firstCharCode; i <= lastCharCode; i++)
-                                        {
-                                            dict.Add(i, charIndex++);
-                                        }
-                                        break;
+                                        dict.Add(i, charIndex++);
                                     }
+                                    break;
+                                }
                                 case 1:
+                                {
+                                    for (ushort i = firstCharCode; i <= lastCharCode; i++)
                                     {
-                                        for (ushort i = firstCharCode; i <= lastCharCode; i++)
-                                        {
-                                            dict.Add(i, r.ReadUInt16());
-                                        }
-                                        break;
+                                        dict.Add(i, r.ReadUInt16());
                                     }
+                                    break;
+                                }
                                 case 2:
+                                {
+                                    ushort numDefinitions = r.ReadUInt16();
+                                    for (ushort i = 0; i < numDefinitions; ++i)
                                     {
-                                        ushort numDefinitions = r.ReadUInt16();
-                                        for (ushort i = 0; i < numDefinitions; ++i)
-                                        {
-                                            dict.Add(r.ReadUInt16(), r.ReadUInt16());
-                                        }
-                                        break;
+                                        dict.Add(r.ReadUInt16(), r.ReadUInt16());
                                     }
+                                    break;
+                                }
                             }
                         }
 

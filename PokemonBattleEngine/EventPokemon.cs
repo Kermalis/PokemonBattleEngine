@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngine
             };
         }
 
-        static readonly IList<PBENature> allNatures = Enum.GetValues(typeof(PBENature)).Cast<PBENature>().Except(new[] { PBENature.MAX }).ToArray();
+        private static readonly IList<PBENature> allNatures = Enum.GetValues(typeof(PBENature)).Cast<PBENature>().Except(new[] { PBENature.MAX }).ToArray();
         public static ReadOnlyDictionary<PBESpecies, ReadOnlyCollection<PBEEventPokemon>> Events { get; } = new ReadOnlyDictionary<PBESpecies, ReadOnlyCollection<PBEEventPokemon>>(new Dictionary<PBESpecies, ReadOnlyCollection<PBEEventPokemon>>
         {
             {

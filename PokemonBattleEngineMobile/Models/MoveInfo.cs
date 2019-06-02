@@ -8,7 +8,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Models
 {
     public class MoveInfo
     {
-        static Dictionary<PBEType, Tuple<Color, Color>> typeToColor;
+        private static Dictionary<PBEType, Tuple<Color, Color>> typeToColor;
         public static void CreateBrushes()
         {
             if (typeToColor == null)

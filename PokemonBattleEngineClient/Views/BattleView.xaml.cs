@@ -7,7 +7,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
     {
         public FieldView Field { get; }
         public ActionsView Actions { get; }
-        readonly MessageView messages;
+        private readonly MessageView messages;
 
         public BattleClient Client { get; }
 

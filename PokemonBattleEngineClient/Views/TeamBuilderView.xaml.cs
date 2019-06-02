@@ -16,10 +16,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 {
     public class TeamBuilderView : UserControl, INotifyPropertyChanged
     {
-        void OnPropertyChanged(string property) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        Uri source;
+        private Uri source;
         public Uri Source
         {
             get => source; set
@@ -30,12 +33,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         // TODO: Legal species vs non-legal (Cherrim Sunny in a pokeball etc)
-        readonly IEnumerable<PBEAbility> allAbilities = Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.MAX });
-        readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
-        readonly IEnumerable<PBEItem> allItems = Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>();
+        private readonly IEnumerable<PBEAbility> allAbilities = Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.MAX });
+        private readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
+        private readonly IEnumerable<PBEItem> allItems = Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>();
 
         public IEnumerable<PBESpecies> Species { get; } = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>();
-        IEnumerable<PBEAbility> availableAbilities;
+        private IEnumerable<PBEAbility> availableAbilities;
         public IEnumerable<PBEAbility> AvailableAbilities
         {
             get => availableAbilities;
@@ -45,8 +48,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(AvailableAbilities));
             }
         }
-        IEnumerable<PBENature> Natures { get; } = Enum.GetValues(typeof(PBENature)).Cast<PBENature>().Except(new[] { PBENature.MAX });
-        IEnumerable<PBEGender> availableGenders;
+        public IEnumerable<PBENature> Natures { get; } = Enum.GetValues(typeof(PBENature)).Cast<PBENature>().Except(new[] { PBENature.MAX });
+        private IEnumerable<PBEGender> availableGenders;
         public IEnumerable<PBEGender> AvailableGenders
         {
             get => availableGenders;
@@ -56,7 +59,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(AvailableGenders));
             }
         }
-        IEnumerable<PBEItem> availableItems;
+        private IEnumerable<PBEItem> availableItems;
         public IEnumerable<PBEItem> AvailableItems
         {
             get => availableItems;
@@ -68,8 +71,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public IEnumerable<PBEMove> AvailableMoves { get; } = Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.MAX });
 
-        PBEPokemonShell shell;
-        public Tuple<string, ObservableCollection<PBEPokemonShell>> team;
+        private PBEPokemonShell shell;
+        private Tuple<string, ObservableCollection<PBEPokemonShell>> team;
         public Tuple<string, ObservableCollection<PBEPokemonShell>> Team
         {
             get => team;
@@ -81,17 +84,17 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>> Teams { get; } = new ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>>();
 
-        readonly Subject<bool> addPartyEnabled, removePartyEnabled;
+        private readonly Subject<bool> addPartyEnabled, removePartyEnabled;
 
         public readonly PBESettings settings = PBESettings.DefaultSettings;
 
-        readonly TextBox nickname;
-        readonly NumericUpDown level, friendship;
-        readonly NumericUpDown[] evs, ivs, ppups;
-        readonly ListBox party, savedTeams;
-        readonly CheckBox illegal, shiny;
-        readonly ComboBox species, ability, nature, gender, item;
-        readonly ComboBox[] moves;
+        private readonly TextBox nickname;
+        private readonly NumericUpDown level, friendship;
+        private readonly NumericUpDown[] evs, ivs, ppups;
+        private readonly ListBox party, savedTeams;
+        private readonly CheckBox illegal, shiny;
+        private readonly ComboBox species, ability, nature, gender, item;
+        private readonly ComboBox[] moves;
 
         public TeamBuilderView()
         {
@@ -127,7 +130,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             illegal = this.FindControl<CheckBox>("Illegal");
             illegal.Command = ReactiveCommand.Create(IllegalChanged);
 
-            void shellOnly(object s, EventArgs e) => UpdateEditor(true, false, false);
+            void shellOnly(object s, EventArgs e)
+            {
+                UpdateEditor(true, false, false);
+            }
 
             species = this.FindControl<ComboBox>("Species");
             species.SelectionChanged += (s, e) => UpdateEditor(true, true, true);
@@ -213,13 +219,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AddTeam();
         }
 
-        void AddTeam()
+        private void AddTeam()
         {
             Teams.Add(Tuple.Create($"Team {DateTime.Now.Ticks}", new ObservableCollection<PBEPokemonShell>()));
             savedTeams.SelectedIndex = Teams.Count - 1;
             AddPartyMember();
         }
-        void RemoveTeam()
+        private void RemoveTeam()
         {
             Teams.Remove(team);
             //File.Delete($"Teams\\{team.Item1}.txt");
@@ -232,7 +238,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 savedTeams.SelectedIndex = Teams.Count - 1;
             }
         }
-        void AddPartyMember()
+        private void AddPartyMember()
         {
             PBESpecies species = Species.Sample();
             team.Item2.Add(new PBEPokemonShell
@@ -248,13 +254,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             party.SelectedIndex = team.Item2.Count - 1;
             EvaluatePartySize();
         }
-        void RemovePartyMember()
+        private void RemovePartyMember()
         {
             team.Item2.Remove(shell);
             party.SelectedIndex = team.Item2.Count - 1;
             EvaluatePartySize();
         }
-        void EvaluatePartySize()
+        private void EvaluatePartySize()
         {
             if (illegal.IsChecked.Value)
             {
@@ -276,14 +282,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             removePartyEnabled.OnNext(team.Item2.Count > 1);
         }
-        void IllegalChanged()
+        private void IllegalChanged()
         {
             EvaluatePartySize();
             UpdateEditor(false, true, false);
         }
 
-        bool ignoreUpdate = false;
-        void UpdateEditor(bool updateShell, bool updateControls, bool updateSprites, bool toggleIgnore = false)
+        private bool ignoreUpdate = false;
+        private void UpdateEditor(bool updateShell, bool updateControls, bool updateSprites, bool toggleIgnore = false)
         {
             if (toggleIgnore)
             {

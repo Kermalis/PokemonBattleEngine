@@ -18,13 +18,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
             public Func<Task> ClickFunc;
         }
 
-        static readonly List<Listener> reactionListeners = new List<Listener>();
+        private static readonly List<Listener> reactionListeners = new List<Listener>();
 
         public static Task Client_ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
             lock (reactionListeners)
             {
-                var listener = reactionListeners.SingleOrDefault(l => l.Message.Id == reaction.MessageId && reaction.Emote.Equals(l.Emote) && l.UsersThatWillRunClickFunc.Any(u => u.Id == reaction.UserId));
+                Listener listener = reactionListeners.SingleOrDefault(l => l.Message.Id == reaction.MessageId && reaction.Emote.Equals(l.Emote) && l.UsersThatWillRunClickFunc.Any(u => u.Id == reaction.UserId));
                 if (listener != null)
                 {
                     foreach (IUserMessage removing in listener.MessagesToRemoveListenersForOnViableClick)

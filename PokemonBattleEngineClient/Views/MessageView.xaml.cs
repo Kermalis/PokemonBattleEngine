@@ -37,7 +37,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         public ObservableCollection<Message> Messages { get; } = new ObservableCollection<Message>();
-        readonly ListBox listBox;
+        private readonly ListBox listBox;
 
         public MessageView()
         {

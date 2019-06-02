@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
-    static class StringRendering
+    internal static class StringRendering
     {
         private interface IStringRenderFont
         {

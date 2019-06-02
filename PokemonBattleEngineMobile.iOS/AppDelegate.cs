@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineMobile.iOS
             return base.FinishedLaunching(app, options);
         }
 
-        void CopyDatabase()
+        private void CopyDatabase()
         {
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Library");
             if (!Directory.Exists(path))

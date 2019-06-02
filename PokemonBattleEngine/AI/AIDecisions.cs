@@ -68,15 +68,9 @@ namespace Kermalis.PokemonBattleEngine.AI
                         PBEMove move = usableMoves[m];
                         PBEType moveType = pkmn.GetMoveType(move);
                         PBEMoveTarget moveTargets = pkmn.GetMoveTargets(move);
-                        PBETarget[] possibleTargets;
-                        if (PBEMoveData.IsSpreadMove(moveTargets))
-                        {
-                            possibleTargets = new PBETarget[] { GetSpreadMoveTargets(pkmn, moveTargets) };
-                        }
-                        else
-                        {
-                            possibleTargets = GetPossibleTargets(pkmn, moveTargets);
-                        }
+                        PBETarget[] possibleTargets = PBEMoveData.IsSpreadMove(moveTargets)
+                            ? new PBETarget[] { GetSpreadMoveTargets(pkmn, moveTargets) }
+                            : GetPossibleTargets(pkmn, moveTargets);
                         foreach (PBETarget possibleTarget in possibleTargets)
                         {
                             // TODO: RandomFoeSurrounding (probably just account for the specific effects that use this target type)
@@ -114,37 +108,37 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 case PBEMoveEffect.Poison:
                                 case PBEMoveEffect.Sleep:
                                 case PBEMoveEffect.Toxic:
+                                {
+                                    foreach (PBEPokemon target in targets)
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        if (target == null)
                                         {
-                                            if (target == null)
+                                            // TODO: If all targets are null, this should give a bad score
+                                        }
+                                        else
+                                        {
+                                            // TODO: Effectiveness check
+                                            // TODO: Favor sleep with Bad Dreams (unless ally)
+                                            if (target.Status1 != PBEStatus1.None)
                                             {
-                                                // TODO: If all targets are null, this should give a bad score
+                                                score += target.Team == opposingTeam ? -60 : 0;
                                             }
                                             else
                                             {
-                                                // TODO: Effectiveness check
-                                                // TODO: Favor sleep with Bad Dreams (unless ally)
-                                                if (target.Status1 != PBEStatus1.None)
-                                                {
-                                                    score += target.Team == opposingTeam ? -60 : 0;
-                                                }
-                                                else
-                                                {
-                                                    score += target.Team == opposingTeam ? +40 : -20;
-                                                }
+                                                score += target.Team == opposingTeam ? +40 : -20;
                                             }
                                         }
-                                        break;
                                     }
+                                    break;
+                                }
                                 case PBEMoveEffect.Hail:
+                                {
+                                    if (team.Battle.Weather == PBEWeather.Hailstorm)
                                     {
-                                        if (team.Battle.Weather == PBEWeather.Hailstorm)
-                                        {
-                                            score -= 100;
-                                        }
-                                        break;
+                                        score -= 100;
                                     }
+                                    break;
+                                }
                                 case PBEMoveEffect.BrickBreak:
                                 case PBEMoveEffect.Dig:
                                 case PBEMoveEffect.Dive:
@@ -179,96 +173,96 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 case PBEMoveEffect.FlareBlitz:
                                 case PBEMoveEffect.SuckerPunch:
                                 case PBEMoveEffect.VoltTackle:
+                                {
+                                    foreach (PBEPokemon target in targets)
                                     {
-                                        foreach (PBEPokemon target in targets)
+                                        if (target == null)
                                         {
-                                            if (target == null)
+                                            // TODO: If all targets are null, this should give a bad score
+                                        }
+                                        else
+                                        {
+                                            // TODO: Put type checking somewhere in PBEPokemon (levitate, wonder guard, etc)
+                                            // TODO: Favor hitting ally with move if it absorbs it
+                                            // TODO: Check items
+                                            // TODO: Stat changes and accuracy
+                                            // TODO: Check base power specifically against hp remaining (include spread move damage reduction)
+                                            double typeEffectiveness = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.KnownType1];
+                                            typeEffectiveness *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.KnownType2];
+                                            if (typeEffectiveness <= 0.0) // (-infinity, 0.0] Ineffective
                                             {
-                                                // TODO: If all targets are null, this should give a bad score
+                                                score += target.Team == opposingTeam ? -60 : -1;
                                             }
-                                            else
+                                            else if (typeEffectiveness <= 0.25) // (0.0, 0.25] NotVeryEffective
                                             {
-                                                // TODO: Put type checking somewhere in PBEPokemon (levitate, wonder guard, etc)
-                                                // TODO: Favor hitting ally with move if it absorbs it
-                                                // TODO: Check items
-                                                // TODO: Stat changes and accuracy
-                                                // TODO: Check base power specifically against hp remaining (include spread move damage reduction)
-                                                double typeEffectiveness = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.KnownType1];
-                                                typeEffectiveness *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.KnownType2];
-                                                if (typeEffectiveness <= 0.0) // (-infinity, 0.0] Ineffective
-                                                {
-                                                    score += target.Team == opposingTeam ? -60 : -1;
-                                                }
-                                                else if (typeEffectiveness <= 0.25) // (0.0, 0.25] NotVeryEffective
-                                                {
-                                                    score += target.Team == opposingTeam ? -30 : -5;
-                                                }
-                                                else if (typeEffectiveness < 1.0) // (0.25, 1.0) NotVeryEffective
-                                                {
-                                                    score += target.Team == opposingTeam ? -10 : -10;
-                                                }
-                                                else if (typeEffectiveness == 1.0) // [1.0, 1.0] Normal
-                                                {
-                                                    score += target.Team == opposingTeam ? +10 : -15;
-                                                }
-                                                else if (typeEffectiveness < 4.0) // (1.0, 4.0) SuperEffective
-                                                {
-                                                    score += target.Team == opposingTeam ? +25 : -20;
-                                                }
-                                                else // [4.0, infinity) SuperEffective
-                                                {
-                                                    score += target.Team == opposingTeam ? +40 : -30;
-                                                }
-                                                if (pkmn.HasType(moveType) && typeEffectiveness > 0.0) // STAB
-                                                {
-                                                    score += (pkmn.Ability == PBEAbility.Adaptability ? 15 : 10) * (target.Team == opposingTeam ? +1 : -1);
-                                                }
+                                                score += target.Team == opposingTeam ? -30 : -5;
+                                            }
+                                            else if (typeEffectiveness < 1.0) // (0.25, 1.0) NotVeryEffective
+                                            {
+                                                score += target.Team == opposingTeam ? -10 : -10;
+                                            }
+                                            else if (typeEffectiveness == 1.0) // [1.0, 1.0] Normal
+                                            {
+                                                score += target.Team == opposingTeam ? +10 : -15;
+                                            }
+                                            else if (typeEffectiveness < 4.0) // (1.0, 4.0) SuperEffective
+                                            {
+                                                score += target.Team == opposingTeam ? +25 : -20;
+                                            }
+                                            else // [4.0, infinity) SuperEffective
+                                            {
+                                                score += target.Team == opposingTeam ? +40 : -30;
+                                            }
+                                            if (pkmn.HasType(moveType) && typeEffectiveness > 0.0) // STAB
+                                            {
+                                                score += (pkmn.Ability == PBEAbility.Adaptability ? 15 : 10) * (target.Team == opposingTeam ? +1 : -1);
                                             }
                                         }
-
-                                        break;
                                     }
+
+                                    break;
+                                }
                                 case PBEMoveEffect.Moonlight:
                                 case PBEMoveEffect.Rest:
                                 case PBEMoveEffect.RestoreTargetHP:
                                 case PBEMoveEffect.RestoreUserHP:
+                                {
+                                    PBEPokemon target = targets[0];
+                                    if (target == null || target.Team == opposingTeam)
                                     {
-                                        PBEPokemon target = targets[0];
-                                        if (target == null || target.Team == opposingTeam)
-                                        {
-                                            score -= 100;
-                                        }
-                                        else // Ally
-                                        {
-                                            // 0% = +45, 25% = +30, 50% = +15, 75% = 0, 100% = -15
-                                            score -= (60 * target.HPPercentage) - 45;
-                                        }
-                                        break;
+                                        score -= 100;
                                     }
+                                    else // Ally
+                                    {
+                                        // 0% = +45, 25% = +30, 50% = +15, 75% = 0, 100% = -15
+                                        score -= (60 * target.HPPercentage) - 45;
+                                    }
+                                    break;
+                                }
                                 case PBEMoveEffect.RainDance:
+                                {
+                                    if (team.Battle.Weather == PBEWeather.Rain)
                                     {
-                                        if (team.Battle.Weather == PBEWeather.Rain)
-                                        {
-                                            score -= 100;
-                                        }
-                                        break;
+                                        score -= 100;
                                     }
+                                    break;
+                                }
                                 case PBEMoveEffect.Sandstorm:
+                                {
+                                    if (team.Battle.Weather == PBEWeather.Sandstorm)
                                     {
-                                        if (team.Battle.Weather == PBEWeather.Sandstorm)
-                                        {
-                                            score -= 100;
-                                        }
-                                        break;
+                                        score -= 100;
                                     }
+                                    break;
+                                }
                                 case PBEMoveEffect.SunnyDay:
+                                {
+                                    if (team.Battle.Weather == PBEWeather.HarshSunlight)
                                     {
-                                        if (team.Battle.Weather == PBEWeather.HarshSunlight)
-                                        {
-                                            score -= 100;
-                                        }
-                                        break;
+                                        score -= 100;
                                     }
+                                    break;
+                                }
                                 case PBEMoveEffect.Attract:
                                 case PBEMoveEffect.ChangeTarget_ACC:
                                 case PBEMoveEffect.ChangeTarget_ATK:
@@ -327,10 +321,10 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 case PBEMoveEffect.TrickRoom:
                                 case PBEMoveEffect.Whirlwind:
                                 case PBEMoveEffect.WideGuard:
-                                    {
-                                        // TODO Moves
-                                        break;
-                                    }
+                                {
+                                    // TODO Moves
+                                    break;
+                                }
                             }
                             var mAction = new PBEAction
                             {
@@ -412,39 +406,39 @@ namespace Kermalis.PokemonBattleEngine.AI
             switch (team.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:
-                    {
-                        availablePositions.Add(PBEFieldPosition.Center);
-                        break;
-                    }
+                {
+                    availablePositions.Add(PBEFieldPosition.Center);
+                    break;
+                }
                 case PBEBattleFormat.Double:
+                {
+                    if (team.TryGetPokemon(PBEFieldPosition.Left) == null)
                     {
-                        if (team.TryGetPokemon(PBEFieldPosition.Left) == null)
-                        {
-                            availablePositions.Add(PBEFieldPosition.Left);
-                        }
-                        if (team.TryGetPokemon(PBEFieldPosition.Right) == null)
-                        {
-                            availablePositions.Add(PBEFieldPosition.Right);
-                        }
-                        break;
+                        availablePositions.Add(PBEFieldPosition.Left);
                     }
+                    if (team.TryGetPokemon(PBEFieldPosition.Right) == null)
+                    {
+                        availablePositions.Add(PBEFieldPosition.Right);
+                    }
+                    break;
+                }
                 case PBEBattleFormat.Triple:
                 case PBEBattleFormat.Rotation:
+                {
+                    if (team.TryGetPokemon(PBEFieldPosition.Left) == null)
                     {
-                        if (team.TryGetPokemon(PBEFieldPosition.Left) == null)
-                        {
-                            availablePositions.Add(PBEFieldPosition.Left);
-                        }
-                        if (team.TryGetPokemon(PBEFieldPosition.Center) == null)
-                        {
-                            availablePositions.Add(PBEFieldPosition.Center);
-                        }
-                        if (team.TryGetPokemon(PBEFieldPosition.Right) == null)
-                        {
-                            availablePositions.Add(PBEFieldPosition.Right);
-                        }
-                        break;
+                        availablePositions.Add(PBEFieldPosition.Left);
                     }
+                    if (team.TryGetPokemon(PBEFieldPosition.Center) == null)
+                    {
+                        availablePositions.Add(PBEFieldPosition.Center);
+                    }
+                    if (team.TryGetPokemon(PBEFieldPosition.Right) == null)
+                    {
+                        availablePositions.Add(PBEFieldPosition.Right);
+                    }
+                    break;
+                }
                 default: throw new ArgumentOutOfRangeException(nameof(team.Battle.BattleFormat));
             }
             for (int i = 0; i < team.SwitchInsRequired; i++)

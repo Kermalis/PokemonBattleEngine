@@ -352,17 +352,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (Ability)
             {
                 case PBEAbility.NaturalCure:
-                    {
-                        Status1 = PBEStatus1.None;
-                        Status1Counter = SleepTurns = 0;
-                        break;
-                    }
+                {
+                    Status1 = PBEStatus1.None;
+                    Status1Counter = SleepTurns = 0;
+                    break;
+                }
                 case PBEAbility.Regenerator:
-                    {
-                        HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
-                        HPPercentage = (double)HP / MaxHP;
-                        break;
-                    }
+                {
+                    HP = PBEUtils.Clamp((ushort)(HP + (MaxHP / 3)), ushort.MinValue, MaxHP);
+                    HPPercentage = (double)HP / MaxHP;
+                    break;
+                }
             }
             PBEPokemonData pData;
             if (Shaymin_CannotChangeBackToSkyForm)
@@ -609,68 +609,68 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (move)
             {
                 case PBEMove.HiddenPower:
-                    {
-                        return GetHiddenPowerType();
-                    }
+                {
+                    return GetHiddenPowerType();
+                }
                 case PBEMove.Judgment:
+                {
+                    switch (Item)
                     {
-                        switch (Item)
-                        {
-                            case PBEItem.DracoPlate: return PBEType.Dragon;
-                            case PBEItem.DreadPlate: return PBEType.Dark;
-                            case PBEItem.EarthPlate: return PBEType.Ground;
-                            case PBEItem.FistPlate: return PBEType.Fighting;
-                            case PBEItem.FlamePlate: return PBEType.Fire;
-                            case PBEItem.IciclePlate: return PBEType.Ice;
-                            case PBEItem.InsectPlate: return PBEType.Bug;
-                            case PBEItem.IronPlate: return PBEType.Steel;
-                            case PBEItem.MeadowPlate: return PBEType.Grass;
-                            case PBEItem.MindPlate: return PBEType.Psychic;
-                            case PBEItem.SkyPlate: return PBEType.Flying;
-                            case PBEItem.SplashPlate: return PBEType.Water;
-                            case PBEItem.SpookyPlate: return PBEType.Ghost;
-                            case PBEItem.StonePlate: return PBEType.Rock;
-                            case PBEItem.ToxicPlate: return PBEType.Poison;
-                            case PBEItem.ZapPlate: return PBEType.Electric;
-                            default: return PBEMoveData.Data[PBEMove.Judgment].Type;
-                        }
+                        case PBEItem.DracoPlate: return PBEType.Dragon;
+                        case PBEItem.DreadPlate: return PBEType.Dark;
+                        case PBEItem.EarthPlate: return PBEType.Ground;
+                        case PBEItem.FistPlate: return PBEType.Fighting;
+                        case PBEItem.FlamePlate: return PBEType.Fire;
+                        case PBEItem.IciclePlate: return PBEType.Ice;
+                        case PBEItem.InsectPlate: return PBEType.Bug;
+                        case PBEItem.IronPlate: return PBEType.Steel;
+                        case PBEItem.MeadowPlate: return PBEType.Grass;
+                        case PBEItem.MindPlate: return PBEType.Psychic;
+                        case PBEItem.SkyPlate: return PBEType.Flying;
+                        case PBEItem.SplashPlate: return PBEType.Water;
+                        case PBEItem.SpookyPlate: return PBEType.Ghost;
+                        case PBEItem.StonePlate: return PBEType.Rock;
+                        case PBEItem.ToxicPlate: return PBEType.Poison;
+                        case PBEItem.ZapPlate: return PBEType.Electric;
+                        default: return PBEMoveData.Data[PBEMove.Judgment].Type;
                     }
+                }
                 case PBEMove.TechnoBlast:
+                {
+                    switch (Item)
                     {
-                        switch (Item)
-                        {
-                            case PBEItem.BurnDrive: return PBEType.Fire;
-                            case PBEItem.ChillDrive: return PBEType.Ice;
-                            case PBEItem.DouseDrive: return PBEType.Water;
-                            case PBEItem.ShockDrive: return PBEType.Electric;
-                            default: return PBEMoveData.Data[PBEMove.TechnoBlast].Type;
-                        }
+                        case PBEItem.BurnDrive: return PBEType.Fire;
+                        case PBEItem.ChillDrive: return PBEType.Ice;
+                        case PBEItem.DouseDrive: return PBEType.Water;
+                        case PBEItem.ShockDrive: return PBEType.Electric;
+                        default: return PBEMoveData.Data[PBEMove.TechnoBlast].Type;
                     }
+                }
                 case PBEMove.WeatherBall:
+                {
+                    if (Team.Battle.ShouldDoWeatherEffects())
                     {
-                        if (Team.Battle.ShouldDoWeatherEffects())
+                        switch (Team.Battle.Weather)
                         {
-                            switch (Team.Battle.Weather)
-                            {
-                                case PBEWeather.Hailstorm: return PBEType.Ice;
-                                case PBEWeather.HarshSunlight: return PBEType.Fire;
-                                case PBEWeather.Rain: return PBEType.Water;
-                                case PBEWeather.Sandstorm: return PBEType.Rock;
-                            }
+                            case PBEWeather.Hailstorm: return PBEType.Ice;
+                            case PBEWeather.HarshSunlight: return PBEType.Fire;
+                            case PBEWeather.Rain: return PBEType.Water;
+                            case PBEWeather.Sandstorm: return PBEType.Rock;
                         }
-                        return PBEMoveData.Data[PBEMove.WeatherBall].Type;
                     }
+                    return PBEMoveData.Data[PBEMove.WeatherBall].Type;
+                }
                 default:
+                {
+                    if (Ability == PBEAbility.Normalize)
                     {
-                        if (Ability == PBEAbility.Normalize)
-                        {
-                            return PBEType.Normal;
-                        }
-                        else
-                        {
-                            return PBEMoveData.Data[move].Type;
-                        }
+                        return PBEType.Normal;
                     }
+                    else
+                    {
+                        return PBEMoveData.Data[move].Type;
+                    }
+                }
             }
         }
         /// <summary>

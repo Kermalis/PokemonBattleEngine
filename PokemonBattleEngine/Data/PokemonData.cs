@@ -36,8 +36,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             OtherMoves = new ReadOnlyCollection<Tuple<PBEMove, PBEMoveObtainMethod>>(otherMoves);
         }
 
-        public bool HasAbility(PBEAbility ability) => Abilities.Contains(ability);
-        public bool HasType(PBEType type) => Type1 == type || Type2 == type;
+        public bool HasAbility(PBEAbility ability)
+        {
+            return Abilities.Contains(ability);
+        }
+        public bool HasType(PBEType type)
+        {
+            return Type1 == type || Type2 == type;
+        }
 
         // First is attacker, second is defender
         // TypeEffectiveness[(int)PBEType.Bug][(int)PBEType.Dark] = TypeEffectiveness[1][2] = Bug attacker, Dark defender
@@ -122,19 +128,19 @@ namespace Kermalis.PokemonBattleEngine.Data
             switch (stat)
             {
                 case PBEStat.HP:
-                    {
-                        return (ushort)(species == PBESpecies.Shedinja ? 1 : (((2 * GetData(species).BaseStats[0] + ivs + (evs / 4)) * level / settings.MaxLevel) + level + 10));
-                    }
+                {
+                    return (ushort)(species == PBESpecies.Shedinja ? 1 : ((((2 * GetData(species).BaseStats[0]) + ivs + (evs / 4)) * level / settings.MaxLevel) + level + 10));
+                }
                 case PBEStat.Attack:
                 case PBEStat.Defense:
                 case PBEStat.SpAttack:
                 case PBEStat.SpDefense:
                 case PBEStat.Speed:
-                    {
-                        int statIndex = (int)stat;
-                        double natureMultiplier = 1.0 + (NatureBoosts[nature][statIndex - 1] * settings.NatureStatBoost);
-                        return (ushort)((((2 * GetData(species).BaseStats[statIndex] + ivs + (evs / 4)) * level / settings.MaxLevel) + 5) * natureMultiplier);
-                    }
+                {
+                    int statIndex = (int)stat;
+                    double natureMultiplier = 1.0 + (NatureBoosts[nature][statIndex - 1] * settings.NatureStatBoost);
+                    return (ushort)(((((2 * GetData(species).BaseStats[statIndex]) + ivs + (evs / 4)) * level / settings.MaxLevel) + 5) * natureMultiplier);
+                }
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
         }
@@ -143,41 +149,41 @@ namespace Kermalis.PokemonBattleEngine.Data
             switch (stat)
             {
                 case PBEStat.HP:
-                    {
-                        low = CalculateStat(PBEStat.HP, species, PBENature.Bashful, 0, 0, level, settings);
-                        high = CalculateStat(PBEStat.HP, species, PBENature.Bashful, byte.MaxValue, settings.MaxIVs, level, settings);
-                        break;
-                    }
+                {
+                    low = CalculateStat(PBEStat.HP, species, PBENature.Bashful, 0, 0, level, settings);
+                    high = CalculateStat(PBEStat.HP, species, PBENature.Bashful, byte.MaxValue, settings.MaxIVs, level, settings);
+                    break;
+                }
                 case PBEStat.Attack:
-                    {
-                        low = CalculateStat(PBEStat.Attack, species, PBENature.Bold, 0, 0, level, settings);
-                        high = CalculateStat(PBEStat.Attack, species, PBENature.Adamant, byte.MaxValue, settings.MaxIVs, level, settings);
-                        break;
-                    }
+                {
+                    low = CalculateStat(PBEStat.Attack, species, PBENature.Bold, 0, 0, level, settings);
+                    high = CalculateStat(PBEStat.Attack, species, PBENature.Adamant, byte.MaxValue, settings.MaxIVs, level, settings);
+                    break;
+                }
                 case PBEStat.Defense:
-                    {
-                        low = CalculateStat(PBEStat.Defense, species, PBENature.Gentle, 0, 0, level, settings);
-                        high = CalculateStat(PBEStat.Defense, species, PBENature.Bold, byte.MaxValue, settings.MaxIVs, level, settings);
-                        break;
-                    }
+                {
+                    low = CalculateStat(PBEStat.Defense, species, PBENature.Gentle, 0, 0, level, settings);
+                    high = CalculateStat(PBEStat.Defense, species, PBENature.Bold, byte.MaxValue, settings.MaxIVs, level, settings);
+                    break;
+                }
                 case PBEStat.SpAttack:
-                    {
-                        low = CalculateStat(PBEStat.SpAttack, species, PBENature.Adamant, 0, 0, level, settings);
-                        high = CalculateStat(PBEStat.SpAttack, species, PBENature.Mild, byte.MaxValue, settings.MaxIVs, level, settings);
-                        break;
-                    }
+                {
+                    low = CalculateStat(PBEStat.SpAttack, species, PBENature.Adamant, 0, 0, level, settings);
+                    high = CalculateStat(PBEStat.SpAttack, species, PBENature.Mild, byte.MaxValue, settings.MaxIVs, level, settings);
+                    break;
+                }
                 case PBEStat.SpDefense:
-                    {
-                        low = CalculateStat(PBEStat.SpDefense, species, PBENature.Lax, 0, 0, level, settings);
-                        high = CalculateStat(PBEStat.SpDefense, species, PBENature.Gentle, byte.MaxValue, settings.MaxIVs, level, settings);
-                        break;
-                    }
+                {
+                    low = CalculateStat(PBEStat.SpDefense, species, PBENature.Lax, 0, 0, level, settings);
+                    high = CalculateStat(PBEStat.SpDefense, species, PBENature.Gentle, byte.MaxValue, settings.MaxIVs, level, settings);
+                    break;
+                }
                 case PBEStat.Speed:
-                    {
-                        low = CalculateStat(PBEStat.Speed, species, PBENature.Brave, 0, 0, level, settings);
-                        high = CalculateStat(PBEStat.Speed, species, PBENature.Hasty, byte.MaxValue, settings.MaxIVs, level, settings);
-                        break;
-                    }
+                {
+                    low = CalculateStat(PBEStat.Speed, species, PBENature.Brave, 0, 0, level, settings);
+                    high = CalculateStat(PBEStat.Speed, species, PBENature.Hasty, byte.MaxValue, settings.MaxIVs, level, settings);
+                    break;
+                }
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
         }
@@ -197,7 +203,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 reader.Read(); // {
                 reader.Read(); // "BaseStats":
                 reader.Read(); // [
-                var baseStats = new byte[6];
+                byte[] baseStats = new byte[6];
                 for (int i = 0; i < 6; i++)
                 {
                     reader.Read();

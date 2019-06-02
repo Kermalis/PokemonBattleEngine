@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineServer
 {
-    class Player : NetUser
+    internal class Player : NetUser
     {
         public ManualResetEvent ResetEvent { get; } = new ManualResetEvent(true);
         public string PlayerName { get; set; }
@@ -47,21 +47,21 @@ namespace Kermalis.PokemonBattleEngineServer
                 switch (packet)
                 {
                     case PBEActionsResponsePacket arp:
-                        {
-                            ser.ActionsSubmitted(this, arp.Actions);
-                            break;
-                        }
+                    {
+                        ser.ActionsSubmitted(this, arp.Actions);
+                        break;
+                    }
                     case PBEPartyResponsePacket prp:
-                        {
-                            Party = prp.Party;
-                            ser.PartySubmitted(this);
-                            break;
-                        }
+                    {
+                        Party = prp.Party;
+                        ser.PartySubmitted(this);
+                        break;
+                    }
                     case PBESwitchInResponsePacket sirp:
-                        {
-                            ser.SwitchesSubmitted(this, sirp.Switches);
-                            break;
-                        }
+                    {
+                        ser.SwitchesSubmitted(this, sirp.Switches);
+                        break;
+                    }
                 }
             }
         }
