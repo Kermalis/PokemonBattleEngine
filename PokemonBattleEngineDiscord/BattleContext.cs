@@ -1189,7 +1189,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     var userArray = new SocketUser[] { user };
                     PBEPokemon mainPkmn = arp.Team.ActionsRequired[0];
                     var allMessages = new List<IUserMessage>(PBESettings.DefaultSettings.MaxPartySize);
-                    var reactionsToAdd = new List<Tuple<IUserMessage, IEmote>>(PBESettings.DefaultSettings.MaxPartySize - 1 + PBESettings.DefaultSettings.NumMoves); // 5 switch reactions, 4 move reactions
+                    var reactionsToAdd = new List<(IUserMessage Message, IEmote Reaction)>(PBESettings.DefaultSettings.MaxPartySize - 1 + PBESettings.DefaultSettings.NumMoves); // 5 switch reactions, 4 move reactions
 
                     if (mainPkmn.CanSwitchOut())
                     {
@@ -1220,7 +1220,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 return;
                             }
                             allMessages.Add(switchMsg);
-                            reactionsToAdd.Add(Tuple.Create(switchMsg, (IEmote)switchEmoji));
+                            reactionsToAdd.Add((switchMsg, (IEmote)switchEmoji));
                             ReactionListener.AddListener(switchMsg, allMessages, switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
                         }
                     }
@@ -1284,15 +1284,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         PBEMove move = usableMoves[i]; // move must be evaluated before it reaches the lambda
                         var emoji = new Emoji(char.ConvertFromUtf32(0x1F1E6 + i).ToString());
-                        reactionsToAdd.Add(Tuple.Create(mainMsg, (IEmote)emoji));
+                        reactionsToAdd.Add((mainMsg, (IEmote)emoji));
                         ReactionListener.AddListener(mainMsg, allMessages, emoji, userArray, () => MoveReactionClicked(move));
                     }
 
                     // All listeners are added, so now we can send the reactions
                     // Clicking a reaction will not harm reactions that are not sent yet because allMessages is sent by reference
-                    foreach (Tuple<IUserMessage, IEmote> tup in reactionsToAdd)
+                    foreach ((IUserMessage Message, IEmote Reaction) in reactionsToAdd)
                     {
-                        await tup.Item1.AddReactionAsync(tup.Item2);
+                        await Message.AddReactionAsync(Reaction);
                     }
                     break;
                 }
@@ -1306,20 +1306,20 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEPokemon[] switches = sirp.Team.Party.Where(p => p.HP > 0).ToArray();
                     if (switches.Length == 1)
                     {
-                        PBEBattle.SelectSwitchesIfValid(sirp.Team, new Tuple<byte, PBEFieldPosition>[] { Tuple.Create(switches[0].Id, PBEFieldPosition.Center) });
+                        PBEBattle.SelectSwitchesIfValid(sirp.Team, new (byte PokemonId, PBEFieldPosition Position)[] { (switches[0].Id, PBEFieldPosition.Center) });
                     }
                     else
                     {
                         async Task SwitchReactionClicked(IUserMessage switchMsg, PBEPokemon switchPkmn)
                         {
                             await switchMsg.AddReactionAsync(confirmationEmoji); // Put this here so it happens before RunTurn() takes its time
-                            PBEBattle.SelectSwitchesIfValid(sirp.Team, new Tuple<byte, PBEFieldPosition>[] { Tuple.Create(switchPkmn.Id, PBEFieldPosition.Center) });
+                            PBEBattle.SelectSwitchesIfValid(sirp.Team, new (byte PokemonId, PBEFieldPosition Position)[] { (switchPkmn.Id, PBEFieldPosition.Center) });
                         }
 
                         SocketUser user = context.battlers[Array.IndexOf(context.battle.Teams, sirp.Team)];
                         var userArray = new SocketUser[] { user };
                         var allMessages = new IUserMessage[switches.Length];
-                        var reactionsToAdd = new Tuple<IUserMessage, IEmote>[switches.Length];
+                        var reactionsToAdd = new (IUserMessage Message, IEmote Reaction)[switches.Length];
                         for (int i = 0; i < switches.Length; i++)
                         {
                             PBEPokemon switchPkmn = switches[i];
@@ -1334,7 +1334,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 return;
                             }
                             allMessages[i] = switchMsg;
-                            reactionsToAdd[i] = Tuple.Create(switchMsg, (IEmote)switchEmoji);
+                            reactionsToAdd[i] = (switchMsg, (IEmote)switchEmoji);
                             ReactionListener.AddListener(switchMsg, allMessages, switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
                         }
 
@@ -1342,8 +1342,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         // Clicking a reaction will not harm reactions that are not sent yet because allMessages is sent by reference
                         for (int i = 0; i < reactionsToAdd.Length; i++)
                         {
-                            Tuple<IUserMessage, IEmote> tup = reactionsToAdd[i];
-                            await tup.Item1.AddReactionAsync(tup.Item2);
+                            (IUserMessage Message, IEmote Reaction) = reactionsToAdd[i];
+                            await Message.AddReactionAsync(Reaction);
                         }
                     }
                     break;

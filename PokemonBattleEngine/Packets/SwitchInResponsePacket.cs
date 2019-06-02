@@ -14,14 +14,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x24;
         public IEnumerable<byte> Buffer { get; }
 
-        public ReadOnlyCollection<Tuple<byte, PBEFieldPosition>> Switches { get; } // Pokemon ID, Field Position
+        public ReadOnlyCollection<(byte PokemonId, PBEFieldPosition Position)> Switches { get; }
 
-        public PBESwitchInResponsePacket(IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
+        public PBESwitchInResponsePacket(IEnumerable<(byte PokemonId, PBEFieldPosition Position)> switches)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Switches = switches.ToList().AsReadOnly()).Count);
-            bytes.AddRange(Switches.SelectMany(s => new byte[] { s.Item1, (byte)s.Item2 }));
+            bytes.AddRange(Switches.SelectMany(s => new byte[] { s.PokemonId, (byte)s.Position }));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBESwitchInResponsePacket(byte[] buffer, PBEBattle battle)
@@ -30,10 +30,10 @@ namespace Kermalis.PokemonBattleEngine.Packets
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
                 r.ReadInt16(); // Skip Code
-                var switches = new Tuple<byte, PBEFieldPosition>[r.ReadByte()];
+                var switches = new (byte PokemonId, PBEFieldPosition Position)[r.ReadByte()];
                 for (int i = 0; i < switches.Length; i++)
                 {
-                    switches[i] = Tuple.Create(r.ReadByte(), (PBEFieldPosition)r.ReadByte());
+                    switches[i] = (r.ReadByte(), (PBEFieldPosition)r.ReadByte());
                 }
                 Switches = Array.AsReadOnly(switches);
             }

@@ -126,7 +126,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
                         {
-                            IEnumerable<Tuple<byte, PBEFieldPosition>> switches = PBEAIManager.CreateSwitches(team);
+                            IEnumerable<(byte PokemonId, PBEFieldPosition Position)> switches = PBEAIManager.CreateSwitches(team);
                             if (!PBEBattle.AreSwitchesValid(team, switches))
                             {
                                 throw new Exception($"{team.TrainerName}'s AI created invalid switches!");

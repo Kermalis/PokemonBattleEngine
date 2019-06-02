@@ -366,7 +366,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private IEnumerable<PBEPokemon> GetActingOrder(IEnumerable<PBEPokemon> pokemon, bool ignoreItemsThatActivate)
         {
-            var evaluated = new List<Tuple<PBEPokemon, double>>(); // TODO: Full Incense, Lagging Tail, Stall, Quick Claw
+            var evaluated = new List<(PBEPokemon Pokemon, double Speed)>(); // TODO: Full Incense, Lagging Tail, Stall, Quick Claw
             foreach (PBEPokemon pkmn in pokemon)
             {
                 double speed = pkmn.Speed * GetStatChangeModifier(pkmn.SpeedChange, false);
@@ -427,14 +427,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
 
                 Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Nickname, speed);
-                var tup = Tuple.Create(pkmn, speed);
+                (PBEPokemon Pokemon, double Speed) tup = (pkmn, speed);
                 if (evaluated.Count == 0)
                 {
                     evaluated.Add(tup);
                 }
                 else
                 {
-                    int pkmnTiedWith = evaluated.FindIndex(t => t.Item2 == speed);
+                    int pkmnTiedWith = evaluated.FindIndex(t => t.Speed == speed);
                     if (pkmnTiedWith != -1) // Speed tie - randomly go before or after the Pokémon it tied with
                     {
                         if (PBEUtils.RNG.NextBoolean())
@@ -455,7 +455,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        int pkmnToGoBefore = evaluated.FindIndex(t => BattleStatus.HasFlag(PBEBattleStatus.TrickRoom) ? t.Item2 > speed : t.Item2 < speed);
+                        int pkmnToGoBefore = evaluated.FindIndex(t => BattleStatus.HasFlag(PBEBattleStatus.TrickRoom) ? t.Speed > speed : t.Speed < speed);
                         if (pkmnToGoBefore == -1)
                         {
                             evaluated.Add(tup);
@@ -466,9 +466,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                Debug.WriteLine(evaluated.Select(t => $"{t.Item1.Team.Id} {t.Item1.Nickname} {t.Item2}").Print());
+                Debug.WriteLine(evaluated.Select(t => $"{t.Pokemon.Team.Id} {t.Pokemon.Nickname} {t.Speed}").Print());
             }
-            return evaluated.Select(t => t.Item1);
+            return evaluated.Select(t => t.Pokemon);
         }
         private void DetermineTurnOrder()
         {

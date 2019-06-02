@@ -231,7 +231,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
             }
         }
-        public void SwitchesSubmitted(Player player, IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
+        public void SwitchesSubmitted(Player player, IEnumerable<(byte PokemonId, PBEFieldPosition Position)> switches)
         {
             if (state != ServerState.WaitingForSwitchIns)
             {

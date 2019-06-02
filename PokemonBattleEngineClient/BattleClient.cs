@@ -1534,7 +1534,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 BattleView.Actions.DisplayActions(actions[i]);
             }
         }
-        public List<Tuple<byte, PBEFieldPosition>> Switches { get; } = new List<Tuple<byte, PBEFieldPosition>>(3);
+        public List<(byte PokemonId, PBEFieldPosition Position)> Switches { get; } = new List<(byte PokemonId, PBEFieldPosition Position)>(3);
         private byte switchesRequired;
         public List<PBEFieldPosition> PositionStandBy { get; } = new List<PBEFieldPosition>(3);
         public void SwitchesLoop(bool begin)

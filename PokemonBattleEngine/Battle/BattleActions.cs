@@ -224,7 +224,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="switches">The switches the team wishes to execute.</param>
         /// <returns>False if the team already chose switches or the switches are illegal, True otherwise.</returns>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForSwitchIns"/>.</exception>
-        public static bool AreSwitchesValid(PBETeam team, IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
+        public static bool AreSwitchesValid(PBETeam team, IEnumerable<(byte PokemonId, PBEFieldPosition Position)> switches)
         {
             if (team.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {
@@ -234,9 +234,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return false;
             }
-            foreach (Tuple<byte, PBEFieldPosition> s in switches)
+            foreach ((byte PokemonId, PBEFieldPosition Position) in switches)
             {
-                PBEPokemon pkmn = team.TryGetPokemon(s.Item1);
+                PBEPokemon pkmn = team.TryGetPokemon(PokemonId);
                 if (pkmn == null || pkmn.HP == 0 || pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     return false;
@@ -251,7 +251,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="switches">The switches the team wishes to execute.</param>
         /// <returns>True if the switches are valid and were selected.</returns>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForSwitchIns"/>.</exception>
-        public static bool SelectSwitchesIfValid(PBETeam team, IEnumerable<Tuple<byte, PBEFieldPosition>> switches)
+        public static bool SelectSwitchesIfValid(PBETeam team, IEnumerable<(byte PokemonId, PBEFieldPosition Position)> switches)
         {
             if (team.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {
@@ -260,10 +260,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (AreSwitchesValid(team, switches))
             {
                 team.SwitchInsRequired = 0;
-                foreach (Tuple<byte, PBEFieldPosition> s in switches)
+                foreach ((byte PokemonId, PBEFieldPosition Position) in switches)
                 {
-                    PBEPokemon pkmn = team.TryGetPokemon(s.Item1);
-                    pkmn.FieldPosition = s.Item2;
+                    PBEPokemon pkmn = team.TryGetPokemon(PokemonId);
+                    pkmn.FieldPosition = Position;
                     team.SwitchInQueue.Add(pkmn);
                 }
                 if (Array.TrueForAll(team.Battle.Teams, t => t.SwitchInsRequired == 0))

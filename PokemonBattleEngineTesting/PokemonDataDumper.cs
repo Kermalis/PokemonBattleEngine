@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineTesting
             public List<PBESpecies> PreEvolutions = new List<PBESpecies>();
             public List<PBESpecies> Evolutions = new List<PBESpecies>();
             public List<PBEAbility> Abilities = new List<PBEAbility>();
-            public Dictionary<Tuple<PBEMove, byte>, PBEMoveObtainMethod> LevelUpMoves = new Dictionary<Tuple<PBEMove, byte>, PBEMoveObtainMethod>();
+            public Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod> LevelUpMoves = new Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod>();
             public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
         }
 
@@ -1075,14 +1075,14 @@ namespace Kermalis.PokemonBattleEngineTesting
                 void AddLevelUpMove(PBESpecies species, PBEMove move, byte level, PBEMoveObtainMethod flag)
                 {
                     AddSpecies(species);
-                    Tuple<PBEMove, byte> key = dict[species].LevelUpMoves.Keys.SingleOrDefault(k => k.Item1 == move && k.Item2 == level);
-                    if (key != null)
+                    (PBEMove, byte) key = (move, level);
+                    if (dict[species].LevelUpMoves.ContainsKey(key))
                     {
                         dict[species].LevelUpMoves[key] |= flag;
                     }
                     else
                     {
-                        dict[species].LevelUpMoves.Add(Tuple.Create(move, level), flag);
+                        dict[species].LevelUpMoves.Add(key, flag);
                     }
                 }
                 void AddOtherMove(PBESpecies species, PBEMove move, PBEMoveObtainMethod flag)
@@ -1121,9 +1121,9 @@ namespace Kermalis.PokemonBattleEngineTesting
                                 pkmn.Type2 = basePkmn.Type2;
                                 pkmn.Weight = basePkmn.Weight;
                             }
-                            foreach (KeyValuePair<Tuple<PBEMove, byte>, PBEMoveObtainMethod> levelup in pkmn.LevelUpMoves)
+                            foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelup in pkmn.LevelUpMoves)
                             {
-                                AddLevelUpMove(baseSpecies, levelup.Key.Item1, levelup.Key.Item2, levelup.Value);
+                                AddLevelUpMove(baseSpecies, levelup.Key.Move, levelup.Key.Level, levelup.Value);
                             }
                             foreach (KeyValuePair<PBEMove, PBEMoveObtainMethod> other in pkmn.OtherMoves)
                             {
@@ -1791,13 +1791,13 @@ namespace Kermalis.PokemonBattleEngineTesting
                         writer.WriteEndArray();
                         writer.WritePropertyName(nameof(PBEPokemonData.LevelUpMoves));
                         writer.WriteStartArray();
-                        foreach (KeyValuePair<Tuple<PBEMove, byte>, PBEMoveObtainMethod> levelUpMove in pkmn.Value.LevelUpMoves)
+                        foreach (KeyValuePair<(PBEMove Move, byte Level), PBEMoveObtainMethod> levelUpMove in pkmn.Value.LevelUpMoves)
                         {
-                            if (Enum.IsDefined(typeof(PBEMove), levelUpMove.Key.Item1))
+                            if (Enum.IsDefined(typeof(PBEMove), levelUpMove.Key.Move))
                             {
                                 writer.WriteStartArray();
-                                writer.WriteValue(levelUpMove.Key.Item1);
-                                writer.WriteValue(levelUpMove.Key.Item2);
+                                writer.WriteValue(levelUpMove.Key.Move);
+                                writer.WriteValue(levelUpMove.Key.Level);
                                 writer.WriteValue(levelUpMove.Value);
                                 writer.WriteEndArray();
                             }

@@ -62,7 +62,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                     PBEPokemon[] availableForSwitch = team.Party.Except(standBy).Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
                     PBEMove[] usableMoves = pkmn.GetUsableMoves();
 
-                    var possibleActions = new List<Tuple<PBEAction, double>>(); // Associate specific actions with a score
+                    var possibleActions = new List<(PBEAction Action, double Score)>();
                     for (int m = 0; m < usableMoves.Length; m++) // Score moves
                     {
                         PBEMove move = usableMoves[m];
@@ -332,7 +332,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 FightMove = move,
                                 FightTargets = possibleTarget
                             };
-                            possibleActions.Add(Tuple.Create(mAction, score));
+                            possibleActions.Add((mAction, score));
                         }
                     }
                     if (pkmn.CanSwitchOut())
@@ -349,28 +349,28 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 Decision = PBEDecision.SwitchOut,
                                 SwitchPokemonId = switchPkmn.Id
                             };
-                            possibleActions.Add(Tuple.Create(sAction, score));
+                            possibleActions.Add((sAction, score));
                         }
                     }
 
-                    string ToDebugString(Tuple<PBEAction, double> a)
+                    string ToDebugString((PBEAction Action, double Score) t)
                     {
                         string str = "{";
-                        if (a.Item1.Decision == PBEDecision.Fight)
+                        if (t.Action.Decision == PBEDecision.Fight)
                         {
-                            str += string.Format("Fight {0} {1}", a.Item1.FightMove, a.Item1.FightTargets);
+                            str += string.Format("Fight {0} {1}", t.Action.FightMove, t.Action.FightTargets);
                         }
                         else
                         {
-                            str += string.Format("Switch {0}", team.TryGetPokemon(a.Item1.SwitchPokemonId).Nickname);
+                            str += string.Format("Switch {0}", team.TryGetPokemon(t.Action.SwitchPokemonId).Nickname);
                         }
-                        str += " [" + a.Item2 + "]}";
+                        str += " [" + t.Score + "]}";
                         return str;
                     }
-                    IOrderedEnumerable<Tuple<PBEAction, double>> byScore = possibleActions.OrderByDescending(a => a.Item2);
-                    Debug.WriteLine("{0}'s possible actions: {1}", pkmn.Nickname, byScore.Select(a => ToDebugString(a)).Print());
-                    double bestScore = byScore.First().Item2;
-                    actions[i] = byScore.Where(a => a.Item2 == bestScore).Sample().Item1; // Pick random action of the ones that tied for best score
+                    IOrderedEnumerable<(PBEAction Action, double Score)> byScore = possibleActions.OrderByDescending(t => t.Score);
+                    Debug.WriteLine("{0}'s possible actions: {1}", pkmn.Nickname, byScore.Select(t => ToDebugString(t)).Print());
+                    double bestScore = byScore.First().Score;
+                    actions[i] = byScore.Where(t => t.Score == bestScore).Sample().Action; // Pick random action of the ones that tied for best score
                 }
 
                 // Action was chosen, finish up for this Pokémon
@@ -389,7 +389,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         /// <param name="team">The team to create switches for.</param>
         /// <exception cref="InvalidOperationException">Thrown when <paramref name="team"/> does not require switch-ins or <paramref name="team"/>'s <see cref="PBETeam.Battle"/>'s <see cref="PBEBattle.BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="team"/>'s <see cref="PBETeam.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
-        public static IEnumerable<Tuple<byte, PBEFieldPosition>> CreateSwitches(PBETeam team)
+        public static IEnumerable<(byte PokemonId, PBEFieldPosition Position)> CreateSwitches(PBETeam team)
         {
             if (team.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {
@@ -399,7 +399,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 throw new InvalidOperationException($"{nameof(team)} must require switch-ins.");
             }
-            var switches = new List<Tuple<byte, PBEFieldPosition>>(team.SwitchInsRequired);
+            var switches = new List<(byte PokemonId, PBEFieldPosition Position)>(team.SwitchInsRequired);
             PBEPokemon[] available = team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
             available.Shuffle();
             var availablePositions = new List<PBEFieldPosition>();
@@ -443,7 +443,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             }
             for (int i = 0; i < team.SwitchInsRequired; i++)
             {
-                switches.Add(Tuple.Create(available[i].Id, availablePositions[i]));
+                switches.Add((available[i].Id, availablePositions[i]));
             }
             return switches;
         }

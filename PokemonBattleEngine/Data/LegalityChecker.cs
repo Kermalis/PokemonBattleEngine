@@ -64,12 +64,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             // Combine all moves from pre-evolutions
             IEnumerable<PBESpecies> evolutionChain = PBEPokemonData.GetData(species).PreEvolutions.Concat(new[] { species });
 
-            var levelUp = new List<Tuple<PBEMove, byte, PBEMoveObtainMethod>>();
-            var other = new List<Tuple<PBEMove, PBEMoveObtainMethod>>();
+            var levelUp = new List<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)>();
+            var other = new List<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)>();
             foreach (PBESpecies pkmn in evolutionChain)
             {
                 var pData = PBEPokemonData.GetData(pkmn);
-                levelUp.AddRange(pData.LevelUpMoves.Where(t => t.Item2 <= level));
+                levelUp.AddRange(pData.LevelUpMoves.Where(t => t.Level <= level));
                 other.AddRange(pData.OtherMoves);
             }
             // TODO:
@@ -125,17 +125,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     || method.HasFlag(PBEMoveObtainMethod.EggMove_BWB2W2);
             }
 
-            IEnumerable<Tuple<PBEMove, PBEMoveObtainMethod>> movesAsObtainMethods = levelUp.Where(t => moves.Contains(t.Item1)).Select(t => Tuple.Create(t.Item1, t.Item3)).Union(other.Where(t => moves.Contains(t.Item1)));
+            IEnumerable<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> movesAsObtainMethods = levelUp.Where(t => moves.Contains(t.Move)).Select(t => (t.Move, t.ObtainMethod)).Union(other.Where(t => moves.Contains(t.Move)));
 
             // Check to see where the Pokémon DEFINITELY has been
             bool definitelyBeenInGeneration3 = false,
                 definitelyBeenInGeneration4 = false,
                 definitelyBeenInGeneration5 = false;
-            foreach (Tuple<PBEMove, PBEMoveObtainMethod> m in movesAsObtainMethods)
+            foreach ((PBEMove Move, PBEMoveObtainMethod ObtainMethod) in movesAsObtainMethods)
             {
-                bool gen3 = HasGen3Method(m.Item2),
-                    gen4 = HasGen4Method(m.Item2),
-                    gen5 = HasGen5Method(m.Item2);
+                bool gen3 = HasGen3Method(ObtainMethod),
+                    gen4 = HasGen4Method(ObtainMethod),
+                    gen5 = HasGen5Method(ObtainMethod);
                 if (gen3 && !gen4 && !gen5)
                 {
                     definitelyBeenInGeneration3 = true;

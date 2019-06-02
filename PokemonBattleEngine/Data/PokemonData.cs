@@ -16,24 +16,24 @@ namespace Kermalis.PokemonBattleEngine.Data
         public ReadOnlyCollection<PBESpecies> PreEvolutions { get; }
         public ReadOnlyCollection<PBESpecies> Evolutions { get; }
         public ReadOnlyCollection<PBEAbility> Abilities { get; }
-        public ReadOnlyCollection<Tuple<PBEMove, byte, PBEMoveObtainMethod>> LevelUpMoves { get; }
-        public ReadOnlyCollection<Tuple<PBEMove, PBEMoveObtainMethod>> OtherMoves { get; }
+        public ReadOnlyCollection<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> LevelUpMoves { get; }
+        public ReadOnlyCollection<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> OtherMoves { get; }
 
         private PBEPokemonData(byte[] baseStats,
             PBEType type1, PBEType type2, PBEGenderRatio genderRatio, double weight,
             List<PBESpecies> preEvolutions,
             List<PBESpecies> evolutions,
             List<PBEAbility> abilities,
-            List<Tuple<PBEMove, byte, PBEMoveObtainMethod>> levelUpMoves,
-            List<Tuple<PBEMove, PBEMoveObtainMethod>> otherMoves)
+            List<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)> levelUpMoves,
+            List<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> otherMoves)
         {
             BaseStats = new ReadOnlyCollection<byte>(baseStats);
             Type1 = type1; Type2 = type2; GenderRatio = genderRatio; Weight = weight;
             PreEvolutions = new ReadOnlyCollection<PBESpecies>(preEvolutions);
             Evolutions = new ReadOnlyCollection<PBESpecies>(evolutions);
             Abilities = new ReadOnlyCollection<PBEAbility>(abilities);
-            LevelUpMoves = new ReadOnlyCollection<Tuple<PBEMove, byte, PBEMoveObtainMethod>>(levelUpMoves);
-            OtherMoves = new ReadOnlyCollection<Tuple<PBEMove, PBEMoveObtainMethod>>(otherMoves);
+            LevelUpMoves = new ReadOnlyCollection<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)>(levelUpMoves);
+            OtherMoves = new ReadOnlyCollection<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)>(otherMoves);
         }
 
         public bool HasAbility(PBEAbility ability)
@@ -269,7 +269,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
                 reader.Read(); // "LevelUpMoves":
                 reader.Read(); // [
-                var levelUpMoves = new List<Tuple<PBEMove, byte, PBEMoveObtainMethod>>();
+                var levelUpMoves = new List<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)>();
                 while (true)
                 {
                     reader.Read();
@@ -281,7 +281,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         byte level = Convert.ToByte(reader.Value);
                         reader.Read();
                         var method = (PBEMoveObtainMethod)Convert.ToUInt64(reader.Value);
-                        levelUpMoves.Add(Tuple.Create(move, level, method));
+                        levelUpMoves.Add((move, level, method));
                         reader.Read(); // ]
                     }
                     else if (reader.TokenType == JsonToken.EndArray) // ]
@@ -291,7 +291,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
                 reader.Read(); // "OtherMoves":
                 reader.Read(); // [
-                var otherMoves = new List<Tuple<PBEMove, PBEMoveObtainMethod>>();
+                var otherMoves = new List<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)>();
                 while (true)
                 {
                     reader.Read();
@@ -301,7 +301,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         var move = (PBEMove)Convert.ToUInt16(reader.Value);
                         reader.Read();
                         var method = (PBEMoveObtainMethod)Convert.ToUInt64(reader.Value);
-                        otherMoves.Add(Tuple.Create(move, method));
+                        otherMoves.Add((move, method));
                         reader.Read(); // ]
                     }
                     else if (reader.TokenType == JsonToken.EndArray) // ]
