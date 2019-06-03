@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                 return con;
             }
 
-            TestType t = TestType.LocalizationDumper;
+            TestType t = TestType.PokemonDataDumper;
             switch (t)
             {
                 case TestType.AIBattle: AIBattle.Test(); break;

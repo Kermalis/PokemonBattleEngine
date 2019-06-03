@@ -18,7 +18,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 ----
 # To Do:
 * Rotation battles and triple battle shifting
-* Dump Pokémon XD: Gale of Darkness move tutor compatibility
+* Complete [Pokémon data dumper](PokemonBattleEngineTesting/PokemonDataDumper.cs)
 * Separate forme-specific moves in PokemonData and instead have legality checker do some work
 * Add lots of items, moves, and secondary statuses (taunt, torment, etc.)
 * Protect from corrupt packets (if they are even a problem)

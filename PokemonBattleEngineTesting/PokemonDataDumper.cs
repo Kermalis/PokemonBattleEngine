@@ -545,6 +545,21 @@ namespace Kermalis.PokemonBattleEngineTesting
             PBEMove.FirePunch,
             (PBEMove)210 // FuryCutter
         };
+        private static readonly PBEMove[] xdTutorMoves = new PBEMove[12]
+        {
+            PBEMove.BodySlam,
+            PBEMove.DoubleEdge,
+            PBEMove.SeismicToss,
+            (PBEMove)102, // Mimic
+            PBEMove.DreamEater,
+            PBEMove.ThunderWave,
+            PBEMove.Substitute,
+            PBEMove.IcyWind,
+            PBEMove.Swagger,
+            (PBEMove)143, // SkyAttack
+            PBEMove.Selfdestruct,
+            (PBEMove)171 // Nightmare
+        };
         private static readonly Dictionary<int, PBESpecies> gen4SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 496, PBESpecies.Deoxys_Attack },
@@ -1041,14 +1056,14 @@ namespace Kermalis.PokemonBattleEngineTesting
         // B2 and W2 tutor compatibility is in the Pokémon data NARC which is /a/0/1/6 (B2 and W2 have identical Pokémon data NARCs)
         // B and W egg move NARC is /a/1/2/3, B2 and W2 egg move NARC is /a/1/2/4 (B, W, B2, and W2 have identical egg move NARCs)
         //
-        // TODO: XD - tutor
+        // TODO: XD - Mew special tutor moves
         // TODO: FRLG - Ultimate starter tutor moves
         // TODO: D, P, Pt - Free tutor moves
-        // TODO: HG, SS - Free tutor moves (aside from headbutt)
+        // TODO: HG, SS - Free tutor moves (aside from Headbutt)
         // TODO: Rotom special moves
-        // TODO: Arceus gets Draco Meteor from free tutor moves
-        // TODO: Pichu & Volt Tackle (and check for other egg move special cases)
-        // TODO: Egg move chain breeding?
+        // TODO: Arceus_Dragon gets DracoMeteor from free tutor moves
+        // TODO: Pichu & VoltTackle
+        // TODO: Egg move logic (currently we only kept the possible egg moves, but no logic that assigns them, so it is incorrect)
 #pragma warning disable CS8321 // Local function is declared but never used
         public static void Dump(SqliteConnection con)
         {
@@ -1516,6 +1531,24 @@ namespace Kermalis.PokemonBattleEngineTesting
                     ReadTutorMoves(fr.ReadUInt16(), frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
                     //ReadTutorMoves(lg.ReadUInt16(), frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
                     ReadTutorMoves(e.ReadUInt32(), emeraldTutorMoves, PBEMoveObtainMethod.MoveTutor_E);
+                }
+                // Gen 3 - XD
+                for (int sp = 1; sp <= 411; sp++)
+                {
+                    // Gen 2 Unown slots are ignored in gen 3
+                    if (sp > 251 && sp < 277)
+                    {
+                        continue;
+                    }
+                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                    xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0x6E;
+                    for (int i = 0; i < xdTutorMoves.Length; i++)
+                    {
+                        if (xdCommonRel.ReadBoolean())
+                        {
+                            AddOtherMove(species, xdTutorMoves[i], PBEMoveObtainMethod.MoveTutor_XD);
+                        }
+                    }
                 }
                 // Gen 4
                 using (var pt = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"), Endianness.LittleEndian))
