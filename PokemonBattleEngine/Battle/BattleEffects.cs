@@ -45,14 +45,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // Grounded Poison types remove the Toxic Spikes
                     if (pkmn.HasType(PBEType.Poison) && pkmn.Ability != PBEAbility.Levitate && !pkmn.HasType(PBEType.Flying))
                     {
+                        pkmn.Team.TeamStatus &= ~PBETeamStatus.ToxicSpikes;
+                        pkmn.Team.ToxicSpikeCount = 0;
                         BroadcastTeamStatus(pkmn.Team, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
                     }
                     // Steel types and floating Pokémon don't get Poisoned
                     else if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Steel) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
                     {
-                        pkmn.Status1 = pkmn.Team.ToxicSpikeCount == 1 ? PBEStatus1.Poisoned : PBEStatus1.BadlyPoisoned;
-                        if (pkmn.Status1 == PBEStatus1.BadlyPoisoned)
+                        if (pkmn.Team.ToxicSpikeCount == 1)
                         {
+                            pkmn.Status1 = PBEStatus1.Poisoned;
+                        }
+                        else
+                        {
+                            pkmn.Status1 = PBEStatus1.BadlyPoisoned;
                             pkmn.Status1Counter = 1;
                         }
                         BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Added);
