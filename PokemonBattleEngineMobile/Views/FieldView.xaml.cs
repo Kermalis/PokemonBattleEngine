@@ -73,12 +73,12 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                string gif = $"Kermalis.PokemonBattleEngineMobile.MISC.WEATHER_{battleView.Client.Battle.Weather}.gif";
+                string resource = $"Kermalis.PokemonBattleEngineMobile.MISC.WEATHER_{battleView.Client.Battle.Weather}.gif";
                 switch (battleView.Client.Battle.Weather)
                 {
                     case PBEWeather.Hailstorm:
                         //WeatherDim = hailstormDim;
-                        WeatherGif.Source = ImageSource.FromResource(gif);
+                        WeatherGif.SetGifResource(resource);
                         /*WeatherDimVisible = */
                         WeatherGif.IsVisible = true;
                         break;
@@ -89,7 +89,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
                         break;
                     case PBEWeather.Rain:
                         //WeatherDim = rainDim;
-                        WeatherGif.Source = ImageSource.FromResource(gif);
+                        WeatherGif.SetGifResource(resource);
                         /*WeatherDimVisible = */
                         WeatherGif.IsVisible = true;
                         break;
@@ -182,9 +182,9 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
                 if (oldPosition != PBEFieldPosition.None)
                 {
                     hpView = this.FindByName<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
-                    hpView.Update(null);
+                    hpView.IsVisible = false;
                     pkmnView = this.FindByName<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{oldPosition}");
-                    pkmnView.Update(null, false);
+                    pkmnView.IsVisible = false;
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {

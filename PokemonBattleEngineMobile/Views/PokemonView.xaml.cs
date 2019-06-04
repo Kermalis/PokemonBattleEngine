@@ -10,28 +10,15 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
         public PokemonView()
         {
             InitializeComponent();
-            IsVisible = false;
         }
 
         public void Update(PBEPokemon pkmn, bool backSprite)
         {
-            if (pkmn == null)
-            {
-                IsVisible = false;
-            }
-            else
-            {
-                Scale = backSprite ? 2.0 : 1.0;
+            // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
+            Sprite.Opacity = !pkmn.Status2.HasFlag(PBEStatus2.Substitute) && (pkmn.Status2.HasFlag(PBEStatus2.Airborne) || pkmn.Status2.HasFlag(PBEStatus2.Underground) || pkmn.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
+            Sprite.SetGifResource(Utils.GetPokemonSpriteResource(pkmn, backSprite));
 
-                // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
-                Opacity = !pkmn.Status2.HasFlag(PBEStatus2.Substitute) && (pkmn.Status2.HasFlag(PBEStatus2.Airborne) || pkmn.Status2.HasFlag(PBEStatus2.Underground) || pkmn.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
-
-                Sprite.Source = Utils.GetPokemonSprite(pkmn, backSprite, out short width, out short height);
-                Sprite.WidthRequest = width;
-                Sprite.HeightRequest = height;
-
-                IsVisible = true;
-            }
+            IsVisible = true;
         }
     }
 }

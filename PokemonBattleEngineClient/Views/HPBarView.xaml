@@ -1,6 +1,7 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
-             x:Class="Kermalis.PokemonBattleEngineClient.Views.HPBarView">
+             x:Class="Kermalis.PokemonBattleEngineClient.Views.HPBarView"
+             IsVisible="False">
   <Image Name="Drawn"/>
 </UserControl>

@@ -45,7 +45,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
-            IsVisible = false;
         }
 
         public void Update(PBEPokemon pkmn, bool backSprite, bool showRawValues0, bool showRawValues1)
@@ -53,22 +52,13 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             this.showRawValues0 = showRawValues0;
             this.showRawValues1 = showRawValues1;
             pokemon = pkmn;
-            if (pokemon == null)
-            {
-                IsVisible = false;
-            }
-            else
-            {
-                Scale = backSprite ? 2.0 : 1.0;
 
-                Image sprite = this.FindControl<Image>("Sprite");
-                // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
-                sprite.Opacity = !pokemon.Status2.HasFlag(PBEStatus2.Substitute) && (pokemon.Status2.HasFlag(PBEStatus2.Airborne) || pokemon.Status2.HasFlag(PBEStatus2.Underground) || pokemon.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
+            Image sprite = this.FindControl<Image>("Sprite");
+            // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
+            sprite.Opacity = !pokemon.Status2.HasFlag(PBEStatus2.Substitute) && (pokemon.Status2.HasFlag(PBEStatus2.Airborne) || pokemon.Status2.HasFlag(PBEStatus2.Underground) || pokemon.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
+            GifImage.SetSourceUri(sprite, Utils.GetPokemonSpriteUri(pokemon, backSprite));
 
-                GifImage.SetSourceUri(sprite, Utils.GetPokemonSpriteUri(pokemon, backSprite));
-
-                IsVisible = true;
-            }
+            IsVisible = true;
         }
     }
 }

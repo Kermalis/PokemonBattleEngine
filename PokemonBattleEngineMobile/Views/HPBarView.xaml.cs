@@ -7,12 +7,13 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
 {
     public partial class HPBarView : ContentView
     {
+        private PBEStatus1 status1;
+        private double hpPercentage;
         private readonly Color green, yellow, red;
 
         public HPBarView()
         {
             InitializeComponent();
-            IsVisible = false;
             Bar.Source = ImageSource.FromResource("Kermalis.PokemonBattleEngineMobile.MISC.HPBAR_Ally.png");
 
             green = Color.FromRgb(0, 255, 41);
@@ -22,19 +23,19 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
 
         public void Update(PBEPokemon pkmn)
         {
-            if (pkmn == null)
+            if (pkmn.Status1 != status1)
             {
-                IsVisible = false;
+                Status1.Source = (status1 = pkmn.Status1) == PBEStatus1.None ? null : ImageSource.FromResource($"Kermalis.PokemonBattleEngineMobile.MISC.STATUS1_{pkmn.Status1}.png");
             }
-            else
-            {
-                Status1.Source = pkmn.Status1 == PBEStatus1.None ? null : ImageSource.FromResource($"Kermalis.PokemonBattleEngineMobile.MISC.STATUS1_{pkmn.Status1}.png");
 
-                if (pkmn.HPPercentage <= 0.20)
+            if (pkmn.HPPercentage != hpPercentage)
+            {
+                hpPercentage = pkmn.HPPercentage;
+                if (hpPercentage <= 0.20)
                 {
                     HP.Color = red;
                 }
-                else if (pkmn.HPPercentage <= 0.50)
+                else if (hpPercentage <= 0.50)
                 {
                     HP.Color = yellow;
                 }
@@ -43,10 +44,10 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
                     HP.Color = green;
                 }
                 const byte lineW = 48, lineH = 3;
-                Canvas.SetSize(HP, new Size(pkmn.HPPercentage * lineW, lineH));
-
-                IsVisible = true;
+                Canvas.SetSize(HP, new Size(hpPercentage * lineW, lineH));
             }
+
+            IsVisible = true;
         }
     }
 }

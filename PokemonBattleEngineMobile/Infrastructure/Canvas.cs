@@ -6,8 +6,8 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
     {
         private const double autoSize = -1.0;
 
-        public static readonly BindableProperty IntendedWidthProperty = BindableProperty.Create("IntendedWidth", typeof(double), typeof(Canvas), autoSize, propertyChanged: OnIntendedWidthPropertyChanged);
-        public static readonly BindableProperty IntendedHeightProperty = BindableProperty.Create("IntendedHeight", typeof(double), typeof(Canvas), autoSize, propertyChanged: OnIntendedHeightPropertyChanged);
+        public static readonly BindableProperty IntendedWidthProperty = BindableProperty.Create(nameof(IntendedWidth), typeof(double), typeof(Canvas), autoSize, propertyChanged: OnIntendedWidthPropertyChanged);
+        public static readonly BindableProperty IntendedHeightProperty = BindableProperty.Create(nameof(IntendedHeight), typeof(double), typeof(Canvas), autoSize, propertyChanged: OnIntendedHeightPropertyChanged);
 
         public static readonly BindableProperty LocationProperty = BindableProperty.CreateAttached("Location", typeof(Point), typeof(Canvas), new Point(0.0, 0.0));
         public static readonly BindableProperty SizeProperty = BindableProperty.CreateAttached("Size", typeof(Size), typeof(Canvas), new Size(autoSize, autoSize));

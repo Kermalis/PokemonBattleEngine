@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineMobile.Infrastructure"
              xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineMobile.Views"
              x:Class="Kermalis.PokemonBattleEngineMobile.Views.FieldView"
@@ -9,14 +8,14 @@
     <infrastructure:Canvas IntendedWidth="512" IntendedHeight="384" VerticalOptions="Center" HorizontalOptions="Center">
         <Image x:Name="BG" infrastructure:Canvas.Size="512,384" />
 
-        <views:PokemonView x:Name="Battler1_Right" />
-        <views:PokemonView x:Name="Battler1_Left" />
-        <views:PokemonView x:Name="Battler1_Center" />
-        <views:PokemonView x:Name="Battler0_Center" />
-        <views:PokemonView x:Name="Battler0_Left" />
-        <views:PokemonView x:Name="Battler0_Right" />
+        <views:PokemonView x:Name="Battler1_Right" Scale="1" />
+        <views:PokemonView x:Name="Battler1_Left" Scale="1" />
+        <views:PokemonView x:Name="Battler1_Center" Scale="1" />
+        <views:PokemonView x:Name="Battler0_Center" Scale="2" />
+        <views:PokemonView x:Name="Battler0_Left" Scale="2" />
+        <views:PokemonView x:Name="Battler0_Right" Scale="2" />
 
-        <ff:CachedImage x:Name="WeatherGif" infrastructure:Canvas.Size="512,384" />
+        <infrastructure:GifImage x:Name="WeatherGif" infrastructure:Canvas.Size="512,384" />
 
         <views:HPBarView x:Name="Bar0_Left" />
         <views:HPBarView x:Name="Bar0_Center" />

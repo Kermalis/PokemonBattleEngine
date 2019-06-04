@@ -9,20 +9,11 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
 {
     internal static class Utils
     {
+        private static readonly Assembly assembly = Assembly.GetExecutingAssembly();
         public static bool DoesResourceExist(string resource)
         {
-            string[] resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            string[] resources = assembly.GetManifestResourceNames();
             return resources.Contains(resource);
-        }
-        public static void GetGifResourceWidthAndHeight(string resource, out short width, out short height)
-        {
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))
-            using (var reader = new BinaryReader(stream))
-            {
-                reader.ReadBytes(6); // Skip header
-                width = reader.ReadInt16();
-                height = reader.ReadInt16();
-            }
         }
         // https://forums.xamarin.com/discussion/80050/how-to-maintain-aspect-ratio-of-custom-rendered-view
         public static VisualElement GetFirstParentVisualElement(Element element)
@@ -30,21 +21,27 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
             Element parent = element.Parent;
             while (parent != null)
             {
-                var parentView = parent as VisualElement;
-                if (parentView != null)
+                if (parent is VisualElement parentView)
                 {
                     return parentView;
                 }
-                parent = parent.Parent;
+                else
+                {
+                    parent = parent.Parent;
+                }
             }
             return null;
         }
-
-        public static ImageSource GetPokemonSprite(PBEPokemon pokemon, bool backSprite, out short width, out short height)
+        public static Stream GetResourceStream(string resource)
         {
-            return GetPokemonSprite(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite, out width, out height);
+            return assembly.GetManifestResourceStream(resource);
         }
-        public static ImageSource GetPokemonSprite(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite, out short width, out short height)
+
+        public static string GetPokemonSpriteResource(PBEPokemon pokemon, bool backSprite)
+        {
+            return GetPokemonSpriteResource(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite);
+        }
+        public static string GetPokemonSpriteResource(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {
             string resource;
             string orientation = backSprite ? "_B" : "_F";
@@ -60,8 +57,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
                 string genderStr = gender == PBEGender.Female && DoesResourceExist($"Kermalis.PokemonBattleEngineMobile.PKMN.PKMN_{sss}_F.gif") ? "_F" : string.Empty;
                 resource = $"Kermalis.PokemonBattleEngineMobile.PKMN.PKMN_{sss}{genderStr}.gif";
             }
-            GetGifResourceWidthAndHeight(resource, out width, out height);
-            return ImageSource.FromResource(resource);
+            return resource;
         }
     }
 }

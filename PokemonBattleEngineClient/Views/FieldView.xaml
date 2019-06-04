@@ -10,12 +10,12 @@
       <ImageBrush Source="{Binding BGSource}"/>
     </Canvas.Background>
 
-    <views:PokemonView Name="Battler1_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <views:PokemonView Name="Battler1_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <views:PokemonView Name="Battler1_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <views:PokemonView Name="Battler0_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <views:PokemonView Name="Battler0_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
-    <views:PokemonView Name="Battler0_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <views:PokemonView Name="Battler1_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="1"/>
+    <views:PokemonView Name="Battler1_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="1"/>
+    <views:PokemonView Name="Battler1_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="1"/>
+    <views:PokemonView Name="Battler0_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="2"/>
+    <views:PokemonView Name="Battler0_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="2"/>
+    <views:PokemonView Name="Battler0_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="2"/>
 
     <Image Name="WeatherGif" IsHitTestVisible="false"/>
     <Rectangle Name="WeatherDim" Width="512" Height="384" IsHitTestVisible="false"/>
