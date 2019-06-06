@@ -130,21 +130,20 @@ namespace Kermalis.PokemonBattleEngineTesting
                         Directory.CreateDirectory(path);
                         foreach (KeyValuePair<ushort, ushort> pair in dict)
                         {
-                            if (pair.Value == ushort.MaxValue)
+                            if (pair.Value != ushort.MaxValue)
                             {
-                                continue;
-                            }
-                            Character car = chars[pair.Value];
-                            using (var b = new Bitmap(car.Width + car.SpaceWidth, height))
-                            {
-                                for (int y = 0; y < car.Bitmap.Length; y++)
+                                Character car = chars[pair.Value];
+                                using (var b = new Bitmap(car.Width + car.SpaceWidth, height))
                                 {
-                                    for (int x = 0; x < car.Width; x++)
+                                    for (int y = 0; y < car.Bitmap.Length; y++)
                                     {
-                                        b.SetPixel(x, y, colors[car.Bitmap[y][x]]);
+                                        for (int x = 0; x < car.Width; x++)
+                                        {
+                                            b.SetPixel(x, y, colors[car.Bitmap[y][x]]);
+                                        }
                                     }
+                                    b.Save(path + '\\' + pair.Key.ToString("X4") + ".png");
                                 }
-                                b.Save(path + '\\' + pair.Key.ToString("X4") + ".png");
                             }
                         }
                     }

@@ -19,7 +19,9 @@ namespace Kermalis.PokemonBattleEngineMobile
         {
             var client = new MobileBattleClient(IP.Text, 8888, PBEBattleFormat.Double, PBESettings.DefaultSettings);
             battles.Add(client);
-            Children.Add(new NavigationPage(new ContentPage { Content = new ScrollView { Content = new BattleView(client) } }) { Title = "Battle " + battles.Count });
+            var page = new NavigationPage(new ContentPage { Content = new ScrollView { Content = new BattleView(client) } }) { Title = "Battle " + battles.Count };
+            Children.Add(page);
+            SelectedItem = page;
             client.Connect();
         }
     }

@@ -1,9 +1,10 @@
-﻿using Avalonia.Data.Converters;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using SkiaSharp.Views.Forms;
 using System;
 using System.Globalization;
+using Xamarin.Forms;
 
-namespace Kermalis.PokemonBattleEngineClient.Infrastructure
+namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
 {
     public class ObjectToTextBitmapConverter : IValueConverter
     {
@@ -18,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 case PBEMove move: localized = PBELocalizedString.GetMoveName(move); break;
                 case PBESpecies species: localized = PBELocalizedString.GetSpeciesName(species); break;
             }
-            return StringRenderer.Render(localized == null ? value?.ToString() : localized.FromUICultureInfo(), parameter?.ToString());
+            return new SKBitmapImageSource { Bitmap = StringRenderer.RenderString(localized == null ? value?.ToString() : localized.FromUICultureInfo(), parameter?.ToString()) };
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

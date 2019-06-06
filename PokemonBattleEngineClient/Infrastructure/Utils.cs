@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             }
             return value;
         }
-        public static Stream ResourceToStream(string resource)
+        public static Stream GetResourceStream(string resource)
         {
             return assembly.GetManifestResourceStream(assemblyPrefix + resource);
         }
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             uint formeID = (uint)species >> 0x10;
             string sss = speciesID + (formeID > 0 ? ("_" + formeID) : string.Empty) + (shiny ? "_S" : string.Empty);
             string genderStr = gender == PBEGender.Female && DoesResourceExist("PKMN.PKMN_" + sss + "_F.png") ? "_F" : string.Empty;
-            return new Bitmap(ResourceToStream("PKMN.PKMN_" + sss + genderStr + ".png"));
+            return new Bitmap(GetResourceStream("PKMN.PKMN_" + sss + genderStr + ".png"));
         }
         public static Stream GetPokemonSpriteStream(PBEPokemon pokemon, bool backSprite)
         {
@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             string orientation = backSprite ? "_B" : "_F";
             if (behindSubstitute)
             {
-                return ResourceToStream("PKMN.STATUS2_Substitute" + orientation + ".gif");
+                return GetResourceStream("PKMN.STATUS2_Substitute" + orientation + ".gif");
             }
             else
             {
@@ -62,7 +62,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 uint formeID = (uint)species >> 0x10;
                 string sss = speciesID + (formeID > 0 ? ("_" + formeID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
                 string genderStr = gender == PBEGender.Female && DoesResourceExist("PKMN.PKMN_" + sss + "_F.gif") ? "_F" : string.Empty;
-                return ResourceToStream("PKMN.PKMN_" + sss + genderStr + ".gif");
+                return GetResourceStream("PKMN.PKMN_" + sss + genderStr + ".gif");
             }
         }
 

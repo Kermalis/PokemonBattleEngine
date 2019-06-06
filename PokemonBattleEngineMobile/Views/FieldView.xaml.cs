@@ -9,7 +9,8 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
 {
     public partial class FieldView : ContentView
     {
-        public bool MessageBoxVisible { get; set; }
+        public string Message { get; private set; }
+        public bool MessageBoxVisible { get; private set; }
 
         private BattleView battleView;
         //private readonly IBrush hailstormDim, harshSunlightDim, rainDim, sandstormDim;
@@ -60,13 +61,10 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
 
         public void SetMessage(string message)
         {
-            // TODO: Remove this when the converter is there
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                Message.Text = message;
-                MessageBoxVisible = !string.IsNullOrWhiteSpace(message);
-                OnPropertyChanged(nameof(MessageBoxVisible));
-            });
+            Message = message;
+            OnPropertyChanged(nameof(Message));
+            MessageBoxVisible = !string.IsNullOrWhiteSpace(message);
+            OnPropertyChanged(nameof(MessageBoxVisible));
         }
 
         public void UpdateWeather()

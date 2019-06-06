@@ -31,6 +31,6 @@
         <BoxView Color="#76000000" infrastructure:Canvas.Location="0,375" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
         <BoxView Color="#5A000000" infrastructure:Canvas.Location="0,376" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
         <BoxView Color="#90000000" infrastructure:Canvas.Location="0,377" infrastructure:Canvas.Size="512,1" IsVisible="{Binding MessageBoxVisible}" />
-        <Label x:Name="Message" TextColor="White" infrastructure:Canvas.Location="16,341" infrastructure:Canvas.Size="512,43" IsVisible="{Binding MessageBoxVisible}" />
+        <Image Source="{Binding Message, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleWhite, Mode=OneWay}" infrastructure:Canvas.Location="16,341" infrastructure:Canvas.Size="512,43" IsVisible="{Binding MessageBoxVisible}" />
     </infrastructure:Canvas>
 </ContentView>

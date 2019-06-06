@@ -71,7 +71,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 case PBEBattleFormat.Rotation: s = PBEUtils.Sample(new string[] { "1_R", "2_R" }); break;
                 default: throw new ArgumentOutOfRangeException(nameof(battleView.Client.Battle.BattleFormat));
             }
-            BGSource = new Bitmap(Utils.ResourceToStream("BG.BG_" + s + ".png"));
+            BGSource = new Bitmap(Utils.GetResourceStream("BG.BG_" + s + ".png"));
             OnPropertyChanged(nameof(BGSource));
         }
 
@@ -96,7 +96,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     {
                         dim.Fill = hailstormDim;
                         dim.IsVisible = true;
-                        GifImage.SetSourceStream(gif, Utils.ResourceToStream(resource));
+                        GifImage.SetSourceStream(gif, Utils.GetResourceStream(resource));
                         gif.IsVisible = true;
                         break;
                     }
@@ -111,7 +111,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     {
                         dim.Fill = rainDim;
                         dim.IsVisible = true;
-                        GifImage.SetSourceStream(gif, Utils.ResourceToStream(resource));
+                        GifImage.SetSourceStream(gif, Utils.GetResourceStream(resource));
                         gif.IsVisible = true;
                         break;
                     }

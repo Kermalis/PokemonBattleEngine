@@ -65,18 +65,18 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     barResource = "MISC.HPBAR_Foe.png";
                     yOffset = 2;
                 }
-                var hpBar = new Bitmap(Utils.ResourceToStream(barResource));
+                var hpBar = new Bitmap(Utils.GetResourceStream(barResource));
                 ctx.DrawImage(hpBar.PlatformImpl, 1.0, new Rect(0, 0, hpBar.PixelSize.Width, hpBar.PixelSize.Height), new Rect(0, 11 + yOffset, hpBar.PixelSize.Width, hpBar.PixelSize.Height));
 
-                Bitmap nickname = StringRendering.RenderString(pkmn.KnownNickname, "BattleName");
+                Bitmap nickname = StringRenderer.Render(pkmn.KnownNickname, "BattleName");
                 ctx.DrawImage(nickname.PlatformImpl, 1.0, new Rect(0, 0, nickname.PixelSize.Width, nickname.PixelSize.Height), new Rect(72 - Math.Max(54, nickname.PixelSize.Width), yOffset, nickname.PixelSize.Width, nickname.PixelSize.Height));
 
-                Bitmap level = StringRendering.RenderString($"{(pkmn.KnownGender == PBEGender.Female ? "♀" : pkmn.KnownGender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Level}", "BattleLevel");
+                Bitmap level = StringRenderer.Render($"{(pkmn.KnownGender == PBEGender.Female ? "♀" : pkmn.KnownGender == PBEGender.Male ? "♂" : " ")}[LV]{pkmn.Level}", "BattleLevel");
                 ctx.DrawImage(level.PlatformImpl, 1.0, new Rect(0, 0, level.PixelSize.Width, level.PixelSize.Height), new Rect(70, 1 + yOffset, level.PixelSize.Width, level.PixelSize.Height));
 
                 if (pkmn.Status1 != PBEStatus1.None)
                 {
-                    var status = new Bitmap(Utils.ResourceToStream("MISC.STATUS1_" + pkmn.Status1 + ".png"));
+                    var status = new Bitmap(Utils.GetResourceStream("MISC.STATUS1_" + pkmn.Status1 + ".png"));
                     ctx.DrawImage(status.PlatformImpl, 1.0, new Rect(0, 0, status.PixelSize.Width, status.PixelSize.Height), new Rect(1, 11 + yOffset, status.PixelSize.Width, status.PixelSize.Height));
                 }
 
@@ -108,9 +108,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
                 if (showRawValues)
                 {
-                    Bitmap hp = StringRendering.RenderString(pkmn.HP.ToString(), "BattleHP");
+                    Bitmap hp = StringRenderer.Render(pkmn.HP.ToString(), "BattleHP");
                     ctx.DrawImage(hp.PlatformImpl, 1.0, new Rect(0, 0, hp.PixelSize.Width, hp.PixelSize.Height), new Rect(62 - hp.PixelSize.Width, 16 + yOffset, hp.PixelSize.Width, hp.PixelSize.Height));
-                    Bitmap maxHP = StringRendering.RenderString(pkmn.MaxHP.ToString(), "BattleHP");
+                    Bitmap maxHP = StringRenderer.Render(pkmn.MaxHP.ToString(), "BattleHP");
                     ctx.DrawImage(maxHP.PlatformImpl, 1.0, new Rect(0, 0, maxHP.PixelSize.Width, maxHP.PixelSize.Height), new Rect(70, 16 + yOffset, maxHP.PixelSize.Width, maxHP.PixelSize.Height));
                 }
             }
