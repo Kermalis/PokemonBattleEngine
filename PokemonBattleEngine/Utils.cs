@@ -236,7 +236,7 @@ namespace Kermalis.PokemonBattleEngine
                     case PBESpecies.Wormadam_Plant: numForms = 3; break;
                     default: numForms = 1; break;
                 }
-                species = (PBESpecies)(((uint)species & 0xFFFF) | (uint)(RNG.Next(numForms) << 0x10)); // Change form ID to a random form
+                species = (PBESpecies)(((ushort)species) | (uint)(RNG.Next(numForms) << 0x10)); // Change form ID to a random form
                 var pData = PBEPokemonData.GetData(species);
                 var shell = new PBEPokemonShell
                 {

@@ -73,32 +73,45 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                string resource = $"Kermalis.PokemonBattleEngineMobile.MISC.WEATHER_{battleView.Client.Battle.Weather}.gif";
+                string resource = "MISC.WEATHER_" + battleView.Client.Battle.Weather + ".gif";
                 switch (battleView.Client.Battle.Weather)
                 {
                     case PBEWeather.Hailstorm:
+                    {
                         //WeatherDim = hailstormDim;
+                        //WeatherDimVisible = true;
                         WeatherGif.SetGifResource(resource);
-                        /*WeatherDimVisible = */
                         WeatherGif.IsVisible = true;
                         break;
+                    }
                     case PBEWeather.HarshSunlight:
+                    {
                         //WeatherDim = harshSunlightDim;
                         //WeatherDimVisible = true;
                         WeatherGif.IsVisible = false;
                         break;
+                    }
                     case PBEWeather.Rain:
+                    {
                         //WeatherDim = rainDim;
+                        //WeatherDimVisible = true;
                         WeatherGif.SetGifResource(resource);
-                        /*WeatherDimVisible = */
                         WeatherGif.IsVisible = true;
                         break;
+                    }
                     case PBEWeather.Sandstorm:
+                    {
                         //WeatherDim = sandstormDim;
                         //WeatherDimVisible = true;
                         WeatherGif.IsVisible = false;
                         break;
-                    default: /*WeatherDimVisible = */WeatherGif.IsVisible = false; break;
+                    }
+                    default:
+                    {
+                        //WeatherDimVisible = false;
+                        WeatherGif.IsVisible = false;
+                        break;
+                    }
                 }
             });
         }

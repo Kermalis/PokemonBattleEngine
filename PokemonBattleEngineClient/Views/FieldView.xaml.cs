@@ -71,7 +71,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 case PBEBattleFormat.Rotation: s = PBEUtils.Sample(new string[] { "1_R", "2_R" }); break;
                 default: throw new ArgumentOutOfRangeException(nameof(battleView.Client.Battle.BattleFormat));
             }
-            BGSource = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.BG.BG_{s}.png?assembly=PokemonBattleEngineClient"));
+            BGSource = new Bitmap(Utils.ResourceToStream("BG.BG_" + s + ".png"));
             OnPropertyChanged(nameof(BGSource));
         }
 
@@ -89,30 +89,45 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 Rectangle dim = this.FindControl<Rectangle>("WeatherDim");
                 Image gif = this.FindControl<Image>("WeatherGif");
-                var uri = new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.WEATHER_{battleView.Client.Battle.Weather}.gif?assembly=PokemonBattleEngineClient");
+                string resource = "MISC.WEATHER_" + battleView.Client.Battle.Weather + ".gif";
                 switch (battleView.Client.Battle.Weather)
                 {
                     case PBEWeather.Hailstorm:
+                    {
                         dim.Fill = hailstormDim;
-                        GifImage.SetSourceUri(gif, uri);
-                        dim.IsVisible = gif.IsVisible = true;
+                        dim.IsVisible = true;
+                        GifImage.SetSourceStream(gif, Utils.ResourceToStream(resource));
+                        gif.IsVisible = true;
                         break;
+                    }
                     case PBEWeather.HarshSunlight:
+                    {
                         dim.Fill = harshSunlightDim;
                         dim.IsVisible = true;
                         gif.IsVisible = false;
                         break;
+                    }
                     case PBEWeather.Rain:
+                    {
                         dim.Fill = rainDim;
-                        GifImage.SetSourceUri(gif, uri);
-                        dim.IsVisible = gif.IsVisible = true;
+                        dim.IsVisible = true;
+                        GifImage.SetSourceStream(gif, Utils.ResourceToStream(resource));
+                        gif.IsVisible = true;
                         break;
+                    }
                     case PBEWeather.Sandstorm:
+                    {
                         dim.Fill = sandstormDim;
                         dim.IsVisible = true;
                         gif.IsVisible = false;
                         break;
-                    default: dim.IsVisible = gif.IsVisible = false; break;
+                    }
+                    default:
+                    {
+                        dim.IsVisible = false;
+                        gif.IsVisible = false;
+                        break;
+                    }
                 }
             });
         }

@@ -67,7 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static PBEAbility? GetAbilityByName(string abilityName)
         {
-            PBEAbility ability = PBEAbility.None;
+            PBEAbility ability;
             List<SearchResult> results = PBEUtils.DatabaseConnection.Query<SearchResult>(string.Format("SELECT * FROM AbilityNames WHERE StrCmp(English,'{0}') OR StrCmp(French,'{0}') OR StrCmp(German,'{0}') OR StrCmp(Italian,'{0}') OR StrCmp(Japanese_Kana,'{0}') OR StrCmp(Japanese_Kanji,'{0}') OR StrCmp(Korean,'{0}') OR StrCmp(Spanish,'{0}')", abilityName));
             if (results.Count == 1)
             {
@@ -93,7 +93,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(ability));
             }
-            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM AbilityDescriptions WHERE Id={(byte)ability}")[0]);
+            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>("SELECT * FROM AbilityDescriptions WHERE Id=" + (byte)ability)[0]);
         }
         public static PBELocalizedString GetAbilityName(PBEAbility ability)
         {
@@ -101,11 +101,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(ability));
             }
-            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM AbilityNames WHERE Id={(byte)ability}")[0]);
+            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>("SELECT * FROM AbilityNames WHERE Id=" + (byte)ability)[0]);
         }
         public static PBEItem? GetItemByName(string itemName)
         {
-            PBEItem item = PBEItem.None;
+            PBEItem item;
             List<SearchResult> results = PBEUtils.DatabaseConnection.Query<SearchResult>(string.Format("SELECT * FROM ItemNames WHERE StrCmp(English,'{0}') OR StrCmp(French,'{0}') OR StrCmp(German,'{0}') OR StrCmp(Italian,'{0}') OR StrCmp(Japanese_Kana,'{0}') OR StrCmp(Japanese_Kanji,'{0}') OR StrCmp(Korean,'{0}') OR StrCmp(Spanish,'{0}')", itemName));
             if (results.Count == 1)
             {
@@ -131,7 +131,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(item));
             }
-            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM ItemDescriptions WHERE Id={(ushort)item}")[0]);
+            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>("SELECT * FROM ItemDescriptions WHERE Id=" + (ushort)item)[0]);
         }
         public static PBELocalizedString GetItemName(PBEItem item)
         {
@@ -139,11 +139,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(item));
             }
-            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM ItemNames WHERE Id={(ushort)item}")[0]);
+            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>("SELECT * FROM ItemNames WHERE Id=" + (ushort)item)[0]);
         }
         public static PBEMove? GetMoveByName(string moveName)
         {
-            PBEMove move = PBEMove.None;
+            PBEMove move;
             List<SearchResult> results = PBEUtils.DatabaseConnection.Query<SearchResult>(string.Format("SELECT * FROM MoveNames WHERE StrCmp(English,'{0}') OR StrCmp(French,'{0}') OR StrCmp(German,'{0}') OR StrCmp(Italian,'{0}') OR StrCmp(Japanese_Kana,'{0}') OR StrCmp(Japanese_Kanji,'{0}') OR StrCmp(Korean,'{0}') OR StrCmp(Spanish,'{0}')", moveName));
             if (results.Count == 1)
             {
@@ -169,7 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM MoveDescriptions WHERE Id={(ushort)move}")[0]);
+            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>("SELECT * FROM MoveDescriptions WHERE Id=" + (ushort)move)[0]);
         }
         public static PBELocalizedString GetMoveName(PBEMove move)
         {
@@ -177,11 +177,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(move));
             }
-            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM MoveNames WHERE Id={(ushort)move}")[0]);
+            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>("SELECT * FROM MoveNames WHERE Id=" + (ushort)move)[0]);
         }
         public static PBESpecies? GetSpeciesByName(string speciesName)
         {
-            PBESpecies species = 0;
+            PBESpecies species;
             List<SearchResult> results = PBEUtils.DatabaseConnection.Query<SearchResult>(string.Format("SELECT * FROM SpeciesNames WHERE StrCmp(English,'{0}') OR StrCmp(French,'{0}') OR StrCmp(German,'{0}') OR StrCmp(Italian,'{0}') OR StrCmp(Japanese_Kana,'{0}') OR StrCmp(Japanese_Kanji,'{0}') OR StrCmp(Korean,'{0}') OR StrCmp(Spanish,'{0}')", speciesName));
             if (results.Count == 1)
             {
@@ -203,30 +203,30 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static PBELocalizedString GetSpeciesCategory(PBESpecies species)
         {
-            uint speciesId = (uint)species & 0xFFFF;
+            uint speciesId = (ushort)species;
             if (!Enum.IsDefined(typeof(PBESpecies), speciesId))
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM SpeciesCategories WHERE Id={speciesId}")[0]);
+            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>("SELECT * FROM SpeciesCategories WHERE Id=" + speciesId)[0]);
         }
         public static PBELocalizedString GetSpeciesEntry(PBESpecies species)
         {
-            uint speciesId = (uint)species & 0xFFFF;
+            uint speciesId = (ushort)species;
             if (!Enum.IsDefined(typeof(PBESpecies), speciesId))
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM SpeciesEntries WHERE Id={speciesId}")[0]);
+            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>("SELECT * FROM SpeciesEntries WHERE Id=" + speciesId)[0]);
         }
         public static PBELocalizedString GetSpeciesName(PBESpecies species)
         {
-            uint speciesId = (uint)species & 0xFFFF;
+            uint speciesId = (ushort)species;
             if (!Enum.IsDefined(typeof(PBESpecies), speciesId))
             {
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
-            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM SpeciesNames WHERE Id={speciesId}")[0]);
+            return new PBELocalizedString(PBEUtils.DatabaseConnection.Query<SearchResult>("SELECT * FROM SpeciesNames WHERE Id=" + speciesId)[0]);
         }
 
         #endregion

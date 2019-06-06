@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             Image sprite = this.FindControl<Image>("Sprite");
             // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
             sprite.Opacity = !pokemon.Status2.HasFlag(PBEStatus2.Substitute) && (pokemon.Status2.HasFlag(PBEStatus2.Airborne) || pokemon.Status2.HasFlag(PBEStatus2.Underground) || pokemon.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
-            GifImage.SetSourceUri(sprite, Utils.GetPokemonSpriteUri(pokemon, backSprite));
+            GifImage.SetSourceStream(sprite, Utils.GetPokemonSpriteStream(pokemon, backSprite));
 
             IsVisible = true;
         }

@@ -67,7 +67,7 @@
           <ComboBox Grid.Row="8" Grid.Column="1" Name="Item" Items="{Binding AvailableItems}" ItemTemplate="{StaticResource MenuBlack}"/>
         </Grid>
         <Panel Width="192" Height="192">
-          <Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceUri="{Binding Source}">
+          <Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapInterpolationMode="Default" gif:GifImage.SourceStream="{Binding SpriteStream}">
             <Image.RenderTransform>
               <ScaleTransform ScaleX="2" ScaleY="2"/>
             </Image.RenderTransform>

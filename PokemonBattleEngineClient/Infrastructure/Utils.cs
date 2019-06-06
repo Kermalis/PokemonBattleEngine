@@ -5,6 +5,7 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,51 +14,55 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
     internal static class Utils
     {
-        private static string[] resources = null;
+        private const string assemblyPrefix = "Kermalis.PokemonBattleEngineClient.";
+        private static readonly Assembly assembly = Assembly.GetExecutingAssembly();
+        private static readonly string[] resources = assembly.GetManifestResourceNames();
+        public static readonly IPlatformRenderInterface RenderInterface = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>();
+        private static readonly Dictionary<string, bool> resourceExistsCache = new Dictionary<string, bool>();
         public static bool DoesResourceExist(string resource)
         {
-            if (resources == null)
+            if (!resourceExistsCache.TryGetValue(resource, out bool value))
             {
-                resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+                value = Array.IndexOf(resources, assemblyPrefix + resource) != -1;
+                resourceExistsCache.Add(resource, value);
             }
-            return Array.IndexOf(resources, resource) != -1;
+            return value;
         }
-        public static Bitmap UriToBitmap(Uri uri)
+        public static Stream ResourceToStream(string resource)
         {
-            IAssetLoader assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-            return new Bitmap(assets.Open(uri));
+            return assembly.GetManifestResourceStream(assemblyPrefix + resource);
         }
 
         public static Bitmap GetMinisprite(PBESpecies species, PBEGender gender, bool shiny)
         {
-            uint speciesID = (uint)species & 0xFFFF;
+            ushort speciesID = (ushort)species;
             uint formeID = (uint)species >> 0x10;
-            string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{(shiny ? "_S" : string.Empty)}";
-            string genderStr = gender == PBEGender.Female && DoesResourceExist($"Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}_F.png") ? "_F" : string.Empty;
-            return UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}{genderStr}.png?assembly=PokemonBattleEngineClient"));
+            string sss = speciesID + (formeID > 0 ? ("_" + formeID) : string.Empty) + (shiny ? "_S" : string.Empty);
+            string genderStr = gender == PBEGender.Female && DoesResourceExist("PKMN.PKMN_" + sss + "_F.png") ? "_F" : string.Empty;
+            return new Bitmap(ResourceToStream("PKMN.PKMN_" + sss + genderStr + ".png"));
         }
-        public static Uri GetPokemonSpriteUri(PBEPokemon pokemon, bool backSprite)
+        public static Stream GetPokemonSpriteStream(PBEPokemon pokemon, bool backSprite)
         {
-            return GetPokemonSpriteUri(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite);
+            return GetPokemonSpriteStream(pokemon.KnownSpecies, pokemon.KnownShiny, pokemon.KnownGender, pokemon.Status2.HasFlag(PBEStatus2.Substitute), backSprite);
         }
-        public static Uri GetPokemonSpriteUri(PBEPokemonShell shell)
+        public static Stream GetPokemonSpriteStream(PBEPokemonShell shell)
         {
-            return GetPokemonSpriteUri(shell.Species, shell.Shiny, shell.Gender, false, false);
+            return GetPokemonSpriteStream(shell.Species, shell.Shiny, shell.Gender, false, false);
         }
-        public static Uri GetPokemonSpriteUri(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
+        public static Stream GetPokemonSpriteStream(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {
             string orientation = backSprite ? "_B" : "_F";
             if (behindSubstitute)
             {
-                return new Uri($"resm:Kermalis.PokemonBattleEngineClient.PKMN.STATUS2_Substitute{orientation}.gif?assembly=PokemonBattleEngineClient");
+                return ResourceToStream("PKMN.STATUS2_Substitute" + orientation + ".gif");
             }
             else
             {
-                uint speciesID = (uint)species & 0xFFFF;
+                ushort speciesID = (ushort)species;
                 uint formeID = (uint)species >> 0x10;
-                string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{orientation}{(shiny ? "_S" : string.Empty)}";
-                string genderStr = gender == PBEGender.Female && DoesResourceExist($"Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}_F.gif") ? "_F" : string.Empty;
-                return new Uri($"resm:Kermalis.PokemonBattleEngineClient.PKMN.PKMN_{sss}{genderStr}.gif?assembly=PokemonBattleEngineClient");
+                string sss = speciesID + (formeID > 0 ? ("_" + formeID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
+                string genderStr = gender == PBEGender.Female && DoesResourceExist("PKMN.PKMN_" + sss + "_F.gif") ? "_F" : string.Empty;
+                return ResourceToStream("PKMN.PKMN_" + sss + genderStr + ".gif");
             }
         }
 

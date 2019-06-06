@@ -34,9 +34,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
         // https://stackoverflow.com/a/3722337
         public static Color Blend(this Color color, Color backColor, double depth = 0.5)
         {
-            byte r = (byte)((color.R * depth) + backColor.R * (1 - depth));
-            byte g = (byte)((color.G * depth) + backColor.G * (1 - depth));
-            byte b = (byte)((color.B * depth) + backColor.B * (1 - depth));
+            byte r = (byte)((color.R * depth) + (backColor.R * (1 - depth)));
+            byte g = (byte)((color.G * depth) + (backColor.G * (1 - depth)));
+            byte b = (byte)((color.B * depth) + (backColor.B * (1 - depth)));
             return new Color(r, g, b);
         }
         public static Color GetColor(PBEType type1, PBEType type2)
@@ -62,28 +62,37 @@ namespace Kermalis.PokemonBattleEngineDiscord
             return PBEUtils.Sample(TypeToColor.Values);
         }
 
+        private static readonly Dictionary<string, bool> urlCache = new Dictionary<string, bool>();
         // https://stackoverflow.com/questions/1979915/can-i-check-if-a-file-exists-at-a-url
         public static bool URLExists(string url)
         {
-            bool result = false;
-            var webRequest = WebRequest.Create(url);
-            webRequest.Timeout = 2000;
-            webRequest.Method = "HEAD";
-            HttpWebResponse response = null;
-            try
+            if (urlCache.TryGetValue(url, out bool value))
             {
-                response = (HttpWebResponse)webRequest.GetResponse();
-                result = true;
+                return value;
             }
-            catch { }
-            finally
+            else
             {
-                if (response != null)
+                bool result = false;
+                var webRequest = WebRequest.Create(url);
+                webRequest.Timeout = 2000;
+                webRequest.Method = "HEAD";
+                HttpWebResponse response = null;
+                try
                 {
-                    response.Close();
+                    response = (HttpWebResponse)webRequest.GetResponse();
+                    result = true;
                 }
+                catch { }
+                finally
+                {
+                    if (response != null)
+                    {
+                        response.Close();
+                    }
+                }
+                urlCache.Add(url, result);
+                return result;
             }
-            return result;
         }
         public static string GetPokemonSprite(PBEPokemon pokemon)
         {
@@ -91,18 +100,19 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static string GetPokemonSprite(PBESpecies species, bool shiny, PBEGender gender, bool behindSubstitute, bool backSprite)
         {
+            const string path = "https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/";
             string orientation = backSprite ? "_B" : "_F";
             if (behindSubstitute)
             {
-                return $"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/STATUS2_Substitute{orientation}.gif";
+                return path + "STATUS2_Substitute" + orientation + ".gif";
             }
             else
             {
-                uint speciesID = (uint)species & 0xFFFF;
+                ushort speciesID = (ushort)species;
                 uint formeID = (uint)species >> 0x10;
-                string sss = $"{speciesID}{(formeID > 0 ? $"_{formeID}" : string.Empty)}{orientation}{(shiny ? "_S" : string.Empty)}";
-                string genderStr = gender == PBEGender.Female && URLExists($"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/PKMN_{sss}_F.gif") ? "_F" : string.Empty;
-                return $"https://raw.githubusercontent.com/Kermalis/PokemonBattleEngine/master/Shared%20Assets/PKMN/PKMN_{sss}{genderStr}.gif";
+                string sss = speciesID + (formeID > 0 ? ("_" + formeID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
+                string genderStr = gender == PBEGender.Female && URLExists(path + "PKMN_" + sss + "_F.gif") ? "_F" : string.Empty;
+                return path + "PKMN_" + sss + genderStr + ".gif";
             }
         }
     }

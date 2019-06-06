@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineTesting
 {
@@ -1164,7 +1163,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                         // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon
                         if (sp <= 649 || sp >= 685)
                         {
-                            PBESpecies species = b2w2SpeciesIndexToPBESpecies.ContainsKey(sp) ? b2w2SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
+                            if (!b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                            {
+                                species = (PBESpecies)sp;
+                            }
                             AddSpecies(species);
                             using (var pokedata = new EndianBinaryReader(b2w2Pokedata.Files[sp], Endianness.LittleEndian))
                             using (var evolution = new EndianBinaryReader(b2w2Evolution.Files[sp], Endianness.LittleEndian))
@@ -1301,7 +1303,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                         {
                             continue;
                         }
-                        PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
+                        if (!gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                        {
+                            species = (PBESpecies)sp;
+                        }
                         void ReadLevelUpMoves(MemoryStream file, PBEMoveObtainMethod flag)
                         {
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
@@ -1337,8 +1342,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         void ReadLevelUpMoves(MemoryStream file, bool isBW)
                         {
-                            Dictionary<int, PBESpecies> d = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
-                            PBESpecies species = d.ContainsKey(sp) ? d[sp] : (PBESpecies)sp;
+                            if (!(isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
+                            {
+                                species = (PBESpecies)sp;
+                            }
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
                                 while (true)
@@ -1350,7 +1357,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                                     }
                                     else
                                     {
-                                        AddLevelUpMove(species, (PBEMove)(val & 0xFFFF), (byte)(val >> 16), isBW ? PBEMoveObtainMethod.LevelUp_BW : PBEMoveObtainMethod.LevelUp_B2W2);
+                                        AddLevelUpMove(species, (PBEMove)(ushort)val, (byte)(val >> 0x10), isBW ? PBEMoveObtainMethod.LevelUp_BW : PBEMoveObtainMethod.LevelUp_B2W2);
                                     }
                                 }
                             }
@@ -1433,7 +1440,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                         {
                             continue;
                         }
-                        PBESpecies species = gen4SpeciesIndexToPBESpecies.ContainsKey(sp) ? gen4SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
+                        if (!gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                        {
+                            species = (PBESpecies)sp;
+                        }
                         void ReadTMHMMoves(MemoryStream file, bool isDPPt)
                         {
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
@@ -1465,8 +1475,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         void ReadTMHMMoves(MemoryStream file, bool isBW)
                         {
-                            Dictionary<int, PBESpecies> d = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
-                            PBESpecies species = d.ContainsKey(sp) ? d[sp] : (PBESpecies)sp;
+                            if (!(isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
+                            {
+                                species = (PBESpecies)sp;
+                            }
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
                                 byte[] bytes = reader.ReadBytes(13, 0x28);
@@ -1589,8 +1601,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                     {
                         void ReadFreeTutorMoves(EndianBinaryReader reader, bool isBW)
                         {
-                            Dictionary<int, PBESpecies> d = isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies;
-                            PBESpecies species = d.ContainsKey(sp) ? d[sp] : (PBESpecies)sp;
+                            if (!(isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
+                            {
+                                species = (PBESpecies)sp;
+                            }
                             byte val = reader.ReadByte(0x38);
                             for (int i = 0; i < gen5FreeTutorMoves.Length; i++)
                             {
@@ -1602,7 +1616,10 @@ namespace Kermalis.PokemonBattleEngineTesting
                         }
                         void ReadB2W2TutorMoves(EndianBinaryReader reader)
                         {
-                            PBESpecies species = b2w2SpeciesIndexToPBESpecies.ContainsKey(sp) ? b2w2SpeciesIndexToPBESpecies[sp] : (PBESpecies)sp;
+                            if (!b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                            {
+                                species = (PBESpecies)sp;
+                            }
                             for (int i = 0; i < b2w2TutorMoves.Length; i++)
                             {
                                 uint val = reader.ReadUInt32(0x3C + (sizeof(uint) * i));

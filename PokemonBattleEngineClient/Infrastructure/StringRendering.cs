@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             string FontId { get; }
             int FontHeight { get; }
             ConcurrentDictionary<string, Bitmap> LoadedKeys { get; }
-            Dictionary<string, string> OverrideKeys { get; }
+            List<(string OldKey, string NewKey)> OverrideKeys { get; }
             // TODO: Cached text?
         }
         private class BattleHPFont : IStringRenderFont
@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public int FontHeight => 8;
             public static BattleHPFont Instance { get; } = new BattleHPFont();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new ConcurrentDictionary<string, Bitmap>();
-            public Dictionary<string, string> OverrideKeys { get; } = new Dictionary<string, string>();
+            public List<(string OldKey, string NewKey)> OverrideKeys { get; } = new List<(string OldKey, string NewKey)>();
         }
         private class BattleLevelFont : IStringRenderFont
         {
@@ -32,9 +32,9 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public int FontHeight => 10;
             public static BattleLevelFont Instance { get; } = new BattleLevelFont();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new ConcurrentDictionary<string, Bitmap>();
-            public Dictionary<string, string> OverrideKeys { get; } = new Dictionary<string, string>
+            public List<(string OldKey, string NewKey)> OverrideKeys { get; } = new List<(string OldKey, string NewKey)>
             {
-                { "[LV]", "LV" }
+                ("[LV]", "LV")
             };
         }
         private class BattleNameFont : IStringRenderFont
@@ -43,12 +43,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public int FontHeight => 13;
             public static BattleNameFont Instance { get; } = new BattleNameFont();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new ConcurrentDictionary<string, Bitmap>();
-            public Dictionary<string, string> OverrideKeys { get; } = new Dictionary<string, string>
+            public List<(string OldKey, string NewKey)> OverrideKeys { get; } = new List<(string OldKey, string NewKey)>
             {
-                { "♂", "246D" },
-                { "♀", "246E" },
-                { "[PK]", "2486" },
-                { "[MN]", "2487" }
+                ("♂", "246D"),
+                ("♀", "246E"),
+                ("[PK]", "2486"),
+                ("[MN]", "2487")
             };
         }
         private class DefaultFont : IStringRenderFont
@@ -57,12 +57,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public int FontHeight => 15;
             public static DefaultFont Instance { get; } = new DefaultFont();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new ConcurrentDictionary<string, Bitmap>();
-            public Dictionary<string, string> OverrideKeys { get; } = new Dictionary<string, string>
+            public List<(string OldKey, string NewKey)> OverrideKeys { get; } = new List<(string OldKey, string NewKey)>
             {
-                { "♂", "246D" },
-                { "♀", "246E" },
-                { "[PK]", "2486" },
-                { "[MN]", "2487" }
+                ("♂", "246D"),
+                ("♀", "246E"),
+                ("[PK]", "2486"),
+                ("[MN]", "2487")
             };
         }
 
@@ -82,7 +82,9 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 case "BattleName": font = BattleNameFont.Instance; break;
                 default: font = DefaultFont.Instance; break;
             }
-            uint primary = 0xFFFFFFFF, secondary = 0xFF000000, tertiary = 0xFF808080;
+            uint primary = 0xFFFFFFFF,
+                secondary = 0xFF000000,
+                tertiary = 0xFF808080;
             switch (style)
             {
                 case "BattleHP": primary = 0xFFF7F7F7; secondary = 0xFF101010; tertiary = 0xFF9C9CA5; break;
@@ -93,38 +95,20 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 default: secondary = 0xFF848484; break;
             }
 
-            int index;
-            string GetCharKey()
-            {
-                string key = null;
-                foreach (KeyValuePair<string, string> pair in font.OverrideKeys)
-                {
-                    if (index + pair.Key.Length <= str.Length && str.Substring(index, pair.Key.Length) == pair.Key)
-                    {
-                        key = pair.Value;
-                        index += pair.Key.Length;
-                        break;
-                    }
-                }
-                if (key == null)
-                {
-                    key = ((int)str[index]).ToString("X4");
-                    index++;
-                }
-                return Utils.DoesResourceExist($"Kermalis.PokemonBattleEngineClient.FONT.{font.FontId}.F_{key}.png") ? key : "003F"; // 003F is '?'
-            }
-
             // Measure how large the string will end up
-            int stringWidth = 0, stringHeight = font.FontHeight, curLineWidth = 0;
-            index = 0;
+            int stringWidth = 0,
+                stringHeight = font.FontHeight,
+                curLineWidth = 0;
+            int index = 0;
+            var keys = new List<(string Key, Bitmap Bitmap)>();
             while (index < str.Length)
             {
-                if (str[index] == '\r') // Ignore
+                char c = str[index];
+                if (c == '\r') // Ignore
                 {
                     index++;
-                    continue;
                 }
-                else if (str[index] == '\n')
+                else if (c == '\n')
                 {
                     index++;
                     stringHeight += font.FontHeight + 1;
@@ -133,15 +117,37 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         stringWidth = curLineWidth;
                     }
                     curLineWidth = 0;
+                    keys.Add(("\n", null));
                 }
                 else
                 {
-                    string key = GetCharKey();
-                    if (!font.LoadedKeys.ContainsKey(key))
+                    string key = null;
+                    for (int i = 0; i < font.OverrideKeys.Count; i++)
                     {
-                        font.LoadedKeys.TryAdd(key, Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.FONT.{font.FontId}.F_{key}.png?assembly=PokemonBattleEngineClient")));
+                        (string oldKey, string newKey) = font.OverrideKeys[i];
+                        if (index + oldKey.Length <= str.Length && str.Substring(index, oldKey.Length) == oldKey)
+                        {
+                            key = newKey;
+                            index += oldKey.Length;
+                            break;
+                        }
                     }
-                    curLineWidth += font.LoadedKeys[key].PixelSize.Width;
+                    if (key == null)
+                    {
+                        key = ((ushort)str[index]).ToString("X4");
+                        index++;
+                    }
+                    if (!Utils.DoesResourceExist("FONT." + font.FontId + ".F_" + key + ".png"))
+                    {
+                        key = "003F"; // 003F is '?'
+                    }
+                    if (!font.LoadedKeys.TryGetValue(key, out Bitmap bmp))
+                    {
+                        bmp = new Bitmap(Utils.ResourceToStream("FONT." + font.FontId + ".F_" + key + ".png"));
+                        font.LoadedKeys.TryAdd(key, bmp);
+                    }
+                    curLineWidth += bmp.PixelSize.Width;
+                    keys.Add((key, bmp));
                 }
             }
             if (curLineWidth > stringWidth)
@@ -151,28 +157,23 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
             // Draw the string
             var wb = new WriteableBitmap(new PixelSize(stringWidth, stringHeight), new Vector(96, 96), PixelFormat.Bgra8888);
-            using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
+            using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
             using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
             {
-                double x = 0, y = 0;
-                index = 0;
-                while (index < str.Length)
+                int x = 0,
+                    y = 0;
+                for (int i = 0; i < keys.Count; i++)
                 {
-                    if (str[index] == '\r') // Ignore
+                    (string key, Bitmap bmp) = keys[i];
+                    if (key == "\n")
                     {
-                        index++;
-                        continue;
-                    }
-                    else if (str[index] == '\n')
-                    {
-                        index++;
                         y += font.FontHeight + 1;
                         x = 0;
                     }
                     else
                     {
-                        Bitmap bmp = font.LoadedKeys[GetCharKey()];
-                        ctx.DrawImage(bmp.PlatformImpl, 1.0, new Rect(0, 0, bmp.PixelSize.Width, font.FontHeight), new Rect(x, y, bmp.PixelSize.Width, font.FontHeight));
+                        var size = new Size(bmp.PixelSize.Width, font.FontHeight);
+                        ctx.DrawImage(bmp.PlatformImpl, 1D, new Rect(size), new Rect(new Point(x, y), size));
                         x += bmp.PixelSize.Width;
                     }
                 }
@@ -180,11 +181,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             // Edit colors
             using (ILockedFramebuffer l = wb.Lock())
             {
+                long startAddress = l.Address.ToInt64();
                 for (int x = 0; x < stringWidth; x++)
                 {
                     for (int y = 0; y < stringHeight; y++)
                     {
-                        var address = new IntPtr(l.Address.ToInt64() + (x * sizeof(uint)) + (y * l.RowBytes));
+                        var address = new IntPtr(startAddress + (x * sizeof(uint)) + (y * l.RowBytes));
                         uint pixel = (uint)Marshal.ReadInt32(address);
                         if (pixel == 0xFFFFFFFF)
                         {

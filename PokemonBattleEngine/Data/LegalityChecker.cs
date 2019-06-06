@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
@@ -26,10 +27,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             foreach (PBESpecies pkmn in evolutionChain)
             {
                 var pData = PBEPokemonData.GetData(pkmn);
-                moves.AddRange(pData.LevelUpMoves.Where(t => t.Item2 <= level).Select(t => t.Item1).Union(pData.OtherMoves.Select(t => t.Item1)));
-                if (PBEEventPokemon.Events.ContainsKey(pkmn))
+                moves.AddRange(pData.LevelUpMoves.Where(t => t.Level <= level).Select(t => t.Move).Union(pData.OtherMoves.Select(t => t.Move)));
+                if (PBEEventPokemon.Events.TryGetValue(pkmn, out ReadOnlyCollection<PBEEventPokemon> events))
                 {
-                    moves.AddRange(PBEEventPokemon.Events[pkmn].SelectMany(e => e.Moves));
+                    moves.AddRange(events.SelectMany(e => e.Moves));
                 }
             }
 

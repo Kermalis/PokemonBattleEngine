@@ -50,22 +50,22 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public void Update(PBEPokemon pkmn, bool showRawValues)
         {
             var wb = new WriteableBitmap(new PixelSize(104, 27), new Vector(96, 96), PixelFormat.Bgra8888);
-            using (IRenderTarget rtb = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>().CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
+            using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
             using (IDrawingContextImpl ctx = rtb.CreateDrawingContext(null))
             {
-                string bar;
+                string barResource;
                 byte yOffset;
                 if (showRawValues)
                 {
-                    bar = "resm:Kermalis.PokemonBattleEngineClient.MISC.HPBAR_Ally.png?assembly=PokemonBattleEngineClient";
+                    barResource = "MISC.HPBAR_Ally.png";
                     yOffset = 0;
                 }
                 else
                 {
-                    bar = "resm:Kermalis.PokemonBattleEngineClient.MISC.HPBAR_Foe.png?assembly=PokemonBattleEngineClient";
+                    barResource = "MISC.HPBAR_Foe.png";
                     yOffset = 2;
                 }
-                Bitmap hpBar = Utils.UriToBitmap(new Uri(bar));
+                var hpBar = new Bitmap(Utils.ResourceToStream(barResource));
                 ctx.DrawImage(hpBar.PlatformImpl, 1.0, new Rect(0, 0, hpBar.PixelSize.Width, hpBar.PixelSize.Height), new Rect(0, 11 + yOffset, hpBar.PixelSize.Width, hpBar.PixelSize.Height));
 
                 Bitmap nickname = StringRendering.RenderString(pkmn.KnownNickname, "BattleName");
@@ -76,7 +76,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
                 if (pkmn.Status1 != PBEStatus1.None)
                 {
-                    Bitmap status = Utils.UriToBitmap(new Uri($"resm:Kermalis.PokemonBattleEngineClient.MISC.STATUS1_{pkmn.Status1}.png?assembly=PokemonBattleEngineClient"));
+                    var status = new Bitmap(Utils.ResourceToStream("MISC.STATUS1_" + pkmn.Status1 + ".png"));
                     ctx.DrawImage(status.PlatformImpl, 1.0, new Rect(0, 0, status.PixelSize.Width, status.PixelSize.Height), new Rect(1, 11 + yOffset, status.PixelSize.Width, status.PixelSize.Height));
                 }
 

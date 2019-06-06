@@ -22,13 +22,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private Uri source;
-        public Uri Source
+        private Stream spriteStream;
+        public Stream SpriteStream
         {
-            get => source; set
+            get => spriteStream;
+            set
             {
-                source = value;
-                OnPropertyChanged(nameof(Source));
+                spriteStream = value;
+                OnPropertyChanged(nameof(SpriteStream));
             }
         }
 
@@ -348,7 +349,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             if (updateSprites)
             {
-                Source = Utils.GetPokemonSpriteUri(shell);
+                SpriteStream = Utils.GetPokemonSpriteStream(shell);
                 // Force redraw
                 party.Items = Array.Empty<object>();
                 party.Items = team.Item2;
