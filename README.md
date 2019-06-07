@@ -41,7 +41,7 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 
 # PokemonBattleEngineMobile Uses:
 * [Xamarin.Forms](https://github.com/xamarin/Xamarin.Forms)
-* [FFImageLoading](https://github.com/luberda-molinet/FFImageLoading)
+* [SkiaSharp](https://github.com/mono/SkiaSharp)
 
 # PokemonBattleEngineTesting Uses:
 * [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
