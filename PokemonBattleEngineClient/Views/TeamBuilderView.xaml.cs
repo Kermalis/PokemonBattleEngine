@@ -214,7 +214,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             else
             {
-                Directory.CreateDirectory("Teams");
+                //Directory.CreateDirectory("Teams");
             }
 
             AddTeam();
@@ -222,8 +222,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         private void AddTeam()
         {
-            Teams.Add(Tuple.Create($"Team {DateTime.Now.Ticks}", new ObservableCollection<PBEPokemonShell>()));
-            savedTeams.SelectedIndex = Teams.Count - 1;
+            Team = Tuple.Create($"Team {DateTime.Now.Ticks}", new ObservableCollection<PBEPokemonShell>());
+            Teams.Add(team);
+            savedTeams.SelectedIndex = Teams.Count - 1; // Not working since I switched the location Load() is called; why?
             AddPartyMember();
         }
         private void RemoveTeam()

@@ -951,7 +951,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         private void SelectPosition(string arg)
         {
-            PBEFieldPosition pos = Enum.Parse<PBEFieldPosition>(arg);
+            var pos = (PBEFieldPosition)Enum.Parse(typeof(PBEFieldPosition), arg);
             BattleView.Client.Switches.Add((Pokemon.Id, pos));
             BattleView.Client.StandBy.Add(Pokemon);
             BattleView.Client.PositionStandBy.Add(pos);

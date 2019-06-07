@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
@@ -12,12 +13,24 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
-    internal static class Utils
+    public static class Utils
     {
         private const string assemblyPrefix = "Kermalis.PokemonBattleEngineClient.";
         private static readonly Assembly assembly = Assembly.GetExecutingAssembly();
         private static readonly string[] resources = assembly.GetManifestResourceNames();
-        public static readonly IPlatformRenderInterface RenderInterface = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>();
+        private static IPlatformRenderInterface renderInterface = null;
+        public static IPlatformRenderInterface RenderInterface
+        {
+            get
+            {
+                // This is done because the static constructor of Utils is called (by ForwardCreateDatabaseConnection) before the Avalonia app is built
+                if (renderInterface == null)
+                {
+                    renderInterface = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>();
+                }
+                return renderInterface;
+            }
+        }
         private static readonly Dictionary<string, bool> resourceExistsCache = new Dictionary<string, bool>();
         public static bool DoesResourceExist(string resource)
         {
@@ -31,6 +44,10 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static Stream GetResourceStream(string resource)
         {
             return assembly.GetManifestResourceStream(assemblyPrefix + resource);
+        }
+        public static void ForwardCreateDatabaseConnection(string databasePath)
+        {
+            PBEUtils.CreateDatabaseConnection(databasePath);
         }
 
         public static Bitmap GetMinisprite(PBESpecies species, PBEGender gender, bool shiny)

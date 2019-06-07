@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <OutputType>Exe</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
     <RootNamespace>Kermalis.PokemonBattleEngineClient</RootNamespace>
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
@@ -17,6 +17,9 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
     <EmbeddedResource Include="../Shared Assets\**" />
+    <EmbeddedResource Include="..\PokemonBattleEngine\PokemonBattleEngine.db">
+      <Link>PokemonBattleEngine.db</Link>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

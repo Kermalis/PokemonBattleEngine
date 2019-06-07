@@ -1,24 +1,7 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
-        xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient"
+        xmlns:local="clr-namespace:Kermalis.PokemonBattleEngineClient;assembly=PokemonBattleEngineClient"
         x:Class="Kermalis.PokemonBattleEngineClient.MainWindow"
-        Width="896" Height="554" CanResize="False" WindowStartupLocation="CenterScreen"
-        Title="Pokémon Battle Engine">
-  <TabControl Name="Tabs" Background="#313131">
-    <TabItem Header="Home">
-      <StackPanel Orientation="Vertical">
-        <views:TeamBuilderView Name="TeamBuilder"/>
-        <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-          <TextBox Name="IP" Width="100" Text="127.0.0.1"/>
-          <NumericUpDown Name="Port" Width="100" Value="8888"/>
-          <Button Width="100" Height="30" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Name="Connect">
-            <StackPanel>
-              <Image Source="{Binding ConnectText, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
-            </StackPanel>
-          </Button>
-        </StackPanel>
-      </StackPanel>
-    </TabItem>
-  </TabControl>
+        MinWidth="800" MinHeight="542" WindowStartupLocation="CenterScreen" Title="Pokémon Battle Engine">
+  <local:MainView />
 </Window>
