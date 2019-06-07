@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
                 case PBEMove move: localized = PBELocalizedString.GetMoveName(move); break;
                 case PBESpecies species: localized = PBELocalizedString.GetSpeciesName(species); break;
             }
-            return new SKBitmapImageSource { Bitmap = StringRenderer.RenderString(localized == null ? value?.ToString() : localized.FromUICultureInfo(), parameter?.ToString()) };
+            return new SKBitmapImageSource { Bitmap = StringRenderer.Render(localized == null ? value?.ToString() : localized.FromUICultureInfo(), parameter?.ToString()) };
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

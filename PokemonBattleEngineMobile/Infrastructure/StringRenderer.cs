@@ -61,7 +61,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Infrastructure
                 ("[MN]", "2487")
             };
         }
-        public static SKBitmap RenderString(string str, string style)
+        public static SKBitmap Render(string str, string style)
         {
             // Return null for bad strings
             if (string.IsNullOrWhiteSpace(str))

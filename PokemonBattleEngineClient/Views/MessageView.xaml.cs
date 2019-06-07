@@ -26,12 +26,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 if (matches.Count == 1 && matches[0].Value == message)
                 {
                     Alignment = HorizontalAlignment.Center;
-                    Scale = 2.0;
+                    Scale = 2d;
                 }
                 else
                 {
                     Alignment = HorizontalAlignment.Left;
-                    Scale = 1.0;
+                    Scale = 1d;
                 }
                 Height = Bitmap.PixelSize.Height * Scale;
             }

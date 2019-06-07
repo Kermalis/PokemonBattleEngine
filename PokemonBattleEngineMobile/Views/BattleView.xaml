@@ -4,7 +4,10 @@
              xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineMobile.Views"
              x:Class="Kermalis.PokemonBattleEngineMobile.Views.BattleView">
     <StackLayout Orientation="Vertical">
-        <views:FieldView x:Name="Field" x:FieldModifier="public" />
+        <StackLayout Orientation="Horizontal">
+            <views:FieldView x:Name="Field" x:FieldModifier="public" />
+            <views:MessageView x:Name="Messages" IsVisible="False" />
+        </StackLayout>
         <views:ActionsView x:Name="Actions" x:FieldModifier="public" />
     </StackLayout>
 </ContentView>

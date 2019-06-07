@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngineMobile.Views
             }
             if (messageLog)
             {
-                //Messages.AddMessage(message);
+                Messages.AddMessage(message);
             }
         }
     }

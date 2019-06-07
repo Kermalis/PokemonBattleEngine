@@ -50,6 +50,9 @@
     <EmbeddedResource Update="Views\HPBarView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\MessageView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\PokemonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
