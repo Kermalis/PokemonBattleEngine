@@ -1,28 +1,28 @@
 # PokemonBattleEngine
 
-A C# library that can emulate Pokémon battles.
+Pokémon Battle Engine is a C# library that can emulate Pokémon battles.
+This repository includes the engine library, a Windows/Linux/MacOS/Android/iOS client, a server, a Discord bot, and some extra code to rip data from the official games.
+The engine only emulates Pokémon B2W2 versions, so nothing introduced after generation 5 is included and neither are generation 1/2 exclusive items, event Pokémon, and move compatibility.
 
-![Preview](Preview.gif)
+![Client Preview](Client Preview.gif)
 
-The library comes with a desktop client, mobile app, server, and Discord bot.
-The engine only emulates as if it were Pokémon B2W2 versions, so there will not be features introduced after generation 5.
+The engine does not send information a player should not know; information only gets sent to each player/spectator when it is revealed.
+For example, a client has no way of knowing if the opponent has sent out a Pokémon with Illusion, the opponent's nature, stats, Hidden Power damage/type, unused item/moves, etc.
+Therefore, a custom/modified client cannot do anything more than an ordinary player unless it is hosting the battle. A lot of work has been done to prevent any cheating, so if there are any exploits, create an issue please!
 
-The library does not send information a player should not know; information slowly gets revealed to each player over time.
-For example, your opponent will not know your ability until your ability does something. The client has no way of telling if the opponent has a Pokémon out with Illusion.
-The opponent will never know your nature or hidden power damage/type unless they use context clues as a human.
-Therefore, a modified client cannot do anything more than an ordinary player (unless my code has exploits... in that case... create an issue!)
+There is also [a settings file](PokemonBattleEngine/Data/Settings.cs) that you can change. Have you ever wanted to have level 200 Pokémon or 8 moves? You can do that!
 
-There is a settings file that you can change for custom battles. Ever wanted to have level 200 Pokémon? Or 8 moves? You can do that!
-Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
+Currently, you need to change the settings to be identical for the server and all connected clients for the server to accept parties/actions and for the clients to communicate without crashing.
+This will change in the future as the server will send the settings to all connected clients.
 
 ----
 # To Do:
-* Rotation battles and triple battle shifting
-* Complete [Pokémon data dumper](PokemonBattleEngineTesting/PokemonDataDumper.cs)
-* Separate forme-specific moves in PokemonData and instead have legality checker do some work
-* Add lots of items, moves, and secondary statuses (taunt, torment, etc.)
-* Protect from corrupt packets (if they are even a problem)
-* Mobile HP bars
+* Triple-battle shifting and Rotation-battles
+* Complete [the Pokémon data dumper](PokemonBattleEngineTesting/PokemonDataDumper.cs)
+* Separate forme-specific moves in Pokémon data and instead have legality checker do some work
+* Add lots of items, moves, and volatile statuses (taunt, torment, etc. are volatile statuses)
+* Finish adding all event Pokémon
+* Add previews of Discord and Android/iOS
 
 ----
 # PokemonBattleEngine Uses:
@@ -34,7 +34,6 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 # PokemonBattleEngineClient Uses:
 * [Avalonia](https://github.com/AvaloniaUI/Avalonia)
 * [AvaloniaGif](https://github.com/jmacato/AvaloniaGif)
-* [pokecheck.org sprites](http://sprites.pokecheck.org)
 
 # PokemonBattleEngineDiscord Uses:
 * [Discord.Net](https://github.com/RogueException/Discord.Net)
