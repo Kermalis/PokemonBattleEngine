@@ -4,7 +4,7 @@ Pokémon Battle Engine is a C# library that can emulate Pokémon battles.
 This repository includes the engine library, a Windows/Linux/MacOS/Android/iOS client, a server, a Discord bot, and some extra code to rip data from the official games.
 The engine only emulates Pokémon B2W2 versions, so nothing introduced after generation 5 is included and neither are generation 1/2 exclusive items, event Pokémon, and move compatibility.
 
-![Client Preview](Client Preview.gif)
+![Client Preview](Client_Preview.gif)
 
 The engine does not send information a player should not know; information only gets sent to each player/spectator when it is revealed.
 For example, a client has no way of knowing if the opponent has sent out a Pokémon with Illusion, the opponent's nature, stats, Hidden Power damage/type, unused item/moves, etc.
