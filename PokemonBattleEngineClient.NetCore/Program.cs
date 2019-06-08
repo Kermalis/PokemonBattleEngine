@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Logging.Serilog;
+using Avalonia.ReactiveUI;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using System;
 

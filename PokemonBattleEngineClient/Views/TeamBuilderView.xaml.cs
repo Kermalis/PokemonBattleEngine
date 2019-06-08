@@ -10,7 +10,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
@@ -85,10 +84,9 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>> Teams { get; } = new ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>>();
 
-        private readonly Subject<bool> addPartyEnabled, removePartyEnabled;
-
         public readonly PBESettings settings = PBESettings.DefaultSettings;
 
+        private readonly Button addParty, removeParty;
         private readonly TextBox nickname;
         private readonly NumericUpDown level, friendship;
         private readonly NumericUpDown[] evs, ivs, ppups;
@@ -102,10 +100,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
 
-            addPartyEnabled = new Subject<bool>();
-            this.FindControl<Button>("AddParty").Command = ReactiveCommand.Create(AddPartyMember, addPartyEnabled);
-            removePartyEnabled = new Subject<bool>();
-            this.FindControl<Button>("RemoveParty").Command = ReactiveCommand.Create(RemovePartyMember, removePartyEnabled);
+            addParty = this.FindControl<Button>("AddParty");
+            addParty.Command = ReactiveCommand.Create(AddPartyMember);
+            removeParty = this.FindControl<Button>("RemoveParty");
+            removeParty.Command = ReactiveCommand.Create(RemovePartyMember);
             this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
             this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
             party = this.FindControl<ListBox>("Party");
@@ -266,11 +264,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             if (illegal.IsChecked.Value)
             {
-                addPartyEnabled.OnNext(true);
+                addParty.IsEnabled = true;
             }
             else
             {
-                addPartyEnabled.OnNext(team.Item2.Count < settings.MaxPartySize);
+                addParty.IsEnabled = team.Item2.Count < settings.MaxPartySize;
                 // Remove if too many
                 if (team.Item2.Count > settings.MaxPartySize)
                 {
@@ -282,7 +280,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                 }
             }
-            removePartyEnabled.OnNext(team.Item2.Count > 1);
+            removeParty.IsEnabled = team.Item2.Count > 1;
         }
         private void IllegalChanged()
         {

@@ -9,7 +9,6 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient
@@ -25,13 +24,13 @@ namespace Kermalis.PokemonBattleEngineClient
         private string connectText = "Connect";
         public string ConnectText
         {
-            get => connectText; set
+            get => connectText;
+            set
             {
                 connectText = value;
                 OnPropertyChanged(nameof(ConnectText));
             }
         }
-        private readonly Subject<bool> connectEnabled;
 
         private readonly List<BattleClient> battles = new List<BattleClient>();
 
@@ -39,6 +38,7 @@ namespace Kermalis.PokemonBattleEngineClient
         private readonly TeamBuilderView teamBuilder;
         private readonly TextBox ip;
         private readonly NumericUpDown port;
+        private readonly Button connect;
 
         public MainView()
         {
@@ -49,15 +49,14 @@ namespace Kermalis.PokemonBattleEngineClient
             teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder");
             ip = this.FindControl<TextBox>("IP");
             port = this.FindControl<NumericUpDown>("Port");
-            connectEnabled = new Subject<bool>();
-            this.FindControl<Button>("Connect").Command = ReactiveCommand.Create(Connect, connectEnabled);
-            connectEnabled.OnNext(true);
+            connect = this.FindControl<Button>("Connect");
+            connect.Command = ReactiveCommand.Create(Connect);
             teamBuilder.Load();
         }
 
         private void Connect()
         {
-            connectEnabled.OnNext(false);
+            connect.IsEnabled = false;
             ConnectText = "Connecting...";
             var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.settings, teamBuilder.Team.Item2);
             var battleView = new BattleView(client);
@@ -80,7 +79,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         tabs.SelectedItem = tab;
                     }
                     ConnectText = "Connect";
-                    connectEnabled.OnNext(true);
+                    connect.IsEnabled = true;
                 });
             })
             {

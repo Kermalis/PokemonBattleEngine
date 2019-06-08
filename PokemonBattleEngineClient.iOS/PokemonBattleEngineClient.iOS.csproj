@@ -109,86 +109,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Avalonia, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Animation, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Animation.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Base, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Controls, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.DesignerSupport, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.DesignerSupport.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Diagnostics, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Diagnostics.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Input, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Interactivity, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Interactivity.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.iOS, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.iOS.0.8.0\lib\xamarinios10\Avalonia.iOS.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Layout, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Layout.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Logging.Serilog, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Logging.Serilog.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Markup, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Markup.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Markup.Xaml, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Markup.Xaml.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.OpenGL, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.OpenGL.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Remote.Protocol, Version=0.8.0.0, Culture=neutral, PublicKeyToken=7ecde292c616a9f3, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.Remote.Protocol.0.8.0\lib\netstandard2.0\Avalonia.Remote.Protocol.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Styling, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Styling.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Themes.Default, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Themes.Default.dll</HintPath>
-    </Reference>
-    <Reference Include="Avalonia.Visuals, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Avalonia.0.8.0\lib\netstandard2.0\Avalonia.Visuals.dll</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.3.0\lib\netstandard1.0\JetBrains.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.2.5.0\lib\netstandard1.3\Serilog.dll</HintPath>
-    </Reference>
-    <Reference Include="Serilog.Sinks.Debug, Version=1.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.Debug.1.0.0\lib\netstandard1.0\Serilog.Sinks.Debug.dll</HintPath>
-    </Reference>
-    <Reference Include="Serilog.Sinks.Trace, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.Trace.2.1.0\lib\netstandard1.3\Serilog.Sinks.Trace.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.1\lib\netstandard2.0\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.4.0.0\lib\netstandard2.0\System.Reactive.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Avalonia.iOS">
+      <Version>0.8.1-cibuild*</Version>
+    </PackageReference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />

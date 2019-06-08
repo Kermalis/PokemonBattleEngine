@@ -16,7 +16,7 @@
       </Button>
     </DataTemplate>
     <DataTemplate DataType="models:PokemonInfo">
-      <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4">
+      <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" IsEnabled="{Binding Enabled}">
         <StackPanel>
           <Image Source="{Binding Pokemon.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </StackPanel>

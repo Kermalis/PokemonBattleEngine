@@ -11,6 +11,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public BattleClient Client { get; }
 
+        public BattleView()
+        {
+            AvaloniaXamlLoader.Load(this); // Only exists so xaml compiles
+        }
         public BattleView(BattleClient client)
         {
             AvaloniaXamlLoader.Load(this);

@@ -35,6 +35,5 @@
     <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="376" Fill="#5A000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
     <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="377" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
     <Image Source="{Binding Message, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleWhite, Mode=OneWay}" Canvas.Left="16" Canvas.Top="341" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
-
   </Canvas>
 </UserControl>
