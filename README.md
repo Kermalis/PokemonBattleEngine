@@ -39,9 +39,5 @@ Check [Settings.cs](PokemonBattleEngine/Data/Settings.cs)
 # PokemonBattleEngineDiscord Uses:
 * [Discord.Net](https://github.com/RogueException/Discord.Net)
 
-# PokemonBattleEngineMobile Uses:
-* [Xamarin.Forms](https://github.com/xamarin/Xamarin.Forms)
-* [SkiaSharp](https://github.com/mono/SkiaSharp)
-
-# PokemonBattleEngineTesting Uses:
+# PokemonBattleEngineExtras Uses:
 * [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)

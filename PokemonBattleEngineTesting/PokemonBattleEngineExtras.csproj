@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Kermalis.PokemonBattleEngineTesting</RootNamespace>
+    <RootNamespace>Kermalis.PokemonBattleEngineExtras</RootNamespace>
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
     <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>

@@ -1,11 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net461</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Kermalis.PokemonBattleEngineClient.Desktop</RootNamespace>
+    <Authors>Kermalis</Authors>
+    <Copyright>Kermalis</Copyright>
+    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PokemonBattleEngineClient\PokemonBattleEngineClient.csproj" />
   </ItemGroup>
+  
 </Project>

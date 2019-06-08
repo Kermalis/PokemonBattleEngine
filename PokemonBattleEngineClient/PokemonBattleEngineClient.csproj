@@ -40,4 +40,5 @@
       <HintPath>../Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>
   </ItemGroup>
+  
 </Project>

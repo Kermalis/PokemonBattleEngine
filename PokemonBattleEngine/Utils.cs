@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine
         }
 
         private static SqliteConnection databaseConnection;
-        public static SqliteConnection DatabaseConnection => databaseConnection ?? throw new Exception($"You must first call {nameof(CreateDatabaseConnection)}.");
+        public static SqliteConnection DatabaseConnection => databaseConnection ?? throw new Exception($"You must first call \"{nameof(PBEUtils)}.{nameof(CreateDatabaseConnection)}()\"");
 
         /// <summary>
         /// An ordinary pseudo-random number generator.

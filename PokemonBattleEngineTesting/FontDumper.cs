@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
-namespace Kermalis.PokemonBattleEngineTesting
+namespace Kermalis.PokemonBattleEngineExtras
 {
     internal class FontDumper
     {

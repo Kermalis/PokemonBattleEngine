@@ -6,7 +6,7 @@ using System;
 
 namespace Kermalis.PokemonBattleEngineClient.Desktop
 {
-    internal class Program
+    internal static class Program
     {
         [STAThread]
         private static void Main()

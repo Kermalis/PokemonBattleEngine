@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Kermalis.PokemonBattleEngineTesting
+namespace Kermalis.PokemonBattleEngineExtras
 {
     internal class NARC : IDisposable
     {

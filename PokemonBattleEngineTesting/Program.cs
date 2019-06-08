@@ -1,10 +1,11 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Kermalis.PokemonBattleEngine;
+using Microsoft.Data.Sqlite;
 
-namespace Kermalis.PokemonBattleEngineTesting
+namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal class TestProgram
+    internal class Program
     {
-        private enum TestType
+        private enum Extra
         {
             AIBattle,
             FontDumper,
@@ -23,12 +24,17 @@ namespace Kermalis.PokemonBattleEngineTesting
                 return con;
             }
 
-            TestType t = TestType.PokemonDataDumper;
+            Extra t = Extra.PokemonDataDumper;
             switch (t)
             {
-                case TestType.AIBattle: AIBattle.Test(); break;
-                case TestType.FontDumper: FontDumper.Dump(); break;
-                case TestType.LocalizationDumper:
+                case Extra.AIBattle:
+                {
+                    PBEUtils.CreateDatabaseConnection(string.Empty);
+                    AIBattle.Test();
+                    break;
+                }
+                case Extra.FontDumper: FontDumper.Dump(); break;
+                case Extra.LocalizationDumper:
                 {
                     using (SqliteConnection con = GetConnection())
                     {
@@ -37,7 +43,7 @@ namespace Kermalis.PokemonBattleEngineTesting
                     }
                     break;
                 }
-                case TestType.PokemonDataDumper:
+                case Extra.PokemonDataDumper:
                 {
                     using (SqliteConnection con = GetConnection())
                     {

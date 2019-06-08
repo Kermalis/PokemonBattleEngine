@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Kermalis.PokemonBattleEngineTesting
+namespace Kermalis.PokemonBattleEngineExtras
 {
     internal class PokemonDataDumper
     {

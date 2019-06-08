@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Kermalis.PokemonBattleEngineTesting
+namespace Kermalis.PokemonBattleEngineExtras
 {
     internal class AIBattle
     {
