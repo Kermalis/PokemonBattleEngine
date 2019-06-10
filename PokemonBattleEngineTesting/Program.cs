@@ -24,8 +24,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                 return con;
             }
 
-            Extra t = Extra.PokemonDataDumper;
-            switch (t)
+            Extra e = Extra.PokemonDataDumper;
+            switch (e)
             {
                 case Extra.AIBattle:
                 {

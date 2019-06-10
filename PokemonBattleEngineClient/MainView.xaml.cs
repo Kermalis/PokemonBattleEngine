@@ -34,24 +34,27 @@ namespace Kermalis.PokemonBattleEngineClient
 
         private readonly List<BattleClient> battles = new List<BattleClient>();
 
-        private readonly TabControl tabs;
-        private readonly TeamBuilderView teamBuilder;
-        private readonly TextBox ip;
-        private readonly NumericUpDown port;
-        private readonly Button connect;
+        private /*readonly*/ TabControl tabs;
+        private /*readonly*/ TeamBuilderView teamBuilder;
+        private /*readonly*/ TextBox ip;
+        private /*readonly*/ NumericUpDown port;
+        private /*readonly*/ Button connect;
 
         public MainView()
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
 
-            tabs = this.FindControl<TabControl>("Tabs");
-            teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder");
-            ip = this.FindControl<TextBox>("IP");
-            port = this.FindControl<NumericUpDown>("Port");
-            connect = this.FindControl<Button>("Connect");
-            connect.Command = ReactiveCommand.Create(Connect);
-            teamBuilder.Load();
+            Initialized += (s, e) => // Temporary fix (remove readonly comments too when fixed)
+            {
+                tabs = this.FindControl<TabControl>("Tabs");
+                teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder");
+                ip = this.FindControl<TextBox>("IP");
+                port = this.FindControl<NumericUpDown>("Port");
+                connect = this.FindControl<Button>("Connect");
+                connect.Command = ReactiveCommand.Create(Connect);
+                teamBuilder.Load();
+            };
         }
 
         private void Connect()

@@ -5,26 +5,31 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 {
     public class BattleView : UserControl
     {
-        public FieldView Field { get; }
-        public ActionsView Actions { get; }
-        private readonly MessageView messages;
+        public /*readonly*/ FieldView Field;
+        public /*readonly*/ ActionsView Actions;
+        private /*readonly*/ MessageView messages;
 
         public BattleClient Client { get; }
 
         public BattleView()
         {
-            AvaloniaXamlLoader.Load(this); // Only exists so xaml compiles
+            // This constructor only exists so xaml compiles
+            AvaloniaXamlLoader.Load(this);
         }
         public BattleView(BattleClient client)
         {
             AvaloniaXamlLoader.Load(this);
+
             Client = client;
             Client.BattleView = this;
-            Field = this.FindControl<FieldView>("Field");
-            Field.SetBattleView(this);
-            Actions = this.FindControl<ActionsView>("Actions");
-            Actions.BattleView = this;
-            messages = this.FindControl<MessageView>("Messages");
+            Initialized += (s, e) => // Temporary fix (remove readonly comments too when fixed)
+            {
+                Field = this.FindControl<FieldView>("Field");
+                Field.SetBattleView(this);
+                Actions = this.FindControl<ActionsView>("Actions");
+                Actions.BattleView = this;
+                messages = this.FindControl<MessageView>("Messages");
+            };
         }
 
         public void AddMessage(string message, bool messageBox, bool messageLog)
