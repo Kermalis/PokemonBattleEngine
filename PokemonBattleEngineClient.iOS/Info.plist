@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>ControlCatalog.iOS</string>
+	<string>Pokémon Battle Engine</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.companyname.ControlCatalog.iOS</string>
+	<string>com.Kermalis.PokemonBattleEngine</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
