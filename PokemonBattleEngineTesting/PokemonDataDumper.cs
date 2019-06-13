@@ -1061,6 +1061,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         // TODO: HG, SS - Free tutor moves (aside from Headbutt)
         // TODO: Rotom special moves
         // TODO: Arceus_Dragon gets DracoMeteor from free tutor moves
+        // TODO: Basculin_Blue extra abilities
         // TODO: Pichu & VoltTackle
         // TODO: Egg move logic (currently we only kept the possible egg moves, but no logic that assigns them, so it is incorrect)
 #pragma warning disable CS8321 // Local function is declared but never used
