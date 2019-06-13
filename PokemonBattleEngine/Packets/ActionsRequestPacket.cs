@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((Team = team).Id);
             bytes.Add((byte)(Pokemon = Team.ActionsRequired.Select(p => p.FieldPosition).ToList().AsReadOnly()).Count);
-            bytes.AddRange(Pokemon.Cast<byte>());
+            bytes.AddRange(Pokemon.Select(p => (byte)p));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEActionsRequestPacket(byte[] buffer, PBEBattle battle)
@@ -32,7 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 Team = battle.Teams[r.ReadByte()];
-                Pokemon = r.ReadBytes(r.ReadByte()).Cast<PBEFieldPosition>().ToList().AsReadOnly();
+                Pokemon = r.ReadBytes(r.ReadByte()).Select(b => (PBEFieldPosition)b).ToList().AsReadOnly();
             }
         }
 
