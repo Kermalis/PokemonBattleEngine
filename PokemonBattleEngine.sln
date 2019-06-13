@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineClient",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineDiscord", "PokemonBattleEngineDiscord\PokemonBattleEngineDiscord.csproj", "{CCBE5C1D-7C76-4774-B4D1-34659A5C856B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineExtras", "PokemonBattleEngineTesting\PokemonBattleEngineExtras.csproj", "{31B95673-DFD2-4613-BAD6-7892CB29F4B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineExtras", "PokemonBattleEngineExtras\PokemonBattleEngineExtras.csproj", "{31B95673-DFD2-4613-BAD6-7892CB29F4B9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineClient.Desktop", "PokemonBattleEngineClient.Desktop\PokemonBattleEngineClient.Desktop.csproj", "{CEDCFABE-658C-42AB-BCE2-A96A7B17410E}"
 EndProject
