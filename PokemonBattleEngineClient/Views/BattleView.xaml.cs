@@ -22,13 +22,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
             Client = client;
             Client.BattleView = this;
-            Initialized += (s, e) => // Temporary fix (remove readonly comments too when fixed)
+            // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2562 (remove readonly comments too when fixed) (stopped working when switching to PR build)
+            Initialized += (s, e) =>
             {
-                Field = this.FindControl<FieldView>("Field");
+                Field = this.FindControl<FieldView>("Field"); // Field will be null
                 Field.SetBattleView(this);
-                Actions = this.FindControl<ActionsView>("Actions");
+                Actions = this.FindControl<ActionsView>("Actions"); // Actions will be null
                 Actions.BattleView = this;
-                messages = this.FindControl<MessageView>("Messages");
+                messages = this.FindControl<MessageView>("Messages"); // Messages will be null
             };
         }
 

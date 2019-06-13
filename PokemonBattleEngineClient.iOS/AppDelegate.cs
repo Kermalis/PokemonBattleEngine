@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngineClient.iOS
                     }
                 }
             }
-            Utils.ForwardCreateDatabaseConnection(path);
+            Utils.SetWorkingDirectory(path);
         }
     }
 }

@@ -9,6 +9,7 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient
@@ -38,31 +39,32 @@ namespace Kermalis.PokemonBattleEngineClient
         private /*readonly*/ TeamBuilderView teamBuilder;
         private /*readonly*/ TextBox ip;
         private /*readonly*/ NumericUpDown port;
-        private /*readonly*/ Button connect;
+        private /*readonly*/ Subject<bool> connectEnabled;
 
         public MainView()
         {
             AvaloniaXamlLoader.Load(this);
             DataContext = this;
 
-            Initialized += (s, e) => // Temporary fix (remove readonly comments too when fixed)
+            // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2562 (remove readonly comments too when fixed) (stopped working when switching to PR build)
+            // Also a fix for https://github.com/AvaloniaUI/Avalonia/issues/2656
+            Initialized += (s, e) =>
             {
                 tabs = this.FindControl<TabControl>("Tabs");
-                teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder");
+                teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder"); // teamBuilder will be null
                 ip = this.FindControl<TextBox>("IP");
                 port = this.FindControl<NumericUpDown>("Port");
-                connect = this.FindControl<Button>("Connect");
-                connect.Command = ReactiveCommand.Create(Connect);
-                teamBuilder.Load();
+                connectEnabled = new Subject<bool>();
+                this.FindControl<Button>("Connect").Command = ReactiveCommand.Create(WatchReplay, connectEnabled);
+                connectEnabled.OnNext(true);
             };
         }
 
         private void Connect()
         {
-            connect.IsEnabled = false;
+            connectEnabled.OnNext(false);
             ConnectText = "Connecting...";
-            var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.settings, teamBuilder.Team.Item2);
-            var battleView = new BattleView(client);
+            var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.settings, teamBuilder.Team.Party);
             new Thread(() =>
             {
                 client.Connect();
@@ -70,19 +72,10 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     if (client.IsConnected)
                     {
-                        battles.Add(client);
-                        var pages = tabs.Items.Cast<object>().ToList();
-                        var tab = new TabItem
-                        {
-                            Header = "Battle " + battles.Count,
-                            Content = battleView
-                        };
-                        pages.Add(tab);
-                        tabs.Items = pages;
-                        tabs.SelectedItem = tab;
+                        Add(client);
                     }
                     ConnectText = "Connect";
-                    connect.IsEnabled = true;
+                    connectEnabled.OnNext(true);
                 });
             })
             {
@@ -91,18 +84,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         private void WatchReplay()
         {
-            var client = new BattleClient(PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineTesting\bin\Debug\netcoreapp2.1\Test Replay.pbereplay"), BattleClient.ClientMode.Replay);
-            var battleView = new BattleView(client);
-            battles.Add(client);
-            var pages = tabs.Items.Cast<object>().ToList();
-            var tab = new TabItem
-            {
-                Header = "Battle " + battles.Count,
-                Content = battleView
-            };
-            pages.Add(tab);
-            tabs.Items = pages;
-            tabs.SelectedItem = tab;
+            Add(new BattleClient(PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineExtras\bin\Debug\netcoreapp2.1\Test Replay.pbereplay"), BattleClient.ClientMode.Replay));
         }
         private void SinglePlayer()
         {
@@ -113,7 +95,13 @@ namespace Kermalis.PokemonBattleEngineClient
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, team0Party, team1Party);
             battle.Teams[0].TrainerName = "May";
             battle.Teams[1].TrainerName = "Champion Steven";
-            var client = new BattleClient(battle, BattleClient.ClientMode.SinglePlayer);
+            Add(new BattleClient(battle, BattleClient.ClientMode.SinglePlayer));
+            new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
+        }
+
+        // TODO: Removing battles
+        private void Add(BattleClient client)
+        {
             var battleView = new BattleView(client);
             battles.Add(client);
             var pages = tabs.Items.Cast<object>().ToList();
@@ -125,7 +113,6 @@ namespace Kermalis.PokemonBattleEngineClient
             pages.Add(tab);
             tabs.Items = pages;
             tabs.SelectedItem = tab;
-            new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
         }
     }
 }

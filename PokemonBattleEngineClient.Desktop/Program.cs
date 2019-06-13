@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngineClient.Desktop
         [STAThread]
         private static void Main()
         {
-            Utils.ForwardCreateDatabaseConnection(string.Empty);
+            Utils.SetWorkingDirectory(string.Empty);
             BuildAvaloniaApp().Start<MainWindow>();
         }
         /// <summary>

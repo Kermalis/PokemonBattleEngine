@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             get
             {
-                // This is done because the static constructor of Utils is called (by ForwardCreateDatabaseConnection) before the Avalonia app is built
+                // This is done because the static constructor of Utils is called (by SetWorkingDirectory) before the Avalonia app is built
                 if (renderInterface == null)
                 {
                     renderInterface = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>();
@@ -45,9 +45,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         {
             return assembly.GetManifestResourceStream(assemblyPrefix + resource);
         }
-        public static void ForwardCreateDatabaseConnection(string databasePath)
+
+        public static string WorkingDirectory;
+        public static void SetWorkingDirectory(string workingDirectory)
         {
-            PBEUtils.CreateDatabaseConnection(databasePath);
+            PBEUtils.CreateDatabaseConnection(workingDirectory);
+            WorkingDirectory = workingDirectory;
         }
 
         public static Bitmap GetMinisprite(PBESpecies species, PBEGender gender, bool shiny)

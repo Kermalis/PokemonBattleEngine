@@ -132,7 +132,7 @@
           </StackPanel>
         </Button>
       </StackPanel>
-      <ListBox Name="Party" Items="{Binding Team.Item2}">
+      <ListBox Name="Party" Items="{Binding Team.Party}">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <StackPanel Spacing="4" Orientation="Horizontal">
@@ -160,7 +160,7 @@
         <ListBox.ItemTemplate>
           <DataTemplate>
             <StackPanel Spacing="4" Orientation="Horizontal">
-              <Image Height="15" Source="{Binding Item1, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+              <Image Height="15" Source="{Binding Name, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
             </StackPanel>
           </DataTemplate>
         </ListBox.ItemTemplate>

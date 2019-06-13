@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngineClient.Android
                     }
                 }
             }
-            Utils.ForwardCreateDatabaseConnection(path);
+            Utils.SetWorkingDirectory(path);
         }
     }
 }

@@ -28,10 +28,17 @@ namespace Kermalis.PokemonBattleEngine
 
         public static void CreateDatabaseConnection(string databasePath)
         {
-            SQLitePCL.Batteries_V2.Init();
-            databaseConnection = new SqliteConnection($"Filename={Path.Combine(databasePath, "PokemonBattleEngine.db")};Mode=ReadOnly;");
-            databaseConnection.Open();
-            databaseConnection.CreateFunction("StrCmp", (Func<object, object, bool>)StrCmp);
+            if (databaseConnection != null)
+            {
+                throw new Exception("Database connection was already created.");
+            }
+            else
+            {
+                SQLitePCL.Batteries_V2.Init();
+                databaseConnection = new SqliteConnection($"Filename={Path.Combine(databasePath, "PokemonBattleEngine.db")};Mode=ReadOnly;");
+                databaseConnection.Open();
+                databaseConnection.CreateFunction("StrCmp", (Func<object, object, bool>)StrCmp);
+            }
         }
 
         private static SqliteConnection databaseConnection;
