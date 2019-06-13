@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngineClient
     public class BattleClient : NetClient
     {
         private const int WaitMilliseconds = 2000;
-        public enum ClientMode
+        public enum ClientMode : byte
         {
             Online,
             Replay,
@@ -29,9 +29,9 @@ namespace Kermalis.PokemonBattleEngineClient
         private readonly PBEPacketProcessor packetProcessor;
         public override IPacketProcessor PacketProcessor => packetProcessor;
 
-        public PBEBattle Battle;
-        public BattleView BattleView;
-        public ClientMode Mode;
+        public readonly PBEBattle Battle;
+        public readonly BattleView BattleView;
+        public readonly ClientMode Mode;
         public int BattleId = int.MaxValue;
         public bool ShowRawValues0, ShowRawValues1;
         private readonly IEnumerable<PBEPokemonShell> partyShells;
@@ -49,6 +49,7 @@ namespace Kermalis.PokemonBattleEngineClient
 
             packetTimer.Elapsed += PacketTimer_Elapsed;
             packetTimer.Start();
+            BattleView = new BattleView(this);
         }
         public BattleClient(PBEBattle battle, ClientMode mode)
         {
@@ -69,6 +70,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 packetTimer.Elapsed += PacketTimer_Elapsed;
                 packetTimer.Start();
             }
+            BattleView = new BattleView(this);
         }
 
         private int currentPacket = -1;
@@ -1576,7 +1578,7 @@ namespace Kermalis.PokemonBattleEngineClient
         protected override void OnDisconnected()
         {
             Debug.WriteLine("Disconnected from server");
-            Environment.Exit(0);
+            BattleView.AddMessage("Disconnected from server.", false, true);
         }
         protected override void OnSocketError(SocketError socketError)
         {

@@ -35,27 +35,27 @@ namespace Kermalis.PokemonBattleEngineClient
 
         private readonly List<BattleClient> battles = new List<BattleClient>();
 
-        private /*readonly*/ TabControl tabs;
-        private /*readonly*/ TeamBuilderView teamBuilder;
-        private /*readonly*/ TextBox ip;
-        private /*readonly*/ NumericUpDown port;
-        private /*readonly*/ Subject<bool> connectEnabled;
+        private TabControl tabs;
+        private TeamBuilderView teamBuilder;
+        private TextBox ip;
+        private NumericUpDown port;
+        private Subject<bool> connectEnabled;
 
         public MainView()
         {
-            AvaloniaXamlLoader.Load(this);
             DataContext = this;
+            AvaloniaXamlLoader.Load(this);
 
-            // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2562 (remove readonly comments too when fixed) (stopped working when switching to PR build)
-            // Also a fix for https://github.com/AvaloniaUI/Avalonia/issues/2656
+            // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2656
             Initialized += (s, e) =>
             {
                 tabs = this.FindControl<TabControl>("Tabs");
-                teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder"); // teamBuilder will be null
+                //teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder"); // teamBuilder will be null
+                teamBuilder = TemporaryFix<TeamBuilderView>("TeamBuilder");
                 ip = this.FindControl<TextBox>("IP");
                 port = this.FindControl<NumericUpDown>("Port");
                 connectEnabled = new Subject<bool>();
-                this.FindControl<Button>("Connect").Command = ReactiveCommand.Create(WatchReplay, connectEnabled);
+                this.FindControl<Button>("Connect").Command = ReactiveCommand.Create(Connect, connectEnabled);
                 connectEnabled.OnNext(true);
             };
         }
@@ -102,17 +102,41 @@ namespace Kermalis.PokemonBattleEngineClient
         // TODO: Removing battles
         private void Add(BattleClient client)
         {
-            var battleView = new BattleView(client);
             battles.Add(client);
             var pages = tabs.Items.Cast<object>().ToList();
             var tab = new TabItem
             {
                 Header = "Battle " + battles.Count,
-                Content = battleView
+                Content = client.BattleView
             };
             pages.Add(tab);
             tabs.Items = pages;
             tabs.SelectedItem = tab;
+        }
+
+        // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2562
+        private T TemporaryFix<T>(string name) where T : UserControl
+        {
+            T Recursion(IEnumerable<Avalonia.LogicalTree.ILogical> list)
+            {
+                foreach (Avalonia.LogicalTree.ILogical i in list)
+                {
+                    if (i is Avalonia.INamed named && named is T ret && ret.Name == name)
+                    {
+                        return ret;
+                    }
+                    else
+                    {
+                        T r = Recursion(i.LogicalChildren);
+                        if (r != null)
+                        {
+                            return r;
+                        }
+                    }
+                }
+                return null;
+            }
+            return Recursion(LogicalChildren);
         }
     }
 }

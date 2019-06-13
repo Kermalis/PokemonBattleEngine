@@ -377,12 +377,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public ActionsView()
         {
-            AvaloniaXamlLoader.Load(this);
-            DataContext = this;
+            MoveInfo.CreateBrushes();
+
             SelectTargetCommand = ReactiveCommand.Create<string>(SelectTarget);
             SelectPositionCommand = ReactiveCommand.Create<string>(SelectPosition);
-
-            MoveInfo.CreateBrushes();
+            DataContext = this;
+            AvaloniaXamlLoader.Load(this);
         }
 
         public void DisplayActions(PBEPokemon pkmn)

@@ -105,8 +105,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public TeamBuilderView()
         {
-            AvaloniaXamlLoader.Load(this);
             DataContext = this;
+            AvaloniaXamlLoader.Load(this);
 
             // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2656
             Initialized += (sh, he) =>
@@ -115,7 +115,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 this.FindControl<Button>("AddParty").Command = ReactiveCommand.Create(AddPartyMember, addPartyEnabled);
                 removePartyEnabled = new Subject<bool>();
                 this.FindControl<Button>("RemoveParty").Command = ReactiveCommand.Create(RemovePartyMember, removePartyEnabled);
-                this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam, addPartyEnabled);
+                this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
                 this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
                 party = this.FindControl<ListBox>("Party");
                 party.SelectionChanged += (s, e) =>

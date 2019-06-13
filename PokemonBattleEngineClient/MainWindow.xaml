@@ -2,6 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Kermalis.PokemonBattleEngineClient;assembly=PokemonBattleEngineClient"
         x:Class="Kermalis.PokemonBattleEngineClient.MainWindow"
-        MinWidth="800" MinHeight="542" WindowStartupLocation="CenterScreen" Title="Pokémon Battle Engine">
+        MinWidth="894" MinHeight="554" Width="894" Height="554" WindowStartupLocation="CenterScreen" Title="Pokémon Battle Engine">
   <local:MainView />
 </Window>
