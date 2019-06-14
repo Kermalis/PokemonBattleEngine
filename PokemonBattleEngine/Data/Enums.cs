@@ -67,27 +67,27 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>
         /// Hit points.
         /// </summary>
-        HP,
+        HP = 0,
         /// <summary>
         /// Attack.
         /// </summary>
-        Attack,
+        Attack = 1,
         /// <summary>
         /// Defense.
         /// </summary>
-        Defense,
+        Defense = 2,
         /// <summary>
         /// Special Attack.
         /// </summary>
-        SpAttack,
+        SpAttack = 3,
         /// <summary>
         /// Special Defense.
         /// </summary>
-        SpDefense,
+        SpDefense = 4,
         /// <summary>
         /// Speed.
         /// </summary>
-        Speed,
+        Speed = 5,
         /// <summary>
         /// Accuracy.
         /// </summary>

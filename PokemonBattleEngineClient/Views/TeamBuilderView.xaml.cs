@@ -214,7 +214,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     {
                         foreach (string f in files)
                         {
-                            Teams.Add(new TeamInfo { Name = Path.GetFileNameWithoutExtension(f), Party = new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromTextFile(f)) });
+                            Teams.Add(new TeamInfo { Name = Path.GetFileNameWithoutExtension(f), Party = new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromJsonFile(f)) });
                         }
                         savedTeams.SelectedIndex = 0;
                         return;
@@ -352,7 +352,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                     shell.PPUps[i] = (byte)ppups[i].Value;
                 }
-                PBEPokemonShell.TeamToTextFile(Path.Combine(teamPath, $"{team.Name}.txt"), team.Party);
+                PBEPokemonShell.TeamToJsonFile(Path.Combine(teamPath, $"{team.Name}.json"), team.Party);
             }
             if (updateSprites)
             {
