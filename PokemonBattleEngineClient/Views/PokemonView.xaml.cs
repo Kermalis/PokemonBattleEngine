@@ -43,8 +43,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public PokemonView()
         {
-            AvaloniaXamlLoader.Load(this);
             DataContext = this;
+            AvaloniaXamlLoader.Load(this);
         }
 
         public void Update(PBEPokemon pkmn, bool backSprite, bool showRawValues0, bool showRawValues1)

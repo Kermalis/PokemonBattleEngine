@@ -32,19 +32,22 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
 
-        private readonly SolidColorBrush greenSides, greenMid, yellowSides, yellowMid, redSides, redMid;
+        private static SolidColorBrush greenSides, greenMid, yellowSides, yellowMid, redSides, redMid;
 
         public HPBarView()
         {
-            AvaloniaXamlLoader.Load(this);
-            DataContext = this;
+            if (greenSides == null)
+            {
+                greenSides = new SolidColorBrush(0xFF008C29);
+                greenMid = new SolidColorBrush(0xFF00FF4A);
+                yellowSides = new SolidColorBrush(0xFF9C6310);
+                yellowMid = new SolidColorBrush(0xFFF7B500);
+                redSides = new SolidColorBrush(0xFF942131);
+                redMid = new SolidColorBrush(0xFFFF3142);
+            }
 
-            greenSides = new SolidColorBrush(0xFF008C29);
-            greenMid = new SolidColorBrush(0xFF00FF4A);
-            yellowSides = new SolidColorBrush(0xFF9C6310);
-            yellowMid = new SolidColorBrush(0xFFF7B500);
-            redSides = new SolidColorBrush(0xFF942131);
-            redMid = new SolidColorBrush(0xFFFF3142);
+            DataContext = this;
+            AvaloniaXamlLoader.Load(this);
         }
 
         public void Update(PBEPokemon pkmn, bool showRawValues)

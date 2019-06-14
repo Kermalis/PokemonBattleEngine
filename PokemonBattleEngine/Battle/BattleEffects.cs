@@ -1499,14 +1499,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit) || PBEUtils.RNG.ApplyChance((int)(chance * 100), 100 * 100);
         }
+        private void TrySetLoser(PBEPokemon pkmn)
+        {
+            if (Winner == null && pkmn.Team.NumPkmnAlive == 0)
+            {
+                Winner = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
+            }
+        }
         private bool FaintCheck(PBEPokemon pkmn)
         {
             if (pkmn.HP == 0)
             {
-                if (Winner == null && pkmn.Team.NumPkmnAlive == 0)
-                {
-                    Winner = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
-                }
+                TrySetLoser(pkmn);
                 turnOrder.Remove(pkmn);
                 ActiveBattlers.Remove(pkmn);
                 PBEFieldPosition oldPos = pkmn.FieldPosition;
@@ -2986,11 +2990,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
+            // In gen 5, the user faints first (and loses if possible)
+            // Due to technical limitations, we cannot faint first, but we should still make the user faint so it is the same behavior
             DealDamage(user, user, user.MaxHP, true, ignoreSturdy: true);
+            TrySetLoser(user);
             if (targets.Length == 0) // You still faint if there are no targets
             {
                 failReason = PBEFailReason.NoTarget;
-                BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
+                BroadcastMoveFailed(user, user, failReason);
             }
             else
             {

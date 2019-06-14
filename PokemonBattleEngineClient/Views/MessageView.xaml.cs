@@ -41,8 +41,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public MessageView()
         {
-            AvaloniaXamlLoader.Load(this);
             DataContext = this;
+            AvaloniaXamlLoader.Load(this);
 
             listBox = this.FindControl<ListBox>("List");
         }

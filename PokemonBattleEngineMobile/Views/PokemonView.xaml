@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineMobile.Infrastructure"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Kermalis.PokemonBattleEngineMobile.Views.PokemonView"
-             WidthRequest="192" HeightRequest="192" IsVisible="False">
-    <infrastructure:GifImage x:Name="Sprite" HorizontalOptions="Center" VerticalOptions="End" />
-</ContentView>

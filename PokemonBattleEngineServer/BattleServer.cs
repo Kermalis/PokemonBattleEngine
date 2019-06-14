@@ -50,6 +50,7 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         protected override void Initialize()
         {
+            PBEUtils.CreateDatabaseConnection(string.Empty);
             Console.WriteLine("Server online.");
             Reset();
         }

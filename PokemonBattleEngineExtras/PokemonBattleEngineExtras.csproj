@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Kermalis.PokemonBattleEngineExtras</RootNamespace>
+    <Authors>Kermalis</Authors>
+    <Copyright>Kermalis</Copyright>
+    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DumpedData\**" />
+    <EmbeddedResource Remove="DumpedData\**" />
+    <None Remove="DumpedData\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.Drawing.Common" Version="4.6.0-preview5.19224.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
+    <Reference Include="EndianBinaryIO">
+      <HintPath>..\Shared Dependencies\EndianBinaryIO.dll</HintPath>
+    </Reference>
+    <Reference Include="Ether.Network">
+      <HintPath>..\Shared Dependencies\Ether.Network.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

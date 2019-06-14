@@ -3,6 +3,7 @@ using Avalonia.Markup.Xaml;
 using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
+using Kermalis.PokemonBattleEngineClient.Models;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
 
         // TODO: Legal species vs non-legal (Cherrim Sunny in a pokeball etc)
+        // TODO: Prevent illegal and duplicate moves
+        // TODO: Disable moves after the first until the first is chosen
+        // TODO: Disable PPUps for moves not chosen
+        // TODO: EV counter and prevention of exceeding limit
+        // TODO: Settings editor
         private readonly IEnumerable<PBEAbility> allAbilities = Enum.GetValues(typeof(PBEAbility)).Cast<PBEAbility>().Except(new[] { PBEAbility.MAX });
         private readonly IEnumerable<PBEGender> allGenders = Enum.GetValues(typeof(PBEGender)).Cast<PBEGender>().Except(new[] { PBEGender.MAX });
         private readonly IEnumerable<PBEItem> allItems = Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>();
@@ -73,8 +79,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public IEnumerable<PBEMove> AvailableMoves { get; } = Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.MAX });
 
         private PBEPokemonShell shell;
-        private Tuple<string, ObservableCollection<PBEPokemonShell>> team;
-        public Tuple<string, ObservableCollection<PBEPokemonShell>> Team
+        private TeamInfo team;
+        public TeamInfo Team
         {
             get => team;
             set
@@ -83,79 +89,82 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 OnPropertyChanged(nameof(Team));
             }
         }
-        public ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>> Teams { get; } = new ObservableCollection<Tuple<string, ObservableCollection<PBEPokemonShell>>>();
-
-        private readonly Subject<bool> addPartyEnabled, removePartyEnabled;
+        public ObservableCollection<TeamInfo> Teams { get; } = new ObservableCollection<TeamInfo>();
 
         public readonly PBESettings settings = PBESettings.DefaultSettings;
+        private string teamPath;
 
-        private readonly TextBox nickname;
-        private readonly NumericUpDown level, friendship;
-        private readonly NumericUpDown[] evs, ivs, ppups;
-        private readonly ListBox party, savedTeams;
-        private readonly CheckBox illegal, shiny;
-        private readonly ComboBox species, ability, nature, gender, item;
-        private readonly ComboBox[] moves;
+        private Subject<bool> addPartyEnabled, removePartyEnabled;
+        private TextBox nickname;
+        private NumericUpDown level, friendship;
+        private NumericUpDown[] evs, ivs, ppups;
+        private ListBox party, savedTeams;
+        private CheckBox illegal, shiny;
+        private ComboBox species, ability, nature, gender, item;
+        private ComboBox[] moves;
 
         public TeamBuilderView()
         {
-            AvaloniaXamlLoader.Load(this);
             DataContext = this;
+            AvaloniaXamlLoader.Load(this);
 
-            addPartyEnabled = new Subject<bool>();
-            this.FindControl<Button>("AddParty").Command = ReactiveCommand.Create(AddPartyMember, addPartyEnabled);
-            removePartyEnabled = new Subject<bool>();
-            this.FindControl<Button>("RemoveParty").Command = ReactiveCommand.Create(RemovePartyMember, removePartyEnabled);
-            this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
-            this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
-            party = this.FindControl<ListBox>("Party");
-            party.SelectionChanged += (s, e) =>
+            // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2656
+            Initialized += (sh, he) =>
             {
-                if (party.SelectedIndex > -1)
+                addPartyEnabled = new Subject<bool>();
+                this.FindControl<Button>("AddParty").Command = ReactiveCommand.Create(AddPartyMember, addPartyEnabled);
+                removePartyEnabled = new Subject<bool>();
+                this.FindControl<Button>("RemoveParty").Command = ReactiveCommand.Create(RemovePartyMember, removePartyEnabled);
+                this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
+                this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
+                party = this.FindControl<ListBox>("Party");
+                party.SelectionChanged += (s, e) =>
                 {
-                    shell = team.Item2[party.SelectedIndex];
-                    UpdateEditor(false, true, true, true);
-                    UpdateEditor(true, false, false, true);
-                }
-            };
-            savedTeams = this.FindControl<ListBox>("SavedTeams");
-            savedTeams.SelectionChanged += (s, e) =>
-            {
-                if (savedTeams.SelectedIndex > -1)
+                    if (party.SelectedIndex > -1)
+                    {
+                        shell = team.Party[party.SelectedIndex];
+                        UpdateEditor(false, true, true, true);
+                        UpdateEditor(true, false, false, true);
+                    }
+                };
+                savedTeams = this.FindControl<ListBox>("SavedTeams");
+                savedTeams.SelectionChanged += (s, e) =>
                 {
-                    Team = Teams[savedTeams.SelectedIndex];
-                    party.SelectedIndex = 0;
-                    EvaluatePartySize();
+                    if (savedTeams.SelectedIndex > -1)
+                    {
+                        Team = Teams[savedTeams.SelectedIndex];
+                        EvaluatePartySize();
+                        party.SelectedIndex = 0;
+                    }
+                };
+                illegal = this.FindControl<CheckBox>("Illegal");
+                illegal.Command = ReactiveCommand.Create(IllegalChanged);
+
+                void shellOnly(object s, EventArgs e)
+                {
+                    UpdateEditor(true, false, false);
                 }
-            };
-            illegal = this.FindControl<CheckBox>("Illegal");
-            illegal.Command = ReactiveCommand.Create(IllegalChanged);
 
-            void shellOnly(object s, EventArgs e)
-            {
-                UpdateEditor(true, false, false);
-            }
-
-            species = this.FindControl<ComboBox>("Species");
-            species.SelectionChanged += (s, e) => UpdateEditor(true, true, true);
-            nickname = this.FindControl<TextBox>("Nickname");
-            nickname.LostFocus += (s, e) => UpdateEditor(true, false, true);
-            level = this.FindControl<NumericUpDown>("Level");
-            level.ValueChanged += shellOnly;
-            friendship = this.FindControl<NumericUpDown>("Friendship");
-            friendship.ValueChanged += shellOnly;
-            shiny = this.FindControl<CheckBox>("Shiny");
-            shiny.Command = ReactiveCommand.Create(() => UpdateEditor(true, false, true));
-            ability = this.FindControl<ComboBox>("Ability");
-            ability.SelectionChanged += shellOnly;
-            nature = this.FindControl<ComboBox>("Nature");
-            nature.SelectionChanged += shellOnly;
-            gender = this.FindControl<ComboBox>("Gender");
-            gender.SelectionChanged += (s, e) => UpdateEditor(true, false, true);
-            item = this.FindControl<ComboBox>("Item");
-            item.SelectionChanged += shellOnly;
-            evs = new[]
-            {
+                species = this.FindControl<ComboBox>("Species");
+                species.SelectionChanged += (s, e) => UpdateEditor(true, true, true);
+                nickname = this.FindControl<TextBox>("Nickname");
+                nickname.LostFocus += shellOnly;
+                level = this.FindControl<NumericUpDown>("Level");
+                level.ValueChanged += shellOnly;
+                friendship = this.FindControl<NumericUpDown>("Friendship");
+                friendship.ValueChanged += shellOnly;
+                shiny = this.FindControl<CheckBox>("Shiny");
+                shiny.Command = ReactiveCommand.Create(() => UpdateEditor(true, false, true));
+                ability = this.FindControl<ComboBox>("Ability");
+                ability.SelectionChanged += shellOnly;
+                nature = this.FindControl<ComboBox>("Nature");
+                nature.SelectionChanged += shellOnly;
+                gender = this.FindControl<ComboBox>("Gender");
+                gender.SelectionChanged += (s, e) => UpdateEditor(true, false, true);
+                item = this.FindControl<ComboBox>("Item");
+                item.SelectionChanged += shellOnly;
+                evs = new[]
+                {
                 this.FindControl<NumericUpDown>("HPEV"),
                 this.FindControl<NumericUpDown>("ATKEV"),
                 this.FindControl<NumericUpDown>("DEFEV"),
@@ -163,8 +172,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 this.FindControl<NumericUpDown>("SPDEFEV"),
                 this.FindControl<NumericUpDown>("SPEEV")
             };
-            ivs = new[]
-            {
+                ivs = new[]
+                {
                 this.FindControl<NumericUpDown>("HPIV"),
                 this.FindControl<NumericUpDown>("ATKIV"),
                 this.FindControl<NumericUpDown>("DEFIV"),
@@ -172,64 +181,63 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 this.FindControl<NumericUpDown>("SPDEFIV"),
                 this.FindControl<NumericUpDown>("SPEIV")
             };
-            for (int i = 0; i < 6; i++)
-            {
-                evs[i].ValueChanged += shellOnly;
-                ivs[i].ValueChanged += shellOnly;
-            }
-            moves = new[]
-            {
+                for (int i = 0; i < 6; i++)
+                {
+                    evs[i].ValueChanged += shellOnly;
+                    ivs[i].ValueChanged += shellOnly;
+                }
+                moves = new[]
+                {
                 this.FindControl<ComboBox>("Move0"),
                 this.FindControl<ComboBox>("Move1"),
                 this.FindControl<ComboBox>("Move2"),
                 this.FindControl<ComboBox>("Move3")
             };
-            ppups = new[]
-            {
+                ppups = new[]
+                {
                 this.FindControl<NumericUpDown>("PPUps0"),
                 this.FindControl<NumericUpDown>("PPUps1"),
                 this.FindControl<NumericUpDown>("PPUps2"),
                 this.FindControl<NumericUpDown>("PPUps3")
             };
-            for (int i = 0; i < moves.Length; i++)
-            {
-                moves[i].SelectionChanged += shellOnly;
-                ppups[i].ValueChanged += shellOnly;
-            }
-        }
-        public void Load()
-        {
-            if (Directory.Exists("Teams"))
-            {
-                string[] files = Directory.GetFiles("Teams");
-                if (files.Length > 0)
+                for (int i = 0; i < moves.Length; i++)
                 {
-                    foreach (string f in files)
-                    {
-                        Teams.Add(Tuple.Create(Path.GetFileNameWithoutExtension(f), new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromTextFile(f))));
-                    }
-                    savedTeams.SelectedIndex = 0;
-                    return;
+                    moves[i].SelectionChanged += shellOnly;
+                    ppups[i].ValueChanged += shellOnly;
                 }
-            }
-            else
-            {
-                Directory.CreateDirectory("Teams");
-            }
 
-            AddTeam();
+                teamPath = Path.Combine(Utils.WorkingDirectory, "Teams");
+                if (Directory.Exists(teamPath))
+                {
+                    string[] files = Directory.GetFiles(teamPath);
+                    if (files.Length > 0)
+                    {
+                        foreach (string f in files)
+                        {
+                            Teams.Add(new TeamInfo { Name = Path.GetFileNameWithoutExtension(f), Party = new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromTextFile(f)) });
+                        }
+                        savedTeams.SelectedIndex = 0;
+                        return;
+                    }
+                }
+                else
+                {
+                    Directory.CreateDirectory(teamPath);
+                }
+                AddTeam();
+            };
         }
 
         private void AddTeam()
         {
-            Teams.Add(Tuple.Create($"Team {DateTime.Now.Ticks}", new ObservableCollection<PBEPokemonShell>()));
+            Teams.Add(new TeamInfo { Name = $"Team {DateTime.Now.Ticks}", Party = new ObservableCollection<PBEPokemonShell>() });
             savedTeams.SelectedIndex = Teams.Count - 1;
             AddPartyMember();
         }
         private void RemoveTeam()
         {
             Teams.Remove(team);
-            //File.Delete($"Teams\\{team.Item1}.txt");
+            File.Delete(Path.Combine(teamPath, $"{team.Name}.txt"));
             if (Teams.Count == 0)
             {
                 AddTeam();
@@ -242,7 +250,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private void AddPartyMember()
         {
             PBESpecies species = Species.Sample();
-            team.Item2.Add(new PBEPokemonShell
+            team.Party.Add(new PBEPokemonShell
             {
                 Species = species,
                 Nickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo(),
@@ -252,14 +260,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 Moves = new PBEMove[moves.Length],
                 PPUps = new byte[moves.Length]
             });
-            party.SelectedIndex = team.Item2.Count - 1;
             EvaluatePartySize();
+            party.SelectedIndex = team.Party.Count - 1;
         }
         private void RemovePartyMember()
         {
-            team.Item2.Remove(shell);
-            party.SelectedIndex = team.Item2.Count - 1;
+            team.Party.Remove(shell);
             EvaluatePartySize();
+            party.SelectedIndex = team.Party.Count - 1;
         }
         private void EvaluatePartySize()
         {
@@ -269,19 +277,19 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             else
             {
-                addPartyEnabled.OnNext(team.Item2.Count < settings.MaxPartySize);
+                addPartyEnabled.OnNext(team.Party.Count < settings.MaxPartySize);
                 // Remove if too many
-                if (team.Item2.Count > settings.MaxPartySize)
+                if (team.Party.Count > settings.MaxPartySize)
                 {
-                    party.SelectedIndex = settings.MaxPartySize - 1;
-                    int removeAmt = team.Item2.Count - settings.MaxPartySize;
+                    int removeAmt = team.Party.Count - settings.MaxPartySize;
                     for (int i = 0; i < removeAmt; i++)
                     {
-                        team.Item2.RemoveAt(team.Item2.Count - 1);
+                        team.Party.RemoveAt(team.Party.Count - 1);
                     }
+                    party.SelectedIndex = team.Party.Count - 1;
                 }
             }
-            removePartyEnabled.OnNext(team.Item2.Count > 1);
+            removePartyEnabled.OnNext(team.Party.Count > 1);
         }
         private void IllegalChanged()
         {
@@ -344,16 +352,19 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                     shell.PPUps[i] = (byte)ppups[i].Value;
                 }
-
-                //PBEPokemonShell.TeamToTextFile($"Teams\\{team.Item1}.txt", team.Item2);
+                PBEPokemonShell.TeamToTextFile(Path.Combine(teamPath, $"{team.Name}.txt"), team.Party);
             }
             if (updateSprites)
             {
                 SpriteStream = Utils.GetPokemonSpriteStream(shell);
-                // Force redraw
-                party.Items = Array.Empty<object>();
-                party.Items = team.Item2;
-                party.InvalidateVisual();
+                // Force redraw of minisprite
+                var c = (ListBoxItem)party.ItemContainerGenerator.ContainerFromIndex(party.SelectedIndex);
+                if (c != null)
+                {
+                    object old = c.Content;
+                    c.Content = null;
+                    c.Content = old;
+                }
             }
             if (updateControls)
             {
@@ -440,10 +451,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         case PBESpecies.Giratina: AvailableItems = allItems.Except(new[] { PBEItem.GriseousOrb }); break;
                         case PBESpecies.Giratina_Origin: AvailableItems = new[] { PBEItem.GriseousOrb }; break;
                         case PBESpecies.Arceus:
+                        {
                             AvailableItems = allItems.Except(new[] { PBEItem.DracoPlate, PBEItem.DreadPlate, PBEItem.EarthPlate, PBEItem.FistPlate,
                                 PBEItem.FlamePlate, PBEItem.IciclePlate, PBEItem.InsectPlate, PBEItem.IronPlate, PBEItem.MeadowPlate, PBEItem.MindPlate, PBEItem.SkyPlate,
                                 PBEItem.SplashPlate, PBEItem.SpookyPlate, PBEItem.StonePlate, PBEItem.ToxicPlate, PBEItem.ZapPlate });
                             break;
+                        }
                         case PBESpecies.Arceus_Bug: AvailableItems = new[] { PBEItem.InsectPlate }; break;
                         case PBESpecies.Arceus_Dark: AvailableItems = new[] { PBEItem.DreadPlate }; break;
                         case PBESpecies.Arceus_Dragon: AvailableItems = new[] { PBEItem.DracoPlate }; break;

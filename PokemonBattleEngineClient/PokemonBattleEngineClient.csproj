@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <OutputType>Exe</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
     <RootNamespace>Kermalis.PokemonBattleEngineClient</RootNamespace>
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
@@ -17,6 +17,9 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
     <EmbeddedResource Include="../Shared Assets\**" />
+    <EmbeddedResource Include="..\PokemonBattleEngine\PokemonBattleEngine.db">
+      <Link>PokemonBattleEngine.db</Link>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -26,9 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.8.0" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.8.0" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.8.0" />
+    <PackageReference Include="Avalonia" Version="0.8.1-cibuild0002893-beta" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.8.1-cibuild0002893-beta" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.8.1-cibuild0002893-beta" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
     <Reference Include="AvaloniaGif">
       <HintPath>Dependencies\AvaloniaGif.dll</HintPath>
@@ -37,5 +40,5 @@
       <HintPath>../Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>
   </ItemGroup>
-
+  
 </Project>

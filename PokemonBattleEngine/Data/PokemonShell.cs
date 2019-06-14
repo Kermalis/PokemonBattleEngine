@@ -1,25 +1,149 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBEPokemonShell
+    public sealed class PBEPokemonShell : INotifyPropertyChanged
     {
-        public PBESpecies Species { get; set; }
-        public string Nickname { get; set; }
-        public byte Level { get; set; }
-        public byte Friendship { get; set; }
-        public bool Shiny { get; set; }
-        public PBEAbility Ability { get; set; }
-        public PBENature Nature { get; set; }
-        public PBEGender Gender { get; set; }
-        public PBEItem Item { get; set; }
-        public byte[] EVs { get; set; }
-        public byte[] IVs { get; set; }
-        public PBEMove[] Moves { get; set; }
-        public byte[] PPUps { get; set; }
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private PBESpecies species;
+        public PBESpecies Species
+        {
+            get => species;
+            set
+            {
+                species = value;
+                OnPropertyChanged(nameof(Species));
+            }
+        }
+        private string nickname;
+        public string Nickname
+        {
+            get => nickname;
+            set
+            {
+                nickname = value;
+                OnPropertyChanged(nameof(Nickname));
+            }
+        }
+        private byte level;
+        public byte Level
+        {
+            get => level;
+            set
+            {
+                level = value;
+                OnPropertyChanged(nameof(Level));
+            }
+        }
+        private byte friendship;
+        public byte Friendship
+        {
+            get => friendship;
+            set
+            {
+                friendship = value;
+                OnPropertyChanged(nameof(Friendship));
+            }
+        }
+        private bool shiny;
+        public bool Shiny
+        {
+            get => shiny;
+            set
+            {
+                shiny = value;
+                OnPropertyChanged(nameof(Shiny));
+            }
+        }
+        private PBEAbility ability;
+        public PBEAbility Ability
+        {
+            get => ability;
+            set
+            {
+                ability = value;
+                OnPropertyChanged(nameof(Ability));
+            }
+        }
+        private PBENature nature;
+        public PBENature Nature
+        {
+            get => nature;
+            set
+            {
+                nature = value;
+                OnPropertyChanged(nameof(Nature));
+            }
+        }
+        private PBEGender gender;
+        public PBEGender Gender
+        {
+            get => gender;
+            set
+            {
+                gender = value;
+                OnPropertyChanged(nameof(Gender));
+            }
+        }
+        private PBEItem item;
+        public PBEItem Item
+        {
+            get => item;
+            set
+            {
+                item = value;
+                OnPropertyChanged(nameof(Item));
+            }
+        }
+        private byte[] evs;
+        public byte[] EVs
+        {
+            get => evs;
+            set
+            {
+                evs = value;
+                OnPropertyChanged(nameof(EVs));
+            }
+        }
+        private byte[] ivs;
+        public byte[] IVs
+        {
+            get => ivs;
+            set
+            {
+                ivs = value;
+                OnPropertyChanged(nameof(IVs));
+            }
+        }
+        private PBEMove[] moves;
+        public PBEMove[] Moves
+        {
+            get => moves;
+            set
+            {
+                moves = value;
+                OnPropertyChanged(nameof(Moves));
+            }
+        }
+        private byte[] ppups;
+        public byte[] PPUps
+        {
+            get => ppups;
+            set
+            {
+                ppups = value;
+                OnPropertyChanged(nameof(PPUps));
+            }
+        }
 
         public static IEnumerable<PBEPokemonShell> TeamFromTextFile(string path)
         {
@@ -31,15 +155,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     team[i] = new PBEPokemonShell
                     {
-                        Species = (PBESpecies)Enum.Parse(typeof(PBESpecies), r.ReadLine()),
-                        Nickname = r.ReadLine(),
-                        Level = byte.Parse(r.ReadLine()),
-                        Friendship = byte.Parse(r.ReadLine()),
-                        Shiny = bool.Parse(r.ReadLine()),
-                        Ability = (PBEAbility)Enum.Parse(typeof(PBEAbility), r.ReadLine()),
-                        Nature = (PBENature)Enum.Parse(typeof(PBENature), r.ReadLine()),
-                        Gender = (PBEGender)Enum.Parse(typeof(PBEGender), r.ReadLine()),
-                        Item = (PBEItem)Enum.Parse(typeof(PBEItem), r.ReadLine()),
+                        species = (PBESpecies)Enum.Parse(typeof(PBESpecies), r.ReadLine()),
+                        nickname = r.ReadLine(),
+                        level = byte.Parse(r.ReadLine()),
+                        friendship = byte.Parse(r.ReadLine()),
+                        shiny = bool.Parse(r.ReadLine()),
+                        ability = (PBEAbility)Enum.Parse(typeof(PBEAbility), r.ReadLine()),
+                        nature = (PBENature)Enum.Parse(typeof(PBENature), r.ReadLine()),
+                        gender = (PBEGender)Enum.Parse(typeof(PBEGender), r.ReadLine()),
+                        item = (PBEItem)Enum.Parse(typeof(PBEItem), r.ReadLine()),
                     };
                     // Setup for arrays
                     string line;
@@ -51,31 +175,31 @@ namespace Kermalis.PokemonBattleEngine.Data
                     }
                     // EVs
                     SplitNext();
-                    team[i].EVs = new byte[args.Length];
+                    team[i].evs = new byte[args.Length];
                     for (int j = 0; j < args.Length; j++)
                     {
-                        team[i].EVs[j] = byte.Parse(args[j]);
+                        team[i].evs[j] = byte.Parse(args[j]);
                     }
                     // IVs
                     SplitNext();
-                    team[i].IVs = new byte[args.Length];
+                    team[i].ivs = new byte[args.Length];
                     for (int j = 0; j < args.Length; j++)
                     {
-                        team[i].IVs[j] = byte.Parse(args[j]);
+                        team[i].ivs[j] = byte.Parse(args[j]);
                     }
                     // Moves
                     SplitNext();
-                    team[i].Moves = new PBEMove[args.Length];
+                    team[i].moves = new PBEMove[args.Length];
                     for (int j = 0; j < args.Length; j++)
                     {
-                        team[i].Moves[j] = (PBEMove)Enum.Parse(typeof(PBEMove), args[j]);
+                        team[i].moves[j] = (PBEMove)Enum.Parse(typeof(PBEMove), args[j]);
                     }
                     // PPUps
                     SplitNext();
-                    team[i].PPUps = new byte[args.Length];
+                    team[i].ppups = new byte[args.Length];
                     for (int j = 0; j < args.Length; j++)
                     {
-                        team[i].PPUps[j] = byte.Parse(args[j]);
+                        team[i].ppups[j] = byte.Parse(args[j]);
                     }
                 }
                 return team;
@@ -83,24 +207,25 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static void TeamToTextFile(string path, IEnumerable<PBEPokemonShell> team)
         {
+            // TODO: Include settings
             using (var w = new StreamWriter(path))
             {
                 w.WriteLine(team.Count());
                 foreach (PBEPokemonShell pkmn in team)
                 {
-                    w.WriteLine(pkmn.Species);
-                    w.WriteLine(pkmn.Nickname);
-                    w.WriteLine(pkmn.Level);
-                    w.WriteLine(pkmn.Friendship);
-                    w.WriteLine(pkmn.Shiny);
-                    w.WriteLine(pkmn.Ability);
-                    w.WriteLine(pkmn.Nature);
-                    w.WriteLine(pkmn.Gender);
-                    w.WriteLine(pkmn.Item);
-                    w.WriteLine(string.Join(", ", pkmn.EVs));
-                    w.WriteLine(string.Join(", ", pkmn.IVs));
-                    w.WriteLine(string.Join(", ", pkmn.Moves));
-                    w.WriteLine(string.Join(", ", pkmn.PPUps));
+                    w.WriteLine(pkmn.species);
+                    w.WriteLine(pkmn.nickname);
+                    w.WriteLine(pkmn.level);
+                    w.WriteLine(pkmn.friendship);
+                    w.WriteLine(pkmn.shiny);
+                    w.WriteLine(pkmn.ability);
+                    w.WriteLine(pkmn.nature);
+                    w.WriteLine(pkmn.gender);
+                    w.WriteLine(pkmn.item);
+                    w.WriteLine(string.Join(", ", pkmn.evs));
+                    w.WriteLine(string.Join(", ", pkmn.ivs));
+                    w.WriteLine(string.Join(", ", pkmn.moves));
+                    w.WriteLine(string.Join(", ", pkmn.ppups));
                 }
             }
         }
@@ -131,25 +256,25 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             var pkmn = new PBEPokemonShell
             {
-                Species = (PBESpecies)r.ReadUInt32(),
-                Nickname = PBEUtils.StringFromBytes(r),
-                Level = r.ReadByte(),
-                Friendship = r.ReadByte(),
-                Shiny = r.ReadBoolean(),
-                Ability = (PBEAbility)r.ReadByte(),
-                Nature = (PBENature)r.ReadByte(),
-                Gender = (PBEGender)r.ReadByte(),
-                Item = (PBEItem)r.ReadUInt16(),
-                EVs = r.ReadBytes(6),
-                IVs = r.ReadBytes(6)
+                species = (PBESpecies)r.ReadUInt32(),
+                nickname = PBEUtils.StringFromBytes(r),
+                level = r.ReadByte(),
+                friendship = r.ReadByte(),
+                shiny = r.ReadBoolean(),
+                ability = (PBEAbility)r.ReadByte(),
+                nature = (PBENature)r.ReadByte(),
+                gender = (PBEGender)r.ReadByte(),
+                item = (PBEItem)r.ReadUInt16(),
+                evs = r.ReadBytes(6),
+                ivs = r.ReadBytes(6)
             };
             byte numMoves = r.ReadByte();
-            pkmn.Moves = new PBEMove[numMoves];
+            pkmn.moves = new PBEMove[numMoves];
             for (int i = 0; i < numMoves; i++)
             {
-                pkmn.Moves[i] = (PBEMove)r.ReadUInt16();
+                pkmn.moves[i] = (PBEMove)r.ReadUInt16();
             }
-            pkmn.PPUps = r.ReadBytes(numMoves);
+            pkmn.ppups = r.ReadBytes(numMoves);
             return pkmn;
         }
     }

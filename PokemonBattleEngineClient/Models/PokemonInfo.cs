@@ -17,12 +17,9 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public PokemonInfo(PBEPokemon pkmn, bool locked, Action<PBEPokemon> clickAction)
         {
             Pokemon = pkmn;
-
-            bool enabled = !locked && pkmn.FieldPosition == PBEFieldPosition.None && pkmn.HP > 0;
-
             var sub = new Subject<bool>();
             SelectPokemonCommand = ReactiveCommand.Create(() => clickAction(pkmn), sub);
-            sub.OnNext(enabled);
+            sub.OnNext(!locked && pkmn.FieldPosition == PBEFieldPosition.None && pkmn.HP > 0);
         }
     }
 }

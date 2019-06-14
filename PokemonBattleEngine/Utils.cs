@@ -26,34 +26,23 @@ namespace Kermalis.PokemonBattleEngine
             }
         }
 
-        private static SqliteConnection databaseConnection = null;
-        public static SqliteConnection DatabaseConnection
+        public static void CreateDatabaseConnection(string databasePath)
         {
-            get
+            if (databaseConnection != null)
             {
-                if (databaseConnection == null)
-                {
-                    string path;
-                    if (DoesNamespaceExist("Kermalis.PokemonBattleEngineMobile.Droid"))
-                    {
-                        path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                    }
-                    else if (DoesNamespaceExist("Kermalis.PokemonBattleEngineMobile.iOS"))
-                    {
-                        path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Library");
-                    }
-                    else
-                    {
-                        path = string.Empty;
-                    }
-                    SQLitePCL.Batteries_V2.Init();
-                    databaseConnection = new SqliteConnection($"Filename={Path.Combine(path, "PokemonBattleEngine.db")};Mode=ReadOnly;");
-                    databaseConnection.Open();
-                    databaseConnection.CreateFunction("StrCmp", (Func<object, object, bool>)StrCmp);
-                }
-                return databaseConnection;
+                throw new Exception("Database connection was already created.");
+            }
+            else
+            {
+                SQLitePCL.Batteries_V2.Init();
+                databaseConnection = new SqliteConnection($"Filename={Path.Combine(databasePath, "PokemonBattleEngine.db")};Mode=ReadOnly;");
+                databaseConnection.Open();
+                databaseConnection.CreateFunction("StrCmp", (Func<object, object, bool>)StrCmp);
             }
         }
+
+        private static SqliteConnection databaseConnection;
+        public static SqliteConnection DatabaseConnection => databaseConnection ?? throw new Exception($"You must first call \"{nameof(PBEUtils)}.{nameof(CreateDatabaseConnection)}()\"");
 
         /// <summary>
         /// An ordinary pseudo-random number generator.

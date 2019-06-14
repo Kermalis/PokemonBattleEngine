@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Kermalis.PokemonBattleEngineClient.NetCore</RootNamespace>
+    <Authors>Kermalis</Authors>
+    <Copyright>Kermalis</Copyright>
+    <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PokemonBattleEngineClient\PokemonBattleEngineClient.csproj" />
+  </ItemGroup>
+</Project>
