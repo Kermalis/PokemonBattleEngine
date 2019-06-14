@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Kermalis.PokemonBattleEngine;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
@@ -21,6 +22,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         private async Task MainAsync(string[] args)
         {
+            PBEUtils.CreateDatabaseConnection(string.Empty);
+
             client = new DiscordSocketClient(new DiscordSocketConfig { WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance });
 
             commands = new CommandService(new CommandServiceConfig { DefaultRunMode = RunMode.Async });
