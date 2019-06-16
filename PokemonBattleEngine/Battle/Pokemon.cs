@@ -8,6 +8,7 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
+    // TODO: INPC, make hidden power min and max damage settings
     /// <summary>
     /// Represents a specific Pokémon during a battle.
     /// </summary>
@@ -578,7 +579,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 d = IVs[5] & 1,
                 e = IVs[3] & 1,
                 f = IVs[4] & 1;
-            return PBEPokemonData.HiddenPowerTypes[((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (PBEPokemonData.HiddenPowerTypes.Count - 1) / ((1 << 6) - 1)];
+            return PBEPokemonData.HiddenPowerTypes[(((1 << 0) * a) + ((1 << 1) * b) + ((1 << 2) * c) + ((1 << 3) * d) + ((1 << 4) * e) + ((1 << 5) * f)) * (PBEPokemonData.HiddenPowerTypes.Count - 1) / ((1 << 6) - 1)];
         }
         /// <summary>
         /// Gets the base power that <see cref="PBEMove.HiddenPower"/> will have when used by this Pokémon.
@@ -593,7 +594,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 d = (IVs[5] & 2) == 2 ? 1 : 0,
                 e = (IVs[3] & 2) == 2 ? 1 : 0,
                 f = (IVs[4] & 2) == 2 ? 1 : 0;
-            return (byte)((((1 << 0) * a + (1 << 1) * b + (1 << 2) * c + (1 << 3) * d + (1 << 4) * e + (1 << 5) * f) * (maximumBasePower - mininumBasePower) / ((1 << 6) - 1)) + mininumBasePower);
+            return (byte)(((((1 << 0) * a) + ((1 << 1) * b) + ((1 << 2) * c) + ((1 << 3) * d) + ((1 << 4) * e) + ((1 << 5) * f)) * (maximumBasePower - mininumBasePower) / ((1 << 6) - 1)) + mininumBasePower);
         }
         /// <summary>
         /// Gets the type that a move will become when used by this Pokémon.

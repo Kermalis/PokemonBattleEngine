@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         {
             Console.WriteLine("----- Pokémon Battle Engine Test -----");
 
-            PBESettings settings = PBESettings.DefaultSettings;
+            var settings = new PBESettings { NumMoves = 12 };
             PBEPokemonShell[] team0Party, team1Party;
 
             // Completely Randomized Pokémon

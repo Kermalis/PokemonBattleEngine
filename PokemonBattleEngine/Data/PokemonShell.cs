@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
+    // TODO: Don't fire propertychanged if new value is same as old value
     public sealed class PBEPokemonShell : INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
