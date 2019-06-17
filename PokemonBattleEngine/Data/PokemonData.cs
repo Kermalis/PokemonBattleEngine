@@ -45,30 +45,405 @@ namespace Kermalis.PokemonBattleEngine.Data
             return Type1 == type || Type2 == type;
         }
 
-        // First is attacker, second is defender
-        // TypeEffectiveness[(int)PBEType.Bug][(int)PBEType.Dark] = TypeEffectiveness[1][2] = Bug attacker, Dark defender
-        public static ReadOnlyCollection<ReadOnlyCollection<double>> TypeEffectiveness { get; } = new ReadOnlyCollection<ReadOnlyCollection<double>>(new ReadOnlyCollection<double>[]
+        /// <summary>The type effectiveness table. The first key is the attacking type and the second key is the defending type.</summary>
+        public static ReadOnlyDictionary<PBEType, ReadOnlyDictionary<PBEType, double>> TypeEffectiveness { get; } = new ReadOnlyDictionary<PBEType, ReadOnlyDictionary<PBEType, double>>(new Dictionary<PBEType, ReadOnlyDictionary<PBEType, double>>
         {
-            //                                  Defender     None      Bug     Dark   Dragon Electric Fighting     Fire   Flying    Ghost    Grass   Ground      Ice   Normal   Poison  Psychic     Rock    Steel    Water
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0}), // None
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     0.5,     0.5,     0.5,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     1.0,     0.5,     1.0}), // Bug
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5,     1.0}), // Dark
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}), // Dragon
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     0.5,     0.5,     1.0,     1.0,     2.0,     1.0,     0.5,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0}), // Electric
-            new ReadOnlyCollection<double>(new double[] {     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.0,     1.0,     1.0,     2.0,     2.0,     0.5,     0.5,     2.0,     2.0,     1.0}), // Fighting
-            new ReadOnlyCollection<double>(new double[] {     1.0,     2.0,     1.0,     0.5,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5}), // Fire
-            new ReadOnlyCollection<double>(new double[] {     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}), // Flying
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     0.0,     1.0,     2.0,     1.0,     0.5,     1.0}), // Ghost
-            new ReadOnlyCollection<double>(new double[] {     1.0,     0.5,     1.0,     0.5,     1.0,     1.0,     0.5,     0.5,     1.0,     0.5,     2.0,     1.0,     1.0,     0.5,     1.0,     2.0,     0.5,     2.0}), // Grass
-            new ReadOnlyCollection<double>(new double[] {     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     2.0,     0.0,     1.0,     0.5,     1.0,     1.0,     1.0,     2.0,     1.0,     2.0,     2.0,     1.0}), // Ground
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     2.0,     2.0,     0.5,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5}), // Ice
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     0.5,     1.0}), // Normal
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     0.5,     2.0,     0.5,     1.0,     1.0,     0.5,     1.0,     0.5,     0.0,     1.0}), // Poison
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     0.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     2.0,     0.5,     1.0,     0.5,     1.0}), // Psychic
-            new ReadOnlyCollection<double>(new double[] {     1.0,     2.0,     1.0,     1.0,     1.0,     0.5,     2.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     0.5,     1.0}), // Rock
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     1.0,     0.5,     1.0,     0.5,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     1.0,     1.0,     2.0,     0.5,     0.5}), // Steel
-            new ReadOnlyCollection<double>(new double[] {     1.0,     1.0,     1.0,     0.5,     1.0,     1.0,     2.0,     1.0,     1.0,     0.5,     2.0,     1.0,     1.0,     1.0,     1.0,     2.0,     1.0,     0.5})  // Water
-                                                                                                                                                                                                                              // Attacker
+            { PBEType.None, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 1.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 1.0 },
+                { PBEType.Steel, 1.0 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Bug, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 2.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 0.5 },
+                { PBEType.Fire, 0.5 },
+                { PBEType.Flying, 0.5 },
+                { PBEType.Ghost, 0.5 },
+                { PBEType.Grass, 2.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 0.5 },
+                { PBEType.Psychic, 2.0 },
+                { PBEType.Rock, 1.0 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Dark, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 0.5 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 0.5 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 2.0 },
+                { PBEType.Grass, 1.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 2.0 },
+                { PBEType.Rock, 1.0 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Dragon, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 2.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 1.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 1.0 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Electric, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 0.5 },
+                { PBEType.Electric, 0.5 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 2.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 0.5 },
+                { PBEType.Ground, 0.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 1.0 },
+                { PBEType.Steel, 1.0 },
+                { PBEType.Water, 2.0 },
+            })
+            },
+            { PBEType.Fighting, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 0.5 },
+                { PBEType.Dark, 2.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 0.5 },
+                { PBEType.Ghost, 0.0 },
+                { PBEType.Grass, 1.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 2.0 },
+                { PBEType.Normal, 2.0 },
+                { PBEType.Poison, 0.5 },
+                { PBEType.Psychic, 0.5 },
+                { PBEType.Rock, 2.0 },
+                { PBEType.Steel, 2.0 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Fire, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 2.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 0.5 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 0.5 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 2.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 2.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 0.5 },
+                { PBEType.Steel, 2.0 },
+                { PBEType.Water, 0.5 },
+            })
+            },
+            { PBEType.Flying, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 2.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 0.5 },
+                { PBEType.Fighting, 2.0 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 2.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 0.5 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Ghost, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 0.5 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 2.0 },
+                { PBEType.Grass, 1.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 0.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 2.0 },
+                { PBEType.Rock, 1.0 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Grass, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 0.5 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 0.5 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 0.5 },
+                { PBEType.Flying, 0.5 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 0.5 },
+                { PBEType.Ground, 2.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 0.5 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 2.0 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 2.0 },
+            })
+            },
+            { PBEType.Ground, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 0.5 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 2.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 2.0 },
+                { PBEType.Flying, 0.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 0.5 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 2.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 2.0 },
+                { PBEType.Steel, 2.0 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Ice, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 2.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 0.5 },
+                { PBEType.Flying, 2.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 2.0 },
+                { PBEType.Ground, 2.0 },
+                { PBEType.Ice, 0.5 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 1.0 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 0.5 },
+            })
+            },
+            { PBEType.Normal, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 0.0 },
+                { PBEType.Grass, 1.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 0.5 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Poison, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 0.5 },
+                { PBEType.Grass, 2.0 },
+                { PBEType.Ground, 0.5 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 0.5 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 0.5 },
+                { PBEType.Steel, 0.0 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Psychic, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 0.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 2.0 },
+                { PBEType.Fire, 1.0 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 1.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 2.0 },
+                { PBEType.Psychic, 0.5 },
+                { PBEType.Rock, 1.0 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Rock, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 2.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 0.5 },
+                { PBEType.Fire, 2.0 },
+                { PBEType.Flying, 2.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 1.0 },
+                { PBEType.Ground, 0.5 },
+                { PBEType.Ice, 2.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 1.0 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 1.0 },
+            })
+            },
+            { PBEType.Steel, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 1.0 },
+                { PBEType.Electric, 0.5 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 0.5 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 1.0 },
+                { PBEType.Ground, 1.0 },
+                { PBEType.Ice, 2.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 2.0 },
+                { PBEType.Steel, 0.5 },
+                { PBEType.Water, 0.5 },
+            })
+            },
+            { PBEType.Water, new ReadOnlyDictionary<PBEType, double>(new Dictionary<PBEType, double>
+            {
+                { PBEType.None, 1.0 },
+                { PBEType.Bug, 1.0 },
+                { PBEType.Dark, 1.0 },
+                { PBEType.Dragon, 0.5 },
+                { PBEType.Electric, 1.0 },
+                { PBEType.Fighting, 1.0 },
+                { PBEType.Fire, 2.0 },
+                { PBEType.Flying, 1.0 },
+                { PBEType.Ghost, 1.0 },
+                { PBEType.Grass, 0.5 },
+                { PBEType.Ground, 2.0 },
+                { PBEType.Ice, 1.0 },
+                { PBEType.Normal, 1.0 },
+                { PBEType.Poison, 1.0 },
+                { PBEType.Psychic, 1.0 },
+                { PBEType.Rock, 2.0 },
+                { PBEType.Steel, 1.0 },
+                { PBEType.Water, 0.5 },
+            })
+            }
         });
         public static ReadOnlyDictionary<PBENature, ReadOnlyCollection<sbyte>> NatureBoosts { get; } = new ReadOnlyDictionary<PBENature, ReadOnlyCollection<sbyte>>(new Dictionary<PBENature, ReadOnlyCollection<sbyte>>
         {

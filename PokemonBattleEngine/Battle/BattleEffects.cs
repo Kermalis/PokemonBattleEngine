@@ -30,8 +30,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                 {
                     double effectiveness = 0.125;
-                    effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type1];
-                    effectiveness *= PBEPokemonData.TypeEffectiveness[(int)PBEType.Rock][(int)pkmn.Type2];
+                    effectiveness *= PBEPokemonData.TypeEffectiveness[PBEType.Rock][pkmn.Type1];
+                    effectiveness *= PBEPokemonData.TypeEffectiveness[PBEType.Rock][pkmn.Type2];
                     BroadcastTeamStatus(pkmn.Team, PBETeamStatus.StealthRock, PBETeamStatusAction.Damage, pkmn);
                     DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP * effectiveness), true, ignoreSturdy: true);
                     if (FaintCheck(pkmn))

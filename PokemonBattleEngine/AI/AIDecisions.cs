@@ -187,8 +187,8 @@ namespace Kermalis.PokemonBattleEngine.AI
                                             // TODO: Check items
                                             // TODO: Stat changes and accuracy
                                             // TODO: Check base power specifically against hp remaining (include spread move damage reduction)
-                                            double typeEffectiveness = PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.KnownType1];
-                                            typeEffectiveness *= PBEPokemonData.TypeEffectiveness[(int)moveType][(int)target.KnownType2];
+                                            double typeEffectiveness = PBEPokemonData.TypeEffectiveness[moveType][target.KnownType1];
+                                            typeEffectiveness *= PBEPokemonData.TypeEffectiveness[moveType][target.KnownType2];
                                             if (typeEffectiveness <= 0.0) // (-infinity, 0.0] Ineffective
                                             {
                                                 score += target.Team == opposingTeam ? -60 : -1;
