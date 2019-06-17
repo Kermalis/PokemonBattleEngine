@@ -19,6 +19,89 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private const string separator = "**--------------------**";
         private static readonly Emoji switchEmoji = new Emoji("😼");
         private static readonly Emoji confirmationEmoji = new Emoji("👍");
+        private static readonly Dictionary<PBEType, Emote>[] moveEmojis = new Dictionary<PBEType, Emote>[4]
+        {
+            new Dictionary<PBEType, Emote>
+            {
+                { PBEType.Bug, Emote.Parse("<:A_Bug:589220293814517764>") },
+                { PBEType.Dark, Emote.Parse("<:A_Dark:589220295651622922>") },
+                { PBEType.Dragon, Emote.Parse("<:A_Dragon:589220295517143048>") },
+                { PBEType.Electric, Emote.Parse("<:A_Electric:589220295664074767>") },
+                { PBEType.Fighting, Emote.Parse("<:A_Fighting:589220295454359552>") },
+                { PBEType.Fire, Emote.Parse("<:A_Fire:589220295286718485>") },
+                { PBEType.Flying, Emote.Parse("<:A_Flying:589220295047380994>") },
+                { PBEType.Ghost, Emote.Parse("<:A_Ghost:589220295412547599>") },
+                { PBEType.Grass, Emote.Parse("<:A_Grass:589220295517143053>") },
+                { PBEType.Ground, Emote.Parse("<:A_Ground:589220295525531648>") },
+                { PBEType.Ice, Emote.Parse("<:A_Ice:589220295517143105>") },
+                { PBEType.Normal, Emote.Parse("<:A_Normal:589220296586690620>") },
+                { PBEType.Poison, Emote.Parse("<:A_Poison:589220295202832388>") },
+                { PBEType.Psychic, Emote.Parse("<:A_Psychic:589220295395770384>") },
+                { PBEType.Rock, Emote.Parse("<:A_Rock:589220295618068549>") },
+                { PBEType.Steel, Emote.Parse("<:A_Steel:589220295651622922>") },
+                { PBEType.Water, Emote.Parse("<:A_Water:589220295664074770>") }
+            },
+            new Dictionary<PBEType, Emote>
+            {
+                { PBEType.Bug, Emote.Parse("<:B_Bug:589220295592902667>") },
+                { PBEType.Dark, Emote.Parse("<:B_Dark:589220295286718496>") },
+                { PBEType.Dragon, Emote.Parse("<:B_Dragon:589220295517143250>") },
+                { PBEType.Electric, Emote.Parse("<:B_Electric:589220295584251944>") },
+                { PBEType.Fighting, Emote.Parse("<:B_Fighting:589220295198375948>") },
+                { PBEType.Fire, Emote.Parse("<:B_Fire:589220295252901900>") },
+                { PBEType.Flying, Emote.Parse("<:B_Flying:589220295622000680>") },
+                { PBEType.Ghost, Emote.Parse("<:B_Ghost:589220295605485588>") },
+                { PBEType.Grass, Emote.Parse("<:B_Grass:589220295701823506>") },
+                { PBEType.Ground, Emote.Parse("<:B_Ground:589220295584514058>") },
+                { PBEType.Ice, Emote.Parse("<:B_Ice:589220295739441153>") },
+                { PBEType.Normal, Emote.Parse("<:B_Normal:589220295672463485>") },
+                { PBEType.Poison, Emote.Parse("<:B_Poison:589220295643234366>") },
+                { PBEType.Psychic, Emote.Parse("<:B_Psychic:589220295483719695>") },
+                { PBEType.Rock, Emote.Parse("<:B_Rock:589220295676657667>") },
+                { PBEType.Steel, Emote.Parse("<:B_Steel:589220295773126672>") },
+                { PBEType.Water, Emote.Parse("<:B_Water:589220295710212153>") }
+            },
+            new Dictionary<PBEType, Emote>
+            {
+                { PBEType.Bug, Emote.Parse("<:C_Bug:589220295429324812>") },
+                { PBEType.Dark, Emote.Parse("<:C_Dark:589220295911538708>") },
+                { PBEType.Dragon, Emote.Parse("<:C_Dragon:589220295840104448>") },
+                { PBEType.Electric, Emote.Parse("<:C_Electric:589220295517143165>") },
+                { PBEType.Fighting, Emote.Parse("<:C_Fighting:589220295852949504>") },
+                { PBEType.Fire, Emote.Parse("<:C_Fire:589220295747829801>") },
+                { PBEType.Flying, Emote.Parse("<:C_Flying:589220295836041236>") },
+                { PBEType.Ghost, Emote.Parse("<:C_Ghost:589220295479525400>") },
+                { PBEType.Grass, Emote.Parse("<:C_Grass:589220295706017817>") },
+                { PBEType.Ground, Emote.Parse("<:C_Ground:589220296104476702>") },
+                { PBEType.Ice, Emote.Parse("<:C_Ice:589220296255602728>") },
+                { PBEType.Normal, Emote.Parse("<:C_Normal:589220295865270292>") },
+                { PBEType.Poison, Emote.Parse("<:C_Poison:589220295479656450>") },
+                { PBEType.Psychic, Emote.Parse("<:C_Psychic:589220295949156352>") },
+                { PBEType.Rock, Emote.Parse("<:C_Rock:589220295672463436>") },
+                { PBEType.Steel, Emote.Parse("<:C_Steel:589220295936573469>") },
+                { PBEType.Water, Emote.Parse("<:C_Water:589220471711465591>") }
+            },
+            new Dictionary<PBEType, Emote>
+            {
+                { PBEType.Bug, Emote.Parse("<:D_Bug:589220471065542685>") },
+                { PBEType.Dark, Emote.Parse("<:D_Dark:589220471816454173>") },
+                { PBEType.Dragon, Emote.Parse("<:D_Dragon:589220471845683271>") },
+                { PBEType.Electric, Emote.Parse("<:D_Electric:589220471770447873>") },
+                { PBEType.Fighting, Emote.Parse("<:D_Fighting:589220471531372560>") },
+                { PBEType.Fire, Emote.Parse("<:D_Fire:589220471678173235>") },
+                { PBEType.Flying, Emote.Parse("<:D_Flying:589220471569121300>") },
+                { PBEType.Ghost, Emote.Parse("<:D_Ghost:589220471967449123>") },
+                { PBEType.Grass, Emote.Parse("<:D_Grass:589220471862460463>") },
+                { PBEType.Ground, Emote.Parse("<:D_Ground:589220471900340224>") },
+                { PBEType.Ice, Emote.Parse("<:D_Ice:589220471736631328>") },
+                { PBEType.Normal, Emote.Parse("<:D_Normal:589220471615258626>") },
+                { PBEType.Poison, Emote.Parse("<:D_Poison:589220471816454171>") },
+                { PBEType.Psychic, Emote.Parse("<:D_Psychic:589220471615127563>") },
+                { PBEType.Rock, Emote.Parse("<:D_Rock:589220471489298445>") },
+                { PBEType.Steel, Emote.Parse("<:D_Steel:589220471879237658>") },
+                { PBEType.Water, Emote.Parse("<:D_Water:589220471543955481>") }
+            }
+        };
         private static readonly List<BattleContext> activeBattles = new List<BattleContext>(); // TODO: Locks for accessing this
 
         private readonly PBEBattle battle;
@@ -213,7 +296,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 string str = string.Empty;
                 if (addReactionChars)
                 {
-                    str += $"{char.ConvertFromUtf32(0x1F1E6 + i)} ";
+                    str += moveEmojis[i][pkmn.GetMoveType(move)].ToString() + ' ';
                 }
                 str += PBELocalizedString.GetMoveName(move).English;
                 moveStrs[i] = str;
@@ -1220,7 +1303,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 return;
                             }
                             allMessages.Add(switchMsg);
-                            reactionsToAdd.Add((switchMsg, (IEmote)switchEmoji));
+                            reactionsToAdd.Add((switchMsg, switchEmoji));
                             ReactionListener.AddListener(switchMsg, allMessages, switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
                         }
                     }
@@ -1283,8 +1366,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     for (int i = 0; i < usableMoves.Length; i++)
                     {
                         PBEMove move = usableMoves[i]; // move must be evaluated before it reaches the lambda
-                        var emoji = new Emoji(char.ConvertFromUtf32(0x1F1E6 + i).ToString());
-                        reactionsToAdd.Add((mainMsg, (IEmote)emoji));
+                        Emote emoji = moveEmojis[i][mainPkmn.GetMoveType(move)];
+                        reactionsToAdd.Add((mainMsg, emoji));
                         ReactionListener.AddListener(mainMsg, allMessages, emoji, userArray, () => MoveReactionClicked(move));
                     }
 
@@ -1334,7 +1417,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                                 return;
                             }
                             allMessages[i] = switchMsg;
-                            reactionsToAdd[i] = (switchMsg, (IEmote)switchEmoji);
+                            reactionsToAdd[i] = (switchMsg, switchEmoji);
                             ReactionListener.AddListener(switchMsg, allMessages, switchEmoji, userArray, () => SwitchReactionClicked(switchMsg, switchPkmn));
                         }
 
