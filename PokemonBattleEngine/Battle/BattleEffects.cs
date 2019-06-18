@@ -2384,7 +2384,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, PBEFailReason.NoTarget, targetSuccess);
+            RecordExecutedMove(user, move, failReason, targetSuccess);
             return;
         }
         private void Ef_TryForceStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status)
