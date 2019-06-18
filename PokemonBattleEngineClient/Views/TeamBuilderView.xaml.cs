@@ -236,8 +236,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         private void RemoveTeam()
         {
+            File.Delete(Path.Combine(teamPath, $"{team.Name}.json"));
             Teams.Remove(team);
-            File.Delete(Path.Combine(teamPath, $"{team.Name}.txt"));
             if (Teams.Count == 0)
             {
                 AddTeam();
