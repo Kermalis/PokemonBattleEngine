@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             new Dictionary<PBEType, Emote>
             {
                 { PBEType.Bug, Emote.Parse("<:A_Bug:589220293814517764>") },
-                { PBEType.Dark, Emote.Parse("<:A_Dark:589220295651622922>") },
+                { PBEType.Dark, Emote.Parse("<:A_Dark:589220294070108172>") },
                 { PBEType.Dragon, Emote.Parse("<:A_Dragon:589220295517143048>") },
                 { PBEType.Electric, Emote.Parse("<:A_Electric:589220295664074767>") },
                 { PBEType.Fighting, Emote.Parse("<:A_Fighting:589220295454359552>") },
