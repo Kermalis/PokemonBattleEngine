@@ -198,67 +198,12 @@ namespace Kermalis.PokemonBattleEngine
             return fileName;
         }
 
-        public static PBEPokemonShell[] CreateCompletelyRandomTeam(PBESettings settings)
+        public static PBEPokemonShell[] CreateCompletelyRandomTeam(PBESettings settings, bool setToMaxLevel)
         {
             var team = new PBEPokemonShell[settings.MaxPartySize];
-            IEnumerable<PBESpecies> allSpecies = Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Where(s => ((uint)s >> 0x10) == 0); // All species with form ID 0
             for (int i = 0; i < settings.MaxPartySize; i++)
             {
-                PBESpecies species = allSpecies.Sample();
-                int numForms;
-                switch (species)
-                {
-                    case PBESpecies.Basculin_Blue: numForms = 2; break;
-                    case PBESpecies.Burmy_Plant: numForms = 3; break;
-                    case PBESpecies.Deerling_Autumn: numForms = 4; break;
-                    case PBESpecies.Deoxys: numForms = 4; break;
-                    case PBESpecies.Gastrodon_East: numForms = 2; break;
-                    case PBESpecies.Kyurem: numForms = 3; break;
-                    case PBESpecies.Landorus: numForms = 2; break;
-                    case PBESpecies.Rotom: numForms = 6; break;
-                    case PBESpecies.Sawsbuck_Autumn: numForms = 4; break;
-                    case PBESpecies.Shaymin: numForms = 2; break;
-                    case PBESpecies.Shellos_East: numForms = 2; break;
-                    case PBESpecies.Thundurus: numForms = 2; break;
-                    case PBESpecies.Tornadus: numForms = 2; break;
-                    case PBESpecies.Unown_A: numForms = 28; break;
-                    case PBESpecies.Wormadam_Plant: numForms = 3; break;
-                    default: numForms = 1; break;
-                }
-                species = (PBESpecies)(((ushort)species) | (uint)(RNG.Next(numForms) << 0x10)); // Change form ID to a random form
-                var pData = PBEPokemonData.GetData(species);
-                var shell = new PBEPokemonShell
-                {
-                    Species = species,
-                    Ability = pData.Abilities.Sample(),
-                    Gender = RNG.NextGender(pData.GenderRatio),
-                    Level = settings.MaxLevel,
-                    Friendship = (byte)RNG.Next(byte.MaxValue + 1),
-                    Nature = (PBENature)RNG.Next((int)PBENature.MAX),
-                    Nickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo(),
-                    Shiny = RNG.NextShiny(),
-                    EVs = new byte[6],
-                    IVs = new byte[6],
-                    PPUps = new byte[settings.NumMoves],
-                    Moves = new PBEMove[settings.NumMoves],
-                    Item = PBEItem.None
-                };
-                for (int j = 0; j < 6; j++)
-                {
-                    shell.IVs[j] = (byte)RNG.Next(settings.MaxIVs + 1);
-                }
-                var legalMoves = PBELegalityChecker.GetLegalMoves(species, shell.Level).ToList();
-                for (int j = 0; j < settings.NumMoves; j++)
-                {
-                    if (legalMoves.Count == 0)
-                    {
-                        break;
-                    }
-                    PBEMove move = legalMoves.Sample();
-                    shell.Moves[j] = move;
-                    legalMoves.Remove(move);
-                }
-                team[i] = shell;
+                team[i] = new PBEPokemonShell(PBEPokemonShell.AllSpecies.Sample(), setToMaxLevel ? settings.MaxLevel : (byte)RNG.Next(settings.MinLevel, settings.MaxLevel + 1), settings);
             }
             return team;
         }

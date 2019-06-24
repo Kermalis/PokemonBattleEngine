@@ -24,12 +24,8 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEPokemonShell[] team0Party, team1Party;
 
             // Completely Randomized Pokémon
-            team0Party = PBEUtils.CreateCompletelyRandomTeam(settings);
-            team1Party = PBEUtils.CreateCompletelyRandomTeam(settings);
-
-            // Randomized Competitive Pokémon
-            /*team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
-            team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();*/
+            team0Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
+            team1Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
 
             // Predefined Pokémon
             /*team0Party = new PBEPokemonShell[]

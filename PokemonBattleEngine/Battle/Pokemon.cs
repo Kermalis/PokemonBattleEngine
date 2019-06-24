@@ -83,7 +83,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public sbyte SpeedChange { get; set; }
         public sbyte AccuracyChange { get; set; }
         public sbyte EvasionChange { get; set; }
-        public byte[] EVs { get; set; }
+        public byte[] EVs { get; set; } // TODO: Make a dictionary
         public byte Friendship { get; set; }
         public byte[] IVs { get; set; }
         /// <summary>
@@ -268,7 +268,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Gender = KnownGender = Shell.Gender;
             Item = Shell.Item;
             KnownItem = (PBEItem)ushort.MaxValue;
-            Moves = (PBEMove[])Shell.Moves.Clone();
+            Moves = Shell.Moveset.MoveSlots.Select(m => m.Move).ToArray();
             KnownMoves = new PBEMove[Team.Battle.Settings.NumMoves];
             for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
             {
@@ -297,7 +297,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (move != PBEMove.None)
                 {
                     byte tier = PBEMoveData.Data[move].PPTier;
-                    PP[i] = MaxPP[i] = (byte)Math.Max(1, (tier * Team.Battle.Settings.PPMultiplier) + (tier * Shell.PPUps[i]));
+                    PP[i] = MaxPP[i] = (byte)Math.Max(1, (tier * Team.Battle.Settings.PPMultiplier) + (tier * Shell.Moveset.MoveSlots[i].PPUps));
                 }
             }
             Team.Party.Add(this);
@@ -838,7 +838,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         internal static PBEPokemon FromBytes(BinaryReader r, PBETeam team)
         {
-            return new PBEPokemon(team, r.ReadByte(), PBEPokemonShell.FromBytes(r));
+            return new PBEPokemon(team, r.ReadByte(), PBEPokemonShell.FromBytes(r, team.Battle.Settings));
         }
 
         // Will only be accurate for the host

@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 var party = new PBEPokemonShell[r.ReadSByte()];
                 for (int i = 0; i < party.Length; i++)
                 {
-                    party[i] = PBEPokemonShell.FromBytes(r);
+                    party[i] = PBEPokemonShell.FromBytes(r, battle.Settings);
                 }
                 Party = Array.AsReadOnly(party);
             }

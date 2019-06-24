@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: .Equals
+    // TODO: .Equals, struct?
     /// <summary>The various engine settings.</summary>
     public sealed class PBESettings : INotifyPropertyChanged
     {
@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>The default settings used in official games.</summary>
-        public static PBESettings DefaultSettings { get; } = new PBESettings();
+        public static PBESettings DefaultSettings { get; } = new PBESettings(); // TODO: I wish I could make this constant somehow (it can be edited) (would a struct work?)
 
         private byte maxLevel;
         /// <summary>The maximum level a Pokémon can be. Used in stat calculation.</summary>

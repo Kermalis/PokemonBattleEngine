@@ -61,12 +61,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBESettings settings = PBESettings.DefaultSettings;
                     PBEPokemonShell[] team0Party, team1Party;
                     // Completely Randomized Pokémon
-                    team0Party = PBEUtils.CreateCompletelyRandomTeam(settings);
-                    team1Party = PBEUtils.CreateCompletelyRandomTeam(settings);
-
-                    // Randomized Competitive Pokémon
-                    /*team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
-                    team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();*/
+                    team0Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
+                    team1Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
 
                     var battle = new PBEBattle(PBEBattleFormat.Single, settings, team0Party, team1Party);
                     battle.Teams[0].TrainerName = Context.User.Username;

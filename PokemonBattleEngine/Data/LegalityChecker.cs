@@ -254,21 +254,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             // Validate Moves
             try
             {
-                MoveLegalityCheck(shell.Species, shell.Level, shell.Moves, settings);
+                MoveLegalityCheck(shell.Species, shell.Level, shell.Moveset.MoveSlots.Select(m => m.Move), settings);
             }
             catch (Exception e)
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.Moves), e.Message);
+                throw new ArgumentOutOfRangeException(nameof(shell.Moveset), e.Message);
             }
-
-            // Validate PPUps
-            if (shell.PPUps == null || shell.PPUps.Length != settings.NumMoves)
+            if (shell.Moveset.MoveSlots.Any(m => m.PPUps > settings.MaxPPUps))
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.PPUps), $"{nameof(shell.PPUps)} array can only have a length of {settings.NumMoves}.");
-            }
-            if (Array.Exists(shell.PPUps, p => p > settings.MaxPPUps))
-            {
-                throw new ArgumentOutOfRangeException(nameof(shell.PPUps), $"Each PP-Up cannot exceed {settings.MaxPPUps}.");
+                throw new ArgumentOutOfRangeException(nameof(shell.Moveset), $"Each PP-Up cannot exceed {settings.MaxPPUps}.");
             }
 
             // Validate Forme-Specific Requirements

@@ -52,6 +52,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public static PBEBattle LoadReplay(string path)
         {
+            PBESettings settings = PBESettings.DefaultSettings;
             byte[] fileBytes = File.ReadAllBytes(path);
             using (var s = new MemoryStream(fileBytes))
             using (var r = new BinaryReader(s))
@@ -70,13 +71,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                 ushort version = r.ReadUInt16();
 
-                var battle = new PBEBattle((PBEBattleFormat)r.ReadByte(), PBESettings.DefaultSettings);
+                var battle = new PBEBattle((PBEBattleFormat)r.ReadByte(), settings);
 
                 battle.Teams[0].TrainerName = PBEUtils.StringFromBytes(r);
                 var party = new PBEPokemonShell[r.ReadSByte()];
                 for (int i = 0; i < party.Length; i++)
                 {
-                    party[i] = PBEPokemonShell.FromBytes(r);
+                    party[i] = PBEPokemonShell.FromBytes(r, settings);
                 }
                 battle.Teams[0].CreateParty(party, ref battle.pkmnIdCounter);
 
@@ -84,7 +85,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 party = new PBEPokemonShell[r.ReadSByte()];
                 for (int i = 0; i < party.Length; i++)
                 {
-                    party[i] = PBEPokemonShell.FromBytes(r);
+                    party[i] = PBEPokemonShell.FromBytes(r, settings);
                 }
                 battle.Teams[1].CreateParty(party, ref battle.pkmnIdCounter);
 

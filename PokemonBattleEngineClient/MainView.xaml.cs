@@ -90,8 +90,8 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             PBESettings settings = PBESettings.DefaultSettings;
             PBEPokemonShell[] team0Party, team1Party;
-            team0Party = PBEUtils.CreateCompletelyRandomTeam(settings);
-            team1Party = PBEUtils.CreateCompletelyRandomTeam(settings);
+            team0Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
+            team1Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
             var battle = new PBEBattle(PBEBattleFormat.Double, settings, team0Party, team1Party);
             battle.Teams[0].TrainerName = "May";
             battle.Teams[1].TrainerName = "Champion Steven";
