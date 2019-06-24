@@ -268,14 +268,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             // Validate Forme-Specific Requirements
             switch (shell.Species)
             {
-                case PBESpecies.Shedinja:
-                {
-                    if (shell.EVs[0] > 0)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(shell.EVs), $"{shell.Species} cannot have any HP EVs.");
-                    }
-                    break;
-                }
                 case PBESpecies.Giratina:
                 {
                     if (shell.Item == PBEItem.GriseousOrb)
