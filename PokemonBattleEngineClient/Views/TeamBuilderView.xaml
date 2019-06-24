@@ -80,16 +80,25 @@
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="150"/>
           <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Image Grid.Row="0" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='EVs:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-          <NumericUpDown Name="HPEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
-          <NumericUpDown Name="ATKEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
-          <NumericUpDown Name="DEFEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
-          <NumericUpDown Name="SPATKEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
-          <NumericUpDown Name="SPDEFEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
-          <NumericUpDown Name="SPEEV" Minimum="0" Maximum="255" Width="60" ClipValueToMinMax="true"/>
-        </StackPanel>
+        <ItemsControl Grid.Row="0" Grid.Column="1" Items="{Binding Shell.EffortValues}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Vertical">
+                <NumericUpDown Width="60" Minimum="0" Maximum="255" ClipValueToMinMax="True" Value="{Binding Value}"/>
+                <Image Height="15" Source="{Binding Stat, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Image Grid.Row="0" Grid.Column="2" Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.EffortValues.StatTotal, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         <Image Grid.Row="1" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='IVs:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
           <NumericUpDown Name="HPIV" Minimum="0" Width="60" ClipValueToMinMax="true"/>

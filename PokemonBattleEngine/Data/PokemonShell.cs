@@ -12,7 +12,6 @@ namespace Kermalis.PokemonBattleEngine.Data
     // TODO: Don't fire propertychanged if new value is same as old value
     // TODO: Validate setter values (and constructor)
     // TODO: Set settings and listen to changes
-    // TODO: Fire any events for Moveset?
     public sealed class PBEPokemonShell : INotifyPropertyChanged
     {
         public static ReadOnlyCollection<PBESpecies> AllSpecies { get; } = new ReadOnlyCollection<PBESpecies>(Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny, PBESpecies.Cherrim_Sunshine, PBESpecies.Darmanitan_Zen, PBESpecies.Meloetta_Pirouette }).ToArray());
@@ -126,16 +125,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 OnPropertyChanged(nameof(Item));
             }
         }
-        private byte[] evs;
-        public byte[] EVs
-        {
-            get => evs;
-            set
-            {
-                evs = value;
-                OnPropertyChanged(nameof(EVs));
-            }
-        } // TODO: Make dictionary (or PBEEffortValues/PBEIndividualValues)
+        public PBEEffortValueCollection EffortValues { get; private set; }
         private byte[] ivs;
         public byte[] IVs
         {
@@ -146,16 +136,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 OnPropertyChanged(nameof(IVs));
             }
         }
-        private PBEMovesetBuilder moveset;
-        public PBEMovesetBuilder Moveset
-        {
-            get => moveset;
-            private set
-            {
-                moveset = value;
-                OnPropertyChanged(nameof(Moveset));
-            }
-        }
+        public PBEMovesetBuilder Moveset { get; private set; }
 
         private PBEPokemonShell(PBESettings settings)
         {
@@ -169,7 +150,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             friendship = (byte)PBEUtils.RNG.Next(byte.MaxValue + 1);
             shiny = PBEUtils.RNG.NextShiny();
             nature = AllNatures.Sample();
-            evs = new byte[6]; // TODO: Randomly fill
+            EffortValues = new PBEEffortValueCollection(settings);
             ivs = new byte[6];
             for (int i = 0; i < 6; i++)
             {
@@ -259,17 +240,17 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         private void UpdateMoves()
         {
-            PBEMove[] moves = moveset.MoveSlots.Select(m => m.Move).ToArray();
-            byte[] ppUps = moveset.MoveSlots.Select(m => m.PPUps).ToArray();
-            moveset = new PBEMovesetBuilder(species, level, settings);
-            moveset.Clear();
+            PBEMove[] moves = Moveset.MoveSlots.Select(m => m.Move).ToArray();
+            byte[] ppUps = Moveset.MoveSlots.Select(m => m.PPUps).ToArray();
+            Moveset = new PBEMovesetBuilder(species, level, settings);
+            Moveset.Clear();
             for (int i = 0; i < settings.NumMoves; i++)
             {
-                PBEMovesetBuilder.PBEMoveSlot slot = moveset.MoveSlots[i];
+                PBEMovesetBuilder.PBEMoveSlot slot = Moveset.MoveSlots[i];
                 PBEMove move = moves[i];
                 if (slot.Allowed.Contains(move))
                 {
-                    moveset.Set(i, move, slot.IsPPUpsEditable ? ppUps[i] : (byte?)null);
+                    Moveset.Set(i, move, slot.IsPPUpsEditable ? ppUps[i] : (byte?)null);
                 }
             }
             OnPropertyChanged(nameof(Moveset));
@@ -300,16 +281,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     item = PBELocalizedString.GetItemByName(pkmnObject[nameof(Item)].Value<string>()).GetValueOrDefault() // Item can be None
                 };
                 pkmn.SetSelectable();
-                JToken wObject = pkmnObject[nameof(EVs)];
-                pkmn.evs = new byte[6]
-                {
+                JToken wObject = pkmnObject[nameof(EffortValues)];
+                pkmn.EffortValues = new PBEEffortValueCollection(settings,
                     wObject[nameof(PBEStat.HP)].Value<byte>(),
                     wObject[nameof(PBEStat.Attack)].Value<byte>(),
                     wObject[nameof(PBEStat.Defense)].Value<byte>(),
                     wObject[nameof(PBEStat.SpAttack)].Value<byte>(),
                     wObject[nameof(PBEStat.SpDefense)].Value<byte>(),
                     wObject[nameof(PBEStat.Speed)].Value<byte>()
-                };
+                );
                 wObject = pkmnObject[nameof(IVs)];
                 pkmn.ivs = new byte[6]
                 {
@@ -332,11 +312,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     ppUps[j] = wObject[$"Move {j}"].Value<byte>();
                 }
-                pkmn.moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings);
-                pkmn.moveset.Clear();
+                pkmn.Moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings);
+                pkmn.Moveset.Clear();
                 for (int j = 0; j < settings.NumMoves; j++)
                 {
-                    pkmn.moveset.Set(j, moves[j], ppUps[j]);
+                    pkmn.Moveset.Set(j, moves[j], ppUps[j]);
                 }
                 party[i] = pkmn;
             }
@@ -375,12 +355,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                     writer.WriteValue(pkmn.gender.ToString());
                     writer.WritePropertyName(nameof(Item));
                     writer.WriteValue(pkmn.item.ToString());
-                    writer.WritePropertyName(nameof(EVs));
+                    writer.WritePropertyName(nameof(EffortValues));
                     writer.WriteStartObject();
-                    for (int j = 0; j < 6; j++)
+                    foreach (PBEEffortValueCollection.PBEEffortValue ev in pkmn.EffortValues)
                     {
-                        writer.WritePropertyName(((PBEStat)j).ToString());
-                        writer.WriteValue(pkmn.evs[j]);
+                        writer.WritePropertyName(ev.Stat.ToString());
+                        writer.WriteValue(ev.Value);
                     }
                     writer.WriteEndObject();
                     writer.WritePropertyName(nameof(IVs));
@@ -396,7 +376,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     for (int j = 0; j < 4; j++)
                     {
                         writer.WritePropertyName($"Move {j}");
-                        writer.WriteValue(pkmn.moveset.MoveSlots[j].Move.ToString());
+                        writer.WriteValue(pkmn.Moveset.MoveSlots[j].Move.ToString());
                     }
                     writer.WriteEndObject();
                     writer.WritePropertyName("PPUps");
@@ -404,7 +384,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     for (int j = 0; j < 4; j++)
                     {
                         writer.WritePropertyName($"Move {j}");
-                        writer.WriteValue(pkmn.moveset.MoveSlots[j].PPUps);
+                        writer.WriteValue(pkmn.Moveset.MoveSlots[j].PPUps);
                     }
                     writer.WriteEndObject();
                     writer.WriteEndObject();
@@ -417,22 +397,22 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal byte[] ToBytes()
         {
             var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes((uint)Species));
-            bytes.AddRange(PBEUtils.StringToBytes(Nickname));
-            bytes.Add(Level);
-            bytes.Add(Friendship);
-            bytes.Add((byte)(Shiny ? 1 : 0));
-            bytes.Add((byte)Ability);
-            bytes.Add((byte)Nature);
-            bytes.Add((byte)Gender);
-            bytes.AddRange(BitConverter.GetBytes((ushort)Item));
-            bytes.AddRange(EVs);
-            bytes.AddRange(IVs);
+            bytes.AddRange(BitConverter.GetBytes((uint)species));
+            bytes.AddRange(PBEUtils.StringToBytes(nickname));
+            bytes.Add(level);
+            bytes.Add(friendship);
+            bytes.Add((byte)(shiny ? 1 : 0));
+            bytes.Add((byte)ability);
+            bytes.Add((byte)nature);
+            bytes.Add((byte)gender);
+            bytes.AddRange(BitConverter.GetBytes((ushort)item));
+            bytes.AddRange(EffortValues.Select(ev => ev.Value));
+            bytes.AddRange(ivs);
             for (int i = 0; i < settings.NumMoves; i++)
             {
-                bytes.AddRange(BitConverter.GetBytes((ushort)moveset.MoveSlots[i].Move));
+                bytes.AddRange(BitConverter.GetBytes((ushort)Moveset.MoveSlots[i].Move));
             }
-            bytes.AddRange(moveset.MoveSlots.Select(m => m.PPUps));
+            bytes.AddRange(Moveset.MoveSlots.Select(m => m.PPUps));
             return bytes.ToArray();
         }
         internal static PBEPokemonShell FromBytes(BinaryReader r, PBESettings settings)
@@ -448,7 +428,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 nature = (PBENature)r.ReadByte(),
                 gender = (PBEGender)r.ReadByte(),
                 item = (PBEItem)r.ReadUInt16(),
-                evs = r.ReadBytes(6),
+                EffortValues = new PBEEffortValueCollection(settings, r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte()),
                 ivs = r.ReadBytes(6)
             };
             var moves = new PBEMove[settings.NumMoves];
@@ -457,11 +437,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                 moves[i] = (PBEMove)r.ReadUInt16();
             }
             byte[] ppUps = r.ReadBytes(settings.NumMoves);
-            pkmn.moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings);
-            pkmn.moveset.Clear();
+            pkmn.Moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings);
+            pkmn.Moveset.Clear();
             for (int i = 0; i < settings.NumMoves; i++)
             {
-                pkmn.moveset.Set(i, moves[i], ppUps[i]);
+                pkmn.Moveset.Set(i, moves[i], ppUps[i]);
             }
             return pkmn;
         }

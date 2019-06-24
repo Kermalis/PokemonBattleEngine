@@ -9,9 +9,7 @@ using System.Text;
 namespace Kermalis.PokemonBattleEngine.Battle
 {
     // TODO: INPC, make hidden power min and max damage settings
-    /// <summary>
-    /// Represents a specific Pokémon during a battle.
-    /// </summary>
+    /// <summary>Represents a specific Pokémon during a battle.</summary>
     public sealed class PBEPokemon
     {
         /// <summary>
@@ -83,7 +81,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public sbyte SpeedChange { get; set; }
         public sbyte AccuracyChange { get; set; }
         public sbyte EvasionChange { get; set; }
-        public byte[] EVs { get; set; } // TODO: Make a dictionary
+        public PBEEffortValueCollection EffortValues { get; set; }
         public byte Friendship { get; set; }
         public byte[] IVs { get; set; }
         /// <summary>
@@ -155,7 +153,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// </summary>
         public bool KnownShiny { get; set; }
         /// <summary>
-        /// The current species of the Pokémon (affected by transforming or forme changing).
+        /// The current species of the Pokémon (affected by transforming or form changing).
         /// </summary>
         public PBESpecies Species { get; set; }
         /// <summary>
@@ -163,7 +161,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// </summary>
         public PBESpecies OriginalSpecies { get; set; }
         /// <summary>
-        /// The species everyone sees the Pokémon as (affected by transforming, disguising, or forme changing).
+        /// The species everyone sees the Pokémon as (affected by transforming, disguising, or form changing).
         /// </summary>
         public PBESpecies KnownSpecies { get; set; }
         public PBEStatus1 Status1 { get; set; }
@@ -281,7 +279,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
-            EVs = (byte[])Shell.EVs.Clone();
+            EffortValues = new PBEEffortValueCollection(team.Battle.Settings, Shell.EffortValues);
             Friendship = Shell.Friendship;
             IVs = (byte[])Shell.IVs.Clone();
             Level = Shell.Level;
@@ -289,18 +287,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             SetStats();
             HP = MaxHP;
             HPPercentage = 1.0;
-            PP = new byte[Team.Battle.Settings.NumMoves];
-            MaxPP = new byte[Team.Battle.Settings.NumMoves];
-            for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
+            PP = new byte[team.Battle.Settings.NumMoves];
+            MaxPP = new byte[team.Battle.Settings.NumMoves];
+            for (int i = 0; i < team.Battle.Settings.NumMoves; i++)
             {
                 PBEMove move = Moves[i];
                 if (move != PBEMove.None)
                 {
                     byte tier = PBEMoveData.Data[move].PPTier;
-                    PP[i] = MaxPP[i] = (byte)Math.Max(1, (tier * Team.Battle.Settings.PPMultiplier) + (tier * Shell.Moveset.MoveSlots[i].PPUps));
+                    PP[i] = MaxPP[i] = (byte)Math.Max(1, (tier * team.Battle.Settings.PPMultiplier) + (tier * Shell.Moveset.MoveSlots[i].PPUps));
                 }
             }
-            Team.Party.Add(this);
+            team.Party.Add(this);
         }
         // This constructor is to define a remote Pokémon
         public PBEPokemon(PBETeam team, PBEPkmnSwitchInPacket.PBESwitchInInfo info)
@@ -336,12 +334,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public void SetStats()
         {
-            MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Species, Nature, EVs[0], IVs[0], Level, Team.Battle.Settings);
-            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, Species, Nature, EVs[1], IVs[1], Level, Team.Battle.Settings);
-            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, Species, Nature, EVs[2], IVs[2], Level, Team.Battle.Settings);
-            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, Species, Nature, EVs[3], IVs[3], Level, Team.Battle.Settings);
-            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, Species, Nature, EVs[4], IVs[4], Level, Team.Battle.Settings);
-            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, Species, Nature, EVs[5], IVs[5], Level, Team.Battle.Settings);
+            MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Species, Nature, EffortValues[PBEStat.HP].Value, IVs[0], Level, Team.Battle.Settings);
+            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, Species, Nature, EffortValues[PBEStat.Attack].Value, IVs[1], Level, Team.Battle.Settings);
+            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, Species, Nature, EffortValues[PBEStat.Defense].Value, IVs[2], Level, Team.Battle.Settings);
+            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, Species, Nature, EffortValues[PBEStat.SpAttack].Value, IVs[3], Level, Team.Battle.Settings);
+            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, Species, Nature, EffortValues[PBEStat.SpDefense].Value, IVs[4], Level, Team.Battle.Settings);
+            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, Species, Nature, EffortValues[PBEStat.Speed].Value, IVs[5], Level, Team.Battle.Settings);
         }
 
         /// <summary>

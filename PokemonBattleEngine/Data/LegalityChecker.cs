@@ -155,6 +155,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         public static void ValidateShell(this PBEPokemonShell shell, PBESettings settings)
         {
             // Validate Species
+            if (shell == null)
+            {
+                throw new ArgumentNullException(nameof(shell));
+            }
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             PBEPokemonData pData;
             switch (shell.Species)
             {
@@ -233,13 +242,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate EVs
-            if (shell.EVs == null || shell.EVs.Length != 6)
+            if (shell.EffortValues == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.EVs), $"{nameof(shell.EVs)} array can only have a length of 6.");
+                throw new ArgumentNullException(nameof(shell.EffortValues));
             }
-            if (shell.EVs.Select(e => (int)e).Sum() > settings.MaxTotalEVs)
+            if (shell.EffortValues.StatTotal > settings.MaxTotalEVs)
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.EVs), $"Total EVs cannot exceed {settings.MaxTotalEVs}.");
+                throw new ArgumentOutOfRangeException(nameof(shell.EffortValues), $"Total EVs cannot exceed {settings.MaxTotalEVs}.");
             }
             // Validate IVs
             if (shell.IVs == null || shell.IVs.Length != 6)

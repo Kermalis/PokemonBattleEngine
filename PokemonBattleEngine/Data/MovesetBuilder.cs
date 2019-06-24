@@ -194,6 +194,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentException($"\"{nameof(move)}\" or \"{nameof(ppUps)}\" has to have a value to set.");
             }
         }
+        // This is just temporary. If I don't use it, then trying to set a slot to a move that is in another slot would crash, and there is a high chance since this starts with random moves
         public void Clear()
         {
             for (int i = settings.NumMoves - 1; i >= 1; i--)
