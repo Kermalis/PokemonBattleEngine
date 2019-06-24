@@ -7,7 +7,6 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngine.Data
 {
     // TODO: Listen for changes to settings
-    // TODO: Set PPUps to 0 if move is set to none? Allow PPUps in none slots?
     // TODO: Cannot set slot 3 if slot 2 is none, and cannot clear slot 2 if slot 3 is not none
     public sealed class PBEMovesetBuilder
     {
@@ -155,7 +154,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         {
                             throw new ArgumentOutOfRangeException(nameof(move), $"Slot {slotIndex} does not allow {mVal}.");
                         }
-                        slot.Update(null, mVal, null);
+                        slot.Update(null, mVal, mVal == PBEMove.None ? 0 : (byte?)null);
                         for (int i = 0; i < settings.NumMoves; i++)
                         {
                             if (i != slotIndex)
