@@ -179,6 +179,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                                 PBEReadOnlyObservableCollection<PBEMove> a = MoveSlots[i].Allowed;
                                 a.Remove(mVal);
                                 if (old != PBEMove.None)
+                                if (old != PBEMove.None && !(species == PBESpecies.Keldeo_Resolute && i == 0))
                                 {
                                     a.Add(old);
                                 }
