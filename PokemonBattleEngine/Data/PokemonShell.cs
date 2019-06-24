@@ -458,6 +458,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             byte[] ppUps = r.ReadBytes(settings.NumMoves);
             pkmn.moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings);
+            pkmn.moveset.Clear();
             for (int i = 0; i < settings.NumMoves; i++)
             {
                 pkmn.moveset.Set(i, moves[i], ppUps[i]);
