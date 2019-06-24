@@ -154,7 +154,6 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public static void ValidateShell(this PBEPokemonShell shell, PBESettings settings)
         {
-            // Validate Species
             if (shell == null)
             {
                 throw new ArgumentNullException(nameof(shell));
@@ -164,6 +163,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentNullException(nameof(settings));
             }
 
+            // Validate species
             PBEPokemonData pData;
             switch (shell.Species)
             {
@@ -174,7 +174,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBESpecies.Darmanitan_Zen:
                 case PBESpecies.Meloetta_Pirouette:
                 {
-                    throw new ArgumentOutOfRangeException(nameof(shell.Species), $"{shell.Species} must be in its base forme.");
+                    throw new ArgumentOutOfRangeException(nameof(shell.Species), $"{shell.Species} must be in its base form.");
                 }
                 default:
                 {
@@ -190,7 +190,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
 
-            // Validate Nickname
+            // Validate nickname
             if (string.IsNullOrWhiteSpace(shell.Nickname))
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.Nickname), $"{nameof(shell.Nickname)} cannot be empty.");
@@ -200,25 +200,25 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(shell.Nickname), $"{nameof(shell.Nickname)} cannot exceed {settings.MaxPokemonNameLength} characters.");
             }
 
-            // Validate Level
+            // Validate level
             if (shell.Level < settings.MinLevel || shell.Level > settings.MaxLevel)
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.Level), $"A {shell.Species}'s level must be at least {settings.MinLevel} and cannot exceed {settings.MaxLevel}.");
             }
 
-            // Validate Ability
+            // Validate ability
             if (!pData.HasAbility(shell.Ability))
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.Ability), $"{shell.Species} cannot have {shell.Ability}.");
             }
 
-            // Validate Nature
+            // Validate nature
             if (shell.Nature >= PBENature.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.Nature), "Invalid nature.");
             }
 
-            // Validate Gender
+            // Validate gender
             if (shell.Gender >= PBEGender.MAX
                 || (shell.Gender == PBEGender.Male && (pData.GenderRatio == PBEGenderRatio.M0_F1 || pData.GenderRatio == PBEGenderRatio.M0_F0))
                 || (shell.Gender == PBEGender.Female && (pData.GenderRatio == PBEGenderRatio.M1_F0 || pData.GenderRatio == PBEGenderRatio.M0_F0))
@@ -228,7 +228,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(shell.Gender), $"Invalid gender for {shell.Species}.");
             }
 
-            // Validate Item
+            // Validate item
             if (shell.Item != PBEItem.None)
             {
                 try
@@ -260,7 +260,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(shell.IVs), $"Each IV cannot exceed {settings.MaxIVs}.");
             }
 
-            // Validate Moves
+            // Validate moveset
             try
             {
                 MoveLegalityCheck(shell.Species, shell.Level, shell.Moveset.MoveSlots.Select(m => m.Move), settings);
@@ -274,7 +274,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(shell.Moveset), $"Each PP-Up must belong to a move and cannot exceed {settings.MaxPPUps}.");
             }
 
-            // Validate Forme-Specific Requirements
+            // Validate form-specific requirements
             switch (shell.Species)
             {
                 case PBESpecies.Giratina:

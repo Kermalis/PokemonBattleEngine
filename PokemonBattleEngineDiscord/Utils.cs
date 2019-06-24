@@ -109,8 +109,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
             else
             {
                 ushort speciesID = (ushort)species;
-                uint formeID = (uint)species >> 0x10;
-                string sss = speciesID + (formeID > 0 ? ("_" + formeID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
+                uint formID = (uint)species >> 0x10;
+                string sss = speciesID + (formID > 0 ? ("_" + formID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
                 string genderStr = gender == PBEGender.Female && URLExists(path + "PKMN_" + sss + "_F.gif") ? "_F" : string.Empty;
                 return path + "PKMN_" + sss + genderStr + ".gif";
             }
