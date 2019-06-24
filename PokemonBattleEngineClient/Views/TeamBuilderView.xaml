@@ -109,7 +109,7 @@
           <ItemsControl.ItemTemplate>
             <DataTemplate>
               <StackPanel Orientation="Vertical">
-                <ComboBox Width="100" Items="{Binding Allowed}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Move}" IsEnabled="{Binding IsMoveEditable}"/>
+                <ComboBox Width="100" Items="{Binding Allowed}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Move}"/>
                 <NumericUpDown Width="60" Minimum="0" ClipValueToMinMax="True" IsEnabled="{Binding IsPPUpsEditable}" Value="{Binding PPUps}"/>
               </StackPanel>
             </DataTemplate>

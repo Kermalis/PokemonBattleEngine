@@ -7,7 +7,7 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngine.Data
 {
     // TODO: Listen for changes to settings
-    // TODO: Set PPUps to 0 if move is set to none and isppupseditable to false
+    // TODO: Set PPUps to 0 if move is set to none? Allow PPUps in none slots?
     // TODO: Cannot set slot 3 if slot 2 is none, and cannot clear slot 2 if slot 3 is not none
     public sealed class PBEMovesetBuilder
     {
@@ -22,7 +22,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             private readonly PBEMovesetBuilder parent;
             private readonly int slotIndex;
 
-            public PBEReadOnlyObservableCollection<PBEMove> Allowed { get; private set; } // Does not contain PBEMove.None
+            public PBEReadOnlyObservableCollection<PBEMove> Allowed { get; private set; }
             private PBEMove move;
             public PBEMove Move
             {
@@ -35,8 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 get => ppUps;
                 set => parent.Set(slotIndex, null, value);
             }
-            public bool IsMoveEditable { get; private set; }
-            public bool IsPPUpsEditable { get; private set; }
+            public bool IsPPUpsEditable => move != PBEMove.None;
 
             internal PBEMoveSlot(PBEMovesetBuilder parent, int slotIndex)
             {
@@ -44,40 +43,25 @@ namespace Kermalis.PokemonBattleEngine.Data
                 this.slotIndex = slotIndex;
             }
 
-            internal bool Update(List<PBEMove> allowed, PBEMove? move, byte? ppUps, bool? isMoveEditable, bool? isPPUpsEditable)
+            // TODO: Only fire if changed?
+            internal void Update(List<PBEMove> allowed, PBEMove? move, byte? ppUps)
             {
-                bool changed = false;
                 if (allowed != null)
                 {
                     Allowed = new PBEReadOnlyObservableCollection<PBEMove>(allowed);
                     OnPropertyChanged(nameof(Allowed));
-                    changed = true;
                 }
                 if (move.HasValue)
                 {
                     this.move = move.Value;
                     OnPropertyChanged(nameof(Move));
-                    changed = true;
+                    OnPropertyChanged(nameof(IsPPUpsEditable));
                 }
                 if (ppUps.HasValue)
                 {
                     this.ppUps = ppUps.Value;
                     OnPropertyChanged(nameof(PPUps));
-                    changed = true;
                 }
-                if (isMoveEditable.HasValue)
-                {
-                    IsMoveEditable = isMoveEditable.Value;
-                    OnPropertyChanged(nameof(IsMoveEditable));
-                    changed = true;
-                }
-                if (isPPUpsEditable.HasValue)
-                {
-                    IsPPUpsEditable = isPPUpsEditable.Value;
-                    OnPropertyChanged(nameof(IsPPUpsEditable));
-                    changed = true;
-                }
-                return changed;
             }
         }
 
@@ -112,7 +96,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             if (species == PBESpecies.Keldeo_Resolute)
             {
                 used.Add(PBEMove.SecretSword);
-                MoveSlots[0].Update(new List<PBEMove>() { PBEMove.SecretSword }, PBEMove.SecretSword, MakePP(), false, true);
+                MoveSlots[0].Update(new List<PBEMove>() { PBEMove.SecretSword }, PBEMove.SecretSword, MakePP());
                 i = 1;
             }
             else
@@ -140,7 +124,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                         MoveSlots[j].Allowed.Remove(move);
                     }
                 }
-                MoveSlots[i].Update(allowed, move, ppUps, !none, !none);
+                if (i != 0)
+                {
+                    allowed.Insert(0, PBEMove.None);
+                }
+                MoveSlots[i].Update(allowed, move, ppUps);
             }
         }
 
@@ -163,22 +151,20 @@ namespace Kermalis.PokemonBattleEngine.Data
                         {
                             throw new ArgumentOutOfRangeException(nameof(move));
                         }
-                        if (!slot.IsMoveEditable)
-                        {
-                            throw new InvalidOperationException($"Slot {slotIndex}'s move cannot be changed.");
-                        }
-                        if ((mVal == PBEMove.None && slotIndex == 0) || (mVal != PBEMove.None && !slot.Allowed.Contains(mVal)))
+                        if (!slot.Allowed.Contains(mVal))
                         {
                             throw new ArgumentOutOfRangeException(nameof(move), $"Slot {slotIndex} does not allow {mVal}.");
                         }
-                        slot.Update(null, mVal, null, null, null);
+                        slot.Update(null, mVal, null);
                         for (int i = 0; i < settings.NumMoves; i++)
                         {
                             if (i != slotIndex)
                             {
                                 PBEReadOnlyObservableCollection<PBEMove> a = MoveSlots[i].Allowed;
-                                a.Remove(mVal);
-                                if (old != PBEMove.None)
+                                if (mVal != PBEMove.None)
+                                {
+                                    a.Remove(mVal);
+                                }
                                 if (old != PBEMove.None && !(species == PBESpecies.Keldeo_Resolute && i == 0))
                                 {
                                     a.Add(old);
@@ -198,9 +184,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         }
                         if (!slot.IsPPUpsEditable)
                         {
-                            throw new InvalidOperationException($"Slot {slotIndex}'s PP-Ups cannot be changed.");
+                            throw new InvalidOperationException($"Slot {slotIndex}'s PP-Ups cannot be changed because it has no move.");
                         }
-                        slot.Update(null, null, pVal, null, null);
+                        slot.Update(null, null, pVal);
                     }
                 }
             }

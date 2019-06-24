@@ -267,7 +267,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 PBEMovesetBuilder.PBEMoveSlot slot = moveset.MoveSlots[i];
                 PBEMove move = moves[i];
-                if (slot.IsMoveEditable && slot.Allowed.Contains(move))
+                if (slot.Allowed.Contains(move))
                 {
                     moveset.Set(i, move, slot.IsPPUpsEditable ? ppUps[i] : (byte?)null);
                 }
