@@ -9,7 +9,6 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient
@@ -35,34 +34,30 @@ namespace Kermalis.PokemonBattleEngineClient
 
         private readonly List<BattleClient> battles = new List<BattleClient>();
 
-        private TabControl tabs;
-        private TeamBuilderView teamBuilder;
-        private TextBox ip;
-        private NumericUpDown port;
-        private Subject<bool> connectEnabled;
+        private readonly TabControl tabs;
+        private readonly TeamBuilderView teamBuilder;
+        private readonly TextBox ip;
+        private readonly NumericUpDown port;
+        private readonly Button connect;
 
         public MainView()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2656
-            Initialized += (s, e) =>
-            {
-                tabs = this.FindControl<TabControl>("Tabs");
-                //teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder"); // teamBuilder will be null
-                teamBuilder = TemporaryFix<TeamBuilderView>("TeamBuilder");
-                ip = this.FindControl<TextBox>("IP");
-                port = this.FindControl<NumericUpDown>("Port");
-                connectEnabled = new Subject<bool>();
-                this.FindControl<Button>("Connect").Command = ReactiveCommand.Create(Connect, connectEnabled);
-                connectEnabled.OnNext(true);
-            };
+            tabs = this.FindControl<TabControl>("Tabs");
+            //teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder"); // teamBuilder will be null
+            teamBuilder = TemporaryFix<TeamBuilderView>("TeamBuilder");
+            ip = this.FindControl<TextBox>("IP");
+            port = this.FindControl<NumericUpDown>("Port");
+            connect = this.FindControl<Button>("Connect");
+            connect.Command = ReactiveCommand.Create(Connect);
+            connect.IsEnabled = true;
         }
 
         private void Connect()
         {
-            connectEnabled.OnNext(false);
+            connect.IsEnabled = false;
             ConnectText = "Connecting...";
             var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.Settings, teamBuilder.Team.Party);
             new Thread(() =>
@@ -75,7 +70,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         Add(client);
                     }
                     ConnectText = "Connect";
-                    connectEnabled.OnNext(true);
+                    connect.IsEnabled = true;
                 });
             })
             {

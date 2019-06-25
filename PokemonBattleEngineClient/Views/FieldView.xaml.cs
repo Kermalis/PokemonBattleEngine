@@ -40,10 +40,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     StartPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
                     EndPoint = new RelativePoint(1.0, 0.0, RelativeUnit.Relative),
                     GradientStops =
-                {
-                    new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.0 },
-                    new GradientStop { Color = Color.FromUInt32(0x20FFD080), Offset = 1.0 }
-                }
+                    {
+                        new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.0 },
+                        new GradientStop { Color = Color.FromUInt32(0x20FFD080), Offset = 1.0 }
+                    }
                 };
                 rainDim = new SolidColorBrush(Color.FromUInt32(0x40000000));
                 sandstormDim = new LinearGradientBrush()
@@ -51,11 +51,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     StartPoint = new RelativePoint(0.0, 0.0, RelativeUnit.Relative),
                     EndPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
                     GradientStops =
-                {
-                    new GradientStop { Color = Color.FromUInt32(0x40FF7F00), Offset = 0.0 },
-                    new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.3 },
-                    new GradientStop { Color = Color.FromUInt32(0x30FFC000), Offset = 1.0 }
-                }
+                    {
+                        new GradientStop { Color = Color.FromUInt32(0x40FF7F00), Offset = 0.0 },
+                        new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.3 },
+                        new GradientStop { Color = Color.FromUInt32(0x30FFC000), Offset = 1.0 }
+                    }
                 };
             }
 

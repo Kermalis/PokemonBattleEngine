@@ -9,7 +9,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
@@ -57,55 +56,51 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public ObservableCollection<TeamInfo> Teams { get; } = new ObservableCollection<TeamInfo>();
 
         public PBESettings Settings { get; } = PBESettings.DefaultSettings;
-        private string teamPath;
+        private readonly string teamPath;
 
-        private Subject<bool> addPartyEnabled, removePartyEnabled;
-        private ListBox party;
+        private readonly Button addParty, removeParty;
+        private readonly ListBox party;
 
         public TeamBuilderView()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2656
-            Initialized += (sh, he) =>
+            addParty = this.FindControl<Button>("AddParty");
+            addParty.Command = ReactiveCommand.Create(AddPartyMember);
+            removeParty = this.FindControl<Button>("RemoveParty");
+            removeParty.Command = ReactiveCommand.Create(RemovePartyMember);
+            this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
+            this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
+            party = this.FindControl<ListBox>("Party");
+            this.FindControl<ListBox>("SavedTeams").SelectionChanged += (s, e) =>
             {
-                addPartyEnabled = new Subject<bool>();
-                this.FindControl<Button>("AddParty").Command = ReactiveCommand.Create(AddPartyMember, addPartyEnabled);
-                removePartyEnabled = new Subject<bool>();
-                this.FindControl<Button>("RemoveParty").Command = ReactiveCommand.Create(RemovePartyMember, removePartyEnabled);
-                this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
-                this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
-                party = this.FindControl<ListBox>("Party");
-                this.FindControl<ListBox>("SavedTeams").SelectionChanged += (s, e) =>
-                {
-                    EvaluatePartySize();
-                    Shell = team.Party[0];
-                };
-                this.FindControl<ComboBox>("Species").SelectionChanged += (s, e) => UpdateSprites();
-                this.FindControl<CheckBox>("Shiny").Command = ReactiveCommand.Create(UpdateSprites);
-                this.FindControl<ComboBox>("Gender").SelectionChanged += (s, e) => UpdateSprites();
-
-                teamPath = Path.Combine(Utils.WorkingDirectory, "Teams");
-                if (Directory.Exists(teamPath))
-                {
-                    string[] files = Directory.GetFiles(teamPath);
-                    if (files.Length > 0)
-                    {
-                        foreach (string f in files)
-                        {
-                            Teams.Add(new TeamInfo { Name = Path.GetFileNameWithoutExtension(f), Party = new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromJsonFile(f)) });
-                        }
-                        Team = Teams[0];
-                        return;
-                    }
-                }
-                else
-                {
-                    Directory.CreateDirectory(teamPath);
-                }
-                AddTeam();
+                EvaluatePartySize();
+                Shell = team.Party[0];
             };
+            this.FindControl<ComboBox>("Species").SelectionChanged += (s, e) => UpdateSprites();
+            this.FindControl<CheckBox>("Shiny").Command = ReactiveCommand.Create(UpdateSprites);
+            this.FindControl<ComboBox>("Gender").SelectionChanged += (s, e) => UpdateSprites();
+
+            teamPath = Path.Combine(Utils.WorkingDirectory, "Teams");
+            if (Directory.Exists(teamPath))
+            {
+                string[] files = Directory.GetFiles(teamPath);
+                if (files.Length > 0)
+                {
+                    foreach (string f in files)
+                    {
+                        Teams.Add(new TeamInfo { Name = Path.GetFileNameWithoutExtension(f), Party = new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromJsonFile(f)) });
+                    }
+                    Team = Teams[0];
+                    return;
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(teamPath);
+            }
+            AddTeam();
         }
 
         private PBEPokemonShell CreateShell()
@@ -151,7 +146,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         private void EvaluatePartySize()
         {
-            addPartyEnabled.OnNext(team.Party.Count < Settings.MaxPartySize);
+            addParty.IsEnabled = team.Party.Count < Settings.MaxPartySize;
             // Remove if too many
             if (team.Party.Count > Settings.MaxPartySize)
             {
@@ -161,7 +156,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     team.Party.RemoveAt(team.Party.Count - 1);
                 }
             }
-            removePartyEnabled.OnNext(team.Party.Count > 1);
+            removeParty.IsEnabled = team.Party.Count > 1;
         }
 
         private void UpdateSprites()
