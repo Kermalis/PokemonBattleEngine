@@ -13,8 +13,8 @@ using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    // TODO: Settings editor
-    // TODO: level.Maximum, level.Minimum, PPUps.Maximum, ivs.Maximum
+    // TODO: Settings editor, listen to settings changes
+    // TODO: PPUps.Maximum, ivs.Maximum
     public class TeamBuilderView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
@@ -56,7 +56,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public ObservableCollection<TeamInfo> Teams { get; } = new ObservableCollection<TeamInfo>();
 
-        public readonly PBESettings settings = PBESettings.DefaultSettings;
+        public PBESettings Settings { get; } = PBESettings.DefaultSettings;
         private string teamPath;
 
         private Subject<bool> addPartyEnabled, removePartyEnabled;
@@ -110,7 +110,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         private PBEPokemonShell CreateShell()
         {
-            return new PBEPokemonShell(PBEPokemonShell.AllSpecies.Sample(), settings.MaxLevel, settings);
+            return new PBEPokemonShell(PBEPokemonShell.AllSpecies.Sample(), Settings.MaxLevel, Settings);
         }
         private void AddTeam()
         {
@@ -151,11 +151,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         private void EvaluatePartySize()
         {
-            addPartyEnabled.OnNext(team.Party.Count < settings.MaxPartySize);
+            addPartyEnabled.OnNext(team.Party.Count < Settings.MaxPartySize);
             // Remove if too many
-            if (team.Party.Count > settings.MaxPartySize)
+            if (team.Party.Count > Settings.MaxPartySize)
             {
-                int removeAmt = team.Party.Count - settings.MaxPartySize;
+                int removeAmt = team.Party.Count - Settings.MaxPartySize;
                 for (int i = 0; i < removeAmt; i++)
                 {
                     team.Party.RemoveAt(team.Party.Count - 1);

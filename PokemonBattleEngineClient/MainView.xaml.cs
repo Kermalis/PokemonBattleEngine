@@ -64,7 +64,7 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             connectEnabled.OnNext(false);
             ConnectText = "Connecting...";
-            var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.settings, teamBuilder.Team.Party);
+            var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.Settings, teamBuilder.Team.Party);
             new Thread(() =>
             {
                 client.Connect();
