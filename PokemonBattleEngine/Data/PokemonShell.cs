@@ -126,16 +126,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
         public PBEEffortValueCollection EffortValues { get; private set; }
-        private byte[] ivs;
-        public byte[] IVs
-        {
-            get => ivs;
-            set
-            {
-                ivs = value;
-                OnPropertyChanged(nameof(IVs));
-            }
-        }
+        public PBEIndividualValueCollection IndividualValues { get; private set; }
         public PBEMovesetBuilder Moveset { get; private set; }
 
         private PBEPokemonShell(PBESettings settings)
@@ -151,11 +142,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             shiny = PBEUtils.RNG.NextShiny();
             nature = AllNatures.Sample();
             EffortValues = new PBEEffortValueCollection(settings);
-            ivs = new byte[6];
-            for (int i = 0; i < 6; i++)
-            {
-                ivs[i] = (byte)PBEUtils.RNG.Next(settings.MaxIVs + 1);
-            }
+            IndividualValues = new PBEIndividualValueCollection(settings);
             SpeciesChanged(0);
         }
         private void SetSelectable()
@@ -290,16 +277,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     wObject[nameof(PBEStat.SpDefense)].Value<byte>(),
                     wObject[nameof(PBEStat.Speed)].Value<byte>()
                 );
-                wObject = pkmnObject[nameof(IVs)];
-                pkmn.ivs = new byte[6]
-                {
+                wObject = pkmnObject[nameof(IndividualValues)];
+                pkmn.IndividualValues = new PBEIndividualValueCollection(settings,
                     wObject[nameof(PBEStat.HP)].Value<byte>(),
                     wObject[nameof(PBEStat.Attack)].Value<byte>(),
                     wObject[nameof(PBEStat.Defense)].Value<byte>(),
                     wObject[nameof(PBEStat.SpAttack)].Value<byte>(),
                     wObject[nameof(PBEStat.SpDefense)].Value<byte>(),
                     wObject[nameof(PBEStat.Speed)].Value<byte>()
-                };
+                );
                 wObject = pkmnObject["Moves"];
                 var moves = new PBEMove[settings.NumMoves];
                 for (int j = 0; j < settings.NumMoves; j++)
@@ -363,12 +349,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                         writer.WriteValue(ev.Value);
                     }
                     writer.WriteEndObject();
-                    writer.WritePropertyName(nameof(IVs));
+                    writer.WritePropertyName(nameof(IndividualValues));
                     writer.WriteStartObject();
-                    for (int j = 0; j < 6; j++)
+                    foreach (PBEIndividualValueCollection.PBEIndividualValue iv in pkmn.IndividualValues)
                     {
-                        writer.WritePropertyName(((PBEStat)j).ToString());
-                        writer.WriteValue(pkmn.ivs[j]);
+                        writer.WritePropertyName(iv.Stat.ToString());
+                        writer.WriteValue(iv.Value);
                     }
                     writer.WriteEndObject();
                     writer.WritePropertyName("Moves");
@@ -407,7 +393,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             bytes.Add((byte)gender);
             bytes.AddRange(BitConverter.GetBytes((ushort)item));
             bytes.AddRange(EffortValues.Select(ev => ev.Value));
-            bytes.AddRange(ivs);
+            bytes.AddRange(IndividualValues.Select(iv => iv.Value));
             for (int i = 0; i < settings.NumMoves; i++)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)Moveset.MoveSlots[i].Move));
@@ -429,7 +415,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 gender = (PBEGender)r.ReadByte(),
                 item = (PBEItem)r.ReadUInt16(),
                 EffortValues = new PBEEffortValueCollection(settings, r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte()),
-                ivs = r.ReadBytes(6)
+                IndividualValues = new PBEIndividualValueCollection(settings, r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte())
             };
             var moves = new PBEMove[settings.NumMoves];
             for (int i = 0; i < settings.NumMoves; i++)

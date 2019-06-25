@@ -82,8 +82,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public sbyte AccuracyChange { get; set; }
         public sbyte EvasionChange { get; set; }
         public PBEEffortValueCollection EffortValues { get; set; }
+        public PBEIndividualValueCollection IndividualValues { get; set; }
         public byte Friendship { get; set; }
-        public byte[] IVs { get; set; }
         /// <summary>
         /// The Pokémon's level.
         /// </summary>
@@ -279,9 +279,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
             KnownWeight = Weight = pData.Weight;
-            EffortValues = new PBEEffortValueCollection(team.Battle.Settings, Shell.EffortValues);
+            EffortValues = new PBEEffortValueCollection(team.Battle.Settings, shell.EffortValues);
+            IndividualValues = new PBEIndividualValueCollection(team.Battle.Settings, shell.IndividualValues);
             Friendship = Shell.Friendship;
-            IVs = (byte[])Shell.IVs.Clone();
             Level = Shell.Level;
             Nature = Shell.Nature;
             SetStats();
@@ -334,12 +334,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public void SetStats()
         {
-            MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Species, Nature, EffortValues[PBEStat.HP].Value, IVs[0], Level, Team.Battle.Settings);
-            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, Species, Nature, EffortValues[PBEStat.Attack].Value, IVs[1], Level, Team.Battle.Settings);
-            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, Species, Nature, EffortValues[PBEStat.Defense].Value, IVs[2], Level, Team.Battle.Settings);
-            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, Species, Nature, EffortValues[PBEStat.SpAttack].Value, IVs[3], Level, Team.Battle.Settings);
-            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, Species, Nature, EffortValues[PBEStat.SpDefense].Value, IVs[4], Level, Team.Battle.Settings);
-            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, Species, Nature, EffortValues[PBEStat.Speed].Value, IVs[5], Level, Team.Battle.Settings);
+            MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Species, Nature, EffortValues[PBEStat.HP].Value, IndividualValues[PBEStat.HP].Value, Level, Team.Battle.Settings);
+            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, Species, Nature, EffortValues[PBEStat.Attack].Value, IndividualValues[PBEStat.Attack].Value, Level, Team.Battle.Settings);
+            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, Species, Nature, EffortValues[PBEStat.Defense].Value, IndividualValues[PBEStat.Defense].Value, Level, Team.Battle.Settings);
+            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, Species, Nature, EffortValues[PBEStat.SpAttack].Value, IndividualValues[PBEStat.SpAttack].Value, Level, Team.Battle.Settings);
+            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, Species, Nature, EffortValues[PBEStat.SpDefense].Value, IndividualValues[PBEStat.SpDefense].Value, Level, Team.Battle.Settings);
+            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, Species, Nature, EffortValues[PBEStat.Speed].Value, IndividualValues[PBEStat.Speed].Value, Level, Team.Battle.Settings);
         }
 
         /// <summary>
@@ -571,12 +571,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// </summary>
         public PBEType GetHiddenPowerType()
         {
-            int a = IVs[0] & 1,
-                b = IVs[1] & 1,
-                c = IVs[2] & 1,
-                d = IVs[5] & 1,
-                e = IVs[3] & 1,
-                f = IVs[4] & 1;
+            int a = IndividualValues[PBEStat.HP].Value & 1,
+                b = IndividualValues[PBEStat.Attack].Value & 1,
+                c = IndividualValues[PBEStat.Defense].Value & 1,
+                d = IndividualValues[PBEStat.Speed].Value & 1,
+                e = IndividualValues[PBEStat.SpAttack].Value & 1,
+                f = IndividualValues[PBEStat.SpDefense].Value & 1;
             return PBEPokemonData.HiddenPowerTypes[(((1 << 0) * a) + ((1 << 1) * b) + ((1 << 2) * c) + ((1 << 3) * d) + ((1 << 4) * e) + ((1 << 5) * f)) * (PBEPokemonData.HiddenPowerTypes.Count - 1) / ((1 << 6) - 1)];
         }
         /// <summary>
@@ -586,12 +586,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             const byte mininumBasePower = 30,
                 maximumBasePower = 70;
-            int a = (IVs[0] & 2) == 2 ? 1 : 0,
-                b = (IVs[1] & 2) == 2 ? 1 : 0,
-                c = (IVs[2] & 2) == 2 ? 1 : 0,
-                d = (IVs[5] & 2) == 2 ? 1 : 0,
-                e = (IVs[3] & 2) == 2 ? 1 : 0,
-                f = (IVs[4] & 2) == 2 ? 1 : 0;
+            int a = (IndividualValues[PBEStat.HP].Value & 2) == 2 ? 1 : 0,
+                b = (IndividualValues[PBEStat.Attack].Value & 2) == 2 ? 1 : 0,
+                c = (IndividualValues[PBEStat.Defense].Value & 2) == 2 ? 1 : 0,
+                d = (IndividualValues[PBEStat.Speed].Value & 2) == 2 ? 1 : 0,
+                e = (IndividualValues[PBEStat.SpAttack].Value & 2) == 2 ? 1 : 0,
+                f = (IndividualValues[PBEStat.SpDefense].Value & 2) == 2 ? 1 : 0;
             return (byte)(((((1 << 0) * a) + ((1 << 1) * b) + ((1 << 2) * c) + ((1 << 3) * d) + ((1 << 4) * e) + ((1 << 5) * f)) * (maximumBasePower - mininumBasePower) / ((1 << 6) - 1)) + mininumBasePower);
         }
         /// <summary>

@@ -251,13 +251,13 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(shell.EffortValues), $"Total EVs cannot exceed {settings.MaxTotalEVs}.");
             }
             // Validate IVs
-            if (shell.IVs == null || shell.IVs.Length != 6)
+            if (shell.IndividualValues == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.IVs), $"{nameof(shell.IVs)} array can only have a length of 6.");
+                throw new ArgumentNullException(nameof(shell.IndividualValues));
             }
-            if (Array.Exists(shell.IVs, i => i > settings.MaxIVs))
+            if (shell.IndividualValues.Any(iv => iv.Value > settings.MaxIVs))
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.IVs), $"Each IV cannot exceed {settings.MaxIVs}.");
+                throw new ArgumentOutOfRangeException(nameof(shell.IndividualValues), $"Each IV cannot exceed {settings.MaxIVs}.");
             }
 
             // Validate moveset

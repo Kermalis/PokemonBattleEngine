@@ -13,10 +13,8 @@ using System.Reactive.Subjects;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    // TODO: EV counter and prevention of exceeding limit
     // TODO: Settings editor
     // TODO: level.Maximum, level.Minimum, PPUps.Maximum, ivs.Maximum
-    // TODO: Editing of evs and ivs
     public class TeamBuilderView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)

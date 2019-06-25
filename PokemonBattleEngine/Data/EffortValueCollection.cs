@@ -70,12 +70,20 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public PBEEffortValueCollection(PBESettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
             this.settings = settings;
             CreateEVs();
             Randomize();
         }
         public PBEEffortValueCollection(PBESettings settings, byte hp = 0, byte attack = 0, byte defense = 0, byte spAttack = 0, byte spDefense = 0, byte speed = 0)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
             this.settings = settings;
             CreateEVs();
             Set(PBEStat.HP, hp);
@@ -87,6 +95,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public PBEEffortValueCollection(PBESettings settings, PBEEffortValueCollection other)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
             if (other == null)
             {
                 throw new ArgumentNullException(nameof(other));

@@ -54,7 +54,7 @@ namespace Kermalis.PokemonBattleEngine
                 byte? b = IVs[i];
                 if (b.HasValue)
                 {
-                    p.IVs[i] = b.Value;
+                    p.IndividualValues[(PBEStat)i].Value = b.Value;
                 }
             }
             PBEMove[] moves = Moves.Concat(new PBEMove[settings.NumMoves - Moves.Count]).ToArray(); // Fills the empty slots with PBEMove.None (Can remove once all moves are added)
