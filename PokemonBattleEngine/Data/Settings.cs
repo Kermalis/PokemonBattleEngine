@@ -116,8 +116,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => maxTotalEVs;
             set
             {
+                const int max = byte.MaxValue * 6;
                 if (maxTotalEVs != value)
                 {
+                    if (value > max)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MaxTotalEVs)} must not exceed {max}.");
+                    }
                     maxTotalEVs = value;
                     OnPropertyChanged(nameof(MaxTotalEVs));
                 }
@@ -146,6 +151,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (natureStatBoost != value)
                 {
+                    if (value < 0)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(NatureStatBoost)} must be at least 0.");
+                    }
                     natureStatBoost = value;
                     OnPropertyChanged(nameof(NatureStatBoost));
                 }

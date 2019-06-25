@@ -184,6 +184,24 @@ namespace Kermalis.PokemonBattleEngine.Data
                     vals[i] = b;
                     sum += b;
                 }
+                // This "while" will fix the issue where the speed stat was supposed to be above 255
+                var notMax = new List<int>(5);
+                while (sum != settings.MaxTotalEVs)
+                {
+                    notMax.Clear();
+                    for (int i = 0; i < 6; i++)
+                    {
+                        if (vals[i] != byte.MaxValue)
+                        {
+                            notMax.Add(i);
+                        }
+                    }
+                    int index = notMax.Sample();
+                    byte old = vals[index];
+                    byte b = (byte)Math.Min(byte.MaxValue, old + (settings.MaxTotalEVs - sum));
+                    vals[index] = b;
+                    sum += (byte)(b - old);
+                }
             }
             for (int i = 0; i < 6; i++)
             {
