@@ -11,6 +11,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     // TODO: Don't fire propertychanged if new value is same as old value
     // TODO: Validate setter values (and constructor)
+    // TODO: Way more constructors? The way we load from json and bytes is messy
     // TODO: Set settings and listen to changes
     public sealed class PBEPokemonShell : INotifyPropertyChanged
     {
@@ -246,6 +247,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         // TODO: Include settings
         // TODO: Reject team sizes above settings max
         // TODO: Validate values
+        // TODO: Do not allow PBEAbility.None (kinda same as above)
         public static IEnumerable<PBEPokemonShell> TeamFromJsonFile(string path)
         {
             var json = JObject.Parse(File.ReadAllText(path));
@@ -257,15 +259,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 JToken pkmnObject = partyObject[i];
                 var pkmn = new PBEPokemonShell(settings)
                 {
-                    species = PBELocalizedString.GetSpeciesByName(pkmnObject[nameof(Species)].Value<string>()).Value, // Must have species
+                    species = PBELocalizedString.GetSpeciesByName(pkmnObject[nameof(Species)].Value<string>()).Value,
                     nickname = pkmnObject[nameof(Nickname)].Value<string>(),
                     level = pkmnObject[nameof(Level)].Value<byte>(),
                     friendship = pkmnObject[nameof(Friendship)].Value<byte>(),
                     shiny = pkmnObject[nameof(Shiny)].Value<bool>(),
-                    ability = PBELocalizedString.GetAbilityByName(pkmnObject[nameof(Ability)].Value<string>()).Value, // Must have ability
+                    ability = PBELocalizedString.GetAbilityByName(pkmnObject[nameof(Ability)].Value<string>()).Value,
                     nature = (PBENature)Enum.Parse(typeof(PBENature), pkmnObject[nameof(Nature)].Value<string>(), true),
                     gender = (PBEGender)Enum.Parse(typeof(PBEGender), pkmnObject[nameof(Gender)].Value<string>(), true),
-                    item = PBELocalizedString.GetItemByName(pkmnObject[nameof(Item)].Value<string>()).GetValueOrDefault() // Item can be None
+                    item = PBELocalizedString.GetItemByName(pkmnObject[nameof(Item)].Value<string>()).Value
                 };
                 pkmn.SetSelectable();
                 JToken wObject = pkmnObject[nameof(EffortValues)];
@@ -286,23 +288,16 @@ namespace Kermalis.PokemonBattleEngine.Data
                     wObject[nameof(PBEStat.SpDefense)].Value<byte>(),
                     wObject[nameof(PBEStat.Speed)].Value<byte>()
                 );
-                wObject = pkmnObject["Moves"];
-                var moves = new PBEMove[settings.NumMoves];
-                for (int j = 0; j < settings.NumMoves; j++)
-                {
-                    moves[j] = PBELocalizedString.GetMoveByName(wObject[$"Move {j}"].Value<string>()).GetValueOrDefault(); // Move can be None
-                }
-                wObject = pkmnObject["PPUps"];
-                byte[] ppUps = new byte[settings.NumMoves];
-                for (int j = 0; j < settings.NumMoves; j++)
-                {
-                    ppUps[j] = wObject[$"Move {j}"].Value<byte>();
-                }
+                var mObject = (JArray)pkmnObject[nameof(Moveset)];
                 pkmn.Moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings);
                 pkmn.Moveset.Clear();
                 for (int j = 0; j < settings.NumMoves; j++)
                 {
-                    pkmn.Moveset.Set(j, moves[j], ppUps[j]);
+                    wObject = mObject[j];
+                    pkmn.Moveset.Set(j,
+                        PBELocalizedString.GetMoveByName(wObject[nameof(PBEMovesetBuilder.PBEMoveSlot.Move)].Value<string>()).Value,
+                        wObject[nameof(PBEMovesetBuilder.PBEMoveSlot.PPUps)].Value<byte>()
+                        );
                 }
                 party[i] = pkmn;
             }
@@ -357,22 +352,18 @@ namespace Kermalis.PokemonBattleEngine.Data
                         writer.WriteValue(iv.Value);
                     }
                     writer.WriteEndObject();
-                    writer.WritePropertyName("Moves");
-                    writer.WriteStartObject();
-                    for (int j = 0; j < 4; j++)
+                    writer.WritePropertyName(nameof(Moveset));
+                    writer.WriteStartArray();
+                    foreach (PBEMovesetBuilder.PBEMoveSlot slot in pkmn.Moveset.MoveSlots)
                     {
-                        writer.WritePropertyName($"Move {j}");
-                        writer.WriteValue(pkmn.Moveset.MoveSlots[j].Move.ToString());
+                        writer.WriteStartObject();
+                        writer.WritePropertyName(nameof(PBEMovesetBuilder.PBEMoveSlot.Move));
+                        writer.WriteValue(slot.Move.ToString());
+                        writer.WritePropertyName(nameof(PBEMovesetBuilder.PBEMoveSlot.PPUps));
+                        writer.WriteValue(slot.PPUps);
+                        writer.WriteEndObject();
                     }
-                    writer.WriteEndObject();
-                    writer.WritePropertyName("PPUps");
-                    writer.WriteStartObject();
-                    for (int j = 0; j < 4; j++)
-                    {
-                        writer.WritePropertyName($"Move {j}");
-                        writer.WriteValue(pkmn.Moveset.MoveSlots[j].PPUps);
-                    }
-                    writer.WriteEndObject();
+                    writer.WriteEndArray();
                     writer.WriteEndObject();
                 }
                 writer.WriteEndArray();

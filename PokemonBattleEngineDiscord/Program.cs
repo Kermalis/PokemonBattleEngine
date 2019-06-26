@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
-    internal class DiscordBot
+    internal class Program
     {
         private DiscordSocketClient client;
         private IServiceProvider services;
@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
         public static void Main(string[] args)
         {
-            new DiscordBot().MainAsync(args).GetAwaiter().GetResult();
+            new Program().MainAsync(args).GetAwaiter().GetResult();
         }
         private async Task MainAsync(string[] args)
         {

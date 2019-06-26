@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             public async Task Info([Remainder] string abilityName)
             {
                 PBEAbility? nAbility = PBELocalizedString.GetAbilityByName(abilityName);
-                if (!nAbility.HasValue)
+                if (!nAbility.HasValue || nAbility.Value == PBEAbility.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid ability!");
                 }
@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             public async Task Info([Remainder] string itemName)
             {
                 PBEItem? nItem = PBELocalizedString.GetItemByName(itemName);
-                if (!nItem.HasValue)
+                if (!nItem.HasValue || nItem.Value == PBEItem.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid item!");
                 }
@@ -120,7 +120,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             public async Task Info([Remainder] string moveName)
             {
                 PBEMove? nMove = PBELocalizedString.GetMoveByName(moveName);
-                if (!nMove.HasValue)
+                if (!nMove.HasValue || nMove.Value == PBEMove.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid move!");
                 }
