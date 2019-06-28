@@ -5,9 +5,8 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    /// <summary>
-    /// Represents a team in a specific <see cref="PBEBattle"/>.
-    /// </summary>
+    // TODO: INPC
+    /// <summary>Represents a team in a specific <see cref="PBEBattle"/>.</summary>
     public sealed class PBETeam
     {
         /// <summary>
@@ -33,6 +32,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte SpikeCount { get; set; }
         public byte ToxicSpikeCount { get; set; }
         public bool MonFaintedLastTurn { get; set; }
+        public bool MonFaintedThisTurn { get; set; }
 
         // Host constructor
         internal PBETeam(PBEBattle battle, byte id, IEnumerable<PBEPokemonShell> party, ref byte pkmnIdCounter)

@@ -1510,13 +1510,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (pkmn.HP == 0)
             {
-                TrySetLoser(pkmn);
                 turnOrder.Remove(pkmn);
                 ActiveBattlers.Remove(pkmn);
                 PBEFieldPosition oldPos = pkmn.FieldPosition;
                 pkmn.FieldPosition = PBEFieldPosition.None;
                 RemoveInfatuations(pkmn);
                 BroadcastPkmnFainted(pkmn, oldPos);
+                pkmn.Team.MonFaintedThisTurn = true;
+                TrySetLoser(pkmn);
                 CastformCherrimCheckAll();
                 return true;
             }

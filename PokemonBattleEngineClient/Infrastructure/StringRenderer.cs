@@ -4,7 +4,6 @@ using Avalonia.Platform;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
@@ -15,7 +14,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             string FontId { get; }
             int FontHeight { get; }
             ConcurrentDictionary<string, Bitmap> LoadedKeys { get; }
-            List<(string OldKey, string NewKey)> OverrideKeys { get; }
+            (string OldKey, string NewKey)[] OverrideKeys { get; }
             // TODO: Cached text?
         }
         private class BattleHPFont : IStringRenderFont
@@ -24,7 +23,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public int FontHeight => 8;
             public static BattleHPFont Instance { get; } = new BattleHPFont();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new ConcurrentDictionary<string, Bitmap>();
-            public List<(string OldKey, string NewKey)> OverrideKeys { get; } = new List<(string OldKey, string NewKey)>();
+            public (string OldKey, string NewKey)[] OverrideKeys { get; } = Array.Empty<(string OldKey, string NewKey)>();
         }
         private class BattleLevelFont : IStringRenderFont
         {
@@ -32,7 +31,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public int FontHeight => 10;
             public static BattleLevelFont Instance { get; } = new BattleLevelFont();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new ConcurrentDictionary<string, Bitmap>();
-            public List<(string OldKey, string NewKey)> OverrideKeys { get; } = new List<(string OldKey, string NewKey)>
+            public (string OldKey, string NewKey)[] OverrideKeys { get; } = new (string OldKey, string NewKey)[]
             {
                 ("[LV]", "LV")
             };
@@ -43,7 +42,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public int FontHeight => 13;
             public static BattleNameFont Instance { get; } = new BattleNameFont();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new ConcurrentDictionary<string, Bitmap>();
-            public List<(string OldKey, string NewKey)> OverrideKeys { get; } = new List<(string OldKey, string NewKey)>
+            public (string OldKey, string NewKey)[] OverrideKeys { get; } = new (string OldKey, string NewKey)[]
             {
                 ("♂", "246D"),
                 ("♀", "246E"),
@@ -57,7 +56,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             public int FontHeight => 15;
             public static DefaultFont Instance { get; } = new DefaultFont();
             public ConcurrentDictionary<string, Bitmap> LoadedKeys { get; } = new ConcurrentDictionary<string, Bitmap>();
-            public List<(string OldKey, string NewKey)> OverrideKeys { get; } = new List<(string OldKey, string NewKey)>
+            public (string OldKey, string NewKey)[] OverrideKeys { get; } = new (string OldKey, string NewKey)[]
             {
                 ("♂", "246D"),
                 ("♀", "246E"),
@@ -66,9 +65,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             };
         }
 
-        public static Bitmap Render(string str, string style)
+        public static unsafe Bitmap Render(string str, string style)
         {
-            // Return null for bad strings
             if (string.IsNullOrWhiteSpace(str))
             {
                 return null;
@@ -97,9 +95,18 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
 
                 // Measure how large the string will end up
+                var lineWidths = new List<int>(20);
                 int stringWidth = 0,
                 stringHeight = font.FontHeight,
                 curLineWidth = 0;
+                void RecordLineWidth()
+                {
+                    if (curLineWidth > stringWidth)
+                    {
+                        stringWidth = curLineWidth;
+                    }
+                    lineWidths.Add(curLineWidth);
+                }
                 int index = 0;
                 var keys = new List<(string Key, Bitmap Bitmap)>();
                 while (index < str.Length)
@@ -113,17 +120,14 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     {
                         index++;
                         stringHeight += font.FontHeight + 1;
-                        if (curLineWidth > stringWidth)
-                        {
-                            stringWidth = curLineWidth;
-                        }
+                        RecordLineWidth();
                         curLineWidth = 0;
                         keys.Add(("\n", null));
                     }
                     else
                     {
                         string key = null;
-                        for (int i = 0; i < font.OverrideKeys.Count; i++)
+                        for (int i = 0; i < font.OverrideKeys.Length; i++)
                         {
                             (string oldKey, string newKey) = font.OverrideKeys[i];
                             if (index + oldKey.Length <= str.Length && str.Substring(index, oldKey.Length) == oldKey)
@@ -152,10 +156,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                         keys.Add((key, bmp));
                     }
                 }
-                if (curLineWidth > stringWidth)
-                {
-                    stringWidth = curLineWidth;
-                }
+                RecordLineWidth();
 
                 // Draw the string
                 var dpi = new Vector(96, 96);
@@ -185,23 +186,27 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 using (ILockedFramebuffer l = wb.Lock())
                 {
                     long startAddress = l.Address.ToInt64();
-                    for (int x = 0; x < stringWidth; x++)
+                    for (int i = 0; i < lineWidths.Count; i++)
                     {
-                        for (int y = 0; y < stringHeight; y++)
+                        int w = lineWidths[i];
+                        for (int x = 0; x < w; x++)
                         {
-                            var address = new IntPtr(startAddress + (x * sizeof(uint)) + (y * l.RowBytes));
-                            uint pixel = (uint)Marshal.ReadInt32(address);
-                            if (pixel == 0xFFFFFFFF)
+                            for (int y = 0; y < font.FontHeight; y++)
                             {
-                                Marshal.WriteInt32(address, (int)primary);
-                            }
-                            else if (pixel == 0xFF000000)
-                            {
-                                Marshal.WriteInt32(address, (int)secondary);
-                            }
-                            else if (pixel == 0xFF808080)
-                            {
-                                Marshal.WriteInt32(address, (int)tertiary);
+                                uint* address = (uint*)(startAddress + (x * sizeof(uint)) + ((y + ((font.FontHeight + 1) * i)) * l.RowBytes));
+                                uint pixel = *address;
+                                if (pixel == 0xFFFFFFFF)
+                                {
+                                    *address = primary;
+                                }
+                                else if (pixel == 0xFF000000)
+                                {
+                                    *address = secondary;
+                                }
+                                else if (pixel == 0xFF808080)
+                                {
+                                    *address = tertiary;
+                                }
                             }
                         }
                     }

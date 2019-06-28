@@ -7,9 +7,8 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    /// <summary>
-    /// Represents a specific Pokémon battle.
-    /// </summary>
+    // TODO: INPC
+    /// <summary>Represents a specific Pokémon battle.</summary>
     public sealed partial class PBEBattle
     {
         public delegate void BattleStateChangedEvent(PBEBattle battle);
@@ -356,6 +355,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                 TurnNumber++;
                 BroadcastTurnBegan();
+                foreach (PBETeam team in Teams)
+                {
+                    bool old = team.MonFaintedThisTurn; // Fire events in a specific order
+                    team.MonFaintedThisTurn = false;
+                    team.MonFaintedLastTurn = old;
+                }
                 BattleState = PBEBattleState.WaitingForActions;
                 OnStateChanged?.Invoke(this);
                 foreach (PBETeam team in Teams)
