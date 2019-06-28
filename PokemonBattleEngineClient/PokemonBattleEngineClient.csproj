@@ -7,6 +7,7 @@
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
     <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
