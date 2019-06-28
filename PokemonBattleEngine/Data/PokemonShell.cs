@@ -9,7 +9,6 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: Don't fire propertychanged if new value is same as old value
     // TODO: Validate setter values (and constructor)
     // TODO: Way more constructors? The way we load from json and bytes is messy
     // TODO: Set settings and listen to changes
@@ -39,10 +38,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => species;
             set
             {
-                PBESpecies old = species;
-                species = value;
-                OnPropertyChanged(nameof(Species));
-                SpeciesChanged(old);
+                if (species != value)
+                {
+                    ValidateSpecies(value);
+                    PBESpecies old = species;
+                    species = value;
+                    OnPropertyChanged(nameof(Species));
+                    SpeciesChanged(old);
+                }
             }
         }
         private string nickname;
@@ -51,8 +54,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => nickname;
             set
             {
-                nickname = value;
-                OnPropertyChanged(nameof(Nickname));
+                if (nickname != value)
+                {
+                    ValidateNickname(value);
+                    nickname = value;
+                    OnPropertyChanged(nameof(Nickname));
+                }
             }
         }
         private byte level;
@@ -61,9 +68,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => level;
             set
             {
-                level = value;
-                OnPropertyChanged(nameof(Level));
-                UpdateMoves();
+                if (level != value)
+                {
+                    ValidateLevel(value);
+                    level = value;
+                    OnPropertyChanged(nameof(Level));
+                    UpdateMoves();
+                }
             }
         }
         private byte friendship;
@@ -72,8 +83,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => friendship;
             set
             {
-                friendship = value;
-                OnPropertyChanged(nameof(Friendship));
+                if (value != friendship)
+                {
+                    friendship = value;
+                    OnPropertyChanged(nameof(Friendship));
+                }
             }
         }
         private bool shiny;
@@ -82,8 +96,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => shiny;
             set
             {
-                shiny = value;
-                OnPropertyChanged(nameof(Shiny));
+                if (value != shiny)
+                {
+                    shiny = value;
+                    OnPropertyChanged(nameof(Shiny));
+                }
             }
         }
         private PBEAbility ability;
@@ -92,8 +109,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => ability;
             set
             {
-                ability = value;
-                OnPropertyChanged(nameof(Ability));
+                if (value != ability)
+                {
+                    ValidateAbility(value);
+                    ability = value;
+                    OnPropertyChanged(nameof(Ability));
+                }
             }
         }
         private PBENature nature;
@@ -102,8 +123,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => nature;
             set
             {
-                nature = value;
-                OnPropertyChanged(nameof(Nature));
+                if (value != nature)
+                {
+                    ValidateNature(value);
+                    nature = value;
+                    OnPropertyChanged(nameof(Nature));
+                }
             }
         }
         private PBEGender gender;
@@ -112,8 +137,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => gender;
             set
             {
-                gender = value;
-                OnPropertyChanged(nameof(Gender));
+                if (value != gender)
+                {
+                    ValidateGender(value);
+                    gender = value;
+                    OnPropertyChanged(nameof(Gender));
+                }
             }
         }
         private PBEItem item;
@@ -122,8 +151,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             get => item;
             set
             {
-                item = value;
-                OnPropertyChanged(nameof(Item));
+                if (value != item)
+                {
+                    ValidateItem(value);
+                    item = value;
+                    OnPropertyChanged(nameof(Item));
+                }
             }
         }
         public PBEEffortValueCollection EffortValues { get; private set; }
@@ -244,10 +277,58 @@ namespace Kermalis.PokemonBattleEngine.Data
             OnPropertyChanged(nameof(Moveset));
         }
 
+        private void ValidateSpecies(PBESpecies value)
+        {
+            if (!AllSpecies.Contains(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+        }
+        private void ValidateNickname(string value)
+        {
+            if (value.Length > settings.MaxPokemonNameLength)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(Nickname)} cannot have more than {nameof(settings.MaxPokemonNameLength)} ({settings.MaxPokemonNameLength}) characters.");
+            }
+        }
+        private void ValidateLevel(byte value)
+        {
+            if (value < settings.MinLevel || value > settings.MaxLevel)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(Level)} must be at least {nameof(settings.MinLevel)} ({settings.MinLevel}) and cannot exceed {nameof(settings.MaxLevel)} ({settings.MaxLevel}).");
+            }
+        }
+        private void ValidateAbility(PBEAbility value)
+        {
+            if (!SelectableAbilities.Contains(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+        }
+        private void ValidateNature(PBENature value)
+        {
+            if (!AllNatures.Contains(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+        }
+        private void ValidateGender(PBEGender value)
+        {
+            if (Array.IndexOf(selectableGenders, value) == -1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+        }
+        private void ValidateItem(PBEItem value)
+        {
+            if (!selectableItems.Contains(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+        }
+
         // TODO: Include settings
         // TODO: Reject team sizes above settings max
-        // TODO: Validate values
-        // TODO: Do not allow PBEAbility.None (kinda same as above)
         public static IEnumerable<PBEPokemonShell> TeamFromJsonFile(string path)
         {
             var json = JObject.Parse(File.ReadAllText(path));
@@ -259,17 +340,31 @@ namespace Kermalis.PokemonBattleEngine.Data
                 JToken pkmnObject = partyObject[i];
                 var pkmn = new PBEPokemonShell(settings)
                 {
-                    species = PBELocalizedString.GetSpeciesByName(pkmnObject[nameof(Species)].Value<string>()).Value,
-                    nickname = pkmnObject[nameof(Nickname)].Value<string>(),
-                    level = pkmnObject[nameof(Level)].Value<byte>(),
                     friendship = pkmnObject[nameof(Friendship)].Value<byte>(),
-                    shiny = pkmnObject[nameof(Shiny)].Value<bool>(),
-                    ability = PBELocalizedString.GetAbilityByName(pkmnObject[nameof(Ability)].Value<string>()).Value,
-                    nature = (PBENature)Enum.Parse(typeof(PBENature), pkmnObject[nameof(Nature)].Value<string>(), true),
-                    gender = (PBEGender)Enum.Parse(typeof(PBEGender), pkmnObject[nameof(Gender)].Value<string>(), true),
-                    item = PBELocalizedString.GetItemByName(pkmnObject[nameof(Item)].Value<string>()).Value
+                    shiny = pkmnObject[nameof(Shiny)].Value<bool>()
                 };
+                PBESpecies species = PBELocalizedString.GetSpeciesByName(pkmnObject[nameof(Species)].Value<string>()).Value;
+                pkmn.ValidateSpecies(species);
+                pkmn.species = species;
                 pkmn.SetSelectable();
+                string nickname = pkmnObject[nameof(Nickname)].Value<string>();
+                pkmn.ValidateNickname(nickname);
+                pkmn.nickname = nickname;
+                byte level = pkmnObject[nameof(Level)].Value<byte>();
+                pkmn.ValidateLevel(level);
+                pkmn.level = level;
+                PBEAbility ability = PBELocalizedString.GetAbilityByName(pkmnObject[nameof(Ability)].Value<string>()).Value;
+                pkmn.ValidateAbility(ability);
+                pkmn.ability = ability;
+                var nature = (PBENature)Enum.Parse(typeof(PBENature), pkmnObject[nameof(Nature)].Value<string>(), true); // TODO: GetNatureByName
+                pkmn.ValidateNature(nature);
+                pkmn.nature = nature;
+                var gender = (PBEGender)Enum.Parse(typeof(PBEGender), pkmnObject[nameof(Gender)].Value<string>(), true); // TODO: GetGenderByName
+                pkmn.ValidateGender(gender);
+                pkmn.gender = gender;
+                PBEItem item = PBELocalizedString.GetItemByName(pkmnObject[nameof(Item)].Value<string>()).Value;
+                pkmn.ValidateItem(item);
+                pkmn.item = item;
                 JToken wObject = pkmnObject[nameof(EffortValues)];
                 pkmn.EffortValues = new PBEEffortValueCollection(settings,
                     wObject[nameof(PBEStat.HP)].Value<byte>(),

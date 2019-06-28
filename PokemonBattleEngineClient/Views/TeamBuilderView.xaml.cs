@@ -14,6 +14,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 {
     // TODO: Settings editor, listen to settings changes
     // TODO: PPUps.Maximum, ivs.Maximum
+    // TODO: Save again (listen to shell changes)
     public class TeamBuilderView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)

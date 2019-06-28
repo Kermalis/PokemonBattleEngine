@@ -8,6 +8,8 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     // TODO: Listen for changes to settings
     // TODO: Cannot set slot 3 if slot 2 is none, and cannot clear slot 2 if slot 3 is not none
+    // TODO: Clear() is just temporary. If I don't use it, then trying to set a slot to a move that is in another slot would crash, and there is a high chance since this starts with random moves
+    // TODO: No need to create a new one of these each time the species/level changes honestly
     public sealed class PBEMovesetBuilder
     {
         public sealed class PBEMoveSlot : INotifyPropertyChanged
@@ -42,7 +44,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                 this.slotIndex = slotIndex;
             }
 
-            // TODO: Only fire if changed?
             internal void Update(List<PBEMove> allowed, PBEMove? move, byte? ppUps)
             {
                 if (allowed != null)
@@ -50,13 +51,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                     Allowed = new PBEReadOnlyObservableCollection<PBEMove>(allowed);
                     OnPropertyChanged(nameof(Allowed));
                 }
-                if (move.HasValue)
+                if (move.HasValue && this.move != move.Value)
                 {
+                    PBEMove old = this.move;
                     this.move = move.Value;
                     OnPropertyChanged(nameof(Move));
-                    OnPropertyChanged(nameof(IsPPUpsEditable));
+                    if ((old == PBEMove.None && this.move != PBEMove.None) || (old != PBEMove.None && this.move == PBEMove.None))
+                    {
+                        OnPropertyChanged(nameof(IsPPUpsEditable));
+                    }
                 }
-                if (ppUps.HasValue)
+                if (ppUps.HasValue && this.ppUps != ppUps.Value)
                 {
                     this.ppUps = ppUps.Value;
                     OnPropertyChanged(nameof(PPUps));
@@ -194,7 +199,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentException($"\"{nameof(move)}\" or \"{nameof(ppUps)}\" has to have a value to set.");
             }
         }
-        // This is just temporary. If I don't use it, then trying to set a slot to a move that is in another slot would crash, and there is a high chance since this starts with random moves
         public void Clear()
         {
             for (int i = settings.NumMoves - 1; i >= 1; i--)
