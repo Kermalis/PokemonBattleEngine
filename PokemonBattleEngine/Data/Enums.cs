@@ -3437,7 +3437,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reflect = 115,
         //RelicSong // TODO: Blocked by Metronome
         Rest = 156, // TODO: Uproar, Insomnia, Vital Spirit, Sleep Talk, Leaf Guard
-        Retaliate = 514, // TODO
+        Retaliate = 514,
         Return = 216,
         Reversal = 179,
         Roar = 46, // TODO: Suction Cups, Soundproof, Ingrain
