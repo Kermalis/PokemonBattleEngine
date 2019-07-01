@@ -152,6 +152,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        // TODO: Is this necessary anymore?
         public static void ValidateShell(this PBEPokemonShell shell, PBESettings settings)
         {
             if (shell == null)

@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         private readonly PBESettings settings;
         private PBEIndividualValue[] ivs;
 
-        public PBEIndividualValueCollection(PBESettings settings)
+        public PBEIndividualValueCollection(PBESettings settings, bool randomize)
         {
             if (settings == null)
             {
@@ -52,7 +52,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             this.settings = settings;
             CreateIVs(settings);
-            Randomize();
+            if (randomize)
+            {
+                Randomize();
+            }
         }
         public PBEIndividualValueCollection(PBESettings settings, byte hp = 0, byte attack = 0, byte defense = 0, byte spAttack = 0, byte spDefense = 0, byte speed = 0)
         {

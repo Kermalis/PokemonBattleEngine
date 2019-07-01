@@ -68,7 +68,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        public PBEEffortValueCollection(PBESettings settings)
+        public PBEEffortValueCollection(PBESettings settings, bool randomize)
         {
             if (settings == null)
             {
@@ -76,7 +76,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             this.settings = settings;
             CreateEVs();
-            Randomize();
+            if (randomize)
+            {
+                Randomize();
+            }
         }
         public PBEEffortValueCollection(PBESettings settings, byte hp = 0, byte attack = 0, byte defense = 0, byte spAttack = 0, byte spDefense = 0, byte speed = 0)
         {

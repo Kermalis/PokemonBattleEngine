@@ -1059,6 +1059,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         // TODO: FRLG - Ultimate starter tutor moves
         // TODO: D, P, Pt - Free tutor moves
         // TODO: HG, SS - Free tutor moves (aside from Headbutt)
+        // TODO: BW, B2W2 - SecretSword, RelicSong
         // TODO: Rotom special moves
         // TODO: Arceus_Dragon gets DracoMeteor from free tutor moves
         // TODO: Basculin_Blue extra abilities

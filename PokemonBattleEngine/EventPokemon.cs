@@ -14,7 +14,7 @@ namespace Kermalis.PokemonBattleEngine
         public PBEGender Gender { get; } // ">= PBEGender.MAX" means the Pokémon can be male or female
         public ReadOnlyCollection<PBEAbility> PossibleAbilities { get; }
         public ReadOnlyCollection<PBENature> PossibleNatures { get; }
-        public ReadOnlyCollection<byte?> IVs { get; } // A stat being "null" means that stat is random
+        public ReadOnlyCollection<byte?> IndividualValues { get; } // A stat being "null" means that stat is random
         public ReadOnlyCollection<PBEMove> Moves { get; }
 
         private PBEEventPokemon(IList<byte> generations, PBESpecies species, byte level, bool? shiny, PBEGender gender, IList<PBEAbility> possibleAbilities, IList<PBENature> possibleNatures,
@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngine
             {
                 PossibleNatures = new ReadOnlyCollection<PBENature>(possibleNatures);
             }
-            IVs = new ReadOnlyCollection<byte?>(ivs); Moves = new ReadOnlyCollection<PBEMove>(moves);
+            IndividualValues = new ReadOnlyCollection<byte?>(ivs); Moves = new ReadOnlyCollection<PBEMove>(moves);
         }
 
         /// <summary>Converts the <see cref="PBEEventPokemon"/> into a <see cref="PBEPokemonShell"/> using <see cref="PBESettings.DefaultSettings"/>.</summary>
@@ -51,7 +51,7 @@ namespace Kermalis.PokemonBattleEngine
             }
             for (int i = 0; i < 6; i++)
             {
-                byte? b = IVs[i];
+                byte? b = IndividualValues[i];
                 if (b.HasValue)
                 {
                     p.IndividualValues[(PBEStat)i].Value = b.Value;
