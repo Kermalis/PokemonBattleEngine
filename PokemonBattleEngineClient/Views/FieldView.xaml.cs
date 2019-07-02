@@ -68,10 +68,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             string s;
             switch (battleView.Client.Battle.BattleFormat)
             {
-                case PBEBattleFormat.Single: s = PBEUtils.Sample(new string[] { "1_S", "2_S", "3_S", "4_S", "5_S", "6_S", "8_S" }); break;
-                case PBEBattleFormat.Double: s = PBEUtils.Sample(new string[] { "1_D", "6_D", "7_D" }); break;
-                case PBEBattleFormat.Triple: s = PBEUtils.Sample(new string[] { "1_T", "4_T", "5_T", "8_T" }); break;
-                case PBEBattleFormat.Rotation: s = PBEUtils.Sample(new string[] { "1_R", "2_R" }); break;
+                case PBEBattleFormat.Single: s = PBEUtils.RandomElement(new string[] { "1_S", "2_S", "3_S", "4_S", "5_S", "6_S", "8_S" }); break;
+                case PBEBattleFormat.Double: s = PBEUtils.RandomElement(new string[] { "1_D", "6_D", "7_D" }); break;
+                case PBEBattleFormat.Triple: s = PBEUtils.RandomElement(new string[] { "1_T", "4_T", "5_T", "8_T" }); break;
+                case PBEBattleFormat.Rotation: s = PBEUtils.RandomElement(new string[] { "1_R", "2_R" }); break;
                 default: throw new ArgumentOutOfRangeException(nameof(battleView.Client.Battle.BattleFormat));
             }
             BGSource = new Bitmap(Utils.GetResourceStream("BG.BG_" + s + ".png"));

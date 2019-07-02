@@ -19,6 +19,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private const string separator = "**--------------------**";
         private static readonly Emoji switchEmoji = new Emoji("😼");
         private static readonly Emoji confirmationEmoji = new Emoji("👍");
+        private static readonly IEnumerable<PBEMove> suggestedMoves = Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX });
         private static readonly Dictionary<PBEType, Emote>[] moveEmojis = new Dictionary<PBEType, Emote>[4]
         {
             new Dictionary<PBEType, Emote>
@@ -1311,7 +1312,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     IUserMessage mainMsg;
                     try
                     {
-                        mainMsg = await context.CreateAndSendEmbedAsync($"{CustomPokemonToString(mainPkmn, true)}\nTo check a move: `!move info {PBELocalizedString.GetMoveName(PBEUtils.Sample(Enum.GetValues(typeof(PBEMove)).Cast<PBEMove>().Except(new[] { PBEMove.None, PBEMove.MAX }))).English}`", pkmn: mainPkmn, useUpperImage: false, userToSendTo: user);
+                        mainMsg = await context.CreateAndSendEmbedAsync($"{CustomPokemonToString(mainPkmn, true)}\nTo check a move: `!move info {PBELocalizedString.GetMoveName(PBEUtils.RandomElement(suggestedMoves)).English}`", pkmn: mainPkmn, useUpperImage: false, userToSendTo: user);
                     }
                     catch (HttpException)
                     {

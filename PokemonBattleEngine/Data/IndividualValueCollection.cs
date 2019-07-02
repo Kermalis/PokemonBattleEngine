@@ -124,7 +124,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             for (int i = 0; i < 6; i++)
             {
-                ivs[i].Value = (byte)PBEUtils.RNG.Next(settings.MaxIVs + 1);
+                ivs[i].Value = (byte)PBEUtils.RandomInt(0, settings.MaxIVs);
             }
         }
 

@@ -177,9 +177,9 @@ namespace Kermalis.PokemonBattleEngine.Data
             this.settings = settings;
             this.species = species;
             this.level = level;
-            friendship = (byte)PBEUtils.RNG.Next(byte.MaxValue + 1);
-            shiny = PBEUtils.RNG.NextShiny();
-            nature = AllNatures.Sample();
+            friendship = (byte)PBEUtils.RandomInt(0, byte.MaxValue);
+            shiny = PBEUtils.RandomShiny();
+            nature = AllNatures.RandomElement();
             EffortValues = new PBEEffortValueCollection(settings, true);
             IndividualValues = new PBEIndividualValueCollection(settings, true);
             OnSpeciesChanged(0);
@@ -245,15 +245,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             if (oldSpecies == 0 || !SelectableAbilities.Contains(ability))
             {
-                Ability = SelectableAbilities.Sample();
+                Ability = SelectableAbilities.RandomElement();
             }
             if (oldSpecies == 0 || !SelectableGenders.Contains(gender))
             {
-                Gender = PBEUtils.RNG.NextGender(pData.GenderRatio);
+                Gender = PBEUtils.RandomGender(pData.GenderRatio);
             }
             if (oldSpecies == 0 || !SelectableItems.Contains(item))
             {
-                Item = SelectableItems.Sample();
+                Item = SelectableItems.RandomElement();
             }
             if (oldSpecies == 0)
             {

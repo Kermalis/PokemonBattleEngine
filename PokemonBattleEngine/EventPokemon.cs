@@ -38,8 +38,8 @@ namespace Kermalis.PokemonBattleEngine
             PBESettings settings = PBESettings.DefaultSettings;
             var p = new PBEPokemonShell(Species, Level, settings)
             {
-                Ability = PossibleAbilities.Sample(),
-                Nature = PossibleNatures.Sample(),
+                Ability = PossibleAbilities.RandomElement(),
+                Nature = PossibleNatures.RandomElement(),
             };
             if (Shiny.HasValue)
             {
@@ -61,7 +61,7 @@ namespace Kermalis.PokemonBattleEngine
             p.Moveset.Clear();
             for (int i = 0; i < settings.NumMoves; i++)
             {
-                p.Moveset.Set(i, moves[i], (byte)PBEUtils.RNG.Next(settings.MaxPPUps + 1));
+                p.Moveset.Set(i, moves[i], (byte)PBEUtils.RandomInt(0, settings.MaxPPUps));
             }
             return p;
         }

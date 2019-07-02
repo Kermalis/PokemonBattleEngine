@@ -106,7 +106,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         private PBEPokemonShell CreateShell()
         {
-            return new PBEPokemonShell(PBEPokemonShell.AllSpecies.Sample(), Settings.MaxLevel, Settings);
+            return new PBEPokemonShell(PBEUtils.RandomSpecies(), Settings.MaxLevel, Settings);
         }
         private void AddTeam()
         {

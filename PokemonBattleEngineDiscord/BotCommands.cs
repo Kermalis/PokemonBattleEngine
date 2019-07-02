@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEAbility ability = nAbility.Value;
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
-                        .WithColor(PBEUtils.Sample(Utils.TypeToColor).Value)
+                        .WithColor(PBEUtils.RandomElement(Utils.TypeToColor).Value)
                         .WithTitle(PBELocalizedString.GetAbilityName(ability).English)
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetAbilityDescription(ability).English.Replace('\n', ' '));
@@ -205,7 +205,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Special Attack", pData.BaseStats[3], true)
                         .AddField("Special Defense", pData.BaseStats[4], true)
                         .AddField("Speed", pData.BaseStats[5], true)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEUtils.RNG.NextGender(pData.GenderRatio), false, false));
+                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RandomShiny(), PBEUtils.RandomGender(pData.GenderRatio), false, false));
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }

@@ -176,7 +176,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             if (settings.MaxTotalEVs != 0)
             {
                 int[] a = Enumerable.Repeat(0, 6 - 1)
-                    .Select(x => PBEUtils.RNG.Next(1, settings.MaxTotalEVs))
+                    .Select(x => PBEUtils.RandomInt(1, settings.MaxTotalEVs - 1))
                     .Concat(new int[] { settings.MaxTotalEVs })
                     .OrderBy(x => x)
                     .ToArray();
@@ -199,7 +199,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                             notMax.Add(i);
                         }
                     }
-                    int index = notMax.Sample();
+                    int index = notMax.RandomElement();
                     byte old = vals[index];
                     byte b = (byte)Math.Min(byte.MaxValue, old + (settings.MaxTotalEVs - sum));
                     vals[index] = b;

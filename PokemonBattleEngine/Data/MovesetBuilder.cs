@@ -222,12 +222,12 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
                 else
                 {
-                    PBEMove move = allowed.Sample();
+                    PBEMove move = allowed.RandomElement();
                     if (i < settings.NumMoves - 1)
                     {
                         blacklist.Add(move);
                     }
-                    slot.Update(move, (byte)PBEUtils.RNG.Next(settings.MaxPPUps + 1));
+                    slot.Update(move, (byte)PBEUtils.RandomInt(0, settings.MaxPPUps));
                 }
             }
             SetEditables();

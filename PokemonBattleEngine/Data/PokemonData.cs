@@ -572,7 +572,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static PBEPokemonData GetData(PBESpecies species)
         {
-            string json = PBEUtils.DatabaseConnection.Query<SearchResult>($"SELECT * FROM PokemonData WHERE Id={(uint)species}")[0].Json;
+            string json = PBEUtils.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Id={(uint)species}")[0].Json;
             using (var reader = new JsonTextReader(new StringReader(json)))
             {
                 reader.Read(); // {

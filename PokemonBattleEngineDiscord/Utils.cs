@@ -59,7 +59,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
         public static Color RandomColor()
         {
-            return PBEUtils.Sample(TypeToColor.Values);
+            return PBEUtils.RandomElement(TypeToColor.Values);
         }
 
         private static readonly Dictionary<string, bool> urlCache = new Dictionary<string, bool>();
