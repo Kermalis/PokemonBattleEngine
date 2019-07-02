@@ -7,7 +7,6 @@ using System.Linq;
 namespace Kermalis.PokemonBattleEngine.Data
 {
     // TODO: Set settings and listen for changes
-    // TODO: IsMoveEditable (if I set slot 3 to none, slot 4 should not be editable)
     public sealed class PBEMovesetBuilder : INotifyPropertyChanged
     {
         public sealed class PBEMoveSlot : INotifyPropertyChanged
@@ -28,6 +27,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 get => move;
                 set => parent.Set(slotIndex, value, null);
             }
+            public bool IsMoveEditable { get; private set; }
             private byte ppUps;
             public byte PPUps
             {
@@ -40,6 +40,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 this.parent = parent;
                 this.slotIndex = slotIndex;
+                IsMoveEditable = slotIndex < 2;
                 Allowed = new PBEReadOnlyObservableCollection<PBEMove>();
             }
 
@@ -59,6 +60,14 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     this.ppUps = ppUps.Value;
                     OnPropertyChanged(nameof(PPUps));
+                }
+            }
+            internal void SetEditable(bool value)
+            {
+                if (value != IsMoveEditable)
+                {
+                    IsMoveEditable = value;
+                    OnPropertyChanged(nameof(IsMoveEditable));
                 }
             }
             internal void RemoveIfNotAllowed()
@@ -160,6 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 i = 0;
             }
+            // Moves after 1 will all have the same allowed pool, so there is no need to check for PBEMove.None between other moves.
             IEnumerable<PBEMove> legalMoves = PBELegalityChecker.GetLegalMoves(species, level);
             for (; i < settings.NumMoves; i++)
             {
@@ -177,14 +187,22 @@ namespace Kermalis.PokemonBattleEngine.Data
                 slot.RemoveIfNotAllowedSilent();
             }
         }
+        private void SetEditables()
+        {
+            for (int i = 2; i < settings.NumMoves; i++)
+            {
+                MoveSlots[i].SetEditable(MoveSlots[i - 1].Move != PBEMove.None);
+            }
+        }
 
         /// <summary>Sets every move slot excluding the first to <see cref="PBEMove.None"/> with 0 PP-Ups.</summary>
         public void Clear()
         {
-            for (int i = settings.NumMoves - 1; i >= 1; i--)
+            for (int i = 1; i < settings.NumMoves; i++)
             {
                 MoveSlots[i].Update(PBEMove.None, 0);
             }
+            SetEditables();
         }
         /// <summary>Randomizes the move and PP-Ups in each slot without creating duplicate moves.</summary>
         public void Randomize()
@@ -212,6 +230,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     slot.Update(move, (byte)PBEUtils.RNG.Next(settings.MaxPPUps + 1));
                 }
             }
+            SetEditables();
         }
         /// <summary>Sets a specific move slot's move and/or PP-Ups. If using a for loop to set all values and the moveset is not already cleared, you should call <see cref="Clear"/> first so that move indexes do not move behind your iterator as you change moves.</summary>
         /// <param name="slotIndex">The index of the slot to change.</param>
@@ -236,6 +255,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                         {
                             throw new ArgumentOutOfRangeException(nameof(move));
                         }
+                        if (!slot.IsMoveEditable)
+                        {
+                            throw new InvalidOperationException($"Slot {slotIndex}'s move cannot be changed because there is no move in slot {slotIndex - 1}.");
+                        }
                         if (!slot.Allowed.Contains(mVal))
                         {
                             throw new ArgumentOutOfRangeException(nameof(move), $"Slot {slotIndex} does not allow {mVal}.");
@@ -255,12 +278,16 @@ namespace Kermalis.PokemonBattleEngine.Data
                                     if (iSlot.Move == mVal)
                                     {
                                         // If slot 0 is Snore and slot 3 is None but is trying to become Snore, do nothing because the first Snore is in an earlier slot and swapping None to an earlier slot makes no sense
-                                        if (!(old == PBEMove.None && i < slotIndex))
+                                        if (old == PBEMove.None && i < slotIndex)
+                                        {
+                                            goto finish;
+                                        }
+                                        else
                                         {
                                             UpdateSlot();
                                             iSlot.Update(old, old == PBEMove.None ? 0 : (byte?)null);
+                                            goto editables;
                                         }
-                                        goto bottom;
                                     }
                                 }
                             }
@@ -275,7 +302,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                                 {
                                     slot.Update(iSlot.Move, null);
                                     iSlot.Update(PBEMove.None, 0);
-                                    goto bottom;
+                                    goto editables;
                                 }
                             }
                         }
@@ -283,7 +310,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                         // "move" is not None and there is no other slot with "move"
                         // "move" is None and there is no slot after "slotIndex" with a move
                         UpdateSlot();
-                    bottom:
+                    editables:
+                        SetEditables();
+                    finish:
                         ;
                     }
                 }
