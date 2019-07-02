@@ -274,6 +274,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.Moveset), $"Each PP-Up must belong to a move and cannot exceed {settings.MaxPPUps}.");
             }
+            for (int i = 0; i < settings.NumMoves; i++)
+            {
+                if (i != 0 && shell.Moveset.MoveSlots[i].Move != PBEMove.None && shell.Moveset.MoveSlots[i - 1].Move == PBEMove.None)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(shell.Moveset), $"Move slot {i} cannot have a move unless slot {i - 1} has a move.");
+                }
+            }
 
             // Validate form-specific requirements
             switch (shell.Species)
