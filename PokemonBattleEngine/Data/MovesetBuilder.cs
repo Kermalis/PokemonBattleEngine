@@ -6,11 +6,9 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: Listen for changes to settings
-    // TODO: Cannot set slot 3 if slot 2 is none, and cannot clear slot 2 if slot 3 is not none
-    // TODO: Clear() is just temporary. If I don't use it, then trying to set a slot to a move that is in another slot would crash, and there is a high chance since this starts with random moves
-    // TODO: No need to create a new one of these each time the species/level changes honestly
-    public sealed class PBEMovesetBuilder
+    // TODO: Set settings and listen for changes
+    // TODO: IsMoveEditable (if I set slot 3 to none, slot 4 should not be editable)
+    public sealed class PBEMovesetBuilder : INotifyPropertyChanged
     {
         public sealed class PBEMoveSlot : INotifyPropertyChanged
         {
@@ -23,7 +21,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             private readonly PBEMovesetBuilder parent;
             private readonly int slotIndex;
 
-            public PBEReadOnlyObservableCollection<PBEMove> Allowed { get; private set; }
+            public PBEReadOnlyObservableCollection<PBEMove> Allowed { get; }
             private PBEMove move;
             public PBEMove Move
             {
@@ -42,15 +40,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 this.parent = parent;
                 this.slotIndex = slotIndex;
+                Allowed = new PBEReadOnlyObservableCollection<PBEMove>();
             }
 
-            internal void Update(List<PBEMove> allowed, PBEMove? move, byte? ppUps)
+            internal void Update(PBEMove? move, byte? ppUps)
             {
-                if (allowed != null)
-                {
-                    Allowed = new PBEReadOnlyObservableCollection<PBEMove>(allowed);
-                    OnPropertyChanged(nameof(Allowed));
-                }
                 if (move.HasValue && this.move != move.Value)
                 {
                     PBEMove old = this.move;
@@ -67,75 +61,162 @@ namespace Kermalis.PokemonBattleEngine.Data
                     OnPropertyChanged(nameof(PPUps));
                 }
             }
+            internal void RemoveIfNotAllowed()
+            {
+                if (!Allowed.Contains(move))
+                {
+                    Move = Allowed[0];
+                }
+            }
+            internal void RemoveIfNotAllowedSilent()
+            {
+                if (!Allowed.Contains(move))
+                {
+                    PBEMove m = Allowed[0];
+                    Update(m, m == PBEMove.None ? 0 : (byte?)null);
+                }
+            }
         }
 
-        private readonly PBESpecies species;
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private PBESpecies species;
+        public PBESpecies Species
+        {
+            get => species;
+            set
+            {
+                if (species != value)
+                {
+                    PBEPokemonShell.ValidateSpecies(value);
+                    species = value;
+                    OnPropertyChanged(nameof(Species));
+                    SetAlloweds();
+                }
+            }
+        }
+        private byte level;
+        public byte Level
+        {
+            get => level;
+            set
+            {
+                if (level != value)
+                {
+                    PBEPokemonShell.ValidateLevel(value, settings);
+                    level = value;
+                    OnPropertyChanged(nameof(Level));
+                    SetAlloweds();
+                }
+            }
+        }
         private readonly PBESettings settings;
-        private readonly IEnumerable<PBEMove> legalMoves;
         public ReadOnlyCollection<PBEMoveSlot> MoveSlots { get; }
 
-        public PBEMovesetBuilder(PBESpecies species, byte level, PBESettings settings)
+        /// <summary>Creates a new <see cref="PBEMovesetBuilder"/> object with the specified traits.</summary>
+        /// <param name="species">The species of the Pokémon that this moveset will be built for.</param>
+        /// <param name="level">The level of the Pokémon that this moveset will be built for.</param>
+        /// <param name="settings">The settings that will be used to evaluate the <see cref="PBEMovesetBuilder"/>.</param>
+        /// <param name="randomize">True if <see cref="Randomize"/> should be called, False if the move slots use their default values.</param>
+        public PBEMovesetBuilder(PBESpecies species, byte level, PBESettings settings, bool randomize)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            PBEPokemonShell.ValidateLevel(level, settings);
+            PBEPokemonShell.ValidateSpecies(species);
             this.species = species;
+            this.level = level;
             this.settings = settings;
-            legalMoves = PBELegalityChecker.GetLegalMoves(species, level);
             var moves = new PBEMoveSlot[settings.NumMoves];
             for (int i = 0; i < settings.NumMoves; i++)
             {
                 moves[i] = new PBEMoveSlot(this, i);
             }
             MoveSlots = new ReadOnlyCollection<PBEMoveSlot>(moves);
-            Randomize();
+            SetAlloweds();
+            if (randomize)
+            {
+                Randomize();
+            }
         }
 
-        public void Randomize()
+        private void SetAlloweds()
         {
-            byte MakePP()
-            {
-                return (byte)PBEUtils.RNG.Next(settings.MaxPPUps + 1);
-            }
-
             int i;
-            var used = new List<PBEMove>();
             if (species == PBESpecies.Keldeo_Resolute)
             {
-                used.Add(PBEMove.SecretSword);
-                MoveSlots[0].Update(new List<PBEMove>() { PBEMove.SecretSword }, PBEMove.SecretSword, MakePP());
+                PBEMoveSlot slot = MoveSlots[0];
+                slot.Allowed.Reset(new[] { PBEMove.SecretSword });
+                slot.RemoveIfNotAllowedSilent();
                 i = 1;
             }
             else
             {
                 i = 0;
             }
+            IEnumerable<PBEMove> legalMoves = PBELegalityChecker.GetLegalMoves(species, level);
             for (; i < settings.NumMoves; i++)
             {
-                var allowed = new List<PBEMove>(legalMoves.Except(used));
-                bool none = allowed.Count == 0;
-                PBEMove move;
-                byte ppUps;
-                if (none)
-                {
-                    move = PBEMove.None;
-                    ppUps = 0;
-                }
-                else
-                {
-                    move = allowed.Sample();
-                    ppUps = MakePP();
-                    used.Add(move);
-                    for (int j = 0; j < i; j++)
-                    {
-                        MoveSlots[j].Allowed.Remove(move);
-                    }
-                }
+                PBEMoveSlot slot = MoveSlots[i];
+                var allowed = new List<PBEMove>(legalMoves);
                 if (i != 0)
                 {
                     allowed.Insert(0, PBEMove.None);
                 }
-                MoveSlots[i].Update(allowed, move, ppUps);
+                if (species == PBESpecies.Keldeo_Resolute)
+                {
+                    allowed.Remove(PBEMove.SecretSword);
+                }
+                slot.Allowed.Reset(allowed);
+                slot.RemoveIfNotAllowedSilent();
             }
         }
 
+        /// <summary>Sets every move slot excluding the first to <see cref="PBEMove.None"/> with 0 PP-Ups.</summary>
+        public void Clear()
+        {
+            for (int i = settings.NumMoves - 1; i >= 1; i--)
+            {
+                MoveSlots[i].Update(PBEMove.None, 0);
+            }
+        }
+        /// <summary>Randomizes the move and PP-Ups in each slot without creating duplicate moves.</summary>
+        public void Randomize()
+        {
+            var blacklist = new List<PBEMove>(settings.NumMoves) { PBEMove.None };
+            for (int i = 0; i < settings.NumMoves; i++)
+            {
+                PBEMoveSlot slot = MoveSlots[i];
+                PBEMove[] allowed = slot.Allowed.Except(blacklist).ToArray();
+                if (allowed.Length == 0)
+                {
+                    for (int j = i; j < settings.NumMoves; j++)
+                    {
+                        MoveSlots[j].Update(PBEMove.None, 0);
+                    }
+                    break;
+                }
+                else
+                {
+                    PBEMove move = allowed.Sample();
+                    if (i < settings.NumMoves - 1)
+                    {
+                        blacklist.Add(move);
+                    }
+                    slot.Update(move, (byte)PBEUtils.RNG.Next(settings.MaxPPUps + 1));
+                }
+            }
+        }
+        /// <summary>Sets a specific move slot's move and/or PP-Ups. If using a for loop to set all values and the moveset is not already cleared, you should call <see cref="Clear"/> first so that move indexes do not move behind your iterator as you change moves.</summary>
+        /// <param name="slotIndex">The index of the slot to change.</param>
+        /// <param name="move">The move if it needs changing, null if the current move will remain unchanged.</param>
+        /// <param name="ppUps">The PP-Ups if it needs changing, null if the current PP-Ups will remain unchanged.</param>
         public void Set(int slotIndex, PBEMove? move, byte? ppUps)
         {
             if (slotIndex < 0 || slotIndex >= settings.NumMoves)
@@ -159,22 +240,51 @@ namespace Kermalis.PokemonBattleEngine.Data
                         {
                             throw new ArgumentOutOfRangeException(nameof(move), $"Slot {slotIndex} does not allow {mVal}.");
                         }
-                        slot.Update(null, mVal, mVal == PBEMove.None ? 0 : (byte?)null);
-                        for (int i = 0; i < settings.NumMoves; i++)
+                        void UpdateSlot()
                         {
-                            if (i != slotIndex)
+                            slot.Update(mVal, mVal == PBEMove.None ? 0 : (byte?)null);
+                        }
+                        if (mVal != PBEMove.None)
+                        {
+                            // If "move" is in another slot, place "slotIndex"'s old move at the other slot
+                            for (int i = 0; i < settings.NumMoves; i++)
                             {
-                                PBEReadOnlyObservableCollection<PBEMove> a = MoveSlots[i].Allowed;
-                                if (mVal != PBEMove.None)
+                                if (i != slotIndex)
                                 {
-                                    a.Remove(mVal);
-                                }
-                                if (old != PBEMove.None && !(species == PBESpecies.Keldeo_Resolute && i == 0))
-                                {
-                                    a.Add(old);
+                                    PBEMoveSlot iSlot = MoveSlots[i];
+                                    if (iSlot.Move == mVal)
+                                    {
+                                        // If slot 0 is Snore and slot 3 is None but is trying to become Snore, do nothing because the first Snore is in an earlier slot and swapping None to an earlier slot makes no sense
+                                        if (!(old == PBEMove.None && i < slotIndex))
+                                        {
+                                            UpdateSlot();
+                                            iSlot.Update(old, old == PBEMove.None ? 0 : (byte?)null);
+                                        }
+                                        goto bottom;
+                                    }
                                 }
                             }
                         }
+                        else
+                        {
+                            // If "move" is None and a slot after "slotIndex" is not None, then place None at the other slot instead and place the other slot's move at "slotIndex"
+                            for (int i = settings.NumMoves - 1; i > slotIndex; i--)
+                            {
+                                PBEMoveSlot iSlot = MoveSlots[i];
+                                if (iSlot.Move != PBEMove.None)
+                                {
+                                    slot.Update(iSlot.Move, null);
+                                    iSlot.Update(PBEMove.None, 0);
+                                    goto bottom;
+                                }
+                            }
+                        }
+                        // This gets reached if:
+                        // "move" is not None and there is no other slot with "move"
+                        // "move" is None and there is no slot after "slotIndex" with a move
+                        UpdateSlot();
+                    bottom:
+                        ;
                     }
                 }
                 if (ppUps.HasValue)
@@ -184,26 +294,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         if (pVal > settings.MaxPPUps)
                         {
-                            throw new ArgumentOutOfRangeException(nameof(ppUps), $"\"{nameof(ppUps)}\" cannot exceed {settings.MaxPPUps}.");
+                            throw new ArgumentOutOfRangeException(nameof(ppUps), $"\"{nameof(ppUps)}\" cannot exceed \"{nameof(settings.MaxPPUps)}\" ({settings.MaxPPUps}).");
                         }
                         if (!slot.IsPPUpsEditable)
                         {
                             throw new InvalidOperationException($"Slot {slotIndex}'s PP-Ups cannot be changed because it has no move.");
                         }
-                        slot.Update(null, null, pVal);
+                        slot.Update(null, pVal);
                     }
                 }
             }
             else
             {
                 throw new ArgumentException($"\"{nameof(move)}\" or \"{nameof(ppUps)}\" has to have a value to set.");
-            }
-        }
-        public void Clear()
-        {
-            for (int i = settings.NumMoves - 1; i >= 1; i--)
-            {
-                Set(i, PBEMove.None, null);
             }
         }
     }

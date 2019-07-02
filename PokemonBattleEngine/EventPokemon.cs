@@ -61,7 +61,7 @@ namespace Kermalis.PokemonBattleEngine
             p.Moveset.Clear();
             for (int i = 0; i < settings.NumMoves; i++)
             {
-                p.Moveset.Set(i, moves[i], null);
+                p.Moveset.Set(i, moves[i], (byte)PBEUtils.RNG.Next(settings.MaxPPUps + 1));
             }
             return p;
         }

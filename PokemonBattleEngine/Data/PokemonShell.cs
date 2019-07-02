@@ -9,8 +9,6 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: Validate setter values (and constructor)
-    // TODO: Way more constructors? The way we load from json and bytes is messy
     // TODO: Set settings and listen to changes
     public sealed class PBEPokemonShell : INotifyPropertyChanged
     {
@@ -26,6 +24,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         private readonly PBESettings settings;
 
+        private PBEPokemonData pData;
         public ReadOnlyCollection<PBEAbility> SelectableAbilities { get; private set; }
         private PBEGender[] selectableGenders;
         public ReadOnlyCollection<PBEGender> SelectableGenders { get; private set; }
@@ -44,7 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBESpecies old = species;
                     species = value;
                     OnPropertyChanged(nameof(Species));
-                    SpeciesChanged(old);
+                    OnSpeciesChanged(old);
                 }
             }
         }
@@ -56,7 +55,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (nickname != value)
                 {
-                    ValidateNickname(value);
+                    ValidateNickname(value, settings);
                     nickname = value;
                     OnPropertyChanged(nameof(Nickname));
                 }
@@ -70,10 +69,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (level != value)
                 {
-                    ValidateLevel(value);
+                    ValidateLevel(value, settings);
                     level = value;
                     OnPropertyChanged(nameof(Level));
-                    UpdateMoves();
+                    Moveset.Level = value;
                 }
             }
         }
@@ -168,20 +167,26 @@ namespace Kermalis.PokemonBattleEngine.Data
             this.settings = settings;
         }
         public PBEPokemonShell(PBESpecies species, byte level, PBESettings settings)
-            : this(settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            ValidateLevel(level, settings);
+            ValidateSpecies(species);
+            this.settings = settings;
             this.species = species;
             this.level = level;
             friendship = (byte)PBEUtils.RNG.Next(byte.MaxValue + 1);
             shiny = PBEUtils.RNG.NextShiny();
             nature = AllNatures.Sample();
-            EffortValues = new PBEEffortValueCollection(settings);
-            IndividualValues = new PBEIndividualValueCollection(settings);
-            SpeciesChanged(0);
+            EffortValues = new PBEEffortValueCollection(settings, true);
+            IndividualValues = new PBEIndividualValueCollection(settings, true);
+            OnSpeciesChanged(0);
         }
         private void SetSelectable()
         {
-            var pData = PBEPokemonData.GetData(species);
+            pData = PBEPokemonData.GetData(species);
             SelectableAbilities = pData.Abilities;
             OnPropertyChanged(nameof(SelectableAbilities));
             switch (pData.GenderRatio)
@@ -230,21 +235,21 @@ namespace Kermalis.PokemonBattleEngine.Data
             SelectableItems = new ReadOnlyCollection<PBEItem>(selectableItems.ToArray());
             OnPropertyChanged(nameof(SelectableItems));
         }
-        private void SpeciesChanged(PBESpecies oldSpecies)
+        private void OnSpeciesChanged(PBESpecies oldSpecies)
         {
             SetSelectable();
-            // Change nickname if previous nickname was the species name
+            // Change Nickname if the previous nickname was the species name
             if (oldSpecies == 0 || nickname == PBELocalizedString.GetSpeciesName(oldSpecies).FromUICultureInfo())
             {
                 Nickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo();
             }
-            if (!SelectableAbilities.Contains(ability))
+            if (oldSpecies == 0 || !SelectableAbilities.Contains(ability))
             {
                 Ability = SelectableAbilities.Sample();
             }
             if (oldSpecies == 0 || !SelectableGenders.Contains(gender))
             {
-                Gender = PBEUtils.RNG.NextGender(PBEPokemonData.GetData(species).GenderRatio);
+                Gender = PBEUtils.RNG.NextGender(pData.GenderRatio);
             }
             if (oldSpecies == 0 || !SelectableItems.Contains(item))
             {
@@ -252,46 +257,29 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             if (oldSpecies == 0)
             {
-                Moveset = new PBEMovesetBuilder(species, level, settings);
+                Moveset = new PBEMovesetBuilder(species, level, settings, true);
             }
             else
             {
-                UpdateMoves();
+                Moveset.Species = species;
             }
-        }
-        private void UpdateMoves()
-        {
-            PBEMove[] moves = Moveset.MoveSlots.Select(m => m.Move).ToArray();
-            byte[] ppUps = Moveset.MoveSlots.Select(m => m.PPUps).ToArray();
-            Moveset = new PBEMovesetBuilder(species, level, settings);
-            Moveset.Clear();
-            for (int i = 0; i < settings.NumMoves; i++)
-            {
-                PBEMovesetBuilder.PBEMoveSlot slot = Moveset.MoveSlots[i];
-                PBEMove move = moves[i];
-                if (slot.Allowed.Contains(move))
-                {
-                    Moveset.Set(i, move, slot.IsPPUpsEditable ? ppUps[i] : (byte?)null);
-                }
-            }
-            OnPropertyChanged(nameof(Moveset));
         }
 
-        private void ValidateSpecies(PBESpecies value)
+        internal static void ValidateSpecies(PBESpecies value)
         {
             if (!AllSpecies.Contains(value))
             {
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
         }
-        private void ValidateNickname(string value)
+        internal static void ValidateNickname(string value, PBESettings settings)
         {
             if (value.Length > settings.MaxPokemonNameLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(Nickname)} cannot have more than {nameof(settings.MaxPokemonNameLength)} ({settings.MaxPokemonNameLength}) characters.");
             }
         }
-        private void ValidateLevel(byte value)
+        internal static void ValidateLevel(byte value, PBESettings settings)
         {
             if (value < settings.MinLevel || value > settings.MaxLevel)
             {
@@ -305,7 +293,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
         }
-        private void ValidateNature(PBENature value)
+        internal static void ValidateNature(PBENature value)
         {
             if (!AllNatures.Contains(value))
             {
@@ -314,7 +302,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         private void ValidateGender(PBEGender value)
         {
-            if (Array.IndexOf(selectableGenders, value) == -1)
+            if (!SelectableGenders.Contains(value))
             {
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
@@ -343,22 +331,22 @@ namespace Kermalis.PokemonBattleEngine.Data
                     friendship = pkmnObject[nameof(Friendship)].Value<byte>(),
                     shiny = pkmnObject[nameof(Shiny)].Value<bool>()
                 };
+                byte level = pkmnObject[nameof(Level)].Value<byte>();
+                ValidateLevel(level, settings);
+                pkmn.level = level;
+                string nickname = pkmnObject[nameof(Nickname)].Value<string>();
+                ValidateNickname(nickname, settings);
+                pkmn.nickname = nickname;
+                var nature = (PBENature)Enum.Parse(typeof(PBENature), pkmnObject[nameof(Nature)].Value<string>(), true); // TODO: GetNatureByName
+                ValidateNature(nature);
+                pkmn.nature = nature;
                 PBESpecies species = PBELocalizedString.GetSpeciesByName(pkmnObject[nameof(Species)].Value<string>()).Value;
-                pkmn.ValidateSpecies(species);
+                ValidateSpecies(species);
                 pkmn.species = species;
                 pkmn.SetSelectable();
-                string nickname = pkmnObject[nameof(Nickname)].Value<string>();
-                pkmn.ValidateNickname(nickname);
-                pkmn.nickname = nickname;
-                byte level = pkmnObject[nameof(Level)].Value<byte>();
-                pkmn.ValidateLevel(level);
-                pkmn.level = level;
                 PBEAbility ability = PBELocalizedString.GetAbilityByName(pkmnObject[nameof(Ability)].Value<string>()).Value;
                 pkmn.ValidateAbility(ability);
                 pkmn.ability = ability;
-                var nature = (PBENature)Enum.Parse(typeof(PBENature), pkmnObject[nameof(Nature)].Value<string>(), true); // TODO: GetNatureByName
-                pkmn.ValidateNature(nature);
-                pkmn.nature = nature;
                 var gender = (PBEGender)Enum.Parse(typeof(PBEGender), pkmnObject[nameof(Gender)].Value<string>(), true); // TODO: GetGenderByName
                 pkmn.ValidateGender(gender);
                 pkmn.gender = gender;
@@ -384,8 +372,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     wObject[nameof(PBEStat.Speed)].Value<byte>()
                 );
                 var mObject = (JArray)pkmnObject[nameof(Moveset)];
-                pkmn.Moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings);
-                pkmn.Moveset.Clear();
+                pkmn.Moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings, false);
                 for (int j = 0; j < settings.NumMoves; j++)
                 {
                     wObject = mObject[j];
@@ -480,13 +467,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             bytes.AddRange(BitConverter.GetBytes((ushort)item));
             bytes.AddRange(EffortValues.Select(ev => ev.Value));
             bytes.AddRange(IndividualValues.Select(iv => iv.Value));
-            for (int i = 0; i < settings.NumMoves; i++)
+            foreach (PBEMovesetBuilder.PBEMoveSlot slot in Moveset.MoveSlots)
             {
-                bytes.AddRange(BitConverter.GetBytes((ushort)Moveset.MoveSlots[i].Move));
+                bytes.AddRange(BitConverter.GetBytes((ushort)slot.Move));
+                bytes.Add(slot.PPUps);
             }
-            bytes.AddRange(Moveset.MoveSlots.Select(m => m.PPUps));
             return bytes.ToArray();
         }
+        // TODO: Validate
+        // TODO: SetSelectable (this shell would be unusable once reconstructed with this method)
         internal static PBEPokemonShell FromBytes(BinaryReader r, PBESettings settings)
         {
             var pkmn = new PBEPokemonShell(settings)
@@ -503,17 +492,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                 EffortValues = new PBEEffortValueCollection(settings, r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte()),
                 IndividualValues = new PBEIndividualValueCollection(settings, r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte())
             };
-            var moves = new PBEMove[settings.NumMoves];
+            pkmn.Moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings, false);
             for (int i = 0; i < settings.NumMoves; i++)
             {
-                moves[i] = (PBEMove)r.ReadUInt16();
-            }
-            byte[] ppUps = r.ReadBytes(settings.NumMoves);
-            pkmn.Moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings);
-            pkmn.Moveset.Clear();
-            for (int i = 0; i < settings.NumMoves; i++)
-            {
-                pkmn.Moveset.Set(i, moves[i], ppUps[i]);
+                pkmn.Moveset.Set(i, (PBEMove)r.ReadUInt16(), r.ReadByte());
             }
             return pkmn;
         }
