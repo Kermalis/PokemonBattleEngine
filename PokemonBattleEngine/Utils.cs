@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Kermalis.PokemonBattleEngine
@@ -24,6 +25,8 @@ namespace Kermalis.PokemonBattleEngine
                 return Convert.ToString(arg0).Equals(Convert.ToString(arg1), StringComparison.InvariantCultureIgnoreCase);
             }
         }
+        /// <summary>Creates a connection to PokemonBattleEngine.db. This must be called only once; before the database is used.</summary>
+        /// <param name="databasePath">The path to the folder containing PokemonBattleEngine.db.</param>
         public static void CreateDatabaseConnection(string databasePath)
         {
             if (databaseConnection != null)
@@ -39,28 +42,45 @@ namespace Kermalis.PokemonBattleEngine
             }
         }
 
-        private static readonly Random rand = new Random();
+        /// <summary>
+        /// When I used <see cref="Random"/>, it would only take 55 consecutive calls to <see cref="RandomElement{T}(IEnumerable{T})"/> with a collection of ints to be able to predict future values.
+        /// You would also be able to predict with more work if you called <see cref="RandomSpecies"/> or <see cref="RandomGender(PBEGenderRatio)"/>.
+        /// I do not see how that would help attackers because the host would be able to modify the game however it desires anyway.
+        /// For these reasons, I decided to have the random functions use the private <see cref="Random"/> without the need to pass one in as a parameter.
+        /// Although <see cref="RNGCryptoServiceProvider"/> is slower and does not allow seeds for obvious reasons, I did not use seeds with the <see cref="Random"/> implementation, and Pokémon battles are turn based so the speed doesn't hurt much.
+        /// I decided to switch from <see cref="Random"/> to <see cref="RNGCryptoServiceProvider"/> because I did not need the better speed or the seeded constructor and because <see cref="RNGCryptoServiceProvider"/> provides better random outputs.
+        /// </summary>
+        private static readonly RNGCryptoServiceProvider rand = new RNGCryptoServiceProvider();
+        /// <summary>Creates an array of <see cref="PBEPokemonShell"/>s each with completely random properties. The amount to create is <see cref="PBESettings.MaxPartySize"/>.</summary>
+        /// <param name="settings">The settings to use.</param>
+        /// <param name="setToMaxLevel">True if <see cref="PBEPokemonShell.Level"/> will be set to <see cref="PBESettings.MaxLevel"/>.</param>
         public static PBEPokemonShell[] CreateCompletelyRandomTeam(PBESettings settings, bool setToMaxLevel)
         {
             var team = new PBEPokemonShell[settings.MaxPartySize];
             for (int i = 0; i < settings.MaxPartySize; i++)
             {
-                team[i] = new PBEPokemonShell(RandomSpecies(), setToMaxLevel ? settings.MaxLevel : (byte)rand.Next(settings.MinLevel, settings.MaxLevel + 1), settings);
+                team[i] = new PBEPokemonShell(RandomSpecies(), setToMaxLevel ? settings.MaxLevel : (byte)RandomInt(settings.MinLevel, settings.MaxLevel), settings);
             }
             return team;
         }
         internal static bool RandomBool()
         {
-            return rand.NextDouble() < 0.5;
+            return RandomInt(0, 1) == 1;
         }
         internal static bool RandomBool(int chanceNumerator, int chanceDenominator)
         {
-            return rand.Next(chanceDenominator) < chanceNumerator;
+            return RandomInt(0, chanceDenominator - 1) < chanceNumerator;
         }
-        public static T RandomElement<T>(this IEnumerable<T> source)
+        internal static T RandomElement<T>(this IList<T> source)
         {
-            return source.ElementAt(rand.Next(0, source.Count()));
+            int count = source.Count - 1;
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
+            }
+            return source[RandomInt(0, count)];
         }
+        /// <summary>Returns a random <see cref="PBEGender"/> for the given <paramref name="genderRatio"/>.</summary>
         public static PBEGender RandomGender(PBEGenderRatio genderRatio)
         {
             switch (genderRatio)
@@ -75,18 +95,33 @@ namespace Kermalis.PokemonBattleEngine
                 default: throw new ArgumentOutOfRangeException(nameof(genderRatio));
             }
         }
+        /// <summary>Returns a random int between the inclusive <paramref name="minValue"/> and inclusive <paramref name="maxValue"/>.</summary>
         internal static int RandomInt(int minValue, int maxValue)
         {
-            return rand.Next(minValue, maxValue + 1);
+            if (minValue > maxValue)
+            {
+                throw new ArgumentOutOfRangeException(nameof(minValue), $"\"{nameof(minValue)}\" cannot exceed \"{nameof(maxValue)}\".");
+            }
+            uint scale = uint.MaxValue;
+            byte[] bytes = new byte[sizeof(uint)];
+            while (scale == uint.MaxValue) // "d" should not be 1.0
+            {
+                rand.GetBytes(bytes);
+                scale = BitConverter.ToUInt32(bytes, 0);
+            }
+            double d = scale / (double)uint.MaxValue;
+            return (int)(minValue + (((long)maxValue + 1 - minValue) * d)); // Remove "+ 1" for exclusive maxValue
         }
+        /// <summary>Returns a random shiny value.</summary>
         public static bool RandomShiny()
         {
             return RandomBool(8, 65536);
         }
+        /// <summary>Returns a random <see cref="PBESpecies"/> with a random form. All species are weighted equally. Forms that cannot be maintained outside of battle are not considered.</summary>
         public static PBESpecies RandomSpecies()
         {
-            IEnumerable<PBESpecies> allSpecies = PBEPokemonShell.AllSpecies.Where(s => ((uint)s >> 0x10) == 0); // All species with form ID 0
-            PBESpecies species = allSpecies.RandomElement();
+            PBESpecies[] allSpecies = PBEPokemonShell.AllSpecies.Where(s => ((uint)s >> 0x10) == 0).ToArray(); // All species with form ID 0
+            PBESpecies species = RandomElement(allSpecies);
             int numForms;
             switch (species)
             {
@@ -115,7 +150,7 @@ namespace Kermalis.PokemonBattleEngine
                 case PBESpecies.Wormadam_Plant: numForms = 3; break;
                 default: numForms = 1; break;
             }
-            return (PBESpecies)(((ushort)species) | (uint)(rand.Next(numForms) << 0x10)); // Change form ID to a random form
+            return (PBESpecies)(((ushort)species) | (uint)(RandomInt(0, numForms - 1) << 0x10)); // Change form ID to a random form
         }
 
         public static string Andify<T>(this IEnumerable<T> source)
@@ -190,20 +225,19 @@ namespace Kermalis.PokemonBattleEngine
             }
             return list;
         }
-        /// <summary>Shuffles the items in a list using the Fisher-Yates Shuffle algorithm.</summary>
-        /// <param name="source">The list to shuffle.</param>
+        /// <summary>Shuffles the items in <paramref name="source"/> using the Fisher-Yates Shuffle algorithm.</summary>
         internal static void Shuffle<T>(this IList<T> source)
         {
-            for (int a = 0; a < source.Count - 1; a++)
+            int count = source.Count - 1;
+            for (int a = 0; a < count; a++)
             {
-                int b = rand.Next(a, source.Count);
+                int b = RandomInt(a, count);
                 T value = source[a];
                 source[a] = source[b];
                 source[b] = value;
             }
         }
-        /// <summary>Takes a string and removes all invalid file name characters from it.</summary>
-        /// <param name="fileName">The string to clean.</param>
+        /// <summary>Removes all invalid file name characters from <paramref name="fileName"/>.</summary>
         internal static string ToSafeFileName(string fileName)
         {
             foreach (char c in Path.GetInvalidFileNameChars())

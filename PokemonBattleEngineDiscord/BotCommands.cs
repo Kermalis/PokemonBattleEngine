@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEAbility ability = nAbility.Value;
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
-                        .WithColor(PBEUtils.RandomElement(Utils.TypeToColor).Value)
+                        .WithColor(Utils.RandomColor())
                         .WithTitle(PBELocalizedString.GetAbilityName(ability).English)
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetAbilityDescription(ability).English.Replace('\n', ' '));
@@ -191,7 +191,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
-                        .WithColor(Utils.GetColor(species))
+                        .WithColor(Utils.GetColor(pData.Type1, pData.Type2))
                         .WithTitle($"{PBELocalizedString.GetSpeciesName(species).English} - {PBELocalizedString.GetSpeciesCategory(species).English}")
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetSpeciesEntry(species).English.Replace('\n', ' '))

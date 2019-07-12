@@ -578,14 +578,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBEAbility.Moody:
                         {
                             IEnumerable<PBEStat> allStats = Enum.GetValues(typeof(PBEStat)).Cast<PBEStat>().Except(new[] { PBEStat.HP });
-                            IEnumerable<PBEStat> statsThatCanGoUp = allStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange);
-                            PBEStat? upStat = statsThatCanGoUp.Count() == 0 ? (PBEStat?)null : statsThatCanGoUp.RandomElement();
+                            PBEStat[] statsThatCanGoUp = allStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
+                            PBEStat? upStat = statsThatCanGoUp.Length == 0 ? (PBEStat?)null : statsThatCanGoUp.RandomElement();
                             var statsThatCanGoDown = allStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
                             if (upStat.HasValue)
                             {
                                 statsThatCanGoDown.Remove(upStat.Value);
                             }
-                            PBEStat? downStat = statsThatCanGoDown.Count() == 0 ? (PBEStat?)null : statsThatCanGoDown.RandomElement();
+                            PBEStat? downStat = statsThatCanGoDown.Count == 0 ? (PBEStat?)null : statsThatCanGoDown.RandomElement();
                             if (upStat.HasValue || downStat.HasValue)
                             {
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
@@ -3804,7 +3804,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Record before the called move is recorded
             RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
 
-            PBEMove calledMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).RandomElement();
+            PBEMove calledMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).ToArray().RandomElement();
             calledFromOtherMove = true;
             UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
             calledFromOtherMove = false;
@@ -3919,8 +3919,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        IEnumerable<PBEPokemon> possibleSwitcheroonies = target.Team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0);
-                        if (possibleSwitcheroonies.Count() == 0)
+                        PBEPokemon[] possibleSwitcheroonies = target.Team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
+                        if (possibleSwitcheroonies.Length == 0)
                         {
                             success.FailReason = PBEFailReason.Default;
                             BroadcastMoveFailed(user, target, PBEFailReason.Default);
