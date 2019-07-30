@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:gif="clr-namespace:AvaloniaGif;assembly=AvaloniaGif"
              xmlns:infrastructure="clr-namespace:Kermalis.PokemonBattleEngineClient.Infrastructure;assembly=PokemonBattleEngineClient"
+             xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient"
              x:Class="Kermalis.PokemonBattleEngineClient.Views.TeamBuilderView"
              Background="#313131">
   <UserControl.Styles>
@@ -118,7 +119,7 @@
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <NumericUpDown Width="60" Minimum="0" ClipValueToMinMax="True" Value="{Binding Value}"/>
+              <NumericUpDown Width="60" Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Settings.MaxIVs, Mode=OneWay}" ClipValueToMinMax="True" Value="{Binding Value}"/>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
@@ -133,7 +134,7 @@
             <DataTemplate>
               <StackPanel Orientation="Vertical">
                 <ComboBox Width="100" Items="{Binding Allowed, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Move}" IsEnabled="{Binding IsMoveEditable, Mode=OneWay}"/>
-                <NumericUpDown Width="60" Minimum="0" ClipValueToMinMax="True" IsEnabled="{Binding IsPPUpsEditable, Mode=OneWay}" Value="{Binding PPUps}"/>
+                <NumericUpDown Width="60" Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Settings.MaxPPUps, Mode=OneWay}" ClipValueToMinMax="True" IsEnabled="{Binding IsPPUpsEditable, Mode=OneWay}" Value="{Binding PPUps}"/>
               </StackPanel>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
