@@ -370,7 +370,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                     IOrderedEnumerable<(PBEAction Action, double Score)> byScore = possibleActions.OrderByDescending(t => t.Score);
                     Debug.WriteLine("{0}'s possible actions: {1}", pkmn.Nickname, byScore.Select(t => ToDebugString(t)).Print());
                     double bestScore = byScore.First().Score;
-                    actions[i] = byScore.Where(t => t.Score == bestScore).Sample().Action; // Pick random action of the ones that tied for best score
+                    actions[i] = byScore.Where(t => t.Score == bestScore).ToArray().RandomElement().Action; // Pick random action of the ones that tied for best score
                 }
 
                 // Action was chosen, finish up for this Pokémon

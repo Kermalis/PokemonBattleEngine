@@ -442,7 +442,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     int pkmnTiedWith = evaluated.FindIndex(t => t.Speed == speed);
                     if (pkmnTiedWith != -1) // Speed tie - randomly go before or after the Pokémon it tied with
                     {
-                        if (PBEUtils.RNG.NextBoolean())
+                        if (PBEUtils.RandomBool())
                         {
                             if (pkmnTiedWith == evaluated.Count - 1)
                             {

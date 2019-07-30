@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             public async Task Info([Remainder] string abilityName)
             {
                 PBEAbility? nAbility = PBELocalizedString.GetAbilityByName(abilityName);
-                if (!nAbility.HasValue)
+                if (!nAbility.HasValue || nAbility.Value == PBEAbility.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid ability!");
                 }
@@ -29,7 +29,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBEAbility ability = nAbility.Value;
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
-                        .WithColor(PBEUtils.Sample(Utils.TypeToColor).Value)
+                        .WithColor(Utils.RandomColor())
                         .WithTitle(PBELocalizedString.GetAbilityName(ability).English)
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetAbilityDescription(ability).English.Replace('\n', ' '));
@@ -61,12 +61,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     PBESettings settings = PBESettings.DefaultSettings;
                     PBEPokemonShell[] team0Party, team1Party;
                     // Completely Randomized Pokémon
-                    team0Party = PBEUtils.CreateCompletelyRandomTeam(settings);
-                    team1Party = PBEUtils.CreateCompletelyRandomTeam(settings);
-
-                    // Randomized Competitive Pokémon
-                    /*team0Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();
-                    team1Party = PBECompetitivePokemonShells.CreateRandomTeam(settings.MaxPartySize).ToArray();*/
+                    team0Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
+                    team1Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
 
                     var battle = new PBEBattle(PBEBattleFormat.Single, settings, team0Party, team1Party);
                     battle.Teams[0].TrainerName = Context.User.Username;
@@ -84,7 +80,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             public async Task Info([Remainder] string itemName)
             {
                 PBEItem? nItem = PBELocalizedString.GetItemByName(itemName);
-                if (!nItem.HasValue)
+                if (!nItem.HasValue || nItem.Value == PBEItem.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid item!");
                 }
@@ -124,7 +120,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             public async Task Info([Remainder] string moveName)
             {
                 PBEMove? nMove = PBELocalizedString.GetMoveByName(moveName);
-                if (!nMove.HasValue)
+                if (!nMove.HasValue || nMove.Value == PBEMove.None)
                 {
                     await Context.Channel.SendMessageAsync($"{Context.User.Mention} Invalid move!");
                 }
@@ -195,7 +191,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
                     EmbedBuilder embed = new EmbedBuilder()
                         .WithAuthor(Context.User)
-                        .WithColor(Utils.GetColor(species))
+                        .WithColor(Utils.GetColor(pData.Type1, pData.Type2))
                         .WithTitle($"{PBELocalizedString.GetSpeciesName(species).English} - {PBELocalizedString.GetSpeciesCategory(species).English}")
                         .WithUrl(Utils.URL)
                         .WithDescription(PBELocalizedString.GetSpeciesEntry(species).English.Replace('\n', ' '))
@@ -209,7 +205,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Special Attack", pData.BaseStats[3], true)
                         .AddField("Special Defense", pData.BaseStats[4], true)
                         .AddField("Speed", pData.BaseStats[5], true)
-                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RNG.NextShiny(), PBEUtils.RNG.NextGender(pData.GenderRatio), false, false));
+                        .WithImageUrl(Utils.GetPokemonSprite(species, PBEUtils.RandomShiny(), PBEUtils.RandomGender(pData.GenderRatio), false, false));
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }

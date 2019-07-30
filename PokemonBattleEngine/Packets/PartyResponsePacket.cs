@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 var party = new PBEPokemonShell[r.ReadSByte()];
                 for (int i = 0; i < party.Length; i++)
                 {
-                    party[i] = PBEPokemonShell.FromBytes(r);
+                    party[i] = PBEPokemonShell.FromBytes(r, battle.Settings); // What happens if an exception occurs? Similar question to https://github.com/Kermalis/PokemonBattleEngine/issues/167
                 }
                 Party = Array.AsReadOnly(party);
             }

@@ -144,21 +144,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                         }
                                         case PBEBattleFormat.Double:
                                         {
-                                            pkmn.SelectedAction.FightTargets = PBEUtils.RNG.NextBoolean() ? PBETarget.FoeLeft : PBETarget.FoeRight;
+                                            pkmn.SelectedAction.FightTargets = PBEUtils.RandomBool() ? PBETarget.FoeLeft : PBETarget.FoeRight;
                                             break;
                                         }
                                         case PBEBattleFormat.Triple:
                                         {
                                             if (pkmn.FieldPosition == PBEFieldPosition.Left)
                                             {
-                                                pkmn.SelectedAction.FightTargets = PBEUtils.RNG.NextBoolean() ? PBETarget.FoeCenter : PBETarget.FoeRight;
+                                                pkmn.SelectedAction.FightTargets = PBEUtils.RandomBool() ? PBETarget.FoeCenter : PBETarget.FoeRight;
                                             }
                                             else if (pkmn.FieldPosition == PBEFieldPosition.Center)
                                             {
                                                 PBETeam opposingTeam = team == team.Battle.Teams[0] ? team.Battle.Teams[1] : team.Battle.Teams[0];
                                                 int r; // Keep randomly picking until a non-fainted foe is selected
                                             roll:
-                                                r = PBEUtils.RNG.Next(3);
+                                                r = PBEUtils.RandomInt(0, 2);
                                                 if (r == 0)
                                                 {
                                                     if (opposingTeam.TryGetPokemon(PBEFieldPosition.Left) != null)
@@ -195,7 +195,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                             }
                                             else
                                             {
-                                                pkmn.SelectedAction.FightTargets = PBEUtils.RNG.NextBoolean() ? PBETarget.FoeLeft : PBETarget.FoeCenter;
+                                                pkmn.SelectedAction.FightTargets = PBEUtils.RandomBool() ? PBETarget.FoeLeft : PBETarget.FoeCenter;
                                             }
                                             break;
                                         }

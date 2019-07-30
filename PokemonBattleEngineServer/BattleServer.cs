@@ -73,7 +73,7 @@ namespace Kermalis.PokemonBattleEngineServer
                             break;
                         }
                     }
-                    client.PlayerName = PBEUtils.Sample(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
+                    client.PlayerName = Utils.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
                     readyPlayers.Add(client);
                     Console.WriteLine($"Client connected ({client.BattleId} {client.PlayerName})");
 

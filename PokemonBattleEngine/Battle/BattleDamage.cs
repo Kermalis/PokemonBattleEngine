@@ -52,7 +52,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         sturdyHappened = true;
                         victim.HP = 1;
                     }
-                    else if (victim.Item == PBEItem.FocusBand && PBEUtils.RNG.ApplyChance(10, 100))
+                    else if (victim.Item == PBEItem.FocusBand && PBEUtils.RandomBool(10, 100))
                     {
                         focusBandHappened = true;
                         victim.HP = 1;
@@ -246,7 +246,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.Magnitude:
                 {
-                    int val = PBEUtils.RNG.Next(0, 100);
+                    int val = PBEUtils.RandomInt(0, 99);
                     byte magnitude;
                     if (val < 5) // Magnitude 4 - 5%
                     {
@@ -1042,7 +1042,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             damage = (ushort)(damage * a * basePower / d);
             damage /= 50;
             damage += 2;
-            return (ushort)(damage * (100 - PBEUtils.RNG.Next(0, 0x10)) / 100);
+            return (ushort)(damage * (100 - PBEUtils.RandomInt(0, 15)) / 100);
         }
     }
 }

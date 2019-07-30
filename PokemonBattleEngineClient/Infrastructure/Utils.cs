@@ -56,8 +56,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
         public static Bitmap GetMinisprite(PBESpecies species, PBEGender gender, bool shiny)
         {
             ushort speciesID = (ushort)species;
-            uint formeID = (uint)species >> 0x10;
-            string sss = speciesID + (formeID > 0 ? ("_" + formeID) : string.Empty) + (shiny ? "_S" : string.Empty);
+            uint formID = (uint)species >> 0x10;
+            string sss = speciesID + (formID > 0 ? ("_" + formID) : string.Empty) + (shiny ? "_S" : string.Empty);
             string genderStr = gender == PBEGender.Female && DoesResourceExist("PKMN.PKMN_" + sss + "_F.png") ? "_F" : string.Empty;
             return new Bitmap(GetResourceStream("PKMN.PKMN_" + sss + genderStr + ".png"));
         }
@@ -79,8 +79,8 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             else
             {
                 ushort speciesID = (ushort)species;
-                uint formeID = (uint)species >> 0x10;
-                string sss = speciesID + (formeID > 0 ? ("_" + formeID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
+                uint formID = (uint)species >> 0x10;
+                string sss = speciesID + (formID > 0 ? ("_" + formID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
                 string genderStr = gender == PBEGender.Female && DoesResourceExist("PKMN.PKMN_" + sss + "_F.gif") ? "_F" : string.Empty;
                 return GetResourceStream("PKMN.PKMN_" + sss + genderStr + ".gif");
             }
@@ -233,6 +233,17 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 sb.Append($"Usable moves: {string.Join(", ", pkmn.GetUsableMoves().Select(m => PBELocalizedString.GetMoveName(m).FromUICultureInfo()))}");
             }
             return sb.ToString();
+        }
+
+        private static readonly Random rand = new Random();
+        public static T RandomElement<T>(this T[] source)
+        {
+            int count = source.Length;
+            if (count < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
+            }
+            return source[rand.Next(count)];
         }
     }
 }

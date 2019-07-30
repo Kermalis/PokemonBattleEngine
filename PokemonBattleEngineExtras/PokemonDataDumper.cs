@@ -678,7 +678,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.RockClimb
         };
         // These tutor moves are copied from overlay_0005.bin address 0x2FF64 to ram address 0x02200CE4 on each map load (USA offsets)
-        // The tutor compatibility is at the end of the table (0x3012C and 0x02200EAC [USA offsets]), starting with Bulbasaur and ending with Arceus (no forme entries), and each compatibility is a bitfield of 5 bytes
+        // The tutor compatibility is at the end of the table (0x3012C and 0x02200EAC [USA offsets]), starting with Bulbasaur and ending with Arceus (no form entries), and each compatibility is a bitfield of 5 bytes
         // Each tutor move entry is 0xC bytes:
         // u16 moveId
         // u8 redShard
@@ -1059,6 +1059,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         // TODO: FRLG - Ultimate starter tutor moves
         // TODO: D, P, Pt - Free tutor moves
         // TODO: HG, SS - Free tutor moves (aside from Headbutt)
+        // TODO: BW, B2W2 - SecretSword, RelicSong
         // TODO: Rotom special moves
         // TODO: Arceus_Dragon gets DracoMeteor from free tutor moves
         // TODO: Basculin_Blue extra abilities
@@ -1581,7 +1582,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 }
                 using (var hgss = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\HGSSTutor.bin"), Endianness.LittleEndian))
                 {
-                    for (int sp = 1; sp <= 505; sp++) // Includes formes, but not eggs
+                    for (int sp = 1; sp <= 505; sp++) // Includes forms but not eggs
                     {
                         PBESpecies species = sp > 493 ? gen4SpeciesIndexToPBESpecies[sp + 2] : (PBESpecies)sp;
                         byte[] bytes = hgss.ReadBytes(8);

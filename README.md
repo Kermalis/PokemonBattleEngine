@@ -19,7 +19,7 @@ This will change in the future as the server will send the settings to all conne
 # To Do:
 * Triple-battle shifting and Rotation-battles
 * Complete [the Pokémon data dumper](PokemonBattleEngineTesting/PokemonDataDumper.cs)
-* Separate forme-specific moves in Pokémon data and instead have legality checker do some work
+* Separate form-specific moves in Pokémon data and instead have legality checker do some work
 * Add lots of items, moves, and volatile statuses (taunt, torment, etc. are volatile statuses)
 * Finish adding all event Pokémon
 * Add previews of Discord and Android/iOS

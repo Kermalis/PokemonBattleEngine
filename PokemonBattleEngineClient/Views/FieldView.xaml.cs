@@ -40,10 +40,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     StartPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
                     EndPoint = new RelativePoint(1.0, 0.0, RelativeUnit.Relative),
                     GradientStops =
-                {
-                    new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.0 },
-                    new GradientStop { Color = Color.FromUInt32(0x20FFD080), Offset = 1.0 }
-                }
+                    {
+                        new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.0 },
+                        new GradientStop { Color = Color.FromUInt32(0x20FFD080), Offset = 1.0 }
+                    }
                 };
                 rainDim = new SolidColorBrush(Color.FromUInt32(0x40000000));
                 sandstormDim = new LinearGradientBrush()
@@ -51,11 +51,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     StartPoint = new RelativePoint(0.0, 0.0, RelativeUnit.Relative),
                     EndPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
                     GradientStops =
-                {
-                    new GradientStop { Color = Color.FromUInt32(0x40FF7F00), Offset = 0.0 },
-                    new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.3 },
-                    new GradientStop { Color = Color.FromUInt32(0x30FFC000), Offset = 1.0 }
-                }
+                    {
+                        new GradientStop { Color = Color.FromUInt32(0x40FF7F00), Offset = 0.0 },
+                        new GradientStop { Color = Color.FromUInt32(0x60FFF0A0), Offset = 0.3 },
+                        new GradientStop { Color = Color.FromUInt32(0x30FFC000), Offset = 1.0 }
+                    }
                 };
             }
 
@@ -68,10 +68,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             string s;
             switch (battleView.Client.Battle.BattleFormat)
             {
-                case PBEBattleFormat.Single: s = PBEUtils.Sample(new string[] { "1_S", "2_S", "3_S", "4_S", "5_S", "6_S", "8_S" }); break;
-                case PBEBattleFormat.Double: s = PBEUtils.Sample(new string[] { "1_D", "6_D", "7_D" }); break;
-                case PBEBattleFormat.Triple: s = PBEUtils.Sample(new string[] { "1_T", "4_T", "5_T", "8_T" }); break;
-                case PBEBattleFormat.Rotation: s = PBEUtils.Sample(new string[] { "1_R", "2_R" }); break;
+                case PBEBattleFormat.Single: s = Utils.RandomElement(new string[] { "1_S", "2_S", "3_S", "4_S", "5_S", "6_S", "8_S" }); break;
+                case PBEBattleFormat.Double: s = Utils.RandomElement(new string[] { "1_D", "6_D", "7_D" }); break;
+                case PBEBattleFormat.Triple: s = Utils.RandomElement(new string[] { "1_T", "4_T", "5_T", "8_T" }); break;
+                case PBEBattleFormat.Rotation: s = Utils.RandomElement(new string[] { "1_R", "2_R" }); break;
                 default: throw new ArgumentOutOfRangeException(nameof(battleView.Client.Battle.BattleFormat));
             }
             BGSource = new Bitmap(Utils.GetResourceStream("BG.BG_" + s + ".png"));

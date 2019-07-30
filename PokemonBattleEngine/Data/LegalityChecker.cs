@@ -152,9 +152,19 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        // TODO: Is this necessary anymore?
         public static void ValidateShell(this PBEPokemonShell shell, PBESettings settings)
         {
-            // Validate Species
+            if (shell == null)
+            {
+                throw new ArgumentNullException(nameof(shell));
+            }
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
+            // Validate species
             PBEPokemonData pData;
             switch (shell.Species)
             {
@@ -165,7 +175,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBESpecies.Darmanitan_Zen:
                 case PBESpecies.Meloetta_Pirouette:
                 {
-                    throw new ArgumentOutOfRangeException(nameof(shell.Species), $"{shell.Species} must be in its base forme.");
+                    throw new ArgumentOutOfRangeException(nameof(shell.Species), $"{shell.Species} must be in its base form.");
                 }
                 default:
                 {
@@ -181,7 +191,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
 
-            // Validate Nickname
+            // Validate nickname
             if (string.IsNullOrWhiteSpace(shell.Nickname))
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.Nickname), $"{nameof(shell.Nickname)} cannot be empty.");
@@ -191,25 +201,25 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(shell.Nickname), $"{nameof(shell.Nickname)} cannot exceed {settings.MaxPokemonNameLength} characters.");
             }
 
-            // Validate Level
+            // Validate level
             if (shell.Level < settings.MinLevel || shell.Level > settings.MaxLevel)
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.Level), $"A {shell.Species}'s level must be at least {settings.MinLevel} and cannot exceed {settings.MaxLevel}.");
             }
 
-            // Validate Ability
+            // Validate ability
             if (!pData.HasAbility(shell.Ability))
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.Ability), $"{shell.Species} cannot have {shell.Ability}.");
             }
 
-            // Validate Nature
+            // Validate nature
             if (shell.Nature >= PBENature.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(shell.Nature), "Invalid nature.");
             }
 
-            // Validate Gender
+            // Validate gender
             if (shell.Gender >= PBEGender.MAX
                 || (shell.Gender == PBEGender.Male && (pData.GenderRatio == PBEGenderRatio.M0_F1 || pData.GenderRatio == PBEGenderRatio.M0_F0))
                 || (shell.Gender == PBEGender.Female && (pData.GenderRatio == PBEGenderRatio.M1_F0 || pData.GenderRatio == PBEGenderRatio.M0_F0))
@@ -219,7 +229,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(shell.Gender), $"Invalid gender for {shell.Species}.");
             }
 
-            // Validate Item
+            // Validate item
             if (shell.Item != PBEItem.None)
             {
                 try
@@ -233,55 +243,48 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
 
             // Validate EVs
-            if (shell.EVs == null || shell.EVs.Length != 6)
+            if (shell.EffortValues == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.EVs), $"{nameof(shell.EVs)} array can only have a length of 6.");
+                throw new ArgumentNullException(nameof(shell.EffortValues));
             }
-            if (shell.EVs.Select(e => (int)e).Sum() > settings.MaxTotalEVs)
+            if (shell.EffortValues.StatTotal > settings.MaxTotalEVs)
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.EVs), $"Total EVs cannot exceed {settings.MaxTotalEVs}.");
+                throw new ArgumentOutOfRangeException(nameof(shell.EffortValues), $"Total EVs cannot exceed {settings.MaxTotalEVs}.");
             }
             // Validate IVs
-            if (shell.IVs == null || shell.IVs.Length != 6)
+            if (shell.IndividualValues == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.IVs), $"{nameof(shell.IVs)} array can only have a length of 6.");
+                throw new ArgumentNullException(nameof(shell.IndividualValues));
             }
-            if (Array.Exists(shell.IVs, i => i > settings.MaxIVs))
+            if (shell.IndividualValues.Any(iv => iv.Value > settings.MaxIVs))
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.IVs), $"Each IV cannot exceed {settings.MaxIVs}.");
+                throw new ArgumentOutOfRangeException(nameof(shell.IndividualValues), $"Each IV cannot exceed {settings.MaxIVs}.");
             }
 
-            // Validate Moves
+            // Validate moveset
             try
             {
-                MoveLegalityCheck(shell.Species, shell.Level, shell.Moves, settings);
+                MoveLegalityCheck(shell.Species, shell.Level, shell.Moveset.MoveSlots.Select(m => m.Move), settings);
             }
             catch (Exception e)
             {
-                throw new ArgumentOutOfRangeException(nameof(shell.Moves), e.Message);
+                throw new ArgumentOutOfRangeException(nameof(shell.Moveset), e.Message);
+            }
+            if (shell.Moveset.MoveSlots.Any(m => (m.Move == PBEMove.None && m.PPUps != 0) || m.PPUps > settings.MaxPPUps))
+            {
+                throw new ArgumentOutOfRangeException(nameof(shell.Moveset), $"Each PP-Up must belong to a move and cannot exceed {settings.MaxPPUps}.");
+            }
+            for (int i = 0; i < settings.NumMoves; i++)
+            {
+                if (i != 0 && shell.Moveset.MoveSlots[i].Move != PBEMove.None && shell.Moveset.MoveSlots[i - 1].Move == PBEMove.None)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(shell.Moveset), $"Move slot {i} cannot have a move unless slot {i - 1} has a move.");
+                }
             }
 
-            // Validate PPUps
-            if (shell.PPUps == null || shell.PPUps.Length != settings.NumMoves)
-            {
-                throw new ArgumentOutOfRangeException(nameof(shell.PPUps), $"{nameof(shell.PPUps)} array can only have a length of {settings.NumMoves}.");
-            }
-            if (Array.Exists(shell.PPUps, p => p > settings.MaxPPUps))
-            {
-                throw new ArgumentOutOfRangeException(nameof(shell.PPUps), $"Each PP-Up cannot exceed {settings.MaxPPUps}.");
-            }
-
-            // Validate Forme-Specific Requirements
+            // Validate form-specific requirements
             switch (shell.Species)
             {
-                case PBESpecies.Shedinja:
-                {
-                    if (shell.EVs[0] > 0)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(shell.EVs), $"{shell.Species} cannot have any HP EVs.");
-                    }
-                    break;
-                }
                 case PBESpecies.Giratina:
                 {
                     if (shell.Item == PBEItem.GriseousOrb)

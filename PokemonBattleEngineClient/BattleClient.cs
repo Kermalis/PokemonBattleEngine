@@ -102,7 +102,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PBEPartyRequestPacket _:
                 {
                     //Send(new PBEPartyResponsePacket(partyShells));
-                    PBEPokemonShell[] team = PBEUtils.CreateCompletelyRandomTeam(Battle.Settings);
+                    PBEPokemonShell[] team = PBEUtils.CreateCompletelyRandomTeam(Battle.Settings, true);
                     Send(new PBEPartyResponsePacket(team));
                     break;
                 }

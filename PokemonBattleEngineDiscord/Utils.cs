@@ -1,8 +1,9 @@
 ﻿using Discord;
-using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 
 namespace Kermalis.PokemonBattleEngineDiscord
@@ -48,18 +49,26 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             return color;
         }
-        public static Color GetColor(PBESpecies species)
-        {
-            var pData = PBEPokemonData.GetData(species);
-            return GetColor(pData.Type1, pData.Type2);
-        }
         public static Color GetColor(PBEPokemon pkmn)
         {
             return GetColor(pkmn.KnownType1, pkmn.KnownType2);
         }
+
+        private static readonly Random rand = new Random();
         public static Color RandomColor()
         {
-            return PBEUtils.Sample(TypeToColor.Values);
+            byte[] bytes = new byte[3];
+            rand.NextBytes(bytes);
+            return new Color(bytes[0], bytes[1], bytes[2]);
+        }
+        public static T RandomElement<T>(this T[] source)
+        {
+            int count = source.Length;
+            if (count < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
+            }
+            return source.ElementAt(rand.Next(count));
         }
 
         private static readonly Dictionary<string, bool> urlCache = new Dictionary<string, bool>();
@@ -109,8 +118,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
             else
             {
                 ushort speciesID = (ushort)species;
-                uint formeID = (uint)species >> 0x10;
-                string sss = speciesID + (formeID > 0 ? ("_" + formeID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
+                uint formID = (uint)species >> 0x10;
+                string sss = speciesID + (formID > 0 ? ("_" + formID) : string.Empty) + orientation + (shiny ? "_S" : string.Empty);
                 string genderStr = gender == PBEGender.Female && URLExists(path + "PKMN_" + sss + "_F.gif") ? "_F" : string.Empty;
                 return path + "PKMN_" + sss + genderStr + ".gif";
             }
