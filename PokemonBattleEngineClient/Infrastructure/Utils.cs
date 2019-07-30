@@ -130,7 +130,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 
             if ((pkmn.Team.Id == 0 && !showRawValues0) || (pkmn.Team.Id == 1 && !showRawValues1))
             {
-                sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {pkmn.KnownGenderSymbol} Lv.{pkmn.Level}");
+                sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
                 sb.AppendLine($"Known types: {pkmn.KnownType1}/{pkmn.KnownType2}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)

@@ -2,7 +2,6 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
@@ -308,7 +307,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         private static string CustomKnownPokemonToString(PBEPokemon pkmn)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {pkmn.KnownGenderSymbol} Lv.{pkmn.Level}");
+            sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
             sb.AppendLine($"**HP:** {pkmn.HPPercentage:P2}");
             sb.AppendLine($"**Known types:** {pkmn.KnownType1}/{pkmn.KnownType2}");
             if (pkmn.Status1 != PBEStatus1.None)
