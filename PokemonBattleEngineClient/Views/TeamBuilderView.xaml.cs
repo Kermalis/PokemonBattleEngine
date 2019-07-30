@@ -72,6 +72,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             removeParty.Command = ReactiveCommand.Create(RemovePartyMember);
             this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
             this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
+            this.FindControl<Button>("SaveTeam").Command = ReactiveCommand.Create(SaveTeam);
             party = this.FindControl<ListBox>("Party");
             this.FindControl<ListBox>("SavedTeams").SelectionChanged += (s, e) =>
             {
@@ -131,6 +132,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 AddTeam();
             }
             Teams.Remove(old);
+        }
+        private void SaveTeam()
+        {
+            PBEPokemonShell.TeamToJsonFile(Path.Combine(teamPath, $"{team.Name}.json"), team.Party);
         }
         private void AddPartyMember()
         {

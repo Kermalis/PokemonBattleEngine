@@ -178,6 +178,11 @@
           </StackPanel>
         </Button>
       </StackPanel>
+      <Button Name="SaveTeam">
+        <StackPanel>
+          <Image Source="{Binding Source='Save', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
+        </StackPanel>
+      </Button>
       <ListBox Name="SavedTeams" Items="{Binding Teams, Mode=OneWay}" SelectedItem="{Binding Team}" SelectionMode="AlwaysSelected">
         <ListBox.ItemTemplate>
           <DataTemplate>
