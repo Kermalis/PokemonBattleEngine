@@ -10,6 +10,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             AIBattle,
             FontDumper,
             LocalizationDumper,
+            NARCTextDumper,
             PokemonDataDumper
         }
 
@@ -43,6 +44,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     break;
                 }
+                case Extra.NARCTextDumper: NARCTextDumper.Dump(); break;
                 case Extra.PokemonDataDumper:
                 {
                     using (SqliteConnection con = GetConnection())
