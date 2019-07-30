@@ -13,7 +13,6 @@ using System.IO;
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
     // TODO: Settings editor, listen to settings changes
-    // TODO: Save again (button)
     public class TeamBuilderView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)

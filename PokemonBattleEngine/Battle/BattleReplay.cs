@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             foreach (INetPacket packet in Events)
             {
-                bytes.AddRange(packet.Buffer.ToArray());
+                bytes.AddRange(packet.Buffer);
             }
 
             using (var md5 = MD5.Create())

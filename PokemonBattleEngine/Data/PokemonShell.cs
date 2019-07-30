@@ -474,28 +474,76 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             return bytes.ToArray();
         }
-        // TODO: Validate
-        // TODO: SetSelectable (this shell would be unusable once reconstructed with this method)
         internal static PBEPokemonShell FromBytes(BinaryReader r, PBESettings settings)
         {
-            var pkmn = new PBEPokemonShell(settings)
+            var pkmn = new PBEPokemonShell(settings);
+            var species = (PBESpecies)r.ReadUInt32();
+            ValidateSpecies(species);
+            pkmn.species = species;
+            pkmn.SetSelectable();
+            string nickname = PBEUtils.StringFromBytes(r);
+            ValidateNickname(nickname, settings);
+            pkmn.nickname = nickname;
+            byte level = r.ReadByte();
+            ValidateLevel(level, settings);
+            pkmn.level = level;
+            pkmn.friendship = r.ReadByte();
+            pkmn.shiny = r.ReadBoolean();
+            var ability = (PBEAbility)r.ReadByte();
+            pkmn.ValidateAbility(ability);
+            pkmn.ability = ability;
+            var nature = (PBENature)r.ReadByte();
+            ValidateNature(nature);
+            pkmn.nature = nature;
+            var gender = (PBEGender)r.ReadByte();
+            pkmn.ValidateGender(gender);
+            pkmn.gender = gender;
+            var item = (PBEItem)r.ReadUInt16();
+            pkmn.ValidateItem(item);
+            pkmn.item = item;
+            byte hpEV = r.ReadByte();
+            byte attackEV = r.ReadByte();
+            byte defenseEV = r.ReadByte();
+            byte spAttackEV = r.ReadByte();
+            byte spDefenseEV = r.ReadByte();
+            byte speedEV = r.ReadByte();
+            if (hpEV + attackEV + defenseEV + spAttackEV + spDefenseEV + speedEV > settings.MaxTotalEVs)
             {
-                species = (PBESpecies)r.ReadUInt32(),
-                nickname = PBEUtils.StringFromBytes(r),
-                level = r.ReadByte(),
-                friendship = r.ReadByte(),
-                shiny = r.ReadBoolean(),
-                ability = (PBEAbility)r.ReadByte(),
-                nature = (PBENature)r.ReadByte(),
-                gender = (PBEGender)r.ReadByte(),
-                item = (PBEItem)r.ReadUInt16(),
-                EffortValues = new PBEEffortValueCollection(settings, r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte()),
-                IndividualValues = new PBEIndividualValueCollection(settings, r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte(), r.ReadByte())
-            };
-            pkmn.Moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings, false);
+                throw new ArgumentOutOfRangeException(nameof(EffortValues), $"Total must not exceed \"{nameof(settings.MaxTotalEVs)}\" ({settings.MaxTotalEVs})");
+            }
+            pkmn.EffortValues = new PBEEffortValueCollection(settings, hpEV, attackEV, defenseEV, spAttackEV, spDefenseEV, speedEV);
+            void ValidateIV(byte val, string name)
+            {
+                if (val > settings.MaxIVs)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(IndividualValues), $"\"{name}\" value must not exceed \"{nameof(settings.MaxIVs)}\" ({settings.MaxIVs})");
+                }
+            }
+            byte hpIV = r.ReadByte();
+            ValidateIV(hpIV, nameof(PBEStat.HP));
+            byte attackIV = r.ReadByte();
+            ValidateIV(attackIV, nameof(PBEStat.Attack));
+            byte defenseIV = r.ReadByte();
+            ValidateIV(defenseIV, nameof(PBEStat.Defense));
+            byte spAttackIV = r.ReadByte();
+            ValidateIV(spAttackIV, nameof(PBEStat.SpAttack));
+            byte spDefenseIV = r.ReadByte();
+            ValidateIV(spDefenseIV, nameof(PBEStat.SpDefense));
+            byte speedIV = r.ReadByte();
+            ValidateIV(speedIV, nameof(PBEStat.Speed));
+            pkmn.IndividualValues = new PBEIndividualValueCollection(settings, hpIV, attackIV, defenseIV, spAttackIV, spDefenseIV, speedIV);
+            pkmn.Moveset = new PBEMovesetBuilder(species, level, settings, false);
             for (int i = 0; i < settings.NumMoves; i++)
             {
-                pkmn.Moveset.Set(i, (PBEMove)r.ReadUInt16(), r.ReadByte());
+                var move = (PBEMove)r.ReadUInt16();
+                byte ppUps = r.ReadByte();
+                pkmn.Moveset.Set(i, move, ppUps); // "Set()" will throw its own exceptions for invalid moves and pp-ups
+                                                  // The following check is for the case where identical moves were stored in the same moveset, therefore forcing "Set()" to overwrite one with PBEMove.None
+                PBEMovesetBuilder.PBEMoveSlot slot = pkmn.Moveset.MoveSlots[i];
+                if (slot.Move != move || slot.PPUps != ppUps)
+                {
+                    throw new InvalidDataException("Invalid moveset.");
+                }
             }
             return pkmn;
         }
