@@ -268,11 +268,13 @@ namespace Kermalis.PokemonBattleEngineServer
                         {
                             try
                             {
-                                shell.ValidateShell(battle.Settings);
+                                // Not currently necessary, but it would be necessary eventually because PBEMovesetBuilder cannot check if a moveset "makes sense" for the method the Pokémon was obtained in
+                                // Eventually we would probably want to store that sort of information in PBEPokemonShell
+                                PBELegalityChecker.MoveLegalityCheck(shell.Species, shell.Level, shell.Moveset.MoveSlots.Select(m => m.Move), battle.Settings);
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine($"Invalid team data received from {player.PlayerName}:");
+                                Console.WriteLine($"Illegal moveset received from {player.PlayerName}");
                                 Console.WriteLine(e.Message);
                                 CancelMatch();
                                 return;
