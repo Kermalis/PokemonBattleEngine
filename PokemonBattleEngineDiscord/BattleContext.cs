@@ -273,7 +273,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
             {
-                sb.AppendLine($"**Hidden Power:** {PBELocalizedString.GetTypeName(pkmn.GetHiddenPowerType()).English}/{pkmn.GetHiddenPowerBasePower()}");
+                sb.AppendLine($"**{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}:** {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).English}/{pkmn.IndividualValues.HiddenPowerBasePower}");
             }
             string[] moveStrs = new string[PBESettings.DefaultSettings.NumMoves];
             for (int i = 0; i < PBESettings.DefaultSettings.NumMoves; i++)

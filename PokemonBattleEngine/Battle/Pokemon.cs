@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    // TODO: INPC, make hidden power min and max damage settings
+    // TODO: INPC
     /// <summary>Represents a specific Pokémon during a battle.</summary>
     public sealed class PBEPokemon
     {
@@ -567,34 +567,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
         /// <summary>
-        /// Gets the type that <see cref="PBEMove.HiddenPower"/> will become when used by this Pokémon.
-        /// </summary>
-        public PBEType GetHiddenPowerType()
-        {
-            int a = IndividualValues[PBEStat.HP].Value & 1,
-                b = IndividualValues[PBEStat.Attack].Value & 1,
-                c = IndividualValues[PBEStat.Defense].Value & 1,
-                d = IndividualValues[PBEStat.Speed].Value & 1,
-                e = IndividualValues[PBEStat.SpAttack].Value & 1,
-                f = IndividualValues[PBEStat.SpDefense].Value & 1;
-            return PBEPokemonData.HiddenPowerTypes[(((1 << 0) * a) + ((1 << 1) * b) + ((1 << 2) * c) + ((1 << 3) * d) + ((1 << 4) * e) + ((1 << 5) * f)) * (PBEPokemonData.HiddenPowerTypes.Count - 1) / ((1 << 6) - 1)];
-        }
-        /// <summary>
-        /// Gets the base power that <see cref="PBEMove.HiddenPower"/> will have when used by this Pokémon.
-        /// </summary>
-        public byte GetHiddenPowerBasePower()
-        {
-            const byte mininumBasePower = 30,
-                maximumBasePower = 70;
-            int a = (IndividualValues[PBEStat.HP].Value & 2) == 2 ? 1 : 0,
-                b = (IndividualValues[PBEStat.Attack].Value & 2) == 2 ? 1 : 0,
-                c = (IndividualValues[PBEStat.Defense].Value & 2) == 2 ? 1 : 0,
-                d = (IndividualValues[PBEStat.Speed].Value & 2) == 2 ? 1 : 0,
-                e = (IndividualValues[PBEStat.SpAttack].Value & 2) == 2 ? 1 : 0,
-                f = (IndividualValues[PBEStat.SpDefense].Value & 2) == 2 ? 1 : 0;
-            return (byte)(((((1 << 0) * a) + ((1 << 1) * b) + ((1 << 2) * c) + ((1 << 3) * d) + ((1 << 4) * e) + ((1 << 5) * f)) * (maximumBasePower - mininumBasePower) / ((1 << 6) - 1)) + mininumBasePower);
-        }
-        /// <summary>
         /// Gets the type that a move will become when used by this Pokémon.
         /// </summary>
         /// <param name="move">The move to check.</param>
@@ -609,7 +581,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEMove.HiddenPower:
                 {
-                    return GetHiddenPowerType();
+                    return IndividualValues.HiddenPowerType;
                 }
                 case PBEMove.Judgment:
                 {
@@ -922,7 +894,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Array.IndexOf(Moves, PBEMove.HiddenPower) != -1)
             {
-                sb.AppendLine($"Hidden Power: {PBELocalizedString.GetTypeName(GetHiddenPowerType()).English}/{GetHiddenPowerBasePower()}");
+                sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}: {PBELocalizedString.GetTypeName(IndividualValues.HiddenPowerType).English}/{IndividualValues.HiddenPowerBasePower}");
             }
             string[] moveStrs = new string[Moves.Length];
             for (int i = 0; i < moveStrs.Length; i++)

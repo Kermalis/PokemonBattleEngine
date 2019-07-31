@@ -6,7 +6,7 @@ using System.ComponentModel;
 namespace Kermalis.PokemonBattleEngine.Data
 {
     // TODO: Listen to settings changes
-    public sealed class PBEIndividualValueCollection : IEnumerable<PBEIndividualValueCollection.PBEIndividualValue>
+    public sealed class PBEIndividualValueCollection : IEnumerable<PBEIndividualValueCollection.PBEIndividualValue>, INotifyPropertyChanged
     {
         public sealed class PBEIndividualValue : INotifyPropertyChanged
         {
@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             public event PropertyChangedEventHandler PropertyChanged;
 
-            private readonly PBESettings settings;
+            private readonly PBEIndividualValueCollection parent;
 
             public PBEStat Stat { get; }
             private byte value;
@@ -25,24 +25,61 @@ namespace Kermalis.PokemonBattleEngine.Data
                 get => value;
                 set
                 {
-                    byte newVal = Math.Min(value, settings.MaxIVs);
-                    if (this.value != newVal)
+                    if (this.value != value)
                     {
-                        this.value = newVal;
-                        OnPropertyChanged(nameof(Value));
+                        parent.Set(Stat, value);
                     }
                 }
             }
 
-            internal PBEIndividualValue(PBESettings settings, PBEStat stat)
+            internal PBEIndividualValue(PBEIndividualValueCollection parent, PBEStat stat)
             {
-                this.settings = settings;
+                this.parent = parent;
                 Stat = stat;
+            }
+
+            internal void Update(byte value)
+            {
+                this.value = value;
+                OnPropertyChanged(nameof(Value));
             }
         }
 
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private readonly PBESettings settings;
         private PBEIndividualValue[] ivs;
+
+        private PBEType hiddenPowerType;
+        public PBEType HiddenPowerType
+        {
+            get => hiddenPowerType;
+            private set
+            {
+                if (hiddenPowerType != value)
+                {
+                    hiddenPowerType = value;
+                    OnPropertyChanged(nameof(HiddenPowerType));
+                }
+            }
+        }
+        private byte hiddenPowerBasePower;
+        public byte HiddenPowerBasePower
+        {
+            get => hiddenPowerBasePower;
+            private set
+            {
+                if (hiddenPowerBasePower != value)
+                {
+                    hiddenPowerBasePower = value;
+                    OnPropertyChanged(nameof(HiddenPowerBasePower));
+                }
+            }
+        }
 
         public PBEIndividualValueCollection(PBESettings settings, bool randomize)
         {
@@ -51,7 +88,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentNullException(nameof(settings));
             }
             this.settings = settings;
-            CreateIVs(settings);
+            CreateIVs();
             if (randomize)
             {
                 Randomize();
@@ -64,13 +101,13 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentNullException(nameof(settings));
             }
             this.settings = settings;
-            CreateIVs(settings);
-            this[PBEStat.HP].Value = hp;
-            this[PBEStat.Attack].Value = attack;
-            this[PBEStat.Defense].Value = defense;
-            this[PBEStat.SpAttack].Value = spAttack;
-            this[PBEStat.SpDefense].Value = spDefense;
-            this[PBEStat.Speed].Value = speed;
+            CreateIVs();
+            Set(PBEStat.HP, hp);
+            Set(PBEStat.Attack, attack);
+            Set(PBEStat.Defense, defense);
+            Set(PBEStat.SpAttack, spAttack);
+            Set(PBEStat.SpDefense, spDefense);
+            Set(PBEStat.Speed, speed);
         }
         public PBEIndividualValueCollection(PBESettings settings, PBEIndividualValueCollection other)
         {
@@ -83,25 +120,31 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentNullException(nameof(other));
             }
             this.settings = settings;
-            CreateIVs(settings);
-            this[PBEStat.HP].Value = other[PBEStat.HP].Value;
-            this[PBEStat.Attack].Value = other[PBEStat.Attack].Value;
-            this[PBEStat.Defense].Value = other[PBEStat.Defense].Value;
-            this[PBEStat.SpAttack].Value = other[PBEStat.SpAttack].Value;
-            this[PBEStat.SpDefense].Value = other[PBEStat.SpDefense].Value;
-            this[PBEStat.Speed].Value = other[PBEStat.Speed].Value;
+            CreateIVs();
+            Set(PBEStat.HP, other[PBEStat.HP].Value);
+            Set(PBEStat.Attack, other[PBEStat.Attack].Value);
+            Set(PBEStat.Defense, other[PBEStat.Defense].Value);
+            Set(PBEStat.SpAttack, other[PBEStat.SpAttack].Value);
+            Set(PBEStat.SpDefense, other[PBEStat.SpDefense].Value);
+            Set(PBEStat.Speed, other[PBEStat.Speed].Value);
         }
-        private void CreateIVs(PBESettings settings)
+        private void CreateIVs()
         {
             ivs = new PBEIndividualValue[6]
             {
-                new PBEIndividualValue(settings, PBEStat.HP),
-                new PBEIndividualValue(settings, PBEStat.Attack),
-                new PBEIndividualValue(settings, PBEStat.Defense),
-                new PBEIndividualValue(settings, PBEStat.SpAttack),
-                new PBEIndividualValue(settings, PBEStat.SpDefense),
-                new PBEIndividualValue(settings, PBEStat.Speed)
+                new PBEIndividualValue(this, PBEStat.HP),
+                new PBEIndividualValue(this, PBEStat.Attack),
+                new PBEIndividualValue(this, PBEStat.Defense),
+                new PBEIndividualValue(this, PBEStat.SpAttack),
+                new PBEIndividualValue(this, PBEStat.SpDefense),
+                new PBEIndividualValue(this, PBEStat.Speed)
             };
+            UpdateHiddenPower();
+        }
+        private void UpdateHiddenPower()
+        {
+            HiddenPowerType = PBEPokemonData.GetHiddenPowerType(this[PBEStat.HP].Value, this[PBEStat.Attack].Value, this[PBEStat.Defense].Value, this[PBEStat.SpAttack].Value, this[PBEStat.SpDefense].Value, this[PBEStat.Speed].Value);
+            HiddenPowerBasePower = PBEPokemonData.GetHiddenPowerBasePower(this[PBEStat.HP].Value, this[PBEStat.Attack].Value, this[PBEStat.Defense].Value, this[PBEStat.SpAttack].Value, this[PBEStat.SpDefense].Value, this[PBEStat.Speed].Value);
         }
 
         public PBEIndividualValue this[PBEStat stat]
@@ -117,6 +160,22 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     return ivs[statIndex];
                 }
+            }
+        }
+
+        public void Set(PBEStat stat, byte value)
+        {
+            int statIndex = (int)stat;
+            if (statIndex >= 6)
+            {
+                throw new ArgumentOutOfRangeException(nameof(stat));
+            }
+            byte newVal = Math.Min(value, settings.MaxIVs);
+            PBEIndividualValue iv = ivs[statIndex];
+            if (iv.Value != newVal)
+            {
+                iv.Update(newVal);
+                UpdateHiddenPower();
             }
         }
 

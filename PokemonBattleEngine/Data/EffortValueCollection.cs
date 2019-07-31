@@ -212,12 +212,12 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        private void UpdateEV(int index, byte v)
+        private void UpdateEV(int statIndex, byte value)
         {
-            PBEEffortValue ev = evs[index];
-            if (ev.Value != v)
+            PBEEffortValue ev = evs[statIndex];
+            if (ev.Value != value)
             {
-                ev.Update(v);
+                ev.Update(value);
                 OnPropertyChanged(nameof(StatTotal));
             }
         }

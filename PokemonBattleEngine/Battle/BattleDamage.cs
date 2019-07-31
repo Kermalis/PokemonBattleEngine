@@ -241,7 +241,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.HiddenPower:
                 {
-                    basePower = user.GetHiddenPowerBasePower();
+                    basePower = user.IndividualValues.HiddenPowerBasePower;
                     break;
                 }
                 case PBEMove.Magnitude:
