@@ -228,7 +228,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             var sb = new StringBuilder();
             sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
             sb.AppendLine($"**HP:** {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
-            sb.AppendLine($"**Types:** {pkmn.Type1}/{pkmn.Type2}");
+            sb.AppendLine($"**Types:** {PBELocalizedString.GetTypeName(pkmn.Type1).English}/{PBELocalizedString.GetTypeName(pkmn.Type2).English}");
             if (pkmn.Status1 != PBEStatus1.None)
             {
                 sb.AppendLine($"**Main status:** {pkmn.Status1}");
@@ -273,7 +273,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             }
             if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
             {
-                sb.AppendLine($"**Hidden Power:** {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
+                sb.AppendLine($"**Hidden Power:** {PBELocalizedString.GetTypeName(pkmn.GetHiddenPowerType()).English}/{pkmn.GetHiddenPowerBasePower()}");
             }
             string[] moveStrs = new string[PBESettings.DefaultSettings.NumMoves];
             for (int i = 0; i < PBESettings.DefaultSettings.NumMoves; i++)
@@ -309,7 +309,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
             var sb = new StringBuilder();
             sb.AppendLine($"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
             sb.AppendLine($"**HP:** {pkmn.HPPercentage:P2}");
-            sb.AppendLine($"**Known types:** {pkmn.KnownType1}/{pkmn.KnownType2}");
+            sb.AppendLine($"**Known types:** {PBELocalizedString.GetTypeName(pkmn.KnownType1).English}/{PBELocalizedString.GetTypeName(pkmn.KnownType2).English}");
             if (pkmn.Status1 != PBEStatus1.None)
             {
                 sb.AppendLine($"**Main status:** {pkmn.Status1}");

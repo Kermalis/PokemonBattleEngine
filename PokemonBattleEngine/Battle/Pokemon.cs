@@ -845,7 +845,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var sb = new StringBuilder();
             sb.AppendLine($"{Nickname}/{Species} {GenderSymbol} Lv.{Level}");
             sb.AppendLine($"HP: {HP}/{MaxHP} ({HPPercentage:P2})");
-            sb.AppendLine($"Types: {Type1}/{Type2}");
+            sb.AppendLine($"Types: {PBELocalizedString.GetTypeName(Type1).English}/{PBELocalizedString.GetTypeName(Type2).English}");
             sb.AppendLine($"Position: {Team.TrainerName}'s {FieldPosition}");
             sb.AppendLine($"Status1: {Status1}");
             if (Status1 == PBEStatus1.Asleep)
@@ -922,7 +922,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Array.IndexOf(Moves, PBEMove.HiddenPower) != -1)
             {
-                sb.AppendLine($"Hidden Power: {GetHiddenPowerType()}/{GetHiddenPowerBasePower()}");
+                sb.AppendLine($"Hidden Power: {PBELocalizedString.GetTypeName(GetHiddenPowerType()).English}/{GetHiddenPowerBasePower()}");
             }
             string[] moveStrs = new string[Moves.Length];
             for (int i = 0; i < moveStrs.Length; i++)

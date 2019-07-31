@@ -55,7 +55,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             if (move != PBEMove.None)
             {
                 PBEMoveData mData = PBEMoveData.Data[move];
-                sb.AppendLine($"Type: {mData.Type}");
+                sb.AppendLine($"Type: {PBELocalizedString.GetTypeName(mData.Type).FromUICultureInfo()}");
                 sb.AppendLine($"Category: {mData.Category}");
                 int moveIndex = Array.IndexOf(pkmn.Moves, move);
                 if (moveIndex != -1)

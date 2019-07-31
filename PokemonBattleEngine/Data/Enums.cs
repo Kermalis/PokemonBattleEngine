@@ -3,26 +3,16 @@ using System;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    /// <summary>
-    /// Represents a specific Pokémon's gender.
-    /// </summary>
+    /// <summary>Represents a specific Pokémon's gender.</summary>
     public enum PBEGender : byte
     {
-        /// <summary>
-        /// The Pokémon is female.
-        /// </summary>
+        /// <summary>The Pokémon is female.</summary>
         Female,
-        /// <summary>
-        /// The Pokémon is genderless.
-        /// </summary>
+        /// <summary>The Pokémon is genderless.</summary>
         Genderless,
-        /// <summary>
-        /// The Pokémon is male.
-        /// </summary>
+        /// <summary>The Pokémon is male.</summary>
         Male,
-        /// <summary>
-        /// Invalid gender.
-        /// </summary>
+        /// <summary>Invalid gender.</summary>
         MAX
     }
     /// <summary>
@@ -869,115 +859,61 @@ namespace Kermalis.PokemonBattleEngine.Data
         Steel,
         Water
     }
-    /// <summary>
-    /// Represents a specific Pokémon's nature.
-    /// </summary>
+    /// <summary>Represents a specific Pokémon's nature.</summary>
     public enum PBENature : byte
     {
-        /// <summary>
-        /// The Pokémon favors attack and hinders special attack.
-        /// </summary>
-        Adamant,
-        /// <summary>
-        /// The Pokémon doesn't favor any stat.
-        /// </summary>
-        Bashful,
-        /// <summary>
-        /// The Pokémon favors defense and hinders attack.
-        /// </summary>
-        Bold,
-        /// <summary>
-        /// The Pokémon favors attack and hinders speed.
-        /// </summary>
-        Brave,
-        /// <summary>
-        /// The Pokémon favors special defense and hinders attack.
-        /// </summary>
-        Calm,
-        /// <summary>
-        /// The Pokémon favors special defense and hinders special attack.
-        /// </summary>
-        Careful,
-        /// <summary>
-        /// The Pokémon doesn't favor any stat.
-        /// </summary>
-        Docile,
-        /// <summary>
-        /// The Pokémon favors special defense and hinders defense.
-        /// </summary>
-        Gentle,
-        /// <summary>
-        /// The Pokémon doesn't favor any stat.
-        /// </summary>
-        Hardy,
-        /// <summary>
-        /// The Pokémon favors speed and hinders defense.
-        /// </summary>
-        Hasty,
-        /// <summary>
-        /// The Pokémon favors defense and hinders special attack.
-        /// </summary>
-        Impish,
-        /// <summary>
-        /// The Pokémon favors speed and hinders special attack.
-        /// </summary>
-        Jolly,
-        /// <summary>
-        /// The Pokémon favors defense and hinders special defense.
-        /// </summary>
-        Lax,
-        /// <summary>
-        /// The Pokémon favors attack and hinders defense.
-        /// </summary>
-        Lonely,
-        /// <summary>
-        /// The Pokémon favors special attack and hinders defense.
-        /// </summary>
-        Mild,
-        /// <summary>
-        /// The Pokémon favors special attack and hinders attack.
-        /// </summary>
-        Modest,
-        /// <summary>
-        /// The Pokémon favors speed and hinders special defense.
-        /// </summary>
-        Naive,
-        /// <summary>
-        /// The Pokémon favors attack and hinders special defense.
-        /// </summary>
-        Naughty,
-        /// <summary>
-        /// The Pokémon favors special attack and hinders speed.
-        /// </summary>
-        Quiet,
-        /// <summary>
-        /// The Pokémon doesn't favor any stat.
-        /// </summary>
-        Quirky,
-        /// <summary>
-        /// The Pokémon favors special attack and hinders special defense.
-        /// </summary>
-        Rash,
-        /// <summary>
-        /// The Pokémon favors defense and hinders speed.
-        /// </summary>
-        Relaxed,
-        /// <summary>
-        /// The Pokémon favors special defense and hinders speed.
-        /// </summary>
-        Sassy,
-        /// <summary>
-        /// The Pokémon doesn't favor any stat.
-        /// </summary>
-        Serious,
-        /// <summary>
-        /// The Pokémon favors speed and hinders attack.
-        /// </summary>
-        Timid,
-        /// <summary>
-        /// Invalid nature.
-        /// </summary>
-        MAX
+        /// <summary>The Pokémon favors attack and hinders special attack.</summary>
+        Adamant = 3,
+        /// <summary>The Pokémon doesn't favor any stat.</summary>
+        Bashful = 18,
+        /// <summary>The Pokémon favors defense and hinders attack.</summary>
+        Bold = 5,
+        /// <summary>The Pokémon favors attack and hinders speed.</summary>
+        Brave = 2,
+        /// <summary>The Pokémon favors special defense and hinders attack.</summary>
+        Calm = 20,
+        /// <summary>The Pokémon favors special defense and hinders special attack.</summary>
+        Careful = 23,
+        /// <summary>The Pokémon doesn't favor any stat.</summary>
+        Docile = 6,
+        /// <summary>The Pokémon favors special defense and hinders defense.</summary>
+        Gentle = 21,
+        /// <summary>The Pokémon doesn't favor any stat.</summary>
+        Hardy = 0,
+        /// <summary>The Pokémon favors speed and hinders defense.</summary>
+        Hasty = 11,
+        /// <summary>The Pokémon favors defense and hinders special attack.</summary>
+        Impish = 8,
+        /// <summary>The Pokémon favors speed and hinders special attack.</summary>
+        Jolly = 13,
+        /// <summary>The Pokémon favors defense and hinders special defense.</summary>
+        Lax = 9,
+        /// <summary>The Pokémon favors attack and hinders defense.</summary>
+        Lonely = 1,
+        /// <summary>The Pokémon favors special attack and hinders defense.</summary>
+        Mild = 16,
+        /// <summary>The Pokémon favors special attack and hinders attack.</summary>
+        Modest = 15,
+        /// <summary>The Pokémon favors speed and hinders special defense.</summary>
+        Naive = 14,
+        /// <summary>The Pokémon favors attack and hinders special defense.</summary>
+        Naughty = 4,
+        /// <summary>The Pokémon favors special attack and hinders speed.</summary>
+        Quiet = 17,
+        /// <summary>The Pokémon doesn't favor any stat.</summary>
+        Quirky = 24,
+        /// <summary>The Pokémon favors special attack and hinders special defense.</summary>
+        Rash = 19,
+        /// <summary>The Pokémon favors defense and hinders speed.</summary>
+        Relaxed = 7,
+        /// <summary>The Pokémon favors special defense and hinders speed.</summary>
+        Sassy = 22,
+        /// <summary>The Pokémon doesn't favor any stat.</summary>
+        Serious = 12,
+        /// <summary>The Pokémon favors speed and hinders attack.</summary>
+        Timid = 10,
+        /// <summary>Invalid nature.</summary>
+        MAX = 25
     }
     /// <summary>
     /// Represents a specific Pokémon's held item.

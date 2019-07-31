@@ -1,9 +1,31 @@
 ﻿using Kermalis.EndianBinaryIO;
+using Kermalis.PokemonBattleEngine.Data;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
     internal class Utils
     {
+        public static readonly PBEType[] Gen5Types = new PBEType[17]
+        {
+            PBEType.Normal,
+            PBEType.Fighting,
+            PBEType.Flying,
+            PBEType.Poison,
+            PBEType.Ground,
+            PBEType.Rock,
+            PBEType.Bug,
+            PBEType.Ghost,
+            PBEType.Steel,
+            PBEType.Fire,
+            PBEType.Water,
+            PBEType.Grass,
+            PBEType.Electric,
+            PBEType.Psychic,
+            PBEType.Ice,
+            PBEType.Dragon,
+            PBEType.Dark
+        };
+
         public static string[][] ReadTextFile(NARC narc, int fileNum)
         {
             using (var r = new EndianBinaryReader(narc.Files[fileNum], Endianness.LittleEndian))

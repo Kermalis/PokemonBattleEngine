@@ -38,7 +38,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public string FromCultureInfo(CultureInfo cultureInfo)
         {
-            switch (cultureInfo.TwoLetterISOLanguageName)
+            string id = cultureInfo.TwoLetterISOLanguageName;
+            switch (id)
             {
                 case "en": return English;
                 case "fr": return French;
@@ -111,6 +112,28 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(queryId, "AbilityNames", (byte)ability))[0]);
         }
+        public static PBEGender? GetGenderByName(string genderName)
+        {
+            PBEGender gender;
+            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(queryText, "GenderNames", genderName));
+            if (results.Count == 1)
+            {
+                gender = (PBEGender)results[0].Id;
+            }
+            else if (!GetEnumValue(genderName, out gender) || gender == PBEGender.MAX)
+            {
+                return null;
+            }
+            return gender;
+        }
+        public static PBELocalizedString GetGenderName(PBEGender gender)
+        {
+            if (gender >= PBEGender.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(gender));
+            }
+            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(queryId, "GenderNames", (byte)gender))[0]);
+        }
         public static PBEItem? GetItemByName(string itemName)
         {
             PBEItem item;
@@ -171,6 +194,28 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(queryId, "MoveNames", (ushort)move))[0]);
         }
+        public static PBENature? GetNatureByName(string natureName)
+        {
+            PBENature nature;
+            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(queryText, "NatureNames", natureName));
+            if (results.Count == 1)
+            {
+                nature = (PBENature)results[0].Id;
+            }
+            else if (!GetEnumValue(natureName, out nature) || nature == PBENature.MAX)
+            {
+                return null;
+            }
+            return nature;
+        }
+        public static PBELocalizedString GetNatureName(PBENature nature)
+        {
+            if (nature >= PBENature.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(nature));
+            }
+            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(queryId, "NatureNames", (byte)nature))[0]);
+        }
         public static PBESpecies? GetSpeciesByName(string speciesName)
         {
             PBESpecies species;
@@ -211,6 +256,28 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(species));
             }
             return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(queryId, "SpeciesNames", speciesId))[0]);
+        }
+        public static PBEType? GetTypeByName(string typeName)
+        {
+            PBEType type;
+            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(queryText, "TypeNames", typeName));
+            if (results.Count == 1)
+            {
+                type = (PBEType)results[0].Id;
+            }
+            else if (!GetEnumValue(typeName, out type))
+            {
+                return null;
+            }
+            return type;
+        }
+        public static PBELocalizedString GetTypeName(PBEType type)
+        {
+            if (!Enum.IsDefined(typeof(PBEType), type))
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
+            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(queryId, "TypeNames", (byte)type))[0]);
         }
 
         #endregion

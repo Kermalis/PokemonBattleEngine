@@ -132,7 +132,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
-                sb.AppendLine($"Known types: {pkmn.KnownType1}/{pkmn.KnownType2}");
+                sb.AppendLine($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1).FromUICultureInfo()}/{PBELocalizedString.GetTypeName(pkmn.KnownType2).FromUICultureInfo()}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
@@ -184,7 +184,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
-                sb.AppendLine($"Types: {pkmn.Type1}/{pkmn.Type2}");
+                sb.AppendLine($"Types: {PBELocalizedString.GetTypeName(pkmn.Type1).FromUICultureInfo()}/{PBELocalizedString.GetTypeName(pkmn.Type2).FromUICultureInfo()}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
@@ -222,7 +222,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
                 {
-                    sb.AppendLine($"Hidden Power: {pkmn.GetHiddenPowerType()}/{pkmn.GetHiddenPowerBasePower()}");
+                    sb.AppendLine($"Hidden Power: {PBELocalizedString.GetTypeName(pkmn.GetHiddenPowerType()).FromUICultureInfo()}/{pkmn.GetHiddenPowerBasePower()}");
                 }
                 string[] moveStrs = new string[pkmn.Moves.Length];
                 for (int i = 0; i < moveStrs.Length; i++)

@@ -23,26 +23,6 @@ namespace Kermalis.PokemonBattleEngineExtras
             public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
         }
 
-        private static readonly PBEType[] gen5Types = new PBEType[17]
-        {
-            PBEType.Normal,
-            PBEType.Fighting,
-            PBEType.Flying,
-            PBEType.Poison,
-            PBEType.Ground,
-            PBEType.Rock,
-            PBEType.Bug,
-            PBEType.Ghost,
-            PBEType.Steel,
-            PBEType.Fire,
-            PBEType.Water,
-            PBEType.Grass,
-            PBEType.Electric,
-            PBEType.Psychic,
-            PBEType.Ice,
-            PBEType.Dragon,
-            PBEType.Dark
-        };
         private static readonly Dictionary<int, PBESpecies> gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 1, PBESpecies.Bulbasaur },
@@ -1181,8 +1161,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 pkmn.SpAttack = pokedata.ReadByte(0x4);
                                 pkmn.SpDefense = pokedata.ReadByte(0x5);
                                 pkmn.Speed = pokedata.ReadByte(0x3);
-                                pkmn.Type1 = gen5Types[pokedata.ReadByte(0x6)];
-                                pkmn.Type2 = gen5Types[pokedata.ReadByte(0x7)];
+                                pkmn.Type1 = Utils.Gen5Types[pokedata.ReadByte(0x6)];
+                                pkmn.Type2 = Utils.Gen5Types[pokedata.ReadByte(0x7)];
                                 if (pkmn.Type1 == pkmn.Type2)
                                 {
                                     pkmn.Type2 = PBEType.None;

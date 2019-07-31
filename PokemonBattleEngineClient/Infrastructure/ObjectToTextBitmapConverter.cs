@@ -14,9 +14,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             switch (value)
             {
                 case PBEAbility ability: localized = PBELocalizedString.GetAbilityName(ability); break;
+                case PBEGender gender: localized = PBELocalizedString.GetGenderName(gender); break;
                 case PBEItem item: localized = PBELocalizedString.GetItemName(item); break;
                 case PBEMove move: localized = PBELocalizedString.GetMoveName(move); break;
+                case PBENature nature: localized = PBELocalizedString.GetNatureName(nature); break;
                 case PBESpecies species: localized = PBELocalizedString.GetSpeciesName(species); break;
+                case PBEType type: localized = PBELocalizedString.GetTypeName(type); break;
             }
             return StringRenderer.Render(localized == null ? value?.ToString() : localized.FromUICultureInfo(), parameter?.ToString());
         }

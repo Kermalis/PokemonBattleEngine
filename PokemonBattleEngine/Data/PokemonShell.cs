@@ -337,7 +337,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 string nickname = pkmnObject[nameof(Nickname)].Value<string>();
                 ValidateNickname(nickname, settings);
                 pkmn.nickname = nickname;
-                var nature = (PBENature)Enum.Parse(typeof(PBENature), pkmnObject[nameof(Nature)].Value<string>(), true); // TODO: GetNatureByName
+                PBENature nature = PBELocalizedString.GetNatureByName(pkmnObject[nameof(Nature)].Value<string>()).Value;
                 ValidateNature(nature);
                 pkmn.nature = nature;
                 PBESpecies species = PBELocalizedString.GetSpeciesByName(pkmnObject[nameof(Species)].Value<string>()).Value;
@@ -347,7 +347,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 PBEAbility ability = PBELocalizedString.GetAbilityByName(pkmnObject[nameof(Ability)].Value<string>()).Value;
                 pkmn.ValidateAbility(ability);
                 pkmn.ability = ability;
-                var gender = (PBEGender)Enum.Parse(typeof(PBEGender), pkmnObject[nameof(Gender)].Value<string>(), true); // TODO: GetGenderByName
+                PBEGender gender = PBELocalizedString.GetGenderByName(pkmnObject[nameof(Gender)].Value<string>()).Value;
                 pkmn.ValidateGender(gender);
                 pkmn.gender = gender;
                 PBEItem item = PBELocalizedString.GetItemByName(pkmnObject[nameof(Item)].Value<string>()).Value;
