@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: .Equals, struct?
+    // TODO: .Equals, ability to make read-only
     /// <summary>The various engine settings.</summary>
     public sealed class PBESettings : INotifyPropertyChanged
     {
@@ -16,9 +16,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>The default settings used in official games.</summary>
-        public static PBESettings DefaultSettings { get; } = new PBESettings(); // TODO: I wish I could make this constant somehow (it can be edited) (would a struct work?)
+        public static PBESettings DefaultSettings { get; } = new PBESettings();
 
-        private byte maxLevel;
+        /// <summary>The default value of <see cref="MaxLevel"/>.</summary>
+        public const byte DefaultMaxLevel = 100;
+        private byte maxLevel = DefaultMaxLevel;
         /// <summary>The maximum level a Pokémon can be. Used in stat calculation.</summary>
         public byte MaxLevel
         {
@@ -36,7 +38,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte minLevel;
+        /// <summary>The default value of <see cref="MinLevel"/>.</summary>
+        public const byte DefaultMinLevel = 1;
+        private byte minLevel = DefaultMinLevel;
         /// <summary>The minimum level a Pokémon can be.</summary>
         public byte MinLevel
         {
@@ -54,7 +58,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private sbyte maxPartySize;
+        /// <summary>The default value of <see cref="MaxPartySize"/>.</summary>
+        public const sbyte DefaultMaxPartySize = 6;
+        private sbyte maxPartySize = DefaultMaxPartySize;
         /// <summary>The maximum amount of Pokémon each team can bring into a battle.</summary>
         public sbyte MaxPartySize
         {
@@ -72,7 +78,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte maxPokemonNameLength;
+        /// <summary>The default value of <see cref="MaxPokemonNameLength"/>.</summary>
+        public const byte DefaultMaxPokemonNameLength = 10;
+        private byte maxPokemonNameLength = DefaultMaxPokemonNameLength;
         /// <summary>The maximum amount of characters a Pokémon nickname can have.</summary>
         public byte MaxPokemonNameLength
         {
@@ -90,7 +98,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte maxTrainerNameLength;
+        /// <summary>The default value of <see cref="MaxTrainerNameLength"/>. This value is different in non-English games.</summary>
+        public const byte DefaultMaxTrainerNameLength = 7;
+        private byte maxTrainerNameLength = DefaultMaxTrainerNameLength;
         /// <summary>The maximum amount of characters a trainer's name can have.</summary>
         [Obsolete("Currently not used anywhere")]
         public byte MaxTrainerNameLength
@@ -109,7 +119,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private ushort maxTotalEVs;
+        /// <summary>The default value of <see cref="MaxTotalEVs"/>.</summary>
+        public const ushort DefaultMaxTotalEVs = 510;
+        private ushort maxTotalEVs = DefaultMaxTotalEVs;
         /// <summary>The maximum sum of a Pokémon's EVs.</summary>
         public ushort MaxTotalEVs
         {
@@ -128,7 +140,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte maxIVs;
+        /// <summary>The default value of <see cref="MaxIVs"/>.</summary>
+        public const byte DefaultMaxIVs = 31;
+        private byte maxIVs = DefaultMaxIVs;
         /// <summary>The maximum amount of IVs Pokémon can have in each stat. Raising this will not affect <see cref="PBEMove.HiddenPower"/>.</summary>
         public byte MaxIVs
         {
@@ -142,7 +156,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private double natureStatBoost;
+        /// <summary>The default value of <see cref="NatureStatBoost"/>.</summary>
+        public const double DefaultNatureStatBoost = 0.1;
+        private double natureStatBoost = DefaultNatureStatBoost;
         /// <summary>The amount of influence a Pokémon's <see cref="PBENature"/> has on its stats.</summary>
         public double NatureStatBoost
         {
@@ -160,7 +176,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private sbyte maxStatChange;
+        /// <summary>The default value of <see cref="MaxStatChange"/>.</summary>
+        public const sbyte DefaultMaxStatChange = 6;
+        private sbyte maxStatChange = DefaultMaxStatChange;
         /// <summary>The maximum change a stat can have in the negative and positive direction.</summary>
         public sbyte MaxStatChange
         {
@@ -174,7 +192,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte numMoves;
+        /// <summary>The default value of <see cref="NumMoves"/>.</summary>
+        public const byte DefaultNumMoves = 4;
+        private byte numMoves = DefaultNumMoves;
         /// <summary>The maximum amount of moves a specific Pokémon can remember at once.</summary>
         public byte NumMoves
         {
@@ -192,7 +212,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte ppMultiplier;
+        /// <summary>The default value of <see cref="PPMultiplier"/>.</summary>
+        public const byte DefaultPPMultiplier = 5;
+        private byte ppMultiplier = DefaultPPMultiplier;
         /// <summary>This affects the base PP of each move and the boost PP-Ups give.</summary>
         /// <remarks>
         /// <para>Growl is a tier 8 move, so the maximum PP will be 64. The formula: Max(1, ((tier * PPMultiplier) + (tier * PPUps))).</para>
@@ -214,7 +236,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte maxPPUps;
+        /// <summary>The default value of <see cref="MaxPPUps"/>.</summary>
+        public const byte DefaultMaxPPUps = 3;
+        private byte maxPPUps = DefaultMaxPPUps;
         /// <summary>The maximum amount of PP-Ups that can be used on each of a Pokémon's moves.</summary>
         public byte MaxPPUps
         {
@@ -228,7 +252,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private double critMultiplier;
+        /// <summary>The default value of <see cref="CritMultiplier"/>.</summary>
+        public const double DefaultCritMultiplier = 2.0;
+        private double critMultiplier = DefaultCritMultiplier;
         /// <summary>The damage boost awarded by critical hits.</summary>
         public double CritMultiplier
         {
@@ -242,7 +268,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte confusionMinTurns;
+        /// <summary>The default value of <see cref="ConfusionMinTurns"/>.</summary>
+        public const byte DefaultConfusionMinTurns = 1;
+        private byte confusionMinTurns = DefaultConfusionMinTurns;
         /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus2.Confused"/>.</summary>
         public byte ConfusionMinTurns
         {
@@ -260,7 +288,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte confusionMaxTurns;
+        /// <summary>The default value of <see cref="ConfusionMaxTurns"/>.</summary>
+        public const byte DefaultConfusionMaxTurns = 4;
+        private byte confusionMaxTurns = DefaultConfusionMaxTurns;
         /// <summary>The maximum amount of turns a Pokémon can be <see cref="PBEStatus2.Confused"/>.</summary>
         public byte ConfusionMaxTurns
         {
@@ -278,7 +308,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte sleepMinTurns;
+        /// <summary>The default value of <see cref="SleepMinTurns"/>.</summary>
+        public const byte DefaultSleepMinTurns = 1;
+        private byte sleepMinTurns = DefaultSleepMinTurns;
         /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>.</summary>
         public byte SleepMinTurns
         {
@@ -296,7 +328,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte sleepMaxTurns;
+        /// <summary>The default value of <see cref="SleepMaxTurns"/>.</summary>
+        public const byte DefaultSleepMaxTurns = 3;
+        private byte sleepMaxTurns = DefaultSleepMaxTurns;
         /// <summary>The maximum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>.</summary>
         public byte SleepMaxTurns
         {
@@ -314,7 +348,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte burnDamageDenominator;
+        /// <summary>The default value of <see cref="BurnDamageDenominator"/>.</summary>
+        public const byte DefaultBurnDamageDenominator = 8;
+        private byte burnDamageDenominator = DefaultBurnDamageDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus1.Burned"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte BurnDamageDenominator
         {
@@ -332,7 +368,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte poisonDamageDenominator;
+        /// <summary>The default value of <see cref="PoisonDamageDenominator"/>.</summary>
+        public const byte DefaultPoisonDamageDenominator = 8;
+        private byte poisonDamageDenominator = DefaultPoisonDamageDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus1.Poisoned"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte PoisonDamageDenominator
         {
@@ -350,7 +388,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte toxicDamageDenominator;
+        /// <summary>The default value of <see cref="ToxicDamageDenominator"/>.</summary>
+        public const byte DefaultToxicDamageDenominator = 16;
+        private byte toxicDamageDenominator = DefaultToxicDamageDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus1.BadlyPoisoned"/> loses (<see cref="PBEPokemon.Status1Counter"/>/this) of its HP at the end of every turn.</summary>
         public byte ToxicDamageDenominator
         {
@@ -368,7 +408,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte leechSeedDenominator;
+        /// <summary>The default value of <see cref="LeechSeedDenominator"/>.</summary>
+        public const byte DefaultLeechSeedDenominator = 8;
+        private byte leechSeedDenominator = DefaultLeechSeedDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus2.LeechSeed"/> loses (1/this) of its HP at the end of every turn and the Pokémon at <see cref="PBEPokemon.SeededPosition"/> on <see cref="PBEPokemon.SeededTeam"/> restores the lost HP.</summary>
         public byte LeechSeedDenominator
         {
@@ -386,7 +428,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte curseDenominator;
+        /// <summary>The default value of <see cref="CurseDenominator"/>.</summary>
+        public const byte DefaultCurseDenominator = 4;
+        private byte curseDenominator = DefaultCurseDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus2.Cursed"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte CurseDenominator
         {
@@ -404,7 +448,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte leftoversHealDenominator;
+        /// <summary>The default value of <see cref="LeftoversHealDenominator"/>.</summary>
+        public const byte DefaultLeftoversHealDenominator = 16;
+        private byte leftoversHealDenominator = DefaultLeftoversHealDenominator;
         /// <summary>A Pokémon holding a <see cref="PBEItem.Leftovers"/> restores (1/this) of its HP at the end of every turn.</summary>
         public byte LeftoversHealDenominator
         {
@@ -422,7 +468,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte blackSludgeDamageDenominator;
+        /// <summary>The default value of <see cref="BlackSludgeDamageDenominator"/>.</summary>
+        public const byte DefaultBlackSludgeDamageDenominator = 8;
+        private byte blackSludgeDamageDenominator = DefaultBlackSludgeDamageDenominator;
         /// <summary>A Pokémon holding a <see cref="PBEItem.BlackSludge"/> without <see cref="PBEType.Poison"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte BlackSludgeDamageDenominator
         {
@@ -440,7 +488,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte blackSludgeHealDenominator;
+        /// <summary>The default value of <see cref="BlackSludgeHealDenominator"/>.</summary>
+        public const byte DefaultBlackSludgeHealDenominator = 16;
+        private byte blackSludgeHealDenominator = DefaultBlackSludgeHealDenominator;
         /// <summary>A Pokémon holding a <see cref="PBEItem.BlackSludge"/> with <see cref="PBEType.Poison"/> restores (1/this) of its HP at the end of every turn.</summary>
         public byte BlackSludgeHealDenominator
         {
@@ -458,7 +508,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte reflectTurns;
+        /// <summary>The default value of <see cref="ReflectTurns"/>.</summary>
+        public const byte DefaultReflectTurns = 5;
+        private byte reflectTurns = DefaultReflectTurns;
         /// <summary>The amount of turns <see cref="PBEMove.Reflect"/> lasts.</summary>
         public byte ReflectTurns
         {
@@ -476,7 +528,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte lightScreenTurns;
+        /// <summary>The default value of <see cref="LightScreenTurns"/>.</summary>
+        public const byte DefaultLightScreenTurns = 5;
+        private byte lightScreenTurns = DefaultLightScreenTurns;
         /// <summary>The amount of turns <see cref="PBEMove.LightScreen"/> lasts.</summary>
         public byte LightScreenTurns
         {
@@ -494,7 +548,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte lightClayTurnExtension;
+        /// <summary>The default value of <see cref="LightClayTurnExtension"/>.</summary>
+        public const byte DefaultLightClayTurnExtension = 3;
+        private byte lightClayTurnExtension = DefaultLightClayTurnExtension;
         /// <summary>The amount of turns added to <see cref="ReflectTurns"/> and <see cref="LightScreenTurns"/> when the user is holding a <see cref="PBEItem.LightClay"/>.</summary>
         public byte LightClayTurnExtension
         {
@@ -508,7 +564,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte hailTurns;
+        /// <summary>The default value of <see cref="HailTurns"/>.</summary>
+        public const byte DefaultHailTurns = 5;
+        private byte hailTurns = DefaultHailTurns;
         /// <summary>The amount of turns <see cref="PBEWeather.Hailstorm"/> lasts. For infinite turns, set <see cref="IcyRockTurnExtension"/> to 0 first, then this to 0.</summary>
         public byte HailTurns
         {
@@ -526,7 +584,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte hailDamageDenominator;
+        /// <summary>The default value of <see cref="HailDamageDenominator"/>.</summary>
+        public const byte DefaultHailDamageDenominator = 16;
+        private byte hailDamageDenominator = DefaultHailDamageDenominator;
         /// <summary>A Pokémon in <see cref="PBEWeather.Hailstorm"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte HailDamageDenominator
         {
@@ -544,7 +604,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte icyRockTurnExtension;
+        /// <summary>The default value of <see cref="IcyRockTurnExtension"/>.</summary>
+        public const byte DefaultIcyRockTurnExtension = 3;
+        private byte icyRockTurnExtension = DefaultIcyRockTurnExtension;
         /// <summary>The amount of turns added to <see cref="HailTurns"/> when the user is holding a <see cref="PBEItem.IcyRock"/>. If <see cref="HailTurns"/> is 0 (infinite turns), this must also be 0.</summary>
         public byte IcyRockTurnExtension
         {
@@ -562,7 +624,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte iceBodyHealDenominator;
+        /// <summary>The default value of <see cref="IceBodyHealDenominator"/>.</summary>
+        public const byte DefaultIceBodyHealDenominator = 16;
+        private byte iceBodyHealDenominator = DefaultIceBodyHealDenominator;
         /// <summary>A Pokémon with <see cref="PBEAbility.IceBody"/> in <see cref="PBEWeather.Hailstorm"/> restores (1/this) of its HP at the end of every turn.</summary>
         public byte IceBodyHealDenominator
         {
@@ -580,7 +644,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte rainTurns;
+        /// <summary>The default value of <see cref="RainTurns"/>.</summary>
+        public const byte DefaultRainTurns = 5;
+        private byte rainTurns = DefaultRainTurns;
         /// <summary>The amount of turns <see cref="PBEWeather.Rain"/> lasts. For infinite turns, set <see cref="DampRockTurnExtension"/> to 0 first, then this to 0.</summary>
         public byte RainTurns
         {
@@ -598,7 +664,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte dampRockTurnExtension;
+        /// <summary>The default value of <see cref="DampRockTurnExtension"/>.</summary>
+        public const byte DefaultDampRockTurnExtension = 3;
+        private byte dampRockTurnExtension = DefaultDampRockTurnExtension;
         /// <summary>The amount of turns added to <see cref="RainTurns"/> when the user is holding a <see cref="PBEItem.DampRock"/>. If <see cref="RainTurns"/> is 0 (infinite turns), this must also be 0.</summary>
         public byte DampRockTurnExtension
         {
@@ -616,7 +684,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte sandstormTurns;
+        /// <summary>The default value of <see cref="SandstormTurns"/>.</summary>
+        public const byte DefaultSandstormTurns = 5;
+        private byte sandstormTurns = DefaultSandstormTurns;
         /// <summary>The amount of turns <see cref="PBEWeather.Sandstorm"/> lasts. For infinite turns, set <see cref="SmoothRockTurnExtension"/> to 0 first, then this to 0.</summary>
         public byte SandstormTurns
         {
@@ -634,7 +704,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte sandstormDamageDenominator;
+        /// <summary>The default value of <see cref="SandstormDamageDenominator"/>.</summary>
+        public const byte DefaultSandstormDamageDenominator = 16;
+        private byte sandstormDamageDenominator = DefaultSandstormDamageDenominator;
         /// <summary>A Pokémon in <see cref="PBEWeather.Sandstorm"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte SandstormDamageDenominator
         {
@@ -652,7 +724,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte smoothRockTurnExtension;
+        /// <summary>The default value of <see cref="SmoothRockTurnExtension"/>.</summary>
+        public const byte DefaultSmoothRockTurnExtension = 3;
+        private byte smoothRockTurnExtension = DefaultSmoothRockTurnExtension;
         /// <summary>The amount of turns added to <see cref="SandstormTurns"/> when the user is holding a <see cref="PBEItem.SmoothRock"/>. If <see cref="SandstormTurns"/> is 0 (infinite turns), this must also be 0.</summary>
         public byte SmoothRockTurnExtension
         {
@@ -670,7 +744,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte sunTurns;
+        /// <summary>The default value of <see cref="SunTurns"/>.</summary>
+        public const byte DefaultSunTurns = 5;
+        private byte sunTurns = DefaultSunTurns;
         /// <summary>The amount of turns <see cref="PBEWeather.HarshSunlight"/> lasts. For infinite turns, set <see cref="HeatRockTurnExtension"/> to 0 first, then this to 0.</summary>
         public byte SunTurns
         {
@@ -688,7 +764,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        private byte heatRockTurnExtension;
+        /// <summary>The default value of <see cref="HeatRockTurnExtension"/>.</summary>
+        public const byte DefaultHeatRockTurnExtension = 3;
+        private byte heatRockTurnExtension = DefaultHeatRockTurnExtension;
         /// <summary>The amount of turns added to <see cref="SunTurns"/> when the user is holding a <see cref="PBEItem.HeatRock"/>. If <see cref="SunTurns"/> is 0 (infinite turns), this must also be 0.</summary>
         public byte HeatRockTurnExtension
         {
@@ -708,47 +786,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
 
         /// <summary>Creates a new <see cref="PBESettings"/> object where every setting is pre-set to the values used in official games.</summary>
-        public PBESettings()
-        {
-            maxLevel = 100;
-            minLevel = 1;
-            maxPartySize = 6;
-            maxPokemonNameLength = 10;
-            maxTrainerNameLength = 7; // English is 7, other languages are different
-            maxTotalEVs = 510;
-            maxIVs = 31;
-            natureStatBoost = 0.1;
-            maxStatChange = 6;
-            numMoves = 4;
-            ppMultiplier = 5;
-            maxPPUps = 3;
-            critMultiplier = 2.0;
-            confusionMinTurns = 1;
-            confusionMaxTurns = 4;
-            sleepMinTurns = 1;
-            sleepMaxTurns = 3;
-            burnDamageDenominator = 8;
-            poisonDamageDenominator = 8;
-            toxicDamageDenominator = 16;
-            leechSeedDenominator = 8;
-            curseDenominator = 4;
-            leftoversHealDenominator = 16;
-            blackSludgeDamageDenominator = 8;
-            blackSludgeHealDenominator = 16;
-            reflectTurns = 5;
-            lightScreenTurns = 5;
-            lightClayTurnExtension = 3;
-            hailTurns = 5;
-            hailDamageDenominator = 16;
-            icyRockTurnExtension = 3;
-            iceBodyHealDenominator = 16;
-            rainTurns = 5;
-            dampRockTurnExtension = 3;
-            sandstormTurns = 5;
-            sandstormDamageDenominator = 16;
-            smoothRockTurnExtension = 3;
-            sunTurns = 5;
-            heatRockTurnExtension = 3;
-        }
+        public PBESettings() { }
     }
 }
