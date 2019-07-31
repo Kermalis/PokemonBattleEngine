@@ -257,6 +257,28 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(queryId, "SpeciesNames", speciesId))[0]);
         }
+        public static PBEStat? GetStatByName(string statName)
+        {
+            PBEStat stat;
+            List<SearchResult> results = PBEUtils.QueryDatabase<SearchResult>(string.Format(queryText, "StatNames", statName));
+            if (results.Count == 1)
+            {
+                stat = (PBEStat)results[0].Id;
+            }
+            else if (!GetEnumValue(statName, out stat))
+            {
+                return null;
+            }
+            return stat;
+        }
+        public static PBELocalizedString GetStatName(PBEStat stat)
+        {
+            if (!Enum.IsDefined(typeof(PBEStat), stat))
+            {
+                throw new ArgumentOutOfRangeException(nameof(stat));
+            }
+            return new PBELocalizedString(PBEUtils.QueryDatabase<SearchResult>(string.Format(queryId, "StatNames", (byte)stat))[0]);
+        }
         public static PBEType? GetTypeByName(string typeName)
         {
             PBEType type;

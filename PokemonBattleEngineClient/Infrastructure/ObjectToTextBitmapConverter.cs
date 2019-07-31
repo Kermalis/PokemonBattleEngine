@@ -19,6 +19,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 case PBEMove move: localized = PBELocalizedString.GetMoveName(move); break;
                 case PBENature nature: localized = PBELocalizedString.GetNatureName(nature); break;
                 case PBESpecies species: localized = PBELocalizedString.GetSpeciesName(species); break;
+                case PBEStat stat: localized = PBELocalizedString.GetStatName(stat); break;
                 case PBEType type: localized = PBELocalizedString.GetTypeName(type); break;
             }
             return StringRenderer.Render(localized == null ? value?.ToString() : localized.FromUICultureInfo(), parameter?.ToString());

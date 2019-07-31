@@ -147,6 +147,20 @@ namespace Kermalis.PokemonBattleEngineExtras
                     LoadTexts(464);
                     WriteAll("SpeciesCategories");
                 }
+                // Stats (Non-Japanese languages do not have PBEStat.Accuracy or PBEStat.Evasion)
+                {
+                    LoadTexts(372);
+                    const string tableName = "StatNames";
+                    CreateTable(tableName);
+                    WriteTexts(tableName, (byte)PBEStat.HP, 0);
+                    WriteTexts(tableName, (byte)PBEStat.Attack, 1);
+                    WriteTexts(tableName, (byte)PBEStat.Defense, 2);
+                    WriteTexts(tableName, (byte)PBEStat.SpAttack, 4);
+                    WriteTexts(tableName, (byte)PBEStat.SpDefense, 5);
+                    WriteTexts(tableName, (byte)PBEStat.Speed, 3);
+                    Insert(tableName, (byte)PBEStat.Accuracy, "Accuracy", "Précision", "Genauigkeit", "Precisione", jap[0][6], jap[1][6], "명중률", "Precisión");
+                    Insert(tableName, (byte)PBEStat.Evasion, "Evasiveness", "Esquive", "Fluchtwert", "Elusione", jap[0][7], jap[1][7], "회피율", "Evasión");
+                }
                 // Types (Does not have PBEType.None)
                 {
                     LoadTexts(398);
