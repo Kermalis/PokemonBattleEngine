@@ -137,7 +137,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type", mData.Type, true)
                         .AddField("Category", mData.Category, true)
                         .AddField("Priority", mData.Priority, true)
-                        .AddField("PP", Math.Max(1, mData.PPTier * PBESettings.DefaultSettings.PPMultiplier), true)
+                        .AddField("PP", Math.Max(1, mData.PPTier * PBESettings.DefaultPPMultiplier), true)
                         .AddField("Power", mData.Power == 0 ? "--" : mData.Power.ToString(), true)
                         .AddField("Accuracy", mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString(), true);
                     switch (mData.Effect)
