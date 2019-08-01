@@ -27,6 +27,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(CurrentReplayVersion));
+            bytes.AddRange(Settings.ToBytes());
             bytes.Add((byte)BattleFormat);
 
             bytes.AddRange(PBEUtils.StringToBytes(Teams[0].TrainerName));
@@ -52,7 +53,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public static PBEBattle LoadReplay(string path)
         {
-            PBESettings settings = PBESettings.DefaultSettings;
             byte[] fileBytes = File.ReadAllBytes(path);
             using (var s = new MemoryStream(fileBytes))
             using (var r = new BinaryReader(s))
@@ -71,6 +71,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                 ushort version = r.ReadUInt16();
 
+                var settings = PBESettings.FromBytes(r);
                 var battle = new PBEBattle((PBEBattleFormat)r.ReadByte(), settings);
 
                 battle.Teams[0].TrainerName = PBEUtils.StringFromBytes(r);
