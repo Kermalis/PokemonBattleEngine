@@ -50,6 +50,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(battleFormat));
             }
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
             if (team0Party == null)
             {
                 throw new ArgumentNullException(nameof(team0Party));
@@ -77,6 +81,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (battleFormat >= PBEBattleFormat.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(battleFormat));
+            }
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
             }
             BattleFormat = battleFormat;
             Settings = settings;
