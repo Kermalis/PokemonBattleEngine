@@ -453,7 +453,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        internal byte[] ToBytes()
+        internal List<byte> ToBytes()
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes((uint)species));
@@ -472,7 +472,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 bytes.AddRange(BitConverter.GetBytes((ushort)slot.Move));
                 bytes.Add(slot.PPUps);
             }
-            return bytes.ToArray();
+            return bytes;
         }
         internal static PBEPokemonShell FromBytes(BinaryReader r, PBESettings settings)
         {

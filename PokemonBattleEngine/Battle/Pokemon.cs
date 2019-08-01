@@ -799,12 +799,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
         // ToBytes() and FromBytes() will only be used when the server sends you your team Ids, so they do not need to contain all info
-        internal byte[] ToBytes()
+        internal List<byte> ToBytes()
         {
             var bytes = new List<byte>();
             bytes.Add(Id);
             bytes.AddRange(Shell.ToBytes());
-            return bytes.ToArray();
+            return bytes;
         }
         internal static PBEPokemon FromBytes(BinaryReader r, PBETeam team)
         {

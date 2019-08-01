@@ -1,6 +1,8 @@
 ﻿using Kermalis.PokemonBattleEngine.Battle;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
@@ -268,26 +270,6 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        /// <summary>The default value of <see cref="ConfusionMinTurns"/>.</summary>
-        public const byte DefaultConfusionMinTurns = 1;
-        private byte confusionMinTurns = DefaultConfusionMinTurns;
-        /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus2.Confused"/>.</summary>
-        public byte ConfusionMinTurns
-        {
-            get => confusionMinTurns;
-            set
-            {
-                if (confusionMinTurns != value)
-                {
-                    if (value > confusionMaxTurns)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(ConfusionMinTurns)} cannot exceed {nameof(ConfusionMaxTurns)} ({confusionMaxTurns}).");
-                    }
-                    confusionMinTurns = value;
-                    OnPropertyChanged(nameof(ConfusionMinTurns));
-                }
-            }
-        }
         /// <summary>The default value of <see cref="ConfusionMaxTurns"/>.</summary>
         public const byte DefaultConfusionMaxTurns = 4;
         private byte confusionMaxTurns = DefaultConfusionMaxTurns;
@@ -308,23 +290,23 @@ namespace Kermalis.PokemonBattleEngine.Data
                 }
             }
         }
-        /// <summary>The default value of <see cref="SleepMinTurns"/>.</summary>
-        public const byte DefaultSleepMinTurns = 1;
-        private byte sleepMinTurns = DefaultSleepMinTurns;
-        /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>.</summary>
-        public byte SleepMinTurns
+        /// <summary>The default value of <see cref="ConfusionMinTurns"/>.</summary>
+        public const byte DefaultConfusionMinTurns = 1;
+        private byte confusionMinTurns = DefaultConfusionMinTurns;
+        /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus2.Confused"/>.</summary>
+        public byte ConfusionMinTurns
         {
-            get => sleepMinTurns;
+            get => confusionMinTurns;
             set
             {
-                if (sleepMinTurns != value)
+                if (confusionMinTurns != value)
                 {
-                    if (value > sleepMaxTurns)
+                    if (value > confusionMaxTurns)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(SleepMinTurns)} cannot exceed {nameof(SleepMaxTurns)} ({sleepMaxTurns}).");
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(ConfusionMinTurns)} cannot exceed {nameof(ConfusionMaxTurns)} ({confusionMaxTurns}).");
                     }
-                    sleepMinTurns = value;
-                    OnPropertyChanged(nameof(SleepMinTurns));
+                    confusionMinTurns = value;
+                    OnPropertyChanged(nameof(ConfusionMinTurns));
                 }
             }
         }
@@ -345,6 +327,26 @@ namespace Kermalis.PokemonBattleEngine.Data
                     }
                     sleepMaxTurns = value;
                     OnPropertyChanged(nameof(SleepMaxTurns));
+                }
+            }
+        }
+        /// <summary>The default value of <see cref="SleepMinTurns"/>.</summary>
+        public const byte DefaultSleepMinTurns = 1;
+        private byte sleepMinTurns = DefaultSleepMinTurns;
+        /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>.</summary>
+        public byte SleepMinTurns
+        {
+            get => sleepMinTurns;
+            set
+            {
+                if (sleepMinTurns != value)
+                {
+                    if (value > sleepMaxTurns)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(SleepMinTurns)} cannot exceed {nameof(SleepMaxTurns)} ({sleepMaxTurns}).");
+                    }
+                    sleepMinTurns = value;
+                    OnPropertyChanged(nameof(SleepMinTurns));
                 }
             }
         }
@@ -787,5 +789,358 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         /// <summary>Creates a new <see cref="PBESettings"/> object where every setting is pre-set to the values used in official games.</summary>
         public PBESettings() { }
+
+        private enum PBESettingID : ushort
+        {
+            MaxLevel,
+            MinLevel,
+            MaxPartySize,
+            MaxPokemonNameLength,
+            MaxTrainerNameLength,
+            MaxTotalEVs,
+            MaxIVs,
+            NatureStatBoost,
+            MaxStatChange,
+            NumMoves,
+            PPMultiplier,
+            MaxPPUps,
+            CritMultiplier,
+            ConfusionMaxTurns,
+            ConfusionMinTurns,
+            SleepMaxTurns,
+            SleepMinTurns,
+            BurnDamageDenominator,
+            PoisonDamageDenominator,
+            ToxicDamageDenominator,
+            LeechSeedDenominator,
+            CurseDenominator,
+            LeftoversHealDenominator,
+            BlackSludgeDamageDenominator,
+            BlackSludgeHealDenominator,
+            ReflectTurns,
+            LightScreenTurns,
+            LightClayTurnExtension,
+            HailTurns,
+            HailDamageDenominator,
+            IcyRockTurnExtension,
+            IceBodyHealDenominator,
+            RainTurns,
+            DampRockTurnExtension,
+            SandstormTurns,
+            SandstormDamageDenominator,
+            SmoothRockTurnExtension,
+            SunTurns,
+            HeatRockTurnExtension
+        }
+
+        public override string ToString()
+        {
+            return Convert.ToBase64String(ToBytes().ToArray());
+        }
+        public static PBESettings FromString(string code)
+        {
+            if (code == null)
+            {
+                throw new ArgumentNullException(code);
+            }
+            using (var r = new BinaryReader(new MemoryStream(Convert.FromBase64String(code))))
+            {
+                return FromBytes(r);
+            }
+        }
+
+        internal List<byte> ToBytes()
+        {
+            var bytes = new List<byte>();
+            ushort numChanged = 0;
+            if (maxLevel != DefaultMaxLevel)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxLevel));
+                bytes.Add(maxLevel);
+                numChanged++;
+            }
+            if (minLevel != DefaultMinLevel)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MinLevel));
+                bytes.Add(minLevel);
+                numChanged++;
+            }
+            if (maxPartySize != DefaultMaxPartySize)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxPartySize));
+                bytes.Add((byte)maxPartySize);
+                numChanged++;
+            }
+            if (maxPokemonNameLength != DefaultMaxPokemonNameLength)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxPokemonNameLength));
+                bytes.Add(maxPokemonNameLength);
+                numChanged++;
+            }
+            if (maxTrainerNameLength != DefaultMaxTrainerNameLength)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxTrainerNameLength));
+                bytes.Add(maxTrainerNameLength);
+                numChanged++;
+            }
+            if (maxTotalEVs != DefaultMaxTotalEVs)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxTotalEVs));
+                bytes.AddRange(BitConverter.GetBytes(maxTotalEVs));
+                numChanged++;
+            }
+            if (maxIVs != DefaultMaxIVs)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxIVs));
+                bytes.Add(maxIVs);
+                numChanged++;
+            }
+            if (natureStatBoost != DefaultNatureStatBoost)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.NatureStatBoost));
+                bytes.AddRange(BitConverter.GetBytes(natureStatBoost));
+                numChanged++;
+            }
+            if (maxStatChange != MaxStatChange)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxStatChange));
+                bytes.Add((byte)maxStatChange);
+                numChanged++;
+            }
+            if (numMoves != DefaultNumMoves)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.NumMoves));
+                bytes.Add(numMoves);
+                numChanged++;
+            }
+            if (ppMultiplier != DefaultPPMultiplier)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.PPMultiplier));
+                bytes.Add(ppMultiplier);
+                numChanged++;
+            }
+            if (maxPPUps != DefaultMaxPPUps)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxPPUps));
+                bytes.Add(maxPPUps);
+                numChanged++;
+            }
+            if (critMultiplier != DefaultCritMultiplier)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.CritMultiplier));
+                bytes.AddRange(BitConverter.GetBytes(critMultiplier));
+                numChanged++;
+            }
+            if (confusionMaxTurns != DefaultConfusionMaxTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ConfusionMaxTurns));
+                bytes.Add(confusionMaxTurns);
+                numChanged++;
+            }
+            if (confusionMinTurns != DefaultConfusionMinTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ConfusionMinTurns));
+                bytes.Add(confusionMinTurns);
+                numChanged++;
+            }
+            if (sleepMaxTurns != DefaultSleepMaxTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SleepMaxTurns));
+                bytes.Add(sleepMaxTurns);
+                numChanged++;
+            }
+            if (sleepMinTurns != DefaultSleepMinTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SleepMinTurns));
+                bytes.Add(sleepMinTurns);
+                numChanged++;
+            }
+            if (burnDamageDenominator != DefaultBurnDamageDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.BurnDamageDenominator));
+                bytes.Add(burnDamageDenominator);
+                numChanged++;
+            }
+            if (poisonDamageDenominator != DefaultPoisonDamageDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.PoisonDamageDenominator));
+                bytes.Add(poisonDamageDenominator);
+                numChanged++;
+            }
+            if (toxicDamageDenominator != DefaultToxicDamageDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ToxicDamageDenominator));
+                bytes.Add(toxicDamageDenominator);
+                numChanged++;
+            }
+            if (leechSeedDenominator != DefaultLeechSeedDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LeechSeedDenominator));
+                bytes.Add(leechSeedDenominator);
+                numChanged++;
+            }
+            if (curseDenominator != DefaultCurseDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.CurseDenominator));
+                bytes.Add(curseDenominator);
+                numChanged++;
+            }
+            if (leftoversHealDenominator != DefaultLeftoversHealDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LeftoversHealDenominator));
+                bytes.Add(leftoversHealDenominator);
+                numChanged++;
+            }
+            if (blackSludgeDamageDenominator != DefaultBlackSludgeDamageDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.BlackSludgeDamageDenominator));
+                bytes.Add(blackSludgeDamageDenominator);
+                numChanged++;
+            }
+            if (blackSludgeHealDenominator != DefaultBlackSludgeHealDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.BlackSludgeHealDenominator));
+                bytes.Add(blackSludgeHealDenominator);
+                numChanged++;
+            }
+            if (reflectTurns != DefaultReflectTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ReflectTurns));
+                bytes.Add(reflectTurns);
+                numChanged++;
+            }
+            if (lightScreenTurns != DefaultLightScreenTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LightScreenTurns));
+                bytes.Add(lightScreenTurns);
+                numChanged++;
+            }
+            if (lightClayTurnExtension != DefaultLightClayTurnExtension)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LightClayTurnExtension));
+                bytes.Add(lightClayTurnExtension);
+                numChanged++;
+            }
+            if (hailTurns != DefaultHailTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.HailTurns));
+                bytes.Add(hailTurns);
+                numChanged++;
+            }
+            if (hailDamageDenominator != DefaultHailDamageDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.HailDamageDenominator));
+                bytes.Add(hailDamageDenominator);
+                numChanged++;
+            }
+            if (icyRockTurnExtension != DefaultIcyRockTurnExtension)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.IcyRockTurnExtension));
+                bytes.Add(icyRockTurnExtension);
+                numChanged++;
+            }
+            if (iceBodyHealDenominator != DefaultIceBodyHealDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.IceBodyHealDenominator));
+                bytes.Add(iceBodyHealDenominator);
+                numChanged++;
+            }
+            if (rainTurns != DefaultRainTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.RainTurns));
+                bytes.Add(rainTurns);
+                numChanged++;
+            }
+            if (dampRockTurnExtension != DefaultDampRockTurnExtension)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.DampRockTurnExtension));
+                bytes.Add(dampRockTurnExtension);
+                numChanged++;
+            }
+            if (sandstormTurns != DefaultSandstormTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SandstormTurns));
+                bytes.Add(sandstormTurns);
+                numChanged++;
+            }
+            if (sandstormDamageDenominator != DefaultSandstormDamageDenominator)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SandstormDamageDenominator));
+                bytes.Add(sandstormDamageDenominator);
+                numChanged++;
+            }
+            if (smoothRockTurnExtension != DefaultSmoothRockTurnExtension)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SmoothRockTurnExtension));
+                bytes.Add(smoothRockTurnExtension);
+                numChanged++;
+            }
+            if (sunTurns != DefaultSunTurns)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SunTurns));
+                bytes.Add(sunTurns);
+                numChanged++;
+            }
+            if (heatRockTurnExtension != DefaultHeatRockTurnExtension)
+            {
+                bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.HeatRockTurnExtension));
+                bytes.Add(heatRockTurnExtension);
+                numChanged++;
+            }
+            bytes.InsertRange(0, BitConverter.GetBytes(numChanged));
+            return bytes;
+        }
+        internal static PBESettings FromBytes(BinaryReader r)
+        {
+            var settings = new PBESettings();
+            ushort numChanged = r.ReadUInt16();
+            for (ushort i = 0; i < numChanged; i++)
+            {
+                switch ((PBESettingID)r.ReadUInt16())
+                {
+                    case PBESettingID.MaxLevel: settings.MaxLevel = r.ReadByte(); break;
+                    case PBESettingID.MinLevel: settings.MinLevel = r.ReadByte(); break;
+                    case PBESettingID.MaxPartySize: settings.MaxPartySize = r.ReadSByte(); break;
+                    case PBESettingID.MaxPokemonNameLength: settings.MaxPokemonNameLength = r.ReadByte(); break;
+                    case PBESettingID.MaxTrainerNameLength: settings.MaxTrainerNameLength = r.ReadByte(); break;
+                    case PBESettingID.MaxTotalEVs: settings.MaxTotalEVs = r.ReadUInt16(); break;
+                    case PBESettingID.MaxIVs: settings.MaxIVs = r.ReadByte(); break;
+                    case PBESettingID.NatureStatBoost: settings.NatureStatBoost = r.ReadDouble(); break;
+                    case PBESettingID.MaxStatChange: settings.MaxStatChange = r.ReadSByte(); break;
+                    case PBESettingID.NumMoves: settings.NumMoves = r.ReadByte(); break;
+                    case PBESettingID.PPMultiplier: settings.PPMultiplier = r.ReadByte(); break;
+                    case PBESettingID.MaxPPUps: settings.MaxPPUps = r.ReadByte(); break;
+                    case PBESettingID.CritMultiplier: settings.CritMultiplier = r.ReadDouble(); break;
+                    case PBESettingID.ConfusionMaxTurns: settings.ConfusionMaxTurns = r.ReadByte(); break;
+                    case PBESettingID.ConfusionMinTurns: settings.ConfusionMinTurns = r.ReadByte(); break;
+                    case PBESettingID.SleepMaxTurns: settings.SleepMaxTurns = r.ReadByte(); break;
+                    case PBESettingID.SleepMinTurns: settings.SleepMinTurns = r.ReadByte(); break;
+                    case PBESettingID.BurnDamageDenominator: settings.BurnDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.PoisonDamageDenominator: settings.PoisonDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.ToxicDamageDenominator: settings.ToxicDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.LeechSeedDenominator: settings.LeechSeedDenominator = r.ReadByte(); break;
+                    case PBESettingID.CurseDenominator: settings.CurseDenominator = r.ReadByte(); break;
+                    case PBESettingID.LeftoversHealDenominator: settings.LeftoversHealDenominator = r.ReadByte(); break;
+                    case PBESettingID.BlackSludgeDamageDenominator: settings.BlackSludgeDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.BlackSludgeHealDenominator: settings.BlackSludgeHealDenominator = r.ReadByte(); break;
+                    case PBESettingID.ReflectTurns: settings.ReflectTurns = r.ReadByte(); break;
+                    case PBESettingID.LightScreenTurns: settings.LightScreenTurns = r.ReadByte(); break;
+                    case PBESettingID.LightClayTurnExtension: settings.LightClayTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.HailTurns: settings.HailTurns = r.ReadByte(); break;
+                    case PBESettingID.HailDamageDenominator: settings.HailDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.IcyRockTurnExtension: settings.IcyRockTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.IceBodyHealDenominator: settings.IceBodyHealDenominator = r.ReadByte(); break;
+                    case PBESettingID.RainTurns: settings.RainTurns = r.ReadByte(); break;
+                    case PBESettingID.DampRockTurnExtension: settings.DampRockTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.SandstormTurns: settings.SandstormTurns = r.ReadByte(); break;
+                    case PBESettingID.SandstormDamageDenominator: settings.SandstormDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.SmoothRockTurnExtension: settings.SmoothRockTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.SunTurns: settings.SunTurns = r.ReadByte(); break;
+                    case PBESettingID.HeatRockTurnExtension: settings.HeatRockTurnExtension = r.ReadByte(); break;
+                    default: throw new InvalidDataException();
+                }
+            }
+            return settings;
+        }
     }
 }

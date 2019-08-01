@@ -247,13 +247,13 @@ namespace Kermalis.PokemonBattleEngine
             return fileName;
         }
 
-        internal static byte[] StringToBytes(string str)
+        internal static List<byte> StringToBytes(string str)
         {
             var bytes = new List<byte>();
             byte[] nameBytes = Encoding.Unicode.GetBytes(str);
             bytes.Add((byte)nameBytes.Length);
             bytes.AddRange(nameBytes);
-            return bytes.ToArray();
+            return bytes;
         }
         internal static string StringFromBytes(BinaryReader r)
         {
