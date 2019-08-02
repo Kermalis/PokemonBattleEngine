@@ -901,7 +901,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 bytes.AddRange(BitConverter.GetBytes(natureStatBoost));
                 numChanged++;
             }
-            if (maxStatChange != MaxStatChange)
+            if (maxStatChange != DefaultMaxStatChange)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxStatChange));
                 bytes.Add((byte)maxStatChange);
