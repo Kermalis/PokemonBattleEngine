@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: .Equals, ability to make read-only
+    // TODO: Ability to make read-only
     /// <summary>The various engine settings.</summary>
     public sealed class PBESettings : INotifyPropertyChanged
     {
@@ -789,6 +789,56 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         /// <summary>Creates a new <see cref="PBESettings"/> object where every setting is pre-set to the values used in official games.</summary>
         public PBESettings() { }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is PBESettings other)
+            {
+                return other.maxLevel.Equals(maxLevel)
+                    && other.minLevel.Equals(minLevel)
+                    && other.maxPartySize.Equals(maxPartySize)
+                    && other.maxPokemonNameLength.Equals(maxPokemonNameLength)
+                    && other.maxTrainerNameLength.Equals(maxTrainerNameLength)
+                    && other.maxTotalEVs.Equals(maxTotalEVs)
+                    && other.maxIVs.Equals(maxIVs)
+                    && other.natureStatBoost.Equals(natureStatBoost)
+                    && other.maxStatChange.Equals(maxStatChange)
+                    && other.numMoves.Equals(numMoves)
+                    && other.ppMultiplier.Equals(ppMultiplier)
+                    && other.maxPPUps.Equals(maxPPUps)
+                    && other.critMultiplier.Equals(critMultiplier)
+                    && other.confusionMaxTurns.Equals(confusionMaxTurns)
+                    && other.confusionMinTurns.Equals(confusionMinTurns)
+                    && other.sleepMaxTurns.Equals(sleepMaxTurns)
+                    && other.sleepMinTurns.Equals(sleepMinTurns)
+                    && other.burnDamageDenominator.Equals(burnDamageDenominator)
+                    && other.poisonDamageDenominator.Equals(poisonDamageDenominator)
+                    && other.toxicDamageDenominator.Equals(toxicDamageDenominator)
+                    && other.leechSeedDenominator.Equals(leechSeedDenominator)
+                    && other.curseDenominator.Equals(curseDenominator)
+                    && other.leftoversHealDenominator.Equals(leftoversHealDenominator)
+                    && other.blackSludgeDamageDenominator.Equals(blackSludgeDamageDenominator)
+                    && other.blackSludgeHealDenominator.Equals(blackSludgeHealDenominator)
+                    && other.reflectTurns.Equals(reflectTurns)
+                    && other.lightScreenTurns.Equals(lightScreenTurns)
+                    && other.lightClayTurnExtension.Equals(lightClayTurnExtension)
+                    && other.hailTurns.Equals(hailTurns)
+                    && other.hailDamageDenominator.Equals(hailDamageDenominator)
+                    && other.icyRockTurnExtension.Equals(icyRockTurnExtension)
+                    && other.iceBodyHealDenominator.Equals(iceBodyHealDenominator)
+                    && other.rainTurns.Equals(rainTurns)
+                    && other.dampRockTurnExtension.Equals(dampRockTurnExtension)
+                    && other.sandstormTurns.Equals(sandstormTurns)
+                    && other.sandstormDamageDenominator.Equals(sandstormDamageDenominator)
+                    && other.smoothRockTurnExtension.Equals(smoothRockTurnExtension)
+                    && other.sunTurns.Equals(sunTurns)
+                    && other.heatRockTurnExtension.Equals(heatRockTurnExtension);
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         private enum PBESettingID : ushort
         {
