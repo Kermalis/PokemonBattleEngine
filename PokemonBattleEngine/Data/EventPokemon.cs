@@ -1,9 +1,7 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
-namespace Kermalis.PokemonBattleEngine
+namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEEventPokemon
     {
@@ -30,40 +28,6 @@ namespace Kermalis.PokemonBattleEngine
                 PossibleNatures = new ReadOnlyCollection<PBENature>(possibleNatures);
             }
             IndividualValues = new ReadOnlyCollection<byte?>(ivs); Moves = new ReadOnlyCollection<PBEMove>(moves);
-        }
-
-        /// <summary>Converts the <see cref="PBEEventPokemon"/> into a <see cref="PBEPokemonShell"/> using <see cref="PBESettings.DefaultSettings"/>.</summary>
-        public PBEPokemonShell ToPokemonShell()
-        {
-            PBESettings settings = PBESettings.DefaultSettings;
-            var p = new PBEPokemonShell(Species, Level, settings)
-            {
-                Ability = PossibleAbilities.RandomElement(),
-                Nature = PossibleNatures.RandomElement(),
-            };
-            if (Shiny.HasValue)
-            {
-                p.Shiny = Shiny.Value;
-            }
-            if (Gender < PBEGender.MAX)
-            {
-                p.Gender = Gender;
-            }
-            for (int i = 0; i < 6; i++)
-            {
-                byte? b = IndividualValues[i];
-                if (b.HasValue)
-                {
-                    p.IndividualValues[(PBEStat)i].Value = b.Value;
-                }
-            }
-            PBEMove[] moves = Moves.Concat(new PBEMove[settings.NumMoves - Moves.Count]).ToArray(); // Fills the empty slots with PBEMove.None (Can remove once all moves are added)
-            p.Moveset.Clear();
-            for (int i = 0; i < settings.NumMoves; i++)
-            {
-                p.Moveset.Set(i, moves[i], (byte)PBEUtils.RandomInt(0, settings.MaxPPUps));
-            }
-            return p;
         }
 
         public static ReadOnlyDictionary<PBESpecies, ReadOnlyCollection<PBEEventPokemon>> Events { get; } = new ReadOnlyDictionary<PBESpecies, ReadOnlyCollection<PBEEventPokemon>>(new Dictionary<PBESpecies, ReadOnlyCollection<PBEEventPokemon>>

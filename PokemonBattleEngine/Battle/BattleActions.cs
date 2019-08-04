@@ -21,14 +21,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         [FieldOffset(4)]
         public byte SwitchPokemonId;
 
-        internal byte[] ToBytes()
+        internal List<byte> ToBytes()
         {
             var bytes = new List<byte>();
             bytes.Add(PokemonId);
             bytes.Add((byte)Decision);
             bytes.AddRange(BitConverter.GetBytes((ushort)FightMove));
             bytes.Add(SwitchPokemonId);
-            return bytes.ToArray();
+            return bytes;
         }
         internal static PBEAction FromBytes(BinaryReader r)
         {

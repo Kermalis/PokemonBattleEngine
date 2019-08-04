@@ -51,18 +51,6 @@ namespace Kermalis.PokemonBattleEngine
         /// I decided to switch from <see cref="Random"/> to <see cref="RNGCryptoServiceProvider"/> because I did not need the better speed or the seeded constructor and because <see cref="RNGCryptoServiceProvider"/> provides better random outputs.
         /// </summary>
         private static readonly RNGCryptoServiceProvider rand = new RNGCryptoServiceProvider();
-        /// <summary>Creates an array of <see cref="PBEPokemonShell"/>s each with completely random properties. The amount to create is <see cref="PBESettings.MaxPartySize"/>.</summary>
-        /// <param name="settings">The settings to use.</param>
-        /// <param name="setToMaxLevel">True if <see cref="PBEPokemonShell.Level"/> will be set to <see cref="PBESettings.MaxLevel"/>.</param>
-        public static PBEPokemonShell[] CreateCompletelyRandomTeam(PBESettings settings, bool setToMaxLevel)
-        {
-            var team = new PBEPokemonShell[settings.MaxPartySize];
-            for (int i = 0; i < settings.MaxPartySize; i++)
-            {
-                team[i] = new PBEPokemonShell(RandomSpecies(), setToMaxLevel ? settings.MaxLevel : (byte)RandomInt(settings.MinLevel, settings.MaxLevel), settings);
-            }
-            return team;
-        }
         internal static bool RandomBool()
         {
             return RandomInt(0, 1) == 1;
@@ -111,6 +99,14 @@ namespace Kermalis.PokemonBattleEngine
             }
             double d = scale / (double)uint.MaxValue;
             return (int)(minValue + (((long)maxValue + 1 - minValue) * d)); // Remove "+ 1" for exclusive maxValue
+        }
+        public static byte RandomLevel(PBESettings settings)
+        {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            return (byte)RandomInt(settings.MinLevel, settings.MaxLevel);
         }
         /// <summary>Returns a random shiny value.</summary>
         public static bool RandomShiny()

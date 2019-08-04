@@ -1,5 +1,4 @@
-﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
@@ -27,20 +26,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(CurrentReplayVersion));
+
             bytes.AddRange(Settings.ToBytes());
             bytes.Add((byte)BattleFormat);
 
-            bytes.AddRange(PBEUtils.StringToBytes(Teams[0].TrainerName));
-            bytes.Add((byte)Teams[0].Party.Count);
-            bytes.AddRange(Teams[0].Party.SelectMany(p => p.Shell.ToBytes()));
+            bytes.AddRange(Teams[0].ToBytes());
+            bytes.AddRange(Teams[1].ToBytes());
 
-            bytes.AddRange(PBEUtils.StringToBytes(Teams[1].TrainerName));
-            bytes.Add((byte)Teams[1].Party.Count);
-            bytes.AddRange(Teams[1].Party.SelectMany(p => p.Shell.ToBytes()));
-
-            foreach (INetPacket packet in Events)
+            bytes.AddRange(BitConverter.GetBytes(Events.Count));
+            for (int i = 0; i < Events.Count; i++)
             {
-                bytes.AddRange(packet.Buffer);
+                bytes.AddRange(Events[i].Buffer);
             }
 
             using (var md5 = MD5.Create())
@@ -57,47 +53,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
             using (var s = new MemoryStream(fileBytes))
             using (var r = new BinaryReader(s))
             {
+                byte[] hash;
                 using (var md5 = MD5.Create())
                 {
-                    byte[] hash = md5.ComputeHash(fileBytes, 0, fileBytes.Length - 16);
-                    for (int i = 0; i < 16; i++)
+                    hash = md5.ComputeHash(fileBytes, 0, fileBytes.Length - 16);
+                }
+                for (int i = 0; i < 16; i++)
+                {
+                    if (hash[i] != fileBytes[fileBytes.Length - 16 + i])
                     {
-                        if (hash[i] != fileBytes[fileBytes.Length - 16 + i])
-                        {
-                            throw new InvalidDataException();
-                        }
+                        throw new InvalidDataException();
                     }
                 }
 
                 ushort version = r.ReadUInt16();
 
-                var settings = PBESettings.FromBytes(r);
+                var settings = new PBESettings(r);
                 var battle = new PBEBattle((PBEBattleFormat)r.ReadByte(), settings);
 
-                battle.Teams[0].TrainerName = PBEUtils.StringFromBytes(r);
-                var party = new PBEPokemonShell[r.ReadSByte()];
-                for (int i = 0; i < party.Length; i++)
-                {
-                    party[i] = PBEPokemonShell.FromBytes(r, settings);
-                }
-                battle.Teams[0].CreateParty(party, ref battle.pkmnIdCounter);
-
-                battle.Teams[1].TrainerName = PBEUtils.StringFromBytes(r);
-                party = new PBEPokemonShell[r.ReadSByte()];
-                for (int i = 0; i < party.Length; i++)
-                {
-                    party[i] = PBEPokemonShell.FromBytes(r, settings);
-                }
-                battle.Teams[1].CreateParty(party, ref battle.pkmnIdCounter);
+                battle.Teams[0].FromBytes(r);
+                battle.Teams[1].FromBytes(r);
 
                 var packetProcessor = new PBEPacketProcessor(battle);
-                INetPacket packet;
-                do
+                int numEvents = r.ReadInt32();
+                for (int i = 0; i < numEvents; i++)
                 {
-                    byte[] buffer = r.ReadBytes(r.ReadInt16());
-                    packet = packetProcessor.CreatePacket(buffer);
-                    battle.Events.Add(packet);
-                } while (!(packet is PBEWinnerPacket));
+                    battle.Events.Add(packetProcessor.CreatePacket(r.ReadBytes(r.ReadInt16())));
+                }
 
                 return battle;
             }

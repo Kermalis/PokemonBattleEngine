@@ -789,6 +789,21 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         /// <summary>Creates a new <see cref="PBESettings"/> object where every setting is pre-set to the values used in official games.</summary>
         public PBESettings() { }
+        public PBESettings(string code)
+        {
+            if (code == null)
+            {
+                throw new ArgumentNullException(code);
+            }
+            using (var r = new BinaryReader(new MemoryStream(Convert.FromBase64String(code))))
+            {
+                FromBytes(r);
+            }
+        }
+        internal PBESettings(BinaryReader r)
+        {
+            FromBytes(r);
+        }
 
         public override bool Equals(object obj)
         {
@@ -886,17 +901,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         public override string ToString()
         {
             return Convert.ToBase64String(ToBytes().ToArray());
-        }
-        public static PBESettings FromString(string code)
-        {
-            if (code == null)
-            {
-                throw new ArgumentNullException(code);
-            }
-            using (var r = new BinaryReader(new MemoryStream(Convert.FromBase64String(code))))
-            {
-                return FromBytes(r);
-            }
         }
 
         internal List<byte> ToBytes()
@@ -1140,57 +1144,55 @@ namespace Kermalis.PokemonBattleEngine.Data
             bytes.InsertRange(0, BitConverter.GetBytes(numChanged));
             return bytes;
         }
-        internal static PBESettings FromBytes(BinaryReader r)
+        private void FromBytes(BinaryReader r)
         {
-            var settings = new PBESettings();
             ushort numChanged = r.ReadUInt16();
             for (ushort i = 0; i < numChanged; i++)
             {
                 switch ((PBESettingID)r.ReadUInt16())
                 {
-                    case PBESettingID.MaxLevel: settings.MaxLevel = r.ReadByte(); break;
-                    case PBESettingID.MinLevel: settings.MinLevel = r.ReadByte(); break;
-                    case PBESettingID.MaxPartySize: settings.MaxPartySize = r.ReadSByte(); break;
-                    case PBESettingID.MaxPokemonNameLength: settings.MaxPokemonNameLength = r.ReadByte(); break;
-                    case PBESettingID.MaxTrainerNameLength: settings.MaxTrainerNameLength = r.ReadByte(); break;
-                    case PBESettingID.MaxTotalEVs: settings.MaxTotalEVs = r.ReadUInt16(); break;
-                    case PBESettingID.MaxIVs: settings.MaxIVs = r.ReadByte(); break;
-                    case PBESettingID.NatureStatBoost: settings.NatureStatBoost = r.ReadDouble(); break;
-                    case PBESettingID.MaxStatChange: settings.MaxStatChange = r.ReadSByte(); break;
-                    case PBESettingID.NumMoves: settings.NumMoves = r.ReadByte(); break;
-                    case PBESettingID.PPMultiplier: settings.PPMultiplier = r.ReadByte(); break;
-                    case PBESettingID.MaxPPUps: settings.MaxPPUps = r.ReadByte(); break;
-                    case PBESettingID.CritMultiplier: settings.CritMultiplier = r.ReadDouble(); break;
-                    case PBESettingID.ConfusionMaxTurns: settings.ConfusionMaxTurns = r.ReadByte(); break;
-                    case PBESettingID.ConfusionMinTurns: settings.ConfusionMinTurns = r.ReadByte(); break;
-                    case PBESettingID.SleepMaxTurns: settings.SleepMaxTurns = r.ReadByte(); break;
-                    case PBESettingID.SleepMinTurns: settings.SleepMinTurns = r.ReadByte(); break;
-                    case PBESettingID.BurnDamageDenominator: settings.BurnDamageDenominator = r.ReadByte(); break;
-                    case PBESettingID.PoisonDamageDenominator: settings.PoisonDamageDenominator = r.ReadByte(); break;
-                    case PBESettingID.ToxicDamageDenominator: settings.ToxicDamageDenominator = r.ReadByte(); break;
-                    case PBESettingID.LeechSeedDenominator: settings.LeechSeedDenominator = r.ReadByte(); break;
-                    case PBESettingID.CurseDenominator: settings.CurseDenominator = r.ReadByte(); break;
-                    case PBESettingID.LeftoversHealDenominator: settings.LeftoversHealDenominator = r.ReadByte(); break;
-                    case PBESettingID.BlackSludgeDamageDenominator: settings.BlackSludgeDamageDenominator = r.ReadByte(); break;
-                    case PBESettingID.BlackSludgeHealDenominator: settings.BlackSludgeHealDenominator = r.ReadByte(); break;
-                    case PBESettingID.ReflectTurns: settings.ReflectTurns = r.ReadByte(); break;
-                    case PBESettingID.LightScreenTurns: settings.LightScreenTurns = r.ReadByte(); break;
-                    case PBESettingID.LightClayTurnExtension: settings.LightClayTurnExtension = r.ReadByte(); break;
-                    case PBESettingID.HailTurns: settings.HailTurns = r.ReadByte(); break;
-                    case PBESettingID.HailDamageDenominator: settings.HailDamageDenominator = r.ReadByte(); break;
-                    case PBESettingID.IcyRockTurnExtension: settings.IcyRockTurnExtension = r.ReadByte(); break;
-                    case PBESettingID.IceBodyHealDenominator: settings.IceBodyHealDenominator = r.ReadByte(); break;
-                    case PBESettingID.RainTurns: settings.RainTurns = r.ReadByte(); break;
-                    case PBESettingID.DampRockTurnExtension: settings.DampRockTurnExtension = r.ReadByte(); break;
-                    case PBESettingID.SandstormTurns: settings.SandstormTurns = r.ReadByte(); break;
-                    case PBESettingID.SandstormDamageDenominator: settings.SandstormDamageDenominator = r.ReadByte(); break;
-                    case PBESettingID.SmoothRockTurnExtension: settings.SmoothRockTurnExtension = r.ReadByte(); break;
-                    case PBESettingID.SunTurns: settings.SunTurns = r.ReadByte(); break;
-                    case PBESettingID.HeatRockTurnExtension: settings.HeatRockTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.MaxLevel: MaxLevel = r.ReadByte(); break;
+                    case PBESettingID.MinLevel: MinLevel = r.ReadByte(); break;
+                    case PBESettingID.MaxPartySize: MaxPartySize = r.ReadSByte(); break;
+                    case PBESettingID.MaxPokemonNameLength: MaxPokemonNameLength = r.ReadByte(); break;
+                    case PBESettingID.MaxTrainerNameLength: MaxTrainerNameLength = r.ReadByte(); break;
+                    case PBESettingID.MaxTotalEVs: MaxTotalEVs = r.ReadUInt16(); break;
+                    case PBESettingID.MaxIVs: MaxIVs = r.ReadByte(); break;
+                    case PBESettingID.NatureStatBoost: NatureStatBoost = r.ReadDouble(); break;
+                    case PBESettingID.MaxStatChange: MaxStatChange = r.ReadSByte(); break;
+                    case PBESettingID.NumMoves: NumMoves = r.ReadByte(); break;
+                    case PBESettingID.PPMultiplier: PPMultiplier = r.ReadByte(); break;
+                    case PBESettingID.MaxPPUps: MaxPPUps = r.ReadByte(); break;
+                    case PBESettingID.CritMultiplier: CritMultiplier = r.ReadDouble(); break;
+                    case PBESettingID.ConfusionMaxTurns: ConfusionMaxTurns = r.ReadByte(); break;
+                    case PBESettingID.ConfusionMinTurns: ConfusionMinTurns = r.ReadByte(); break;
+                    case PBESettingID.SleepMaxTurns: SleepMaxTurns = r.ReadByte(); break;
+                    case PBESettingID.SleepMinTurns: SleepMinTurns = r.ReadByte(); break;
+                    case PBESettingID.BurnDamageDenominator: BurnDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.PoisonDamageDenominator: PoisonDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.ToxicDamageDenominator: ToxicDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.LeechSeedDenominator: LeechSeedDenominator = r.ReadByte(); break;
+                    case PBESettingID.CurseDenominator: CurseDenominator = r.ReadByte(); break;
+                    case PBESettingID.LeftoversHealDenominator: LeftoversHealDenominator = r.ReadByte(); break;
+                    case PBESettingID.BlackSludgeDamageDenominator: BlackSludgeDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.BlackSludgeHealDenominator: BlackSludgeHealDenominator = r.ReadByte(); break;
+                    case PBESettingID.ReflectTurns: ReflectTurns = r.ReadByte(); break;
+                    case PBESettingID.LightScreenTurns: LightScreenTurns = r.ReadByte(); break;
+                    case PBESettingID.LightClayTurnExtension: LightClayTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.HailTurns: HailTurns = r.ReadByte(); break;
+                    case PBESettingID.HailDamageDenominator: HailDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.IcyRockTurnExtension: IcyRockTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.IceBodyHealDenominator: IceBodyHealDenominator = r.ReadByte(); break;
+                    case PBESettingID.RainTurns: RainTurns = r.ReadByte(); break;
+                    case PBESettingID.DampRockTurnExtension: DampRockTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.SandstormTurns: SandstormTurns = r.ReadByte(); break;
+                    case PBESettingID.SandstormDamageDenominator: SandstormDamageDenominator = r.ReadByte(); break;
+                    case PBESettingID.SmoothRockTurnExtension: SmoothRockTurnExtension = r.ReadByte(); break;
+                    case PBESettingID.SunTurns: SunTurns = r.ReadByte(); break;
+                    case PBESettingID.HeatRockTurnExtension: HeatRockTurnExtension = r.ReadByte(); break;
                     default: throw new InvalidDataException();
                 }
             }
-            return settings;
         }
     }
 }

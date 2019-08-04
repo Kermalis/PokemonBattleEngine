@@ -3,7 +3,6 @@ using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
@@ -14,7 +13,7 @@ namespace Kermalis.PokemonBattleEngineServer
         public ManualResetEvent ResetEvent { get; } = new ManualResetEvent(true);
         public string PlayerName { get; set; }
         public int BattleId { get; set; } = int.MaxValue;
-        public IEnumerable<PBEPokemonShell> Party { get; private set; }
+        public PBETeamShell TeamShell { get; private set; }
 
         public bool WaitForResponse()
         {
@@ -53,8 +52,16 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                     case PBEPartyResponsePacket prp:
                     {
-                        Party = prp.Party;
-                        ser.PartySubmitted(this);
+                        Console.WriteLine($"Received team from {PlayerName}!");
+                        if (TeamShell == null)
+                        {
+                            TeamShell = prp.TeamShell;
+                            ser.PartySubmitted(this);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Team submitted multiple times!");
+                        }
                         break;
                     }
                     case PBESwitchInResponsePacket sirp:

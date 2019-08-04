@@ -8,6 +8,12 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEReadOnlyObservableCollection<T> : IReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
+        private void FireEvents(NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(Count));
+            OnPropertyChanged("Item[]");
+            OnCollectionChanged(e);
+        }
         private void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged?.Invoke(this, e);
@@ -26,13 +32,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal PBEReadOnlyObservableCollection()
         {
             list = new List<T>();
-        }
-
-        private void FireEvents(NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(Count));
-            OnPropertyChanged("Item[]");
-            OnCollectionChanged(e);
         }
 
         internal void Add(T item)

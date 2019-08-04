@@ -208,7 +208,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                PBEBattle.CreateTeamParty(battle.Teams[player.BattleId], player.Party);
+                PBEBattle.CreateTeamParty(battle.Teams[player.BattleId], player.TeamShell);
             }
         }
         public void ActionsSubmitted(Player player, IEnumerable<PBEAction> actions)
@@ -224,7 +224,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 PBETeam team = battle.Teams[player.BattleId];
-                Console.WriteLine($"Received actions from {team.TrainerName}!");
+                Console.WriteLine($"Received actions from {player.PlayerName}!");
                 if (!PBEBattle.SelectActionsIfValid(team, actions))
                 {
                     Console.WriteLine("Actions are invalid!");
@@ -245,7 +245,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 PBETeam team = battle.Teams[player.BattleId];
-                Console.WriteLine($"Received switches from {team.TrainerName}!");
+                Console.WriteLine($"Received switches from {player.PlayerName}!");
                 if (!PBEBattle.SelectSwitchesIfValid(team, switches))
                 {
                     Console.WriteLine("Switches are invalid!");
@@ -264,7 +264,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     resetEvent.Reset();
                     foreach (Player player in battlers)
                     {
-                        foreach (PBEPokemonShell shell in player.Party)
+                        foreach (PBEPokemonShell shell in player.TeamShell)
                         {
                             try
                             {

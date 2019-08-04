@@ -34,18 +34,18 @@ namespace Kermalis.PokemonBattleEngineClient
         public readonly ClientMode Mode;
         public int BattleId = int.MaxValue;
         public bool ShowRawValues0, ShowRawValues1;
-        private readonly IEnumerable<PBEPokemonShell> partyShells;
+        private readonly PBETeamShell teamShell;
 
-        public BattleClient(string host, int port, PBEBattleFormat battleFormat, PBESettings settings, IEnumerable<PBEPokemonShell> party)
+        public BattleClient(string host, int port, PBEBattleFormat battleFormat, PBETeamShell teamShell)
         {
             Configuration.Host = host;
             Configuration.Port = port;
             Configuration.BufferSize = 1024;
 
             Mode = ClientMode.Online;
-            Battle = new PBEBattle(battleFormat, settings);
+            Battle = new PBEBattle(battleFormat, teamShell.Settings);
             packetProcessor = new PBEPacketProcessor(Battle);
-            partyShells = party;
+            this.teamShell = teamShell;
 
             packetTimer.Elapsed += PacketTimer_Elapsed;
             packetTimer.Start();
@@ -101,7 +101,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
                 case PBEPartyRequestPacket _:
                 {
-                    Send(new PBEPartyResponsePacket(partyShells));
+                    Send(new PBEPartyResponsePacket(teamShell));
                     break;
                 }
                 case PBESetPartyPacket spp:

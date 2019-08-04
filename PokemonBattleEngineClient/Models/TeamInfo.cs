@@ -1,5 +1,4 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
@@ -22,14 +21,14 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 OnPropertyChanged(nameof(Name));
             }
         }
-        private ObservableCollection<PBEPokemonShell> party;
-        public ObservableCollection<PBEPokemonShell> Party
+        private PBETeamShell shell;
+        public PBETeamShell Shell
         {
-            get => party;
+            get => shell;
             set
             {
-                party = value;
-                OnPropertyChanged(nameof(Party));
+                shell = value;
+                OnPropertyChanged(nameof(Shell));
             }
         }
     }

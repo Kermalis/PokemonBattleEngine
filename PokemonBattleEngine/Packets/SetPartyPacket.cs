@@ -35,7 +35,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 var party = new PBEPokemon[r.ReadByte()];
                 for (int i = 0; i < party.Length; i++)
                 {
-                    party[i] = PBEPokemon.FromBytes(r, Team);
+                    party[i] = new PBEPokemon(r, Team);
                 }
                 Party = Array.AsReadOnly(party);
             }

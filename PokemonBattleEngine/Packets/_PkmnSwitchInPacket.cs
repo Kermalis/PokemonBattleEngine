@@ -44,8 +44,23 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 Status1 = status1;
                 FieldPosition = fieldPosition;
             }
+            internal PBESwitchInInfo(BinaryReader r)
+            {
+                PokemonId = r.ReadByte();
+                DisguisedAsId = r.ReadByte();
+                Species = (PBESpecies)r.ReadUInt32();
+                Nickname = PBEUtils.StringFromBytes(r);
+                Level = r.ReadByte();
+                Shiny = r.ReadBoolean();
+                Gender = (PBEGender)r.ReadByte();
+                HP = r.ReadUInt16();
+                MaxHP = r.ReadUInt16();
+                HPPercentage = r.ReadDouble();
+                Status1 = (PBEStatus1)r.ReadByte();
+                FieldPosition = (PBEFieldPosition)r.ReadByte();
+            }
 
-            internal byte[] ToBytes()
+            internal List<byte> ToBytes()
             {
                 var bytes = new List<byte>();
                 bytes.Add(PokemonId);
@@ -60,11 +75,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 bytes.AddRange(BitConverter.GetBytes(HPPercentage));
                 bytes.Add((byte)Status1);
                 bytes.Add((byte)FieldPosition);
-                return bytes.ToArray();
-            }
-            internal static PBESwitchInInfo FromBytes(BinaryReader r)
-            {
-                return new PBESwitchInInfo(r.ReadByte(), r.ReadByte(), (PBESpecies)r.ReadUInt32(), PBEUtils.StringFromBytes(r), r.ReadByte(), r.ReadBoolean(), (PBEGender)r.ReadByte(), r.ReadUInt16(), r.ReadUInt16(), r.ReadDouble(), (PBEStatus1)r.ReadByte(), (PBEFieldPosition)r.ReadByte());
+                return bytes;
             }
         }
 
@@ -94,7 +105,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 var switches = new PBESwitchInInfo[r.ReadByte()];
                 for (int i = 0; i < switches.Length; i++)
                 {
-                    switches[i] = PBESwitchInInfo.FromBytes(r);
+                    switches[i] = new PBESwitchInInfo(r);
                 }
                 SwitchIns = Array.AsReadOnly(switches);
                 Forced = r.ReadBoolean();

@@ -15,9 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public event BattleStateChangedEvent OnStateChanged;
         public PBEBattleState BattleState { get; private set; }
         public ushort TurnNumber { get; set; }
-        /// <summary>
-        /// The winner of the battle. Null if the battle is ongoing or the battle resulted in a draw.
-        /// </summary>
+        /// <summary>The winner of the battle. null if the battle is ongoing or the battle resulted in a draw.</summary>
         public PBETeam Winner { get; set; }
 
         public PBEBattleFormat BattleFormat { get; }
@@ -33,47 +31,36 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public List<INetPacket> Events { get; } = new List<INetPacket>();
 
-        /// <summary>
-        /// Gets a specific Pokémon participating in this battle by its ID.
-        /// </summary>
+        /// <summary>Gets a specific Pokémon participating in this battle by its ID.</summary>
         /// <param name="pkmnId">The ID of the Pokémon you want to get.</param>
-        /// <returns>null if no Pokémon was found with <paramref name="pkmnId"/>; otherwise the <see cref="PBEPokemon"/>.</returns>
         public PBEPokemon TryGetPokemon(byte pkmnId)
         {
             return Teams.SelectMany(t => t.Party).SingleOrDefault(p => p.Id == pkmnId);
         }
 
         private byte pkmnIdCounter;
-        public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings, IEnumerable<PBEPokemonShell> team0Party, IEnumerable<PBEPokemonShell> team1Party)
+        public PBEBattle(PBEBattleFormat battleFormat, PBETeamShell team0Shell, PBETeamShell team1Shell)
         {
             if (battleFormat >= PBEBattleFormat.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(battleFormat));
             }
-            if (settings == null)
+            if (team0Shell == null)
             {
-                throw new ArgumentNullException(nameof(settings));
+                throw new ArgumentNullException(nameof(team0Shell));
             }
-            if (team0Party == null)
+            if (team1Shell == null)
             {
-                throw new ArgumentNullException(nameof(team0Party));
+                throw new ArgumentNullException(nameof(team1Shell));
             }
-            if (team1Party == null)
+            if (!team0Shell.Settings.Equals(team1Shell.Settings))
             {
-                throw new ArgumentNullException(nameof(team1Party));
-            }
-            if (team0Party.Count() == 0 || team0Party.Count() > settings.MaxPartySize)
-            {
-                throw new ArgumentOutOfRangeException(nameof(team0Party));
-            }
-            if (team1Party.Count() == 0 || team1Party.Count() > settings.MaxPartySize)
-            {
-                throw new ArgumentOutOfRangeException(nameof(team1Party));
+                throw new ArgumentOutOfRangeException(nameof(team0Shell.Settings), "Team settings must be equal to each other.");
             }
             BattleFormat = battleFormat;
-            Settings = settings;
-            Teams[0] = new PBETeam(this, 0, team0Party, ref pkmnIdCounter);
-            Teams[1] = new PBETeam(this, 1, team1Party, ref pkmnIdCounter);
+            Settings = team0Shell.Settings;
+            Teams[0] = new PBETeam(this, 0, team0Shell, ref pkmnIdCounter);
+            Teams[1] = new PBETeam(this, 1, team1Shell, ref pkmnIdCounter);
             CheckForReadiness();
         }
         public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings)
@@ -170,29 +157,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 OnStateChanged?.Invoke(this);
             }
         }
-        /// <summary>
-        /// Sets a specific team's party. <see cref="BattleState"/> will change to <see cref="PBEBattleState.ReadyToBegin"/> if all teams have parties.
-        /// </summary>
+        /// <summary>Sets a specific team's party. <see cref="BattleState"/> will change to <see cref="PBEBattleState.ReadyToBegin"/> if all teams have parties.</summary>
         /// <param name="team">The team which will have its party set.</param>
-        /// <param name="party">The Pokémon party <paramref name="team"/> will use.</param>
-        /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForPlayers"/>.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="party"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="party"/>'s size is invalid.</exception>
-        public static void CreateTeamParty(PBETeam team, IEnumerable<PBEPokemonShell> party)
+        /// <param name="teamShell">The information <paramref name="team"/> will use to create its party.</param>
+        /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForPlayers"/> or <see cref="team"/> already has its party set.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="team"/> or <paramref name="teamShell"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="teamShell"/>'s settings are different from <paramref name="team"/>'s battle's settings.</exception>
+        public static void CreateTeamParty(PBETeam team, PBETeamShell teamShell)
         {
+            if (team == null)
+            {
+                throw new ArgumentNullException(nameof(team));
+            }
+            if (teamShell == null)
+            {
+                throw new ArgumentNullException(nameof(teamShell));
+            }
             if (team.Battle.BattleState != PBEBattleState.WaitingForPlayers)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForPlayers} to set a team's party.");
             }
-            if (party == null)
+            if (team.Party.Count > 0)
             {
-                throw new ArgumentNullException(nameof(party));
+                throw new InvalidOperationException("This team already has its party set.");
             }
-            if (party.Count() == 0 || party.Count() > team.Battle.Settings.MaxPartySize)
+            if (!teamShell.Settings.Equals(team.Battle.Settings))
             {
-                throw new ArgumentOutOfRangeException(nameof(party));
+                throw new ArgumentOutOfRangeException(nameof(teamShell), $"\"{nameof(teamShell)}\"'s settings must be equal to the battle's settings.");
             }
-            team.CreateParty(party, ref team.Battle.pkmnIdCounter);
+            team.CreateParty(teamShell, ref team.Battle.pkmnIdCounter);
             team.Battle.CheckForReadiness();
         }
         // Starts the battle

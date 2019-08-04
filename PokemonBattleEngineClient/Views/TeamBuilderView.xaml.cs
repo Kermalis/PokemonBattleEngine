@@ -12,7 +12,6 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    // TODO: Settings editor, listen to settings changes
     public class TeamBuilderView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
@@ -54,7 +53,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public ObservableCollection<TeamInfo> Teams { get; } = new ObservableCollection<TeamInfo>();
 
-        public PBESettings Settings { get; } = PBESettings.DefaultSettings;
         private readonly string teamPath;
 
         private readonly Button addParty, removeParty;
@@ -75,8 +73,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             party = this.FindControl<ListBox>("Party");
             this.FindControl<ListBox>("SavedTeams").SelectionChanged += (s, e) =>
             {
-                EvaluatePartySize();
-                Shell = team.Party[0];
+                SetButtonEnableds();
+                Shell = team.Shell[0];
             };
             this.FindControl<ComboBox>("Species").SelectionChanged += (s, e) => UpdateSprites();
             this.FindControl<CheckBox>("Shiny").Command = ReactiveCommand.Create(UpdateSprites);
@@ -90,7 +88,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 {
                     foreach (string f in files)
                     {
-                        Teams.Add(new TeamInfo { Name = Path.GetFileNameWithoutExtension(f), Party = new ObservableCollection<PBEPokemonShell>(PBEPokemonShell.TeamFromJsonFile(f)) });
+                        Teams.Add(new TeamInfo { Name = Path.GetFileNameWithoutExtension(f), Shell = new PBETeamShell(f) });
                     }
                     Team = Teams[0];
                     return;
@@ -103,24 +101,16 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             AddTeam();
         }
 
-        private PBEPokemonShell CreateShell()
-        {
-            return new PBEPokemonShell(PBEUtils.RandomSpecies(), Settings.MaxLevel, Settings);
-        }
         private void AddTeam()
         {
-            PBEPokemonShell p = CreateShell();
             var t = new TeamInfo
             {
                 Name = $"Team {DateTime.Now.Ticks}",
-                Party = new ObservableCollection<PBEPokemonShell>()
-                {
-                    p
-                }
+                Shell = new PBETeamShell(PBESettings.DefaultSettings, 1, true)
             };
             Teams.Add(t);
             Team = t;
-            Shell = p;
+            Shell = t.Shell[0];
         }
         private void RemoveTeam()
         {
@@ -134,33 +124,24 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         private void SaveTeam()
         {
-            PBEPokemonShell.TeamToJsonFile(Path.Combine(teamPath, $"{team.Name}.json"), team.Party);
+            team.Shell.ToJsonFile(Path.Combine(teamPath, $"{team.Name}.json"));
         }
         private void AddPartyMember()
         {
-            PBEPokemonShell p = CreateShell();
-            team.Party.Add(p);
-            Shell = p;
-            EvaluatePartySize();
+            int index = team.Shell.Count;
+            team.Shell.Add(PBEUtils.RandomSpecies(), team.Shell.Settings.MaxLevel);
+            Shell = team.Shell[index];
+            SetButtonEnableds();
         }
         private void RemovePartyMember()
         {
-            team.Party.Remove(shell);
-            EvaluatePartySize();
+            team.Shell.Remove(shell);
+            SetButtonEnableds();
         }
-        private void EvaluatePartySize()
+        private void SetButtonEnableds()
         {
-            addParty.IsEnabled = team.Party.Count < Settings.MaxPartySize;
-            // Remove if too many
-            if (team.Party.Count > Settings.MaxPartySize)
-            {
-                int removeAmt = team.Party.Count - Settings.MaxPartySize;
-                for (int i = 0; i < removeAmt; i++)
-                {
-                    team.Party.RemoveAt(team.Party.Count - 1);
-                }
-            }
-            removeParty.IsEnabled = team.Party.Count > 1;
+            addParty.IsEnabled = team.Shell.Count < team.Shell.Settings.MaxPartySize;
+            removeParty.IsEnabled = team.Shell.Count > 1;
         }
 
         private void UpdateSprites()
