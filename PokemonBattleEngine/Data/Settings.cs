@@ -807,7 +807,20 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public override bool Equals(object obj)
         {
-            if (obj is PBESettings other)
+            if (obj is string str)
+            {
+                PBESettings ps;
+                try
+                {
+                    ps = new PBESettings(str);
+                }
+                catch
+                {
+                    return false;
+                }
+                return ps.Equals(this);
+            }
+            else if (obj is PBESettings other)
             {
                 return other.maxLevel.Equals(maxLevel)
                     && other.minLevel.Equals(minLevel)
