@@ -504,7 +504,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 case PBEStat.HP:
                 {
-                    return (ushort)(species == PBESpecies.Shedinja ? 1 : ((((2 * GetData(species).BaseStats[0]) + ivs + (evs / 4)) * level / settings.MaxLevel) + level + 10));
+                    return (ushort)(species == PBESpecies.Shedinja ? 1 : ((((2 * GetData(species).BaseStats[0]) + ivs + (evs / 4)) * level / 100) + level + 10));
                 }
                 case PBEStat.Attack:
                 case PBEStat.Defense:
@@ -514,7 +514,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 {
                     int statIndex = (int)stat;
                     double natureMultiplier = 1.0 + (NatureBoosts[nature][statIndex - 1] * settings.NatureStatBoost);
-                    return (ushort)(((((2 * GetData(species).BaseStats[statIndex]) + ivs + (evs / 4)) * level / settings.MaxLevel) + 5) * natureMultiplier);
+                    return (ushort)(((((2 * GetData(species).BaseStats[statIndex]) + ivs + (evs / 4)) * level / 100) + 5) * natureMultiplier);
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }

@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="MaxLevel"/>.</summary>
         public const byte DefaultMaxLevel = 100;
         private byte maxLevel = DefaultMaxLevel;
-        /// <summary>The maximum level a Pokémon can be. Used in stat calculation.</summary>
+        /// <summary>The maximum level a Pokémon can be. Not used in stat/damage calculation.</summary>
         public byte MaxLevel
         {
             get => maxLevel;
