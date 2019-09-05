@@ -65,24 +65,31 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         throw new InvalidDataException();
                     }
                 }
-
-                ushort version = r.ReadUInt16();
-
-                var settings = new PBESettings(r);
-                var battle = new PBEBattle((PBEBattleFormat)r.ReadByte(), settings);
-
-                battle.Teams[0].FromBytes(r);
-                battle.Teams[1].FromBytes(r);
-
-                var packetProcessor = new PBEPacketProcessor(battle);
-                int numEvents = r.ReadInt32();
-                for (int i = 0; i < numEvents; i++)
-                {
-                    battle.Events.Add(packetProcessor.CreatePacket(r.ReadBytes(r.ReadInt16())));
-                }
-
-                return battle;
+                return new PBEBattle(r);
             }
+        }
+        private PBEBattle(BinaryReader r)
+        {
+            ushort version = r.ReadUInt16();
+
+            Settings = new PBESettings(r);
+            Settings.MakeReadOnly();
+            BattleFormat = (PBEBattleFormat)r.ReadByte();
+
+            Teams[0] = new PBETeam(this, 0);
+            Teams[0].FromBytes(r);
+            Teams[1] = new PBETeam(this, 1);
+            Teams[1].FromBytes(r);
+
+            var packetProcessor = new PBEPacketProcessor(this);
+            int numEvents = r.ReadInt32();
+            for (int i = 0; i < numEvents; i++)
+            {
+                Events.Add(packetProcessor.CreatePacket(r.ReadBytes(r.ReadInt16())));
+            }
+
+            BattleState = PBEBattleState.Ended;
+            OnStateChanged?.Invoke(this);
         }
     }
 }

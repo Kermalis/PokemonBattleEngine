@@ -33,14 +33,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool MonFaintedLastTurn { get; set; }
         public bool MonFaintedThisTurn { get; set; }
 
-        // Host constructor
         internal PBETeam(PBEBattle battle, byte id, PBETeamShell shell, ref byte pkmnIdCounter)
         {
             Battle = battle;
             Id = id;
             CreateParty(shell, ref pkmnIdCounter);
         }
-        // Client constructor
         internal PBETeam(PBEBattle battle, byte id)
         {
             Battle = battle;
@@ -56,18 +54,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        /// <summary>
-        /// Gets a specific active Pokémon by its position.
-        /// </summary>
-        /// <param name="pos">The position of the Pokémon you want to get.</param>
-        /// <returns>null if no Pokémon was found was found at <paramref name="pos"/>; otherwise the <see cref="PBEPokemon"/>.</returns>
+        /// <summary>Gets a specific active <see cref="PBEPokemon"/> by its <see cref="PBEPokemon.FieldPosition"/>.</summary>
+        /// <param name="pos">The <see cref="PBEFieldPosition"/> of the <see cref="PBEPokemon"/>.</param>
         public PBEPokemon TryGetPokemon(PBEFieldPosition pos)
         {
             return ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
         }
-        public PBEPokemon TryGetPokemon(byte id)
+        /// <summary>Gets a specific <see cref="PBEPokemon"/> by its ID.</summary>
+        /// <param name="pkmnId">The ID of the <see cref="PBEPokemon"/>.</param>
+        public PBEPokemon TryGetPokemon(byte pkmnId)
         {
-            return Party.SingleOrDefault(p => p.Id == id);
+            return Party.SingleOrDefault(p => p.Id == pkmnId);
         }
 
         internal List<byte> ToBytes()

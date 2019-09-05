@@ -15,7 +15,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public event BattleStateChangedEvent OnStateChanged;
         public PBEBattleState BattleState { get; private set; }
         public ushort TurnNumber { get; set; }
-        /// <summary>The winner of the battle. null if the battle is ongoing or the battle resulted in a draw.</summary>
+        /// <summary>The winner of the battle. null if <see cref="BattleState"/> is not <see cref="PBEBattleState.Ended"/> or the battle resulted in a draw.</summary>
         public PBETeam Winner { get; set; }
 
         public PBEBattleFormat BattleFormat { get; }
@@ -31,14 +31,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public List<INetPacket> Events { get; } = new List<INetPacket>();
 
-        /// <summary>Gets a specific Pokémon participating in this battle by its ID.</summary>
-        /// <param name="pkmnId">The ID of the Pokémon you want to get.</param>
+        /// <summary>Gets a specific <see cref="PBEPokemon"/> participating in this battle by its ID.</summary>
+        /// <param name="pkmnId">The ID of the <see cref="PBEPokemon"/>.</param>
         public PBEPokemon TryGetPokemon(byte pkmnId)
         {
             return Teams.SelectMany(t => t.Party).SingleOrDefault(p => p.Id == pkmnId);
         }
 
         private byte pkmnIdCounter;
+        /// <summary>Creates a new <see cref="PBEBattle"/> object with the specified <see cref="PBEBattleFormat"/> and teams. Each team must have equal settings. The battle's settings are set to a copy of the teams' settings. <see cref="BattleState"/> will be <see cref="PBEBattleState.ReadyToBegin"/>.</summary>
+        /// <param name="battleFormat">The <see cref="PBEBattleFormat"/> of the battle.</param>
+        /// <param name="team0Shell">The <see cref="PBETeamShell"/> object to use to create the <see cref="PBETeam"/> at index 0.</param>
+        /// <param name="team1Shell">The <see cref="PBETeamShell"/> object to use to create the <see cref="PBETeam"/> at index 1.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="team0Shell"/> or <paramref name="team1Shell"/> are null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="team0Shell"/> and <paramref name="team1Shell"/> have unequal <see cref="PBETeamShell.Settings"/>.</exception>
         public PBEBattle(PBEBattleFormat battleFormat, PBETeamShell team0Shell, PBETeamShell team1Shell)
         {
             if (battleFormat >= PBEBattleFormat.MAX)
@@ -58,11 +64,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentOutOfRangeException(nameof(team0Shell.Settings), "Team settings must be equal to each other.");
             }
             BattleFormat = battleFormat;
-            Settings = team0Shell.Settings;
+            Settings = new PBESettings(team0Shell.Settings);
+            Settings.MakeReadOnly();
             Teams[0] = new PBETeam(this, 0, team0Shell, ref pkmnIdCounter);
             Teams[1] = new PBETeam(this, 1, team1Shell, ref pkmnIdCounter);
             CheckForReadiness();
         }
+        /// <summary>Creates a new <see cref="PBEBattle"/> object with the specified <see cref="PBEBattleFormat"/> and a copy of the specified <see cref="PBESettings"/>. <see cref="BattleState"/> will be <see cref="PBEBattleState.WaitingForPlayers"/>.</summary>
+        /// <param name="battleFormat">The <see cref="PBEBattleFormat"/> of the battle.</param>
+        /// <param name="settings">The <see cref="PBESettings"/> to copy for the battle to use.</param>
         public PBEBattle(PBEBattleFormat battleFormat, PBESettings settings)
         {
             if (battleFormat >= PBEBattleFormat.MAX)
@@ -74,7 +84,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentNullException(nameof(settings));
             }
             BattleFormat = battleFormat;
-            Settings = settings;
+            Settings = new PBESettings(settings);
+            Settings.MakeReadOnly();
 
             Teams[0] = new PBETeam(this, 0);
             Teams[1] = new PBETeam(this, 1);
@@ -82,7 +93,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BattleState = PBEBattleState.WaitingForPlayers;
             OnStateChanged?.Invoke(this);
         }
-        // Sets BattleState to PBEBattleState.ReadyToBegin
         private void CheckForReadiness()
         {
             if (Array.TrueForAll(Teams, t => t.NumPkmnAlive > 0))
@@ -160,9 +170,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Sets a specific team's party. <see cref="BattleState"/> will change to <see cref="PBEBattleState.ReadyToBegin"/> if all teams have parties.</summary>
         /// <param name="team">The team which will have its party set.</param>
         /// <param name="teamShell">The information <paramref name="team"/> will use to create its party.</param>
-        /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForPlayers"/> or <see cref="team"/> already has its party set.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForPlayers"/> or <paramref name="team"/> already has its party set.</exception>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="team"/> or <paramref name="teamShell"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="teamShell"/>'s settings are different from <paramref name="team"/>'s battle's settings.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="teamShell"/>'s settings are unequal to <paramref name="team"/>'s battle's settings.</exception>
         public static void CreateTeamParty(PBETeam team, PBETeamShell teamShell)
         {
             if (team == null)
@@ -188,8 +198,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             team.CreateParty(teamShell, ref team.Battle.pkmnIdCounter);
             team.Battle.CheckForReadiness();
         }
-        // Starts the battle
-        // Sets BattleState to PBEBattleState.Processing, then PBEBattleState.WaitingForActions
+        /// <summary>Begins the battle.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToBegin"/>.</exception>
         public void Begin()
         {
             if (BattleState != PBEBattleState.ReadyToBegin)
@@ -198,8 +208,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             SwitchesOrActions();
         }
-        // Runs a turn
-        // Sets BattleState to PBEBattleState.Processing, then PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches/PBEBattleState.Ended
+        /// <summary>Runs a turn.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToRunTurn"/>.</exception>
         public void RunTurn()
         {
             if (BattleState != PBEBattleState.ReadyToRunTurn)
@@ -212,7 +222,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RunActionsInOrder();
             TurnEnded();
         }
-        // Sets BattleState to PBEBattleState.Ended
         private bool WinCheck()
         {
             if (Winner != null)
@@ -224,7 +233,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return false;
         }
-        // Sets BattleState to PBEBattleState.Processing/PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches/PBEBattleState.Ended
         private void SwitchesOrActions()
         {
             BattleState = PBEBattleState.Processing;
@@ -526,7 +534,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        // Sets BattleState to PBEBattleState.WaitingForActions/PBEBattleState.WaitingForSwitches/PBEBattleState.Ended
         private void TurnEnded()
         {
             if (WinCheck())
