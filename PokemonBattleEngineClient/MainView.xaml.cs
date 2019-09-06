@@ -88,9 +88,7 @@ namespace Kermalis.PokemonBattleEngineClient
             team0Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
             team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, team0Shell, team1Shell);
-            battle.Teams[0].TrainerName = "May";
-            battle.Teams[1].TrainerName = "Champion Steven";
+            var battle = new PBEBattle(PBEBattleFormat.Double, team0Shell, "May", team1Shell, "Champion Steven");
             Add(new BattleClient(battle, BattleClient.ClientMode.SinglePlayer));
             new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
         }

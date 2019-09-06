@@ -41,11 +41,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private byte pkmnIdCounter;
         /// <summary>Creates a new <see cref="PBEBattle"/> object with the specified <see cref="PBEBattleFormat"/> and teams. Each team must have equal settings. The battle's settings are set to a copy of the teams' settings. <see cref="BattleState"/> will be <see cref="PBEBattleState.ReadyToBegin"/>.</summary>
         /// <param name="battleFormat">The <see cref="PBEBattleFormat"/> of the battle.</param>
-        /// <param name="team0Shell">The <see cref="PBETeamShell"/> object to use to create the <see cref="PBETeam"/> at index 0.</param>
-        /// <param name="team1Shell">The <see cref="PBETeamShell"/> object to use to create the <see cref="PBETeam"/> at index 1.</param>
+        /// <param name="team0Shell">The <see cref="PBETeamShell"/> object to use to create <see cref="Teams"/>[0].</param>
+        /// <param name="team0TrainerName">The name of the trainer(s) on <see cref="Teams"/>[0].</param>
+        /// <param name="team1Shell">The <see cref="PBETeamShell"/> object to use to create <see cref="Teams"/>[1].</param>
+        /// <param name="team1TrainerName">The name of the trainer(s) on <see cref="Teams"/>[1].</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="team0Shell"/> or <paramref name="team1Shell"/> are null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="team0Shell"/> and <paramref name="team1Shell"/> have unequal <see cref="PBETeamShell.Settings"/>.</exception>
-        public PBEBattle(PBEBattleFormat battleFormat, PBETeamShell team0Shell, PBETeamShell team1Shell)
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="team0Shell"/> and <paramref name="team1Shell"/> have unequal <see cref="PBETeamShell.Settings"/> or when <paramref name="team0TrainerName"/> or <paramref name="team1TrainerName"/> are invalid.</exception>
+        public PBEBattle(PBEBattleFormat battleFormat, PBETeamShell team0Shell, string team0TrainerName, PBETeamShell team1Shell, string team1TrainerName)
         {
             if (battleFormat >= PBEBattleFormat.MAX)
             {
@@ -55,9 +57,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(team0Shell));
             }
+            if (string.IsNullOrWhiteSpace(team0TrainerName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(team0TrainerName));
+            }
             if (team1Shell == null)
             {
                 throw new ArgumentNullException(nameof(team1Shell));
+            }
+            if (string.IsNullOrWhiteSpace(team1TrainerName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(team1TrainerName));
             }
             if (!team0Shell.Settings.Equals(team1Shell.Settings))
             {
@@ -66,8 +76,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BattleFormat = battleFormat;
             Settings = new PBESettings(team0Shell.Settings);
             Settings.MakeReadOnly();
-            Teams[0] = new PBETeam(this, 0, team0Shell, ref pkmnIdCounter);
-            Teams[1] = new PBETeam(this, 1, team1Shell, ref pkmnIdCounter);
+            Teams[0] = new PBETeam(this, 0, team0Shell, team0TrainerName, ref pkmnIdCounter);
+            Teams[1] = new PBETeam(this, 1, team1Shell, team1TrainerName, ref pkmnIdCounter);
             CheckForReadiness();
         }
         /// <summary>Creates a new <see cref="PBEBattle"/> object with the specified <see cref="PBEBattleFormat"/> and a copy of the specified <see cref="PBESettings"/>. <see cref="BattleState"/> will be <see cref="PBEBattleState.WaitingForPlayers"/>.</summary>
@@ -170,19 +180,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Sets a specific team's party. <see cref="BattleState"/> will change to <see cref="PBEBattleState.ReadyToBegin"/> if all teams have parties.</summary>
         /// <param name="team">The team which will have its party set.</param>
         /// <param name="teamShell">The information <paramref name="team"/> will use to create its party.</param>
+        /// <param name="teamTrainerName">The name of the trainer(s) on <paramref name="team"/>.</param>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForPlayers"/> or <paramref name="team"/> already has its party set.</exception>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="team"/> or <paramref name="teamShell"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="teamShell"/>'s settings are unequal to <paramref name="team"/>'s battle's settings.</exception>
-        public static void CreateTeamParty(PBETeam team, PBETeamShell teamShell)
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="teamShell"/>'s settings are unequal to <paramref name="team"/>'s battle's settings or when <paramref name="teamTrainerName"/> is invalid.</exception>
+        public static void CreateTeamParty(PBETeam team, PBETeamShell teamShell, string teamTrainerName)
         {
-            if (team == null)
-            {
-                throw new ArgumentNullException(nameof(team));
-            }
-            if (teamShell == null)
-            {
-                throw new ArgumentNullException(nameof(teamShell));
-            }
             if (team.Battle.BattleState != PBEBattleState.WaitingForPlayers)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForPlayers} to set a team's party.");
@@ -191,11 +194,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new InvalidOperationException("This team already has its party set.");
             }
+            if (team == null)
+            {
+                throw new ArgumentNullException(nameof(team));
+            }
+            if (teamShell == null)
+            {
+                throw new ArgumentNullException(nameof(teamShell));
+            }
             if (!teamShell.Settings.Equals(team.Battle.Settings))
             {
                 throw new ArgumentOutOfRangeException(nameof(teamShell), $"\"{nameof(teamShell)}\"'s settings must be equal to the battle's settings.");
             }
-            team.CreateParty(teamShell, ref team.Battle.pkmnIdCounter);
+            if (string.IsNullOrEmpty(teamTrainerName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(teamTrainerName));
+            }
+            team.CreateParty(teamShell, teamTrainerName, ref team.Battle.pkmnIdCounter);
             team.Battle.CheckForReadiness();
         }
         /// <summary>Begins the battle.</summary>

@@ -13,7 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The battle this team and its party belongs to.</summary>
         public PBEBattle Battle { get; }
         public byte Id { get; }
-        public string TrainerName { get; set; }
+        public string TrainerName { get; private set; }
         public List<PBEPokemon> Party { get; private set; }
 
         public IEnumerable<PBEPokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Team == this).OrderBy(p => p.FieldPosition);
@@ -33,11 +33,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool MonFaintedLastTurn { get; set; }
         public bool MonFaintedThisTurn { get; set; }
 
-        internal PBETeam(PBEBattle battle, byte id, PBETeamShell shell, ref byte pkmnIdCounter)
+        internal PBETeam(PBEBattle battle, byte id, PBETeamShell shell, string trainerName, ref byte pkmnIdCounter)
         {
             Battle = battle;
             Id = id;
-            CreateParty(shell, ref pkmnIdCounter);
+            CreateParty(shell, trainerName, ref pkmnIdCounter);
         }
         internal PBETeam(PBEBattle battle, byte id)
         {
@@ -45,8 +45,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Id = id;
             Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
         }
-        internal void CreateParty(PBETeamShell shell, ref byte pkmnIdCounter)
+        internal void CreateParty(PBETeamShell shell, string trainerName, ref byte pkmnIdCounter)
         {
+            TrainerName = trainerName;
             Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
             for (int i = 0; i < shell.Count; i++)
             {

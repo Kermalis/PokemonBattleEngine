@@ -46,9 +46,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBECompetitivePokemonShells.Victini_Uber
             };*/
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, team0Shell, team1Shell);
-            battle.Teams[0].TrainerName = "Team 1";
-            battle.Teams[1].TrainerName = "Team 2";
+            var battle = new PBEBattle(PBEBattleFormat.Double, team0Shell, "Team 1", team1Shell, "Team 2");
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.OnStateChanged += Battle_OnStateChanged;
             try

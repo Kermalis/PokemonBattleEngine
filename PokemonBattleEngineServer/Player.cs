@@ -11,7 +11,7 @@ namespace Kermalis.PokemonBattleEngineServer
     internal class Player : NetUser
     {
         public ManualResetEvent ResetEvent { get; } = new ManualResetEvent(true);
-        public string PlayerName { get; set; }
+        public string TrainerName { get; set; }
         public int BattleId { get; set; } = int.MaxValue;
         public PBETeamShell TeamShell { get; private set; }
 
@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngineServer
             bool receivedResponseInTime = ResetEvent.WaitOne(1000 * 5);
             if (!receivedResponseInTime)
             {
-                Console.WriteLine($"Kicking client ({BattleId} {PlayerName})");
+                Console.WriteLine($"Kicking client ({BattleId} {TrainerName})");
                 Server.DisconnectClient(Id);
             }
             return receivedResponseInTime;
@@ -52,7 +52,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                     case PBEPartyResponsePacket prp:
                     {
-                        Console.WriteLine($"Received team from {PlayerName}!");
+                        Console.WriteLine($"Received team from {TrainerName}!");
                         if (TeamShell == null)
                         {
                             TeamShell = prp.TeamShell;
