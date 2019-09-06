@@ -7,6 +7,7 @@ using Kermalis.PokemonBattleEngineClient.Models;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 
@@ -54,28 +55,24 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public ObservableCollection<TeamInfo> Teams { get; } = new ObservableCollection<TeamInfo>();
 
         private readonly string teamPath;
-
-        private readonly Button addParty, removeParty;
-        private readonly ListBox party;
+        private readonly Button addPartyButton;
+        private readonly Button removePartyButton;
+        private readonly ListBox partyListBox;
 
         public TeamBuilderView()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            addParty = this.FindControl<Button>("AddParty");
-            addParty.Command = ReactiveCommand.Create(AddPartyMember);
-            removeParty = this.FindControl<Button>("RemoveParty");
-            removeParty.Command = ReactiveCommand.Create(RemovePartyMember);
+            addPartyButton = this.FindControl<Button>("AddParty");
+            addPartyButton.Command = ReactiveCommand.Create(AddPartyMember);
+            removePartyButton = this.FindControl<Button>("RemoveParty");
+            removePartyButton.Command = ReactiveCommand.Create(RemovePartyMember);
             this.FindControl<Button>("AddTeam").Command = ReactiveCommand.Create(AddTeam);
             this.FindControl<Button>("RemoveTeam").Command = ReactiveCommand.Create(RemoveTeam);
             this.FindControl<Button>("SaveTeam").Command = ReactiveCommand.Create(SaveTeam);
-            party = this.FindControl<ListBox>("Party");
-            this.FindControl<ListBox>("SavedTeams").SelectionChanged += (s, e) =>
-            {
-                SetButtonEnableds();
-                Shell = team.Shell[0];
-            };
+            partyListBox = this.FindControl<ListBox>("Party");
+            this.FindControl<ListBox>("SavedTeams").SelectionChanged += OnSelectedTeamChanged;
             this.FindControl<ComboBox>("Species").SelectionChanged += (s, e) => UpdateSprites();
             this.FindControl<CheckBox>("Shiny").Command = ReactiveCommand.Create(UpdateSprites);
             this.FindControl<ComboBox>("Gender").SelectionChanged += (s, e) => UpdateSprites();
@@ -86,9 +83,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 string[] files = Directory.GetFiles(teamPath);
                 if (files.Length > 0)
                 {
-                    foreach (string f in files)
+                    for (int i = 0; i < files.Length; i++)
                     {
-                        Teams.Add(new TeamInfo { Name = Path.GetFileNameWithoutExtension(f), Shell = new PBETeamShell(f) });
+                        string file = files[i];
+                        Teams.Add(new TeamInfo { Name = Path.GetFileNameWithoutExtension(file), Shell = new PBETeamShell(file) });
                     }
                     Team = Teams[0];
                     return;
@@ -131,28 +129,35 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             int index = team.Shell.Count;
             team.Shell.Add(PBEUtils.RandomSpecies(), team.Shell.Settings.MaxLevel);
             Shell = team.Shell[index];
-            SetButtonEnableds();
         }
         private void RemovePartyMember()
         {
             team.Shell.Remove(shell);
-            SetButtonEnableds();
         }
-        private void SetButtonEnableds()
+        private void OnSelectedTeamSizeChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            addParty.IsEnabled = team.Shell.Count < team.Shell.Settings.MaxPartySize;
-            removeParty.IsEnabled = team.Shell.Count > 1;
+            addPartyButton.IsEnabled = team.Shell.Count < team.Shell.Settings.MaxPartySize;
+            removePartyButton.IsEnabled = team.Shell.Count > 1;
         }
-
+        private void OnSelectedTeamChanged(object sender, SelectionChangedEventArgs e)
+        {
+            for (int i = 0; i < e.RemovedItems.Count; i++)
+            {
+                ((TeamInfo)e.RemovedItems[i]).Shell.CollectionChanged -= OnSelectedTeamSizeChanged;
+            }
+            team.Shell.CollectionChanged += OnSelectedTeamSizeChanged;
+            OnSelectedTeamSizeChanged(null, null);
+            Shell = team.Shell[0];
+        }
         private void UpdateSprites()
         {
             SpriteStream = Utils.GetPokemonSpriteStream(shell);
             // Force redraw of minisprite
-            if (party.ItemContainerGenerator.ContainerFromIndex(party.SelectedIndex) is ListBoxItem c)
+            if (partyListBox.ItemContainerGenerator.ContainerFromIndex(partyListBox.SelectedIndex) is ListBoxItem item)
             {
-                object old = c.Content;
-                c.Content = null;
-                c.Content = old;
+                object old = item.Content;
+                item.Content = null;
+                item.Content = old;
             }
         }
     }

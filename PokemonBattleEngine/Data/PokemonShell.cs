@@ -9,7 +9,8 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: Set settings and listen to changes
+    // TODO: What should happen if you continue using this after it was removed from a PBETeamShell?
+    // This should be able to be used aside from team shells (which would help event pokemon be represented again)
     public sealed class PBEPokemonShell : INotifyPropertyChanged
     {
         public static ReadOnlyCollection<PBESpecies> AllSpecies { get; } = new ReadOnlyCollection<PBESpecies>(Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny, PBESpecies.Cherrim_Sunshine, PBESpecies.Darmanitan_Zen, PBESpecies.Meloetta_Pirouette }).ToArray());
@@ -358,10 +359,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         private void OnSpeciesChanged(PBESpecies oldSpecies)
         {
             SetSelectable();
-            // Change Nickname if the previous nickname was the species name
             if (oldSpecies == 0 || nickname == PBELocalizedString.GetSpeciesName(oldSpecies).FromUICultureInfo())
             {
-                Nickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo();
+                string newNickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo();
+                if (newNickname.Length > parent.Settings.MaxPokemonNameLength)
+                {
+                    newNickname = newNickname.Substring(0, parent.Settings.MaxPokemonNameLength);
+                }
+                Nickname = newNickname;
             }
             if (oldSpecies == 0 || !SelectableAbilities.Contains(ability))
             {
@@ -385,6 +390,43 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        internal void OnSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var settings = (PBESettings)sender;
+            switch (e.PropertyName)
+            {
+                case nameof(settings.MaxLevel):
+                {
+                    if (level > settings.MaxLevel)
+                    {
+                        level = settings.MaxLevel;
+                        OnPropertyChanged(nameof(Level));
+                        Moveset.Level = level;
+                    }
+                    break;
+                }
+                case nameof(settings.MaxPokemonNameLength):
+                {
+                    if (nickname.Length > settings.MaxPokemonNameLength)
+                    {
+                        nickname = nickname.Substring(0, settings.MaxPokemonNameLength);
+                        OnPropertyChanged(nameof(Nickname));
+                    }
+                    break;
+                }
+                case nameof(settings.MinLevel):
+                {
+                    if (level < settings.MinLevel)
+                    {
+                        level = settings.MinLevel;
+                        OnPropertyChanged(nameof(Level));
+                        Moveset.Level = level;
+                    }
+                    break;
+                }
+            }
+        }
+
         internal static void ValidateSpecies(PBESpecies value)
         {
             if (!AllSpecies.Contains(value))
@@ -394,6 +436,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         internal static void ValidateNickname(string value, PBESettings settings)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
             if (value.Length > settings.MaxPokemonNameLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(Nickname)} cannot have more than {nameof(settings.MaxPokemonNameLength)} ({settings.MaxPokemonNameLength}) characters.");

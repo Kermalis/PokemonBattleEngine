@@ -37,6 +37,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal PBETeamShell(BinaryReader r)
         {
             Settings = new PBESettings(r);
+            Settings.PropertyChanged += OnSettingsChanged;
             list = new List<PBEPokemonShell>(Settings.MaxPartySize);
             sbyte count = r.ReadSByte();
             if (count < 1 || count > Settings.MaxPartySize)
@@ -45,13 +46,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             for (int i = 0; i < count; i++)
             {
-                list.Add(new PBEPokemonShell(r, this));
+                AddWithEvents(false, new PBEPokemonShell(r, this), i);
             }
         }
         public PBETeamShell(string path)
         {
             var json = JObject.Parse(File.ReadAllText(path));
             Settings = new PBESettings(json[nameof(Settings)].Value<string>());
+            Settings.PropertyChanged += OnSettingsChanged;
             var partyObj = (JArray)json["Party"];
             if (partyObj.Count < 1 || partyObj.Count > Settings.MaxPartySize)
             {
@@ -60,7 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             list = new List<PBEPokemonShell>(Settings.MaxPartySize);
             for (int i = 0; i < partyObj.Count; i++)
             {
-                list.Add(new PBEPokemonShell(partyObj[i], this));
+                AddWithEvents(false, new PBEPokemonShell(partyObj[i], this), i);
             }
         }
         public PBETeamShell(PBESettings settings, int numPkmnToGenerate, bool setToMaxLevel)
@@ -74,47 +76,84 @@ namespace Kermalis.PokemonBattleEngine.Data
                 throw new ArgumentOutOfRangeException(nameof(numPkmnToGenerate));
             }
             Settings = settings;
-            list = new List<PBEPokemonShell>(settings.MaxPartySize);
+            Settings.PropertyChanged += OnSettingsChanged;
+            list = new List<PBEPokemonShell>(Settings.MaxPartySize);
             for (int i = 0; i < numPkmnToGenerate; i++)
             {
-                AddOne(false, PBEUtils.RandomSpecies(), setToMaxLevel ? settings.MaxLevel : PBEUtils.RandomLevel(settings));
+                Add(false, PBEUtils.RandomSpecies(), setToMaxLevel ? Settings.MaxLevel : PBEUtils.RandomLevel(Settings));
             }
         }
 
-        private void AddOne(bool fireEvent)
+        private void AddRandom(bool fireEvent)
         {
-            AddOne(fireEvent, PBEUtils.RandomSpecies(), PBEUtils.RandomLevel(Settings));
+            Add(fireEvent, PBEUtils.RandomSpecies(), PBEUtils.RandomLevel(Settings));
         }
-        private void AddOne(bool fireEvent, PBESpecies species, byte level)
+        private void Add(bool fireEvent, PBESpecies species, byte level)
         {
             var item = new PBEPokemonShell(species, level, this);
             int index = list.Count;
+            AddWithEvents(fireEvent, item, index);
+        }
+        private void AddWithEvents(bool fireEvent, PBEPokemonShell item, int index)
+        {
+            Settings.PropertyChanged += item.OnSettingsChanged;
             list.Insert(index, item);
             if (fireEvent)
             {
                 FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
             }
         }
-
-        public void Add()
+        private void RemoveWithEvents(PBEPokemonShell item, int index)
         {
-            Add(PBEUtils.RandomSpecies(), PBEUtils.RandomLevel(Settings));
+            Settings.PropertyChanged -= item.OnSettingsChanged;
+            list.RemoveAt(index);
+            NotifyCollectionChangedEventArgs e;
+            if (list.Count == 0)
+            {
+                AddRandom(false);
+                e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, list[index], item, index);
+            }
+            else
+            {
+                e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
+            }
+            FireEvents(e);
+        }
+
+        private void ExceedException()
+        {
+            throw new InvalidOperationException($"Party size cannot exceed \"{nameof(Settings.MaxPartySize)}\" ({Settings.MaxPartySize}).");
+        }
+        public void AddRandom()
+        {
+            if (list.Count < Settings.MaxPartySize)
+            {
+                AddRandom(true);
+            }
+            else
+            {
+                ExceedException();
+            }
         }
         public void Add(PBESpecies species, byte level)
         {
             if (list.Count < Settings.MaxPartySize)
             {
-                AddOne(true, species, level);
+                Add(true, species, level);
             }
             else
             {
-                throw new InvalidOperationException($"Party size cannot exceed \"{nameof(Settings.MaxPartySize)}\" ({Settings.MaxPartySize}).");
+                ExceedException();
             }
         }
         public void Clear()
         {
+            for (int i = 0; i < list.Count; i++)
+            {
+                Settings.PropertyChanged -= list[i].OnSettingsChanged;
+            }
             list.Clear();
-            AddOne(false);
+            AddRandom(false);
             FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
         public bool Remove(PBEPokemonShell item)
@@ -123,42 +162,19 @@ namespace Kermalis.PokemonBattleEngine.Data
             bool b = index != -1;
             if (b)
             {
-                list.RemoveAt(index);
-                NotifyCollectionChangedEventArgs e;
-                if (list.Count == 0)
-                {
-                    AddOne(false);
-                    e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-                }
-                else
-                {
-                    e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
-                }
-                FireEvents(e);
+                RemoveWithEvents(item, index);
             }
             return b;
         }
         public void RemoveAt(int index)
         {
-            if (index >= list.Count)
+            if (index < 0 || index >= list.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
             else
             {
-                PBEPokemonShell item = list[index];
-                list.RemoveAt(index);
-                NotifyCollectionChangedEventArgs e;
-                if (list.Count == 0)
-                {
-                    AddOne(false);
-                    e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-                }
-                else
-                {
-                    e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
-                }
-                FireEvents(e);
+                RemoveWithEvents(list[index], index);
             }
         }
 
@@ -178,6 +194,32 @@ namespace Kermalis.PokemonBattleEngine.Data
         IEnumerator IEnumerable.GetEnumerator()
         {
             return list.GetEnumerator();
+        }
+
+        private void OnSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var settings = (PBESettings)sender;
+            switch (e.PropertyName)
+            {
+                case nameof(settings.MaxPartySize):
+                {
+                    if (list.Count > settings.MaxPartySize)
+                    {
+                        int numToRemove = list.Count - settings.MaxPartySize;
+                        var changedItems = new PBEPokemonShell[numToRemove];
+                        for (int i = 0; i < numToRemove; i++)
+                        {
+                            int index = list.Count - 1;
+                            PBEPokemonShell item = list[index];
+                            Settings.PropertyChanged -= item.OnSettingsChanged;
+                            list.RemoveAt(index);
+                            changedItems[i] = item;
+                        }
+                        FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, changedItems, list.Count));
+                    }
+                    break;
+                }
+            }
         }
 
         internal List<byte> ToBytes()

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: Set settings and listen for changes
+    // TODO: Listen for changes to settings
     public sealed class PBEMovesetBuilder : INotifyPropertyChanged
     {
         public sealed class PBEMoveSlot : INotifyPropertyChanged
