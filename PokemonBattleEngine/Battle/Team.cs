@@ -13,7 +13,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>The battle this team and its party belongs to.</summary>
         public PBEBattle Battle { get; }
         public byte Id { get; }
-        public string TrainerName { get; private set; }
+        public string TrainerName { get; set; } // Setter is public because a client cannot submit the opponent's team
         public List<PBEPokemon> Party { get; private set; }
 
         public IEnumerable<PBEPokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Team == this).OrderBy(p => p.FieldPosition);

@@ -27,14 +27,20 @@ namespace Kermalis.PokemonBattleEngine
         }
         /// <summary>Creates a connection to PokemonBattleEngine.db. This must be called only once; before the database is used.</summary>
         /// <param name="databasePath">The path of the folder containing PokemonBattleEngine.db.</param>
-        /// <exception cref="InvalidOperationException">Thrown when <paramref name="databasePath"/> is null, contains only whitespace characters, or contains one or more of the invalid characters defined in <see cref="Path.GetInvalidPathChars"/>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="databasePath"/> is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="databasePath"/> contains one or more of the invalid characters defined in <see cref="Path.GetInvalidPathChars"/>.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when a database connection has already been created.</exception>
         public static void CreateDatabaseConnection(string databasePath)
         {
             if (databaseConnection != null)
             {
                 throw new InvalidOperationException("Database connection was already created.");
             }
-            else if (string.IsNullOrWhiteSpace(databasePath) || databasePath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+            else if (databasePath == null)
+            {
+                throw new ArgumentNullException(nameof(databasePath));
+            }
+            else if (databasePath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
             {
                 throw new ArgumentOutOfRangeException(nameof(databasePath));
             }
