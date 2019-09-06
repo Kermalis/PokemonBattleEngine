@@ -26,12 +26,17 @@ namespace Kermalis.PokemonBattleEngine
             }
         }
         /// <summary>Creates a connection to PokemonBattleEngine.db. This must be called only once; before the database is used.</summary>
-        /// <param name="databasePath">The path to the folder containing PokemonBattleEngine.db.</param>
+        /// <param name="databasePath">The path of the folder containing PokemonBattleEngine.db.</param>
+        /// <exception cref="InvalidOperationException">Thrown when <paramref name="databasePath"/> is null, contains only whitespace characters, or contains one or more of the invalid characters defined in <see cref="Path.GetInvalidPathChars"/>.</exception>
         public static void CreateDatabaseConnection(string databasePath)
         {
             if (databaseConnection != null)
             {
-                throw new Exception("Database connection was already created.");
+                throw new InvalidOperationException("Database connection was already created.");
+            }
+            else if (string.IsNullOrWhiteSpace(databasePath) || databasePath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(databasePath));
             }
             else
             {
@@ -43,7 +48,7 @@ namespace Kermalis.PokemonBattleEngine
         }
 
         /// <summary>
-        /// When I used <see cref="Random"/>, it would only take 55 consecutive calls to <see cref="RandomElement{T}(IEnumerable{T})"/> with a collection of ints to be able to predict future values.
+        /// When I used <see cref="Random"/>, it would only take 55 consecutive calls to <see cref="RandomElement{T}(IList{T})"/> with a collection of <see cref="int"/>s to be able to predict future values.
         /// You would also be able to predict with more work if you called <see cref="RandomSpecies"/> or <see cref="RandomGender(PBEGenderRatio)"/>.
         /// I do not see how that would help attackers because the host would be able to modify the game however it desires anyway.
         /// For these reasons, I decided to have the random functions use the private <see cref="Random"/> without the need to pass one in as a parameter.
@@ -69,6 +74,7 @@ namespace Kermalis.PokemonBattleEngine
             return source[RandomInt(0, count)];
         }
         /// <summary>Returns a random <see cref="PBEGender"/> for the given <paramref name="genderRatio"/>.</summary>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="genderRatio"/> is invalid.</exception>
         public static PBEGender RandomGender(PBEGenderRatio genderRatio)
         {
             switch (genderRatio)
@@ -83,7 +89,7 @@ namespace Kermalis.PokemonBattleEngine
                 default: throw new ArgumentOutOfRangeException(nameof(genderRatio));
             }
         }
-        /// <summary>Returns a random int between the inclusive <paramref name="minValue"/> and inclusive <paramref name="maxValue"/>.</summary>
+        /// <summary>Returns a random <see cref="int"/> value between the inclusive <paramref name="minValue"/> and inclusive <paramref name="maxValue"/>.</summary>
         internal static int RandomInt(int minValue, int maxValue)
         {
             if (minValue > maxValue)
@@ -100,6 +106,9 @@ namespace Kermalis.PokemonBattleEngine
             double d = scale / (double)uint.MaxValue;
             return (int)(minValue + (((long)maxValue + 1 - minValue) * d)); // Remove "+ 1" for exclusive maxValue
         }
+        /// <summary>Returns a random <see cref="byte"/> value that is between <paramref name="settings"/>'s <see cref="PBESettings.MinLevel"/> and <see cref="PBESettings.MaxLevel"/>.</summary>
+        /// <param name="settings">The <see cref="PBESettings"/> object to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="settings"/> is null.</exception>
         public static byte RandomLevel(PBESettings settings)
         {
             if (settings == null)
@@ -108,7 +117,7 @@ namespace Kermalis.PokemonBattleEngine
             }
             return (byte)RandomInt(settings.MinLevel, settings.MaxLevel);
         }
-        /// <summary>Returns a random shiny value.</summary>
+        /// <summary>Returns a random <see cref="bool"/> value that represents shininess using shiny odds.</summary>
         public static bool RandomShiny()
         {
             return RandomBool(8, 65536);
@@ -149,8 +158,16 @@ namespace Kermalis.PokemonBattleEngine
             return (PBESpecies)(((ushort)species) | (uint)(RandomInt(0, numForms - 1) << 0x10)); // Change form ID to a random form
         }
 
+        /// <summary>Returns a <see cref="string"/> that combines <paramref name="source"/>'s elements' string representations using "and" with commas.</summary>
+        /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}"/> to create a string from.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is null.</exception>
         public static string Andify<T>(this IEnumerable<T> source)
         {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
             T[] array = source.ToArray();
             string str = array[0].ToString();
             for (int i = 1; i < array.Length; i++)
@@ -236,9 +253,10 @@ namespace Kermalis.PokemonBattleEngine
         /// <summary>Removes all invalid file name characters from <paramref name="fileName"/>.</summary>
         internal static string ToSafeFileName(string fileName)
         {
-            foreach (char c in Path.GetInvalidFileNameChars())
+            char[] invalid = Path.GetInvalidFileNameChars();
+            for (int i = 0; i < invalid.Length; i++)
             {
-                fileName = fileName.Replace(c, '-');
+                fileName = fileName.Replace(invalid[i], '-');
             }
             return fileName;
         }
