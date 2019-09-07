@@ -3184,7 +3184,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 ushort DamageFunc(PBEPokemon target)
                 {
-                    return (ushort)(user.Level * (PBEUtils.RandomInt(0, Settings.MaxLevel) + (Settings.MaxLevel / 2)) / Settings.MaxLevel);
+                    return (ushort)(user.Level * (PBEUtils.RandomInt(0, 100) + 50) / 100);
                 }
                 FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
             }

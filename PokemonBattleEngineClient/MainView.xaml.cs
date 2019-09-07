@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Views;
@@ -59,7 +58,7 @@ namespace Kermalis.PokemonBattleEngineClient
         {
             connect.IsEnabled = false;
             ConnectText = "Connecting...";
-            var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.Settings, teamBuilder.Team.Party);
+            var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.Team.Shell);
             new Thread(() =>
             {
                 client.Connect();
@@ -84,12 +83,12 @@ namespace Kermalis.PokemonBattleEngineClient
         private void SinglePlayer()
         {
             PBESettings settings = PBESettings.DefaultSettings;
-            PBEPokemonShell[] team0Party, team1Party;
-            team0Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
-            team1Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
-            var battle = new PBEBattle(PBEBattleFormat.Double, settings, team0Party, team1Party);
-            battle.Teams[0].TrainerName = "May";
-            battle.Teams[1].TrainerName = "Champion Steven";
+            PBETeamShell team0Shell, team1Shell;
+            // Completely Randomized Pokémon
+            team0Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
+            team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
+
+            var battle = new PBEBattle(PBEBattleFormat.Double, team0Shell, "May", team1Shell, "Champion Steven");
             Add(new BattleClient(battle, BattleClient.ClientMode.SinglePlayer));
             new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
         }

@@ -3,7 +3,6 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -14,14 +13,13 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public const short Code = 0x04;
         public IEnumerable<byte> Buffer { get; }
 
-        public ReadOnlyCollection<PBEPokemonShell> Party { get; }
+        public PBETeamShell TeamShell { get; }
 
-        public PBEPartyResponsePacket(IEnumerable<PBEPokemonShell> party)
+        public PBEPartyResponsePacket(PBETeamShell teamShell)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Party = party.ToList().AsReadOnly()).Count);
-            bytes.AddRange(Party.SelectMany(p => p.ToBytes()));
+            bytes.AddRange((TeamShell = teamShell).ToBytes());
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEPartyResponsePacket(byte[] buffer, PBEBattle battle)
@@ -29,13 +27,8 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Buffer = buffer;
             using (var r = new BinaryReader(new MemoryStream(buffer)))
             {
-                r.ReadInt16(); // Skip Code
-                var party = new PBEPokemonShell[r.ReadSByte()];
-                for (int i = 0; i < party.Length; i++)
-                {
-                    party[i] = PBEPokemonShell.FromBytes(r, battle.Settings); // What happens if an exception occurs? Similar question to https://github.com/Kermalis/PokemonBattleEngine/issues/167
-                }
-                Party = Array.AsReadOnly(party);
+                r.ReadInt16(); // Skip Code                               
+                TeamShell = new PBETeamShell(r); // What happens if an exception occurs? Similar question to https://github.com/Kermalis/PokemonBattleEngine/issues/167
             }
         }
 

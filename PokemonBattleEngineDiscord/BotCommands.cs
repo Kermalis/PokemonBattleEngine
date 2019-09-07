@@ -59,14 +59,12 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 else
                 {
                     PBESettings settings = PBESettings.DefaultSettings;
-                    PBEPokemonShell[] team0Party, team1Party;
+                    PBETeamShell team0Shell, team1Shell;
                     // Completely Randomized Pokémon
-                    team0Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
-                    team1Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
+                    team0Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
+                    team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
 
-                    var battle = new PBEBattle(PBEBattleFormat.Single, settings, team0Party, team1Party);
-                    battle.Teams[0].TrainerName = Context.User.Username;
-                    battle.Teams[1].TrainerName = battler1.Username;
+                    var battle = new PBEBattle(PBEBattleFormat.Single, team0Shell, Context.User.Username, team1Shell, battler1.Username);
                     var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);
                 }
             }
@@ -137,7 +135,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Type", mData.Type, true)
                         .AddField("Category", mData.Category, true)
                         .AddField("Priority", mData.Priority, true)
-                        .AddField("PP", Math.Max(1, mData.PPTier * PBESettings.DefaultSettings.PPMultiplier), true)
+                        .AddField("PP", Math.Max(1, mData.PPTier * PBESettings.DefaultPPMultiplier), true)
                         .AddField("Power", mData.Power == 0 ? "--" : mData.Power.ToString(), true)
                         .AddField("Accuracy", mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString(), true);
                     switch (mData.Effect)

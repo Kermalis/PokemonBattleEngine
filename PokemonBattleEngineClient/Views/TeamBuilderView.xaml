@@ -62,7 +62,7 @@
           <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Nickname:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Shell.Nickname}"/>
           <Image Grid.Row="3" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Level:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <NumericUpDown Grid.Row="3" Grid.Column="1" Minimum="{Binding Settings.MinLevel, Mode=OneWay}" Maximum="{Binding Settings.MaxLevel, Mode=OneWay}" ClipValueToMinMax="true" Value="{Binding Shell.Level}"/>
+          <NumericUpDown Grid.Row="3" Grid.Column="1" Minimum="{Binding Team.Shell.Settings.MinLevel, Mode=OneWay}" Maximum="{Binding Team.Shell.Settings.MaxLevel, Mode=OneWay}" ClipValueToMinMax="true" Value="{Binding Shell.Level}"/>
           <Image Grid.Row="4" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Friendship:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <NumericUpDown Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="255" ClipValueToMinMax="true" Value="{Binding Shell.Friendship}"/>
           <Image Grid.Row="5" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Ability:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
@@ -119,7 +119,7 @@
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <NumericUpDown Width="60" Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Settings.MaxIVs, Mode=OneWay}" ClipValueToMinMax="True" Value="{Binding Value}"/>
+              <NumericUpDown Width="60" Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Team.Shell.Settings.MaxIVs, Mode=OneWay}" ClipValueToMinMax="True" Value="{Binding Value}"/>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
@@ -139,7 +139,7 @@
             <DataTemplate>
               <StackPanel Orientation="Vertical">
                 <ComboBox Width="100" Items="{Binding Allowed, Mode=OneWay}" ItemTemplate="{StaticResource MenuBlack}" SelectedItem="{Binding Move}" IsEnabled="{Binding IsMoveEditable, Mode=OneWay}"/>
-                <NumericUpDown Width="60" Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Settings.MaxPPUps, Mode=OneWay}" ClipValueToMinMax="True" IsEnabled="{Binding IsPPUpsEditable, Mode=OneWay}" Value="{Binding PPUps}"/>
+                <NumericUpDown Width="60" Minimum="0" Maximum="{Binding RelativeSource={RelativeSource AncestorType=views:TeamBuilderView}, Path=Team.Shell.Settings.MaxPPUps, Mode=OneWay}" ClipValueToMinMax="True" IsEnabled="{Binding IsPPUpsEditable, Mode=OneWay}" Value="{Binding PPUps}"/>
               </StackPanel>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
@@ -159,7 +159,7 @@
           </StackPanel>
         </Button>
       </StackPanel>
-      <ListBox Name="Party" Items="{Binding Team.Party, Mode=OneWay}" SelectedItem="{Binding Shell}" SelectionMode="AlwaysSelected">
+      <ListBox Name="Party" Items="{Binding Team.Shell, Mode=OneWay}" SelectedItem="{Binding Shell}" SelectionMode="AlwaysSelected">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <StackPanel Spacing="4" Orientation="Horizontal">

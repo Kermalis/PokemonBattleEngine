@@ -9,7 +9,8 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: Set settings and listen to changes
+    // TODO: What should happen if you continue using this after it was removed from a PBETeamShell?
+    // This should be able to be used aside from team shells (which would help event pokemon be represented again)
     public sealed class PBEPokemonShell : INotifyPropertyChanged
     {
         public static ReadOnlyCollection<PBESpecies> AllSpecies { get; } = new ReadOnlyCollection<PBESpecies>(Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny, PBESpecies.Cherrim_Sunshine, PBESpecies.Darmanitan_Zen, PBESpecies.Meloetta_Pirouette }).ToArray());
@@ -22,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly PBESettings settings;
+        private readonly PBETeamShell parent;
 
         private PBEPokemonData pData;
         public ReadOnlyCollection<PBEAbility> SelectableAbilities { get; private set; }
@@ -55,7 +56,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (nickname != value)
                 {
-                    ValidateNickname(value, settings);
+                    ValidateNickname(value, parent.Settings);
                     nickname = value;
                     OnPropertyChanged(nameof(Nickname));
                 }
@@ -69,7 +70,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (level != value)
                 {
-                    ValidateLevel(value, settings);
+                    ValidateLevel(value, parent.Settings);
                     level = value;
                     OnPropertyChanged(nameof(Level));
                     Moveset.Level = value;
@@ -162,26 +163,146 @@ namespace Kermalis.PokemonBattleEngine.Data
         public PBEIndividualValueCollection IndividualValues { get; private set; }
         public PBEMovesetBuilder Moveset { get; private set; }
 
-        private PBEPokemonShell(PBESettings settings)
+        internal PBEPokemonShell(BinaryReader r, PBETeamShell parent)
         {
-            this.settings = settings;
-        }
-        public PBEPokemonShell(PBESpecies species, byte level, PBESettings settings)
-        {
-            if (settings == null)
-            {
-                throw new ArgumentNullException(nameof(settings));
-            }
-            ValidateLevel(level, settings);
+            this.parent = parent;
+            var species = (PBESpecies)r.ReadUInt32();
             ValidateSpecies(species);
-            this.settings = settings;
+            this.species = species;
+            SetSelectable();
+            string nickname = PBEUtils.StringFromBytes(r);
+            ValidateNickname(nickname, parent.Settings);
+            this.nickname = nickname;
+            byte level = r.ReadByte();
+            ValidateLevel(level, parent.Settings);
+            this.level = level;
+            friendship = r.ReadByte();
+            shiny = r.ReadBoolean();
+            var ability = (PBEAbility)r.ReadByte();
+            ValidateAbility(ability);
+            this.ability = ability;
+            var nature = (PBENature)r.ReadByte();
+            ValidateNature(nature);
+            this.nature = nature;
+            var gender = (PBEGender)r.ReadByte();
+            ValidateGender(gender);
+            this.gender = gender;
+            var item = (PBEItem)r.ReadUInt16();
+            ValidateItem(item);
+            this.item = item;
+            byte hpEV = r.ReadByte();
+            byte attackEV = r.ReadByte();
+            byte defenseEV = r.ReadByte();
+            byte spAttackEV = r.ReadByte();
+            byte spDefenseEV = r.ReadByte();
+            byte speedEV = r.ReadByte();
+            if (hpEV + attackEV + defenseEV + spAttackEV + spDefenseEV + speedEV > parent.Settings.MaxTotalEVs)
+            {
+                throw new ArgumentOutOfRangeException(nameof(EffortValues), $"Total must not exceed \"{nameof(parent.Settings.MaxTotalEVs)}\" ({parent.Settings.MaxTotalEVs})");
+            }
+            EffortValues = new PBEEffortValueCollection(parent.Settings, hpEV, attackEV, defenseEV, spAttackEV, spDefenseEV, speedEV);
+            void ValidateIV(byte val, string name)
+            {
+                if (val > parent.Settings.MaxIVs)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(IndividualValues), $"\"{name}\" value must not exceed \"{nameof(parent.Settings.MaxIVs)}\" ({parent.Settings.MaxIVs})");
+                }
+            }
+            byte hpIV = r.ReadByte();
+            ValidateIV(hpIV, nameof(PBEStat.HP));
+            byte attackIV = r.ReadByte();
+            ValidateIV(attackIV, nameof(PBEStat.Attack));
+            byte defenseIV = r.ReadByte();
+            ValidateIV(defenseIV, nameof(PBEStat.Defense));
+            byte spAttackIV = r.ReadByte();
+            ValidateIV(spAttackIV, nameof(PBEStat.SpAttack));
+            byte spDefenseIV = r.ReadByte();
+            ValidateIV(spDefenseIV, nameof(PBEStat.SpDefense));
+            byte speedIV = r.ReadByte();
+            ValidateIV(speedIV, nameof(PBEStat.Speed));
+            IndividualValues = new PBEIndividualValueCollection(parent.Settings, hpIV, attackIV, defenseIV, spAttackIV, spDefenseIV, speedIV);
+            Moveset = new PBEMovesetBuilder(species, level, parent.Settings, false);
+            for (int i = 0; i < parent.Settings.NumMoves; i++)
+            {
+                var move = (PBEMove)r.ReadUInt16();
+                byte ppUps = r.ReadByte();
+                Moveset.Set(i, move, ppUps); // "Set()" will throw its own exceptions for invalid moves and pp-ups
+                                             // The following check is for the case where identical moves were stored in the same moveset, therefore forcing "Set()" to overwrite one with PBEMove.None
+                PBEMovesetBuilder.PBEMoveSlot slot = Moveset.MoveSlots[i];
+                if (slot.Move != move || slot.PPUps != ppUps)
+                {
+                    throw new InvalidDataException("Invalid moveset.");
+                }
+            }
+        }
+        internal PBEPokemonShell(JToken jObj, PBETeamShell parent)
+        {
+            this.parent = parent;
+            friendship = jObj[nameof(Friendship)].Value<byte>();
+            shiny = jObj[nameof(Shiny)].Value<bool>();
+            byte level = jObj[nameof(Level)].Value<byte>();
+            ValidateLevel(level, parent.Settings);
+            this.level = level;
+            string nickname = jObj[nameof(Nickname)].Value<string>();
+            ValidateNickname(nickname, parent.Settings);
+            this.nickname = nickname;
+            PBENature nature = PBELocalizedString.GetNatureByName(jObj[nameof(Nature)].Value<string>()).Value;
+            ValidateNature(nature);
+            this.nature = nature;
+            PBESpecies species = PBELocalizedString.GetSpeciesByName(jObj[nameof(Species)].Value<string>()).Value;
+            ValidateSpecies(species);
+            this.species = species;
+            SetSelectable();
+            PBEAbility ability = PBELocalizedString.GetAbilityByName(jObj[nameof(Ability)].Value<string>()).Value;
+            ValidateAbility(ability);
+            this.ability = ability;
+            PBEGender gender = PBELocalizedString.GetGenderByName(jObj[nameof(Gender)].Value<string>()).Value;
+            ValidateGender(gender);
+            this.gender = gender;
+            PBEItem item = PBELocalizedString.GetItemByName(jObj[nameof(Item)].Value<string>()).Value;
+            ValidateItem(item);
+            this.item = item;
+            JToken eiObj = jObj[nameof(EffortValues)];
+            EffortValues = new PBEEffortValueCollection(parent.Settings,
+                eiObj[nameof(PBEStat.HP)].Value<byte>(),
+                eiObj[nameof(PBEStat.Attack)].Value<byte>(),
+                eiObj[nameof(PBEStat.Defense)].Value<byte>(),
+                eiObj[nameof(PBEStat.SpAttack)].Value<byte>(),
+                eiObj[nameof(PBEStat.SpDefense)].Value<byte>(),
+                eiObj[nameof(PBEStat.Speed)].Value<byte>()
+            );
+            eiObj = jObj[nameof(IndividualValues)];
+            IndividualValues = new PBEIndividualValueCollection(parent.Settings,
+                eiObj[nameof(PBEStat.HP)].Value<byte>(),
+                eiObj[nameof(PBEStat.Attack)].Value<byte>(),
+                eiObj[nameof(PBEStat.Defense)].Value<byte>(),
+                eiObj[nameof(PBEStat.SpAttack)].Value<byte>(),
+                eiObj[nameof(PBEStat.SpDefense)].Value<byte>(),
+                eiObj[nameof(PBEStat.Speed)].Value<byte>()
+            );
+            var mObj = (JArray)jObj[nameof(Moveset)];
+            Moveset = new PBEMovesetBuilder(species, level, parent.Settings, false);
+            for (int j = 0; j < parent.Settings.NumMoves; j++)
+            {
+                eiObj = mObj[j];
+                Moveset.Set(j,
+                    PBELocalizedString.GetMoveByName(eiObj[nameof(PBEMovesetBuilder.PBEMoveSlot.Move)].Value<string>()).Value,
+                    eiObj[nameof(PBEMovesetBuilder.PBEMoveSlot.PPUps)].Value<byte>()
+                    );
+            }
+        }
+        internal PBEPokemonShell(PBESpecies species, byte level, PBETeamShell parent)
+        {
+            ValidateLevel(level, parent.Settings);
+            ValidateSpecies(species);
+            this.parent = parent;
             this.species = species;
             this.level = level;
             friendship = (byte)PBEUtils.RandomInt(0, byte.MaxValue);
             shiny = PBEUtils.RandomShiny();
             nature = AllNatures.RandomElement();
-            EffortValues = new PBEEffortValueCollection(settings, true);
-            IndividualValues = new PBEIndividualValueCollection(settings, true);
+            EffortValues = new PBEEffortValueCollection(parent.Settings, true);
+            IndividualValues = new PBEIndividualValueCollection(parent.Settings, true);
             OnSpeciesChanged(0);
         }
         private void SetSelectable()
@@ -238,10 +359,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         private void OnSpeciesChanged(PBESpecies oldSpecies)
         {
             SetSelectable();
-            // Change Nickname if the previous nickname was the species name
             if (oldSpecies == 0 || nickname == PBELocalizedString.GetSpeciesName(oldSpecies).FromUICultureInfo())
             {
-                Nickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo();
+                string newNickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo();
+                if (newNickname.Length > parent.Settings.MaxPokemonNameLength)
+                {
+                    newNickname = newNickname.Substring(0, parent.Settings.MaxPokemonNameLength);
+                }
+                Nickname = newNickname;
             }
             if (oldSpecies == 0 || !SelectableAbilities.Contains(ability))
             {
@@ -257,11 +382,42 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             if (oldSpecies == 0)
             {
-                Moveset = new PBEMovesetBuilder(species, level, settings, true);
+                Moveset = new PBEMovesetBuilder(species, level, parent.Settings, true);
             }
             else
             {
                 Moveset.Species = species;
+            }
+        }
+
+        internal void OnSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(parent.Settings.MaxLevel):
+                {
+                    if (level > parent.Settings.MaxLevel)
+                    {
+                        Level = parent.Settings.MaxLevel;
+                    }
+                    break;
+                }
+                case nameof(parent.Settings.MaxPokemonNameLength):
+                {
+                    if (nickname.Length > parent.Settings.MaxPokemonNameLength)
+                    {
+                        Nickname = nickname.Substring(0, parent.Settings.MaxPokemonNameLength);
+                    }
+                    break;
+                }
+                case nameof(parent.Settings.MinLevel):
+                {
+                    if (level < parent.Settings.MinLevel)
+                    {
+                        Level = parent.Settings.MinLevel;
+                    }
+                    break;
+                }
             }
         }
 
@@ -274,6 +430,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         internal static void ValidateNickname(string value, PBESettings settings)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
             if (value.Length > settings.MaxPokemonNameLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(Nickname)} cannot have more than {nameof(settings.MaxPokemonNameLength)} ({settings.MaxPokemonNameLength}) characters.");
@@ -315,145 +475,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        // TODO: Include settings
-        // TODO: Reject team sizes above settings max
-        public static IEnumerable<PBEPokemonShell> TeamFromJsonFile(string path)
-        {
-            var json = JObject.Parse(File.ReadAllText(path));
-            PBESettings settings = PBESettings.DefaultSettings;
-            var partyObject = (JArray)json["Party"];
-            var party = new PBEPokemonShell[partyObject.Count];
-            for (int i = 0; i < party.Length; i++)
-            {
-                JToken pkmnObject = partyObject[i];
-                var pkmn = new PBEPokemonShell(settings)
-                {
-                    friendship = pkmnObject[nameof(Friendship)].Value<byte>(),
-                    shiny = pkmnObject[nameof(Shiny)].Value<bool>()
-                };
-                byte level = pkmnObject[nameof(Level)].Value<byte>();
-                ValidateLevel(level, settings);
-                pkmn.level = level;
-                string nickname = pkmnObject[nameof(Nickname)].Value<string>();
-                ValidateNickname(nickname, settings);
-                pkmn.nickname = nickname;
-                PBENature nature = PBELocalizedString.GetNatureByName(pkmnObject[nameof(Nature)].Value<string>()).Value;
-                ValidateNature(nature);
-                pkmn.nature = nature;
-                PBESpecies species = PBELocalizedString.GetSpeciesByName(pkmnObject[nameof(Species)].Value<string>()).Value;
-                ValidateSpecies(species);
-                pkmn.species = species;
-                pkmn.SetSelectable();
-                PBEAbility ability = PBELocalizedString.GetAbilityByName(pkmnObject[nameof(Ability)].Value<string>()).Value;
-                pkmn.ValidateAbility(ability);
-                pkmn.ability = ability;
-                PBEGender gender = PBELocalizedString.GetGenderByName(pkmnObject[nameof(Gender)].Value<string>()).Value;
-                pkmn.ValidateGender(gender);
-                pkmn.gender = gender;
-                PBEItem item = PBELocalizedString.GetItemByName(pkmnObject[nameof(Item)].Value<string>()).Value;
-                pkmn.ValidateItem(item);
-                pkmn.item = item;
-                JToken wObject = pkmnObject[nameof(EffortValues)];
-                pkmn.EffortValues = new PBEEffortValueCollection(settings,
-                    wObject[nameof(PBEStat.HP)].Value<byte>(),
-                    wObject[nameof(PBEStat.Attack)].Value<byte>(),
-                    wObject[nameof(PBEStat.Defense)].Value<byte>(),
-                    wObject[nameof(PBEStat.SpAttack)].Value<byte>(),
-                    wObject[nameof(PBEStat.SpDefense)].Value<byte>(),
-                    wObject[nameof(PBEStat.Speed)].Value<byte>()
-                );
-                wObject = pkmnObject[nameof(IndividualValues)];
-                pkmn.IndividualValues = new PBEIndividualValueCollection(settings,
-                    wObject[nameof(PBEStat.HP)].Value<byte>(),
-                    wObject[nameof(PBEStat.Attack)].Value<byte>(),
-                    wObject[nameof(PBEStat.Defense)].Value<byte>(),
-                    wObject[nameof(PBEStat.SpAttack)].Value<byte>(),
-                    wObject[nameof(PBEStat.SpDefense)].Value<byte>(),
-                    wObject[nameof(PBEStat.Speed)].Value<byte>()
-                );
-                var mObject = (JArray)pkmnObject[nameof(Moveset)];
-                pkmn.Moveset = new PBEMovesetBuilder(pkmn.species, pkmn.level, settings, false);
-                for (int j = 0; j < settings.NumMoves; j++)
-                {
-                    wObject = mObject[j];
-                    pkmn.Moveset.Set(j,
-                        PBELocalizedString.GetMoveByName(wObject[nameof(PBEMovesetBuilder.PBEMoveSlot.Move)].Value<string>()).Value,
-                        wObject[nameof(PBEMovesetBuilder.PBEMoveSlot.PPUps)].Value<byte>()
-                        );
-                }
-                party[i] = pkmn;
-            }
-            return party;
-        }
-        // TODO: Include settings
-        // TODO: Reject team sizes above settings max
-        public static void TeamToJsonFile(string path, IEnumerable<PBEPokemonShell> party)
-        {
-            using (var writer = new JsonTextWriter(File.CreateText(path)) { Formatting = Formatting.Indented })
-            {
-                writer.WriteStartObject();
-                writer.WritePropertyName("Party");
-                writer.WriteStartArray();
-                PBEPokemonShell[] p = party.ToArray();
-                byte amt = (byte)p.Length;
-                for (int i = 0; i < amt; i++)
-                {
-                    PBEPokemonShell pkmn = p[i];
-                    writer.WriteStartObject();
-                    writer.WritePropertyName(nameof(Species));
-                    writer.WriteValue(pkmn.species.ToString());
-                    writer.WritePropertyName(nameof(Nickname));
-                    writer.WriteValue(pkmn.nickname);
-                    writer.WritePropertyName(nameof(Level));
-                    writer.WriteValue(pkmn.level);
-                    writer.WritePropertyName(nameof(Friendship));
-                    writer.WriteValue(pkmn.friendship);
-                    writer.WritePropertyName(nameof(Shiny));
-                    writer.WriteValue(pkmn.shiny);
-                    writer.WritePropertyName(nameof(Ability));
-                    writer.WriteValue(pkmn.ability.ToString());
-                    writer.WritePropertyName(nameof(Nature));
-                    writer.WriteValue(pkmn.nature.ToString());
-                    writer.WritePropertyName(nameof(Gender));
-                    writer.WriteValue(pkmn.gender.ToString());
-                    writer.WritePropertyName(nameof(Item));
-                    writer.WriteValue(pkmn.item.ToString());
-                    writer.WritePropertyName(nameof(EffortValues));
-                    writer.WriteStartObject();
-                    foreach (PBEEffortValueCollection.PBEEffortValue ev in pkmn.EffortValues)
-                    {
-                        writer.WritePropertyName(ev.Stat.ToString());
-                        writer.WriteValue(ev.Value);
-                    }
-                    writer.WriteEndObject();
-                    writer.WritePropertyName(nameof(IndividualValues));
-                    writer.WriteStartObject();
-                    foreach (PBEIndividualValueCollection.PBEIndividualValue iv in pkmn.IndividualValues)
-                    {
-                        writer.WritePropertyName(iv.Stat.ToString());
-                        writer.WriteValue(iv.Value);
-                    }
-                    writer.WriteEndObject();
-                    writer.WritePropertyName(nameof(Moveset));
-                    writer.WriteStartArray();
-                    foreach (PBEMovesetBuilder.PBEMoveSlot slot in pkmn.Moveset.MoveSlots)
-                    {
-                        writer.WriteStartObject();
-                        writer.WritePropertyName(nameof(PBEMovesetBuilder.PBEMoveSlot.Move));
-                        writer.WriteValue(slot.Move.ToString());
-                        writer.WritePropertyName(nameof(PBEMovesetBuilder.PBEMoveSlot.PPUps));
-                        writer.WriteValue(slot.PPUps);
-                        writer.WriteEndObject();
-                    }
-                    writer.WriteEndArray();
-                    writer.WriteEndObject();
-                }
-                writer.WriteEndArray();
-                writer.WriteEndObject();
-            }
-        }
-
-        internal byte[] ToBytes()
+        internal List<byte> ToBytes()
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes((uint)species));
@@ -472,80 +494,58 @@ namespace Kermalis.PokemonBattleEngine.Data
                 bytes.AddRange(BitConverter.GetBytes((ushort)slot.Move));
                 bytes.Add(slot.PPUps);
             }
-            return bytes.ToArray();
+            return bytes;
         }
-        internal static PBEPokemonShell FromBytes(BinaryReader r, PBESettings settings)
+        internal void ToJson(JsonTextWriter w)
         {
-            var pkmn = new PBEPokemonShell(settings);
-            var species = (PBESpecies)r.ReadUInt32();
-            ValidateSpecies(species);
-            pkmn.species = species;
-            pkmn.SetSelectable();
-            string nickname = PBEUtils.StringFromBytes(r);
-            ValidateNickname(nickname, settings);
-            pkmn.nickname = nickname;
-            byte level = r.ReadByte();
-            ValidateLevel(level, settings);
-            pkmn.level = level;
-            pkmn.friendship = r.ReadByte();
-            pkmn.shiny = r.ReadBoolean();
-            var ability = (PBEAbility)r.ReadByte();
-            pkmn.ValidateAbility(ability);
-            pkmn.ability = ability;
-            var nature = (PBENature)r.ReadByte();
-            ValidateNature(nature);
-            pkmn.nature = nature;
-            var gender = (PBEGender)r.ReadByte();
-            pkmn.ValidateGender(gender);
-            pkmn.gender = gender;
-            var item = (PBEItem)r.ReadUInt16();
-            pkmn.ValidateItem(item);
-            pkmn.item = item;
-            byte hpEV = r.ReadByte();
-            byte attackEV = r.ReadByte();
-            byte defenseEV = r.ReadByte();
-            byte spAttackEV = r.ReadByte();
-            byte spDefenseEV = r.ReadByte();
-            byte speedEV = r.ReadByte();
-            if (hpEV + attackEV + defenseEV + spAttackEV + spDefenseEV + speedEV > settings.MaxTotalEVs)
+            w.WriteStartObject();
+            w.WritePropertyName(nameof(Species));
+            w.WriteValue(species.ToString());
+            w.WritePropertyName(nameof(Nickname));
+            w.WriteValue(nickname);
+            w.WritePropertyName(nameof(Level));
+            w.WriteValue(level);
+            w.WritePropertyName(nameof(Friendship));
+            w.WriteValue(friendship);
+            w.WritePropertyName(nameof(Shiny));
+            w.WriteValue(shiny);
+            w.WritePropertyName(nameof(Ability));
+            w.WriteValue(ability.ToString());
+            w.WritePropertyName(nameof(Nature));
+            w.WriteValue(nature.ToString());
+            w.WritePropertyName(nameof(Gender));
+            w.WriteValue(gender.ToString());
+            w.WritePropertyName(nameof(Item));
+            w.WriteValue(item.ToString());
+            w.WritePropertyName(nameof(EffortValues));
+            w.WriteStartObject();
+            foreach (PBEEffortValueCollection.PBEEffortValue ev in EffortValues)
             {
-                throw new ArgumentOutOfRangeException(nameof(EffortValues), $"Total must not exceed \"{nameof(settings.MaxTotalEVs)}\" ({settings.MaxTotalEVs})");
+                w.WritePropertyName(ev.Stat.ToString());
+                w.WriteValue(ev.Value);
             }
-            pkmn.EffortValues = new PBEEffortValueCollection(settings, hpEV, attackEV, defenseEV, spAttackEV, spDefenseEV, speedEV);
-            void ValidateIV(byte val, string name)
+            w.WriteEndObject();
+            w.WritePropertyName(nameof(IndividualValues));
+            w.WriteStartObject();
+            foreach (PBEIndividualValueCollection.PBEIndividualValue iv in IndividualValues)
             {
-                if (val > settings.MaxIVs)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(IndividualValues), $"\"{name}\" value must not exceed \"{nameof(settings.MaxIVs)}\" ({settings.MaxIVs})");
-                }
+                w.WritePropertyName(iv.Stat.ToString());
+                w.WriteValue(iv.Value);
             }
-            byte hpIV = r.ReadByte();
-            ValidateIV(hpIV, nameof(PBEStat.HP));
-            byte attackIV = r.ReadByte();
-            ValidateIV(attackIV, nameof(PBEStat.Attack));
-            byte defenseIV = r.ReadByte();
-            ValidateIV(defenseIV, nameof(PBEStat.Defense));
-            byte spAttackIV = r.ReadByte();
-            ValidateIV(spAttackIV, nameof(PBEStat.SpAttack));
-            byte spDefenseIV = r.ReadByte();
-            ValidateIV(spDefenseIV, nameof(PBEStat.SpDefense));
-            byte speedIV = r.ReadByte();
-            ValidateIV(speedIV, nameof(PBEStat.Speed));
-            pkmn.IndividualValues = new PBEIndividualValueCollection(settings, hpIV, attackIV, defenseIV, spAttackIV, spDefenseIV, speedIV);
-            pkmn.Moveset = new PBEMovesetBuilder(species, level, settings, false);
-            for (int i = 0; i < settings.NumMoves; i++)
+            w.WriteEndObject();
+            w.WritePropertyName(nameof(Moveset));
+            w.WriteStartArray();
+            foreach (PBEMovesetBuilder.PBEMoveSlot slot in Moveset.MoveSlots)
             {
-                var move = (PBEMove)r.ReadUInt16();
-                byte ppUps = r.ReadByte();
-                pkmn.Moveset.Set(i, move, ppUps); // "Set()" will throw its own exceptions for invalid moves and pp-ups
-                                                  // The following check is for the case where identical moves were stored in the same moveset, therefore forcing "Set()" to overwrite one with PBEMove.None
-                PBEMovesetBuilder.PBEMoveSlot slot = pkmn.Moveset.MoveSlots[i];
-                if (slot.Move != move || slot.PPUps != ppUps)
-                {
-                    throw new InvalidDataException("Invalid moveset.");
-                }
+                w.WriteStartObject();
+                w.WritePropertyName(nameof(PBEMovesetBuilder.PBEMoveSlot.Move));
+                w.WriteValue(slot.Move.ToString());
+                w.WritePropertyName(nameof(PBEMovesetBuilder.PBEMoveSlot.PPUps));
+                w.WriteValue(slot.PPUps);
+                w.WriteEndObject();
             }
-            return pkmn;
+            w.WriteEndArray();
+            w.WriteEndObject();
         }
     }
 }

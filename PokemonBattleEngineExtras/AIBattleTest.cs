@@ -1,5 +1,4 @@
-﻿using Kermalis.PokemonBattleEngine;
-using Kermalis.PokemonBattleEngine.AI;
+﻿using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
@@ -21,14 +20,14 @@ namespace Kermalis.PokemonBattleEngineExtras
             Console.WriteLine("----- Pokémon Battle Engine Test -----");
 
             var settings = new PBESettings { NumMoves = 12 };
-            PBEPokemonShell[] team0Party, team1Party;
+            PBETeamShell team0Shell, team1Shell;
 
             // Completely Randomized Pokémon
-            team0Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
-            team1Party = PBEUtils.CreateCompletelyRandomTeam(settings, true);
+            team0Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
+            team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
 
             // Predefined Pokémon
-            /*team0Party = new PBEPokemonShell[]
+            /*team0Shell = new PBEPokemonShell[]
             {
                 PBECompetitivePokemonShells.Zoroark_VGC,
                 PBECompetitivePokemonShells.Volcarona_VGC,
@@ -37,7 +36,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBECompetitivePokemonShells.Vanilluxe_VGC,
                 PBECompetitivePokemonShells.Chandelure_VGC
             };
-            team1Party = new PBEPokemonShell[]
+            team1Shell = new PBEPokemonShell[]
             {
                 PBECompetitivePokemonShells.Arceus_Uber,
                 PBECompetitivePokemonShells.Darkrai_Uber,
@@ -47,9 +46,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBECompetitivePokemonShells.Victini_Uber
             };*/
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, settings, team0Party, team1Party);
-            battle.Teams[0].TrainerName = "Team 1";
-            battle.Teams[1].TrainerName = "Team 2";
+            var battle = new PBEBattle(PBEBattleFormat.Double, team0Shell, "Team 1", team1Shell, "Team 2");
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.OnStateChanged += Battle_OnStateChanged;
             try

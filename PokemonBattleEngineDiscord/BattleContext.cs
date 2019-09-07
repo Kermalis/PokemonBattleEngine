@@ -275,8 +275,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 sb.AppendLine($"**{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}:** {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).English}/{pkmn.IndividualValues.HiddenPowerBasePower}");
             }
-            string[] moveStrs = new string[PBESettings.DefaultSettings.NumMoves];
-            for (int i = 0; i < PBESettings.DefaultSettings.NumMoves; i++)
+            string[] moveStrs = new string[PBESettings.DefaultNumMoves];
+            for (int i = 0; i < PBESettings.DefaultNumMoves; i++)
             {
                 PBEMove move = pkmn.Moves[i];
                 string str = PBELocalizedString.GetMoveName(move).English;
@@ -1271,8 +1271,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     SocketUser user = context.battlers[Array.IndexOf(context.battle.Teams, arp.Team)];
                     var userArray = new SocketUser[] { user };
                     PBEPokemon mainPkmn = arp.Team.ActionsRequired[0];
-                    var allMessages = new List<IUserMessage>(PBESettings.DefaultSettings.MaxPartySize);
-                    var reactionsToAdd = new List<(IUserMessage Message, IEmote Reaction)>(PBESettings.DefaultSettings.MaxPartySize - 1 + PBESettings.DefaultSettings.NumMoves); // 5 switch reactions, 4 move reactions
+                    var allMessages = new List<IUserMessage>(PBESettings.DefaultMaxPartySize);
+                    var reactionsToAdd = new List<(IUserMessage Message, IEmote Reaction)>(PBESettings.DefaultMaxPartySize - 1 + PBESettings.DefaultNumMoves); // 5 switch reactions, 4 move reactions
 
                     if (mainPkmn.CanSwitchOut())
                     {

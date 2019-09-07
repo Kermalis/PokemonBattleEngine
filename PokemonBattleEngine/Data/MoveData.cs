@@ -34,7 +34,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             sb.AppendLine($"Type: {Type}");
             sb.AppendLine($"Category: {Category}");
             sb.AppendLine($"Priority: {Priority}");
-            sb.AppendLine($"PP: {Math.Max(1, PPTier * PBESettings.DefaultSettings.PPMultiplier)}");
+            sb.AppendLine($"PP: {Math.Max(1, PPTier * PBESettings.DefaultPPMultiplier)}");
             sb.AppendLine($"Power: {(Power == 0 ? "--" : Power.ToString())}");
             sb.AppendLine($"Accuracy: {(Accuracy == 0 ? "--" : Accuracy.ToString())}");
             sb.AppendLine($"Effect: {Effect}");

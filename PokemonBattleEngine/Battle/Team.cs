@@ -1,5 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -9,12 +10,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
     /// <summary>Represents a team in a specific <see cref="PBEBattle"/>.</summary>
     public sealed class PBETeam
     {
-        /// <summary>
-        /// The battle this team and its party belongs to.
-        /// </summary>
+        /// <summary>The battle this team and its party belongs to.</summary>
         public PBEBattle Battle { get; }
         public byte Id { get; }
-        public string TrainerName { get; set; }
+        public string TrainerName { get; set; } // Setter is public because a client cannot submit the opponent's team
         public List<PBEPokemon> Party { get; private set; }
 
         public IEnumerable<PBEPokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Team == this).OrderBy(p => p.FieldPosition);
@@ -34,41 +33,57 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool MonFaintedLastTurn { get; set; }
         public bool MonFaintedThisTurn { get; set; }
 
-        // Host constructor
-        internal PBETeam(PBEBattle battle, byte id, IEnumerable<PBEPokemonShell> party, ref byte pkmnIdCounter)
+        internal PBETeam(PBEBattle battle, byte id, PBETeamShell shell, string trainerName, ref byte pkmnIdCounter)
         {
             Battle = battle;
             Id = id;
-            CreateParty(party, ref pkmnIdCounter);
+            CreateParty(shell, trainerName, ref pkmnIdCounter);
         }
-        // Client constructor
         internal PBETeam(PBEBattle battle, byte id)
         {
             Battle = battle;
             Id = id;
             Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
         }
-        internal void CreateParty(IEnumerable<PBEPokemonShell> party, ref byte pkmnIdCounter)
+        internal void CreateParty(PBETeamShell shell, string trainerName, ref byte pkmnIdCounter)
         {
+            TrainerName = trainerName;
             Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
-            foreach (PBEPokemonShell pkmn in party)
+            for (int i = 0; i < shell.Count; i++)
             {
-                new PBEPokemon(this, pkmnIdCounter++, pkmn);
+                new PBEPokemon(this, pkmnIdCounter++, shell[i]);
             }
         }
 
-        /// <summary>
-        /// Gets a specific active Pokémon by its position.
-        /// </summary>
-        /// <param name="pos">The position of the Pokémon you want to get.</param>
-        /// <returns>null if no Pokémon was found was found at <paramref name="pos"/>; otherwise the <see cref="PBEPokemon"/>.</returns>
+        /// <summary>Gets a specific active <see cref="PBEPokemon"/> by its <see cref="PBEPokemon.FieldPosition"/>.</summary>
+        /// <param name="pos">The <see cref="PBEFieldPosition"/> of the <see cref="PBEPokemon"/>.</param>
         public PBEPokemon TryGetPokemon(PBEFieldPosition pos)
         {
             return ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
         }
-        public PBEPokemon TryGetPokemon(byte id)
+        /// <summary>Gets a specific <see cref="PBEPokemon"/> by its ID.</summary>
+        /// <param name="pkmnId">The ID of the <see cref="PBEPokemon"/>.</param>
+        public PBEPokemon TryGetPokemon(byte pkmnId)
         {
-            return Party.SingleOrDefault(p => p.Id == id);
+            return Party.SingleOrDefault(p => p.Id == pkmnId);
+        }
+
+        internal List<byte> ToBytes()
+        {
+            var bytes = new List<byte>();
+            bytes.AddRange(PBEUtils.StringToBytes(TrainerName));
+            bytes.Add((byte)Party.Count);
+            bytes.AddRange(Party.SelectMany(p => p.ToBytes()));
+            return bytes;
+        }
+        internal void FromBytes(BinaryReader r)
+        {
+            TrainerName = PBEUtils.StringFromBytes(r);
+            sbyte amt = r.ReadSByte();
+            for (int i = 0; i < amt; i++)
+            {
+                new PBEPokemon(r, this);
+            }
         }
 
         public override string ToString()

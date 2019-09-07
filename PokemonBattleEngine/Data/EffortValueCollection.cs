@@ -6,7 +6,6 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: Listen to settings changes
     public sealed class PBEEffortValueCollection : IEnumerable<PBEEffortValueCollection.PBEEffortValue>, INotifyPropertyChanged
     {
         public sealed class PBEEffortValue : INotifyPropertyChanged
@@ -52,19 +51,19 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly PBESettings settings;
+        public PBESettings Settings { get; }
         private PBEEffortValue[] evs;
 
         public ushort StatTotal
         {
             get
             {
-                ushort sum = 0;
+                ushort total = 0;
                 for (int i = 0; i < 6; i++)
                 {
-                    sum += evs[i].Value;
+                    total += evs[i].Value;
                 }
-                return sum;
+                return total;
             }
         }
 
@@ -74,7 +73,8 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            this.settings = settings;
+            Settings = settings;
+            Settings.PropertyChanged += OnSettingsChanged;
             CreateEVs();
             if (randomize)
             {
@@ -87,14 +87,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            this.settings = settings;
+            Settings = settings;
+            Settings.PropertyChanged += OnSettingsChanged;
             CreateEVs();
-            Set(PBEStat.HP, hp);
-            Set(PBEStat.Attack, attack);
-            Set(PBEStat.Defense, defense);
-            Set(PBEStat.SpAttack, spAttack);
-            Set(PBEStat.SpDefense, spDefense);
-            Set(PBEStat.Speed, speed);
+            TrySet(hp, attack, defense, spAttack, spDefense, speed);
         }
         public PBEEffortValueCollection(PBESettings settings, PBEEffortValueCollection other)
         {
@@ -106,14 +102,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(other));
             }
-            this.settings = settings;
+            Settings = settings;
+            Settings.PropertyChanged += OnSettingsChanged;
             CreateEVs();
-            Set(PBEStat.HP, other[PBEStat.HP].Value);
-            Set(PBEStat.Attack, other[PBEStat.Attack].Value);
-            Set(PBEStat.Defense, other[PBEStat.Defense].Value);
-            Set(PBEStat.SpAttack, other[PBEStat.SpAttack].Value);
-            Set(PBEStat.SpDefense, other[PBEStat.SpDefense].Value);
-            Set(PBEStat.Speed, other[PBEStat.Speed].Value);
+            TrySet(other[PBEStat.HP].Value, other[PBEStat.Attack].Value, other[PBEStat.Defense].Value, other[PBEStat.SpAttack].Value, other[PBEStat.SpDefense].Value, other[PBEStat.Speed].Value);
         }
         private void CreateEVs()
         {
@@ -126,6 +118,24 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEEffortValue(this, PBEStat.SpDefense),
                 new PBEEffortValue(this, PBEStat.Speed)
             };
+        }
+        private void UpdateEV(int statIndex, byte value)
+        {
+            PBEEffortValue ev = evs[statIndex];
+            if (ev.Value != value)
+            {
+                ev.Update(value);
+                OnPropertyChanged(nameof(StatTotal));
+            }
+        }
+        private void TrySet(byte hp, byte attack, byte defense, byte spAttack, byte spDefense, byte speed)
+        {
+            Set(PBEStat.HP, hp);
+            Set(PBEStat.Attack, attack);
+            Set(PBEStat.Defense, defense);
+            Set(PBEStat.SpAttack, spAttack);
+            Set(PBEStat.SpDefense, spDefense);
+            Set(PBEStat.Speed, speed);
         }
 
         public PBEEffortValue this[PBEStat stat]
@@ -151,17 +161,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(stat));
             }
-            ushort sum = 0;
-            for (int i = 0; i < 6; i++)
+            ushort oldTotal = StatTotal;
+            if (oldTotal + value > Settings.MaxTotalEVs)
             {
-                if (i != statIndex)
-                {
-                    sum += evs[i].Value;
-                }
-            }
-            if (sum + value > settings.MaxTotalEVs)
-            {
-                int amountNeededToFree = sum + value - settings.MaxTotalEVs;
+                int amountNeededToFree = oldTotal + value - Settings.MaxTotalEVs;
                 UpdateEV(statIndex, (byte)(value - amountNeededToFree));
             }
             else
@@ -169,27 +172,26 @@ namespace Kermalis.PokemonBattleEngine.Data
                 UpdateEV(statIndex, value);
             }
         }
-
         public void Randomize()
         {
             byte[] vals = new byte[6];
-            if (settings.MaxTotalEVs != 0)
+            if (Settings.MaxTotalEVs != 0)
             {
                 int[] a = Enumerable.Repeat(0, 6 - 1)
-                    .Select(x => PBEUtils.RandomInt(1, settings.MaxTotalEVs - 1))
-                    .Concat(new int[] { settings.MaxTotalEVs })
+                    .Select(x => PBEUtils.RandomInt(1, Settings.MaxTotalEVs - 1))
+                    .Concat(new int[] { Settings.MaxTotalEVs })
                     .OrderBy(x => x)
                     .ToArray();
-                ushort sum = 0;
+                ushort total = 0;
                 for (int i = 0; i < 6; i++)
                 {
-                    byte b = (byte)Math.Min(byte.MaxValue, a[i] - sum);
+                    byte b = (byte)Math.Min(byte.MaxValue, a[i] - total);
                     vals[i] = b;
-                    sum += b;
+                    total += b;
                 }
                 // This "while" will fix the issue where the speed stat was supposed to be above 255
                 var notMax = new List<int>(5);
-                while (sum != settings.MaxTotalEVs)
+                while (total != Settings.MaxTotalEVs)
                 {
                     notMax.Clear();
                     for (int i = 0; i < 6; i++)
@@ -201,24 +203,14 @@ namespace Kermalis.PokemonBattleEngine.Data
                     }
                     int index = notMax.RandomElement();
                     byte old = vals[index];
-                    byte b = (byte)Math.Min(byte.MaxValue, old + (settings.MaxTotalEVs - sum));
+                    byte b = (byte)Math.Min(byte.MaxValue, old + (Settings.MaxTotalEVs - total));
                     vals[index] = b;
-                    sum += (byte)(b - old);
+                    total += (byte)(b - old);
                 }
             }
             for (int i = 0; i < 6; i++)
             {
                 UpdateEV(i, vals[i]);
-            }
-        }
-
-        private void UpdateEV(int statIndex, byte value)
-        {
-            PBEEffortValue ev = evs[statIndex];
-            if (ev.Value != value)
-            {
-                ev.Update(value);
-                OnPropertyChanged(nameof(StatTotal));
             }
         }
 
@@ -232,6 +224,25 @@ namespace Kermalis.PokemonBattleEngine.Data
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private void OnSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(Settings.MaxTotalEVs):
+                {
+                    ushort oldTotal = StatTotal;
+                    if (oldTotal > Settings.MaxTotalEVs)
+                    {
+                        for (int i = 0; i < 6; i++)
+                        {
+                            UpdateEV(i, (byte)(Settings.MaxTotalEVs * ((double)evs[i].Value / oldTotal)));
+                        }
+                    }
+                    break;
+                }
+            }
         }
     }
 }

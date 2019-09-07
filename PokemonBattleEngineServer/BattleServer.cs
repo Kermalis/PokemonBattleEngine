@@ -73,16 +73,16 @@ namespace Kermalis.PokemonBattleEngineServer
                             break;
                         }
                     }
-                    client.PlayerName = Utils.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
+                    client.TrainerName = Utils.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
                     readyPlayers.Add(client);
-                    Console.WriteLine($"Client connected ({client.BattleId} {client.PlayerName})");
+                    Console.WriteLine($"Client connected ({client.BattleId} {client.TrainerName})");
 
                     foreach (Player player in readyPlayers.ToArray()) // Copy so a disconnect doesn't cause an exception
                     {
                         // Alert new player of all other players that have already joined
                         if (player != client)
                         {
-                            client.Send(new PBEPlayerJoinedPacket(false, player.BattleId, player.PlayerName));
+                            client.Send(new PBEPlayerJoinedPacket(false, player.BattleId, player.TrainerName));
                             if (!client.WaitForResponse())
                             {
                                 return;
@@ -91,7 +91,7 @@ namespace Kermalis.PokemonBattleEngineServer
                         // Alert all players that this new player joined (including him/herself)
                         if (player.Socket != null)
                         {
-                            player.Send(new PBEPlayerJoinedPacket(player == client, client.BattleId, client.PlayerName));
+                            player.Send(new PBEPlayerJoinedPacket(player == client, client.BattleId, client.TrainerName));
                             if (!player.WaitForResponse() && player.BattleId < 2)
                             {
                                 return;
@@ -115,8 +115,6 @@ namespace Kermalis.PokemonBattleEngineServer
                         state = ServerState.WaitingForParties;
                         Console.WriteLine("Two players connected! Waiting for parties...");
                         battlers = readyPlayers.ToArray();
-                        battle.Teams[0].TrainerName = battlers[0].PlayerName;
-                        battle.Teams[1].TrainerName = battlers[1].PlayerName;
                         SendTo(battlers, new PBEPartyRequestPacket());
                     }
                 }
@@ -136,7 +134,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     resetEvent.WaitOne();
                     readyPlayers.Remove(client);
 
-                    Console.WriteLine($"Client disconnected ({client.BattleId} {client.PlayerName})");
+                    Console.WriteLine($"Client disconnected ({client.BattleId} {client.TrainerName})");
                     if (client.BattleId < 2)
                     {
                         if (state != ServerState.WaitingForPlayers)
@@ -208,7 +206,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                PBEBattle.CreateTeamParty(battle.Teams[player.BattleId], player.Party);
+                PBEBattle.CreateTeamParty(battle.Teams[player.BattleId], player.TeamShell, player.TrainerName);
             }
         }
         public void ActionsSubmitted(Player player, IEnumerable<PBEAction> actions)
@@ -224,7 +222,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 PBETeam team = battle.Teams[player.BattleId];
-                Console.WriteLine($"Received actions from {team.TrainerName}!");
+                Console.WriteLine($"Received actions from {player.TrainerName}!");
                 if (!PBEBattle.SelectActionsIfValid(team, actions))
                 {
                     Console.WriteLine("Actions are invalid!");
@@ -245,7 +243,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     return;
                 }
                 PBETeam team = battle.Teams[player.BattleId];
-                Console.WriteLine($"Received switches from {team.TrainerName}!");
+                Console.WriteLine($"Received switches from {player.TrainerName}!");
                 if (!PBEBattle.SelectSwitchesIfValid(team, switches))
                 {
                     Console.WriteLine("Switches are invalid!");
@@ -264,7 +262,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     resetEvent.Reset();
                     foreach (Player player in battlers)
                     {
-                        foreach (PBEPokemonShell shell in player.Party)
+                        foreach (PBEPokemonShell shell in player.TeamShell)
                         {
                             try
                             {
@@ -274,7 +272,7 @@ namespace Kermalis.PokemonBattleEngineServer
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine($"Illegal moveset received from {player.PlayerName}");
+                                Console.WriteLine($"Illegal moveset received from {player.TrainerName}");
                                 Console.WriteLine(e.Message);
                                 CancelMatch();
                                 return;
