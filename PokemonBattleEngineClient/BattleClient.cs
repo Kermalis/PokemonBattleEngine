@@ -621,7 +621,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 case PBEMoveUsedPacket mup:
                 {
                     PBEPokemon moveUser = mup.MoveUserTeam.TryGetPokemon(mup.MoveUser);
-                    if (Mode != ClientMode.SinglePlayer && moveUser.Team.Id != BattleId && !mup.CalledFromOtherMove && !moveUser.KnownMoves.Contains(mup.Move))
+                    if (Mode == ClientMode.Online && mup.Reveal)
                     {
                         moveUser.KnownMoves[Array.IndexOf(moveUser.KnownMoves, PBEMove.MAX)] = mup.Move;
                     }

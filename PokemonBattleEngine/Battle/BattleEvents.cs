@@ -88,11 +88,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void BroadcastMoveUsed(PBEPokemon moveUser, PBEMove move)
         {
-            if (!calledFromOtherMove && !moveUser.KnownMoves.Contains(move))
+            bool reveal;
+            if (!calledFromOtherMove && moveUser.Moves.Contains(move) && !moveUser.KnownMoves.Contains(move))
             {
                 moveUser.KnownMoves[Array.IndexOf(moveUser.KnownMoves, PBEMove.MAX)] = move;
+                reveal = true;
             }
-            var p = new PBEMoveUsedPacket(moveUser, move, calledFromOtherMove);
+            else
+            {
+                reveal = false;
+            }
+            var p = new PBEMoveUsedPacket(moveUser, move, reveal);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }

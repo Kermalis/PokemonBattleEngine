@@ -16,16 +16,16 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEFieldPosition MoveUser { get; }
         public PBETeam MoveUserTeam { get; }
         public PBEMove Move { get; }
-        public bool CalledFromOtherMove { get; }
+        public bool Reveal { get; }
 
-        public PBEMoveUsedPacket(PBEPokemon moveUser, PBEMove move, bool calledFromOtherMove)
+        public PBEMoveUsedPacket(PBEPokemon moveUser, PBEMove move, bool reveal)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(MoveUser = moveUser.FieldPosition));
             bytes.Add((MoveUserTeam = moveUser.Team).Id);
             bytes.AddRange(BitConverter.GetBytes((ushort)(Move = move)));
-            bytes.Add((byte)((CalledFromOtherMove = calledFromOtherMove) ? 1 : 0));
+            bytes.Add((byte)((Reveal = reveal) ? 1 : 0));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBEMoveUsedPacket(byte[] buffer, PBEBattle battle)
@@ -37,7 +37,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 MoveUser = (PBEFieldPosition)r.ReadByte();
                 MoveUserTeam = battle.Teams[r.ReadByte()];
                 Move = (PBEMove)r.ReadUInt16();
-                CalledFromOtherMove = r.ReadBoolean();
+                Reveal = r.ReadBoolean();
             }
         }
 
