@@ -1438,8 +1438,8 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     {
                         message += $"\n**Weather:** {context.battle.Weather}";
                     }
-                    PBEPokemon team0Pkmn = context.battle.Teams[0].ActiveBattlers.ElementAt(0);
-                    PBEPokemon team1Pkmn = context.battle.Teams[1].ActiveBattlers.ElementAt(0);
+                    PBEPokemon team0Pkmn = context.battle.Teams[0].ActiveBattlers[0];
+                    PBEPokemon team1Pkmn = context.battle.Teams[1].ActiveBattlers[0];
                     await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team0Pkmn), messageText: message, pkmn: team0Pkmn);
                     await context.CreateAndSendEmbedAsync(CustomKnownPokemonToString(team1Pkmn), pkmn: team1Pkmn);
                     break;

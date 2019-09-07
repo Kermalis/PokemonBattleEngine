@@ -1406,7 +1406,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 1.3;
             }
-            if (user.Team.ActiveBattlers.Any(p => p.Ability == PBEAbility.VictoryStar))
+            if (Array.Exists(user.Team.ActiveBattlers, p => p.Ability == PBEAbility.VictoryStar))
             {
                 chance *= 1.1;
             }

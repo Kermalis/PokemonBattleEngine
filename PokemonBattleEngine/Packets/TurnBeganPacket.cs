@@ -13,12 +13,14 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public IEnumerable<byte> Buffer { get; }
 
         public ushort TurnNumber { get; }
+        public DateTime Time { get; }
 
         public PBETurnBeganPacket(ushort turnNumber)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.AddRange(BitConverter.GetBytes(TurnNumber = turnNumber));
+            bytes.AddRange(BitConverter.GetBytes((Time = DateTime.Now).ToBinary()));
             Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
         }
         public PBETurnBeganPacket(byte[] buffer, PBEBattle battle)
@@ -27,6 +29,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 r.ReadInt16(); // Skip Code
                 TurnNumber = r.ReadUInt16();
+                Time = DateTime.FromBinary(r.ReadInt64());
             }
         }
 

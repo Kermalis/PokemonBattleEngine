@@ -76,8 +76,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/> is invalid or <paramref name="pkmn"/>'s <see cref="PBEPokemon.FieldPosition"/> is invalid for <paramref name="pkmn"/>'s <see cref="PBEBattle"/>'s <see cref="BattleFormat"/>.</exception>
         public static IEnumerable<PBEPokemon> GetRuntimeSurrounding(PBEPokemon pkmn, bool includeAllies, bool includeFoes)
         {
-            IEnumerable<PBEPokemon> allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn);
-            IEnumerable<PBEPokemon> foes = (pkmn.Team == pkmn.Team.Battle.Teams[0] ? pkmn.Team.Battle.Teams[1] : pkmn.Team.Battle.Teams[0]).ActiveBattlers;
+            PBEPokemon[] allies = pkmn.Team.ActiveBattlers.Where(p => p != pkmn).ToArray();
+            PBEPokemon[] foes = (pkmn.Team == pkmn.Team.Battle.Teams[0] ? pkmn.Team.Battle.Teams[1] : pkmn.Team.Battle.Teams[0]).ActiveBattlers;
             switch (pkmn.Team.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single:

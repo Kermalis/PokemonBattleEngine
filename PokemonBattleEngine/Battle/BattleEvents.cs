@@ -1196,7 +1196,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETurnBeganPacket tbp:
                 {
-                    Console.WriteLine("Turn {0} is starting.", tbp.TurnNumber);
+                    Console.WriteLine("Turn {0} is starting. ({1})", tbp.TurnNumber, tbp.Time);
                     break;
                 }
                 case PBEWinnerPacket win:

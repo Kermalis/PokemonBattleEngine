@@ -1,10 +1,12 @@
-﻿using Kermalis.PokemonBattleEngine.AI;
+﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.AI;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
@@ -19,7 +21,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         {
             Console.WriteLine("----- Pokémon Battle Engine Test -----");
 
-            var settings = new PBESettings { NumMoves = 12 };
+            var settings = new PBESettings { NumMoves = 8 };
             PBETeamShell team0Shell, team1Shell;
 
             // Completely Randomized Pokémon
@@ -48,6 +50,7 @@ namespace Kermalis.PokemonBattleEngineExtras
 
             var battle = new PBEBattle(PBEBattleFormat.Double, team0Shell, "Team 1", team1Shell, "Team 2");
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            battle.OnNewEvent += Battle_OnNewEvent;
             battle.OnStateChanged += Battle_OnStateChanged;
             try
             {
@@ -61,7 +64,72 @@ namespace Kermalis.PokemonBattleEngineExtras
             }
             oldWriter = Console.Out;
             Console.SetOut(writer);
-            battle.Begin();
+            new Thread(() =>
+            {
+                try
+                {
+                    battle.Begin();
+                }
+                catch (Exception e)
+                {
+                    CatchException(e);
+                }
+            })
+            { Name = "Battle Thread" }.Start();
+        }
+
+        private static void CatchException(Exception e)
+        {
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.StackTrace);
+            Console.SetOut(oldWriter);
+            writer.Close();
+            Console.WriteLine("Test battle threw an exception, check \"{0}\" for details.", LogFile);
+            Console.ReadKey();
+        }
+
+        private static void Battle_OnNewEvent(PBEBattle battle, INetPacket packet)
+        {
+            try
+            {
+                switch (packet)
+                {
+                    case PBEActionsRequestPacket arp:
+                    {
+                        PBETeam team = arp.Team;
+                        IEnumerable<PBEAction> actions = PBEAIManager.CreateActions(team);
+                        if (!PBEBattle.AreActionsValid(team, actions))
+                        {
+                            throw new Exception($"{team.TrainerName}'s AI created invalid actions!");
+                        }
+                        PBEBattle.SelectActionsIfValid(team, actions);
+                        break;
+                    }
+                    case PBESwitchInRequestPacket sirp:
+                    {
+                        PBETeam team = sirp.Team;
+                        IEnumerable<(byte PokemonId, PBEFieldPosition Position)> switches = PBEAIManager.CreateSwitches(team);
+                        if (!PBEBattle.AreSwitchesValid(team, switches))
+                        {
+                            throw new Exception($"{team.TrainerName}'s AI created invalid switches!");
+                        }
+                        PBEBattle.SelectSwitchesIfValid(team, switches);
+                        break;
+                    }
+                    case PBETurnBeganPacket tbp:
+                    {
+                        Console.SetOut(oldWriter);
+                        DateTime time = tbp.Time;
+                        Console.WriteLine($"Emulating turn {tbp.TurnNumber}... ({time.Hour:D2}:{time.Minute:D2}:{time.Second:D2}:{time.Millisecond:D3})");
+                        Console.SetOut(writer);
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                CatchException(e);
+            }
         }
         private static void Battle_OnStateChanged(PBEBattle battle)
         {
@@ -89,56 +157,37 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     case PBEBattleState.ReadyToRunTurn:
                     {
-                        foreach (PBETeam team in battle.Teams)
+                        for (int i = 0; i < 2; i++)
                         {
+                            PBETeam team = battle.Teams[i];
                             Console.WriteLine();
                             Console.WriteLine("{0}'s team:", team.TrainerName);
-                            foreach (PBEPokemon pkmn in team.ActiveBattlers)
+                            PBEPokemon[] active = team.ActiveBattlers;
+                            for (int j = 0; j < active.Length; j++)
                             {
-                                Console.WriteLine(pkmn);
+                                Console.WriteLine(active[j]);
                                 Console.WriteLine();
                             }
                         }
-                        battle.RunTurn();
-                        break;
-                    }
-                    case PBEBattleState.WaitingForActions:
-                    {
-                        foreach (PBETeam team in battle.Teams)
+                        new Thread(() =>
                         {
-                            IEnumerable<PBEAction> actions = PBEAIManager.CreateActions(team);
-                            if (!PBEBattle.AreActionsValid(team, actions))
+                            try
                             {
-                                throw new Exception($"{team.TrainerName}'s AI created invalid actions!");
+                                battle.RunTurn();
                             }
-                            PBEBattle.SelectActionsIfValid(team, actions);
-                        }
-                        break;
-                    }
-                    case PBEBattleState.WaitingForSwitchIns:
-                    {
-                        foreach (PBETeam team in battle.Teams.Where(t => t.SwitchInsRequired > 0))
-                        {
-                            IEnumerable<(byte PokemonId, PBEFieldPosition Position)> switches = PBEAIManager.CreateSwitches(team);
-                            if (!PBEBattle.AreSwitchesValid(team, switches))
+                            catch (Exception e)
                             {
-                                throw new Exception($"{team.TrainerName}'s AI created invalid switches!");
+                                CatchException(e);
                             }
-                            PBEBattle.SelectSwitchesIfValid(team, switches);
-                        }
+                        })
+                        { Name = "Battle Thread" }.Start();
                         break;
                     }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-                Console.SetOut(oldWriter);
-                writer.Close();
-                Console.WriteLine("Test battle threw an exception, check \"{0}\" for details.", LogFile);
-                Console.ReadKey();
-                Environment.Exit(-1);
+                CatchException(e);
             }
         }
     }

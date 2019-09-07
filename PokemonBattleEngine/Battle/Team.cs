@@ -16,7 +16,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public string TrainerName { get; set; } // Setter is public because a client cannot submit the opponent's team
         public List<PBEPokemon> Party { get; private set; }
 
-        public IEnumerable<PBEPokemon> ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Team == this).OrderBy(p => p.FieldPosition);
+        public PBEPokemon[] ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Team == this).OrderBy(p => p.FieldPosition).ToArray();
         public int NumPkmnAlive => Party.Count(p => p.HP > 0);
         public int NumPkmnOnField => Party.Count(p => p.FieldPosition != PBEFieldPosition.None);
 

@@ -24,7 +24,7 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 throw new InvalidOperationException($"{nameof(team.Battle.BattleState)} must be {PBEBattleState.WaitingForActions} to create actions.");
             }
-            PBEPokemon[] active = team.ActiveBattlers.ToArray();
+            PBEPokemon[] active = team.ActiveBattlers;
             if (active.Length == 0)
             {
                 throw new InvalidOperationException($"{nameof(team)} must have at least one active battler.");
