@@ -861,8 +861,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 FromBytes(r);
             }
         }
-        /// <summary>Creates a new <see cref="PBESettings"/> object which is deep copied from the specified <see cref="PBESettings"/> object.</summary>
-        /// <param name="other">The <see cref="PBESettings"/> object to deep copy.</param>
+        /// <summary>Creates a new <see cref="PBESettings"/> object which copies the settings from the specified <see cref="PBESettings"/> object. <see cref="IsReadOnly"/> and <see cref="PropertyChanged"/> are not copied.</summary>
+        /// <param name="other">The <see cref="PBESettings"/> object to copy settings from.</param>
         public PBESettings(PBESettings other)
         {
             if (other == null)
