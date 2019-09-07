@@ -1,4 +1,5 @@
-﻿using Kermalis.PokemonBattleEngine.Data;
+﻿using Ether.Network.Packets;
+using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
@@ -85,7 +86,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             int numEvents = r.ReadInt32();
             for (int i = 0; i < numEvents; i++)
             {
-                Events.Add(packetProcessor.CreatePacket(r.ReadBytes(r.ReadInt16())));
+                INetPacket packet = packetProcessor.CreatePacket(r.ReadBytes(r.ReadInt16()));
+                if (packet is PBEWinnerPacket wp)
+                {
+                    Winner = wp.WinningTeam;
+                }
+                Events.Add(packet);
             }
 
             BattleState = PBEBattleState.Ended;
