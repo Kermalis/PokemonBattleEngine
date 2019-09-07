@@ -104,7 +104,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             var t = new TeamInfo
             {
                 Name = $"Team {DateTime.Now.Ticks}",
-                Shell = new PBETeamShell(PBESettings.DefaultSettings, 1, true)
+                Shell = new PBETeamShell(new PBESettings(PBESettings.DefaultSettings), 1, true)
             };
             Teams.Add(t);
             Team = t;
