@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBEReadOnlyObservableCollection<T> : IReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged
+    public sealed class PBEList<T> : IReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
         private void FireEvents(NotifyCollectionChangedEventArgs e)
         {
@@ -29,9 +29,13 @@ namespace Kermalis.PokemonBattleEngine.Data
         public int Count => list.Count;
         public T this[int index] => list[index];
 
-        internal PBEReadOnlyObservableCollection()
+        internal PBEList()
         {
             list = new List<T>();
+        }
+        internal PBEList(int capacity)
+        {
+            list = new List<T>(capacity);
         }
 
         internal void Add(T item)
@@ -55,6 +59,19 @@ namespace Kermalis.PokemonBattleEngine.Data
                 FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
             }
             return b;
+        }
+        internal void RemoveAt(int index)
+        {
+            if (index < 0 || index >= list.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+            else
+            {
+                T item = list[index];
+                list.RemoveAt(index);
+                FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+            }
         }
         internal void Reset(IEnumerable<T> collection)
         {

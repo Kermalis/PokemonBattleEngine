@@ -198,14 +198,13 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         private void OnSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            var settings = (PBESettings)sender;
             switch (e.PropertyName)
             {
-                case nameof(settings.MaxPartySize):
+                case nameof(Settings.MaxPartySize):
                 {
-                    if (list.Count > settings.MaxPartySize)
+                    if (list.Count > Settings.MaxPartySize)
                     {
-                        int numToRemove = list.Count - settings.MaxPartySize;
+                        int numToRemove = list.Count - Settings.MaxPartySize;
                         var changedItems = new PBEPokemonShell[numToRemove];
                         for (int i = 0; i < numToRemove; i++)
                         {

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    // TODO: Listen for changes to settings
     public sealed class PBEMovesetBuilder : INotifyPropertyChanged
     {
         public sealed class PBEMoveSlot : INotifyPropertyChanged
@@ -20,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             private readonly PBEMovesetBuilder parent;
             private readonly int slotIndex;
 
-            public PBEReadOnlyObservableCollection<PBEMove> Allowed { get; }
+            public PBEList<PBEMove> Allowed { get; }
             private PBEMove move;
             public PBEMove Move
             {
@@ -41,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 this.parent = parent;
                 this.slotIndex = slotIndex;
                 IsMoveEditable = slotIndex < 2;
-                Allowed = new PBEReadOnlyObservableCollection<PBEMove>();
+                Allowed = new PBEList<PBEMove>() { PBEMove.None };
             }
 
             internal void Update(PBEMove? move, byte? ppUps)
@@ -116,15 +114,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (level != value)
                 {
-                    PBEPokemonShell.ValidateLevel(value, settings);
+                    PBEPokemonShell.ValidateLevel(value, Settings);
                     level = value;
                     OnPropertyChanged(nameof(Level));
                     SetAlloweds();
                 }
             }
         }
-        private readonly PBESettings settings;
-        public ReadOnlyCollection<PBEMoveSlot> MoveSlots { get; }
+        public PBESettings Settings { get; }
+        public PBEList<PBEMoveSlot> MoveSlots { get; }
 
         /// <summary>Creates a new <see cref="PBEMovesetBuilder"/> object with the specified traits.</summary>
         /// <param name="species">The species of the Pokémon that this moveset will be built for.</param>
@@ -137,21 +135,82 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(settings));
             }
-            PBEPokemonShell.ValidateLevel(level, settings);
+            Settings = settings;
+            Settings.PropertyChanged += OnSettingsChanged;
+            PBEPokemonShell.ValidateLevel(level, Settings);
+            this.level = level;
             PBEPokemonShell.ValidateSpecies(species);
             this.species = species;
-            this.level = level;
-            this.settings = settings;
-            var moves = new PBEMoveSlot[settings.NumMoves];
-            for (int i = 0; i < settings.NumMoves; i++)
+            MoveSlots = new PBEList<PBEMoveSlot>(Settings.NumMoves);
+            for (int i = 0; i < Settings.NumMoves; i++)
             {
-                moves[i] = new PBEMoveSlot(this, i);
+                MoveSlots.Add(new PBEMoveSlot(this, i));
             }
-            MoveSlots = new ReadOnlyCollection<PBEMoveSlot>(moves);
             SetAlloweds();
             if (randomize)
             {
                 Randomize();
+            }
+        }
+
+        private void OnSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(Settings.MaxLevel):
+                {
+                    if (level > Settings.MaxLevel)
+                    {
+                        Level = Settings.MaxLevel;
+                    }
+                    break;
+                }
+                case nameof(Settings.MaxPPUps):
+                {
+                    for (int i = 0; i < Settings.NumMoves; i++)
+                    {
+                        PBEMoveSlot slot = MoveSlots[i];
+                        if (slot.PPUps > Settings.MaxPPUps)
+                        {
+                            slot.Update(null, Settings.MaxPPUps);
+                        }
+                    }
+                    break;
+                }
+                case nameof(Settings.MinLevel):
+                {
+                    if (level < Settings.MinLevel)
+                    {
+                        Level = Settings.MinLevel;
+                    }
+                    break;
+                }
+                case nameof(Settings.NumMoves):
+                {
+                    int oldCount = MoveSlots.Count;
+                    if (Settings.NumMoves != oldCount)
+                    {
+                        if (Settings.NumMoves > oldCount)
+                        {
+                            int numToAdd = Settings.NumMoves - oldCount;
+                            for (int i = 0; i < numToAdd; i++)
+                            {
+                                MoveSlots.Add(new PBEMoveSlot(this, oldCount + i));
+                            }
+                        }
+                        else
+                        {
+                            int numToRemove = oldCount - Settings.NumMoves;
+                            for (int i = 0; i < numToRemove; i++)
+                            {
+                                MoveSlots.RemoveAt(oldCount - 1 - i);
+                            }
+                        }
+                        SetAlloweds();
+                        SetEditables();
+                    }
+                    break;
+                }
             }
         }
 
@@ -169,9 +228,9 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 i = 0;
             }
-            // Moves after 1 will all have the same allowed pool, so there is no need to check for PBEMove.None between other moves.
+            // Every move slot except the first will have the same allowed pool, so there is no need to check for PBEMove.None between them.
             IEnumerable<PBEMove> legalMoves = PBELegalityChecker.GetLegalMoves(species, level);
-            for (; i < settings.NumMoves; i++)
+            for (; i < Settings.NumMoves; i++)
             {
                 PBEMoveSlot slot = MoveSlots[i];
                 var allowed = new List<PBEMove>(legalMoves);
@@ -189,7 +248,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         private void SetEditables()
         {
-            for (int i = 2; i < settings.NumMoves; i++)
+            for (int i = 2; i < Settings.NumMoves; i++)
             {
                 MoveSlots[i].SetEditable(MoveSlots[i - 1].Move != PBEMove.None);
             }
@@ -198,7 +257,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Sets every move slot excluding the first to <see cref="PBEMove.None"/> with 0 PP-Ups.</summary>
         public void Clear()
         {
-            for (int i = 1; i < settings.NumMoves; i++)
+            for (int i = 1; i < Settings.NumMoves; i++)
             {
                 MoveSlots[i].Update(PBEMove.None, 0);
             }
@@ -207,14 +266,14 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Randomizes the move and PP-Ups in each slot without creating duplicate moves.</summary>
         public void Randomize()
         {
-            var blacklist = new List<PBEMove>(settings.NumMoves) { PBEMove.None };
-            for (int i = 0; i < settings.NumMoves; i++)
+            var blacklist = new List<PBEMove>(Settings.NumMoves) { PBEMove.None };
+            for (int i = 0; i < Settings.NumMoves; i++)
             {
                 PBEMoveSlot slot = MoveSlots[i];
                 PBEMove[] allowed = slot.Allowed.Except(blacklist).ToArray();
                 if (allowed.Length == 0)
                 {
-                    for (int j = i; j < settings.NumMoves; j++)
+                    for (int j = i; j < Settings.NumMoves; j++)
                     {
                         MoveSlots[j].Update(PBEMove.None, 0);
                     }
@@ -223,11 +282,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                 else
                 {
                     PBEMove move = allowed.RandomElement();
-                    if (i < settings.NumMoves - 1)
+                    if (i < Settings.NumMoves - 1)
                     {
                         blacklist.Add(move);
                     }
-                    slot.Update(move, (byte)PBEUtils.RandomInt(0, settings.MaxPPUps));
+                    slot.Update(move, (byte)PBEUtils.RandomInt(0, Settings.MaxPPUps));
                 }
             }
             SetEditables();
@@ -238,7 +297,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <param name="ppUps">The PP-Ups if it needs changing, null if the current PP-Ups will remain unchanged.</param>
         public void Set(int slotIndex, PBEMove? move, byte? ppUps)
         {
-            if (slotIndex < 0 || slotIndex >= settings.NumMoves)
+            if (slotIndex < 0 || slotIndex >= Settings.NumMoves)
             {
                 throw new ArgumentOutOfRangeException(nameof(slotIndex));
             }
@@ -270,7 +329,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         if (mVal != PBEMove.None)
                         {
                             // If "move" is in another slot, place "slotIndex"'s old move at the other slot
-                            for (int i = 0; i < settings.NumMoves; i++)
+                            for (int i = 0; i < Settings.NumMoves; i++)
                             {
                                 if (i != slotIndex)
                                 {
@@ -295,7 +354,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                         else
                         {
                             // If "move" is None and a slot after "slotIndex" is not None, then place None at the other slot instead and place the other slot's move at "slotIndex"
-                            for (int i = settings.NumMoves - 1; i > slotIndex; i--)
+                            for (int i = Settings.NumMoves - 1; i > slotIndex; i--)
                             {
                                 PBEMoveSlot iSlot = MoveSlots[i];
                                 if (iSlot.Move != PBEMove.None)
@@ -321,9 +380,9 @@ namespace Kermalis.PokemonBattleEngine.Data
                     byte pVal = ppUps.Value;
                     if (slot.PPUps != pVal)
                     {
-                        if (pVal > settings.MaxPPUps)
+                        if (pVal > Settings.MaxPPUps)
                         {
-                            throw new ArgumentOutOfRangeException(nameof(ppUps), $"\"{nameof(ppUps)}\" cannot exceed \"{nameof(settings.MaxPPUps)}\" ({settings.MaxPPUps}).");
+                            throw new ArgumentOutOfRangeException(nameof(ppUps), $"\"{nameof(ppUps)}\" cannot exceed \"{nameof(Settings.MaxPPUps)}\" ({Settings.MaxPPUps}).");
                         }
                         if (!slot.IsPPUpsEditable)
                         {

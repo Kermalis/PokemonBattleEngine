@@ -392,35 +392,29 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         internal void OnSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            var settings = (PBESettings)sender;
             switch (e.PropertyName)
             {
-                case nameof(settings.MaxLevel):
+                case nameof(parent.Settings.MaxLevel):
                 {
-                    if (level > settings.MaxLevel)
+                    if (level > parent.Settings.MaxLevel)
                     {
-                        level = settings.MaxLevel;
-                        OnPropertyChanged(nameof(Level));
-                        Moveset.Level = level;
+                        Level = parent.Settings.MaxLevel;
                     }
                     break;
                 }
-                case nameof(settings.MaxPokemonNameLength):
+                case nameof(parent.Settings.MaxPokemonNameLength):
                 {
-                    if (nickname.Length > settings.MaxPokemonNameLength)
+                    if (nickname.Length > parent.Settings.MaxPokemonNameLength)
                     {
-                        nickname = nickname.Substring(0, settings.MaxPokemonNameLength);
-                        OnPropertyChanged(nameof(Nickname));
+                        Nickname = nickname.Substring(0, parent.Settings.MaxPokemonNameLength);
                     }
                     break;
                 }
-                case nameof(settings.MinLevel):
+                case nameof(parent.Settings.MinLevel):
                 {
-                    if (level < settings.MinLevel)
+                    if (level < parent.Settings.MinLevel)
                     {
-                        level = settings.MinLevel;
-                        OnPropertyChanged(nameof(Level));
-                        Moveset.Level = level;
+                        Level = parent.Settings.MinLevel;
                     }
                     break;
                 }
