@@ -18,7 +18,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             private readonly PBEMovesetBuilder parent;
             private readonly int slotIndex;
 
-            public PBEList<PBEMove> Allowed { get; }
+            public PBEAlphabeticalList<PBEMove> Allowed { get; }
             private PBEMove move;
             public PBEMove Move
             {
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 this.parent = parent;
                 this.slotIndex = slotIndex;
                 IsMoveEditable = slotIndex < 2;
-                Allowed = new PBEList<PBEMove>() { PBEMove.None };
+                Allowed = new PBEAlphabeticalList<PBEMove>(new[] { PBEMove.None });
             }
 
             internal void Update(PBEMove? move, byte? ppUps)
@@ -217,31 +217,28 @@ namespace Kermalis.PokemonBattleEngine.Data
         private void SetAlloweds()
         {
             int i;
+            PBEMove[] legalMoves = PBELegalityChecker.GetLegalMoves(species, level);
+            var allowed = new List<PBEMove>(legalMoves.Length + 1);
+            allowed.AddRange(legalMoves);
             if (species == PBESpecies.Keldeo_Resolute)
             {
                 PBEMoveSlot slot = MoveSlots[0];
                 slot.Allowed.Reset(new[] { PBEMove.SecretSword });
                 slot.RemoveIfNotAllowedSilent();
+                allowed.Remove(PBEMove.SecretSword);
                 i = 1;
             }
             else
             {
                 i = 0;
             }
-            // Every move slot except the first will have the same allowed pool, so there is no need to check for PBEMove.None between them.
-            IEnumerable<PBEMove> legalMoves = PBELegalityChecker.GetLegalMoves(species, level);
             for (; i < Settings.NumMoves; i++)
             {
+                if (i == 1)
+                {
+                    allowed.Add(PBEMove.None);
+                }
                 PBEMoveSlot slot = MoveSlots[i];
-                var allowed = new List<PBEMove>(legalMoves);
-                if (i != 0)
-                {
-                    allowed.Insert(0, PBEMove.None);
-                }
-                if (species == PBESpecies.Keldeo_Resolute)
-                {
-                    allowed.Remove(PBEMove.SecretSword);
-                }
                 slot.Allowed.Reset(allowed);
                 slot.RemoveIfNotAllowedSilent();
             }

@@ -10,24 +10,26 @@ namespace Kermalis.PokemonBattleEngine.Data
         public byte Level { get; }
         public bool? Shiny { get; } // "null" means the Pokémon can be shiny or not shiny
         public PBEGender Gender { get; } // ">= PBEGender.MAX" means the Pokémon can be male or female
-        public ReadOnlyCollection<PBEAbility> PossibleAbilities { get; }
-        public ReadOnlyCollection<PBENature> PossibleNatures { get; }
+        public PBEAlphabeticalList<PBEAbility> PossibleAbilities { get; }
+        public PBEAlphabeticalList<PBENature> PossibleNatures { get; }
         public ReadOnlyCollection<byte?> IndividualValues { get; } // A stat being "null" means that stat is random
         public ReadOnlyCollection<PBEMove> Moves { get; }
 
-        private PBEEventPokemon(IList<byte> generations, PBESpecies species, byte level, bool? shiny, PBEGender gender, IList<PBEAbility> possibleAbilities, IList<PBENature> possibleNatures,
-            IList<byte?> ivs, IList<PBEMove> moves)
+        private PBEEventPokemon(IList<byte> generations, PBESpecies species, byte level, bool? shiny, PBEGender gender, PBEAbility[] possibleAbilities, PBEAlphabeticalList<PBENature> possibleNatures, byte?[] ivs, PBEMove[] moves)
         {
-            Generations = new ReadOnlyCollection<byte>(generations); Species = species; Level = level; Shiny = shiny; Gender = gender; PossibleAbilities = new ReadOnlyCollection<PBEAbility>(possibleAbilities);
-            if (possibleNatures is ReadOnlyCollection<PBENature> roN)
-            {
-                PossibleNatures = roN;
-            }
-            else
-            {
-                PossibleNatures = new ReadOnlyCollection<PBENature>(possibleNatures);
-            }
-            IndividualValues = new ReadOnlyCollection<byte?>(ivs); Moves = new ReadOnlyCollection<PBEMove>(moves);
+            Generations = new ReadOnlyCollection<byte>(generations);
+            Species = species;
+            Level = level;
+            Shiny = shiny;
+            Gender = gender;
+            PossibleAbilities = new PBEAlphabeticalList<PBEAbility>(possibleAbilities);
+            PossibleNatures = possibleNatures;
+            IndividualValues = new ReadOnlyCollection<byte?>(ivs);
+            Moves = new ReadOnlyCollection<PBEMove>(moves);
+        }
+        private PBEEventPokemon(IList<byte> generations, PBESpecies species, byte level, bool? shiny, PBEGender gender, PBEAbility[] possibleAbilities, PBENature[] possibleNatures, byte?[] ivs, PBEMove[] moves)
+            : this(generations, species, level, shiny, gender, possibleAbilities, new PBEAlphabeticalList<PBENature>(possibleNatures), ivs, moves)
+        {
         }
 
         public static ReadOnlyDictionary<PBESpecies, ReadOnlyCollection<PBEEventPokemon>> Events { get; } = new ReadOnlyDictionary<PBESpecies, ReadOnlyCollection<PBEEventPokemon>>(new Dictionary<PBESpecies, ReadOnlyCollection<PBEEventPokemon>>

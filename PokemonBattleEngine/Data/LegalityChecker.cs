@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         // TODO: Include generation?
         // TODO: Sketch
         // TODO: Same goals as MoveLegalityCheck
-        public static IEnumerable<PBEMove> GetLegalMoves(PBESpecies species, byte level)
+        public static PBEMove[] GetLegalMoves(PBESpecies species, byte level)
         {
             var evolutionChain = new List<PBESpecies>();
             void AddPreEvolutions(PBESpecies sp)
@@ -27,14 +27,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             foreach (PBESpecies pkmn in evolutionChain)
             {
                 var pData = PBEPokemonData.GetData(pkmn);
-                moves.AddRange(pData.LevelUpMoves.Where(t => t.Level <= level).Select(t => t.Move).Union(pData.OtherMoves.Select(t => t.Move)));
+                moves.AddRange(pData.LevelUpMoves.Where(t => t.Level <= level).Select(t => t.Move));
+                moves.AddRange(pData.OtherMoves.Select(t => t.Move));
                 if (PBEEventPokemon.Events.TryGetValue(pkmn, out ReadOnlyCollection<PBEEventPokemon> events))
                 {
                     moves.AddRange(events.SelectMany(e => e.Moves));
                 }
             }
 
-            return moves.Except(new[] { PBEMove.None });
+            return moves.Distinct().Where(m => m != PBEMove.None).ToArray();
         }
 
         // TODO: Check where the species was born
@@ -74,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 other.AddRange(pData.OtherMoves);
             }
             // TODO:
-            IEnumerable<PBEMove> allAsMoves = GetLegalMoves(species, level);
+            PBEMove[] allAsMoves = GetLegalMoves(species, level);
 
             // Check if there's a move it cannot possibly learn
             foreach (PBEMove m in moves)

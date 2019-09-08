@@ -70,7 +70,7 @@ namespace Kermalis.PokemonBattleEngine
         {
             return RandomInt(0, chanceDenominator - 1) < chanceNumerator;
         }
-        internal static T RandomElement<T>(this IList<T> source)
+        internal static T RandomElement<T>(this IReadOnlyList<T> source)
         {
             int count = source.Count - 1;
             if (count < 0)
@@ -131,8 +131,7 @@ namespace Kermalis.PokemonBattleEngine
         /// <summary>Returns a random <see cref="PBESpecies"/> with a random form. All species are weighted equally. Forms that cannot be maintained outside of battle are not considered.</summary>
         public static PBESpecies RandomSpecies()
         {
-            PBESpecies[] allSpecies = PBEPokemonShell.AllSpecies.Where(s => ((uint)s >> 0x10) == 0).ToArray(); // All species with form ID 0
-            PBESpecies species = RandomElement(allSpecies);
+            PBESpecies species = PBEPokemonShell.AllSpeciesBaseForm.RandomElement();
             int numForms;
             switch (species)
             {

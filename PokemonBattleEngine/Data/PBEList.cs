@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBEList<T> : IReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged
+    public sealed class PBEList<T> : INotifyCollectionChanged, INotifyPropertyChanged, IReadOnlyList<T>
     {
         private void FireEvents(NotifyCollectionChangedEventArgs e)
         {

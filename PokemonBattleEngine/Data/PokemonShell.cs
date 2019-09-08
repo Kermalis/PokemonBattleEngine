@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -13,9 +12,25 @@ namespace Kermalis.PokemonBattleEngine.Data
     // This should be able to be used aside from team shells (which would help event pokemon be represented again)
     public sealed class PBEPokemonShell : INotifyPropertyChanged
     {
-        public static ReadOnlyCollection<PBESpecies> AllSpecies { get; } = new ReadOnlyCollection<PBESpecies>(Enum.GetValues(typeof(PBESpecies)).Cast<PBESpecies>().Except(new[] { PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny, PBESpecies.Cherrim_Sunshine, PBESpecies.Darmanitan_Zen, PBESpecies.Meloetta_Pirouette }).ToArray());
-        public static ReadOnlyCollection<PBENature> AllNatures { get; } = new ReadOnlyCollection<PBENature>(Enum.GetValues(typeof(PBENature)).Cast<PBENature>().Except(new[] { PBENature.MAX }).ToArray());
-        public static ReadOnlyCollection<PBEItem> AllItems { get; } = new ReadOnlyCollection<PBEItem>(Enum.GetValues(typeof(PBEItem)).Cast<PBEItem>().ToArray());
+        public static PBEAlphabeticalList<PBESpecies> AllSpecies { get; } = new PBEAlphabeticalList<PBESpecies>(
+            Enum.GetValues(typeof(PBESpecies))
+            .Cast<PBESpecies>()
+            .Except(new[] { PBESpecies.Castform_Rainy, PBESpecies.Castform_Snowy, PBESpecies.Castform_Sunny, PBESpecies.Cherrim_Sunshine, PBESpecies.Darmanitan_Zen, PBESpecies.Meloetta_Pirouette })
+            );
+        public static PBEAlphabeticalList<PBESpecies> AllSpeciesBaseForm { get; } = new PBEAlphabeticalList<PBESpecies>(
+            Enum.GetValues(typeof(PBESpecies))
+            .Cast<PBESpecies>()
+            .Where(s => ((uint)s >> 0x10) == 0)
+            );
+        public static PBEAlphabeticalList<PBENature> AllNatures { get; } = new PBEAlphabeticalList<PBENature>(
+            Enum.GetValues(typeof(PBENature))
+            .Cast<PBENature>()
+            .Except(new[] { PBENature.MAX })
+            );
+        public static PBEAlphabeticalList<PBEItem> AllItems { get; } = new PBEAlphabeticalList<PBEItem>(
+            Enum.GetValues(typeof(PBEItem))
+            .Cast<PBEItem>()
+            );
 
         private void OnPropertyChanged(string property)
         {
@@ -26,11 +41,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         private readonly PBETeamShell parent;
 
         private PBEPokemonData pData;
-        public ReadOnlyCollection<PBEAbility> SelectableAbilities { get; private set; }
-        private PBEGender[] selectableGenders;
-        public ReadOnlyCollection<PBEGender> SelectableGenders { get; private set; }
-        private IEnumerable<PBEItem> selectableItems;
-        public ReadOnlyCollection<PBEItem> SelectableItems { get; private set; }
+        public PBEAlphabeticalList<PBEAbility> SelectableAbilities { get; } = new PBEAlphabeticalList<PBEAbility>();
+        public PBEAlphabeticalList<PBEGender> SelectableGenders { get; } = new PBEAlphabeticalList<PBEGender>();
+        public PBEAlphabeticalList<PBEItem> SelectableItems { get; } = new PBEAlphabeticalList<PBEItem>();
 
         private PBESpecies species;
         public PBESpecies Species
@@ -308,8 +321,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         private void SetSelectable()
         {
             pData = PBEPokemonData.GetData(species);
-            SelectableAbilities = pData.Abilities;
-            OnPropertyChanged(nameof(SelectableAbilities));
+            SelectableAbilities.Reset(pData.Abilities);
+            PBEGender[] selectableGenders;
             switch (pData.GenderRatio)
             {
                 case PBEGenderRatio.M0_F0: selectableGenders = new[] { PBEGender.Genderless }; break;
@@ -317,8 +330,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBEGenderRatio.M0_F1: selectableGenders = new[] { PBEGender.Female }; break;
                 default: selectableGenders = new[] { PBEGender.Female, PBEGender.Male }; break;
             }
-            SelectableGenders = new ReadOnlyCollection<PBEGender>(selectableGenders);
-            OnPropertyChanged(nameof(SelectableGenders));
+            SelectableGenders.Reset(selectableGenders);
+            IEnumerable<PBEItem> selectableItems;
             switch (species)
             {
                 case PBESpecies.Giratina: selectableItems = AllItems.Except(new[] { PBEItem.GriseousOrb }); break;
@@ -353,8 +366,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case PBESpecies.Genesect_Shock: selectableItems = new[] { PBEItem.ShockDrive }; break;
                 default: selectableItems = AllItems; break;
             }
-            SelectableItems = new ReadOnlyCollection<PBEItem>(selectableItems.ToArray());
-            OnPropertyChanged(nameof(SelectableItems));
+            SelectableItems.Reset(selectableItems);
         }
         private void OnSpeciesChanged(PBESpecies oldSpecies)
         {
@@ -469,7 +481,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         private void ValidateItem(PBEItem value)
         {
-            if (!selectableItems.Contains(value))
+            if (!SelectableItems.Contains(value))
             {
                 throw new ArgumentOutOfRangeException(nameof(value));
             }

@@ -28,10 +28,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             Spanish = result.Spanish;
         }
 
-        public string FromCurrentCultureInfo()
-        {
-            return FromCultureInfo(Thread.CurrentThread.CurrentCulture);
-        }
         public string FromUICultureInfo()
         {
             return FromCultureInfo(Thread.CurrentThread.CurrentUICulture);

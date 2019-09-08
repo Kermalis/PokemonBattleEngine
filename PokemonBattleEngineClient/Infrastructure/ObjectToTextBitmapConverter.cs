@@ -16,6 +16,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 case PBEAbility ability: localized = PBELocalizedString.GetAbilityName(ability); break;
                 case PBEGender gender: localized = PBELocalizedString.GetGenderName(gender); break;
                 case PBEItem item: localized = PBELocalizedString.GetItemName(item); break;
+                case PBELocalizedString l: localized = l; break;
                 case PBEMove move: localized = PBELocalizedString.GetMoveName(move); break;
                 case PBENature nature: localized = PBELocalizedString.GetNatureName(nature); break;
                 case PBESpecies species: localized = PBELocalizedString.GetSpeciesName(species); break;
