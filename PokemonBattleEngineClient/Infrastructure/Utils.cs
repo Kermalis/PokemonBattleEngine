@@ -222,7 +222,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
                 {
-                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).FromUICultureInfo()}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).FromUICultureInfo()}/{pkmn.IndividualValues.HiddenPowerBasePower}");
+                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).FromUICultureInfo()}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).FromUICultureInfo()}:{pkmn.IndividualValues.HiddenPowerBasePower}");
                 }
                 string[] moveStrs = new string[pkmn.Moves.Length];
                 for (int i = 0; i < moveStrs.Length; i++)

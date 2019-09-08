@@ -894,7 +894,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             if (Array.IndexOf(Moves, PBEMove.HiddenPower) != -1)
             {
-                sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}: {PBELocalizedString.GetTypeName(IndividualValues.HiddenPowerType).English}/{IndividualValues.HiddenPowerBasePower}");
+                sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).English}: {PBELocalizedString.GetTypeName(IndividualValues.HiddenPowerType).English}:{IndividualValues.HiddenPowerBasePower}");
             }
             string[] moveStrs = new string[Moves.Length];
             for (int i = 0; i < moveStrs.Length; i++)

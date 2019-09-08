@@ -109,7 +109,11 @@
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Image Grid.Row="0" Grid.Column="2" Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.EffortValues.StatTotal, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal">
+          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.EffortValues.StatTotal, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='/', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Team.Shell.Settings.MaxTotalEVs, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+        </StackPanel>
         <Image Grid.Row="1" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='IVs:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         <ItemsControl Grid.Row="1" Grid.Column="1" Items="{Binding Shell.IndividualValues, Mode=OneWay}">
           <ItemsControl.ItemsPanel>
@@ -125,7 +129,7 @@
         </ItemsControl>
         <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
           <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.IndividualValues.HiddenPowerType, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='/', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
+          <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Source=':', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
           <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.IndividualValues.HiddenPowerBasePower, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         </StackPanel>
         <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Moves:\nPP-Ups:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
