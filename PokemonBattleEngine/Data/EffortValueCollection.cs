@@ -119,9 +119,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEEffortValue(this, PBEStat.Speed)
             };
         }
-        private void UpdateEV(int statIndex, byte value)
+        private void UpdateEV(PBEEffortValue ev, byte value)
         {
-            PBEEffortValue ev = evs[statIndex];
             if (ev.Value != value)
             {
                 ev.Update(value);
@@ -161,22 +160,23 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentOutOfRangeException(nameof(stat));
             }
+            PBEEffortValue ev = evs[statIndex];
             ushort oldTotal = StatTotal;
-            if (oldTotal + value > Settings.MaxTotalEVs)
+            int newTotal = oldTotal - ev.Value + value;
+            if (newTotal > Settings.MaxTotalEVs)
             {
-                int amountNeededToFree = oldTotal + value - Settings.MaxTotalEVs;
-                UpdateEV(statIndex, (byte)(value - amountNeededToFree));
+                UpdateEV(ev, (byte)(value - (newTotal - Settings.MaxTotalEVs)));
             }
             else
             {
-                UpdateEV(statIndex, value);
+                UpdateEV(ev, value);
             }
         }
         public void Randomize()
         {
-            byte[] vals = new byte[6];
             if (Settings.MaxTotalEVs != 0)
             {
+                byte[] vals = new byte[6];
                 int[] a = Enumerable.Repeat(0, 6 - 1)
                     .Select(x => PBEUtils.RandomInt(1, Settings.MaxTotalEVs - 1))
                     .Concat(new int[] { Settings.MaxTotalEVs })
@@ -207,10 +207,10 @@ namespace Kermalis.PokemonBattleEngine.Data
                     vals[index] = b;
                     total += (byte)(b - old);
                 }
-            }
-            for (int i = 0; i < 6; i++)
-            {
-                UpdateEV(i, vals[i]);
+                for (int i = 0; i < 6; i++)
+                {
+                    UpdateEV(evs[i], vals[i]);
+                }
             }
         }
 
@@ -237,7 +237,8 @@ namespace Kermalis.PokemonBattleEngine.Data
                     {
                         for (int i = 0; i < 6; i++)
                         {
-                            UpdateEV(i, (byte)(Settings.MaxTotalEVs * ((double)evs[i].Value / oldTotal)));
+                            PBEEffortValue ev = evs[i];
+                            UpdateEV(ev, (byte)(Settings.MaxTotalEVs * ((double)ev.Value / oldTotal)));
                         }
                     }
                     break;
