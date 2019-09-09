@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 case PBEStat stat: localized = PBELocalizedString.GetStatName(stat); break;
                 case PBEType type: localized = PBELocalizedString.GetTypeName(type); break;
             }
-            return StringRenderer.Render(localized == null ? value?.ToString() : localized.FromUICultureInfo(), parameter?.ToString());
+            return StringRenderer.Render(localized == null ? value?.ToString() : localized.ToString(), parameter?.ToString());
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

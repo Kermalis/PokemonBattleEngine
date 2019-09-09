@@ -371,9 +371,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         private void OnSpeciesChanged(PBESpecies oldSpecies)
         {
             SetSelectable();
-            if (oldSpecies == 0 || nickname == PBELocalizedString.GetSpeciesName(oldSpecies).FromUICultureInfo())
+            if (oldSpecies == 0 || nickname == PBELocalizedString.GetSpeciesName(oldSpecies).ToString())
             {
-                string newNickname = PBELocalizedString.GetSpeciesName(species).FromUICultureInfo();
+                string newNickname = PBELocalizedString.GetSpeciesName(species).ToString();
                 if (newNickname.Length > parent.Settings.MaxPokemonNameLength)
                 {
                     newNickname = newNickname.Substring(0, parent.Settings.MaxPokemonNameLength);

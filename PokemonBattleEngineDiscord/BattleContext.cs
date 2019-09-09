@@ -342,14 +342,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
             AddStatChanges(pkmn, sb);
             if (pkmn.KnownAbility == PBEAbility.MAX)
             {
-                sb.AppendLine($"**Possible abilities:** {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).FromUICultureInfo()))}");
+                sb.AppendLine($"**Possible abilities:** {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).ToString()))}");
             }
             else
             {
-                sb.AppendLine($"**Known ability:** {PBELocalizedString.GetAbilityName(pkmn.KnownAbility).FromUICultureInfo()}");
+                sb.AppendLine($"**Known ability:** {PBELocalizedString.GetAbilityName(pkmn.KnownAbility).ToString()}");
             }
-            sb.AppendLine($"**Known item:** {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).FromUICultureInfo())}");
-            sb.Append($"**Known moves:** {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(m).FromUICultureInfo()))}");
+            sb.AppendLine($"**Known item:** {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).ToString())}");
+            sb.Append($"**Known moves:** {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(m).ToString()))}");
             return sb.ToString();
         }
 

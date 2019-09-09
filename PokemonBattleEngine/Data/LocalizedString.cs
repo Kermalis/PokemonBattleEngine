@@ -1,12 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBELocalizedString
     {
+        public delegate void PBECultureChangedHandler(CultureInfo oldPBECultureInfo);
+        public static event PBECultureChangedHandler PBECultureChanged;
+
+        private static CultureInfo pbeCulture;
+        public static CultureInfo PBECulture
+        {
+            get => pbeCulture;
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                if (!pbeCulture.Equals(value))
+                {
+                    if (!IsCultureValid(value))
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(value));
+                    }
+                    CultureInfo oldPBECultureInfo = pbeCulture;
+                    pbeCulture = value;
+                    PBECultureChanged?.Invoke(oldPBECultureInfo);
+                }
+            }
+        }
+
+        static PBELocalizedString()
+        {
+            CultureInfo cultureInfo = CultureInfo.CurrentUICulture;
+            pbeCulture = IsCultureValid(cultureInfo) ? cultureInfo : CultureInfo.GetCultureInfo("en-US");
+        }
+
         public string English { get; }
         public string French { get; }
         public string German { get; }
@@ -28,10 +59,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             Spanish = result.Spanish;
         }
 
-        public string FromUICultureInfo()
-        {
-            return FromCultureInfo(Thread.CurrentThread.CurrentUICulture);
-        }
         public string FromCultureInfo(CultureInfo cultureInfo)
         {
             string id = cultureInfo.TwoLetterISOLanguageName;
@@ -46,6 +73,16 @@ namespace Kermalis.PokemonBattleEngine.Data
                 case "es": return Spanish;
                 default: throw new ArgumentOutOfRangeException(nameof(cultureInfo));
             }
+        }
+        public static bool IsCultureValid(CultureInfo cultureInfo)
+        {
+            string id = cultureInfo.TwoLetterISOLanguageName;
+            return id == "en" || id == "fr" || id == "de" || id == "it" || id == "ja" || id == "ko" || id == "es";
+        }
+
+        public override string ToString()
+        {
+            return FromCultureInfo(pbeCulture);
         }
 
         #region Database Querying

@@ -347,7 +347,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), NameForTrainer(pokemon2, true), PBELocalizedString.GetAbilityName(ap.Ability).FromUICultureInfo()), true, true);
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), NameForTrainer(pokemon2, true), PBELocalizedString.GetAbilityName(ap.Ability).ToString()), true, true);
                     break;
                 }
                 case PBEBattleStatusPacket bsp:
@@ -534,7 +534,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(itemHolder, itemHolderCaps), NameForTrainer(pokemon2, pokemon2Caps), PBELocalizedString.GetItemName(ip.Item).FromUICultureInfo()), true, true);
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(itemHolder, itemHolderCaps), NameForTrainer(pokemon2, pokemon2Caps), PBELocalizedString.GetItemName(ip.Item).ToString()), true, true);
                     break;
                 }
                 case PBEMoveCritPacket _:
@@ -625,7 +625,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         moveUser.KnownMoves[Array.IndexOf(moveUser.KnownMoves, PBEMove.MAX)] = mup.Move;
                     }
-                    BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(moveUser, true), PBELocalizedString.GetMoveName(mup.Move).FromUICultureInfo()), true, true);
+                    BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(moveUser, true), PBELocalizedString.GetMoveName(mup.Move).ToString()), true, true);
                     break;
                 }
                 case PBEPkmnFaintedPacket pfap:

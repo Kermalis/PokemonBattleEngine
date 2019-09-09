@@ -132,7 +132,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
-                sb.AppendLine($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1).FromUICultureInfo()}/{PBELocalizedString.GetTypeName(pkmn.KnownType2).FromUICultureInfo()}");
+                sb.AppendLine($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1).ToString()}/{PBELocalizedString.GetTypeName(pkmn.KnownType2).ToString()}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
@@ -171,20 +171,20 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 if (pkmn.KnownAbility == PBEAbility.MAX)
                 {
-                    sb.AppendLine($"Possible abilities: {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).FromUICultureInfo()))}");
+                    sb.AppendLine($"Possible abilities: {string.Join(", ", PBEPokemonData.GetData(pkmn.KnownSpecies).Abilities.Select(a => PBELocalizedString.GetAbilityName(a).ToString()))}");
                 }
                 else
                 {
-                    sb.AppendLine($"Known ability: {PBELocalizedString.GetAbilityName(pkmn.KnownAbility).FromUICultureInfo()}");
+                    sb.AppendLine($"Known ability: {PBELocalizedString.GetAbilityName(pkmn.KnownAbility).ToString()}");
                 }
-                sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).FromUICultureInfo())}");
-                sb.Append($"Known moves: {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(m).FromUICultureInfo()))}");
+                sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).ToString())}");
+                sb.Append($"Known moves: {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(m).ToString()))}");
             }
             else
             {
                 sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
-                sb.AppendLine($"Types: {PBELocalizedString.GetTypeName(pkmn.Type1).FromUICultureInfo()}/{PBELocalizedString.GetTypeName(pkmn.Type2).FromUICultureInfo()}");
+                sb.AppendLine($"Types: {PBELocalizedString.GetTypeName(pkmn.Type1).ToString()}/{PBELocalizedString.GetTypeName(pkmn.Type2).ToString()}");
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
@@ -214,23 +214,23 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 {
                     AddStatChanges();
                 }
-                sb.AppendLine($"Ability: {PBELocalizedString.GetAbilityName(pkmn.Ability).FromUICultureInfo()}");
-                sb.AppendLine($"Item: {PBELocalizedString.GetItemName(pkmn.Item).FromUICultureInfo()}");
+                sb.AppendLine($"Ability: {PBELocalizedString.GetAbilityName(pkmn.Ability).ToString()}");
+                sb.AppendLine($"Item: {PBELocalizedString.GetItemName(pkmn.Item).ToString()}");
                 if (Array.IndexOf(pkmn.Moves, PBEMove.Frustration) != -1 || Array.IndexOf(pkmn.Moves, PBEMove.Return) != -1)
                 {
                     sb.AppendLine($"Friendship: {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
                 }
                 if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
                 {
-                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).FromUICultureInfo()}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).FromUICultureInfo()}:{pkmn.IndividualValues.HiddenPowerBasePower}");
+                    sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).ToString()}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).ToString()}:{pkmn.IndividualValues.HiddenPowerBasePower}");
                 }
                 string[] moveStrs = new string[pkmn.Moves.Length];
                 for (int i = 0; i < moveStrs.Length; i++)
                 {
-                    moveStrs[i] = $"{PBELocalizedString.GetMoveName(pkmn.Moves[i]).FromUICultureInfo()} {pkmn.PP[i]}/{pkmn.MaxPP[i]}";
+                    moveStrs[i] = $"{PBELocalizedString.GetMoveName(pkmn.Moves[i]).ToString()} {pkmn.PP[i]}/{pkmn.MaxPP[i]}";
                 }
                 sb.AppendLine($"Moves: {string.Join(", ", moveStrs)}");
-                sb.Append($"Usable moves: {string.Join(", ", pkmn.GetUsableMoves().Select(m => PBELocalizedString.GetMoveName(m).FromUICultureInfo()))}");
+                sb.Append($"Usable moves: {string.Join(", ", pkmn.GetUsableMoves().Select(m => PBELocalizedString.GetMoveName(m).ToString()))}");
             }
             return sb.ToString();
         }

@@ -55,7 +55,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
             if (move != PBEMove.None)
             {
                 PBEMoveData mData = PBEMoveData.Data[move];
-                sb.AppendLine($"Type: {PBELocalizedString.GetTypeName(mData.Type).FromUICultureInfo()}");
+                sb.AppendLine($"Type: {PBELocalizedString.GetTypeName(mData.Type).ToString()}");
                 sb.AppendLine($"Category: {mData.Category}");
                 int moveIndex = Array.IndexOf(pkmn.Moves, move);
                 if (moveIndex != -1)
@@ -75,7 +75,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 sb.AppendLine($"Targets: {mData.Targets}");
                 sb.AppendLine($"Flags: {mData.Flags}");
                 sb.AppendLine();
-                sb.Append(PBELocalizedString.GetMoveDescription(move).FromUICultureInfo().Replace('\n', ' '));
+                sb.Append(PBELocalizedString.GetMoveDescription(move).ToString().Replace('\n', ' '));
             }
             Description = sb.ToString();
 

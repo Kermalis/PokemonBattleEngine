@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBEAlphabeticalList<T> : INotifyCollectionChanged, INotifyPropertyChanged, IReadOnlyList<T>
+    public sealed class PBEAlphabeticalList<T> : IDisposable, INotifyCollectionChanged, INotifyPropertyChanged, IReadOnlyList<T>
     {
         private sealed class PBEAlphabeticalListEntry<T>
         {
@@ -56,15 +57,24 @@ namespace Kermalis.PokemonBattleEngine.Data
         internal PBEAlphabeticalList()
         {
             list = Array.Empty<PBEAlphabeticalListEntry<T>>();
+            PBELocalizedString.PBECultureChanged += OnCultureChanged;
         }
         internal PBEAlphabeticalList(IEnumerable<T> collection)
         {
+            PBELocalizedString.PBECultureChanged += OnCultureChanged;
             Reset(collection);
         }
 
+        private void OnCultureChanged(CultureInfo oldPBECultureInfo)
+        {
+            if (!oldPBECultureInfo.TwoLetterISOLanguageName.Equals(PBELocalizedString.PBECulture.TwoLetterISOLanguageName))
+            {
+                Sort();
+            }
+        }
         private void Sort()
         {
-            Array.Sort(list, (x, y) => x.Value.FromUICultureInfo().CompareTo(y.Value.FromUICultureInfo()));
+            Array.Sort(list, (x, y) => x.Value.ToString().CompareTo(y.Value.ToString()));
             FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
@@ -104,6 +114,10 @@ namespace Kermalis.PokemonBattleEngine.Data
             return -1;
         }
 
+        public void Dispose()
+        {
+            PBELocalizedString.PBECultureChanged -= OnCultureChanged;
+        }
         public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < list.Length; i++)
