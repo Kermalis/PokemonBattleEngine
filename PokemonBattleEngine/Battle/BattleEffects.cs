@@ -636,6 +636,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel))
                             {
                                 pkmn.Status1 = PBEStatus1.BadlyPoisoned;
+                                pkmn.Status1Counter = 1;
                                 BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
                                 BroadcastStatus1(pkmn, pkmn, PBEStatus1.BadlyPoisoned, PBEStatusAction.Added);
                             }
