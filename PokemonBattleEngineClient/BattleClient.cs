@@ -61,6 +61,7 @@ namespace Kermalis.PokemonBattleEngineClient
             if (Mode == ClientMode.SinglePlayer)
             {
                 BattleId = 0;
+                Team = Battle.Teams[BattleId];
                 ShowRawValues0 = true;
                 ShowRawValues1 = false;
                 Battle.OnNewEvent += SinglePlayerBattle_OnNewEvent;
