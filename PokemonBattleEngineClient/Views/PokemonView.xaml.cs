@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    public class PokemonView : UserControl, INotifyPropertyChanged
+    public sealed class PokemonView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -17,29 +17,36 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private PBEPokemon pokemon;
-        private double scale;
+        private PBEPokemon _pokemon;
+        private double _scale;
         public double Scale
         {
-            get => scale;
+            get => _scale;
             set
             {
-                scale = value;
-                OnPropertyChanged(nameof(Scale));
+                if (_scale != value)
+                {
+                    _scale = value;
+                    OnPropertyChanged(nameof(Scale));
+                }
             }
         }
-        private Point location;
+        private Point _location;
         public Point Location
         {
-            get => location;
-            set
+            get => _location;
+            internal set
             {
-                location = value;
-                OnPropertyChanged(nameof(Location));
+                if (!_location.Equals(value))
+                {
+                    _location = value;
+                    OnPropertyChanged(nameof(Location));
+                }
             }
         }
-        private bool showRawValues0, showRawValues1;
-        public string Description => Utils.CustomPokemonToString(pokemon, showRawValues0, showRawValues1);
+        private bool _showRawValues0;
+        private bool _showRawValues1;
+        public string Description => Utils.CustomPokemonToString(_pokemon, _showRawValues0, _showRawValues1);
 
         public PokemonView()
         {
@@ -49,14 +56,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public void Update(PBEPokemon pkmn, bool backSprite, bool showRawValues0, bool showRawValues1)
         {
-            this.showRawValues0 = showRawValues0;
-            this.showRawValues1 = showRawValues1;
-            pokemon = pkmn;
+            _showRawValues0 = showRawValues0;
+            _showRawValues1 = showRawValues1;
+            _pokemon = pkmn;
 
             Image sprite = this.FindControl<Image>("Sprite");
             // Fly/Bounce/SkyDrop / Dig / Dive / ShadowForce
-            sprite.Opacity = !pokemon.Status2.HasFlag(PBEStatus2.Substitute) && (pokemon.Status2.HasFlag(PBEStatus2.Airborne) || pokemon.Status2.HasFlag(PBEStatus2.Underground) || pokemon.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
-            GifImage.SetSourceStream(sprite, Utils.GetPokemonSpriteStream(pokemon, backSprite));
+            sprite.Opacity = !_pokemon.Status2.HasFlag(PBEStatus2.Substitute) && (_pokemon.Status2.HasFlag(PBEStatus2.Airborne) || _pokemon.Status2.HasFlag(PBEStatus2.Underground) || _pokemon.Status2.HasFlag(PBEStatus2.Underwater)) ? 0.4 : 1.0;
+            GifImage.SetSourceStream(sprite, Utils.GetPokemonSpriteStream(_pokemon, backSprite));
 
             IsVisible = true;
         }

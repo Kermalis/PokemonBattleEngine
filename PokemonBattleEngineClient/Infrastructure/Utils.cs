@@ -15,35 +15,35 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
     public static class Utils
     {
-        private const string assemblyPrefix = "Kermalis.PokemonBattleEngineClient.";
-        private static readonly Assembly assembly = Assembly.GetExecutingAssembly();
-        private static readonly string[] resources = assembly.GetManifestResourceNames();
-        private static IPlatformRenderInterface renderInterface = null;
+        private const string AssemblyPrefix = "Kermalis.PokemonBattleEngineClient.";
+        private static readonly Assembly _assembly = Assembly.GetExecutingAssembly();
+        private static readonly string[] _resources = _assembly.GetManifestResourceNames();
+        private static IPlatformRenderInterface _renderInterface = null;
         public static IPlatformRenderInterface RenderInterface
         {
             get
             {
                 // This is done because the static constructor of Utils is called (by SetWorkingDirectory) before the Avalonia app is built
-                if (renderInterface == null)
+                if (_renderInterface == null)
                 {
-                    renderInterface = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>();
+                    _renderInterface = AvaloniaLocator.Current.GetService<IPlatformRenderInterface>();
                 }
-                return renderInterface;
+                return _renderInterface;
             }
         }
-        private static readonly Dictionary<string, bool> resourceExistsCache = new Dictionary<string, bool>();
+        private static readonly Dictionary<string, bool> _resourceExistsCache = new Dictionary<string, bool>();
         public static bool DoesResourceExist(string resource)
         {
-            if (!resourceExistsCache.TryGetValue(resource, out bool value))
+            if (!_resourceExistsCache.TryGetValue(resource, out bool value))
             {
-                value = Array.IndexOf(resources, assemblyPrefix + resource) != -1;
-                resourceExistsCache.Add(resource, value);
+                value = Array.IndexOf(_resources, AssemblyPrefix + resource) != -1;
+                _resourceExistsCache.Add(resource, value);
             }
             return value;
         }
         public static Stream GetResourceStream(string resource)
         {
-            return assembly.GetManifestResourceStream(assemblyPrefix + resource);
+            return _assembly.GetManifestResourceStream(AssemblyPrefix + resource);
         }
 
         public static string WorkingDirectory;
@@ -132,7 +132,12 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 sb.AppendLine($"{pkmn.KnownNickname}/{pkmn.KnownSpecies} {(pkmn.Status2.HasFlag(PBEStatus2.Transformed) ? pkmn.GenderSymbol : pkmn.KnownGenderSymbol)} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HPPercentage:P2}");
-                sb.AppendLine($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1).ToString()}/{PBELocalizedString.GetTypeName(pkmn.KnownType2).ToString()}");
+                sb.Append($"Known types: {PBELocalizedString.GetTypeName(pkmn.KnownType1).ToString()}");
+                if (pkmn.KnownType2 != PBEType.None)
+                {
+                    sb.Append($"/{PBELocalizedString.GetTypeName(pkmn.KnownType2).ToString()}");
+                }
+                sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
@@ -178,13 +183,34 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                     sb.AppendLine($"Known ability: {PBELocalizedString.GetAbilityName(pkmn.KnownAbility).ToString()}");
                 }
                 sb.AppendLine($"Known item: {(pkmn.KnownItem == (PBEItem)ushort.MaxValue ? "???" : PBELocalizedString.GetItemName(pkmn.KnownItem).ToString())}");
-                sb.Append($"Known moves: {string.Join(", ", pkmn.KnownMoves.Select(m => m == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(m).ToString()))}");
+                sb.Append("Known moves: ");
+                for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)
+                {
+                    PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.KnownMoves[i];
+                    PBEMove move = slot.Move;
+                    int pp = slot.PP;
+                    int maxPP = slot.MaxPP;
+                    if (i > 0)
+                    {
+                        sb.Append(", ");
+                    }
+                    sb.Append(move == PBEMove.MAX ? "???" : PBELocalizedString.GetMoveName(move).ToString());
+                    if (move != PBEMove.None && move != PBEMove.MAX)
+                    {
+                        sb.Append($" ({pp}{(maxPP == 0 ? ")" : $"/{maxPP})")}");
+                    }
+                }
             }
             else
             {
                 sb.AppendLine($"{pkmn.Nickname}/{pkmn.Species} {pkmn.GenderSymbol} Lv.{pkmn.Level}");
                 sb.AppendLine($"HP: {pkmn.HP}/{pkmn.MaxHP} ({pkmn.HPPercentage:P2})");
-                sb.AppendLine($"Types: {PBELocalizedString.GetTypeName(pkmn.Type1).ToString()}/{PBELocalizedString.GetTypeName(pkmn.Type2).ToString()}");
+                sb.Append($"Types: {PBELocalizedString.GetTypeName(pkmn.Type1).ToString()}");
+                if (pkmn.Type2 != PBEType.None)
+                {
+                    sb.Append($"/{PBELocalizedString.GetTypeName(pkmn.Type2).ToString()}");
+                }
+                sb.AppendLine();
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
                     sb.AppendLine($"Position: {pkmn.Team.TrainerName}'s {pkmn.FieldPosition}");
@@ -216,26 +242,36 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
                 }
                 sb.AppendLine($"Ability: {PBELocalizedString.GetAbilityName(pkmn.Ability).ToString()}");
                 sb.AppendLine($"Item: {PBELocalizedString.GetItemName(pkmn.Item).ToString()}");
-                if (Array.IndexOf(pkmn.Moves, PBEMove.Frustration) != -1 || Array.IndexOf(pkmn.Moves, PBEMove.Return) != -1)
+                if (pkmn.Moves.Contains(PBEMove.Frustration) || pkmn.Moves.Contains(PBEMove.Return))
                 {
                     sb.AppendLine($"Friendship: {pkmn.Friendship} ({pkmn.Friendship / (double)byte.MaxValue:P2})");
                 }
-                if (Array.IndexOf(pkmn.Moves, PBEMove.HiddenPower) != -1)
+                if (pkmn.Moves.Contains(PBEMove.HiddenPower))
                 {
                     sb.AppendLine($"{PBELocalizedString.GetMoveName(PBEMove.HiddenPower).ToString()}: {PBELocalizedString.GetTypeName(pkmn.IndividualValues.HiddenPowerType).ToString()}:{pkmn.IndividualValues.HiddenPowerBasePower}");
                 }
-                string[] moveStrs = new string[pkmn.Moves.Length];
-                for (int i = 0; i < moveStrs.Length; i++)
+                sb.Append("Moves: ");
+                for (int i = 0; i < pkmn.Team.Battle.Settings.NumMoves; i++)
                 {
-                    moveStrs[i] = $"{PBELocalizedString.GetMoveName(pkmn.Moves[i]).ToString()} {pkmn.PP[i]}/{pkmn.MaxPP[i]}";
+                    PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[i];
+                    PBEMove move = slot.Move;
+                    if (i > 0)
+                    {
+                        sb.Append(", ");
+                    }
+                    sb.Append(PBELocalizedString.GetMoveName(slot.Move).ToString());
+                    if (move != PBEMove.None)
+                    {
+                        sb.Append($" ({slot.PP}/{slot.MaxPP})");
+                    }
                 }
-                sb.AppendLine($"Moves: {string.Join(", ", moveStrs)}");
+                sb.AppendLine();
                 sb.Append($"Usable moves: {string.Join(", ", pkmn.GetUsableMoves().Select(m => PBELocalizedString.GetMoveName(m).ToString()))}");
             }
             return sb.ToString();
         }
 
-        private static readonly Random rand = new Random();
+        private static readonly Random _rand = new Random();
         public static T RandomElement<T>(this T[] source)
         {
             int count = source.Length;
@@ -243,7 +279,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             {
                 throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
             }
-            return source[rand.Next(count)];
+            return source[_rand.Next(count)];
         }
     }
 }

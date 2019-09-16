@@ -38,10 +38,18 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public bool HasAbility(PBEAbility ability)
         {
+            if (ability >= PBEAbility.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(ability));
+            }
             return Abilities.Contains(ability);
         }
         public bool HasType(PBEType type)
         {
+            if (type >= PBEType.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
             return Type1 == type || Type2 == type;
         }
 
@@ -494,12 +502,23 @@ namespace Kermalis.PokemonBattleEngine.Data
             PBEType.Dark      // 1.5625 %
         });
 
-        /// <summary>
-        /// Calculates a species's stats based on its level, IVs, EVs, and nature.
-        /// </summary>
+        /// <summary>Calculates a species's stats based on its level, IVs, EVs, and nature.</summary>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="stat"/> is invalid.</exception>
         public static ushort CalculateStat(PBEStat stat, PBESpecies species, PBENature nature, byte evs, byte ivs, byte level, PBESettings settings)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            if (!Enum.IsDefined(typeof(PBESpecies), species))
+            {
+                throw new ArgumentOutOfRangeException(nameof(species));
+            }
+            PBEPokemonShell.ValidateLevel(level, settings);
+            if (ivs > settings.MaxIVs)
+            {
+                throw new ArgumentOutOfRangeException(nameof(ivs));
+            }
             switch (stat)
             {
                 case PBEStat.HP:
@@ -521,6 +540,15 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static void GetStatRange(PBEStat stat, PBESpecies species, byte level, PBESettings settings, out ushort low, out ushort high)
         {
+            if (settings == null)
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+            if (!Enum.IsDefined(typeof(PBESpecies), species))
+            {
+                throw new ArgumentOutOfRangeException(nameof(species));
+            }
+            PBEPokemonShell.ValidateLevel(level, settings);
             switch (stat)
             {
                 case PBEStat.HP:
@@ -595,6 +623,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         }
         public static PBEPokemonData GetData(PBESpecies species)
         {
+            if (!Enum.IsDefined(typeof(PBESpecies), species))
+            {
+                throw new ArgumentOutOfRangeException(nameof(species));
+            }
             string json = PBEUtils.QueryDatabase<SearchResult>($"SELECT * FROM PokemonData WHERE Id={(uint)species}")[0].Json;
             using (var reader = new JsonTextReader(new StringReader(json)))
             {

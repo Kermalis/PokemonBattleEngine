@@ -1,6 +1,5 @@
 ﻿using Ether.Network.Packets;
 using Kermalis.PokemonBattleEngine.Battle;
-using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,31 +11,43 @@ namespace Kermalis.PokemonBattleEngine.Packets
     public sealed class PBESwitchInResponsePacket : INetPacket
     {
         public const short Code = 0x24;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
-        public ReadOnlyCollection<(byte PokemonId, PBEFieldPosition Position)> Switches { get; }
+        public ReadOnlyCollection<PBESwitchIn> Switches { get; }
 
-        public PBESwitchInResponsePacket(IEnumerable<(byte PokemonId, PBEFieldPosition Position)> switches)
+        public PBESwitchInResponsePacket(IList<PBESwitchIn> switches)
         {
+            if (switches == null)
+            {
+                throw new ArgumentNullException(nameof(switches));
+            }
+            if (switches.Count == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(switches));
+            }
+            if (switches.Any(s => s == null))
+            {
+                throw new ArgumentNullException(nameof(switches));
+            }
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Switches = switches.ToList().AsReadOnly()).Count);
-            bytes.AddRange(Switches.SelectMany(s => new byte[] { s.PokemonId, (byte)s.Position }));
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.Add((byte)(Switches = new ReadOnlyCollection<PBESwitchIn>(switches)).Count);
+            for (int i = 0; i < (byte)Switches.Count; i++)
+            {
+                Switches[i].ToBytes(bytes);
+            }
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBESwitchInResponsePacket(byte[] buffer, PBEBattle battle)
+        internal PBESwitchInResponsePacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
+            var switches = new PBESwitchIn[r.ReadByte()];
+            for (int i = 0; i < switches.Length; i++)
             {
-                r.ReadInt16(); // Skip Code
-                var switches = new (byte PokemonId, PBEFieldPosition Position)[r.ReadByte()];
-                for (int i = 0; i < switches.Length; i++)
-                {
-                    switches[i] = (r.ReadByte(), (PBEFieldPosition)r.ReadByte());
-                }
-                Switches = Array.AsReadOnly(switches);
+                switches[i] = new PBESwitchIn(r);
             }
+            Switches = new ReadOnlyCollection<PBESwitchIn>(switches);
         }
 
         public void Dispose() { }

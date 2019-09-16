@@ -8,6 +8,7 @@
     <Copyright>Kermalis</Copyright>
     <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,9 +18,6 @@
     <Reference Include="Ether.Network">
       <HintPath>../Shared Dependencies\Ether.Network.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="PokemonBattleEngine.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

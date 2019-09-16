@@ -14,9 +14,7 @@ namespace Kermalis.PokemonBattleEngineClient.NetCore
             Utils.SetWorkingDirectory(string.Empty);
             BuildAvaloniaApp().Start<MainWindow>();
         }
-        /// <summary>
-        /// This method is needed for IDE previewer infrastructure
-        /// </summary>
+        /// <summary>This method is needed for IDE previewer infrastructure.</summary>
         public static AppBuilder BuildAvaloniaApp()
         {
             return AppBuilder.Configure<App>()

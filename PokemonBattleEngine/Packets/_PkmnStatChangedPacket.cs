@@ -3,15 +3,15 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEPkmnStatChangedPacket : INetPacket
     {
         public const short Code = 0x10;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public PBEFieldPosition Pokemon { get; }
         public PBETeam PokemonTeam { get; }
@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public sbyte OldValue { get; }
         public sbyte NewValue { get; }
 
-        public PBEPkmnStatChangedPacket(PBEPokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
+        internal PBEPkmnStatChangedPacket(PBEPokemon pokemon, PBEStat stat, sbyte oldValue, sbyte newValue)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -28,20 +28,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)(Stat = stat));
             bytes.Add((byte)(OldValue = oldValue));
             bytes.Add((byte)(NewValue = newValue));
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBEPkmnStatChangedPacket(byte[] buffer, PBEBattle battle)
+        internal PBEPkmnStatChangedPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                Pokemon = (PBEFieldPosition)r.ReadByte();
-                PokemonTeam = battle.Teams[r.ReadByte()];
-                Stat = (PBEStat)r.ReadByte();
-                OldValue = r.ReadSByte();
-                NewValue = r.ReadSByte();
-            }
+            Pokemon = (PBEFieldPosition)r.ReadByte();
+            PokemonTeam = battle.Teams[r.ReadByte()];
+            Stat = (PBEStat)r.ReadByte();
+            OldValue = r.ReadSByte();
+            NewValue = r.ReadSByte();
         }
 
         public void Dispose() { }

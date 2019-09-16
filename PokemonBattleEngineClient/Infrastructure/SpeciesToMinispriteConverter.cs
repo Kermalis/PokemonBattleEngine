@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
-    public class SpeciesToMinispriteConverter : IValueConverter
+    public sealed class SpeciesToMinispriteConverter : IValueConverter
     {
         public static SpeciesToMinispriteConverter Instance { get; } = new SpeciesToMinispriteConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

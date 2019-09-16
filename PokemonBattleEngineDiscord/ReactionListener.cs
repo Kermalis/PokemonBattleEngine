@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
-    public static class ReactionListener
+    internal static class ReactionListener
     {
         private class Listener
         {

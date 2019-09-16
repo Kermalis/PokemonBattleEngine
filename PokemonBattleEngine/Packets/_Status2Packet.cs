@@ -3,15 +3,15 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEStatus2Packet : INetPacket
     {
         public const short Code = 0x12;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public PBEFieldPosition Status2Receiver { get; }
         public PBETeam Status2ReceiverTeam { get; }
@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEStatus2 Status2 { get; }
         public PBEStatusAction StatusAction { get; }
 
-        public PBEStatus2Packet(PBEPokemon status2Receiver, PBEPokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
+        internal PBEStatus2Packet(PBEPokemon status2Receiver, PBEPokemon pokemon2, PBEStatus2 status2, PBEStatusAction statusAction)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -30,21 +30,18 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((Pokemon2Team = pokemon2.Team).Id);
             bytes.AddRange(BitConverter.GetBytes((uint)(Status2 = status2)));
             bytes.Add((byte)(StatusAction = statusAction));
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBEStatus2Packet(byte[] buffer, PBEBattle battle)
+        internal PBEStatus2Packet(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                Status2Receiver = (PBEFieldPosition)r.ReadByte();
-                Status2ReceiverTeam = battle.Teams[r.ReadByte()];
-                Pokemon2 = (PBEFieldPosition)r.ReadByte();
-                Pokemon2Team = battle.Teams[r.ReadByte()];
-                Status2 = (PBEStatus2)r.ReadUInt32();
-                StatusAction = (PBEStatusAction)r.ReadByte();
-            }
+            Status2Receiver = (PBEFieldPosition)r.ReadByte();
+            Status2ReceiverTeam = battle.Teams[r.ReadByte()];
+            Pokemon2 = (PBEFieldPosition)r.ReadByte();
+            Pokemon2Team = battle.Teams[r.ReadByte()];
+            Status2 = (PBEStatus2)r.ReadUInt32();
+            StatusAction = (PBEStatusAction)r.ReadByte();
         }
 
         public void Dispose() { }

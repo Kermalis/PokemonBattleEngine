@@ -54,11 +54,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
             return GetColor(pkmn.KnownType1, pkmn.KnownType2);
         }
 
-        private static readonly Random rand = new Random();
+        private static readonly Random _rand = new Random();
         public static Color RandomColor()
         {
             byte[] bytes = new byte[3];
-            rand.NextBytes(bytes);
+            _rand.NextBytes(bytes);
             return new Color(bytes[0], bytes[1], bytes[2]);
         }
         public static T RandomElement<T>(this T[] source)
@@ -68,14 +68,14 @@ namespace Kermalis.PokemonBattleEngineDiscord
             {
                 throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
             }
-            return source.ElementAt(rand.Next(count));
+            return source.ElementAt(_rand.Next(count));
         }
 
-        private static readonly Dictionary<string, bool> urlCache = new Dictionary<string, bool>();
+        private static readonly Dictionary<string, bool> _urlCache = new Dictionary<string, bool>();
         // https://stackoverflow.com/questions/1979915/can-i-check-if-a-file-exists-at-a-url
         public static bool URLExists(string url)
         {
-            if (urlCache.TryGetValue(url, out bool value))
+            if (_urlCache.TryGetValue(url, out bool value))
             {
                 return value;
             }
@@ -99,7 +99,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         response.Close();
                     }
                 }
-                urlCache.Add(url, result);
+                _urlCache.Add(url, result);
                 return result;
             }
         }

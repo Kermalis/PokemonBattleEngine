@@ -7,53 +7,39 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.AI
 {
-    /// <summary>
-    /// Creates valid decisions for a team in a battle. Decisions may not be valid for custom settings and/or move changes.
-    /// </summary>
-    public static partial class PBEAIManager
+    /// <summary>Creates valid decisions for a team in a battle. Decisions may not be valid for custom settings and/or move changes.</summary>
+    public static partial class PBEAI
     {
-        /// <summary>
-        /// Creates valid actions for a battle turn for a specific team.
-        /// </summary>
+        /// <summary>Creates valid actions for a battle turn for a specific team.</summary>
         /// <param name="team">The team to create actions for.</param>
         /// <exception cref="InvalidOperationException">Thrown when <paramref name="team"/> has no active battlers or <paramref name="team"/>'s <see cref="PBETeam.Battle"/>'s <see cref="PBEBattle.BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when a Pokémon has no moves, the AI tries to use a move with invalid targets, or <paramref name="team"/>'s <see cref="PBETeam.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
-        public static IEnumerable<PBEAction> CreateActions(PBETeam team)
+        public static PBETurnAction[] CreateActions(PBETeam team)
         {
+            if (team == null)
+            {
+                throw new ArgumentNullException(nameof(team));
+            }
             if (team.Battle.BattleState != PBEBattleState.WaitingForActions)
             {
                 throw new InvalidOperationException($"{nameof(team.Battle.BattleState)} must be {PBEBattleState.WaitingForActions} to create actions.");
             }
-            PBEPokemon[] active = team.ActiveBattlers;
-            if (active.Length == 0)
-            {
-                throw new InvalidOperationException($"{nameof(team)} must have at least one active battler.");
-            }
 
-            PBETeam opposingTeam = team == team.Battle.Teams[0] ? team.Battle.Teams[1] : team.Battle.Teams[0];
-            var actions = new PBEAction[team.ActionsRequired.Count];
+            var actions = new PBETurnAction[team.ActionsRequired.Count];
             var standBy = new List<PBEPokemon>();
             for (int i = 0; i < actions.Length; i++)
             {
                 PBEPokemon pkmn = team.ActionsRequired[i];
-                if (Array.TrueForAll(pkmn.Moves, m => m == PBEMove.None))
-                {
-                    throw new ArgumentOutOfRangeException(nameof(pkmn.Moves), $"{pkmn.Nickname} has no moves.");
-                }
 
                 // If a Pokémon is forced to struggle, it is best that it just stays in until it faints
                 if (pkmn.IsForcedToStruggle())
                 {
-                    actions[i].Decision = PBEDecision.Fight;
-                    actions[i].FightMove = PBEMove.Struggle;
-                    actions[i].FightTargets = GetPossibleTargets(pkmn, pkmn.GetMoveTargets(PBEMove.Struggle))[0]; // Seems a little nasty just to select "Self", since this will be RandomFoeSurrounding
+                    actions[i] = new PBETurnAction(pkmn.Id, PBEMove.Struggle, GetPossibleTargets(pkmn, pkmn.GetMoveTargets(PBEMove.Struggle))[0]);
                 }
                 // If a Pokémon has a temp locked move (Dig, Dive, Shadow Force) it must be used
                 else if (pkmn.TempLockedMove != PBEMove.None)
                 {
-                    actions[i].Decision = PBEDecision.Fight;
-                    actions[i].FightMove = pkmn.TempLockedMove;
-                    actions[i].FightTargets = pkmn.TempLockedTargets;
+                    actions[i] = new PBETurnAction(pkmn.Id, pkmn.TempLockedMove, pkmn.TempLockedTargets);
                 }
                 // The Pokémon is free to switch or fight (unless it cannot switch due to Magnet Pull etc)
                 else
@@ -62,42 +48,42 @@ namespace Kermalis.PokemonBattleEngine.AI
                     PBEPokemon[] availableForSwitch = team.Party.Except(standBy).Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
                     PBEMove[] usableMoves = pkmn.GetUsableMoves();
 
-                    var possibleActions = new List<(PBEAction Action, double Score)>();
+                    var possibleActions = new List<(PBETurnAction Action, double Score)>();
                     for (int m = 0; m < usableMoves.Length; m++) // Score moves
                     {
                         PBEMove move = usableMoves[m];
                         PBEType moveType = pkmn.GetMoveType(move);
                         PBEMoveTarget moveTargets = pkmn.GetMoveTargets(move);
-                        PBETarget[] possibleTargets = PBEMoveData.IsSpreadMove(moveTargets)
-                            ? new PBETarget[] { GetSpreadMoveTargets(pkmn, moveTargets) }
+                        PBETurnTarget[] possibleTargets = PBEMoveData.IsSpreadMove(moveTargets)
+                            ? new PBETurnTarget[] { GetSpreadMoveTargets(pkmn, moveTargets) }
                             : GetPossibleTargets(pkmn, moveTargets);
-                        foreach (PBETarget possibleTarget in possibleTargets)
+                        foreach (PBETurnTarget possibleTarget in possibleTargets)
                         {
                             // TODO: RandomFoeSurrounding (probably just account for the specific effects that use this target type)
                             var targets = new List<PBEPokemon>();
-                            if (possibleTarget.HasFlag(PBETarget.AllyLeft))
+                            if (possibleTarget.HasFlag(PBETurnTarget.AllyLeft))
                             {
                                 targets.Add(team.TryGetPokemon(PBEFieldPosition.Left));
                             }
-                            if (possibleTarget.HasFlag(PBETarget.AllyCenter))
+                            if (possibleTarget.HasFlag(PBETurnTarget.AllyCenter))
                             {
                                 targets.Add(team.TryGetPokemon(PBEFieldPosition.Center));
                             }
-                            if (possibleTarget.HasFlag(PBETarget.AllyRight))
+                            if (possibleTarget.HasFlag(PBETurnTarget.AllyRight))
                             {
                                 targets.Add(team.TryGetPokemon(PBEFieldPosition.Right));
                             }
-                            if (possibleTarget.HasFlag(PBETarget.FoeLeft))
+                            if (possibleTarget.HasFlag(PBETurnTarget.FoeLeft))
                             {
-                                targets.Add(opposingTeam.TryGetPokemon(PBEFieldPosition.Left));
+                                targets.Add(team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Left));
                             }
-                            if (possibleTarget.HasFlag(PBETarget.FoeCenter))
+                            if (possibleTarget.HasFlag(PBETurnTarget.FoeCenter))
                             {
-                                targets.Add(opposingTeam.TryGetPokemon(PBEFieldPosition.Center));
+                                targets.Add(team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Center));
                             }
-                            if (possibleTarget.HasFlag(PBETarget.FoeRight))
+                            if (possibleTarget.HasFlag(PBETurnTarget.FoeRight))
                             {
-                                targets.Add(opposingTeam.TryGetPokemon(PBEFieldPosition.Right));
+                                targets.Add(team.OpposingTeam.TryGetPokemon(PBEFieldPosition.Right));
                             }
 
                             double score = 0.0;
@@ -121,11 +107,11 @@ namespace Kermalis.PokemonBattleEngine.AI
                                             // TODO: Favor sleep with Bad Dreams (unless ally)
                                             if (target.Status1 != PBEStatus1.None)
                                             {
-                                                score += target.Team == opposingTeam ? -60 : 0;
+                                                score += target.Team == team.OpposingTeam ? -60 : 0;
                                             }
                                             else
                                             {
-                                                score += target.Team == opposingTeam ? +40 : -20;
+                                                score += target.Team == team.OpposingTeam ? +40 : -20;
                                             }
                                         }
                                     }
@@ -191,31 +177,31 @@ namespace Kermalis.PokemonBattleEngine.AI
                                             typeEffectiveness *= PBEPokemonData.TypeEffectiveness[moveType][target.KnownType2];
                                             if (typeEffectiveness <= 0.0) // (-infinity, 0.0] Ineffective
                                             {
-                                                score += target.Team == opposingTeam ? -60 : -1;
+                                                score += target.Team == team.OpposingTeam ? -60 : -1;
                                             }
                                             else if (typeEffectiveness <= 0.25) // (0.0, 0.25] NotVeryEffective
                                             {
-                                                score += target.Team == opposingTeam ? -30 : -5;
+                                                score += target.Team == team.OpposingTeam ? -30 : -5;
                                             }
                                             else if (typeEffectiveness < 1.0) // (0.25, 1.0) NotVeryEffective
                                             {
-                                                score += target.Team == opposingTeam ? -10 : -10;
+                                                score += target.Team == team.OpposingTeam ? -10 : -10;
                                             }
                                             else if (typeEffectiveness == 1.0) // [1.0, 1.0] Normal
                                             {
-                                                score += target.Team == opposingTeam ? +10 : -15;
+                                                score += target.Team == team.OpposingTeam ? +10 : -15;
                                             }
                                             else if (typeEffectiveness < 4.0) // (1.0, 4.0) SuperEffective
                                             {
-                                                score += target.Team == opposingTeam ? +25 : -20;
+                                                score += target.Team == team.OpposingTeam ? +25 : -20;
                                             }
                                             else // [4.0, infinity) SuperEffective
                                             {
-                                                score += target.Team == opposingTeam ? +40 : -30;
+                                                score += target.Team == team.OpposingTeam ? +40 : -30;
                                             }
                                             if (pkmn.HasType(moveType) && typeEffectiveness > 0.0) // STAB
                                             {
-                                                score += (pkmn.Ability == PBEAbility.Adaptability ? 15 : 10) * (target.Team == opposingTeam ? +1 : -1);
+                                                score += (pkmn.Ability == PBEAbility.Adaptability ? 15 : 10) * (target.Team == team.OpposingTeam ? +1 : -1);
                                             }
                                         }
                                     }
@@ -228,7 +214,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                 case PBEMoveEffect.RestoreUserHP:
                                 {
                                     PBEPokemon target = targets[0];
-                                    if (target == null || target.Team == opposingTeam)
+                                    if (target == null || target.Team == team.OpposingTeam)
                                     {
                                         score -= 100;
                                     }
@@ -325,14 +311,9 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     // TODO Moves
                                     break;
                                 }
+                                default: throw new ArgumentOutOfRangeException(nameof(PBEMoveData.Effect));
                             }
-                            var mAction = new PBEAction
-                            {
-                                Decision = PBEDecision.Fight,
-                                FightMove = move,
-                                FightTargets = possibleTarget
-                            };
-                            possibleActions.Add((mAction, score));
+                            possibleActions.Add((new PBETurnAction(pkmn.Id, move, possibleTarget), score));
                         }
                     }
                     if (pkmn.CanSwitchOut())
@@ -344,19 +325,14 @@ namespace Kermalis.PokemonBattleEngine.AI
                             // TODO: Known moves of active battlers
                             // TODO: Type effectiveness
                             double score = 0.0;
-                            var sAction = new PBEAction
-                            {
-                                Decision = PBEDecision.SwitchOut,
-                                SwitchPokemonId = switchPkmn.Id
-                            };
-                            possibleActions.Add((sAction, score));
+                            possibleActions.Add((new PBETurnAction(pkmn.Id, switchPkmn.Id), score));
                         }
                     }
 
-                    string ToDebugString((PBEAction Action, double Score) t)
+                    string ToDebugString((PBETurnAction Action, double Score) t)
                     {
                         string str = "{";
-                        if (t.Action.Decision == PBEDecision.Fight)
+                        if (t.Action.Decision == PBETurnDecision.Fight)
                         {
                             str += string.Format("Fight {0} {1}", t.Action.FightMove, t.Action.FightTargets);
                         }
@@ -367,15 +343,14 @@ namespace Kermalis.PokemonBattleEngine.AI
                         str += " [" + t.Score + "]}";
                         return str;
                     }
-                    IOrderedEnumerable<(PBEAction Action, double Score)> byScore = possibleActions.OrderByDescending(t => t.Score);
+                    IOrderedEnumerable<(PBETurnAction Action, double Score)> byScore = possibleActions.OrderByDescending(t => t.Score);
                     Debug.WriteLine("{0}'s possible actions: {1}", pkmn.Nickname, byScore.Select(t => ToDebugString(t)).Print());
                     double bestScore = byScore.First().Score;
                     actions[i] = byScore.Where(t => t.Score == bestScore).ToArray().RandomElement().Action; // Pick random action of the ones that tied for best score
                 }
 
                 // Action was chosen, finish up for this Pokémon
-                actions[i].PokemonId = pkmn.Id;
-                if (actions[i].Decision == PBEDecision.SwitchOut)
+                if (actions[i].Decision == PBETurnDecision.SwitchOut)
                 {
                     standBy.Add(team.TryGetPokemon(actions[i].SwitchPokemonId));
                 }
@@ -383,14 +358,16 @@ namespace Kermalis.PokemonBattleEngine.AI
             return actions;
         }
 
-        /// <summary>
-        /// Creates valid switches for a battle for a specific team.
-        /// </summary>
+        /// <summary>Creates valid switches for a battle for a specific team.</summary>
         /// <param name="team">The team to create switches for.</param>
         /// <exception cref="InvalidOperationException">Thrown when <paramref name="team"/> does not require switch-ins or <paramref name="team"/>'s <see cref="PBETeam.Battle"/>'s <see cref="PBEBattle.BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="team"/>'s <see cref="PBETeam.Battle"/>'s <see cref="PBEBattle.BattleFormat"/> is invalid.</exception>
-        public static IEnumerable<(byte PokemonId, PBEFieldPosition Position)> CreateSwitches(PBETeam team)
+        public static PBESwitchIn[] CreateSwitches(PBETeam team)
         {
+            if (team == null)
+            {
+                throw new ArgumentNullException(nameof(team));
+            }
             if (team.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
             {
                 throw new InvalidOperationException($"{nameof(team.Battle.BattleState)} must be {PBEBattleState.WaitingForSwitchIns} to create switch-ins.");
@@ -399,7 +376,6 @@ namespace Kermalis.PokemonBattleEngine.AI
             {
                 throw new InvalidOperationException($"{nameof(team)} must require switch-ins.");
             }
-            var switches = new List<(byte PokemonId, PBEFieldPosition Position)>(team.SwitchInsRequired);
             PBEPokemon[] available = team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
             available.Shuffle();
             var availablePositions = new List<PBEFieldPosition>();
@@ -441,9 +417,10 @@ namespace Kermalis.PokemonBattleEngine.AI
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(team.Battle.BattleFormat));
             }
+            var switches = new PBESwitchIn[team.SwitchInsRequired];
             for (int i = 0; i < team.SwitchInsRequired; i++)
             {
-                switches.Add((available[i].Id, availablePositions[i]));
+                switches[i] = new PBESwitchIn(available[i].Id, availablePositions[i]);
             }
             return switches;
         }

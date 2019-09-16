@@ -3,17 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEList<T> : INotifyCollectionChanged, INotifyPropertyChanged, IReadOnlyList<T>
     {
-        private void FireEvents(NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(Count));
-            OnPropertyChanged("Item[]");
-            OnCollectionChanged(e);
-        }
         private void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged?.Invoke(this, e);
@@ -25,52 +20,70 @@ namespace Kermalis.PokemonBattleEngine.Data
         public event NotifyCollectionChangedEventHandler CollectionChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<T> list;
-        public int Count => list.Count;
-        public T this[int index] => list[index];
+        private readonly List<T> _list;
+        public int Count => _list.Count;
+        public T this[int index]
+        {
+            get
+            {
+                if (index >= _list.Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+                return _list[index];
+            }
+        }
 
         internal PBEList()
         {
-            list = new List<T>();
+            _list = new List<T>();
         }
         internal PBEList(int capacity)
         {
-            list = new List<T>(capacity);
+            _list = new List<T>(capacity);
         }
 
         internal void Add(T item)
         {
-            int index = list.Count;
-            list.Insert(index, item);
-            FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+            int index = _list.Count;
+            _list.Insert(index, item);
+            OnPropertyChanged(nameof(Count));
+            OnPropertyChanged("Item[]");
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
         }
         internal void Insert(int index, T item)
         {
-            list.Insert(index, item);
-            FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+            _list.Insert(index, item);
+            OnPropertyChanged(nameof(Count));
+            OnPropertyChanged("Item[]");
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
         }
         internal bool Remove(T item)
         {
-            int index = list.IndexOf(item);
+            int index = _list.IndexOf(item);
             bool b = index != -1;
             if (b)
             {
-                list.RemoveAt(index);
-                FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+                _list.RemoveAt(index);
+                OnPropertyChanged(nameof(Count));
+                OnPropertyChanged("Item[]");
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
             }
             return b;
         }
         internal void RemoveAt(int index)
         {
-            if (index < 0 || index >= list.Count)
+            if (index < 0 || index >= _list.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
             else
             {
-                T item = list[index];
-                list.RemoveAt(index);
-                FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+                T item = _list[index];
+                _list.RemoveAt(index);
+                OnPropertyChanged(nameof(Count));
+                OnPropertyChanged("Item[]");
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
             }
         }
         internal void Reset(IEnumerable<T> collection)
@@ -79,27 +92,39 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(collection));
             }
-            list.Clear();
-            list.AddRange(collection);
-            FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            int oldCount = _list.Count;
+            if (!_list.SequenceEqual(collection))
+            {
+                _list.Clear();
+                _list.AddRange(collection);
+                if (oldCount != _list.Count)
+                {
+                    OnPropertyChanged(nameof(Count));
+                }
+                OnPropertyChanged("Item[]");
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
         }
 
         public bool Contains(T item)
         {
-            return list.IndexOf(item) != -1;
+            return _list.IndexOf(item) != -1;
         }
         public int IndexOf(T item)
         {
-            return list.IndexOf(item);
+            return _list.IndexOf(item);
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return list.GetEnumerator();
+            for (int i = 0; i < _list.Count; i++)
+            {
+                yield return _list[i];
+            }
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return list.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

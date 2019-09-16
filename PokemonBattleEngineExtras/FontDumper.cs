@@ -5,13 +5,13 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal class FontDumper
+    internal sealed class FontDumper
     {
-        private class Character
+        private sealed class Character
         {
-            public byte SpaceWidth;
-            public byte Width;
-            public byte[][] Bitmap;
+            public byte SpaceWidth { get; }
+            public byte Width { get; }
+            public byte[][] Bitmap { get; }
 
             public Character(EndianBinaryReader reader, byte maxWidth, byte height)
             {
@@ -40,7 +40,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             }
         }
 
-        private static readonly Color[] colors = new Color[] { Color.Transparent, Color.White, Color.Black }; // value 02 is never used
+        private static readonly Color[] _colors = new Color[] { Color.Transparent, Color.White, Color.Black }; // value 02 is never used
         public static void Dump()
         {
             using (var narc = new NARC(@"../../../\DumpedData\Gen5Font.narc"))
@@ -123,6 +123,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                     }
                                     break;
                                 }
+                                default: throw new InvalidDataException();
                             }
                         }
 
@@ -139,7 +140,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                     {
                                         for (int x = 0; x < car.Width; x++)
                                         {
-                                            b.SetPixel(x, y, colors[car.Bitmap[y][x]]);
+                                            b.SetPixel(x, y, _colors[car.Bitmap[y][x]]);
                                         }
                                     }
                                     b.Save(path + '\\' + pair.Key.ToString("X4") + ".png");

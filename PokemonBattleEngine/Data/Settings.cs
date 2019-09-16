@@ -16,16 +16,16 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Fires whenever a property changes.</summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private bool isReadOnly;
+        private bool _isReadOnly;
         /// <summary>Gets a value that indicates whether this <see cref="PBESettings"/> object is read-only.</summary>
         public bool IsReadOnly
         {
-            get => isReadOnly;
+            get => _isReadOnly;
             private set
             {
-                if (isReadOnly != value)
+                if (_isReadOnly != value)
                 {
-                    isReadOnly = value;
+                    _isReadOnly = value;
                     OnPropertyChanged(nameof(IsReadOnly));
                 }
             }
@@ -42,805 +42,801 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         /// <summary>The default value of <see cref="MaxLevel"/>.</summary>
         public const byte DefaultMaxLevel = 100;
-        private byte maxLevel = DefaultMaxLevel;
+        private byte _maxLevel = DefaultMaxLevel;
         /// <summary>The maximum level a Pokémon can be. Not used in stat/damage calculation.</summary>
         public byte MaxLevel
         {
-            get => maxLevel;
+            get => _maxLevel;
             set
             {
                 ReadOnlyCheck();
-                if (maxLevel != value)
+                if (_maxLevel != value)
                 {
-                    if (value < minLevel)
+                    if (value < _minLevel)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MaxLevel)} must be at least {nameof(MinLevel)} ({minLevel}).");
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MaxLevel)} must be at least {nameof(MinLevel)} ({_minLevel}).");
                     }
-                    maxLevel = value;
+                    _maxLevel = value;
                     OnPropertyChanged(nameof(MaxLevel));
                 }
             }
         }
         /// <summary>The default value of <see cref="MinLevel"/>.</summary>
         public const byte DefaultMinLevel = 1;
-        private byte minLevel = DefaultMinLevel;
+        private byte _minLevel = DefaultMinLevel;
         /// <summary>The minimum level a Pokémon can be.</summary>
         public byte MinLevel
         {
-            get => minLevel;
+            get => _minLevel;
             set
             {
                 ReadOnlyCheck();
-                if (minLevel != value)
+                if (_minLevel != value)
                 {
-                    if (value < 1 || value > maxLevel)
+                    if (value < 1 || value > _maxLevel)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MinLevel)} must be at least 1 and cannot exceed {nameof(MaxLevel)} ({maxLevel}).");
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MinLevel)} must be at least 1 and cannot exceed {nameof(MaxLevel)} ({_maxLevel}).");
                     }
-                    minLevel = value;
+                    _minLevel = value;
                     OnPropertyChanged(nameof(MinLevel));
                 }
             }
         }
         /// <summary>The default value of <see cref="MaxPartySize"/>.</summary>
         public const sbyte DefaultMaxPartySize = 6;
-        private sbyte maxPartySize = DefaultMaxPartySize;
+        private sbyte _maxPartySize = DefaultMaxPartySize;
         /// <summary>The maximum amount of Pokémon each team can bring into a battle.</summary>
         public sbyte MaxPartySize
         {
-            get => maxPartySize;
+            get => _maxPartySize;
             set
             {
                 ReadOnlyCheck();
-                if (maxPartySize != value)
+                if (_maxPartySize != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MaxPartySize)} must be at least 1.");
                     }
-                    maxPartySize = value;
+                    _maxPartySize = value;
                     OnPropertyChanged(nameof(MaxPartySize));
                 }
             }
         }
         /// <summary>The default value of <see cref="MaxPokemonNameLength"/>.</summary>
         public const byte DefaultMaxPokemonNameLength = 10;
-        private byte maxPokemonNameLength = DefaultMaxPokemonNameLength;
+        private byte _maxPokemonNameLength = DefaultMaxPokemonNameLength;
         /// <summary>The maximum amount of characters a Pokémon nickname can have.</summary>
         public byte MaxPokemonNameLength
         {
-            get => maxPokemonNameLength;
+            get => _maxPokemonNameLength;
             set
             {
                 ReadOnlyCheck();
-                if (maxPokemonNameLength != value)
+                if (_maxPokemonNameLength != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MaxPokemonNameLength)} must be at least 1.");
                     }
-                    maxPokemonNameLength = value;
+                    _maxPokemonNameLength = value;
                     OnPropertyChanged(nameof(MaxPokemonNameLength));
                 }
             }
         }
         /// <summary>The default value of <see cref="MaxTrainerNameLength"/>. This value is different in non-English games.</summary>
         public const byte DefaultMaxTrainerNameLength = 7;
-        private byte maxTrainerNameLength = DefaultMaxTrainerNameLength;
+        private byte _maxTrainerNameLength = DefaultMaxTrainerNameLength;
         /// <summary>The maximum amount of characters a trainer's name can have.</summary>
         [Obsolete("Currently not used anywhere.")]
         public byte MaxTrainerNameLength
         {
-            get => maxTrainerNameLength;
+            get => _maxTrainerNameLength;
             set
             {
                 ReadOnlyCheck();
-                if (maxTrainerNameLength != value)
+                if (_maxTrainerNameLength != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MaxTrainerNameLength)} must be at least 1.");
                     }
-                    maxTrainerNameLength = value;
+                    _maxTrainerNameLength = value;
                     OnPropertyChanged(nameof(MaxTrainerNameLength));
                 }
             }
         }
         /// <summary>The default value of <see cref="MaxTotalEVs"/>.</summary>
         public const ushort DefaultMaxTotalEVs = 510;
-        private ushort maxTotalEVs = DefaultMaxTotalEVs;
+        private ushort _maxTotalEVs = DefaultMaxTotalEVs;
         /// <summary>The maximum sum of a Pokémon's EVs.</summary>
         public ushort MaxTotalEVs
         {
-            get => maxTotalEVs;
+            get => _maxTotalEVs;
             set
             {
                 const int max = byte.MaxValue * 6;
                 ReadOnlyCheck();
-                if (maxTotalEVs != value)
+                if (_maxTotalEVs != value)
                 {
                     if (value > max)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(MaxTotalEVs)} must not exceed {max}.");
                     }
-                    maxTotalEVs = value;
+                    _maxTotalEVs = value;
                     OnPropertyChanged(nameof(MaxTotalEVs));
                 }
             }
         }
         /// <summary>The default value of <see cref="MaxIVs"/>.</summary>
         public const byte DefaultMaxIVs = 31;
-        private byte maxIVs = DefaultMaxIVs;
+        private byte _maxIVs = DefaultMaxIVs;
         /// <summary>The maximum amount of IVs Pokémon can have in each stat. Raising this will not affect <see cref="PBEMove.HiddenPower"/>.</summary>
         public byte MaxIVs
         {
-            get => maxIVs;
+            get => _maxIVs;
             set
             {
                 ReadOnlyCheck();
-                if (maxIVs != value)
+                if (_maxIVs != value)
                 {
-                    maxIVs = value;
+                    _maxIVs = value;
                     OnPropertyChanged(nameof(MaxIVs));
                 }
             }
         }
         /// <summary>The default value of <see cref="NatureStatBoost"/>.</summary>
         public const double DefaultNatureStatBoost = 0.1;
-        private double natureStatBoost = DefaultNatureStatBoost;
+        private double _natureStatBoost = DefaultNatureStatBoost;
         /// <summary>The amount of influence a Pokémon's <see cref="PBENature"/> has on its stats.</summary>
         public double NatureStatBoost
         {
-            get => natureStatBoost;
+            get => _natureStatBoost;
             set
             {
                 ReadOnlyCheck();
-                if (natureStatBoost != value)
+                if (_natureStatBoost != value)
                 {
                     if (value < 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(NatureStatBoost)} must be at least 0.");
                     }
-                    natureStatBoost = value;
+                    _natureStatBoost = value;
                     OnPropertyChanged(nameof(NatureStatBoost));
                 }
             }
         }
         /// <summary>The default value of <see cref="MaxStatChange"/>.</summary>
         public const sbyte DefaultMaxStatChange = 6;
-        private sbyte maxStatChange = DefaultMaxStatChange;
+        private sbyte _maxStatChange = DefaultMaxStatChange;
         /// <summary>The maximum change a stat can have in the negative and positive direction.</summary>
         public sbyte MaxStatChange
         {
-            get => maxStatChange;
+            get => _maxStatChange;
             set
             {
                 ReadOnlyCheck();
-                if (maxStatChange != value)
+                if (_maxStatChange != value)
                 {
-                    maxStatChange = value;
+                    _maxStatChange = value;
                     OnPropertyChanged(nameof(MaxStatChange));
                 }
             }
         }
         /// <summary>The default value of <see cref="NumMoves"/>.</summary>
         public const byte DefaultNumMoves = 4;
-        private byte numMoves = DefaultNumMoves;
+        private byte _numMoves = DefaultNumMoves;
         /// <summary>The maximum amount of moves a specific Pokémon can remember at once.</summary>
         public byte NumMoves
         {
-            get => numMoves;
+            get => _numMoves;
             set
             {
                 ReadOnlyCheck();
-                if (numMoves != value)
+                if (_numMoves != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(NumMoves)} must be at least 1.");
                     }
-                    numMoves = value;
+                    _numMoves = value;
                     OnPropertyChanged(nameof(NumMoves));
                 }
             }
         }
         /// <summary>The default value of <see cref="PPMultiplier"/>.</summary>
         public const byte DefaultPPMultiplier = 5;
-        private byte ppMultiplier = DefaultPPMultiplier;
-        /// <summary>This affects the base PP of each move and the boost PP-Ups give.</summary>
-        /// <remarks>
-        /// <para>Growl is a tier 8 move, so the maximum PP will be 64. The formula: Max(1, ((tier * PPMultiplier) + (tier * PPUps))).</para>
-        /// <para><see cref="PBEMove.Transform"/> will change the max PP of each copied move to PPMultiplier (1 if the move is tier 0).</para>
-        /// </remarks>
+        private byte _ppMultiplier = DefaultPPMultiplier;
+        /// <summary>This affects the base PP of each move and the boost PP-Ups give. The formulas that determine PP are at <see cref="PBEBattleMoveset.GetNonTransformPP(PBESettings, PBEMove, byte)"/> and <see cref="PBEBattleMoveset.GetTransformPP(PBESettings, PBEMove)"/>.</summary>
         public byte PPMultiplier
         {
-            get => ppMultiplier;
+            get => _ppMultiplier;
             set
             {
                 ReadOnlyCheck();
-                if (ppMultiplier != value)
+                if (_ppMultiplier != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(PPMultiplier)} must be at least 1.");
                     }
-                    ppMultiplier = value;
+                    _ppMultiplier = value;
                     OnPropertyChanged(nameof(PPMultiplier));
                 }
             }
         }
         /// <summary>The default value of <see cref="MaxPPUps"/>.</summary>
         public const byte DefaultMaxPPUps = 3;
-        private byte maxPPUps = DefaultMaxPPUps;
+        private byte _maxPPUps = DefaultMaxPPUps;
         /// <summary>The maximum amount of PP-Ups that can be used on each of a Pokémon's moves.</summary>
         public byte MaxPPUps
         {
-            get => maxPPUps;
+            get => _maxPPUps;
             set
             {
                 ReadOnlyCheck();
-                if (maxPPUps != value)
+                if (_maxPPUps != value)
                 {
-                    maxPPUps = value;
+                    _maxPPUps = value;
                     OnPropertyChanged(nameof(MaxPPUps));
                 }
             }
         }
         /// <summary>The default value of <see cref="CritMultiplier"/>.</summary>
         public const double DefaultCritMultiplier = 2.0;
-        private double critMultiplier = DefaultCritMultiplier;
+        private double _critMultiplier = DefaultCritMultiplier;
         /// <summary>The damage boost awarded by critical hits.</summary>
         public double CritMultiplier
         {
-            get => critMultiplier;
+            get => _critMultiplier;
             set
             {
                 ReadOnlyCheck();
-                if (critMultiplier != value)
+                if (_critMultiplier != value)
                 {
-                    critMultiplier = value;
+                    _critMultiplier = value;
                     OnPropertyChanged(nameof(CritMultiplier));
                 }
             }
         }
         /// <summary>The default value of <see cref="ConfusionMaxTurns"/>.</summary>
         public const byte DefaultConfusionMaxTurns = 4;
-        private byte confusionMaxTurns = DefaultConfusionMaxTurns;
+        private byte _confusionMaxTurns = DefaultConfusionMaxTurns;
         /// <summary>The maximum amount of turns a Pokémon can be <see cref="PBEStatus2.Confused"/>.</summary>
         public byte ConfusionMaxTurns
         {
-            get => confusionMaxTurns;
+            get => _confusionMaxTurns;
             set
             {
                 ReadOnlyCheck();
-                if (confusionMaxTurns != value)
+                if (_confusionMaxTurns != value)
                 {
-                    if (value < confusionMinTurns)
+                    if (value < _confusionMinTurns)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(ConfusionMaxTurns)} must be at least {nameof(ConfusionMinTurns)} ({confusionMinTurns}).");
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(ConfusionMaxTurns)} must be at least {nameof(ConfusionMinTurns)} ({_confusionMinTurns}).");
                     }
-                    confusionMaxTurns = value;
+                    _confusionMaxTurns = value;
                     OnPropertyChanged(nameof(ConfusionMaxTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="ConfusionMinTurns"/>.</summary>
         public const byte DefaultConfusionMinTurns = 1;
-        private byte confusionMinTurns = DefaultConfusionMinTurns;
+        private byte _confusionMinTurns = DefaultConfusionMinTurns;
         /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus2.Confused"/>.</summary>
         public byte ConfusionMinTurns
         {
-            get => confusionMinTurns;
+            get => _confusionMinTurns;
             set
             {
                 ReadOnlyCheck();
-                if (confusionMinTurns != value)
+                if (_confusionMinTurns != value)
                 {
-                    if (value > confusionMaxTurns)
+                    if (value > _confusionMaxTurns)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(ConfusionMinTurns)} cannot exceed {nameof(ConfusionMaxTurns)} ({confusionMaxTurns}).");
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(ConfusionMinTurns)} cannot exceed {nameof(ConfusionMaxTurns)} ({_confusionMaxTurns}).");
                     }
-                    confusionMinTurns = value;
+                    _confusionMinTurns = value;
                     OnPropertyChanged(nameof(ConfusionMinTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="SleepMaxTurns"/>.</summary>
         public const byte DefaultSleepMaxTurns = 3;
-        private byte sleepMaxTurns = DefaultSleepMaxTurns;
+        private byte _sleepMaxTurns = DefaultSleepMaxTurns;
         /// <summary>The maximum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>.</summary>
         public byte SleepMaxTurns
         {
-            get => sleepMaxTurns;
+            get => _sleepMaxTurns;
             set
             {
                 ReadOnlyCheck();
-                if (sleepMaxTurns != value)
+                if (_sleepMaxTurns != value)
                 {
-                    if (value < sleepMinTurns)
+                    if (value < _sleepMinTurns)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(SleepMaxTurns)} must be at least {nameof(SleepMinTurns)} ({sleepMinTurns}).");
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(SleepMaxTurns)} must be at least {nameof(SleepMinTurns)} ({_sleepMinTurns}).");
                     }
-                    sleepMaxTurns = value;
+                    _sleepMaxTurns = value;
                     OnPropertyChanged(nameof(SleepMaxTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="SleepMinTurns"/>.</summary>
         public const byte DefaultSleepMinTurns = 1;
-        private byte sleepMinTurns = DefaultSleepMinTurns;
+        private byte _sleepMinTurns = DefaultSleepMinTurns;
         /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>.</summary>
         public byte SleepMinTurns
         {
-            get => sleepMinTurns;
+            get => _sleepMinTurns;
             set
             {
                 ReadOnlyCheck();
-                if (sleepMinTurns != value)
+                if (_sleepMinTurns != value)
                 {
-                    if (value > sleepMaxTurns)
+                    if (value > _sleepMaxTurns)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(SleepMinTurns)} cannot exceed {nameof(SleepMaxTurns)} ({sleepMaxTurns}).");
+                        throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(SleepMinTurns)} cannot exceed {nameof(SleepMaxTurns)} ({_sleepMaxTurns}).");
                     }
-                    sleepMinTurns = value;
+                    _sleepMinTurns = value;
                     OnPropertyChanged(nameof(SleepMinTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="BurnDamageDenominator"/>.</summary>
         public const byte DefaultBurnDamageDenominator = 8;
-        private byte burnDamageDenominator = DefaultBurnDamageDenominator;
+        private byte _burnDamageDenominator = DefaultBurnDamageDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus1.Burned"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte BurnDamageDenominator
         {
-            get => burnDamageDenominator;
+            get => _burnDamageDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (burnDamageDenominator != value)
+                if (_burnDamageDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(BurnDamageDenominator)} must be at least 1.");
                     }
-                    burnDamageDenominator = value;
+                    _burnDamageDenominator = value;
                     OnPropertyChanged(nameof(BurnDamageDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="PoisonDamageDenominator"/>.</summary>
         public const byte DefaultPoisonDamageDenominator = 8;
-        private byte poisonDamageDenominator = DefaultPoisonDamageDenominator;
+        private byte _poisonDamageDenominator = DefaultPoisonDamageDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus1.Poisoned"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte PoisonDamageDenominator
         {
-            get => poisonDamageDenominator;
+            get => _poisonDamageDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (poisonDamageDenominator != value)
+                if (_poisonDamageDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(PoisonDamageDenominator)} must be at least 1.");
                     }
-                    poisonDamageDenominator = value;
+                    _poisonDamageDenominator = value;
                     OnPropertyChanged(nameof(PoisonDamageDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="ToxicDamageDenominator"/>.</summary>
         public const byte DefaultToxicDamageDenominator = 16;
-        private byte toxicDamageDenominator = DefaultToxicDamageDenominator;
+        private byte _toxicDamageDenominator = DefaultToxicDamageDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus1.BadlyPoisoned"/> loses (<see cref="PBEPokemon.Status1Counter"/>/this) of its HP at the end of every turn.</summary>
         public byte ToxicDamageDenominator
         {
-            get => toxicDamageDenominator;
+            get => _toxicDamageDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (toxicDamageDenominator != value)
+                if (_toxicDamageDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(ToxicDamageDenominator)} must be at least 1.");
                     }
-                    toxicDamageDenominator = value;
+                    _toxicDamageDenominator = value;
                     OnPropertyChanged(nameof(ToxicDamageDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="LeechSeedDenominator"/>.</summary>
         public const byte DefaultLeechSeedDenominator = 8;
-        private byte leechSeedDenominator = DefaultLeechSeedDenominator;
+        private byte _leechSeedDenominator = DefaultLeechSeedDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus2.LeechSeed"/> loses (1/this) of its HP at the end of every turn and the Pokémon at <see cref="PBEPokemon.SeededPosition"/> on <see cref="PBEPokemon.SeededTeam"/> restores the lost HP.</summary>
         public byte LeechSeedDenominator
         {
-            get => leechSeedDenominator;
+            get => _leechSeedDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (leechSeedDenominator != value)
+                if (_leechSeedDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(LeechSeedDenominator)} must be at least 1.");
                     }
-                    leechSeedDenominator = value;
+                    _leechSeedDenominator = value;
                     OnPropertyChanged(nameof(LeechSeedDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="CurseDenominator"/>.</summary>
         public const byte DefaultCurseDenominator = 4;
-        private byte curseDenominator = DefaultCurseDenominator;
+        private byte _curseDenominator = DefaultCurseDenominator;
         /// <summary>A Pokémon with <see cref="PBEStatus2.Cursed"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte CurseDenominator
         {
-            get => curseDenominator;
+            get => _curseDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (curseDenominator != value)
+                if (_curseDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(CurseDenominator)} must be at least 1.");
                     }
-                    curseDenominator = value;
+                    _curseDenominator = value;
                     OnPropertyChanged(nameof(CurseDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="LeftoversHealDenominator"/>.</summary>
         public const byte DefaultLeftoversHealDenominator = 16;
-        private byte leftoversHealDenominator = DefaultLeftoversHealDenominator;
+        private byte _leftoversHealDenominator = DefaultLeftoversHealDenominator;
         /// <summary>A Pokémon holding a <see cref="PBEItem.Leftovers"/> restores (1/this) of its HP at the end of every turn.</summary>
         public byte LeftoversHealDenominator
         {
-            get => leftoversHealDenominator;
+            get => _leftoversHealDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (leftoversHealDenominator != value)
+                if (_leftoversHealDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(LeftoversHealDenominator)} must be at least 1.");
                     }
-                    leftoversHealDenominator = value;
+                    _leftoversHealDenominator = value;
                     OnPropertyChanged(nameof(LeftoversHealDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="BlackSludgeDamageDenominator"/>.</summary>
         public const byte DefaultBlackSludgeDamageDenominator = 8;
-        private byte blackSludgeDamageDenominator = DefaultBlackSludgeDamageDenominator;
+        private byte _blackSludgeDamageDenominator = DefaultBlackSludgeDamageDenominator;
         /// <summary>A Pokémon holding a <see cref="PBEItem.BlackSludge"/> without <see cref="PBEType.Poison"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte BlackSludgeDamageDenominator
         {
-            get => blackSludgeDamageDenominator;
+            get => _blackSludgeDamageDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (blackSludgeDamageDenominator != value)
+                if (_blackSludgeDamageDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(BlackSludgeDamageDenominator)} must be at least 1.");
                     }
-                    blackSludgeDamageDenominator = value;
+                    _blackSludgeDamageDenominator = value;
                     OnPropertyChanged(nameof(BlackSludgeDamageDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="BlackSludgeHealDenominator"/>.</summary>
         public const byte DefaultBlackSludgeHealDenominator = 16;
-        private byte blackSludgeHealDenominator = DefaultBlackSludgeHealDenominator;
+        private byte _blackSludgeHealDenominator = DefaultBlackSludgeHealDenominator;
         /// <summary>A Pokémon holding a <see cref="PBEItem.BlackSludge"/> with <see cref="PBEType.Poison"/> restores (1/this) of its HP at the end of every turn.</summary>
         public byte BlackSludgeHealDenominator
         {
-            get => blackSludgeHealDenominator;
+            get => _blackSludgeHealDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (blackSludgeHealDenominator != value)
+                if (_blackSludgeHealDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(BlackSludgeHealDenominator)} must be at least 1.");
                     }
-                    blackSludgeHealDenominator = value;
+                    _blackSludgeHealDenominator = value;
                     OnPropertyChanged(nameof(BlackSludgeHealDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="ReflectTurns"/>.</summary>
         public const byte DefaultReflectTurns = 5;
-        private byte reflectTurns = DefaultReflectTurns;
+        private byte _reflectTurns = DefaultReflectTurns;
         /// <summary>The amount of turns <see cref="PBEMove.Reflect"/> lasts.</summary>
         public byte ReflectTurns
         {
-            get => reflectTurns;
+            get => _reflectTurns;
             set
             {
                 ReadOnlyCheck();
-                if (reflectTurns != value)
+                if (_reflectTurns != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(ReflectTurns)} must be at least 1.");
                     }
-                    reflectTurns = value;
+                    _reflectTurns = value;
                     OnPropertyChanged(nameof(ReflectTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="LightScreenTurns"/>.</summary>
         public const byte DefaultLightScreenTurns = 5;
-        private byte lightScreenTurns = DefaultLightScreenTurns;
+        private byte _lightScreenTurns = DefaultLightScreenTurns;
         /// <summary>The amount of turns <see cref="PBEMove.LightScreen"/> lasts.</summary>
         public byte LightScreenTurns
         {
-            get => lightScreenTurns;
+            get => _lightScreenTurns;
             set
             {
                 ReadOnlyCheck();
-                if (lightScreenTurns != value)
+                if (_lightScreenTurns != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(LightScreenTurns)} must be at least 1.");
                     }
-                    lightScreenTurns = value;
+                    _lightScreenTurns = value;
                     OnPropertyChanged(nameof(LightScreenTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="LightClayTurnExtension"/>.</summary>
         public const byte DefaultLightClayTurnExtension = 3;
-        private byte lightClayTurnExtension = DefaultLightClayTurnExtension;
+        private byte _lightClayTurnExtension = DefaultLightClayTurnExtension;
         /// <summary>The amount of turns added to <see cref="ReflectTurns"/> and <see cref="LightScreenTurns"/> when the user is holding a <see cref="PBEItem.LightClay"/>.</summary>
         public byte LightClayTurnExtension
         {
-            get => lightClayTurnExtension;
+            get => _lightClayTurnExtension;
             set
             {
                 ReadOnlyCheck();
-                if (lightClayTurnExtension != value)
+                if (_lightClayTurnExtension != value)
                 {
-                    lightClayTurnExtension = value;
+                    _lightClayTurnExtension = value;
                     OnPropertyChanged(nameof(LightClayTurnExtension));
                 }
             }
         }
         /// <summary>The default value of <see cref="HailTurns"/>.</summary>
         public const byte DefaultHailTurns = 5;
-        private byte hailTurns = DefaultHailTurns;
+        private byte _hailTurns = DefaultHailTurns;
         /// <summary>The amount of turns <see cref="PBEWeather.Hailstorm"/> lasts. For infinite turns, set <see cref="IcyRockTurnExtension"/> to 0 first, then this to 0.</summary>
         public byte HailTurns
         {
-            get => hailTurns;
+            get => _hailTurns;
             set
             {
                 ReadOnlyCheck();
-                if (hailTurns != value)
+                if (_hailTurns != value)
                 {
-                    if (value == 0 && icyRockTurnExtension != 0)
+                    if (value == 0 && _icyRockTurnExtension != 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"For infinite turns, set {nameof(IcyRockTurnExtension)} to 0 first, then {nameof(HailTurns)} to 0.");
                     }
-                    hailTurns = value;
+                    _hailTurns = value;
                     OnPropertyChanged(nameof(HailTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="HailDamageDenominator"/>.</summary>
         public const byte DefaultHailDamageDenominator = 16;
-        private byte hailDamageDenominator = DefaultHailDamageDenominator;
+        private byte _hailDamageDenominator = DefaultHailDamageDenominator;
         /// <summary>A Pokémon in <see cref="PBEWeather.Hailstorm"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte HailDamageDenominator
         {
-            get => hailDamageDenominator;
+            get => _hailDamageDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (hailDamageDenominator != value)
+                if (_hailDamageDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(HailDamageDenominator)} must be at least 1.");
                     }
-                    hailDamageDenominator = value;
+                    _hailDamageDenominator = value;
                     OnPropertyChanged(nameof(HailDamageDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="IcyRockTurnExtension"/>.</summary>
         public const byte DefaultIcyRockTurnExtension = 3;
-        private byte icyRockTurnExtension = DefaultIcyRockTurnExtension;
+        private byte _icyRockTurnExtension = DefaultIcyRockTurnExtension;
         /// <summary>The amount of turns added to <see cref="HailTurns"/> when the user is holding a <see cref="PBEItem.IcyRock"/>. If <see cref="HailTurns"/> is 0 (infinite turns), this must also be 0.</summary>
         public byte IcyRockTurnExtension
         {
-            get => icyRockTurnExtension;
+            get => _icyRockTurnExtension;
             set
             {
                 ReadOnlyCheck();
-                if (icyRockTurnExtension != value)
+                if (_icyRockTurnExtension != value)
                 {
-                    if (value != 0 && hailTurns == 0)
+                    if (value != 0 && _hailTurns == 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"If {nameof(HailTurns)} is 0 (infinite turns), {nameof(IcyRockTurnExtension)} must also be 0.");
                     }
-                    icyRockTurnExtension = value;
+                    _icyRockTurnExtension = value;
                     OnPropertyChanged(nameof(IcyRockTurnExtension));
                 }
             }
         }
         /// <summary>The default value of <see cref="IceBodyHealDenominator"/>.</summary>
         public const byte DefaultIceBodyHealDenominator = 16;
-        private byte iceBodyHealDenominator = DefaultIceBodyHealDenominator;
+        private byte _iceBodyHealDenominator = DefaultIceBodyHealDenominator;
         /// <summary>A Pokémon with <see cref="PBEAbility.IceBody"/> in <see cref="PBEWeather.Hailstorm"/> restores (1/this) of its HP at the end of every turn.</summary>
         public byte IceBodyHealDenominator
         {
-            get => iceBodyHealDenominator;
+            get => _iceBodyHealDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (iceBodyHealDenominator != value)
+                if (_iceBodyHealDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(IceBodyHealDenominator)} must be at least 1.");
                     }
-                    iceBodyHealDenominator = value;
+                    _iceBodyHealDenominator = value;
                     OnPropertyChanged(nameof(IceBodyHealDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="RainTurns"/>.</summary>
         public const byte DefaultRainTurns = 5;
-        private byte rainTurns = DefaultRainTurns;
+        private byte _rainTurns = DefaultRainTurns;
         /// <summary>The amount of turns <see cref="PBEWeather.Rain"/> lasts. For infinite turns, set <see cref="DampRockTurnExtension"/> to 0 first, then this to 0.</summary>
         public byte RainTurns
         {
-            get => rainTurns;
+            get => _rainTurns;
             set
             {
                 ReadOnlyCheck();
-                if (rainTurns != value)
+                if (_rainTurns != value)
                 {
-                    if (value == 0 && dampRockTurnExtension != 0)
+                    if (value == 0 && _dampRockTurnExtension != 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"For infinite turns, set {nameof(DampRockTurnExtension)} to 0 first, then {nameof(RainTurns)} to 0.");
                     }
-                    rainTurns = value;
+                    _rainTurns = value;
                     OnPropertyChanged(nameof(RainTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="DampRockTurnExtension"/>.</summary>
         public const byte DefaultDampRockTurnExtension = 3;
-        private byte dampRockTurnExtension = DefaultDampRockTurnExtension;
+        private byte _dampRockTurnExtension = DefaultDampRockTurnExtension;
         /// <summary>The amount of turns added to <see cref="RainTurns"/> when the user is holding a <see cref="PBEItem.DampRock"/>. If <see cref="RainTurns"/> is 0 (infinite turns), this must also be 0.</summary>
         public byte DampRockTurnExtension
         {
-            get => dampRockTurnExtension;
+            get => _dampRockTurnExtension;
             set
             {
                 ReadOnlyCheck();
-                if (dampRockTurnExtension != value)
+                if (_dampRockTurnExtension != value)
                 {
-                    if (value != 0 && rainTurns == 0)
+                    if (value != 0 && _rainTurns == 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"If {nameof(RainTurns)} is 0 (infinite turns), {nameof(DampRockTurnExtension)} must also be 0.");
                     }
-                    dampRockTurnExtension = value;
+                    _dampRockTurnExtension = value;
                     OnPropertyChanged(nameof(DampRockTurnExtension));
                 }
             }
         }
         /// <summary>The default value of <see cref="SandstormTurns"/>.</summary>
         public const byte DefaultSandstormTurns = 5;
-        private byte sandstormTurns = DefaultSandstormTurns;
+        private byte _sandstormTurns = DefaultSandstormTurns;
         /// <summary>The amount of turns <see cref="PBEWeather.Sandstorm"/> lasts. For infinite turns, set <see cref="SmoothRockTurnExtension"/> to 0 first, then this to 0.</summary>
         public byte SandstormTurns
         {
-            get => sandstormTurns;
+            get => _sandstormTurns;
             set
             {
                 ReadOnlyCheck();
-                if (sandstormTurns != value)
+                if (_sandstormTurns != value)
                 {
-                    if (value == 0 && smoothRockTurnExtension != 0)
+                    if (value == 0 && _smoothRockTurnExtension != 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"For infinite turns, set {nameof(SmoothRockTurnExtension)} to 0 first, then {nameof(SandstormTurns)} to 0.");
                     }
-                    sandstormTurns = value;
+                    _sandstormTurns = value;
                     OnPropertyChanged(nameof(SandstormTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="SandstormDamageDenominator"/>.</summary>
         public const byte DefaultSandstormDamageDenominator = 16;
-        private byte sandstormDamageDenominator = DefaultSandstormDamageDenominator;
+        private byte _sandstormDamageDenominator = DefaultSandstormDamageDenominator;
         /// <summary>A Pokémon in <see cref="PBEWeather.Sandstorm"/> loses (1/this) of its HP at the end of every turn.</summary>
         public byte SandstormDamageDenominator
         {
-            get => sandstormDamageDenominator;
+            get => _sandstormDamageDenominator;
             set
             {
                 ReadOnlyCheck();
-                if (sandstormDamageDenominator != value)
+                if (_sandstormDamageDenominator != value)
                 {
                     if (value < 1)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"{nameof(SandstormDamageDenominator)} must be at least 1.");
                     }
-                    sandstormDamageDenominator = value;
+                    _sandstormDamageDenominator = value;
                     OnPropertyChanged(nameof(SandstormDamageDenominator));
                 }
             }
         }
         /// <summary>The default value of <see cref="SmoothRockTurnExtension"/>.</summary>
         public const byte DefaultSmoothRockTurnExtension = 3;
-        private byte smoothRockTurnExtension = DefaultSmoothRockTurnExtension;
+        private byte _smoothRockTurnExtension = DefaultSmoothRockTurnExtension;
         /// <summary>The amount of turns added to <see cref="SandstormTurns"/> when the user is holding a <see cref="PBEItem.SmoothRock"/>. If <see cref="SandstormTurns"/> is 0 (infinite turns), this must also be 0.</summary>
         public byte SmoothRockTurnExtension
         {
-            get => smoothRockTurnExtension;
+            get => _smoothRockTurnExtension;
             set
             {
                 ReadOnlyCheck();
-                if (smoothRockTurnExtension != value)
+                if (_smoothRockTurnExtension != value)
                 {
-                    if (value != 0 && sandstormTurns == 0)
+                    if (value != 0 && _sandstormTurns == 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"If {nameof(SandstormTurns)} is 0 (infinite turns), {nameof(SmoothRockTurnExtension)} must also be 0.");
                     }
-                    smoothRockTurnExtension = value;
+                    _smoothRockTurnExtension = value;
                     OnPropertyChanged(nameof(SmoothRockTurnExtension));
                 }
             }
         }
         /// <summary>The default value of <see cref="SunTurns"/>.</summary>
         public const byte DefaultSunTurns = 5;
-        private byte sunTurns = DefaultSunTurns;
+        private byte _sunTurns = DefaultSunTurns;
         /// <summary>The amount of turns <see cref="PBEWeather.HarshSunlight"/> lasts. For infinite turns, set <see cref="HeatRockTurnExtension"/> to 0 first, then this to 0.</summary>
         public byte SunTurns
         {
-            get => sunTurns;
+            get => _sunTurns;
             set
             {
                 ReadOnlyCheck();
-                if (sunTurns != value)
+                if (_sunTurns != value)
                 {
-                    if (value == 0 && heatRockTurnExtension != 0)
+                    if (value == 0 && _heatRockTurnExtension != 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"For infinite turns, set {nameof(HeatRockTurnExtension)} to 0 first, then {nameof(SunTurns)} to 0.");
                     }
-                    sunTurns = value;
+                    _sunTurns = value;
                     OnPropertyChanged(nameof(SunTurns));
                 }
             }
         }
         /// <summary>The default value of <see cref="HeatRockTurnExtension"/>.</summary>
         public const byte DefaultHeatRockTurnExtension = 3;
-        private byte heatRockTurnExtension = DefaultHeatRockTurnExtension;
+        private byte _heatRockTurnExtension = DefaultHeatRockTurnExtension;
         /// <summary>The amount of turns added to <see cref="SunTurns"/> when the user is holding a <see cref="PBEItem.HeatRock"/>. If <see cref="SunTurns"/> is 0 (infinite turns), this must also be 0.</summary>
         public byte HeatRockTurnExtension
         {
-            get => heatRockTurnExtension;
+            get => _heatRockTurnExtension;
             set
             {
                 ReadOnlyCheck();
-                if (heatRockTurnExtension != value)
+                if (_heatRockTurnExtension != value)
                 {
-                    if (value != 0 && sunTurns == 0)
+                    if (value != 0 && _sunTurns == 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(value), $"If {nameof(SunTurns)} is 0 (infinite turns), {nameof(HeatRockTurnExtension)} must also be 0.");
                     }
-                    heatRockTurnExtension = value;
+                    _heatRockTurnExtension = value;
                     OnPropertyChanged(nameof(HeatRockTurnExtension));
                 }
             }
@@ -869,45 +865,45 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(other));
             }
-            MaxLevel = other.maxLevel;
-            MinLevel = other.minLevel;
-            MaxPartySize = other.maxPartySize;
-            MaxPokemonNameLength = other.maxPokemonNameLength;
-            MaxTrainerNameLength = other.maxTrainerNameLength;
-            MaxTotalEVs = other.maxTotalEVs;
-            MaxIVs = other.maxIVs;
-            NatureStatBoost = other.natureStatBoost;
-            MaxStatChange = other.maxStatChange;
-            NumMoves = other.numMoves;
-            PPMultiplier = other.ppMultiplier;
-            MaxPPUps = other.maxPPUps;
-            CritMultiplier = other.critMultiplier;
-            ConfusionMaxTurns = other.confusionMaxTurns;
-            ConfusionMinTurns = other.confusionMinTurns;
-            SleepMaxTurns = other.sleepMaxTurns;
-            SleepMinTurns = other.sleepMinTurns;
-            BurnDamageDenominator = other.burnDamageDenominator;
-            PoisonDamageDenominator = other.poisonDamageDenominator;
-            ToxicDamageDenominator = other.toxicDamageDenominator;
-            LeechSeedDenominator = other.leechSeedDenominator;
-            CurseDenominator = other.curseDenominator;
-            LeftoversHealDenominator = other.leftoversHealDenominator;
-            BlackSludgeDamageDenominator = other.blackSludgeDamageDenominator;
-            BlackSludgeHealDenominator = other.blackSludgeHealDenominator;
-            ReflectTurns = other.reflectTurns;
-            LightScreenTurns = other.lightScreenTurns;
-            LightClayTurnExtension = other.lightClayTurnExtension;
-            HailTurns = other.hailTurns;
-            HailDamageDenominator = other.hailDamageDenominator;
-            IcyRockTurnExtension = other.icyRockTurnExtension;
-            IceBodyHealDenominator = other.iceBodyHealDenominator;
-            RainTurns = other.rainTurns;
-            DampRockTurnExtension = other.dampRockTurnExtension;
-            SandstormTurns = other.sandstormTurns;
-            SandstormDamageDenominator = other.sandstormDamageDenominator;
-            SmoothRockTurnExtension = other.smoothRockTurnExtension;
-            SunTurns = other.sunTurns;
-            HeatRockTurnExtension = other.heatRockTurnExtension;
+            MaxLevel = other._maxLevel;
+            MinLevel = other._minLevel;
+            MaxPartySize = other._maxPartySize;
+            MaxPokemonNameLength = other._maxPokemonNameLength;
+            MaxTrainerNameLength = other._maxTrainerNameLength;
+            MaxTotalEVs = other._maxTotalEVs;
+            MaxIVs = other._maxIVs;
+            NatureStatBoost = other._natureStatBoost;
+            MaxStatChange = other._maxStatChange;
+            NumMoves = other._numMoves;
+            PPMultiplier = other._ppMultiplier;
+            MaxPPUps = other._maxPPUps;
+            CritMultiplier = other._critMultiplier;
+            ConfusionMaxTurns = other._confusionMaxTurns;
+            ConfusionMinTurns = other._confusionMinTurns;
+            SleepMaxTurns = other._sleepMaxTurns;
+            SleepMinTurns = other._sleepMinTurns;
+            BurnDamageDenominator = other._burnDamageDenominator;
+            PoisonDamageDenominator = other._poisonDamageDenominator;
+            ToxicDamageDenominator = other._toxicDamageDenominator;
+            LeechSeedDenominator = other._leechSeedDenominator;
+            CurseDenominator = other._curseDenominator;
+            LeftoversHealDenominator = other._leftoversHealDenominator;
+            BlackSludgeDamageDenominator = other._blackSludgeDamageDenominator;
+            BlackSludgeHealDenominator = other._blackSludgeHealDenominator;
+            ReflectTurns = other._reflectTurns;
+            LightScreenTurns = other._lightScreenTurns;
+            LightClayTurnExtension = other._lightClayTurnExtension;
+            HailTurns = other._hailTurns;
+            HailDamageDenominator = other._hailDamageDenominator;
+            IcyRockTurnExtension = other._icyRockTurnExtension;
+            IceBodyHealDenominator = other._iceBodyHealDenominator;
+            RainTurns = other._rainTurns;
+            DampRockTurnExtension = other._dampRockTurnExtension;
+            SandstormTurns = other._sandstormTurns;
+            SandstormDamageDenominator = other._sandstormDamageDenominator;
+            SmoothRockTurnExtension = other._smoothRockTurnExtension;
+            SunTurns = other._sunTurns;
+            HeatRockTurnExtension = other._heatRockTurnExtension;
         }
         internal PBESettings(BinaryReader r)
         {
@@ -916,7 +912,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         private void ReadOnlyCheck()
         {
-            if (isReadOnly)
+            if (_isReadOnly)
             {
                 throw new InvalidOperationException($"This {nameof(PBESettings)} is marked as read-only.");
             }
@@ -924,17 +920,72 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Marks this <see cref="PBESettings"/> object as read-only.</summary>
         public void MakeReadOnly()
         {
-            if (!isReadOnly)
+            if (!_isReadOnly)
             {
                 IsReadOnly = true;
             }
         }
 
-        /// <summary>Returns a value indicating whether a code <see cref="string"/> or another <see cref="PBESettings"/> object represent the same settings as this <see cref="PBESettings"/> object.</summary>
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = (hash * 31) + _maxLevel.GetHashCode();
+                hash = (hash * 31) + _minLevel.GetHashCode();
+                hash = (hash * 31) + _maxPartySize.GetHashCode();
+                hash = (hash * 31) + _maxPokemonNameLength.GetHashCode();
+                hash = (hash * 31) + _maxTrainerNameLength.GetHashCode();
+                hash = (hash * 31) + _maxTotalEVs.GetHashCode();
+                hash = (hash * 31) + _maxIVs.GetHashCode();
+                hash = (hash * 31) + _natureStatBoost.GetHashCode();
+                hash = (hash * 31) + _maxStatChange.GetHashCode();
+                hash = (hash * 31) + _numMoves.GetHashCode();
+                hash = (hash * 31) + _ppMultiplier.GetHashCode();
+                hash = (hash * 31) + _maxPPUps.GetHashCode();
+                hash = (hash * 31) + _critMultiplier.GetHashCode();
+                hash = (hash * 31) + _confusionMaxTurns.GetHashCode();
+                hash = (hash * 31) + _confusionMinTurns.GetHashCode();
+                hash = (hash * 31) + _sleepMaxTurns.GetHashCode();
+                hash = (hash * 31) + _sleepMinTurns.GetHashCode();
+                hash = (hash * 31) + _burnDamageDenominator.GetHashCode();
+                hash = (hash * 31) + _poisonDamageDenominator.GetHashCode();
+                hash = (hash * 31) + _toxicDamageDenominator.GetHashCode();
+                hash = (hash * 31) + _leechSeedDenominator.GetHashCode();
+                hash = (hash * 31) + _curseDenominator.GetHashCode();
+                hash = (hash * 31) + _leftoversHealDenominator.GetHashCode();
+                hash = (hash * 31) + _blackSludgeDamageDenominator.GetHashCode();
+                hash = (hash * 31) + _blackSludgeHealDenominator.GetHashCode();
+                hash = (hash * 31) + _reflectTurns.GetHashCode();
+                hash = (hash * 31) + _lightScreenTurns.GetHashCode();
+                hash = (hash * 31) + _lightClayTurnExtension.GetHashCode();
+                hash = (hash * 31) + _hailTurns.GetHashCode();
+                hash = (hash * 31) + _hailDamageDenominator.GetHashCode();
+                hash = (hash * 31) + _icyRockTurnExtension.GetHashCode();
+                hash = (hash * 31) + _iceBodyHealDenominator.GetHashCode();
+                hash = (hash * 31) + _rainTurns.GetHashCode();
+                hash = (hash * 31) + _dampRockTurnExtension.GetHashCode();
+                hash = (hash * 31) + _sandstormTurns.GetHashCode();
+                hash = (hash * 31) + _sandstormDamageDenominator.GetHashCode();
+                hash = (hash * 31) + _smoothRockTurnExtension.GetHashCode();
+                hash = (hash * 31) + _sunTurns.GetHashCode();
+                hash = (hash * 31) + _heatRockTurnExtension.GetHashCode();
+                return hash;
+            }
+        }
+        /// <summary>Returns a value indicating whether a code <see cref="string"/> or another <see cref="PBESettings"/> object represents the same settings as this <see cref="PBESettings"/> object.</summary>
         /// <param name="obj">The code <see cref="string"/> or the <see cref="PBESettings"/> object to check for equality.</param>
         public override bool Equals(object obj)
         {
-            if (obj is string str)
+            if (ReferenceEquals(obj, null))
+            {
+                return false;
+            }
+            else if (ReferenceEquals(obj, this))
+            {
+                return true;
+            }
+            else if (obj is string str)
             {
                 PBESettings ps;
                 try
@@ -949,45 +1000,45 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
             else if (obj is PBESettings other)
             {
-                return other.maxLevel.Equals(maxLevel)
-                    && other.minLevel.Equals(minLevel)
-                    && other.maxPartySize.Equals(maxPartySize)
-                    && other.maxPokemonNameLength.Equals(maxPokemonNameLength)
-                    && other.maxTrainerNameLength.Equals(maxTrainerNameLength)
-                    && other.maxTotalEVs.Equals(maxTotalEVs)
-                    && other.maxIVs.Equals(maxIVs)
-                    && other.natureStatBoost.Equals(natureStatBoost)
-                    && other.maxStatChange.Equals(maxStatChange)
-                    && other.numMoves.Equals(numMoves)
-                    && other.ppMultiplier.Equals(ppMultiplier)
-                    && other.maxPPUps.Equals(maxPPUps)
-                    && other.critMultiplier.Equals(critMultiplier)
-                    && other.confusionMaxTurns.Equals(confusionMaxTurns)
-                    && other.confusionMinTurns.Equals(confusionMinTurns)
-                    && other.sleepMaxTurns.Equals(sleepMaxTurns)
-                    && other.sleepMinTurns.Equals(sleepMinTurns)
-                    && other.burnDamageDenominator.Equals(burnDamageDenominator)
-                    && other.poisonDamageDenominator.Equals(poisonDamageDenominator)
-                    && other.toxicDamageDenominator.Equals(toxicDamageDenominator)
-                    && other.leechSeedDenominator.Equals(leechSeedDenominator)
-                    && other.curseDenominator.Equals(curseDenominator)
-                    && other.leftoversHealDenominator.Equals(leftoversHealDenominator)
-                    && other.blackSludgeDamageDenominator.Equals(blackSludgeDamageDenominator)
-                    && other.blackSludgeHealDenominator.Equals(blackSludgeHealDenominator)
-                    && other.reflectTurns.Equals(reflectTurns)
-                    && other.lightScreenTurns.Equals(lightScreenTurns)
-                    && other.lightClayTurnExtension.Equals(lightClayTurnExtension)
-                    && other.hailTurns.Equals(hailTurns)
-                    && other.hailDamageDenominator.Equals(hailDamageDenominator)
-                    && other.icyRockTurnExtension.Equals(icyRockTurnExtension)
-                    && other.iceBodyHealDenominator.Equals(iceBodyHealDenominator)
-                    && other.rainTurns.Equals(rainTurns)
-                    && other.dampRockTurnExtension.Equals(dampRockTurnExtension)
-                    && other.sandstormTurns.Equals(sandstormTurns)
-                    && other.sandstormDamageDenominator.Equals(sandstormDamageDenominator)
-                    && other.smoothRockTurnExtension.Equals(smoothRockTurnExtension)
-                    && other.sunTurns.Equals(sunTurns)
-                    && other.heatRockTurnExtension.Equals(heatRockTurnExtension);
+                return other._maxLevel.Equals(_maxLevel)
+                    && other._minLevel.Equals(_minLevel)
+                    && other._maxPartySize.Equals(_maxPartySize)
+                    && other._maxPokemonNameLength.Equals(_maxPokemonNameLength)
+                    && other._maxTrainerNameLength.Equals(_maxTrainerNameLength)
+                    && other._maxTotalEVs.Equals(_maxTotalEVs)
+                    && other._maxIVs.Equals(_maxIVs)
+                    && other._natureStatBoost.Equals(_natureStatBoost)
+                    && other._maxStatChange.Equals(_maxStatChange)
+                    && other._numMoves.Equals(_numMoves)
+                    && other._ppMultiplier.Equals(_ppMultiplier)
+                    && other._maxPPUps.Equals(_maxPPUps)
+                    && other._critMultiplier.Equals(_critMultiplier)
+                    && other._confusionMaxTurns.Equals(_confusionMaxTurns)
+                    && other._confusionMinTurns.Equals(_confusionMinTurns)
+                    && other._sleepMaxTurns.Equals(_sleepMaxTurns)
+                    && other._sleepMinTurns.Equals(_sleepMinTurns)
+                    && other._burnDamageDenominator.Equals(_burnDamageDenominator)
+                    && other._poisonDamageDenominator.Equals(_poisonDamageDenominator)
+                    && other._toxicDamageDenominator.Equals(_toxicDamageDenominator)
+                    && other._leechSeedDenominator.Equals(_leechSeedDenominator)
+                    && other._curseDenominator.Equals(_curseDenominator)
+                    && other._leftoversHealDenominator.Equals(_leftoversHealDenominator)
+                    && other._blackSludgeDamageDenominator.Equals(_blackSludgeDamageDenominator)
+                    && other._blackSludgeHealDenominator.Equals(_blackSludgeHealDenominator)
+                    && other._reflectTurns.Equals(_reflectTurns)
+                    && other._lightScreenTurns.Equals(_lightScreenTurns)
+                    && other._lightClayTurnExtension.Equals(_lightClayTurnExtension)
+                    && other._hailTurns.Equals(_hailTurns)
+                    && other._hailDamageDenominator.Equals(_hailDamageDenominator)
+                    && other._icyRockTurnExtension.Equals(_icyRockTurnExtension)
+                    && other._iceBodyHealDenominator.Equals(_iceBodyHealDenominator)
+                    && other._rainTurns.Equals(_rainTurns)
+                    && other._dampRockTurnExtension.Equals(_dampRockTurnExtension)
+                    && other._sandstormTurns.Equals(_sandstormTurns)
+                    && other._sandstormDamageDenominator.Equals(_sandstormDamageDenominator)
+                    && other._smoothRockTurnExtension.Equals(_smoothRockTurnExtension)
+                    && other._sunTurns.Equals(_sunTurns)
+                    && other._heatRockTurnExtension.Equals(_heatRockTurnExtension);
             }
             else
             {
@@ -1041,249 +1092,250 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Converts this <see cref="PBESettings"/> object into a unique code <see cref="string"/>.</summary>
         public override string ToString()
         {
-            return Convert.ToBase64String(ToBytes().ToArray());
+            var list = new List<byte>();
+            ToBytes(list);
+            return Convert.ToBase64String(list.ToArray());
         }
 
-        internal List<byte> ToBytes()
+        internal void ToBytes(List<byte> bytes)
         {
-            var bytes = new List<byte>();
+            int startIndex = bytes.Count;
             ushort numChanged = 0;
-            if (maxLevel != DefaultMaxLevel)
+            if (_maxLevel != DefaultMaxLevel)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxLevel));
-                bytes.Add(maxLevel);
+                bytes.Add(_maxLevel);
                 numChanged++;
             }
-            if (minLevel != DefaultMinLevel)
+            if (_minLevel != DefaultMinLevel)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MinLevel));
-                bytes.Add(minLevel);
+                bytes.Add(_minLevel);
                 numChanged++;
             }
-            if (maxPartySize != DefaultMaxPartySize)
+            if (_maxPartySize != DefaultMaxPartySize)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxPartySize));
-                bytes.Add((byte)maxPartySize);
+                bytes.Add((byte)_maxPartySize);
                 numChanged++;
             }
-            if (maxPokemonNameLength != DefaultMaxPokemonNameLength)
+            if (_maxPokemonNameLength != DefaultMaxPokemonNameLength)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxPokemonNameLength));
-                bytes.Add(maxPokemonNameLength);
+                bytes.Add(_maxPokemonNameLength);
                 numChanged++;
             }
-            if (maxTrainerNameLength != DefaultMaxTrainerNameLength)
+            if (_maxTrainerNameLength != DefaultMaxTrainerNameLength)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxTrainerNameLength));
-                bytes.Add(maxTrainerNameLength);
+                bytes.Add(_maxTrainerNameLength);
                 numChanged++;
             }
-            if (maxTotalEVs != DefaultMaxTotalEVs)
+            if (_maxTotalEVs != DefaultMaxTotalEVs)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxTotalEVs));
-                bytes.AddRange(BitConverter.GetBytes(maxTotalEVs));
+                bytes.AddRange(BitConverter.GetBytes(_maxTotalEVs));
                 numChanged++;
             }
-            if (maxIVs != DefaultMaxIVs)
+            if (_maxIVs != DefaultMaxIVs)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxIVs));
-                bytes.Add(maxIVs);
+                bytes.Add(_maxIVs);
                 numChanged++;
             }
-            if (natureStatBoost != DefaultNatureStatBoost)
+            if (_natureStatBoost != DefaultNatureStatBoost)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.NatureStatBoost));
-                bytes.AddRange(BitConverter.GetBytes(natureStatBoost));
+                bytes.AddRange(BitConverter.GetBytes(_natureStatBoost));
                 numChanged++;
             }
-            if (maxStatChange != DefaultMaxStatChange)
+            if (_maxStatChange != DefaultMaxStatChange)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxStatChange));
-                bytes.Add((byte)maxStatChange);
+                bytes.Add((byte)_maxStatChange);
                 numChanged++;
             }
-            if (numMoves != DefaultNumMoves)
+            if (_numMoves != DefaultNumMoves)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.NumMoves));
-                bytes.Add(numMoves);
+                bytes.Add(_numMoves);
                 numChanged++;
             }
-            if (ppMultiplier != DefaultPPMultiplier)
+            if (_ppMultiplier != DefaultPPMultiplier)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.PPMultiplier));
-                bytes.Add(ppMultiplier);
+                bytes.Add(_ppMultiplier);
                 numChanged++;
             }
-            if (maxPPUps != DefaultMaxPPUps)
+            if (_maxPPUps != DefaultMaxPPUps)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.MaxPPUps));
-                bytes.Add(maxPPUps);
+                bytes.Add(_maxPPUps);
                 numChanged++;
             }
-            if (critMultiplier != DefaultCritMultiplier)
+            if (_critMultiplier != DefaultCritMultiplier)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.CritMultiplier));
-                bytes.AddRange(BitConverter.GetBytes(critMultiplier));
+                bytes.AddRange(BitConverter.GetBytes(_critMultiplier));
                 numChanged++;
             }
-            if (confusionMaxTurns != DefaultConfusionMaxTurns)
+            if (_confusionMaxTurns != DefaultConfusionMaxTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ConfusionMaxTurns));
-                bytes.Add(confusionMaxTurns);
+                bytes.Add(_confusionMaxTurns);
                 numChanged++;
             }
-            if (confusionMinTurns != DefaultConfusionMinTurns)
+            if (_confusionMinTurns != DefaultConfusionMinTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ConfusionMinTurns));
-                bytes.Add(confusionMinTurns);
+                bytes.Add(_confusionMinTurns);
                 numChanged++;
             }
-            if (sleepMaxTurns != DefaultSleepMaxTurns)
+            if (_sleepMaxTurns != DefaultSleepMaxTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SleepMaxTurns));
-                bytes.Add(sleepMaxTurns);
+                bytes.Add(_sleepMaxTurns);
                 numChanged++;
             }
-            if (sleepMinTurns != DefaultSleepMinTurns)
+            if (_sleepMinTurns != DefaultSleepMinTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SleepMinTurns));
-                bytes.Add(sleepMinTurns);
+                bytes.Add(_sleepMinTurns);
                 numChanged++;
             }
-            if (burnDamageDenominator != DefaultBurnDamageDenominator)
+            if (_burnDamageDenominator != DefaultBurnDamageDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.BurnDamageDenominator));
-                bytes.Add(burnDamageDenominator);
+                bytes.Add(_burnDamageDenominator);
                 numChanged++;
             }
-            if (poisonDamageDenominator != DefaultPoisonDamageDenominator)
+            if (_poisonDamageDenominator != DefaultPoisonDamageDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.PoisonDamageDenominator));
-                bytes.Add(poisonDamageDenominator);
+                bytes.Add(_poisonDamageDenominator);
                 numChanged++;
             }
-            if (toxicDamageDenominator != DefaultToxicDamageDenominator)
+            if (_toxicDamageDenominator != DefaultToxicDamageDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ToxicDamageDenominator));
-                bytes.Add(toxicDamageDenominator);
+                bytes.Add(_toxicDamageDenominator);
                 numChanged++;
             }
-            if (leechSeedDenominator != DefaultLeechSeedDenominator)
+            if (_leechSeedDenominator != DefaultLeechSeedDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LeechSeedDenominator));
-                bytes.Add(leechSeedDenominator);
+                bytes.Add(_leechSeedDenominator);
                 numChanged++;
             }
-            if (curseDenominator != DefaultCurseDenominator)
+            if (_curseDenominator != DefaultCurseDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.CurseDenominator));
-                bytes.Add(curseDenominator);
+                bytes.Add(_curseDenominator);
                 numChanged++;
             }
-            if (leftoversHealDenominator != DefaultLeftoversHealDenominator)
+            if (_leftoversHealDenominator != DefaultLeftoversHealDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LeftoversHealDenominator));
-                bytes.Add(leftoversHealDenominator);
+                bytes.Add(_leftoversHealDenominator);
                 numChanged++;
             }
-            if (blackSludgeDamageDenominator != DefaultBlackSludgeDamageDenominator)
+            if (_blackSludgeDamageDenominator != DefaultBlackSludgeDamageDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.BlackSludgeDamageDenominator));
-                bytes.Add(blackSludgeDamageDenominator);
+                bytes.Add(_blackSludgeDamageDenominator);
                 numChanged++;
             }
-            if (blackSludgeHealDenominator != DefaultBlackSludgeHealDenominator)
+            if (_blackSludgeHealDenominator != DefaultBlackSludgeHealDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.BlackSludgeHealDenominator));
-                bytes.Add(blackSludgeHealDenominator);
+                bytes.Add(_blackSludgeHealDenominator);
                 numChanged++;
             }
-            if (reflectTurns != DefaultReflectTurns)
+            if (_reflectTurns != DefaultReflectTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.ReflectTurns));
-                bytes.Add(reflectTurns);
+                bytes.Add(_reflectTurns);
                 numChanged++;
             }
-            if (lightScreenTurns != DefaultLightScreenTurns)
+            if (_lightScreenTurns != DefaultLightScreenTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LightScreenTurns));
-                bytes.Add(lightScreenTurns);
+                bytes.Add(_lightScreenTurns);
                 numChanged++;
             }
-            if (lightClayTurnExtension != DefaultLightClayTurnExtension)
+            if (_lightClayTurnExtension != DefaultLightClayTurnExtension)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.LightClayTurnExtension));
-                bytes.Add(lightClayTurnExtension);
+                bytes.Add(_lightClayTurnExtension);
                 numChanged++;
             }
-            if (hailTurns != DefaultHailTurns)
+            if (_hailTurns != DefaultHailTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.HailTurns));
-                bytes.Add(hailTurns);
+                bytes.Add(_hailTurns);
                 numChanged++;
             }
-            if (hailDamageDenominator != DefaultHailDamageDenominator)
+            if (_hailDamageDenominator != DefaultHailDamageDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.HailDamageDenominator));
-                bytes.Add(hailDamageDenominator);
+                bytes.Add(_hailDamageDenominator);
                 numChanged++;
             }
-            if (icyRockTurnExtension != DefaultIcyRockTurnExtension)
+            if (_icyRockTurnExtension != DefaultIcyRockTurnExtension)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.IcyRockTurnExtension));
-                bytes.Add(icyRockTurnExtension);
+                bytes.Add(_icyRockTurnExtension);
                 numChanged++;
             }
-            if (iceBodyHealDenominator != DefaultIceBodyHealDenominator)
+            if (_iceBodyHealDenominator != DefaultIceBodyHealDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.IceBodyHealDenominator));
-                bytes.Add(iceBodyHealDenominator);
+                bytes.Add(_iceBodyHealDenominator);
                 numChanged++;
             }
-            if (rainTurns != DefaultRainTurns)
+            if (_rainTurns != DefaultRainTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.RainTurns));
-                bytes.Add(rainTurns);
+                bytes.Add(_rainTurns);
                 numChanged++;
             }
-            if (dampRockTurnExtension != DefaultDampRockTurnExtension)
+            if (_dampRockTurnExtension != DefaultDampRockTurnExtension)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.DampRockTurnExtension));
-                bytes.Add(dampRockTurnExtension);
+                bytes.Add(_dampRockTurnExtension);
                 numChanged++;
             }
-            if (sandstormTurns != DefaultSandstormTurns)
+            if (_sandstormTurns != DefaultSandstormTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SandstormTurns));
-                bytes.Add(sandstormTurns);
+                bytes.Add(_sandstormTurns);
                 numChanged++;
             }
-            if (sandstormDamageDenominator != DefaultSandstormDamageDenominator)
+            if (_sandstormDamageDenominator != DefaultSandstormDamageDenominator)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SandstormDamageDenominator));
-                bytes.Add(sandstormDamageDenominator);
+                bytes.Add(_sandstormDamageDenominator);
                 numChanged++;
             }
-            if (smoothRockTurnExtension != DefaultSmoothRockTurnExtension)
+            if (_smoothRockTurnExtension != DefaultSmoothRockTurnExtension)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SmoothRockTurnExtension));
-                bytes.Add(smoothRockTurnExtension);
+                bytes.Add(_smoothRockTurnExtension);
                 numChanged++;
             }
-            if (sunTurns != DefaultSunTurns)
+            if (_sunTurns != DefaultSunTurns)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.SunTurns));
-                bytes.Add(sunTurns);
+                bytes.Add(_sunTurns);
                 numChanged++;
             }
-            if (heatRockTurnExtension != DefaultHeatRockTurnExtension)
+            if (_heatRockTurnExtension != DefaultHeatRockTurnExtension)
             {
                 bytes.AddRange(BitConverter.GetBytes((ushort)PBESettingID.HeatRockTurnExtension));
-                bytes.Add(heatRockTurnExtension);
+                bytes.Add(_heatRockTurnExtension);
                 numChanged++;
             }
-            bytes.InsertRange(0, BitConverter.GetBytes(numChanged));
-            return bytes;
+            bytes.InsertRange(startIndex, BitConverter.GetBytes(numChanged));
         }
         private void FromBytes(BinaryReader r)
         {

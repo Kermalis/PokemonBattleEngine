@@ -3,23 +3,23 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEMoveLockPacket : INetPacket
     {
         public const short Code = 0x28;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public PBEFieldPosition MoveUser { get; }
         public PBETeam MoveUserTeam { get; }
         public PBEMove LockedMove { get; }
-        public PBETarget LockedTargets { get; }
+        public PBETurnTarget LockedTargets { get; }
         public PBEMoveLockType MoveLockType { get; }
 
-        public PBEMoveLockPacket(PBEPokemon moveUser, PBEMove lockedMove, PBETarget lockedTargets, PBEMoveLockType moveLockType)
+        internal PBEMoveLockPacket(PBEPokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets, PBEMoveLockType moveLockType)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -28,20 +28,17 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.AddRange(BitConverter.GetBytes((ushort)(LockedMove = lockedMove)));
             bytes.Add((byte)(LockedTargets = lockedTargets));
             bytes.Add((byte)(MoveLockType = moveLockType));
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBEMoveLockPacket(byte[] buffer, PBEBattle battle)
+        internal PBEMoveLockPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                MoveUser = (PBEFieldPosition)r.ReadByte();
-                MoveUserTeam = battle.Teams[r.ReadByte()];
-                LockedMove = (PBEMove)r.ReadUInt16();
-                LockedTargets = (PBETarget)r.ReadByte();
-                MoveLockType = (PBEMoveLockType)r.ReadByte();
-            }
+            MoveUser = (PBEFieldPosition)r.ReadByte();
+            MoveUserTeam = battle.Teams[r.ReadByte()];
+            LockedMove = (PBEMove)r.ReadUInt16();
+            LockedTargets = (PBETurnTarget)r.ReadByte();
+            MoveLockType = (PBEMoveLockType)r.ReadByte();
         }
 
         public void Dispose() { }

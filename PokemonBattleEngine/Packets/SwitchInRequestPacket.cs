@@ -2,35 +2,33 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBESwitchInRequestPacket : INetPacket
     {
         public const short Code = 0x23;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public PBETeam Team { get; }
         public byte Amount { get; }
 
-        public PBESwitchInRequestPacket(PBETeam team)
+        internal PBESwitchInRequestPacket(PBETeam team)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((Team = team).Id);
             bytes.Add(Amount = Team.SwitchInsRequired);
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBESwitchInRequestPacket(byte[] buffer, PBEBattle battle)
+        internal PBESwitchInRequestPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                Team = battle.Teams[r.ReadByte()];
-                Amount = r.ReadByte();
-            }
+            Buffer = buffer;
+            Team = battle.Teams[r.ReadByte()];
+            Amount = r.ReadByte();
         }
 
         public void Dispose() { }

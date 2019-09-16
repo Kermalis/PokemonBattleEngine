@@ -12,7 +12,7 @@ using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    public class HPBarView : UserControl, INotifyPropertyChanged
+    public sealed class HPBarView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -21,36 +21,39 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private Point location;
+        private Point _location;
         public Point Location
         {
-            get => location;
-            set
+            get => _location;
+            internal set
             {
-                location = value;
-                OnPropertyChanged(nameof(Location));
+                if (!_location.Equals(value))
+                {
+                    _location = value;
+                    OnPropertyChanged(nameof(Location));
+                }
             }
         }
 
-        private static SolidColorBrush greenSides, greenMid, yellowSides, yellowMid, redSides, redMid;
+        private static SolidColorBrush _greenSides, _greenMid, _yellowSides, _yellowMid, _redSides, _redMid;
 
         public HPBarView()
         {
-            if (greenSides == null)
+            if (_greenSides == null)
             {
-                greenSides = new SolidColorBrush(0xFF008C29);
-                greenMid = new SolidColorBrush(0xFF00FF4A);
-                yellowSides = new SolidColorBrush(0xFF9C6310);
-                yellowMid = new SolidColorBrush(0xFFF7B500);
-                redSides = new SolidColorBrush(0xFF942131);
-                redMid = new SolidColorBrush(0xFFFF3142);
+                _greenSides = new SolidColorBrush(0xFF008C29);
+                _greenMid = new SolidColorBrush(0xFF00FF4A);
+                _yellowSides = new SolidColorBrush(0xFF9C6310);
+                _yellowMid = new SolidColorBrush(0xFFF7B500);
+                _redSides = new SolidColorBrush(0xFF942131);
+                _redMid = new SolidColorBrush(0xFFFF3142);
             }
 
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
         }
 
-        public void Update(PBEPokemon pkmn, bool showRawValues)
+        internal void Update(PBEPokemon pkmn, bool showRawValues)
         {
             var wb = new WriteableBitmap(new PixelSize(104, 27), new Vector(96, 96), PixelFormat.Bgra8888);
             using (IRenderTarget rtb = Utils.RenderInterface.CreateRenderTarget(new[] { new WriteableBitmapSurface(wb) }))
@@ -87,18 +90,18 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 IBrush hpSides, hpMid;
                 if (pkmn.HPPercentage <= 0.20)
                 {
-                    hpSides = redSides;
-                    hpMid = redMid;
+                    hpSides = _redSides;
+                    hpMid = _redMid;
                 }
                 else if (pkmn.HPPercentage <= 0.50)
                 {
-                    hpSides = yellowSides;
-                    hpMid = yellowMid;
+                    hpSides = _yellowSides;
+                    hpMid = _yellowMid;
                 }
                 else
                 {
-                    hpSides = greenSides;
-                    hpMid = greenMid;
+                    hpSides = _greenSides;
+                    hpMid = _greenMid;
                 }
                 const byte lineW = 48;
                 int theW = (int)(lineW * pkmn.HPPercentage);

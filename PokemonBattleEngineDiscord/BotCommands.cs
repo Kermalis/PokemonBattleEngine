@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
-    public class BotCommands : ModuleBase<SocketCommandContext>
+    public sealed class BotCommands : ModuleBase<SocketCommandContext>
     {
         [Group("ability")]
-        public class AbilityCommands : ModuleBase<SocketCommandContext>
+        public sealed class AbilityCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
             [Alias("data")]
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
         }
 
         [Group("battle")]
-        public class BattleCommands : ModuleBase<SocketCommandContext>
+        public sealed class BattleCommands : ModuleBase<SocketCommandContext>
         {
             [Command("challenge")]
             public async Task Challenge(SocketUser battler1)
@@ -58,20 +58,19 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 else
                 {
-                    PBESettings settings = PBESettings.DefaultSettings;
-                    PBETeamShell team0Shell, team1Shell;
+                    PBETeamShell team1Shell, team2Shell;
                     // Completely Randomized Pokémon
-                    team0Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
-                    team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
+                    team1Shell = new PBETeamShell(PBESettings.DefaultSettings, PBESettings.DefaultMaxPartySize, true);
+                    team2Shell = new PBETeamShell(PBESettings.DefaultSettings, PBESettings.DefaultMaxPartySize, true);
 
-                    var battle = new PBEBattle(PBEBattleFormat.Single, team0Shell, Context.User.Username, team1Shell, battler1.Username);
-                    var battleContext = new BattleContext(battle, Context.User, battler1, Context.Channel);
+                    var battle = new PBEBattle(PBEBattleFormat.Single, team1Shell, Context.User.Username, team2Shell, battler1.Username);
+                    new BattleContext(battle, Context.User, battler1, Context.Channel);
                 }
             }
         }
 
         [Group("item")]
-        public class ItemCommands : ModuleBase<SocketCommandContext>
+        public sealed class ItemCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
             [Alias("data")]
@@ -111,7 +110,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
         [Group("move")]
         [Alias("attack")]
-        public class MoveCommands : ModuleBase<SocketCommandContext>
+        public sealed class MoveCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
             [Alias("data")]
@@ -146,7 +145,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         case PBEMoveEffect.VoltTackle: embed.AddField("Recoil", "1/3 damage dealt", true); break; // TODO: Paralyze chance
                     }
                     embed.AddField("Targets", mData.Targets, true)
-                    .AddField("Flags", mData.Flags, true);
+                        .AddField("Flags", mData.Flags, true);
                     await Context.Channel.SendMessageAsync(string.Empty, embed: embed.Build());
                 }
             }
@@ -154,7 +153,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
 
         [Group("pokemon")]
         [Alias("pokémon", "species", "pkmn", "poke", "poké")]
-        public class PokemonCommands : ModuleBase<SocketCommandContext>
+        public sealed class SpeciesCommands : ModuleBase<SocketCommandContext>
         {
             [Command("info")]
             [Alias("data")]

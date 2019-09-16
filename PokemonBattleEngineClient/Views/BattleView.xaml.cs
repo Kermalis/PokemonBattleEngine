@@ -3,20 +3,20 @@ using Avalonia.Markup.Xaml;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    public class BattleView : UserControl
+    public sealed class BattleView : UserControl
     {
-        public readonly FieldView Field;
-        public readonly ActionsView Actions;
-        private readonly MessageView messages;
+        public FieldView Field { get; }
+        public ActionsView Actions { get; }
+        private readonly MessageView _messages;
 
-        public readonly BattleClient Client;
+        internal BattleClient Client { get; }
 
         public BattleView()
         {
             // This constructor only exists so xaml compiles
             AvaloniaXamlLoader.Load(this);
         }
-        public BattleView(BattleClient client)
+        internal BattleView(BattleClient client)
         {
             AvaloniaXamlLoader.Load(this);
 
@@ -28,10 +28,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             Actions = TemporaryFix<ActionsView>("Actions");
             Actions.BattleView = this;
             //messages = this.FindControl<MessageView>("Messages"); // Messages will be null
-            messages = TemporaryFix<MessageView>("Messages");
+            _messages = TemporaryFix<MessageView>("Messages");
         }
 
-        public void AddMessage(string message, bool messageBox, bool messageLog)
+        internal void AddMessage(string message, bool messageBox, bool messageLog)
         {
             if (messageBox)
             {
@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
             if (messageLog)
             {
-                messages.AddMessage(message);
+                _messages.AddMessage(message);
             }
         }
 

@@ -2,7 +2,6 @@
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
@@ -50,9 +49,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        private void BroadcastMoveCrit()
+        private void BroadcastMoveCrit(PBEPokemon victim)
         {
-            var p = new PBEMoveCritPacket();
+            var p = new PBEMoveCritPacket(victim);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -68,7 +67,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        private void BroadcastMoveLock(PBEPokemon moveUser, PBEMove lockedMove, PBETarget lockedTargets, PBEMoveLockType moveLockType)
+        private void BroadcastMoveLock(PBEPokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets, PBEMoveLockType moveLockType)
         {
             var p = new PBEMoveLockPacket(moveUser, lockedMove, lockedTargets, moveLockType);
             Events.Add(p);
@@ -80,18 +79,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        private void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, byte oldValue, byte newValue)
+        private void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, int amountReduced)
         {
-            var p = new PBEMovePPChangedPacket(moveUser.FieldPosition, moveUser.Team, move, oldValue, newValue);
+            var p = new PBEMovePPChangedPacket(moveUser.FieldPosition, moveUser.Team, move, amountReduced);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
         private void BroadcastMoveUsed(PBEPokemon moveUser, PBEMove move)
         {
             bool reveal;
-            if (!calledFromOtherMove && moveUser.Moves.Contains(move) && !moveUser.KnownMoves.Contains(move))
+            if (!_calledFromOtherMove && moveUser.Moves.Contains(move) && !moveUser.KnownMoves.Contains(move))
             {
-                moveUser.KnownMoves[Array.IndexOf(moveUser.KnownMoves, PBEMove.MAX)] = move;
+                moveUser.KnownMoves[PBEMove.MAX].Move = move;
                 reveal = true;
             }
             else
@@ -136,7 +135,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        private void BroadcastPkmnSwitchIn(PBETeam team, IEnumerable<PBEPkmnSwitchInPacket.PBESwitchInInfo> switchIns, bool forced)
+        private void BroadcastPkmnSwitchIn(PBETeam team, PBEPkmnSwitchInPacket.PBESwitchInInfo[] switchIns, bool forced)
         {
             var p = new PBEPkmnSwitchInPacket(team, switchIns, forced);
             Events.Add(p);
@@ -246,6 +245,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
+        private void BroadcastTeam(PBETeam team)
+        {
+            var p = new PBETeamPacket(team);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         private void BroadcastSwitchInRequest(PBETeam team)
         {
             var p = new PBESwitchInRequestPacket(team);
@@ -266,13 +271,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
 
 
-        /// <summary>
-        /// Writes battle events to <see cref="Console.Out"/> in English.
-        /// </summary>
+        /// <summary>Writes battle events to <see cref="Console.Out"/> in English.</summary>
         /// <param name="battle">The battle that <paramref name="packet"/> belongs to.</param>
         /// <param name="packet">The battle event packet.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="battle"/> or <paramref name="packet"/> are null.</exception>
         public static void ConsoleBattleEventHandler(PBEBattle battle, INetPacket packet)
         {
+            if (battle == null)
+            {
+                throw new ArgumentNullException(nameof(battle));
+            }
+            if (packet == null)
+            {
+                throw new ArgumentNullException(nameof(packet));
+            }
+            if (battle.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(battle));
+            }
+
             string NameForTrainer(PBEPokemon pkmn)
             {
                 return pkmn == null ? string.Empty : $"{pkmn.Team.TrainerName}'s {pkmn.KnownNickname}";
@@ -590,9 +607,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     Console.WriteLine(message, NameForTrainer(itemHolder), NameForTrainer(pokemon2), PBELocalizedString.GetItemName(ip.Item).English);
                     break;
                 }
-                case PBEMoveCritPacket _:
+                case PBEMoveCritPacket mcp:
                 {
-                    Console.WriteLine("A critical hit!");
+                    PBEPokemon victim = mcp.VictimTeam.TryGetPokemon(mcp.Victim);
+                    Console.WriteLine("A critical hit on {0}!", NameForTrainer(victim));
                     break;
                 }
                 case PBEMoveEffectivenessPacket mep:
@@ -602,12 +620,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     switch (mep.Effectiveness)
                     {
                         case PBEEffectiveness.Ineffective: message = "It doesn't affect {0}..."; break;
-                        case PBEEffectiveness.NotVeryEffective: message = "It's not very effective..."; break;
-                        case PBEEffectiveness.Normal: message = "It's normally effective."; break;
-                        case PBEEffectiveness.SuperEffective: message = "It's super effective!"; break;
+                        case PBEEffectiveness.NotVeryEffective: message = "It's not very effective on {0}..."; break;
+                        case PBEEffectiveness.Normal: message = null; break;
+                        case PBEEffectiveness.SuperEffective: message = "It's super effective on {0}!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness));
                     }
-                    Console.WriteLine(message, NameForTrainer(victim));
+                    if (message != null)
+                    {
+                        Console.WriteLine(message, NameForTrainer(victim));
+                    }
                     break;
                 }
                 case PBEMoveFailedPacket mfp:
@@ -642,8 +663,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMovePPChangedPacket mpcp:
                 {
                     PBEPokemon moveUser = mpcp.MoveUserTeam.TryGetPokemon(mpcp.MoveUser);
-                    int change = mpcp.NewValue - mpcp.OldValue;
-                    Console.WriteLine("{0}'s {1} {3} {2} PP!", NameForTrainer(moveUser), PBELocalizedString.GetMoveName(mpcp.Move).English, Math.Abs(change), change <= 0 ? "lost" : "gained");
+                    Console.WriteLine("{0}'s {1} {3} {2} PP!", NameForTrainer(moveUser), PBELocalizedString.GetMoveName(mpcp.Move).English, Math.Abs(mpcp.AmountReduced), mpcp.AmountReduced >= 0 ? "lost" : "gained");
                     break;
                 }
                 case PBEMoveUsedPacket mup:
@@ -743,7 +763,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!psip.Forced)
                     {
-                        Console.WriteLine("{1} sent out {0}!", psip.SwitchIns.Select(s => s.Nickname).Andify(), psip.Team.TrainerName);
+                        Console.WriteLine("{1} sent out {0}!", psip.SwitchIns.Select(s => s.Nickname).ToArray().Andify(), psip.Team.TrainerName);
                     }
                     break;
                 }
@@ -1196,12 +1216,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETurnBeganPacket tbp:
                 {
-                    Console.WriteLine("Turn {0} is starting. ({1})", tbp.TurnNumber, tbp.Time);
+                    Console.WriteLine("Turn {0} is starting.", tbp.TurnNumber);
                     break;
                 }
                 case PBEWinnerPacket win:
                 {
-                    Console.WriteLine("{0} defeated {1}!", win.WinningTeam.TrainerName, (win.WinningTeam == battle.Teams[0] ? battle.Teams[1] : battle.Teams[0]).TrainerName);
+                    Console.WriteLine("{0} defeated {1}!", win.WinningTeam.TrainerName, win.WinningTeam.OpposingTeam.TrainerName);
                     break;
                 }
             }

@@ -3,9 +3,9 @@ using Kermalis.PokemonBattleEngine.Data;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal class Utils
+    internal sealed class Utils
     {
-        public static readonly PBEType[] Gen5Types = new PBEType[17]
+        public static PBEType[] Gen5Types { get; } = new PBEType[17]
         {
             PBEType.Normal,
             PBEType.Fighting,

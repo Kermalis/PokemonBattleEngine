@@ -11,31 +11,43 @@ namespace Kermalis.PokemonBattleEngine.Packets
     public sealed class PBEActionsResponsePacket : INetPacket
     {
         public const short Code = 0x08;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
-        public ReadOnlyCollection<PBEAction> Actions { get; }
+        public ReadOnlyCollection<PBETurnAction> Actions { get; }
 
-        public PBEActionsResponsePacket(IEnumerable<PBEAction> actions)
+        public PBEActionsResponsePacket(IList<PBETurnAction> actions)
         {
+            if (actions == null)
+            {
+                throw new ArgumentNullException(nameof(actions));
+            }
+            if (actions.Count == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(actions));
+            }
+            if (actions.Any(a => a == null))
+            {
+                throw new ArgumentNullException(nameof(actions));
+            }
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Actions = actions.ToList().AsReadOnly()).Count);
-            bytes.AddRange(Actions.SelectMany(a => a.ToBytes()));
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.Add((byte)(Actions = new ReadOnlyCollection<PBETurnAction>(actions)).Count);
+            for (int i = 0; i < (byte)Actions.Count; i++)
+            {
+                Actions[i].ToBytes(bytes);
+            }
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBEActionsResponsePacket(byte[] buffer, PBEBattle battle)
+        internal PBEActionsResponsePacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
+            var actions = new PBETurnAction[r.ReadByte()];
+            for (int i = 0; i < actions.Length; i++)
             {
-                r.ReadInt16(); // Skip Code
-                var actions = new PBEAction[r.ReadByte()];
-                for (int i = 0; i < actions.Length; i++)
-                {
-                    actions[i] = PBEAction.FromBytes(r);
-                }
-                Actions = Array.AsReadOnly(actions);
+                actions[i] = new PBETurnAction(r);
             }
+            Actions = new ReadOnlyCollection<PBETurnAction>(actions);
         }
 
         public void Dispose() { }

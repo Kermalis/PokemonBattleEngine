@@ -8,22 +8,28 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal class PokemonDataDumper
+    internal sealed class PokemonDataDumper
     {
-        private class Pokemon
+        private sealed class Pokemon
         {
-            public byte HP, Attack, Defense, SpAttack, SpDefense, Speed;
-            public PBEType Type1, Type2;
-            public PBEGenderRatio GenderRatio;
-            public double Weight;
-            public List<PBESpecies> PreEvolutions = new List<PBESpecies>();
-            public List<PBESpecies> Evolutions = new List<PBESpecies>();
-            public List<PBEAbility> Abilities = new List<PBEAbility>();
-            public Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod> LevelUpMoves = new Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod>();
-            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
+            public byte HP { get; set; }
+            public byte Attack { get; set; }
+            public byte Defense { get; set; }
+            public byte SpAttack { get; set; }
+            public byte SpDefense { get; set; }
+            public byte Speed { get; set; }
+            public PBEType Type1 { get; set; }
+            public PBEType Type2 { get; set; }
+            public PBEGenderRatio GenderRatio { get; set; }
+            public double Weight { get; set; }
+            public List<PBESpecies> PreEvolutions { get; set; } = new List<PBESpecies>();
+            public List<PBESpecies> Evolutions { get; set; } = new List<PBESpecies>();
+            public List<PBEAbility> Abilities { get; set; } = new List<PBEAbility>();
+            public Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod> LevelUpMoves { get; set; } = new Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod>();
+            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves { get; set; } = new Dictionary<PBEMove, PBEMoveObtainMethod>();
         }
 
-        private static readonly Dictionary<int, PBESpecies> gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, PBESpecies> _gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 1, PBESpecies.Bulbasaur },
             { 2, PBESpecies.Ivysaur },
@@ -412,7 +418,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             { 410, PBESpecies.Deoxys },
             { 411, PBESpecies.Chimecho },
         };
-        private static readonly PBEMove[] gen3TMHMs = new PBEMove[58]
+        private static readonly PBEMove[] _gen3TMHMs = new PBEMove[58]
         {
             (PBEMove)264, // FocusPunch
             PBEMove.DragonClaw,
@@ -473,7 +479,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Waterfall,
             PBEMove.Dive
         };
-        private static readonly PBEMove[] frlgTutorMoves = new PBEMove[15]
+        private static readonly PBEMove[] _frlgTutorMoves = new PBEMove[15]
         {
             PBEMove.MegaPunch,
             PBEMove.SwordsDance,
@@ -491,7 +497,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.RockSlide,
             PBEMove.Substitute
         };
-        private static readonly PBEMove[] emeraldTutorMoves = new PBEMove[30]
+        private static readonly PBEMove[] _emeraldTutorMoves = new PBEMove[30]
         {
             PBEMove.MegaPunch,
             PBEMove.SwordsDance,
@@ -524,7 +530,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.FirePunch,
             (PBEMove)210 // FuryCutter
         };
-        private static readonly PBEMove[] xdTutorMoves = new PBEMove[12]
+        private static readonly PBEMove[] _xdTutorMoves = new PBEMove[12]
         {
             PBEMove.BodySlam,
             PBEMove.DoubleEdge,
@@ -539,7 +545,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Selfdestruct,
             (PBEMove)171 // Nightmare
         };
-        private static readonly Dictionary<int, PBESpecies> gen4SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, PBESpecies> _gen4SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 496, PBESpecies.Deoxys_Attack },
             { 497, PBESpecies.Deoxys_Defense },
@@ -554,7 +560,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             { 506, PBESpecies.Rotom_Fan },
             { 507, PBESpecies.Rotom_Mow }
         };
-        private static readonly PBEMove[] gen4TMHMs = new PBEMove[100]
+        private static readonly PBEMove[] _gen4TMHMs = new PBEMove[100]
         {
             (PBEMove)264, // FocusPunch
             PBEMove.DragonClaw,
@@ -667,7 +673,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         // u8 greenShard
         // u16 unk1
         // u32 areaId (0 = Route 212, 1 = Survival Area, 2 = Snowpoint City)
-        private static readonly PBEMove[] ptTutorMoves = new PBEMove[38]
+        private static readonly PBEMove[] _ptTutorMoves = new PBEMove[38]
         {
             PBEMove.Dive,
             PBEMove.MudSlap,
@@ -713,7 +719,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         // u16 moveId
         // u8 bpCost
         // u8 areaId (0 = Frontier Access [top left tutor], 1 = Frontier Access [top right tutor], 2 = Frontier Access [bottom right tutor], 3 = Ilex Forest [Headbutt tutor])
-        private static readonly PBEMove[] hgssTutorMoves = new PBEMove[52]
+        private static readonly PBEMove[] _hgssTutorMoves = new PBEMove[52]
         {
             PBEMove.Dive,
             PBEMove.MudSlap,
@@ -768,7 +774,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             (PBEMove)450, // BugBite
             PBEMove.Headbutt
         };
-        private static readonly Dictionary<int, PBESpecies> bwSpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, PBESpecies> _bwSpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 650, PBESpecies.Deoxys_Attack },
             { 651, PBESpecies.Deoxys_Defense },
@@ -789,7 +795,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             { 666, PBESpecies.Darmanitan_Zen },
             { 667, PBESpecies.Meloetta_Pirouette }
         };
-        private static readonly Dictionary<int, PBESpecies> b2w2SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
+        private static readonly Dictionary<int, PBESpecies> _b2w2SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
         {
             { 685, PBESpecies.Deoxys_Attack },
             { 686, PBESpecies.Deoxys_Defense },
@@ -816,7 +822,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             { 707, PBESpecies.Thundurus_Therian },
             { 708, PBESpecies.Landorus_Therian }
         };
-        private static readonly PBEMove[] gen5TMHMs = new PBEMove[101]
+        private static readonly PBEMove[] _gen5TMHMs = new PBEMove[101]
         {
             PBEMove.HoneClaws,
             PBEMove.DragonClaw,
@@ -920,7 +926,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Waterfall,
             PBEMove.Dive
         };
-        private static readonly PBEMove[] gen5FreeTutorMoves = new PBEMove[7]
+        private static readonly PBEMove[] _gen5FreeTutorMoves = new PBEMove[7]
         {
             (PBEMove)520, // GrassPledge
             (PBEMove)519, // FirePledge
@@ -936,7 +942,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         // u32 moveId
         // u32 shardCost
         // u32 indexInList
-        private static readonly PBEMove[][] b2w2TutorMoves = new PBEMove[4][]
+        private static readonly PBEMove[][] _b2w2TutorMoves = new PBEMove[4][]
         {
             new PBEMove[15] // Driftveil City
             {
@@ -1103,7 +1109,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         Pokemon pkmn = dict[sp];
                         if (pkmn != basePkmn)
                         {
-                            if (!b2w2SpeciesIndexToPBESpecies.ContainsValue(sp)) // If the Pokémon does not have pokedata defined
+                            if (!_b2w2SpeciesIndexToPBESpecies.ContainsValue(sp)) // If the Pokémon does not have pokedata defined
                             {
                                 pkmn.HP = basePkmn.HP;
                                 pkmn.Attack = basePkmn.Attack;
@@ -1145,7 +1151,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon
                         if (sp <= 649 || sp >= 685)
                         {
-                            if (!b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                            if (!_b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
                             {
                                 species = (PBESpecies)sp;
                             }
@@ -1217,7 +1223,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0xC4;
                     void ReadGBALevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
                     {
-                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
                         if (species == PBESpecies.Deoxys)
                         {
                             if (reader == e)
@@ -1254,7 +1260,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     ReadGBALevelUpMoves(e, PBEMoveObtainMethod.LevelUp_E);
                     void ReadGCLevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
                     {
-                        PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
                         for (int i = 0; i < 17; i++)
                         {
                             byte level = reader.ReadByte();
@@ -1285,7 +1291,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             continue;
                         }
-                        if (!gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                        if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
                         {
                             species = (PBESpecies)sp;
                         }
@@ -1324,7 +1330,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         void ReadLevelUpMoves(MemoryStream file, bool isBW)
                         {
-                            if (!(isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
+                            if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
                             {
                                 species = (PBESpecies)sp;
                             }
@@ -1369,7 +1375,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         continue;
                     }
-                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                    PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
                     // It is the same across all of gen 3, so I will only read one
                     r.BaseStream.Position = 0x1FD0F0 + (8 * sp);
                     s.BaseStream.Position = 0x1FD080 + (8 * sp);
@@ -1385,11 +1391,11 @@ namespace Kermalis.PokemonBattleEngineExtras
                     void ReadGBATMHM(EndianBinaryReader reader)
                     {
                         byte[] bytes = reader.ReadBytes(8);
-                        for (int i = 0; i < gen3TMHMs.Length; i++)
+                        for (int i = 0; i < _gen3TMHMs.Length; i++)
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                AddOtherMove(species, gen3TMHMs[i], GetFlag(i));
+                                AddOtherMove(species, _gen3TMHMs[i], GetFlag(i));
                             }
                         }
                     }
@@ -1400,11 +1406,11 @@ namespace Kermalis.PokemonBattleEngineExtras
                     //ReadGBATMHM(e);
                     void ReadGCTMHM(EndianBinaryReader reader)
                     {
-                        for (int i = 0; i < gen3TMHMs.Length; i++)
+                        for (int i = 0; i < _gen3TMHMs.Length; i++)
                         {
                             if (reader.ReadBoolean())
                             {
-                                AddOtherMove(species, gen3TMHMs[i], GetFlag(i));
+                                AddOtherMove(species, _gen3TMHMs[i], GetFlag(i));
                             }
                         }
                     }
@@ -1422,7 +1428,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             continue;
                         }
-                        if (!gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                        if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
                         {
                             species = (PBESpecies)sp;
                         }
@@ -1431,11 +1437,11 @@ namespace Kermalis.PokemonBattleEngineExtras
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
                                 byte[] bytes = reader.ReadBytes(13, 0x1C);
-                                for (int i = 0; i < gen4TMHMs.Length; i++)
+                                for (int i = 0; i < _gen4TMHMs.Length; i++)
                                 {
                                     if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                     {
-                                        PBEMove move = gen4TMHMs[i];
+                                        PBEMove move = _gen4TMHMs[i];
                                         if (move == PBEMove.None)
                                         {
                                             move = isDPPt ? (PBEMove)432 : (PBEMove)250;
@@ -1457,14 +1463,14 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         void ReadTMHMMoves(MemoryStream file, bool isBW)
                         {
-                            if (!(isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
+                            if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
                             {
                                 species = (PBESpecies)sp;
                             }
                             using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
                             {
                                 byte[] bytes = reader.ReadBytes(13, 0x28);
-                                for (int i = 0; i < gen5TMHMs.Length; i++)
+                                for (int i = 0; i < _gen5TMHMs.Length; i++)
                                 {
                                     if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                     {
@@ -1477,7 +1483,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                         {
                                             flag = PBEMoveObtainMethod.HM_BWB2W2;
                                         }
-                                        AddOtherMove(species, gen5TMHMs[i], flag);
+                                        AddOtherMove(species, _gen5TMHMs[i], flag);
                                     }
                                 }
                             }
@@ -1507,7 +1513,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         continue;
                     }
-                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                    PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
                     // It is the same in FR and LG, so I will only read one
                     fr.BaseStream.Position = 0x459B7E + (sizeof(ushort) * sp);
                     lg.BaseStream.Position = 0x45959E + (sizeof(ushort) * sp);
@@ -1522,9 +1528,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                             }
                         }
                     }
-                    ReadTutorMoves(fr.ReadUInt16(), frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
+                    ReadTutorMoves(fr.ReadUInt16(), _frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
                     //ReadTutorMoves(lg.ReadUInt16(), frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
-                    ReadTutorMoves(e.ReadUInt32(), emeraldTutorMoves, PBEMoveObtainMethod.MoveTutor_E);
+                    ReadTutorMoves(e.ReadUInt32(), _emeraldTutorMoves, PBEMoveObtainMethod.MoveTutor_E);
                 }
                 // Gen 3 - XD
                 for (int sp = 1; sp <= 411; sp++)
@@ -1534,13 +1540,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         continue;
                     }
-                    PBESpecies species = gen3SpeciesIndexToPBESpecies[sp];
+                    PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
                     xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0x6E;
-                    for (int i = 0; i < xdTutorMoves.Length; i++)
+                    for (int i = 0; i < _xdTutorMoves.Length; i++)
                     {
                         if (xdCommonRel.ReadBoolean())
                         {
-                            AddOtherMove(species, xdTutorMoves[i], PBEMoveObtainMethod.MoveTutor_XD);
+                            AddOtherMove(species, _xdTutorMoves[i], PBEMoveObtainMethod.MoveTutor_XD);
                         }
                     }
                 }
@@ -1551,11 +1557,11 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         var species = (PBESpecies)sp;
                         byte[] bytes = pt.ReadBytes(5, 0x3012C + (5 * (sp - 1)));
-                        for (int i = 0; i < ptTutorMoves.Length; i++)
+                        for (int i = 0; i < _ptTutorMoves.Length; i++)
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                AddOtherMove(species, ptTutorMoves[i], PBEMoveObtainMethod.MoveTutor_Pt);
+                                AddOtherMove(species, _ptTutorMoves[i], PBEMoveObtainMethod.MoveTutor_Pt);
                             }
                         }
                     }
@@ -1564,13 +1570,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     for (int sp = 1; sp <= 505; sp++) // Includes forms but not eggs
                     {
-                        PBESpecies species = sp > 493 ? gen4SpeciesIndexToPBESpecies[sp + 2] : (PBESpecies)sp;
+                        PBESpecies species = sp > 493 ? _gen4SpeciesIndexToPBESpecies[sp + 2] : (PBESpecies)sp;
                         byte[] bytes = hgss.ReadBytes(8);
-                        for (int i = 0; i < hgssTutorMoves.Length; i++)
+                        for (int i = 0; i < _hgssTutorMoves.Length; i++)
                         {
                             if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                             {
-                                AddOtherMove(species, hgssTutorMoves[i], PBEMoveObtainMethod.MoveTutor_HGSS);
+                                AddOtherMove(species, _hgssTutorMoves[i], PBEMoveObtainMethod.MoveTutor_HGSS);
                             }
                         }
                     }
@@ -1583,33 +1589,33 @@ namespace Kermalis.PokemonBattleEngineExtras
                     {
                         void ReadFreeTutorMoves(EndianBinaryReader reader, bool isBW)
                         {
-                            if (!(isBW ? bwSpeciesIndexToPBESpecies : b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
+                            if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
                             {
                                 species = (PBESpecies)sp;
                             }
                             byte val = reader.ReadByte(0x38);
-                            for (int i = 0; i < gen5FreeTutorMoves.Length; i++)
+                            for (int i = 0; i < _gen5FreeTutorMoves.Length; i++)
                             {
                                 if ((val & (1 << i)) != 0)
                                 {
-                                    AddOtherMove(species, gen5FreeTutorMoves[i], isBW ? PBEMoveObtainMethod.MoveTutor_BW : PBEMoveObtainMethod.MoveTutor_B2W2);
+                                    AddOtherMove(species, _gen5FreeTutorMoves[i], isBW ? PBEMoveObtainMethod.MoveTutor_BW : PBEMoveObtainMethod.MoveTutor_B2W2);
                                 }
                             }
                         }
                         void ReadB2W2TutorMoves(EndianBinaryReader reader)
                         {
-                            if (!b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
+                            if (!_b2w2SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
                             {
                                 species = (PBESpecies)sp;
                             }
-                            for (int i = 0; i < b2w2TutorMoves.Length; i++)
+                            for (int i = 0; i < _b2w2TutorMoves.Length; i++)
                             {
                                 uint val = reader.ReadUInt32(0x3C + (sizeof(uint) * i));
-                                for (int j = 0; j < b2w2TutorMoves[i].Length; j++)
+                                for (int j = 0; j < _b2w2TutorMoves[i].Length; j++)
                                 {
                                     if ((val & (1u << j)) != 0)
                                     {
-                                        AddOtherMove(species, b2w2TutorMoves[i][j], PBEMoveObtainMethod.MoveTutor_B2W2);
+                                        AddOtherMove(species, _b2w2TutorMoves[i][j], PBEMoveObtainMethod.MoveTutor_B2W2);
                                     }
                                 }
                             }
@@ -1668,7 +1674,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                             else if (val > 20000)
                             {
                                 int speciesIndex = val - 20000;
-                                species = isGen3 ? gen3SpeciesIndexToPBESpecies[speciesIndex] : (PBESpecies)speciesIndex;
+                                species = isGen3 ? _gen3SpeciesIndexToPBESpecies[speciesIndex] : (PBESpecies)speciesIndex;
                             }
                             else
                             {

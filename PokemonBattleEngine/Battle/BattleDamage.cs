@@ -6,9 +6,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        /// <summary>
-        /// Gets the influence a stat change has on a stat.
-        /// </summary>
+        /// <summary>Gets the influence a stat change has on a stat.</summary>
         /// <param name="change">The stat change.</param>
         /// <param name="forMissing">True if the stat is <see cref="PBEStat.Accuracy"/> or <see cref="PBEStat.Evasion"/>.</param>
         public static double GetStatChangeModifier(sbyte change, bool forMissing)
@@ -19,9 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return numerator / denominator;
         }
 
-        /// <summary>
-        /// Deals damage to <paramref name="victim"/> and broadcasts the HP changing and substitute damage.
-        /// </summary>
+        /// <summary>Deals damage to <paramref name="victim"/> and broadcasts the HP changing and substitute damage.</summary>
         /// <param name="culprit">The Pokémon responsible for the damage.</param>
         /// <param name="victim">The Pokémon receiving the damage.</param>
         /// <param name="hp">The amount of HP <paramref name="victim"/> will try to lose.</param>
@@ -81,9 +77,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return (ushort)(oldHP - victim.HP);
             }
         }
-        /// <summary>
-        /// Restores HP to <paramref name="pkmn"/> and broadcasts the HP changing if it changes.
-        /// </summary>
+        /// <summary>Restores HP to <paramref name="pkmn"/> and broadcasts the HP changing if it changes.</summary>
         /// <param name="pkmn">The Pokémon receiving the HP.</param>
         /// <param name="hp">The amount of HP <paramref name="pkmn"/> will try to gain.</param>
         /// <returns>The amount of HP restored.</returns>
@@ -502,6 +496,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                     }
                     break;
+                case PBEType.None:
+                {
+                    break;
+                }
                 case PBEType.Normal:
                     switch (user.Item)
                     {
@@ -613,6 +611,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             break;
                     }
                     break;
+                default: throw new ArgumentOutOfRangeException(nameof(moveType));
             }
 
             // Move-specific power boosts

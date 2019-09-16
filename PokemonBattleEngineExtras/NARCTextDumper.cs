@@ -4,16 +4,16 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal class NARCTextDumper
+    internal sealed class NARCTextDumper
     {
-        private static readonly string[] langs = new string[] { "English", "French", "German", "Italian", "Japanese", "Korean", "Spanish" };
+        private static readonly string[] _langs = new string[] { "English", "French", "German", "Italian", "Japanese", "Korean", "Spanish" };
 
         // You must dump the NARC files yourself (/a/0/0/2 in each language)
         public static void Dump()
         {
-            for (int lang = 0; lang < langs.Length; lang++)
+            for (int lang = 0; lang < _langs.Length; lang++)
             {
-                string l = langs[lang];
+                string l = _langs[lang];
                 string dir = Path.Combine(@"../../../\DumpedData\Dumped\Texts", l);
                 Directory.CreateDirectory(dir);
                 using (var narc = new NARC($@"../../../\DumpedData\W2{l}Texts.narc"))

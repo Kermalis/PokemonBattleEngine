@@ -2,15 +2,22 @@
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
-    // TODO: INPC
+    // TODO: Fully implement INPC
     /// <summary>Represents a specific Pokémon battle.</summary>
-    public sealed partial class PBEBattle
+    public sealed partial class PBEBattle : IDisposable, INotifyPropertyChanged
     {
+        private void OnPropertyChanged(string property)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public delegate void BattleStateChangedEvent(PBEBattle battle);
         public event BattleStateChangedEvent OnStateChanged;
         public PBEBattleState BattleState { get; private set; }
@@ -20,9 +27,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public PBEBattleFormat BattleFormat { get; }
         public PBESettings Settings { get; }
-        public PBETeam[] Teams { get; } = new PBETeam[2];
+        public PBETeams Teams { get; }
         public List<PBEPokemon> ActiveBattlers { get; } = new List<PBEPokemon>(6);
-        private readonly List<PBEPokemon> turnOrder = new List<PBEPokemon>();
+        private readonly List<PBEPokemon> _turnOrder = new List<PBEPokemon>();
 
         public PBEWeather Weather { get; set; }
         public byte WeatherCounter { get; set; }
@@ -35,49 +42,59 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="pkmnId">The ID of the <see cref="PBEPokemon"/>.</param>
         public PBEPokemon TryGetPokemon(byte pkmnId)
         {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
             return Teams.SelectMany(t => t.Party).SingleOrDefault(p => p.Id == pkmnId);
         }
 
-        private byte pkmnIdCounter;
         /// <summary>Creates a new <see cref="PBEBattle"/> object with the specified <see cref="PBEBattleFormat"/> and teams. Each team must have equal settings. The battle's settings are set to a copy of the teams' settings. <see cref="BattleState"/> will be <see cref="PBEBattleState.ReadyToBegin"/>.</summary>
         /// <param name="battleFormat">The <see cref="PBEBattleFormat"/> of the battle.</param>
-        /// <param name="team0Shell">The <see cref="PBETeamShell"/> object to use to create <see cref="Teams"/>[0].</param>
-        /// <param name="team0TrainerName">The name of the trainer(s) on <see cref="Teams"/>[0].</param>
-        /// <param name="team1Shell">The <see cref="PBETeamShell"/> object to use to create <see cref="Teams"/>[1].</param>
-        /// <param name="team1TrainerName">The name of the trainer(s) on <see cref="Teams"/>[1].</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="team0Shell"/> or <paramref name="team1Shell"/> are null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="team0Shell"/> and <paramref name="team1Shell"/> have unequal <see cref="PBETeamShell.Settings"/> or when <paramref name="team0TrainerName"/> or <paramref name="team1TrainerName"/> are invalid.</exception>
-        public PBEBattle(PBEBattleFormat battleFormat, PBETeamShell team0Shell, string team0TrainerName, PBETeamShell team1Shell, string team1TrainerName)
+        /// <param name="team1Shell">The <see cref="PBETeamShell"/> object to use to create <see cref="Teams"/>[0].</param>
+        /// <param name="team1TrainerName">The name of the trainer(s) on <see cref="Teams"/>[0].</param>
+        /// <param name="team2Shell">The <see cref="PBETeamShell"/> object to use to create <see cref="Teams"/>[1].</param>
+        /// <param name="team2TrainerName">The name of the trainer(s) on <see cref="Teams"/>[1].</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="team1Shell"/> or <paramref name="team2Shell"/> are null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="team1Shell"/> and <paramref name="team2Shell"/> have unequal <see cref="PBETeamShell.Settings"/> or when <paramref name="team1TrainerName"/> or <paramref name="team2TrainerName"/> are invalid.</exception>
+        public PBEBattle(PBEBattleFormat battleFormat, PBETeamShell team1Shell, string team1TrainerName, PBETeamShell team2Shell, string team2TrainerName)
         {
             if (battleFormat >= PBEBattleFormat.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(battleFormat));
             }
-            if (team0Shell == null)
-            {
-                throw new ArgumentNullException(nameof(team0Shell));
-            }
-            if (string.IsNullOrWhiteSpace(team0TrainerName))
-            {
-                throw new ArgumentOutOfRangeException(nameof(team0TrainerName));
-            }
             if (team1Shell == null)
             {
                 throw new ArgumentNullException(nameof(team1Shell));
+            }
+            if (team2Shell == null)
+            {
+                throw new ArgumentNullException(nameof(team2Shell));
             }
             if (string.IsNullOrWhiteSpace(team1TrainerName))
             {
                 throw new ArgumentOutOfRangeException(nameof(team1TrainerName));
             }
-            if (!team0Shell.Settings.Equals(team1Shell.Settings))
+            if (string.IsNullOrWhiteSpace(team2TrainerName))
             {
-                throw new ArgumentOutOfRangeException(nameof(team0Shell.Settings), "Team settings must be equal to each other.");
+                throw new ArgumentOutOfRangeException(nameof(team2TrainerName));
+            }
+            if (team1Shell.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(team1Shell));
+            }
+            if (team2Shell.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(team2Shell));
+            }
+            if (!team1Shell.Settings.Equals(team2Shell.Settings))
+            {
+                throw new ArgumentOutOfRangeException(nameof(team1Shell.Settings), "Team settings must be equal to each other.");
             }
             BattleFormat = battleFormat;
-            Settings = new PBESettings(team0Shell.Settings);
+            Settings = new PBESettings(team1Shell.Settings);
             Settings.MakeReadOnly();
-            Teams[0] = new PBETeam(this, 0, team0Shell, team0TrainerName, ref pkmnIdCounter);
-            Teams[1] = new PBETeam(this, 1, team1Shell, team1TrainerName, ref pkmnIdCounter);
+            Teams = new PBETeams(this, team1Shell, team1TrainerName, team2Shell, team2TrainerName);
             CheckForReadiness();
         }
         /// <summary>Creates a new <see cref="PBEBattle"/> object with the specified <see cref="PBEBattleFormat"/> and a copy of the specified <see cref="PBESettings"/>. <see cref="BattleState"/> will be <see cref="PBEBattleState.WaitingForPlayers"/>.</summary>
@@ -96,16 +113,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BattleFormat = battleFormat;
             Settings = new PBESettings(settings);
             Settings.MakeReadOnly();
-
-            Teams[0] = new PBETeam(this, 0);
-            Teams[1] = new PBETeam(this, 1);
-
+            Teams = new PBETeams(this);
             BattleState = PBEBattleState.WaitingForPlayers;
             OnStateChanged?.Invoke(this);
         }
         private void CheckForReadiness()
         {
-            if (Array.TrueForAll(Teams, t => t.NumPkmnAlive > 0))
+            if (Teams.All(t => t.NumPkmnAlive > 0))
             {
                 switch (BattleFormat)
                 {
@@ -113,8 +127,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         foreach (PBETeam team in Teams)
                         {
-                            team.Party[0].FieldPosition = PBEFieldPosition.Center;
-                            team.SwitchInQueue.Add(team.Party[0]);
+                            PBEPokemon pkmn = team.Party[0];
+                            pkmn.FieldPosition = PBEFieldPosition.Center;
+                            team.SwitchInQueue.Add(pkmn);
                         }
                         break;
                     }
@@ -122,12 +137,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         foreach (PBETeam team in Teams)
                         {
-                            team.Party[0].FieldPosition = PBEFieldPosition.Left;
-                            team.SwitchInQueue.Add(team.Party[0]);
+                            PBEPokemon pkmn = team.Party[0];
+                            pkmn.FieldPosition = PBEFieldPosition.Left;
+                            team.SwitchInQueue.Add(pkmn);
                             if (team.Party.Count > 1)
                             {
-                                team.Party[1].FieldPosition = PBEFieldPosition.Right;
-                                team.SwitchInQueue.Add(team.Party[1]);
+                                pkmn = team.Party[1];
+                                pkmn.FieldPosition = PBEFieldPosition.Right;
+                                team.SwitchInQueue.Add(pkmn);
                             }
                         }
                         break;
@@ -136,17 +153,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         foreach (PBETeam team in Teams)
                         {
-                            team.Party[0].FieldPosition = PBEFieldPosition.Left;
-                            team.SwitchInQueue.Add(team.Party[0]);
+                            PBEPokemon pkmn = team.Party[0];
+                            pkmn.FieldPosition = PBEFieldPosition.Left;
+                            team.SwitchInQueue.Add(pkmn);
                             if (team.Party.Count > 1)
                             {
-                                team.Party[1].FieldPosition = PBEFieldPosition.Center;
-                                team.SwitchInQueue.Add(team.Party[1]);
+                                pkmn = team.Party[1];
+                                pkmn.FieldPosition = PBEFieldPosition.Center;
+                                team.SwitchInQueue.Add(pkmn);
                             }
                             if (team.Party.Count > 2)
                             {
-                                team.Party[2].FieldPosition = PBEFieldPosition.Right;
-                                team.SwitchInQueue.Add(team.Party[2]);
+                                pkmn = team.Party[2];
+                                pkmn.FieldPosition = PBEFieldPosition.Right;
+                                team.SwitchInQueue.Add(pkmn);
                             }
                         }
                         break;
@@ -155,17 +175,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         foreach (PBETeam team in Teams)
                         {
-                            team.Party[0].FieldPosition = PBEFieldPosition.Center;
-                            team.SwitchInQueue.Add(team.Party[0]);
+                            PBEPokemon pkmn = team.Party[0];
+                            pkmn.FieldPosition = PBEFieldPosition.Center;
+                            team.SwitchInQueue.Add(pkmn);
                             if (team.Party.Count > 1)
                             {
-                                team.Party[1].FieldPosition = PBEFieldPosition.Left;
-                                team.SwitchInQueue.Add(team.Party[1]);
+                                pkmn = team.Party[1];
+                                pkmn.FieldPosition = PBEFieldPosition.Left;
+                                team.SwitchInQueue.Add(pkmn);
                             }
                             if (team.Party.Count > 2)
                             {
-                                team.Party[2].FieldPosition = PBEFieldPosition.Right;
-                                team.SwitchInQueue.Add(team.Party[2]);
+                                pkmn = team.Party[2];
+                                pkmn.FieldPosition = PBEFieldPosition.Right;
+                                team.SwitchInQueue.Add(pkmn);
                             }
                         }
                         break;
@@ -186,14 +209,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="teamShell"/>'s settings are unequal to <paramref name="team"/>'s battle's settings or when <paramref name="teamTrainerName"/> is invalid.</exception>
         public static void CreateTeamParty(PBETeam team, PBETeamShell teamShell, string teamTrainerName)
         {
-            if (team.Battle.BattleState != PBEBattleState.WaitingForPlayers)
-            {
-                throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForPlayers} to set a team's party.");
-            }
-            if (team.Party.Count > 0)
-            {
-                throw new InvalidOperationException("This team already has its party set.");
-            }
             if (team == null)
             {
                 throw new ArgumentNullException(nameof(team));
@@ -202,41 +217,82 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(teamShell));
             }
-            if (!teamShell.Settings.Equals(team.Battle.Settings))
-            {
-                throw new ArgumentOutOfRangeException(nameof(teamShell), $"\"{nameof(teamShell)}\"'s settings must be equal to the battle's settings.");
-            }
             if (string.IsNullOrEmpty(teamTrainerName))
             {
                 throw new ArgumentOutOfRangeException(nameof(teamTrainerName));
             }
-            team.CreateParty(teamShell, teamTrainerName, ref team.Battle.pkmnIdCounter);
+            if (team.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(team));
+            }
+            if (teamShell.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(teamShell));
+            }
+            if (!teamShell.Settings.Equals(team.Battle.Settings))
+            {
+                throw new ArgumentOutOfRangeException(nameof(teamShell), $"\"{nameof(teamShell)}\"'s settings must be equal to the battle's settings.");
+            }
+            if (team.Battle.BattleState != PBEBattleState.WaitingForPlayers)
+            {
+                throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForPlayers} to set a team's party.");
+            }
+            if (team.Party.Count > 0)
+            {
+                throw new InvalidOperationException("This team already has its party set.");
+            }
+            team.CreateParty(teamShell, teamTrainerName);
             team.Battle.CheckForReadiness();
         }
         /// <summary>Begins the battle.</summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToBegin"/>.</exception>
         public void Begin()
         {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
             if (BattleState != PBEBattleState.ReadyToBegin)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToBegin} to begin the battle.");
             }
-            SwitchesOrActions();
+            lock (_disposeLockObj)
+            {
+                if (!IsDisposed)
+                {
+                    foreach (PBETeam team in Teams)
+                    {
+                        BroadcastTeam(team);
+                    }
+                    SwitchesOrActions();
+                }
+            }
         }
         /// <summary>Runs a turn.</summary>
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.ReadyToRunTurn"/>.</exception>
         public void RunTurn()
         {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
             if (BattleState != PBEBattleState.ReadyToRunTurn)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.ReadyToRunTurn} to run a turn.");
             }
-            BattleState = PBEBattleState.Processing;
-            OnStateChanged?.Invoke(this);
-            DetermineTurnOrder();
-            RunActionsInOrder();
-            TurnEnded();
+            lock (_disposeLockObj)
+            {
+                if (!IsDisposed)
+                {
+                    BattleState = PBEBattleState.Processing;
+                    OnStateChanged?.Invoke(this);
+                    DetermineTurnOrder();
+                    RunActionsInOrder();
+                    TurnEnded();
+                }
+            }
         }
+
         private bool WinCheck()
         {
             if (Winner != null)
@@ -253,13 +309,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BattleState = PBEBattleState.Processing;
             OnStateChanged?.Invoke(this);
 
-            IEnumerable<PBETeam> teamsWithSwitchIns = Teams.Where(t => t.SwitchInQueue.Count > 0);
-            if (teamsWithSwitchIns.Count() > 0)
+            PBETeam[] teamsWithSwitchIns = Teams.Where(t => t.SwitchInQueue.Count > 0).ToArray();
+            if (teamsWithSwitchIns.Length > 0)
             {
                 foreach (PBETeam team in teamsWithSwitchIns)
                 {
                     ActiveBattlers.AddRange(team.SwitchInQueue);
-                    BroadcastPkmnSwitchIn(team, team.SwitchInQueue.Select(p => CreateSwitchInInfo(p)), false);
+                    BroadcastPkmnSwitchIn(team, team.SwitchInQueue.Select(p => CreateSwitchInInfo(p)).ToArray(), false);
                 }
                 DoSwitchInEffects(teamsWithSwitchIns.SelectMany(t => t.SwitchInQueue));
             }
@@ -314,8 +370,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     default: throw new ArgumentOutOfRangeException(nameof(BattleFormat));
                 }
             }
-            teamsWithSwitchIns = Teams.Where(t => t.SwitchInsRequired > 0);
-            if (teamsWithSwitchIns.Count() > 0)
+            teamsWithSwitchIns = Teams.Where(t => t.SwitchInsRequired > 0).ToArray();
+            if (teamsWithSwitchIns.Length > 0)
             {
                 BattleState = PBEBattleState.WaitingForSwitchIns;
                 OnStateChanged?.Invoke(this);
@@ -393,7 +449,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        private IEnumerable<PBEPokemon> GetActingOrder(IEnumerable<PBEPokemon> pokemon, bool ignoreItemsThatActivate)
+        private PBEPokemon[] GetActingOrder(IEnumerable<PBEPokemon> pokemon, bool ignoreItemsThatActivate)
         {
             var evaluated = new List<(PBEPokemon Pokemon, double Speed)>(); // TODO: Full Incense, Lagging Tail, Stall, Quick Claw
             foreach (PBEPokemon pkmn in pokemon)
@@ -497,34 +553,34 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 Debug.WriteLine(evaluated.Select(t => $"{t.Pokemon.Team.Id} {t.Pokemon.Nickname} {t.Speed}").Print());
             }
-            return evaluated.Select(t => t.Pokemon);
+            return evaluated.Select(t => t.Pokemon).ToArray();
         }
         private void DetermineTurnOrder()
         {
-            turnOrder.Clear();
-            IEnumerable<PBEPokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.SelectedAction.Decision == PBEDecision.SwitchOut);
-            IEnumerable<PBEPokemon> pkmnFighting = ActiveBattlers.Where(p => p.SelectedAction.Decision == PBEDecision.Fight);
+            _turnOrder.Clear();
+            IEnumerable<PBEPokemon> pkmnSwitchingOut = ActiveBattlers.Where(p => p.TurnAction.Decision == PBETurnDecision.SwitchOut);
+            IEnumerable<PBEPokemon> pkmnFighting = ActiveBattlers.Where(p => p.TurnAction.Decision == PBETurnDecision.Fight);
             // Switching happens first:
-            turnOrder.AddRange(GetActingOrder(pkmnSwitchingOut, true));
+            _turnOrder.AddRange(GetActingOrder(pkmnSwitchingOut, true));
             // Moves:
             sbyte GetPrio(PBEPokemon p)
             {
-                PBEMoveData mData = PBEMoveData.Data[p.SelectedAction.FightMove];
+                PBEMoveData mData = PBEMoveData.Data[p.TurnAction.FightMove];
                 return (sbyte)PBEUtils.Clamp(mData.Priority + (p.Ability == PBEAbility.Prankster && mData.Category == PBEMoveCategory.Status ? 1 : 0), sbyte.MinValue, sbyte.MaxValue);
             }
             foreach (sbyte priority in pkmnFighting.Select(p => GetPrio(p)).Distinct().OrderByDescending(p => p))
             {
-                IEnumerable<PBEPokemon> pkmnWithThisPriority = pkmnFighting.Where(p => GetPrio(p) == priority);
-                if (pkmnWithThisPriority.Count() > 0)
+                PBEPokemon[] pkmnWithThisPriority = pkmnFighting.Where(p => GetPrio(p) == priority).ToArray();
+                if (pkmnWithThisPriority.Length > 0)
                 {
                     Debug.WriteLine("Priority {0} bracket...", priority);
-                    turnOrder.AddRange(GetActingOrder(pkmnWithThisPriority, false));
+                    _turnOrder.AddRange(GetActingOrder(pkmnWithThisPriority, false));
                 }
             }
         }
         private void RunActionsInOrder()
         {
-            foreach (PBEPokemon pkmn in turnOrder.ToArray()) // Copy the list so a faint or ejection does not cause a collection modified exception
+            foreach (PBEPokemon pkmn in _turnOrder.ToArray()) // Copy the list so a faint or ejection does not cause a collection modified exception
             {
                 if (Winner != null) // Do not broadcast winner by calling WinCheck() in here; do it in TurnEnded()
                 {
@@ -532,19 +588,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else if (ActiveBattlers.Contains(pkmn))
                 {
-                    switch (pkmn.SelectedAction.Decision)
+                    switch (pkmn.TurnAction.Decision)
                     {
-                        case PBEDecision.Fight:
+                        case PBETurnDecision.Fight:
                         {
-                            UseMove(pkmn, pkmn.SelectedAction.FightMove, pkmn.SelectedAction.FightTargets);
+                            UseMove(pkmn, pkmn.TurnAction.FightMove, pkmn.TurnAction.FightTargets);
                             break;
                         }
-                        case PBEDecision.SwitchOut:
+                        case PBETurnDecision.SwitchOut:
                         {
-                            SwitchTwoPokemon(pkmn, TryGetPokemon(pkmn.SelectedAction.SwitchPokemonId), false);
+                            SwitchTwoPokemon(pkmn, TryGetPokemon(pkmn.TurnAction.SwitchPokemonId), false);
                             break;
                         }
-                        default: throw new ArgumentOutOfRangeException(nameof(pkmn.SelectedAction.Decision));
+                        default: throw new ArgumentOutOfRangeException(nameof(pkmn.TurnAction.Decision));
                     }
                 }
             }
@@ -564,7 +620,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
 
-            // Verified: Reflect then Light Screen then Lucky Chant then Trick Room
+            // Reflect/Light Screen/Lucky Chant/Trick Room are removed in the order they were added, but who cares
             foreach (PBETeam team in Teams)
             {
                 if (team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
@@ -608,6 +664,24 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             SwitchesOrActions();
+        }
+
+        private readonly object _disposeLockObj = new object();
+        public bool IsDisposed { get; private set; }
+        public void Dispose()
+        {
+            lock (_disposeLockObj)
+            {
+                if (!IsDisposed)
+                {
+                    IsDisposed = true;
+                    OnPropertyChanged(nameof(IsDisposed));
+                    foreach (PBETeam team in Teams)
+                    {
+                        team.Dispose();
+                    }
+                }
+            }
         }
     }
 }

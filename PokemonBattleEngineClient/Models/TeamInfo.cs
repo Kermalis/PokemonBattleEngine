@@ -1,35 +1,16 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
-using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
-    public class TeamInfo : INotifyPropertyChanged
+    public sealed class TeamInfo
     {
-        private void OnPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
+        public string Name { get; }
+        public PBETeamShell Shell { get; }
 
-        private string name;
-        public string Name
+        internal TeamInfo(string name, PBETeamShell shell)
         {
-            get => name;
-            set
-            {
-                name = value;
-                OnPropertyChanged(nameof(Name));
-            }
-        }
-        private PBETeamShell shell;
-        public PBETeamShell Shell
-        {
-            get => shell;
-            set
-            {
-                shell = value;
-                OnPropertyChanged(nameof(Shell));
-            }
+            Name = name;
+            Shell = shell;
         }
     }
 }

@@ -133,7 +133,7 @@
           <Image Stretch="None" HorizontalAlignment="Left" Source="{Binding Shell.IndividualValues.HiddenPowerBasePower, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
         </StackPanel>
         <Image Grid.Row="2" Grid.Column="0" Stretch="None" HorizontalAlignment="Left" Source="{Binding Source='Moves:\nPP-Ups:', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuWhite, Mode=OneWay}"/>
-        <ItemsControl Grid.Row="2" Grid.Column="1" Items="{Binding Shell.Moveset.MoveSlots, Mode=OneWay}">
+        <ItemsControl Grid.Row="2" Grid.Column="1" Items="{Binding Shell.Moveset, Mode=OneWay}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel />

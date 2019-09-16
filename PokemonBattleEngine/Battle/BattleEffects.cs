@@ -8,13 +8,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        private bool calledFromOtherMove = false;
+        private static readonly PBEStat[] _moodyStats = Enum.GetValues(typeof(PBEStat)).Cast<PBEStat>().Except(new[] { PBEStat.HP }).ToArray();
+
+        private bool _calledFromOtherMove = false;
 
         private void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers)
         {
-            IEnumerable<PBEPokemon> order = GetActingOrder(battlers, true);
-
-            foreach (PBEPokemon pkmn in order)
+            foreach (PBEPokemon pkmn in GetActingOrder(battlers, true))
             {
                 // Verified: (Spikes/StealthRock/ToxicSpikes in the order they were applied) before ability
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
@@ -101,8 +101,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEAbility.Imposter:
                     {
                         PBEFieldPosition targetPos = GetPositionAcross(BattleFormat, pkmn.FieldPosition);
-                        PBETeam opposingTeam = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
-                        PBEPokemon target = opposingTeam.TryGetPokemon(targetPos);
+                        PBEPokemon target = pkmn.Team.OpposingTeam.TryGetPokemon(targetPos);
                         if (target != null
                             && !target.Status2.HasFlag(PBEStatus2.Disguised)
                             && !target.Status2.HasFlag(PBEStatus2.Substitute)
@@ -138,9 +137,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
-        /// <summary>
-        /// Does effects that take place after hitting such as substitute breaking, rough skin, and victim eating its berry.
-        /// </summary>
+        /// <summary>Does effects that take place after hitting such as substitute breaking, rough skin, and victim eating its berry.</summary>
         /// <param name="user">The Pokémon who used <paramref name="move"/>.</param>
         /// <param name="victim">The Pokémon who was affected by <paramref name="move"/>.</param>
         /// <param name="move">The move <paramref name="user"/> used.</param>
@@ -295,9 +292,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // TODO: King's Rock, Stench, etc
             // TODO?: Cell Battery
         }
-        /// <summary>
-        /// Does effects that take place after an attack is completely done such as recoil and life orb.
-        /// </summary>
+        /// <summary>Does effects that take place after an attack is completely done such as recoil and life orb.</summary>
         /// <param name="user">The Pokémon who used the attack.</param>
         /// <param name="ignoreLifeOrb">Whether <see cref="PBEItem.LifeOrb"/> should damage the user or not.</param>
         /// <param name="recoilDamage">The amount of recoil damage <paramref name="user"/> will take.</param>
@@ -324,7 +319,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void DoTurnEndedEffects()
         {
-            IEnumerable<PBEPokemon> order = GetActingOrder(ActiveBattlers, true);
+            PBEPokemon[] order = GetActingOrder(ActiveBattlers, true);
 
             // Verified: Weather stops before doing damage
             if (WeatherCounter > 0)
@@ -577,10 +572,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEAbility.Moody:
                         {
-                            IEnumerable<PBEStat> allStats = Enum.GetValues(typeof(PBEStat)).Cast<PBEStat>().Except(new[] { PBEStat.HP });
-                            PBEStat[] statsThatCanGoUp = allStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
+                            PBEStat[] statsThatCanGoUp = _moodyStats.Where(s => pkmn.GetStatChange(s) < Settings.MaxStatChange).ToArray();
                             PBEStat? upStat = statsThatCanGoUp.Length == 0 ? (PBEStat?)null : statsThatCanGoUp.RandomElement();
-                            var statsThatCanGoDown = allStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
+                            var statsThatCanGoDown = _moodyStats.Where(s => pkmn.GetStatChange(s) > -Settings.MaxStatChange).ToList();
                             if (upStat.HasValue)
                             {
                                 statsThatCanGoDown.Remove(upStat.Value);
@@ -648,19 +642,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public bool ShouldDoWeatherEffects()
         {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
             // If HP is needed to be above 0, use HPPercentage so clients can continue to use this
             // However, I see no instance of this getting called where an ActiveBattler has 0 hp
             return !ActiveBattlers.Any(p => p.Ability == PBEAbility.AirLock || p.Ability == PBEAbility.CloudNine);
         }
 
-        private void UseMove(PBEPokemon user, PBEMove move, PBETarget requestedTargets)
+        private void UseMove(PBEPokemon user, PBEMove move, PBETurnTarget requestedTargets)
         {
-            if (!calledFromOtherMove && PreMoveStatusCheck(user, move))
+            if (!_calledFromOtherMove && PreMoveStatusCheck(user, move))
             {
                 if (user.Status2.HasFlag(PBEStatus2.Airborne))
                 {
                     user.TempLockedMove = PBEMove.None;
-                    user.TempLockedTargets = PBETarget.None;
+                    user.TempLockedTargets = PBETurnTarget.None;
                     BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Airborne;
                     BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
@@ -668,7 +666,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (user.Status2.HasFlag(PBEStatus2.Underground))
                 {
                     user.TempLockedMove = PBEMove.None;
-                    user.TempLockedTargets = PBETarget.None;
+                    user.TempLockedTargets = PBETurnTarget.None;
                     BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Underground;
                     BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
@@ -676,7 +674,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (user.Status2.HasFlag(PBEStatus2.Underwater))
                 {
                     user.TempLockedMove = PBEMove.None;
-                    user.TempLockedTargets = PBETarget.None;
+                    user.TempLockedTargets = PBETurnTarget.None;
                     BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Underwater;
                     BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
@@ -1504,14 +1502,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (Winner == null && pkmn.Team.NumPkmnAlive == 0)
             {
-                Winner = pkmn.Team == Teams[0] ? Teams[1] : Teams[0];
+                Winner = pkmn.Team.OpposingTeam;
             }
         }
         private bool FaintCheck(PBEPokemon pkmn)
         {
             if (pkmn.HP == 0)
             {
-                turnOrder.Remove(pkmn);
+                _turnOrder.Remove(pkmn);
                 ActiveBattlers.Remove(pkmn);
                 PBEFieldPosition oldPos = pkmn.FieldPosition;
                 pkmn.FieldPosition = PBEFieldPosition.None;
@@ -1732,7 +1730,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private bool HasUsedMoveThisTurn(PBEPokemon pkmn)
         {
-            return pkmn.ExecutedMoves.Any(e => e.TurnNumber == TurnNumber);
+            for (int i = 0; i < pkmn.ExecutedMoves.Count; i++)
+            {
+                if (pkmn.ExecutedMoves[i].TurnNumber == TurnNumber)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         private void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason, IList<PBEExecutedMove.PBETargetSuccess> targets)
         {
@@ -1741,19 +1746,22 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if ((user.Item == PBEItem.ChoiceBand || user.Item == PBEItem.ChoiceScarf || user.Item == PBEItem.ChoiceSpecs) && user.Moves.Contains(move))
             {
                 user.ChoiceLockedMove = move;
-                BroadcastMoveLock(user, move, PBETarget.None, PBEMoveLockType.ChoiceItem);
+                BroadcastMoveLock(user, move, PBETurnTarget.None, PBEMoveLockType.ChoiceItem);
             }
         }
         private void PPReduce(PBEPokemon pkmn, PBEMove move)
         {
-            if (!calledFromOtherMove)
+            if (!_calledFromOtherMove)
             {
-                int moveIndex = Array.IndexOf(pkmn.Moves, move);
-                int amtToReduce = 1;
+                const int amountToReduce = 1;
                 // TODO: If target is not self and has pressure
-                byte oldPP = pkmn.PP[moveIndex];
-                pkmn.PP[moveIndex] = (byte)Math.Max(0, pkmn.PP[moveIndex] - amtToReduce);
-                BroadcastMovePPChanged(pkmn, move, oldPP, pkmn.PP[moveIndex]);
+                PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[move];
+                int oldPP = slot.PP;
+                int newPP = Math.Max(0, oldPP - amountToReduce);
+                int amountReduced = oldPP - newPP;
+                slot.PP = newPP;
+                pkmn.UpdateKnownPP(move, amountReduced);
+                BroadcastMovePPChanged(pkmn, move, amountReduced);
             }
         }
 
@@ -2155,7 +2163,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
         {
             PBEFieldPosition pos = pkmnLeaving.FieldPosition;
-            turnOrder.Remove(pkmnLeaving);
+            _turnOrder.Remove(pkmnLeaving);
             ActiveBattlers.Remove(pkmnLeaving);
             PBEPokemon disguisedAsPokemon = pkmnLeaving.Status2.HasFlag(PBEStatus2.Disguised) ? pkmnLeaving.DisguisedAsPokemon : pkmnLeaving;
             pkmnLeaving.ClearForSwitch();
@@ -2242,7 +2250,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastEffectiveness(target, moveEffectiveness);
                         if (success.CriticalHit)
                         {
-                            BroadcastMoveCrit();
+                            BroadcastMoveCrit(target);
                         }
 
                         hit++;
@@ -2459,7 +2467,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
 
-            PBETeam opposingTeam = user.Team == Teams[0] ? Teams[1] : Teams[0];
             switch (status)
             {
                 case PBETeamStatus.LightScreen:
@@ -2509,11 +2516,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETeamStatus.Spikes:
                 {
-                    if (opposingTeam.SpikeCount < 3)
+                    if (user.Team.OpposingTeam.SpikeCount < 3)
                     {
-                        opposingTeam.TeamStatus |= PBETeamStatus.Spikes;
-                        opposingTeam.SpikeCount++;
-                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
+                        user.Team.OpposingTeam.TeamStatus |= PBETeamStatus.Spikes;
+                        user.Team.OpposingTeam.SpikeCount++;
+                        BroadcastTeamStatus(user.Team.OpposingTeam, PBETeamStatus.Spikes, PBETeamStatusAction.Added);
                         failReason = PBEFailReason.None;
                     }
                     else
@@ -2524,10 +2531,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETeamStatus.StealthRock:
                 {
-                    if (!opposingTeam.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
+                    if (!user.Team.OpposingTeam.TeamStatus.HasFlag(PBETeamStatus.StealthRock))
                     {
-                        opposingTeam.TeamStatus |= PBETeamStatus.StealthRock;
-                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
+                        user.Team.OpposingTeam.TeamStatus |= PBETeamStatus.StealthRock;
+                        BroadcastTeamStatus(user.Team.OpposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
                         failReason = PBEFailReason.None;
                     }
                     else
@@ -2538,11 +2545,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBETeamStatus.ToxicSpikes:
                 {
-                    if (opposingTeam.ToxicSpikeCount < 2)
+                    if (user.Team.OpposingTeam.ToxicSpikeCount < 2)
                     {
-                        opposingTeam.TeamStatus |= PBETeamStatus.ToxicSpikes;
-                        opposingTeam.ToxicSpikeCount++;
-                        BroadcastTeamStatus(opposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
+                        user.Team.OpposingTeam.TeamStatus |= PBETeamStatus.ToxicSpikes;
+                        user.Team.OpposingTeam.ToxicSpikeCount++;
+                        BroadcastTeamStatus(user.Team.OpposingTeam, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Added);
                         failReason = PBEFailReason.None;
                     }
                     else
@@ -2831,7 +2838,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        private void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
+        private void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2840,7 +2847,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Status2.HasFlag(PBEStatus2.Underground))
             {
                 user.TempLockedMove = PBEMove.None;
-                user.TempLockedTargets = PBETarget.None;
+                user.TempLockedTargets = PBETurnTarget.None;
                 BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
@@ -2874,7 +2881,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move, failReason, targetSuccess);
         }
-        private void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
+        private void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2883,7 +2890,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Status2.HasFlag(PBEStatus2.Underwater))
             {
                 user.TempLockedMove = PBEMove.None;
-                user.TempLockedTargets = PBETarget.None;
+                user.TempLockedTargets = PBETurnTarget.None;
                 BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
@@ -2924,7 +2931,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveFailed(user, user, PBEFailReason.Default);
             RecordExecutedMove(user, move, PBEFailReason.Default, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
         }
-        private void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETarget requestedTargets)
+        private void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
         {
             var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
@@ -2933,7 +2940,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (user.Status2.HasFlag(PBEStatus2.Airborne))
             {
                 user.TempLockedMove = PBEMove.None;
-                user.TempLockedTargets = PBETarget.None;
+                user.TempLockedTargets = PBETurnTarget.None;
                 BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
@@ -3055,8 +3062,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 PBEFailReason BeforeDoingDamage(PBEPokemon target)
                 {
-                    if (target.SelectedAction.Decision != PBEDecision.Fight
-                        || PBEMoveData.Data[target.SelectedAction.FightMove].Category == PBEMoveCategory.Status
+                    if (target.TurnAction.Decision != PBETurnDecision.Fight
+                        || PBEMoveData.Data[target.TurnAction.FightMove].Category == PBEMoveCategory.Status
                         || HasUsedMoveThisTurn(target))
                     {
                         BroadcastMoveFailed(user, target, PBEFailReason.Default);
@@ -3596,18 +3603,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (target == user) // Just gained the Ghost type after selecting the move, so get a random target
                     {
                         PBEFieldPosition prioritizedPos = GetPositionAcross(BattleFormat, user.FieldPosition);
-                        PBETarget moveTarget;
+                        PBETurnTarget moveTarget;
                         if (prioritizedPos == PBEFieldPosition.Left)
                         {
-                            moveTarget = PBETarget.FoeLeft;
+                            moveTarget = PBETurnTarget.FoeLeft;
                         }
                         else if (prioritizedPos == PBEFieldPosition.Center)
                         {
-                            moveTarget = PBETarget.FoeCenter;
+                            moveTarget = PBETurnTarget.FoeCenter;
                         }
                         else
                         {
-                            moveTarget = PBETarget.FoeRight;
+                            moveTarget = PBETurnTarget.FoeRight;
                         }
 
                         PBEPokemon[] runtimeTargets = GetRuntimeTargets(user, moveTarget, false);
@@ -3806,9 +3813,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
 
             PBEMove calledMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).ToArray().RandomElement();
-            calledFromOtherMove = true;
+            _calledFromOtherMove = true;
             UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
-            calledFromOtherMove = false;
+            _calledFromOtherMove = false;
         }
         private void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {

@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Kermalis.PokemonBattleEngineDiscord
 {
-    internal class Program
+    internal sealed class Program
     {
-        private DiscordSocketClient client;
-        private IServiceProvider services;
-        private CommandService commands;
-        private const char commandPrefix = '!';
+        private const char CommandPrefix = '!';
+        private DiscordSocketClient _client;
+        private IServiceProvider _services;
+        private CommandService _commands;
 
         public static void Main(string[] args)
         {
@@ -24,21 +24,21 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             PBEUtils.CreateDatabaseConnection(string.Empty);
 
-            client = new DiscordSocketClient(new DiscordSocketConfig { WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance });
+            _client = new DiscordSocketClient(new DiscordSocketConfig { WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance });
 
-            commands = new CommandService(new CommandServiceConfig { DefaultRunMode = RunMode.Async });
-            services = new ServiceCollection()
-                .AddSingleton(client)
-                .AddSingleton(commands)
+            _commands = new CommandService(new CommandServiceConfig { DefaultRunMode = RunMode.Async });
+            _services = new ServiceCollection()
+                .AddSingleton(_client)
+                .AddSingleton(_commands)
                 .BuildServiceProvider();
-            await commands.AddModulesAsync(Assembly.GetEntryAssembly(), services);
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
-            client.Log += LogMessage;
-            client.MessageReceived += CommandMessageReceived;
-            client.ReactionAdded += ReactionListener.Client_ReactionAdded;
+            _client.Log += LogMessage;
+            _client.MessageReceived += CommandMessageReceived;
+            _client.ReactionAdded += ReactionListener.Client_ReactionAdded;
 
-            await client.LoginAsync(TokenType.Bot, args[0]); // Token is passed in as args[0]
-            await client.StartAsync();
+            await _client.LoginAsync(TokenType.Bot, args[0]); // Token is passed in as args[0]
+            await _client.StartAsync();
 
             await Task.Delay(-1);
         }
@@ -47,13 +47,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
         {
             int argPos = 0;
             if (!(arg is SocketUserMessage message)
-                || message.Author.Id == client.CurrentUser.Id
-                || !message.HasCharPrefix(commandPrefix, ref argPos))
+                || message.Author.Id == _client.CurrentUser.Id
+                || !message.HasCharPrefix(CommandPrefix, ref argPos))
             {
                 return;
             }
-            var context = new SocketCommandContext(client, message);
-            IResult result = await commands.ExecuteAsync(context, argPos, services);
+            var context = new SocketCommandContext(_client, message);
+            IResult result = await _commands.ExecuteAsync(context, argPos, _services);
             if (!result.IsSuccess)
             {
                 Console.WriteLine(result.ErrorReason);

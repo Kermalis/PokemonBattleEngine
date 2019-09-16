@@ -4,7 +4,7 @@ namespace Kermalis.PokemonBattleEngineServer
 {
     internal static class Utils
     {
-        private static readonly Random rand = new Random();
+        private static readonly Random _rand = new Random();
         public static T RandomElement<T>(this T[] source)
         {
             int count = source.Length;
@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineServer
             {
                 throw new ArgumentOutOfRangeException(nameof(source), $"\"{nameof(source)}\" must have at least one element.");
             }
-            return source[rand.Next(count)];
+            return source[_rand.Next(count)];
         }
     }
 }

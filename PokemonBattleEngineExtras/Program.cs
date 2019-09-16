@@ -1,9 +1,10 @@
 ﻿using Kermalis.PokemonBattleEngine;
 using Microsoft.Data.Sqlite;
+using System;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal class Program
+    internal sealed class Program
     {
         private enum Extra
         {
@@ -54,6 +55,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     break;
                 }
+                default: throw new ArgumentOutOfRangeException(nameof(e));
             }
         }
     }

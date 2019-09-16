@@ -3,22 +3,22 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEMoveMissedPacket : INetPacket
     {
         public const short Code = 0x0D;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public PBEFieldPosition MoveUser { get; }
         public PBETeam MoveUserTeam { get; }
         public PBEFieldPosition Pokemon2 { get; }
         public PBETeam Pokemon2Team { get; }
 
-        public PBEMoveMissedPacket(PBEPokemon moveUser, PBEPokemon pokemon2)
+        internal PBEMoveMissedPacket(PBEPokemon moveUser, PBEPokemon pokemon2)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -26,19 +26,16 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((MoveUserTeam = moveUser.Team).Id);
             bytes.Add((byte)(Pokemon2 = pokemon2.FieldPosition));
             bytes.Add((Pokemon2Team = pokemon2.Team).Id);
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBEMoveMissedPacket(byte[] buffer, PBEBattle battle)
+        internal PBEMoveMissedPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                MoveUser = (PBEFieldPosition)r.ReadByte();
-                MoveUserTeam = battle.Teams[r.ReadByte()];
-                Pokemon2 = (PBEFieldPosition)r.ReadByte();
-                Pokemon2Team = battle.Teams[r.ReadByte()];
-            }
+            MoveUser = (PBEFieldPosition)r.ReadByte();
+            MoveUserTeam = battle.Teams[r.ReadByte()];
+            Pokemon2 = (PBEFieldPosition)r.ReadByte();
+            Pokemon2Team = battle.Teams[r.ReadByte()];
         }
 
         public void Dispose() { }

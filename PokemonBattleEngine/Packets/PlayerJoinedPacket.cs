@@ -2,15 +2,15 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEPlayerJoinedPacket : INetPacket
     {
         public const short Code = 0x01;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public bool IsMe { get; }
         public int BattleId { get; }
@@ -18,23 +18,28 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEPlayerJoinedPacket(bool isMe, int battleId, string trainerName)
         {
+            if (trainerName == null)
+            {
+                throw new ArgumentNullException(nameof(trainerName));
+            }
+            if (string.IsNullOrWhiteSpace(trainerName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(trainerName));
+            }
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)((IsMe = isMe) ? 1 : 0));
             bytes.AddRange(BitConverter.GetBytes(BattleId = battleId));
-            bytes.AddRange(PBEUtils.StringToBytes(TrainerName = trainerName));
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            PBEUtils.StringToBytes(bytes, TrainerName = trainerName);
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBEPlayerJoinedPacket(byte[] buffer, PBEBattle battle)
+        internal PBEPlayerJoinedPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                IsMe = r.ReadBoolean();
-                BattleId = r.ReadInt32();
-                TrainerName = PBEUtils.StringFromBytes(r);
-            }
+            IsMe = r.ReadBoolean();
+            BattleId = r.ReadInt32();
+            TrainerName = PBEUtils.StringFromBytes(r);
         }
 
         public void Dispose() { }

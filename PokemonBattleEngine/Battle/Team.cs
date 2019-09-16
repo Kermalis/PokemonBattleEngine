@@ -1,4 +1,6 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +8,50 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
+    public sealed class PBETeams : IReadOnlyList<PBETeam>
+    {
+        private readonly PBETeam _team1;
+        private readonly PBETeam _team2;
+
+        public int Count => 2;
+        public PBETeam this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return _team1;
+                    case 1: return _team2;
+                    default: throw new ArgumentOutOfRangeException(nameof(index));
+                }
+            }
+        }
+
+        internal PBETeams(PBEBattle battle, PBETeamShell team1Shell, string team1TrainerName, PBETeamShell team2Shell, string team2TrainerName)
+        {
+            _team1 = new PBETeam(battle, 0, team1Shell, team1TrainerName);
+            _team2 = new PBETeam(battle, 1, team2Shell, team2TrainerName);
+            _team1.OpposingTeam = _team2;
+            _team2.OpposingTeam = _team1;
+        }
+        internal PBETeams(PBEBattle battle)
+        {
+            _team1 = new PBETeam(battle, 0);
+            _team2 = new PBETeam(battle, 1);
+            _team1.OpposingTeam = _team2;
+            _team2.OpposingTeam = _team1;
+        }
+
+        public IEnumerator<PBETeam> GetEnumerator()
+        {
+            yield return _team1;
+            yield return _team2;
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
     // TODO: INPC
     /// <summary>Represents a team in a specific <see cref="PBEBattle"/>.</summary>
     public sealed class PBETeam
@@ -14,7 +60,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEBattle Battle { get; }
         public byte Id { get; }
         public string TrainerName { get; set; } // Setter is public because a client cannot submit the opponent's team
-        public List<PBEPokemon> Party { get; private set; }
+        public PBEList<PBEPokemon> Party { get; }
+        public PBETeam OpposingTeam { get; internal set; }
 
         public PBEPokemon[] ActiveBattlers => Battle.ActiveBattlers.Where(p => p.Team == this).OrderBy(p => p.FieldPosition).ToArray();
         public int NumPkmnAlive => Party.Count(p => p.HP > 0);
@@ -33,25 +80,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public bool MonFaintedLastTurn { get; set; }
         public bool MonFaintedThisTurn { get; set; }
 
-        internal PBETeam(PBEBattle battle, byte id, PBETeamShell shell, string trainerName, ref byte pkmnIdCounter)
+        internal PBETeam(PBEBattle battle, byte id, PBETeamShell shell, string trainerName)
         {
             Battle = battle;
             Id = id;
-            CreateParty(shell, trainerName, ref pkmnIdCounter);
+            Party = new PBEList<PBEPokemon>(Battle.Settings.MaxPartySize);
+            CreateParty(shell, trainerName);
         }
         internal PBETeam(PBEBattle battle, byte id)
         {
             Battle = battle;
             Id = id;
-            Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
+            Party = new PBEList<PBEPokemon>(Battle.Settings.MaxPartySize);
         }
-        internal void CreateParty(PBETeamShell shell, string trainerName, ref byte pkmnIdCounter)
+        internal void CreateParty(PBETeamShell shell, string trainerName)
         {
             TrainerName = trainerName;
-            Party = new List<PBEPokemon>(Battle.Settings.MaxPartySize);
             for (int i = 0; i < shell.Count; i++)
             {
-                new PBEPokemon(this, pkmnIdCounter++, shell[i]);
+                new PBEPokemon(this, (byte)((Id * Battle.Settings.MaxPartySize) + i), shell[i]);
             }
         }
 
@@ -59,22 +106,49 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="pos">The <see cref="PBEFieldPosition"/> of the <see cref="PBEPokemon"/>.</param>
         public PBEPokemon TryGetPokemon(PBEFieldPosition pos)
         {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
             return ActiveBattlers.SingleOrDefault(p => p.FieldPosition == pos);
         }
         /// <summary>Gets a specific <see cref="PBEPokemon"/> by its ID.</summary>
         /// <param name="pkmnId">The ID of the <see cref="PBEPokemon"/>.</param>
         public PBEPokemon TryGetPokemon(byte pkmnId)
         {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
             return Party.SingleOrDefault(p => p.Id == pkmnId);
         }
 
-        internal List<byte> ToBytes()
+        public bool Remove(PBEPokemon pokemon)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(PBEUtils.StringToBytes(TrainerName));
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
+            if (pokemon.IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(pokemon));
+            }
+            bool b = Party.Remove(pokemon);
+            if (b)
+            {
+                pokemon.Dispose();
+            }
+            return b;
+        }
+
+        internal void ToBytes(List<byte> bytes)
+        {
+            PBEUtils.StringToBytes(bytes, TrainerName);
             bytes.Add((byte)Party.Count);
-            bytes.AddRange(Party.SelectMany(p => p.ToBytes()));
-            return bytes;
+            for (int i = 0; i < (sbyte)Party.Count; i++)
+            {
+                Party[i].ToBytes(bytes);
+            }
         }
         internal void FromBytes(BinaryReader r)
         {
@@ -95,6 +169,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             sb.AppendLine($"NumPkmnAlive: {NumPkmnAlive}");
             sb.AppendLine($"NumPkmnOnField: {NumPkmnOnField}");
             return sb.ToString();
+        }
+
+        internal bool IsDisposed { get; private set; }
+        internal void Dispose()
+        {
+            if (!IsDisposed)
+            {
+                IsDisposed = true;
+                for (int i = 0; i < Party.Count; i++)
+                {
+                    Party[i].Dispose();
+                }
+            }
         }
     }
 }

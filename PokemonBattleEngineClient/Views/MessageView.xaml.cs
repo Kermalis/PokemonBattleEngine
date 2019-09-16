@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    public class MessageView : UserControl, INotifyPropertyChanged
+    public sealed class MessageView : UserControl
     {
         public class Message
         {
@@ -37,14 +37,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             }
         }
         public ObservableCollection<Message> Messages { get; } = new ObservableCollection<Message>();
-        private readonly ListBox listBox;
+        private readonly ListBox _listBox;
 
         public MessageView()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            listBox = this.FindControl<ListBox>("List");
+            _listBox = this.FindControl<ListBox>("List");
         }
 
         public void AddMessage(string message)
@@ -53,7 +53,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             {
                 var m = new Message(message);
                 Messages.Add(m);
-                listBox.ScrollIntoView(m);
+                _listBox.ScrollIntoView(m);
             });
         }
     }

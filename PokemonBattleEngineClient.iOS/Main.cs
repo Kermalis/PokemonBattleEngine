@@ -2,7 +2,7 @@ using UIKit;
 
 namespace Kermalis.PokemonBattleEngineClient.iOS
 {
-    public class Application
+    public sealed class Application
     {
         private static void Main(string[] args)
         {

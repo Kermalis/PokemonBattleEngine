@@ -2,35 +2,30 @@
 using Kermalis.PokemonBattleEngine.Battle;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBETurnBeganPacket : INetPacket
     {
         public const short Code = 0x27;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public ushort TurnNumber { get; }
-        public DateTime Time { get; }
 
-        public PBETurnBeganPacket(ushort turnNumber)
+        internal PBETurnBeganPacket(ushort turnNumber)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.AddRange(BitConverter.GetBytes(TurnNumber = turnNumber));
-            bytes.AddRange(BitConverter.GetBytes((Time = DateTime.Now).ToBinary()));
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBETurnBeganPacket(byte[] buffer, PBEBattle battle)
+        internal PBETurnBeganPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                TurnNumber = r.ReadUInt16();
-                Time = DateTime.FromBinary(r.ReadInt64());
-            }
+            Buffer = buffer;
+            TurnNumber = r.ReadUInt16();
         }
 
         public void Dispose() { }

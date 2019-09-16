@@ -8,14 +8,14 @@ using System.Text;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
-    public class MoveInfo
+    public sealed class MoveInfo
     {
-        private static Dictionary<PBEType, (SolidColorBrush Brush, SolidColorBrush BorderBrush)> typeToBrush;
+        private static Dictionary<PBEType, (SolidColorBrush Brush, SolidColorBrush BorderBrush)> _typeToBrush;
         public static void CreateBrushes()
         {
-            if (typeToBrush == null)
+            if (_typeToBrush == null)
             {
-                typeToBrush = new Dictionary<PBEType, (SolidColorBrush Brush, SolidColorBrush BorderBrush)>
+                _typeToBrush = new Dictionary<PBEType, (SolidColorBrush Brush, SolidColorBrush BorderBrush)>
                 {
                     { PBEType.Bug, (new SolidColorBrush(Color.FromRgb(173, 189, 31)), new SolidColorBrush(Color.FromRgb(66, 107, 57))) },
                     { PBEType.Dark, (new SolidColorBrush(Color.FromRgb(115, 90, 74)), new SolidColorBrush(Color.FromRgb(74, 57, 49))) },
@@ -47,7 +47,7 @@ namespace Kermalis.PokemonBattleEngineClient.Models
         public MoveInfo(PBEPokemon pkmn, PBEMove move, Action<PBEMove> clickAction)
         {
             Move = move;
-            (SolidColorBrush Brush, SolidColorBrush BorderBrush) ttb = typeToBrush[pkmn.GetMoveType(move)];
+            (SolidColorBrush Brush, SolidColorBrush BorderBrush) ttb = _typeToBrush[pkmn.GetMoveType(move)];
             Brush = ttb.Brush;
             BorderBrush = ttb.BorderBrush;
 
@@ -57,10 +57,10 @@ namespace Kermalis.PokemonBattleEngineClient.Models
                 PBEMoveData mData = PBEMoveData.Data[move];
                 sb.AppendLine($"Type: {PBELocalizedString.GetTypeName(mData.Type).ToString()}");
                 sb.AppendLine($"Category: {mData.Category}");
-                int moveIndex = Array.IndexOf(pkmn.Moves, move);
-                if (moveIndex != -1)
+                PBEBattleMoveset.PBEBattleMovesetSlot slot = pkmn.Moves[move];
+                if (slot != null)
                 {
-                    sb.AppendLine($"PP: {pkmn.PP[moveIndex]}/{pkmn.MaxPP[moveIndex]}");
+                    sb.AppendLine($"PP: {slot.PP}/{slot.MaxPP}");
                 }
                 sb.AppendLine($"Priority: {mData.Priority}");
                 sb.AppendLine($"Power: {(mData.Power == 0 ? "--" : mData.Power.ToString())}");

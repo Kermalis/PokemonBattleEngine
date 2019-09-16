@@ -8,6 +8,9 @@
     <Copyright>Kermalis</Copyright>
     <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn />
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,15 +24,9 @@
     <EmbeddedResource Include="..\PokemonBattleEngine\PokemonBattleEngine.db">
       <Link>PokemonBattleEngine.db</Link>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Dependencies\**" />
     <EmbeddedResource Remove="Dependencies\**" />
     <None Remove="Dependencies\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.8.1-cibuild0003053-beta" />
     <PackageReference Include="Avalonia.Desktop" Version="0.8.1-cibuild0003053-beta" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.8.1-cibuild0003053-beta" />

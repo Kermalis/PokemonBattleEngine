@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineServer
 {
-    internal class Player : NetUser
+    internal sealed class Player : NetUser
     {
         public ManualResetEvent ResetEvent { get; } = new ManualResetEvent(true);
         public string TrainerName { get; set; }

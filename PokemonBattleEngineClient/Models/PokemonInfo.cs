@@ -6,7 +6,7 @@ using System;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
-    public class PokemonInfo
+    public sealed class PokemonInfo
     {
         public ReactiveCommand SelectPokemonCommand { get; }
         public bool Enabled { get; }

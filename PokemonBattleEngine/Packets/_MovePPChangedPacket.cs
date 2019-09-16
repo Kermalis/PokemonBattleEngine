@@ -3,45 +3,39 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEMovePPChangedPacket : INetPacket
     {
         public const short Code = 0x17;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public PBEFieldPosition MoveUser { get; }
         public PBETeam MoveUserTeam { get; }
         public PBEMove Move { get; }
-        public byte OldValue { get; }
-        public byte NewValue { get; }
+        public int AmountReduced { get; }
 
-        public PBEMovePPChangedPacket(PBEFieldPosition moveUser, PBETeam moveUserTeam, PBEMove move, byte oldValue, byte newValue)
+        internal PBEMovePPChangedPacket(PBEFieldPosition moveUser, PBETeam moveUserTeam, PBEMove move, int amountReduced)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(MoveUser = moveUser));
             bytes.Add((MoveUserTeam = moveUserTeam).Id);
             bytes.AddRange(BitConverter.GetBytes((ushort)(Move = move)));
-            bytes.Add(OldValue = oldValue);
-            bytes.Add(NewValue = newValue);
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.AddRange(BitConverter.GetBytes(AmountReduced = amountReduced));
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBEMovePPChangedPacket(byte[] buffer, PBEBattle battle)
+        internal PBEMovePPChangedPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                MoveUser = (PBEFieldPosition)r.ReadByte();
-                MoveUserTeam = battle.Teams[r.ReadByte()];
-                Move = (PBEMove)r.ReadUInt16();
-                OldValue = r.ReadByte();
-                NewValue = r.ReadByte();
-            }
+            MoveUser = (PBEFieldPosition)r.ReadByte();
+            MoveUserTeam = battle.Teams[r.ReadByte()];
+            Move = (PBEMove)r.ReadUInt16();
+            AmountReduced = r.ReadInt32();
         }
 
         public void Dispose() { }

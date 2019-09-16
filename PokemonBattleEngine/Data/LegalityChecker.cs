@@ -10,8 +10,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         // TODO: Include generation?
         // TODO: Sketch
         // TODO: Same goals as MoveLegalityCheck
-        public static PBEMove[] GetLegalMoves(PBESpecies species, byte level)
+        public static PBEMove[] GetLegalMoves(PBESpecies species, byte level, PBESettings settings)
         {
+            PBEPokemonShell.ValidateSpecies(species);
+            PBEPokemonShell.ValidateLevel(level, settings);
             var evolutionChain = new List<PBESpecies>();
             void AddPreEvolutions(PBESpecies sp)
             {
@@ -43,47 +45,33 @@ namespace Kermalis.PokemonBattleEngine.Data
         // TODO: Check if HMs were transferred
         // TODO: Check events for moves
         // TODO: EggMove_Special
-        public static void MoveLegalityCheck(PBESpecies species, byte level, IEnumerable<PBEMove> moves, PBESettings settings)
+        public static void MoveLegalityCheck(PBEMoveset moveset)
         {
             // Validate basic move rules first
-            if (moves == null || moves.Count() != settings.NumMoves)
+            if (moveset == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(moves), $"A Pokémon must have exactly {settings.NumMoves} moves.");
-            }
-            if (moves.Any(m => moves.Count(m2 => m != PBEMove.None && m == m2) > 1))
-            {
-                throw new ArgumentOutOfRangeException(nameof(moves), $"A Pokémon cannot have duplicate moves other than {PBEMove.None}.");
-            }
-            if (moves.All(m => m == PBEMove.None))
-            {
-                throw new ArgumentOutOfRangeException(nameof(moves), $"A Pokémon must have at least one move other than {PBEMove.None}.");
-            }
-            if (species == PBESpecies.Keldeo_Resolute && !moves.Contains(PBEMove.SecretSword))
-            {
-                throw new ArgumentOutOfRangeException(nameof(moves), $"{species} must have {PBEMove.SecretSword}.");
+                throw new ArgumentNullException(nameof(moveset));
             }
 
             // Combine all moves from pre-evolutions
-            IEnumerable<PBESpecies> evolutionChain = PBEPokemonData.GetData(species).PreEvolutions.Concat(new[] { species });
+            var evolutionChain = new List<PBESpecies>();
+            void AddPreEvolutions(PBESpecies sp)
+            {
+                foreach (PBESpecies pkmn in PBEPokemonData.GetData(sp).PreEvolutions)
+                {
+                    AddPreEvolutions(pkmn);
+                }
+                evolutionChain.Add(sp);
+            }
+            AddPreEvolutions(moveset.Species);
 
             var levelUp = new List<(PBEMove Move, byte Level, PBEMoveObtainMethod ObtainMethod)>();
             var other = new List<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)>();
             foreach (PBESpecies pkmn in evolutionChain)
             {
                 var pData = PBEPokemonData.GetData(pkmn);
-                levelUp.AddRange(pData.LevelUpMoves.Where(t => t.Level <= level));
+                levelUp.AddRange(pData.LevelUpMoves.Where(t => t.Level <= moveset.Level));
                 other.AddRange(pData.OtherMoves);
-            }
-            // TODO:
-            PBEMove[] allAsMoves = GetLegalMoves(species, level);
-
-            // Check if there's a move it cannot possibly learn
-            foreach (PBEMove m in moves)
-            {
-                if (m != PBEMove.None && !allAsMoves.Contains(m))
-                {
-                    throw new ArgumentOutOfRangeException(nameof(moves), $"{species} cannot learn {m}.");
-                }
             }
 
             // Check generational rules
@@ -127,7 +115,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     || method.HasFlag(PBEMoveObtainMethod.EggMove_BWB2W2);
             }
 
-            IEnumerable<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> movesAsObtainMethods = levelUp.Where(t => moves.Contains(t.Move)).Select(t => (t.Move, t.ObtainMethod)).Union(other.Where(t => moves.Contains(t.Move)));
+            IEnumerable<(PBEMove Move, PBEMoveObtainMethod ObtainMethod)> movesAsObtainMethods = levelUp.Where(t => moveset.Contains(t.Move)).Select(t => (t.Move, t.ObtainMethod)).Union(other.Where(t => moveset.Contains(t.Move)));
 
             // Check to see where the Pokémon DEFINITELY has been
             bool definitelyBeenInGeneration3 = false,

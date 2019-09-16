@@ -6,7 +6,6 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using AvaloniaGif;
-using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
@@ -15,7 +14,7 @@ using System.ComponentModel;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
-    public class FieldView : UserControl, INotifyPropertyChanged
+    public sealed class FieldView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -24,18 +23,42 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public new event PropertyChangedEventHandler PropertyChanged;
 
         public IBitmap BGSource { get; private set; }
-        public string Message { get; private set; }
-        public bool MessageBoxVisible { get; private set; }
+        private string _message;
+        public string Message
+        {
+            get => _message;
+            set
+            {
+                if (_message != value)
+                {
+                    _message = value;
+                    OnPropertyChanged(nameof(Message));
+                }
+            }
+        }
+        private bool _messageBoxVisible;
+        public bool MessageBoxVisible
+        {
+            get => _messageBoxVisible;
+            set
+            {
+                if (_messageBoxVisible != value)
+                {
+                    _messageBoxVisible = value;
+                    OnPropertyChanged(nameof(MessageBoxVisible));
+                }
+            }
+        }
 
-        private BattleView battleView;
-        private static IBrush hailstormDim, harshSunlightDim, rainDim, sandstormDim;
+        private BattleView _battleView;
+        private static IBrush _hailstormDim, _harshSunlightDim, _rainDim, _sandstormDim;
 
         public FieldView()
         {
-            if (hailstormDim == null)
+            if (_hailstormDim == null)
             {
-                hailstormDim = new SolidColorBrush(Color.FromUInt32(0x20D0FFFF));
-                harshSunlightDim = new LinearGradientBrush()
+                _hailstormDim = new SolidColorBrush(Color.FromUInt32(0x20D0FFFF));
+                _harshSunlightDim = new LinearGradientBrush()
                 {
                     StartPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
                     EndPoint = new RelativePoint(1.0, 0.0, RelativeUnit.Relative),
@@ -45,8 +68,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         new GradientStop { Color = Color.FromUInt32(0x20FFD080), Offset = 1.0 }
                     }
                 };
-                rainDim = new SolidColorBrush(Color.FromUInt32(0x40000000));
-                sandstormDim = new LinearGradientBrush()
+                _rainDim = new SolidColorBrush(Color.FromUInt32(0x40000000));
+                _sandstormDim = new LinearGradientBrush()
                 {
                     StartPoint = new RelativePoint(0.0, 0.0, RelativeUnit.Relative),
                     EndPoint = new RelativePoint(0.0, 1.0, RelativeUnit.Relative),
@@ -62,11 +85,11 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
         }
-        public void SetBattleView(BattleView battleView)
+        internal void SetBattleView(BattleView battleView)
         {
-            this.battleView = battleView;
+            _battleView = battleView;
             string s;
-            switch (battleView.Client.Battle.BattleFormat)
+            switch (_battleView.Client.Battle.BattleFormat)
             {
                 case PBEBattleFormat.Single: s = Utils.RandomElement(new string[] { "1_S", "2_S", "3_S", "4_S", "5_S", "6_S", "8_S" }); break;
                 case PBEBattleFormat.Double: s = Utils.RandomElement(new string[] { "1_D", "6_D", "7_D" }); break;
@@ -78,26 +101,24 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             OnPropertyChanged(nameof(BGSource));
         }
 
-        public void SetMessage(string message)
+        internal void SetMessage(string message)
         {
             Message = message;
-            OnPropertyChanged(nameof(Message));
             MessageBoxVisible = !string.IsNullOrWhiteSpace(message);
-            OnPropertyChanged(nameof(MessageBoxVisible));
         }
 
-        public void UpdateWeather()
+        internal void UpdateWeather()
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Rectangle dim = this.FindControl<Rectangle>("WeatherDim");
                 Image gif = this.FindControl<Image>("WeatherGif");
-                string resource = "MISC.WEATHER_" + battleView.Client.Battle.Weather + ".gif";
-                switch (battleView.Client.Battle.Weather)
+                string resource = "MISC.WEATHER_" + _battleView.Client.Battle.Weather + ".gif";
+                switch (_battleView.Client.Battle.Weather)
                 {
                     case PBEWeather.Hailstorm:
                     {
-                        dim.Fill = hailstormDim;
+                        dim.Fill = _hailstormDim;
                         dim.IsVisible = true;
                         GifImage.SetSourceStream(gif, Utils.GetResourceStream(resource));
                         gif.IsVisible = true;
@@ -105,14 +126,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                     case PBEWeather.HarshSunlight:
                     {
-                        dim.Fill = harshSunlightDim;
+                        dim.Fill = _harshSunlightDim;
                         dim.IsVisible = true;
                         gif.IsVisible = false;
                         break;
                     }
                     case PBEWeather.Rain:
                     {
-                        dim.Fill = rainDim;
+                        dim.Fill = _rainDim;
                         dim.IsVisible = true;
                         GifImage.SetSourceStream(gif, Utils.GetResourceStream(resource));
                         gif.IsVisible = true;
@@ -120,7 +141,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                     case PBEWeather.Sandstorm:
                     {
-                        dim.Fill = sandstormDim;
+                        dim.Fill = _sandstormDim;
                         dim.IsVisible = true;
                         gif.IsVisible = false;
                         break;
@@ -135,7 +156,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             });
         }
         // pkmn.FieldPosition must be updated before calling this
-        public void UpdatePokemon(PBEPokemon pkmn, PBEFieldPosition oldPosition = PBEFieldPosition.None)
+        internal void UpdatePokemon(PBEPokemon pkmn, PBEFieldPosition oldPosition = PBEFieldPosition.None)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -207,7 +228,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                     default: throw new ArgumentOutOfRangeException(nameof(battleView.Client.Battle.BattleFormat));
                 }*/
-                switch (battleView.Client.Battle.BattleFormat)
+                switch (_battleView.Client.Battle.BattleFormat)
                 {
                     case PBEBattleFormat.Single:
                     {
@@ -273,12 +294,12 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         TemporaryFix<PokemonView>("Battler1_Left").Location = new Point(421, -24);
                         break;
                     }
-                    default: throw new ArgumentOutOfRangeException(nameof(battleView.Client.Battle.BattleFormat));
+                    default: throw new ArgumentOutOfRangeException(nameof(_battleView.Client.Battle.BattleFormat));
                 }
 
                 HPBarView hpView;
                 PokemonView pkmnView;
-                bool backSprite = (pkmn.Team.Id == 0 && battleView.Client.BattleId != 1) || (pkmn.Team.Id == 1 && battleView.Client.BattleId == 1);
+                bool backSprite = (pkmn.Team.Id == 0 && _battleView.Client.BattleId != 1) || (pkmn.Team.Id == 1 && _battleView.Client.BattleId == 1);
                 if (oldPosition != PBEFieldPosition.None)
                 {
                     //hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
@@ -292,10 +313,10 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 {
                     //hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
                     hpView = TemporaryFix<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    hpView.Update(pkmn, (pkmn.Team.Id == 0 && battleView.Client.ShowRawValues0) || (pkmn.Team.Id == 1 && battleView.Client.ShowRawValues1));
+                    hpView.Update(pkmn, (pkmn.Team.Id == 0 && _battleView.Client.ShowRawValues0) || (pkmn.Team.Id == 1 && _battleView.Client.ShowRawValues1));
                     //pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
                     pkmnView = TemporaryFix<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    pkmnView.Update(pkmn, backSprite, battleView.Client.ShowRawValues0, battleView.Client.ShowRawValues1);
+                    pkmnView.Update(pkmn, backSprite, _battleView.Client.ShowRawValues0, _battleView.Client.ShowRawValues1);
                 }
             });
         }

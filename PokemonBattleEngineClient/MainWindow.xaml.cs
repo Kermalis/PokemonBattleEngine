@@ -3,7 +3,7 @@ using Avalonia.Markup.Xaml;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
-    public class MainWindow : Window
+    public sealed class MainWindow : Window
     {
         public MainWindow()
         {

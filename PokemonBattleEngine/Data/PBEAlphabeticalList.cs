@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Data
 {
-    public sealed class PBEAlphabeticalList<T> : IDisposable, INotifyCollectionChanged, INotifyPropertyChanged, IReadOnlyList<T>
+    public sealed class PBEAlphabeticalList<T> : INotifyCollectionChanged, INotifyPropertyChanged, IReadOnlyList<T>
     {
         private sealed class PBEAlphabeticalListEntry<T>
         {
@@ -33,12 +33,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        private void FireEvents(NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(Count));
-            OnPropertyChanged("Item[]");
-            OnCollectionChanged(e);
-        }
         private void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged?.Invoke(this, e);
@@ -50,13 +44,23 @@ namespace Kermalis.PokemonBattleEngine.Data
         public event NotifyCollectionChangedEventHandler CollectionChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private PBEAlphabeticalListEntry<T>[] list;
-        public int Count => list.Length;
-        public T this[int index] => list[index].Key;
+        private PBEAlphabeticalListEntry<T>[] _list;
+        public int Count => _list.Length;
+        public T this[int index]
+        {
+            get
+            {
+                if (index >= _list.Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+                return _list[index].Key;
+            }
+        }
 
         internal PBEAlphabeticalList()
         {
-            list = Array.Empty<PBEAlphabeticalListEntry<T>>();
+            _list = Array.Empty<PBEAlphabeticalListEntry<T>>();
             PBELocalizedString.PBECultureChanged += OnCultureChanged;
         }
         internal PBEAlphabeticalList(IEnumerable<T> collection)
@@ -69,30 +73,52 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             if (!oldPBECultureInfo.TwoLetterISOLanguageName.Equals(PBELocalizedString.PBECulture.TwoLetterISOLanguageName))
             {
-                Sort();
+                Sort(_list);
             }
         }
-        private void Sort()
+        private void Sort(PBEAlphabeticalListEntry<T>[] old)
         {
-            Array.Sort(list, (x, y) => x.Value.ToString().CompareTo(y.Value.ToString()));
-            FireEvents(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            if (old == null || old == _list)
+            {
+                old = (PBEAlphabeticalListEntry<T>[])_list.Clone();
+            }
+            Array.Sort(_list, (x, y) => x.Value.ToString().CompareTo(y.Value.ToString()));
+            if (!_list.SequenceEqual(old))
+            {
+                OnPropertyChanged("Item[]");
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
         }
 
+        private bool _isDisposed = false;
+        internal void Dispose()
+        {
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                PBELocalizedString.PBECultureChanged -= OnCultureChanged;
+            }
+        }
         internal void Reset(IEnumerable<T> collection)
         {
             if (collection == null)
             {
                 throw new ArgumentNullException(nameof(collection));
             }
+            PBEAlphabeticalListEntry<T>[] old = _list;
             if (collection is PBEAlphabeticalList<T> other)
             {
-                list = (PBEAlphabeticalListEntry<T>[])other.list.Clone();
+                _list = (PBEAlphabeticalListEntry<T>[])other._list.Clone();
             }
             else
             {
-                list = collection.Select(t => new PBEAlphabeticalListEntry<T>(t)).ToArray();
+                _list = collection.Select(t => new PBEAlphabeticalListEntry<T>(t)).ToArray();
             }
-            Sort();
+            if (old != null && old.Length != _list.Length)
+            {
+                OnPropertyChanged(nameof(Count));
+            }
+            Sort(old);
         }
 
         public bool Contains(T item)
@@ -103,9 +129,9 @@ namespace Kermalis.PokemonBattleEngine.Data
         {
             if (item != null)
             {
-                for (int i = 0; i < list.Length; i++)
+                for (int i = 0; i < _list.Length; i++)
                 {
-                    if (item.Equals(list[i].Key))
+                    if (item.Equals(_list[i].Key))
                     {
                         return i;
                     }
@@ -114,15 +140,11 @@ namespace Kermalis.PokemonBattleEngine.Data
             return -1;
         }
 
-        public void Dispose()
-        {
-            PBELocalizedString.PBECultureChanged -= OnCultureChanged;
-        }
         public IEnumerator<T> GetEnumerator()
         {
-            for (int i = 0; i < list.Length; i++)
+            for (int i = 0; i < _list.Length; i++)
             {
-                yield return list[i].Key;
+                yield return _list[i].Key;
             }
         }
         IEnumerator IEnumerable.GetEnumerator()

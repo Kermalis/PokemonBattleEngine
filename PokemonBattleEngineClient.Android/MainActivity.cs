@@ -9,7 +9,7 @@ using System.IO;
 namespace Kermalis.PokemonBattleEngineClient.Android
 {
     [Activity(Label = "Pokémon Battle Engine", Icon = "@drawable/icon", MainLauncher = true, LaunchMode = LaunchMode.SingleInstance)]
-    public class MainActivity : AvaloniaActivity
+    public sealed class MainActivity : AvaloniaActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {

@@ -8,6 +8,8 @@
     <Authors>Kermalis</Authors>
     <Copyright>Kermalis</Copyright>
     <RepositoryUrl>https://github.com/Kermalis/PokemonBattleEngine</RepositoryUrl>
+    <NoWarn />
+    <StartupObject>Kermalis.PokemonBattleEngineClient.NetCore.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

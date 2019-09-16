@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal class LocalizationDumper
+    internal sealed class LocalizationDumper
     {
         // You must dump the NARC files yourself (/a/0/0/2 in each language)
         public static void Dump(SqliteConnection con)

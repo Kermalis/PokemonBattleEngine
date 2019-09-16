@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
-    public class MainView : UserControl, INotifyPropertyChanged
+    public sealed class MainView : UserControl, INotifyPropertyChanged
     {
         private void OnPropertyChanged(string property)
         {
@@ -20,45 +20,48 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         public new event PropertyChangedEventHandler PropertyChanged;
 
-        private string connectText = "Connect";
+        private string _connectText = "Connect";
         public string ConnectText
         {
-            get => connectText;
-            set
+            get => _connectText;
+            private set
             {
-                connectText = value;
-                OnPropertyChanged(nameof(ConnectText));
+                if (_connectText != value)
+                {
+                    _connectText = value;
+                    OnPropertyChanged(nameof(ConnectText));
+                }
             }
         }
 
-        private readonly List<BattleClient> battles = new List<BattleClient>();
+        private readonly List<BattleClient> _battles = new List<BattleClient>();
 
-        private readonly TabControl tabs;
-        private readonly TeamBuilderView teamBuilder;
-        private readonly TextBox ip;
-        private readonly NumericUpDown port;
-        private readonly Button connect;
+        private readonly TabControl _tabs;
+        private readonly TeamBuilderView _teamBuilder;
+        private readonly TextBox _ip;
+        private readonly NumericUpDown _port;
+        private readonly Button _connect;
 
         public MainView()
         {
             DataContext = this;
             AvaloniaXamlLoader.Load(this);
 
-            tabs = this.FindControl<TabControl>("Tabs");
+            _tabs = this.FindControl<TabControl>("Tabs");
             //teamBuilder = this.FindControl<TeamBuilderView>("TeamBuilder"); // teamBuilder will be null
-            teamBuilder = TemporaryFix<TeamBuilderView>("TeamBuilder");
-            ip = this.FindControl<TextBox>("IP");
-            port = this.FindControl<NumericUpDown>("Port");
-            connect = this.FindControl<Button>("Connect");
-            connect.Command = ReactiveCommand.Create(Connect);
-            connect.IsEnabled = true;
+            _teamBuilder = TemporaryFix<TeamBuilderView>("TeamBuilder");
+            _ip = this.FindControl<TextBox>("IP");
+            _port = this.FindControl<NumericUpDown>("Port");
+            _connect = this.FindControl<Button>("Connect");
+            _connect.Command = ReactiveCommand.Create(Connect);
+            _connect.IsEnabled = true;
         }
 
         private void Connect()
         {
-            connect.IsEnabled = false;
+            _connect.IsEnabled = false;
             ConnectText = "Connecting...";
-            var client = new BattleClient(ip.Text, (int)port.Value, PBEBattleFormat.Double, teamBuilder.Team.Shell);
+            var client = new BattleClient(_ip.Text, (int)_port.Value, PBEBattleFormat.Double, _teamBuilder.Team.Shell);
             new Thread(() =>
             {
                 client.Connect();
@@ -69,7 +72,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         Add(client);
                     }
                     ConnectText = "Connect";
-                    connect.IsEnabled = true;
+                    _connect.IsEnabled = true;
                 });
             })
             {
@@ -83,12 +86,12 @@ namespace Kermalis.PokemonBattleEngineClient
         private void SinglePlayer()
         {
             PBESettings settings = PBESettings.DefaultSettings;
-            PBETeamShell team0Shell, team1Shell;
+            PBETeamShell team1Shell, team2Shell;
             // Completely Randomized Pokémon
-            team0Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
             team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
+            team2Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, team0Shell, "May", team1Shell, "Champion Steven");
+            var battle = new PBEBattle(PBEBattleFormat.Double, team1Shell, "May", team2Shell, "Champion Steven");
             Add(new BattleClient(battle, BattleClient.ClientMode.SinglePlayer));
             new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
         }
@@ -96,16 +99,16 @@ namespace Kermalis.PokemonBattleEngineClient
         // TODO: Removing battles
         private void Add(BattleClient client)
         {
-            battles.Add(client);
-            var pages = tabs.Items.Cast<object>().ToList();
+            _battles.Add(client);
+            var pages = _tabs.Items.Cast<object>().ToList();
             var tab = new TabItem
             {
-                Header = "Battle " + battles.Count,
+                Header = "Battle " + _battles.Count,
                 Content = client.BattleView
             };
             pages.Add(tab);
-            tabs.Items = pages;
-            tabs.SelectedItem = tab;
+            _tabs.Items = pages;
+            _tabs.SelectedItem = tab;
         }
 
         // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2562

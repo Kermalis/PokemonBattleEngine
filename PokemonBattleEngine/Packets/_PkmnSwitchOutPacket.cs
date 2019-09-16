@@ -3,15 +3,15 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEPkmnSwitchOutPacket : INetPacket
     {
         public const short Code = 0x0C;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public byte PokemonId { get; }
         public byte DisguisedAsPokemonId { get; }
@@ -19,7 +19,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBETeam PokemonTeam { get; }
         public bool Forced { get; }
 
-        public PBEPkmnSwitchOutPacket(byte pokemonId, byte disguisedAsPokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam, bool forced)
+        internal PBEPkmnSwitchOutPacket(byte pokemonId, byte disguisedAsPokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam, bool forced)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -28,20 +28,22 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((byte)(PokemonPosition = pokemonPosition));
             bytes.Add((PokemonTeam = pokemonTeam).Id);
             bytes.Add((byte)((Forced = forced) ? 1 : 0));
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBEPkmnSwitchOutPacket(byte[] buffer, PBEBattle battle)
+        internal PBEPkmnSwitchOutPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                PokemonId = r.ReadByte();
-                DisguisedAsPokemonId = r.ReadByte();
-                PokemonPosition = (PBEFieldPosition)r.ReadByte();
-                PokemonTeam = battle.Teams[r.ReadByte()];
-                Forced = r.ReadBoolean();
-            }
+            PokemonId = r.ReadByte();
+            DisguisedAsPokemonId = r.ReadByte();
+            PokemonPosition = (PBEFieldPosition)r.ReadByte();
+            PokemonTeam = battle.Teams[r.ReadByte()];
+            Forced = r.ReadBoolean();
+        }
+
+        public PBEPkmnSwitchOutPacket MakeHidden()
+        {
+            return new PBEPkmnSwitchOutPacket(byte.MaxValue, byte.MaxValue, PokemonPosition, PokemonTeam, Forced);
         }
 
         public void Dispose() { }

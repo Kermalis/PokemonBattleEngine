@@ -3,7 +3,6 @@ using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,21 +27,16 @@ namespace Kermalis.PokemonBattleEngine
         /// <summary>Creates a connection to PokemonBattleEngine.db. This must be called only once; before the database is used.</summary>
         /// <param name="databasePath">The path of the folder containing PokemonBattleEngine.db.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="databasePath"/> is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="databasePath"/> contains one or more of the invalid characters defined in <see cref="Path.GetInvalidPathChars"/>.</exception>
         /// <exception cref="InvalidOperationException">Thrown when a database connection has already been created.</exception>
         public static void CreateDatabaseConnection(string databasePath)
         {
-            if (databaseConnection != null)
-            {
-                throw new InvalidOperationException("Database connection was already created.");
-            }
-            else if (databasePath == null)
+            if (databasePath == null)
             {
                 throw new ArgumentNullException(nameof(databasePath));
             }
-            else if (databasePath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+            else if (databaseConnection != null)
             {
-                throw new ArgumentOutOfRangeException(nameof(databasePath));
+                throw new InvalidOperationException("Database connection was already created.");
             }
             else
             {
@@ -54,14 +48,14 @@ namespace Kermalis.PokemonBattleEngine
         }
 
         /// <summary>
-        /// When I used <see cref="Random"/>, it would only take 55 consecutive calls to <see cref="RandomElement{T}(IList{T})"/> with a collection of <see cref="int"/>s to be able to predict future values.
+        /// When I used <see cref="Random"/>, it would only take 55 consecutive calls to <see cref="RandomElement{T}(IReadOnlyList{T})"/> with a collection of <see cref="int"/>s to be able to predict future values.
         /// You would also be able to predict with more work if you called <see cref="RandomSpecies"/> or <see cref="RandomGender(PBEGenderRatio)"/>.
         /// I do not see how that would help attackers because the host would be able to modify the game however it desires anyway.
         /// For these reasons, I decided to have the random functions use the private <see cref="Random"/> without the need to pass one in as a parameter.
         /// Although <see cref="RNGCryptoServiceProvider"/> is slower and does not allow seeds for obvious reasons, I did not use seeds with the <see cref="Random"/> implementation, and Pokémon battles are turn based so the speed doesn't hurt much.
         /// I decided to switch from <see cref="Random"/> to <see cref="RNGCryptoServiceProvider"/> because I did not need the better speed or the seeded constructor and because <see cref="RNGCryptoServiceProvider"/> provides better random outputs.
         /// </summary>
-        private static readonly RNGCryptoServiceProvider rand = new RNGCryptoServiceProvider();
+        private static readonly RNGCryptoServiceProvider _rand = new RNGCryptoServiceProvider();
         internal static bool RandomBool()
         {
             return RandomInt(0, 1) == 1;
@@ -106,7 +100,7 @@ namespace Kermalis.PokemonBattleEngine
             byte[] bytes = new byte[sizeof(uint)];
             while (scale == uint.MaxValue) // "d" should not be 1.0
             {
-                rand.GetBytes(bytes);
+                _rand.GetBytes(bytes);
                 scale = BitConverter.ToUInt32(bytes, 0);
             }
             double d = scale / (double)uint.MaxValue;
@@ -167,19 +161,18 @@ namespace Kermalis.PokemonBattleEngine
         /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
         /// <param name="source">An <see cref="IEnumerable{T}"/> to create a string from.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is null.</exception>
-        public static string Andify<T>(this IEnumerable<T> source)
+        public static string Andify<T>(this IList<T> source)
         {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            T[] array = source.ToArray();
-            string str = array[0].ToString();
-            for (int i = 1; i < array.Length; i++)
+            string str = source[0].ToString();
+            for (int i = 1; i < source.Count; i++)
             {
-                if (i == array.Length - 1)
+                if (i == source.Count - 1)
                 {
-                    if (array.Length > 2)
+                    if (source.Count > 2)
                     {
                         str += ',';
                     }
@@ -189,7 +182,7 @@ namespace Kermalis.PokemonBattleEngine
                 {
                     str += ", ";
                 }
-                str += array[i].ToString();
+                str += source[i].ToString();
             }
             return str;
         }
@@ -266,13 +259,11 @@ namespace Kermalis.PokemonBattleEngine
             return fileName;
         }
 
-        internal static List<byte> StringToBytes(string str)
+        internal static void StringToBytes(List<byte> bytes, string str)
         {
-            var bytes = new List<byte>();
             byte[] nameBytes = Encoding.Unicode.GetBytes(str);
             bytes.Add((byte)nameBytes.Length);
             bytes.AddRange(nameBytes);
-            return bytes;
         }
         internal static string StringFromBytes(BinaryReader r)
         {

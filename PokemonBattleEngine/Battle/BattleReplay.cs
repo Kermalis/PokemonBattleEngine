@@ -15,11 +15,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         public void SaveReplay()
         {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
             // "12-30-2020 11-59-59 PM - Team 1 vs Team 2.pbereplay"
             SaveReplay(PBEUtils.ToSafeFileName(new string(string.Format("{0} - {1} vs {2}", DateTime.Now.ToLocalTime(), Teams[0].TrainerName, Teams[1].TrainerName).Take(200).ToArray())) + ".pbereplay");
         }
         public void SaveReplay(string path)
         {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
             if (BattleState != PBEBattleState.Ended)
             {
                 throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.Ended} to save a replay.");
@@ -28,11 +40,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(CurrentReplayVersion));
 
-            bytes.AddRange(Settings.ToBytes());
+            Settings.ToBytes(bytes);
             bytes.Add((byte)BattleFormat);
-
-            bytes.AddRange(Teams[0].ToBytes());
-            bytes.AddRange(Teams[1].ToBytes());
 
             bytes.AddRange(BitConverter.GetBytes(Events.Count));
             for (int i = 0; i < Events.Count; i++)
@@ -76,20 +85,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Settings = new PBESettings(r);
             Settings.MakeReadOnly();
             BattleFormat = (PBEBattleFormat)r.ReadByte();
-
-            Teams[0] = new PBETeam(this, 0);
-            Teams[0].FromBytes(r);
-            Teams[1] = new PBETeam(this, 1);
-            Teams[1].FromBytes(r);
+            Teams = new PBETeams(this);
 
             var packetProcessor = new PBEPacketProcessor(this);
             int numEvents = r.ReadInt32();
             for (int i = 0; i < numEvents; i++)
             {
                 INetPacket packet = packetProcessor.CreatePacket(r.ReadBytes(r.ReadInt16()));
-                if (packet is PBEWinnerPacket wp)
+                switch (packet)
                 {
-                    Winner = wp.WinningTeam;
+                    case PBEWinnerPacket wp:
+                    {
+                        Winner = wp.WinningTeam;
+                        break;
+                    }
                 }
                 Events.Add(packet);
             }

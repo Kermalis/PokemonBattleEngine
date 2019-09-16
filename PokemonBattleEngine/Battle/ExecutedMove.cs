@@ -16,6 +16,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             public bool CriticalHit { get; set; }
             public PBEFailReason FailReason { get; set; }
             public bool Missed { get; set; }
+
+            internal PBETargetSuccess() { }
         }
 
         public ushort TurnNumber { get; }
@@ -23,7 +25,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEFailReason FailReason { get; }
         public ReadOnlyCollection<PBETargetSuccess> Targets { get; }
 
-        public PBEExecutedMove(ushort turnNumber, PBEMove move, PBEFailReason failReason, IList<PBETargetSuccess> targets)
+        internal PBEExecutedMove(ushort turnNumber, PBEMove move, PBEFailReason failReason, IList<PBETargetSuccess> targets)
         {
             TurnNumber = turnNumber;
             Move = move;

@@ -10,7 +10,7 @@ The engine does not send information a player should not know; information only 
 For example, a client has no way of knowing if the opponent has sent out a Pokémon with Illusion, the opponent's nature, stats, Hidden Power damage/type, unused item/moves, etc.
 Therefore, a custom/modified client cannot do anything more than an ordinary player unless it is hosting the battle. A lot of work has been done to prevent any cheating, so if there are any exploits, create an issue please!
 
-There is also [a settings file](PokemonBattleEngine/Data/Settings.cs) that you can change. Have you ever wanted to have level 200 Pokémon or 8 moves? You can do that!
+There are also [settings](PokemonBattleEngine/Data/Settings.cs) that you can change. Have you ever wanted to have level 200 Pokémon or 8 moves? You can do that!
 
 Currently, you need to change the settings to be identical for the server and all connected clients for the server to accept parties/actions and for the clients to communicate without crashing.
 This will change in the future as the server will send the settings to all connected clients.

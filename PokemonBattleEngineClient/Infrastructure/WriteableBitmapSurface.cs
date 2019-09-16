@@ -4,7 +4,7 @@ using Avalonia.Platform;
 
 namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
-    internal class WriteableBitmapSurface : IFramebufferPlatformSurface
+    internal sealed class WriteableBitmapSurface : IFramebufferPlatformSurface
     {
         private readonly WriteableBitmap _bitmap;
         public WriteableBitmapSurface(WriteableBitmap bmp)

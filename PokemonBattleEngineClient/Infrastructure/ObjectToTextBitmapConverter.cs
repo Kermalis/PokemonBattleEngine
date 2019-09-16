@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Kermalis.PokemonBattleEngineClient.Infrastructure
 {
-    public class ObjectToTextBitmapConverter : IValueConverter
+    public sealed class ObjectToTextBitmapConverter : IValueConverter
     {
         public static ObjectToTextBitmapConverter Instance { get; } = new ObjectToTextBitmapConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

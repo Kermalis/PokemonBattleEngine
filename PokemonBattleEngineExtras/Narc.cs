@@ -4,9 +4,9 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal class NARC : IDisposable
+    internal sealed class NARC : IDisposable
     {
-        public MemoryStream[] Files;
+        public MemoryStream[] Files { get; private set; }
 
         public NARC(string path)
         {
@@ -37,8 +37,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     Files[i].Dispose();
                 }
+                Files = null;
             }
-            Files = null;
         }
 
         public void SaveFilesToFolder(string path)

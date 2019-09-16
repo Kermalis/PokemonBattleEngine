@@ -4,29 +4,28 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal class AIBattle
+    internal sealed class AIBattle
     {
         private const string LogFile = "Test Log.txt";
         private const string ReplayFile = "Test Replay.pbereplay";
-        private static StreamWriter writer;
-        private static TextWriter oldWriter;
+        private static StreamWriter _writer;
+        private static TextWriter _oldWriter;
 
         public static void Test()
         {
             Console.WriteLine("----- Pokémon Battle Engine Test -----");
 
             var settings = new PBESettings { NumMoves = 8 };
-            PBETeamShell team0Shell, team1Shell;
+            PBETeamShell team1Shell, team2Shell;
 
             // Completely Randomized Pokémon
-            team0Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
             team1Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
+            team2Shell = new PBETeamShell(settings, settings.MaxPartySize, true);
 
             // Predefined Pokémon
             /*team0Shell = new PBEPokemonShell[]
@@ -48,13 +47,13 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBECompetitivePokemonShells.Victini_Uber
             };*/
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, team0Shell, "Team 1", team1Shell, "Team 2");
+            var battle = new PBEBattle(PBEBattleFormat.Double, team1Shell, "Team 1", team2Shell, "Team 2");
             battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             battle.OnNewEvent += Battle_OnNewEvent;
             battle.OnStateChanged += Battle_OnStateChanged;
             try
             {
-                writer = new StreamWriter(new FileStream(LogFile, FileMode.Create, FileAccess.Write));
+                _writer = new StreamWriter(new FileStream(LogFile, FileMode.Create, FileAccess.Write));
             }
             catch (Exception e)
             {
@@ -62,8 +61,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                 Console.WriteLine(e.Message);
                 return;
             }
-            oldWriter = Console.Out;
-            Console.SetOut(writer);
+            _oldWriter = Console.Out;
+            Console.SetOut(_writer);
             new Thread(() =>
             {
                 try
@@ -82,8 +81,8 @@ namespace Kermalis.PokemonBattleEngineExtras
         {
             Console.WriteLine(e.Message);
             Console.WriteLine(e.StackTrace);
-            Console.SetOut(oldWriter);
-            writer.Close();
+            Console.SetOut(_oldWriter);
+            _writer.Close();
             Console.WriteLine("Test battle threw an exception, check \"{0}\" for details.", LogFile);
             Console.ReadKey();
         }
@@ -97,7 +96,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     case PBEActionsRequestPacket arp:
                     {
                         PBETeam team = arp.Team;
-                        IEnumerable<PBEAction> actions = PBEAIManager.CreateActions(team);
+                        PBETurnAction[] actions = PBEAI.CreateActions(team);
                         if (!PBEBattle.AreActionsValid(team, actions))
                         {
                             throw new Exception($"{team.TrainerName}'s AI created invalid actions!");
@@ -108,7 +107,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                     case PBESwitchInRequestPacket sirp:
                     {
                         PBETeam team = sirp.Team;
-                        IEnumerable<(byte PokemonId, PBEFieldPosition Position)> switches = PBEAIManager.CreateSwitches(team);
+                        PBESwitchIn[] switches = PBEAI.CreateSwitches(team);
                         if (!PBEBattle.AreSwitchesValid(team, switches))
                         {
                             throw new Exception($"{team.TrainerName}'s AI created invalid switches!");
@@ -118,10 +117,10 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     case PBETurnBeganPacket tbp:
                     {
-                        Console.SetOut(oldWriter);
-                        DateTime time = tbp.Time;
+                        Console.SetOut(_oldWriter);
+                        DateTime time = DateTime.Now;
                         Console.WriteLine($"Emulating turn {tbp.TurnNumber}... ({time.Hour:D2}:{time.Minute:D2}:{time.Second:D2}:{time.Millisecond:D3})");
-                        Console.SetOut(writer);
+                        Console.SetOut(_writer);
                         break;
                     }
                 }
@@ -139,8 +138,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     case PBEBattleState.Ended:
                     {
-                        Console.SetOut(oldWriter);
-                        writer.Close();
+                        Console.SetOut(_oldWriter);
+                        _writer.Close();
                         try
                         {
                             battle.SaveReplay(ReplayFile);
@@ -157,9 +156,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                     case PBEBattleState.ReadyToRunTurn:
                     {
-                        for (int i = 0; i < 2; i++)
+                        foreach (PBETeam team in battle.Teams)
                         {
-                            PBETeam team = battle.Teams[i];
                             Console.WriteLine();
                             Console.WriteLine("{0}'s team:", team.TrainerName);
                             PBEPokemon[] active = team.ActiveBattlers;

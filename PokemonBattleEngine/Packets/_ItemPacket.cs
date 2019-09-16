@@ -3,15 +3,15 @@ using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
     public sealed class PBEItemPacket : INetPacket
     {
         public const short Code = 0x16;
-        public IEnumerable<byte> Buffer { get; }
+        public ReadOnlyCollection<byte> Buffer { get; }
 
         public PBEFieldPosition ItemHolder { get; }
         public PBETeam ItemHolderTeam { get; }
@@ -20,7 +20,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEItem Item { get; }
         public PBEItemAction ItemAction { get; }
 
-        public PBEItemPacket(PBEPokemon itemHolder, PBEPokemon pokemon2, PBEItem item, PBEItemAction itemAction)
+        internal PBEItemPacket(PBEPokemon itemHolder, PBEPokemon pokemon2, PBEItem item, PBEItemAction itemAction)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -30,21 +30,18 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((Pokemon2Team = pokemon2.Team).Id);
             bytes.AddRange(BitConverter.GetBytes((ushort)(Item = item)));
             bytes.Add((byte)(ItemAction = itemAction));
-            Buffer = BitConverter.GetBytes((short)bytes.Count).Concat(bytes);
+            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
+            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        public PBEItemPacket(byte[] buffer, PBEBattle battle)
+        internal PBEItemPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
-            using (var r = new BinaryReader(new MemoryStream(buffer)))
-            {
-                r.ReadInt16(); // Skip Code
-                ItemHolder = (PBEFieldPosition)r.ReadByte();
-                ItemHolderTeam = battle.Teams[r.ReadByte()];
-                Pokemon2 = (PBEFieldPosition)r.ReadByte();
-                Pokemon2Team = battle.Teams[r.ReadByte()];
-                Item = (PBEItem)r.ReadUInt16();
-                ItemAction = (PBEItemAction)r.ReadByte();
-            }
+            ItemHolder = (PBEFieldPosition)r.ReadByte();
+            ItemHolderTeam = battle.Teams[r.ReadByte()];
+            Pokemon2 = (PBEFieldPosition)r.ReadByte();
+            Pokemon2Team = battle.Teams[r.ReadByte()];
+            Item = (PBEItem)r.ReadUInt16();
+            ItemAction = (PBEItemAction)r.ReadByte();
         }
 
         public void Dispose() { }
