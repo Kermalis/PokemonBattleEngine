@@ -27,9 +27,9 @@
     <Compile Remove="Dependencies\**" />
     <EmbeddedResource Remove="Dependencies\**" />
     <None Remove="Dependencies\**" />
-    <PackageReference Include="Avalonia" Version="0.8.1-cibuild0003053-beta" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.8.1-cibuild0003053-beta" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.8.1-cibuild0003053-beta" />
+    <PackageReference Include="Avalonia" Version="0.8.999-cibuild0003925-beta" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.8.999-cibuild0003925-beta" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.8.999-cibuild0003925-beta" />
     <ProjectReference Include="..\PokemonBattleEngine\PokemonBattleEngine.csproj" />
     <Reference Include="AvaloniaGif">
       <HintPath>Dependencies\AvaloniaGif.dll</HintPath>

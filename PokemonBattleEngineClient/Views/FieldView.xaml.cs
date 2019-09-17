@@ -160,7 +160,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                /*switch (battleView.Client.Battle.BattleFormat)
+                switch (_battleView.Client.Battle.BattleFormat)
                 {
                     case PBEBattleFormat.Single:
                     {
@@ -226,74 +226,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                         this.FindControl<PokemonView>("Battler1_Left").Location = new Point(421, -24);
                         break;
                     }
-                    default: throw new ArgumentOutOfRangeException(nameof(battleView.Client.Battle.BattleFormat));
-                }*/
-                switch (_battleView.Client.Battle.BattleFormat)
-                {
-                    case PBEBattleFormat.Single:
-                    {
-                        TemporaryFix<HPBarView>("Bar0_Center").Location = new Point(204, 35);
-
-                        TemporaryFix<HPBarView>("Bar1_Center").Location = new Point(204, 6);
-
-                        TemporaryFix<PokemonView>("Battler0_Center").Location = new Point(75, 53);
-
-                        TemporaryFix<PokemonView>("Battler1_Center").Location = new Point(284, 8);
-                        break;
-                    }
-                    case PBEBattleFormat.Double:
-                    {
-                        TemporaryFix<HPBarView>("Bar0_Left").Location = new Point(101, 35);
-                        TemporaryFix<HPBarView>("Bar0_Right").Location = new Point(307, 35);
-
-                        TemporaryFix<HPBarView>("Bar1_Right").Location = new Point(101, 6);
-                        TemporaryFix<HPBarView>("Bar1_Left").Location = new Point(307, 6);
-
-                        TemporaryFix<PokemonView>("Battler0_Left").Location = new Point(-37, 43);
-                        TemporaryFix<PokemonView>("Battler0_Right").Location = new Point(168, 54);
-
-                        TemporaryFix<PokemonView>("Battler1_Right").Location = new Point(242, 9);
-                        TemporaryFix<PokemonView>("Battler1_Left").Location = new Point(332, 15);
-                        break;
-                    }
-                    case PBEBattleFormat.Triple:
-                    {
-                        TemporaryFix<HPBarView>("Bar0_Left").Location = new Point(50, 35);
-                        TemporaryFix<HPBarView>("Bar0_Center").Location = new Point(204, 35);
-                        TemporaryFix<HPBarView>("Bar0_Right").Location = new Point(358, 35);
-
-                        TemporaryFix<HPBarView>("Bar1_Right").Location = new Point(50, 6);
-                        TemporaryFix<HPBarView>("Bar1_Center").Location = new Point(204, 6);
-                        TemporaryFix<HPBarView>("Bar1_Left").Location = new Point(358, 6);
-
-                        TemporaryFix<PokemonView>("Battler0_Left").Location = new Point(-53, 51);
-                        TemporaryFix<PokemonView>("Battler0_Center").Location = new Point(92, 31);
-                        TemporaryFix<PokemonView>("Battler0_Right").Location = new Point(221, 76);
-
-                        TemporaryFix<PokemonView>("Battler1_Right").Location = new Point(209, -1);
-                        TemporaryFix<PokemonView>("Battler1_Center").Location = new Point(282, 16);
-                        TemporaryFix<PokemonView>("Battler1_Left").Location = new Point(362, 8);
-                        break;
-                    }
-                    case PBEBattleFormat.Rotation:
-                    {
-                        TemporaryFix<HPBarView>("Bar0_Left").Location = new Point(50, 35);
-                        TemporaryFix<HPBarView>("Bar0_Center").Location = new Point(204, 35);
-                        TemporaryFix<HPBarView>("Bar0_Right").Location = new Point(358, 35);
-
-                        TemporaryFix<HPBarView>("Bar1_Right").Location = new Point(50, 6);
-                        TemporaryFix<HPBarView>("Bar1_Center").Location = new Point(204, 6);
-                        TemporaryFix<HPBarView>("Bar1_Left").Location = new Point(358, 6);
-
-                        TemporaryFix<PokemonView>("Battler0_Left").Location = new Point(-46, 384); // Hidden
-                        TemporaryFix<PokemonView>("Battler0_Center").Location = new Point(52, 72);
-                        TemporaryFix<PokemonView>("Battler0_Right").Location = new Point(228, 384); // Hidden
-
-                        TemporaryFix<PokemonView>("Battler1_Right").Location = new Point(211, -34);
-                        TemporaryFix<PokemonView>("Battler1_Center").Location = new Point(282, 16);
-                        TemporaryFix<PokemonView>("Battler1_Left").Location = new Point(421, -24);
-                        break;
-                    }
                     default: throw new ArgumentOutOfRangeException(nameof(_battleView.Client.Battle.BattleFormat));
                 }
 
@@ -302,48 +234,19 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 bool backSprite = (pkmn.Team.Id == 0 && _battleView.Client.BattleId != 1) || (pkmn.Team.Id == 1 && _battleView.Client.BattleId == 1);
                 if (oldPosition != PBEFieldPosition.None)
                 {
-                    //hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
-                    hpView = TemporaryFix<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
+                    hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{oldPosition}");
                     hpView.IsVisible = false;
-                    //pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{oldPosition}");
-                    pkmnView = TemporaryFix<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{oldPosition}");
+                    pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{oldPosition}");
                     pkmnView.IsVisible = false;
                 }
                 if (pkmn.FieldPosition != PBEFieldPosition.None)
                 {
-                    //hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    hpView = TemporaryFix<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
+                    hpView = this.FindControl<HPBarView>($"Bar{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
                     hpView.Update(pkmn, (pkmn.Team.Id == 0 && _battleView.Client.ShowRawValues0) || (pkmn.Team.Id == 1 && _battleView.Client.ShowRawValues1));
-                    //pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
-                    pkmnView = TemporaryFix<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
+                    pkmnView = this.FindControl<PokemonView>($"Battler{(backSprite ? 0 : 1)}_{pkmn.FieldPosition}");
                     pkmnView.Update(pkmn, backSprite, _battleView.Client.ShowRawValues0, _battleView.Client.ShowRawValues1);
                 }
             });
-        }
-
-        // Temporary fix for https://github.com/AvaloniaUI/Avalonia/issues/2562
-        private T TemporaryFix<T>(string name) where T : UserControl
-        {
-            T Recursion(System.Collections.Generic.IEnumerable<Avalonia.LogicalTree.ILogical> list)
-            {
-                foreach (Avalonia.LogicalTree.ILogical i in list)
-                {
-                    if (i is INamed named && named is T ret && ret.Name == name)
-                    {
-                        return ret;
-                    }
-                    else
-                    {
-                        T r = Recursion(i.LogicalChildren);
-                        if (r != null)
-                        {
-                            return r;
-                        }
-                    }
-                }
-                return null;
-            }
-            return Recursion(LogicalChildren);
         }
     }
 }

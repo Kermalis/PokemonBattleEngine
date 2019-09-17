@@ -99,10 +99,10 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
     <PackageReference Include="Avalonia.Android">
-      <Version>0.8.1-cibuild0003053-beta</Version>
+      <Version>0.8.999-cibuild0003925-beta</Version>
     </PackageReference>
-    <PackageReference Include="System.Reactive" Version="4.0.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
+    <PackageReference Include="System.Reactive" Version="4.1.6" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
     <PackageReference Include="System.Buffers" Version="4.5.0" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
