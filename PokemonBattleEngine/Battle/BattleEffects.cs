@@ -139,6 +139,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         break;
                     }
+                    case PBEAbility.SlowStart:
+                    {
+                        pkmn.SlowStart_HinderTurnsLeft = 5;
+                        BroadcastAbility(pkmn, pkmn, PBEAbility.SlowStart, PBEAbilityAction.SlowStart_Began);
+                        break;
+                    }
                     case PBEAbility.SnowWarning:
                     {
                         if (Weather != PBEWeather.Hailstorm || WeatherCounter != 0)
@@ -565,7 +571,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Curse before Moody/SpeedBoost
+            // Verified: Curse before Moody/SlowStart/SpeedBoost
             foreach (PBEPokemon pkmn in order)
             {
                 if (pkmn.HP > 0 && pkmn.Status2.HasFlag(PBEStatus2.Cursed))
@@ -579,7 +585,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            // Verified: Moody/SpeedBoost before Orbs
+            // Verified: Moody/SlowStart/SpeedBoost before Orbs
             foreach (PBEPokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
@@ -606,6 +612,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 if (downStat.HasValue)
                                 {
                                     ApplyStatChange(pkmn, downStat.Value, -1);
+                                }
+                            }
+                            break;
+                        }
+                        case PBEAbility.SlowStart:
+                        {
+                            if (pkmn.SlowStart_HinderTurnsLeft > 0)
+                            {
+                                pkmn.SlowStart_HinderTurnsLeft--;
+                                if (pkmn.SlowStart_HinderTurnsLeft == 0)
+                                {
+                                    BroadcastAbility(pkmn, pkmn, PBEAbility.SlowStart, PBEAbilityAction.SlowStart_Ended);
                                 }
                             }
                             break;
@@ -3778,6 +3796,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastAbility(target, user, PBEAbility.None, PBEAbilityAction.Changed);
                             CastformCherrimCheck(target);
                             IllusionBreak(target, user);
+                            target.SlowStart_HinderTurnsLeft = 0;
+                            target.SpeedBoost_AbleToSpeedBoostThisTurn = false;
                         }
                     }
                     success.NewHP = target.HP;

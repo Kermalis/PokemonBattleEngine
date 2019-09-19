@@ -489,24 +489,35 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         speed *= 2.0;
                     }
-                    if (Weather == PBEWeather.Rain && pkmn.Ability == PBEAbility.SwiftSwim)
+                    else if (Weather == PBEWeather.Rain && pkmn.Ability == PBEAbility.SwiftSwim)
                     {
                         speed *= 2.0;
                     }
-                    if (Weather == PBEWeather.Sandstorm && pkmn.Ability == PBEAbility.SandRush)
+                    else if (Weather == PBEWeather.Sandstorm && pkmn.Ability == PBEAbility.SandRush)
                     {
                         speed *= 2.0;
                     }
                 }
-
-                if (pkmn.Ability == PBEAbility.QuickFeet)
+                switch (pkmn.Ability)
                 {
-                    if (pkmn.Status1 != PBEStatus1.None)
+                    case PBEAbility.QuickFeet:
                     {
-                        speed *= 1.5;
+                        if (pkmn.Status1 != PBEStatus1.None)
+                        {
+                            speed *= 1.5;
+                        }
+                        break;
+                    }
+                    case PBEAbility.SlowStart:
+                    {
+                        if (pkmn.SlowStart_HinderTurnsLeft > 0)
+                        {
+                            speed *= 0.5;
+                        }
+                        break;
                     }
                 }
-                else if (pkmn.Status1 == PBEStatus1.Paralyzed)
+                if (pkmn.Ability != PBEAbility.QuickFeet && pkmn.Status1 == PBEStatus1.Paralyzed)
                 {
                     speed *= 0.25;
                 }

@@ -885,6 +885,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 0.5;
             }
+            if (user.Ability == PBEAbility.SlowStart && user.SlowStart_HinderTurnsLeft > 0)
+            {
+                attack *= 0.5;
+            }
 
             return attack;
         }

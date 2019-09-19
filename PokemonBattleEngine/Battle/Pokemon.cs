@@ -144,6 +144,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #region Special Flags
         /// <summary>True if the Pokémon was originally <see cref="PBESpecies.Shaymin_Sky"/> but was <see cref="PBEStatus1.Frozen"/>, therefore forcing it to remain as <see cref="PBESpecies.Shaymin"/> when switching out.</summary>
         public bool Shaymin_CannotChangeBackToSkyForm { get; set; }
+        /// <summary>The amount of turns left until a Pokémon with <see cref="PBEAbility.SlowStart"/> loses its hinderance.</summary>
+        public byte SlowStart_HinderTurnsLeft { get; set; }
         /// <summary>True if the Pokémon was present at the start of the turn, which would allow <see cref="PBEAbility.SpeedBoost"/> to activate.</summary>
         public bool SpeedBoost_AbleToSpeedBoostThisTurn { get; set; }
         #endregion
@@ -312,6 +314,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             ExecutedMoves.Clear();
 
+            SlowStart_HinderTurnsLeft = 0;
             SpeedBoost_AbleToSpeedBoostThisTurn = false;
 
             SetStats(false);

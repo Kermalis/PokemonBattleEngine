@@ -323,10 +323,10 @@ namespace Kermalis.PokemonBattleEngine.Data
         Spikes = 1 << 3, // TODO: Gravity, magnet rise, magic guard, iron ball, baton pass with ingrain, air balloon
         /// <summary>Pokémon that switch in will take damage.The amount of damage is based on the effectiveness of <see cref="PBEType.Rock"/> on the Pokémon.
         /// </summary>
-        StealthRock = 1 << 4, // TODO: magic guard, castform transforms after taking damage
+        StealthRock = 1 << 4, // TODO: magic guard
         /// <summary>Grounded Pokémon that switch in will be <see cref="PBEStatus1.Poisoned"/> if <see cref="PBETeam.ToxicSpikeCount"/> is 1 or <see cref="PBEStatus1.BadlyPoisoned"/> if it is 2.Grounded <see cref="PBEType.Poison"/> Pokémon will remove toxic spikes.
         /// </summary>
-        ToxicSpikes = 1 << 5, // TODO: Gravity, immunity, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
+        ToxicSpikes = 1 << 5, // TODO: Gravity, magnet rise, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
         /// <summary>The team is protected from spread moves for a turn.</summary>
         WideGuard = 1 << 6
     }
@@ -337,7 +337,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Changed = 0,
         /// <summary>The ability caused a Pokémon to change its appearance.</summary>
         ChangedAppearance = 1,
-        /// <summary>The ability changed a Pokémon stats.</summary>
+        /// <summary>The ability changed a Pokémon's stats.</summary>
         ChangedStats = 2,
         /// <summary>The ability changed a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.</summary>
         ChangedStatus = 3,
@@ -347,8 +347,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         PreventedStatus = 5,
         /// <summary>The ability restored a Pokémon's HP.</summary>
         RestoredHP = 6,
+        /// <summary><see cref="PBEAbility.SlowStart"/> began.</summary>
+        SlowStart_Began = 7,
+        /// <summary><see cref="PBEAbility.SlowStart"/> ended.</summary>
+        SlowStart_Ended = 8,
         /// <summary>The ability was involved with weather.</summary>
-        Weather = 7
+        Weather = 9
     }
     /// <summary>Represents an action regarding a <see cref="PBEItem"/>.</summary>
     public enum PBEItemAction : byte
@@ -1285,7 +1289,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The Pokémon's stat changes are doubled.</summary>
         Simple = 86,
         SkillLink = 92, // TODO
-        SlowStart = 112, // TODO
+        SlowStart = 112,
         /// <summary>The Pokémon deals more damage when landing critical hits.</summary>
         Sniper = 97,
         /// <summary>In a hailstorm, the Pokémon takes no damage from the hailstorm and gets a 20% evasion boost.</summary>

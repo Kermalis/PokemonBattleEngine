@@ -459,6 +459,16 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
+                        case PBEAbility.SlowStart:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.SlowStart_Began: message = "{0} can't get it going!"; break;
+                                case PBEAbilityAction.SlowStart_Ended: message = "{0} finally got its act together!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                     }
                     BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), NameForTrainer(pokemon2, true), PBELocalizedString.GetAbilityName(ap.Ability).ToString()), true, true);
