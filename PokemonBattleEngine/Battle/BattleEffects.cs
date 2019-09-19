@@ -42,15 +42,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
                 {
-                    // Grounded Poison types remove the Toxic Spikes
                     if (pkmn.HasType(PBEType.Poison) && pkmn.Ability != PBEAbility.Levitate && !pkmn.HasType(PBEType.Flying))
                     {
                         pkmn.Team.TeamStatus &= ~PBETeamStatus.ToxicSpikes;
                         pkmn.Team.ToxicSpikeCount = 0;
                         BroadcastTeamStatus(pkmn.Team, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
                     }
-                    // Steel types and floating Pokémon don't get Poisoned
-                    else if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Steel) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
+                    else if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel) && pkmn.Ability != PBEAbility.Immunity && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
                     {
                         if (pkmn.Team.ToxicSpikeCount == 1)
                         {
@@ -642,7 +640,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
 
             // Orbs
-            // TODO: Possible to get burned with water veil?
             foreach (PBEPokemon pkmn in order)
             {
                 if (pkmn.HP > 0)
@@ -651,7 +648,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEItem.FlameOrb:
                         {
-                            if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Fire))
+                            if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Fire) && pkmn.Ability != PBEAbility.WaterVeil)
                             {
                                 pkmn.Status1 = PBEStatus1.Burned;
                                 BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
@@ -661,7 +658,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.ToxicOrb:
                         {
-                            if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel))
+                            if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel) && pkmn.Ability != PBEAbility.Immunity)
                             {
                                 pkmn.Status1 = PBEStatus1.BadlyPoisoned;
                                 pkmn.Status1Counter = 1;

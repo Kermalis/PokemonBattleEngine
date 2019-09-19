@@ -679,7 +679,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 throw new ArgumentNullException(nameof(other));
             }
             return Status1 == PBEStatus1.None
-                && !(Ability == PBEAbility.Insomnia && !other.HasCancellingAbility());
+                && !((Ability == PBEAbility.Insomnia || Ability == PBEAbility.VitalSpirit) && !other.HasCancellingAbility());
         }
         public bool CanFlinchFrom(PBEPokemon other)
         {
