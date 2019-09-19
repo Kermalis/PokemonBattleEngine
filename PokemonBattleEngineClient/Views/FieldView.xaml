@@ -10,12 +10,24 @@
       <ImageBrush Source="{Binding BGSource}"/>
     </Canvas.Background>
 
-    <views:PokemonView Name="Battler1_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="1"/>
-    <views:PokemonView Name="Battler1_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="1"/>
-    <views:PokemonView Name="Battler1_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="1"/>
-    <views:PokemonView Name="Battler0_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="2"/>
-    <views:PokemonView Name="Battler0_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="2"/>
-    <views:PokemonView Name="Battler0_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}" Scale="2"/>
+    <views:PokemonView Name="Battler1_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <views:PokemonView Name="Battler1_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <views:PokemonView Name="Battler1_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
+    <views:PokemonView Name="Battler0_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}">
+      <views:PokemonView.RenderTransform>
+        <ScaleTransform ScaleX="2" ScaleY="2"/>
+      </views:PokemonView.RenderTransform>
+    </views:PokemonView>
+    <views:PokemonView Name="Battler0_Left" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}">
+      <views:PokemonView.RenderTransform>
+        <ScaleTransform ScaleX="2" ScaleY="2"/>
+      </views:PokemonView.RenderTransform>
+    </views:PokemonView>
+    <views:PokemonView Name="Battler0_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}">
+      <views:PokemonView.RenderTransform>
+        <ScaleTransform ScaleX="2" ScaleY="2"/>
+      </views:PokemonView.RenderTransform>
+    </views:PokemonView>
 
     <Image Name="WeatherGif" IsHitTestVisible="false"/>
     <Rectangle Name="WeatherDim" Width="512" Height="384" IsHitTestVisible="false"/>
@@ -27,13 +39,13 @@
     <views:HPBarView Name="Bar1_Center" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
     <views:HPBarView Name="Bar1_Right" Canvas.Left="{Binding Location.X}" Canvas.Top="{Binding Location.Y}"/>
 
-    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="336" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
-    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="337" Fill="#5A000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
-    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="338" Fill="#76000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
-    <Rectangle Width="512" Height="36" Canvas.Left="0" Canvas.Top="339" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
-    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="375" Fill="#76000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
-    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="376" Fill="#5A000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
-    <Rectangle Width="512" Height="1" Canvas.Left="0" Canvas.Top="377" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Top="336" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Top="337" Fill="#5A000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Top="338" Fill="#76000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="36" Canvas.Top="339" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Top="375" Fill="#76000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Top="376" Fill="#5A000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
+    <Rectangle Width="512" Height="1" Canvas.Top="377" Fill="#90000000" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
     <Image Source="{Binding Message, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=BattleWhite, Mode=OneWay}" Canvas.Left="16" Canvas.Top="341" IsVisible="{Binding MessageBoxVisible}" IsHitTestVisible="false"/>
   </Canvas>
 </UserControl>

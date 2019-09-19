@@ -188,72 +188,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
             }
         }
-        private double _leftX;
-        public double LeftX
-        {
-            get => _leftX;
-            private set
-            {
-                if (_leftX != value)
-                {
-                    _leftX = value;
-                    OnPropertyChanged(nameof(LeftX));
-                }
-            }
-        }
-        private double _rightX;
-        public double RightX
-        {
-            get => _rightX;
-            private set
-            {
-                if (_rightX != value)
-                {
-                    _rightX = value;
-                    OnPropertyChanged(nameof(RightX));
-                }
-            }
-        }
-        private double _leftLineX;
-        public double LeftLineX
-        {
-            get => _leftLineX;
-            private set
-            {
-                if (_leftLineX != value)
-                {
-                    _leftLineX = value;
-                    OnPropertyChanged(nameof(LeftLineX));
-                }
-            }
-        }
-        private double _centerLineX;
-        public double CenterLineX
-        {
-            get => _centerLineX;
-            private set
-            {
-                if (_centerLineX != value)
-                {
-                    _centerLineX = value;
-                    OnPropertyChanged(nameof(CenterLineX));
-                }
-            }
-        }
-        private double _rightLineX;
-        public double RightLineX
-        {
-            get => _rightLineX;
-            private set
-            {
-                if (_rightLineX != value)
-                {
-                    _rightLineX = value;
-                    OnPropertyChanged(nameof(RightLineX));
-                }
-            }
-        }
-
         private bool _targetLineFoeLeftFoeCenterEnabled;
         public bool TargetLineFoeLeftFoeCenterEnabled
         {
@@ -489,13 +423,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         internal void DisplayActions(PBEPokemon pkmn)
         {
             Pokemon = pkmn;
-            var pInfo = new PokemonInfo[pkmn.Team.Party.Count];
-            for (int i = 0; i < pInfo.Length; i++)
-            {
-                PBEPokemon p = pkmn.Team.Party[i];
-                pInfo[i] = new PokemonInfo(p, !pkmn.CanSwitchOut() || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn);
-            }
-            Party = pInfo;
             PBEMove[] usableMoves = pkmn.GetUsableMoves();
             var mInfo = new MoveInfo[usableMoves.Length];
             for (int i = 0; i < mInfo.Length; i++)
@@ -503,7 +430,15 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 mInfo[i] = new MoveInfo(pkmn, usableMoves[i], SelectMoveForTurn);
             }
             Moves = mInfo;
+            var pInfo = new PokemonInfo[pkmn.Team.Party.Count];
+            for (int i = 0; i < pInfo.Length; i++)
+            {
+                PBEPokemon p = pkmn.Team.Party[i];
+                pInfo[i] = new PokemonInfo(p, !pkmn.CanSwitchOut() || BattleView.Client.StandBy.Contains(p), SelectPokemonForTurn);
+            }
+            Party = pInfo;
             MovesVisible = true;
+            SwitchesVisible = true;
         }
         internal void DisplaySwitches()
         {
@@ -523,12 +458,14 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             Pokemon.TurnAction = new PBETurnAction(Pokemon.Id, pkmn.Id);
             BattleView.Client.StandBy.Add(pkmn);
             MovesVisible = false;
+            SwitchesVisible = false;
             BattleView.Client.ActionsLoop(false);
         }
         private void SelectMoveForTurn(PBEMove move)
         {
             _fightMove = move;
             MovesVisible = false;
+            SwitchesVisible = false;
             DisplayTargets(move);
         }
         private void SelectSwitch(PBEPokemon pkmn)
@@ -586,8 +523,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
                 if (BattleView.Client.Battle.BattleFormat == PBEBattleFormat.Double)
                 {
-                    const double baseX = 142;
-                    LeftX = baseX + 0; RightX = baseX + 128; LeftLineX = baseX + 44; CenterLineX = baseX + 98; RightLineX = baseX + 172;
                     CenterTargetsVisible = false;
                     TargetLineFoeCenterAllyCenterEnabled = TargetLineFoeLeftFoeCenterEnabled = TargetLineAllyRightAllyCenterEnabled = false;
                     switch (possibleTargets)
@@ -722,8 +657,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                 }
                 else // Triple
                 {
-                    const double baseX = 78;
-                    LeftX = baseX + 0; RightX = baseX + 256; LeftLineX = baseX + 44; CenterLineX = baseX + 98; RightLineX = baseX + 300;
                     CenterTargetsVisible = true;
                     switch (possibleTargets)
                     {

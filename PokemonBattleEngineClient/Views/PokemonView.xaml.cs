@@ -18,19 +18,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         public new event PropertyChangedEventHandler PropertyChanged;
 
         private PBEPokemon _pokemon;
-        private double _scale;
-        public double Scale
-        {
-            get => _scale;
-            set
-            {
-                if (_scale != value)
-                {
-                    _scale = value;
-                    OnPropertyChanged(nameof(Scale));
-                }
-            }
-        }
         private Point _location;
         public Point Location
         {

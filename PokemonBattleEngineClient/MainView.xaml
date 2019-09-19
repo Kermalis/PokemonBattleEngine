@@ -4,7 +4,7 @@
              xmlns:views="clr-namespace:Kermalis.PokemonBattleEngineClient.Views;assembly=PokemonBattleEngineClient"
              x:Class="Kermalis.PokemonBattleEngineClient.MainView"
              Background="#313131">
-  <Viewbox Stretch="Uniform">
+  <Viewbox Stretch="Uniform" VerticalAlignment="Top">
     <TabControl Name="Tabs">
       <TabItem Header="Home">
         <StackPanel Orientation="Vertical">

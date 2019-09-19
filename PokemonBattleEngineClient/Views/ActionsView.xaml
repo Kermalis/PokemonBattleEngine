@@ -6,114 +6,88 @@
              Width="512" Height="128" Background="#313131">
   <UserControl.DataTemplates>
     <DataTemplate DataType="models:MoveInfo">
-      <Button Width="103" Height="30" Command="{Binding SelectMoveCommand}" Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4">
-        <StackPanel>
-          <Image Source="{Binding Move, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-        </StackPanel>
+      <Button Command="{Binding SelectMoveCommand}" Background="{Binding Brush}" BorderBrush="{Binding BorderBrush}" BorderThickness="4" Margin="4,*">
+        <Image Source="{Binding Move, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
         <ToolTip.Tip>
           <Image Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </ToolTip.Tip>
       </Button>
     </DataTemplate>
     <DataTemplate DataType="models:PokemonInfo">
-      <Button Width="73" Height="30" Command="{Binding SelectPokemonCommand}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" IsEnabled="{Binding Enabled}">
-        <StackPanel>
-          <Image Source="{Binding Pokemon.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
-        </StackPanel>
+      <Button Command="{Binding SelectPokemonCommand}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" IsEnabled="{Binding Enabled}">
+        <Image Source="{Binding Pokemon.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         <ToolTip.Tip>
           <Image Source="{Binding Description, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
         </ToolTip.Tip>
       </Button>
     </DataTemplate>
   </UserControl.DataTemplates>
-  <StackPanel>
-    <StackPanel IsVisible="{Binding MovesVisible}">
-      <ItemsControl Items="{Binding Moves}">
+  <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <ItemsControl IsVisible="{Binding MovesVisible}" Items="{Binding Moves}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <StackPanel Orientation="Horizontal" Spacing="20" Margin="20"/>
+            <infrastructure:BetterWrapPanel Orientation="Horizontal" HorizontalContentAlignment="Center"/>
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
       </ItemsControl>
-      <ItemsControl Items="{Binding Party}">
+      <ItemsControl IsVisible="{Binding SwitchesVisible}" Items="{Binding Party}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <StackPanel Orientation="Horizontal" Spacing="10" Margin="12,8"/>
+            <infrastructure:BetterWrapPanel Orientation="Horizontal" HorizontalContentAlignment="Center"/>
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
       </ItemsControl>
-    </StackPanel>
-    <Canvas IsVisible="{Binding TargetsVisible}">
-      <Rectangle IsVisible="{Binding TargetLineFoeRightAllyLeftEnabled}" Width="12" Height="26" Canvas.Left="{Binding LeftLineX}" Canvas.Top="51" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-      <Rectangle IsVisible="{Binding TargetLineFoeRightFoeCenterEnabled}" Width="32" Height="12" Canvas.Left="{Binding CenterLineX}" Canvas.Top="32" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-      <Rectangle IsVisible="{Binding TargetLineAllyLeftAllyCenterEnabled}" Width="32" Height="12" Canvas.Left="{Binding CenterLineX}" Canvas.Top="84" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-      <Rectangle IsVisible="{Binding TargetLineFoeLeftFoeCenterEnabled}" Width="32" Height="12" Canvas.Left="304" Canvas.Top="32" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-      <Rectangle IsVisible="{Binding TargetLineFoeCenterAllyCenterEnabled}" Width="12" Height="26" Canvas.Left="251" Canvas.Top="51" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-      <Rectangle IsVisible="{Binding TargetLineAllyRightAllyCenterEnabled}" Width="32" Height="12" Canvas.Left="304" Canvas.Top="84" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-      <Rectangle IsVisible="{Binding TargetLineFoeLeftAllyRightEnabled}" Width="12" Height="26" Canvas.Left="{Binding RightLineX}" Canvas.Top="51" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
-      <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="23" IsEnabled="{Binding TargetFoeRightEnabled}"
-              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeRight">
-        <StackPanel>
+      <Grid IsVisible="{Binding TargetsVisible}">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="3*"/>
+          <RowDefinition Height="1*"/>
+          <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="3*"/>
+          <ColumnDefinition Width="1*"/>
+          <ColumnDefinition Width="3*"/>
+          <ColumnDefinition Width="1*"/>
+          <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Button Grid.Column="0" Grid.Row="0" IsEnabled="{Binding TargetFoeRightEnabled}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeRight">
           <Image Source="{Binding TargetFoeRight.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-        </StackPanel>
-      </Button>
-      <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="23" IsEnabled="{Binding TargetFoeCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
-              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeCenter">
-        <StackPanel>
-          <Image Source="{Binding TargetFoeCenter.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-        </StackPanel>
-      </Button>
-      <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="23" IsEnabled="{Binding TargetFoeLeftEnabled}"
-              Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeLeft">
-        <StackPanel>
-          <Image Source="{Binding TargetFoeLeft.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-        </StackPanel>
-      </Button>
-      <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="75" IsEnabled="{Binding TargetAllyLeftEnabled}"
-              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyLeft">
-        <StackPanel>
+        </Button>
+        <Rectangle Grid.Column="0" Grid.Row="1" IsVisible="{Binding TargetLineFoeRightAllyLeftEnabled}" Width="12" Height="24" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+        <Button Grid.Column="0" Grid.Row="2" IsEnabled="{Binding TargetAllyLeftEnabled}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyLeft">
           <Image Source="{Binding TargetAllyLeft.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-        </StackPanel>
-      </Button>
-      <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="75"  IsEnabled="{Binding TargetAllyCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}"
-              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyCenter">
-        <StackPanel>
+        </Button>
+        <Rectangle Grid.Column="1" Grid.Row="0" IsVisible="{Binding TargetLineFoeRightFoeCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+        <Rectangle Grid.Column="1" Grid.Row="2" IsVisible="{Binding TargetLineAllyLeftAllyCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+        <Button Grid.Column="2" Grid.Row="0" IsEnabled="{Binding TargetFoeCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeCenter">
+          <Image Source="{Binding TargetFoeCenter.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+        </Button>
+        <Rectangle Grid.Column="2" Grid.Row="1" IsVisible="{Binding TargetLineFoeCenterAllyCenterEnabled}" Width="12" Height="24" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+        <Button Grid.Column="2" Grid.Row="2" IsEnabled="{Binding TargetAllyCenterEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyCenter">
           <Image Source="{Binding TargetAllyCenter.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-        </StackPanel>
-      </Button>
-      <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="75" IsEnabled="{Binding TargetAllyRightEnabled}"
-              Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyRight">
-        <StackPanel>
+        </Button>
+        <Rectangle Grid.Column="3" Grid.Row="0" IsVisible="{Binding TargetLineFoeLeftFoeCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+        <Rectangle Grid.Column="3" Grid.Row="2" IsVisible="{Binding TargetLineAllyRightAllyCenterEnabled}" Width="48" Height="12" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+        <Button Grid.Column="4" Grid.Row="0" IsEnabled="{Binding TargetFoeLeftEnabled}" Background="#F75231" BorderBrush="#732108" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="FoeLeft">
+          <Image Source="{Binding TargetFoeLeft.KnownNameWithKnownGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
+        </Button>
+        <Rectangle Grid.Column="4" Grid.Row="1" IsVisible="{Binding TargetLineFoeLeftAllyRightEnabled}" Width="12" Height="24" Stroke="#425294" StrokeThickness="2" Fill="#9CADF7"/>
+        <Button Grid.Column="4" Grid.Row="2" IsEnabled="{Binding TargetAllyRightEnabled}" Background="#7B63E7" BorderBrush="#4A3994" BorderThickness="4" Command="{Binding SelectTargetCommand}" CommandParameter="AllyRight">
           <Image Source="{Binding TargetAllyRight.NameWithGender, Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, Mode=OneWay}"/>
-        </StackPanel>
-      </Button>
-    </Canvas>
-    <ItemsControl IsVisible="{Binding SwitchesVisible}" Items="{Binding Party}">
-      <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-          <StackPanel Orientation="Horizontal" Spacing="10" Margin="12,49"/>
-        </ItemsPanelTemplate>
-      </ItemsControl.ItemsPanel>
-    </ItemsControl>
-    <Canvas IsVisible="{Binding PositionsVisible}">
-      <Button Width="100" Height="30" Canvas.Left="{Binding LeftX}" Canvas.Top="49" IsEnabled="{Binding LeftPositionEnabled}"
-              Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Left">
-        <StackPanel>
+        </Button>
+      </Grid>
+      <infrastructure:BetterWrapPanel IsVisible="{Binding PositionsVisible}" Orientation="Horizontal" HorizontalContentAlignment="Center">
+        <Button IsEnabled="{Binding LeftPositionEnabled}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" Command="{Binding SelectPositionCommand}" CommandParameter="Left">
           <Image Source="{Binding Source='Left', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
-        </StackPanel>
-      </Button>
-      <Button Width="100" Height="30" Canvas.Left="206" Canvas.Top="49" IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterTargetsVisible}"
-              Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Center">
-        <StackPanel>
+        </Button>
+        <Button IsEnabled="{Binding CenterPositionEnabled}" IsVisible="{Binding CenterTargetsVisible}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" Command="{Binding SelectPositionCommand}" CommandParameter="Center">
           <Image Source="{Binding Source='Center', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
-        </StackPanel>
-      </Button>
-      <Button Width="100" Height="30" Canvas.Left="{Binding RightX}" Canvas.Top="49" IsEnabled="{Binding RightPositionEnabled}"
-              Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Command="{Binding SelectPositionCommand}" CommandParameter="Right">
-        <StackPanel>
+        </Button>
+        <Button IsEnabled="{Binding RightPositionEnabled}" Background="White" BorderBrush="#A2A2A2" BorderThickness="4" Margin="4,*" Command="{Binding SelectPositionCommand}" CommandParameter="Right">
           <Image Source="{Binding Source='Right', Converter={x:Static infrastructure:ObjectToTextBitmapConverter.Instance}, ConverterParameter=MenuBlack, Mode=OneWay}"/>
-        </StackPanel>
-      </Button>
-    </Canvas>
-  </StackPanel>
+        </Button>
+      </infrastructure:BetterWrapPanel>
+    </StackPanel>
+  </ScrollViewer>
 </UserControl>
