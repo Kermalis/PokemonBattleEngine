@@ -1001,9 +1001,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEMove.FoulPlay:
                 {
-                    double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, target.AttackChange) : target.AttackChange, false);
+                    double aMod = unawareA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, target.AttackChange) : target.AttackChange, false);
                     a = CalculateAttack(user, target, moveType, target.Attack * aMod);
-                    double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                    double dMod = unawareD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
                     d = CalculateDefense(user, target, target.Defense * dMod);
                     break;
                 }
@@ -1011,9 +1011,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.Psystrike:
                 case PBEMove.SecretSword:
                 {
-                    double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
+                    double aMod = unawareA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
                     a = CalculateSpAttack(user, target, moveType, user.SpAttack * aMod);
-                    double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                    double dMod = unawareD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
                     d = CalculateDefense(user, target, target.Defense * dMod);
                     break;
                 }
@@ -1021,16 +1021,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (moveCategory == PBEMoveCategory.Physical)
                     {
-                        double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
+                        double aMod = unawareA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.AttackChange) : user.AttackChange, false);
                         a = CalculateAttack(user, target, moveType, user.Attack * aMod);
-                        double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
+                        double dMod = unawareD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.DefenseChange) : target.DefenseChange, false);
                         d = CalculateDefense(user, target, target.Defense * dMod);
                     }
                     else if (moveCategory == PBEMoveCategory.Special)
                     {
-                        double aMod = unawareA ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
+                        double aMod = unawareA ? 1 : GetStatChangeModifier(criticalHit ? Math.Max((sbyte)0, user.SpAttackChange) : user.SpAttackChange, false);
                         a = CalculateSpAttack(user, target, moveType, user.SpAttack * aMod);
-                        double dMod = unawareD ? 1.0 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
+                        double dMod = unawareD ? 1 : GetStatChangeModifier(criticalHit ? Math.Min((sbyte)0, target.SpDefenseChange) : target.SpDefenseChange, false);
                         d = CalculateSpDefense(user, target, target.SpDefense * dMod);
                     }
                     break;

@@ -1160,7 +1160,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Damp = 6, // TODO
         Defeatist = 129,
         Defiant = 128, // TODO
-        Download = 88, // TODO
+        Download = 88, // TODO: Power Trick
         /// <summary>The Pokémon changes the weather to infinite rain.</summary>
         Drizzle = 2,
         /// <summary>The Pokémon changes the weather to infinite harsh sunlight.</summary>

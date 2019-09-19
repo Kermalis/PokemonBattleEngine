@@ -76,13 +76,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         CastformCherrimCheckAll();
                         break;
                     }
+                    case PBEAbility.Download:
+                    {
+                        PBEPokemon[] oppActive = pkmn.Team.OpposingTeam.ActiveBattlers;
+                        if (oppActive.Length != 0)
+                        {
+                            PBEStat stat = oppActive.Average(p => p.Defense * GetStatChangeModifier(p.DefenseChange, false))
+                                < oppActive.Average(p => p.SpDefense * GetStatChangeModifier(p.SpDefenseChange, false))
+                                ? PBEStat.Attack : PBEStat.SpAttack;
+                            if (pkmn.GetStatChange(stat) < Settings.MaxStatChange)
+                            {
+                                BroadcastAbility(pkmn, pkmn, PBEAbility.Download, PBEAbilityAction.ChangedStats);
+                                ApplyStatChange(pkmn, stat, +1);
+                            }
+                        }
+                        break;
+                    }
                     case PBEAbility.Drizzle:
                     {
                         if (Weather != PBEWeather.Rain || WeatherCounter != 0)
                         {
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                             Weather = PBEWeather.Rain;
                             WeatherCounter = 0;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                             BroadcastWeather(PBEWeather.Rain, PBEWeatherAction.Added);
                         }
                         break;
@@ -91,9 +107,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (Weather != PBEWeather.HarshSunlight || WeatherCounter != 0)
                         {
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                             Weather = PBEWeather.HarshSunlight;
                             WeatherCounter = 0;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                             BroadcastWeather(PBEWeather.HarshSunlight, PBEWeatherAction.Added);
                         }
                         break;
@@ -116,9 +132,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (Weather != PBEWeather.Sandstorm || WeatherCounter != 0)
                         {
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                             Weather = PBEWeather.Sandstorm;
                             WeatherCounter = 0;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                             BroadcastWeather(PBEWeather.Sandstorm, PBEWeatherAction.Added);
                         }
                         break;
@@ -127,9 +143,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         if (Weather != PBEWeather.Hailstorm || WeatherCounter != 0)
                         {
+                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                             Weather = PBEWeather.Hailstorm;
                             WeatherCounter = 0;
-                            BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.Weather);
                             BroadcastWeather(PBEWeather.Hailstorm, PBEWeatherAction.Added);
                         }
                         break;

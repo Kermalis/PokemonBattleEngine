@@ -441,6 +441,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             }
                             break;
                         }
+                        case PBEAbility.Download:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.ChangedStats: message = "{0}'s {2} activated!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.Drizzle:
                         case PBEAbility.Drought:
                         case PBEAbility.SandStream:
