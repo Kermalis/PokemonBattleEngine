@@ -1224,6 +1224,24 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
+                        case PBEStatus2.PowerTrick:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added:
+                                {
+                                    if (Mode != ClientMode.SinglePlayer)
+                                    {
+                                        status2Receiver.ApplyPowerTrickChange();
+                                    }
+                                    message = "{0} switched its Attack and Defense!";
+                                    break;
+                                }
+                                case PBEStatusAction.Ended: return true;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
                         case PBEStatus2.Protected:
                         {
                             switch (s2p.StatusAction)

@@ -169,9 +169,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownItem = (PBEItem)ushort.MaxValue;
             EffortValues = new PBEEffortValues(Team.Battle.Settings, r);
             IndividualValues = new PBEIndividualValues(Team.Battle.Settings, r);
-            SetStats();
-            HP = MaxHP;
-            HPPercentage = 1D;
+            SetStats(true);
             OriginalMoveset = new PBEMoveset(Species, Level, Team.Battle.Settings, r);
             Moves = new PBEBattleMoveset(OriginalMoveset);
             KnownMoves = new PBEBattleMoveset(Team.Battle.Settings);
@@ -199,9 +197,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownItem = (PBEItem)ushort.MaxValue;
             EffortValues = new PBEEffortValues(shell.EffortValues);
             IndividualValues = new PBEIndividualValues(shell.IndividualValues);
-            SetStats();
-            HP = MaxHP;
-            HPPercentage = 1D;
+            SetStats(true);
             OriginalMoveset = new PBEMoveset(shell.Moveset);
             Moves = new PBEBattleMoveset(OriginalMoveset);
             KnownMoves = new PBEBattleMoveset(Team.Battle.Settings);
@@ -243,16 +239,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Team.Party.Add(this);
         }
 
-        public void SetStats()
+        public void ApplyPowerTrickChange()
         {
-            MaxHP = PBEPokemonData.CalculateStat(PBEStat.HP, Species, Nature, EffortValues[PBEStat.HP].Value, IndividualValues[PBEStat.HP].Value, Level, Team.Battle.Settings);
-            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, Species, Nature, EffortValues[PBEStat.Attack].Value, IndividualValues[PBEStat.Attack].Value, Level, Team.Battle.Settings);
-            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, Species, Nature, EffortValues[PBEStat.Defense].Value, IndividualValues[PBEStat.Defense].Value, Level, Team.Battle.Settings);
-            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, Species, Nature, EffortValues[PBEStat.SpAttack].Value, IndividualValues[PBEStat.SpAttack].Value, Level, Team.Battle.Settings);
-            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, Species, Nature, EffortValues[PBEStat.SpDefense].Value, IndividualValues[PBEStat.SpDefense].Value, Level, Team.Battle.Settings);
-            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, Species, Nature, EffortValues[PBEStat.Speed].Value, IndividualValues[PBEStat.Speed].Value, Level, Team.Battle.Settings);
+            ushort a = Attack;
+            Attack = Defense;
+            Defense = a;
         }
-
         /// <summary>Sets and clears all information required for switching out.</summary>
         public void ClearForSwitch()
         {
@@ -308,7 +300,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             SeededPosition = PBEFieldPosition.None;
             SeededTeam = null;
             SubstituteHP = 0;
-            if (Id != byte.MaxValue && Status2.HasFlag(PBEStatus2.Transformed))
+            if (Status2.HasFlag(PBEStatus2.Transformed))
             {
                 Moves.Reset(TransformBackupMoves);
                 TransformBackupMoves.SetUnknown();
@@ -322,15 +314,31 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             SpeedBoost_AbleToSpeedBoostThisTurn = false;
 
-            if (Id != byte.MaxValue)
-            {
-                SetStats();
-            }
+            SetStats(false);
         }
-
+        public void SetStats(bool calculateHP)
+        {
+            PBESpecies species = Species;
+            PBENature nature = Nature;
+            PBEEffortValues evs = EffortValues;
+            PBEIndividualValues ivs = IndividualValues;
+            byte level = Level;
+            PBESettings settings = Team.Battle.Settings;
+            if (calculateHP)
+            {
+                ushort hp = PBEPokemonData.CalculateStat(PBEStat.HP, species, nature, evs[PBEStat.HP].Value, ivs[PBEStat.HP].Value, level, settings);
+                MaxHP = hp;
+                HP = hp;
+                HPPercentage = 1d;
+            }
+            Attack = PBEPokemonData.CalculateStat(PBEStat.Attack, species, nature, evs[PBEStat.Attack].Value, ivs[PBEStat.Attack].Value, level, settings);
+            Defense = PBEPokemonData.CalculateStat(PBEStat.Defense, species, nature, evs[PBEStat.Defense].Value, ivs[PBEStat.Defense].Value, level, settings);
+            SpAttack = PBEPokemonData.CalculateStat(PBEStat.SpAttack, species, nature, evs[PBEStat.SpAttack].Value, ivs[PBEStat.SpAttack].Value, level, settings);
+            SpDefense = PBEPokemonData.CalculateStat(PBEStat.SpDefense, species, nature, evs[PBEStat.SpDefense].Value, ivs[PBEStat.SpDefense].Value, level, settings);
+            Speed = PBEPokemonData.CalculateStat(PBEStat.Speed, species, nature, evs[PBEStat.Speed].Value, ivs[PBEStat.Speed].Value, level, settings);
+        }
         /// <summary>Transforms into <paramref name="target"/> and sets <see cref="PBEStatus2.Transformed"/>.</summary>
         /// <param name="target">The Pokémon to transform into.</param>
-        /// <remarks>Frees the Pokémon of its <see cref="ChoiceLockedMove"/>.</remarks>
         public void Transform(PBEPokemon target)
         {
             if (target == null)
@@ -377,6 +385,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ChoiceLockedMove = PBEMove.None;
             }
             Status2 |= PBEStatus2.Transformed;
+            Status2 &= ~PBEStatus2.PowerTrick;
         }
         public void UpdateKnownPP(PBEMove move, int amountReduced)
         {
@@ -708,7 +717,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return usableMoves.ToArray();
         }
         /// <summary>Gets the chance of a protection move succeeding, out of <see cref="ushort.MaxValue"/>.</summary>
-        public ushort GetProtectionChance()
+        internal ushort GetProtectionChance()
         {
             ushort chance = ushort.MaxValue;
             for (int i = ExecutedMoves.Count - 1; i >= 0; i--)

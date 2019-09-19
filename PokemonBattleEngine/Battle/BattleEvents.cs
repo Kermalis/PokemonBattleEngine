@@ -112,9 +112,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             pokemon.Ability = newAbility;
             pokemon.KnownAbility = newKnownAbility;
             pokemon.Species = pokemon.KnownSpecies = newSpecies;
-            ushort oldMaxHP = pokemon.MaxHP; // Store in case someone edits a form's HP base stat
-            pokemon.SetStats();
-            pokemon.MaxHP = oldMaxHP;
+            pokemon.SetStats(false);
+            // Verified: PBEStatus2.PowerTrick is not cleared when changing form. Possible gen 4+ bug?
             var pData = PBEPokemonData.GetData(newSpecies);
             pokemon.Type1 = pokemon.KnownType1 = pData.Type1;
             pokemon.Type2 = pokemon.KnownType2 = pData.Type2;
@@ -1000,6 +999,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 case PBEStatusAction.Added: message = "{0} was seeded!"; break;
                                 case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus2.PowerTrick:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} switched its Attack and Defense!"; break;
+                                case PBEStatusAction.Ended: return;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;

@@ -262,8 +262,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     {
         /// <summary>The Pokémon has no status.</summary>
         None,
-        /// <summary>The Pokémon is high up in the air.A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsAirborne"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
-        /// </summary>
+        /// <summary>The Pokémon is high up in the air. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsAirborne"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.</summary>
         Airborne = 1 << 0,
         /// <summary>The Pokémon is confused and may hurt itself instead of execute its chosen move.</summary>
         Confused = 1 << 1,
@@ -279,24 +278,24 @@ namespace Kermalis.PokemonBattleEngine.Data
         Infatuated = 1 << 6,
         /// <summary>The Pokémon is seeded and HP will be stolen at the end of each turn.</summary>
         LeechSeed = 1 << 7,
+        /// <summary>The Pokémon's <see cref="PBEStat.Attack"/> and <see cref="PBEStat.Defense"/> are switched.</summary>
+        PowerTrick = 1 << 8,
         /// <summary>The Pokémon is protected from moves this turn.</summary>
-        Protected = 1 << 8,
+        Protected = 1 << 9,
         /// <summary>The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
-        Pumped = 1 << 9,
+        Pumped = 1 << 10,
         /// <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
-        Substitute = 1 << 10,
+        Substitute = 1 << 11,
         /// <summary>The Pokémon is unable to use the same move two times in a row.</summary>
-        Tormented = 1 << 11, // TODO
+        Tormented = 1 << 12, // TODO
         /// <summary>The Pokémon is transformed into another Pokémon.</summary>
-        Transformed = 1 << 12,
-        /// <summary>The Pokémon is underground.A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
-        /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.
-        /// </summary>
-        Underground = 1 << 13,
-        /// <summary>The Pokémon is underwater.A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
-        /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.
-        /// </summary>
-        Underwater = 1 << 14
+        Transformed = 1 << 13,
+        /// <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
+        /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.</summary>
+        Underground = 1 << 14,
+        /// <summary>The Pokémon is underwater. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
+        /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.</summary>
+        Underwater = 1 << 15
     }
     /// <summary>Represents a specific <see cref="PBEBattle"/>'s status.</summary>
     [Flags]
@@ -1160,7 +1159,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Damp = 6, // TODO
         Defeatist = 129,
         Defiant = 128, // TODO
-        Download = 88, // TODO: Power Trick
+        Download = 88,
         /// <summary>The Pokémon changes the weather to infinite rain.</summary>
         Drizzle = 2,
         /// <summary>The Pokémon changes the weather to infinite harsh sunlight.</summary>
@@ -2203,6 +2202,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         PainSplit,
         Paralyze,
         Poison,
+        PowerTrick,
         Protect, // TODO: If the user goes last, fail
         PsychUp,
         Psywave,
@@ -2482,6 +2482,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Pound = 1,
         PowderSnow = 181,
         PowerGem = 408,
+        PowerTrick = 379,
         PowerWhip = 438,
         Protect = 182,
         Psybeam = 60,

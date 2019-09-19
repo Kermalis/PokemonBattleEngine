@@ -1988,6 +1988,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.PowerTrick,
+                new PBEMoveData
+                (
+                    PBEType.Psychic, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.PowerTrick, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
                 PBEMove.PowerWhip,
                 new PBEMoveData
                 (

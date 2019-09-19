@@ -1038,6 +1038,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_TryForceStatus1(user, targets, move, PBEStatus1.Poisoned);
                         break;
                     }
+                    case PBEMoveEffect.PowerTrick:
+                    {
+                        Ef_TryForceStatus2(user, targets, move, PBEStatus2.PowerTrick);
+                        break;
+                    }
                     case PBEMoveEffect.Protect:
                     {
                         Ef_TryForceStatus2(user, targets, move, PBEStatus2.Protected);
@@ -1995,7 +2000,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        failReason = PBEFailReason.Default; // broadcastFailOrEffectiveness is always false for Flinching, so this doesn't get broadcast
+                        failReason = PBEFailReason.Default; // broadcastFailOrEffectiveness is always false for Flinching, so this doesn't get broadcasted
                     }
                     break;
                 }
@@ -2061,6 +2066,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 }
+                case PBEStatus2.PowerTrick:
+                {
+                    target.Status2 |= PBEStatus2.PowerTrick;
+                    target.ApplyPowerTrickChange();
+                    BroadcastStatus2(target, user, PBEStatus2.PowerTrick, PBEStatusAction.Added);
+                    failReason = PBEFailReason.None;
+                    break;
+                }
                 case PBEStatus2.Protected:
                 {
                     // TODO: If the user goes last, fail
@@ -2078,10 +2091,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEStatus2.Pumped:
                 {
-                    if (!user.Status2.HasFlag(PBEStatus2.Pumped))
+                    if (!target.Status2.HasFlag(PBEStatus2.Pumped))
                     {
-                        user.Status2 |= PBEStatus2.Pumped;
-                        BroadcastStatus2(user, user, PBEStatus2.Pumped, PBEStatusAction.Added);
+                        target.Status2 |= PBEStatus2.Pumped;
+                        BroadcastStatus2(target, user, PBEStatus2.Pumped, PBEStatusAction.Added);
                         failReason = PBEFailReason.None;
                     }
                     else
@@ -2092,15 +2105,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEStatus2.Substitute:
                 {
-                    bool alreadyHasSubstitute = user.Status2.HasFlag(PBEStatus2.Substitute);
-                    ushort hpRequired = (ushort)(user.MaxHP / 4);
-                    if (!alreadyHasSubstitute && hpRequired > 0 && user.HP > hpRequired)
+                    bool alreadyHasSubstitute = target.Status2.HasFlag(PBEStatus2.Substitute);
+                    ushort hpRequired = (ushort)(target.MaxHP / 4);
+                    if (!alreadyHasSubstitute && hpRequired > 0 && target.HP > hpRequired)
                     {
-                        DealDamage(user, user, hpRequired, true);
-                        HealingBerryCheck(user);
-                        user.Status2 |= PBEStatus2.Substitute;
-                        user.SubstituteHP = hpRequired;
-                        BroadcastStatus2(user, user, PBEStatus2.Substitute, PBEStatusAction.Added);
+                        DealDamage(user, target, hpRequired, true);
+                        HealingBerryCheck(target);
+                        target.Status2 |= PBEStatus2.Substitute;
+                        target.SubstituteHP = hpRequired;
+                        BroadcastStatus2(target, user, PBEStatus2.Substitute, PBEStatusAction.Added);
                         failReason = PBEFailReason.None;
                     }
                     else
@@ -2116,9 +2129,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         && !user.Status2.HasFlag(PBEStatus2.Transformed)
                         && !target.Status2.HasFlag(PBEStatus2.Transformed))
                     {
+                        bool lostPowerTrick = user.Status2.HasFlag(PBEStatus2.PowerTrick);
                         user.Transform(target);
                         BroadcastTransform(user, target);
                         BroadcastStatus2(user, target, PBEStatus2.Transformed, PBEStatusAction.Added);
+                        if (lostPowerTrick)
+                        {
+                            BroadcastStatus2(user, user, PBEStatus2.PowerTrick, PBEStatusAction.Ended);
+                        }
                         failReason = PBEFailReason.None;
                     }
                     else
