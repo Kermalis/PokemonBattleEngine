@@ -134,15 +134,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        private void BroadcastPkmnSwitchIn(PBETeam team, PBEPkmnSwitchInPacket.PBESwitchInInfo[] switchIns, bool forced)
+        private void BroadcastPkmnSwitchIn(PBETeam team, PBEPkmnSwitchInPacket.PBESwitchInInfo[] switchIns, PBEPokemon forcedByPokemon = null)
         {
-            var p = new PBEPkmnSwitchInPacket(team, switchIns, forced);
+            var p = new PBEPkmnSwitchInPacket(team, switchIns, forcedByPokemon);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        private void BroadcastPkmnSwitchOut(PBEPokemon pokemon, PBEPokemon disguisedAsPokemon, PBEFieldPosition oldPosition, bool forced)
+        private void BroadcastPkmnSwitchOut(PBEPokemon pokemon, PBEPokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEPokemon forcedByPokemon = null)
         {
-            var p = new PBEPkmnSwitchOutPacket(pokemon.Id, disguisedAsPokemon.Id, oldPosition, pokemon.Team, forced);
+            var p = new PBEPkmnSwitchOutPacket(pokemon.Id, disguisedAsPokemon.Id, oldPosition, pokemon.Team, forcedByPokemon);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -1176,7 +1176,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEWeatherPacket wp:
                 {
-                    PBEPokemon damageVictim = wp.DamageVictimTeam?.TryGetPokemon(wp.DamageVictim);
+                    PBEPokemon damageVictim = wp.HasDamageVictim ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
                     string message;
                     switch (wp.Weather)
                     {

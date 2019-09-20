@@ -43,7 +43,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (!ignoreSturdy && victim.HP == 0)
                 {
                     // TODO: Endure
-                    if (oldHP == victim.MaxHP && victim.Ability == PBEAbility.Sturdy) // TODO: Mold Breaker
+                    if (oldHP == victim.MaxHP && victim.Ability == PBEAbility.Sturdy && !culprit.HasCancellingAbility())
                     {
                         sturdyHappened = true;
                         victim.HP = 1;
@@ -119,8 +119,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (moveEffectiveness != PBEEffectiveness.Ineffective)
             {
-                if ((target.Ability == PBEAbility.Levitate && moveType == PBEType.Ground)
-                    || (!ignoreWonderGuard && target.Ability == PBEAbility.WonderGuard && moveEffectiveness != PBEEffectiveness.SuperEffective))
+                if ((target.Ability == PBEAbility.Levitate && moveType == PBEType.Ground && !target.IsConsideredGroundedBy(user))
+                    || (!ignoreWonderGuard && target.Ability == PBEAbility.WonderGuard && moveEffectiveness != PBEEffectiveness.SuperEffective && !user.HasCancellingAbility()))
                 {
                     moveEffectiveness = PBEEffectiveness.Ineffective;
                     moveEffectivenessMultiplier = 0;
@@ -800,7 +800,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     break;
                 case PBEEffectiveness.SuperEffective:
-                    if (target.Ability == PBEAbility.Filter || target.Ability == PBEAbility.SolidRock)
+                    if ((target.Ability == PBEAbility.Filter || target.Ability == PBEAbility.SolidRock) && !user.HasCancellingAbility())
                     {
                         damageMultiplier *= 0.75;
                     }
@@ -825,7 +825,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 damageMultiplier *= 0.5;
             }
-            if (moveType == PBEType.Fire && target.Ability == PBEAbility.Heatproof)
+            if (moveType == PBEType.Fire && target.Ability == PBEAbility.Heatproof && !user.HasCancellingAbility())
             {
                 damageMultiplier *= 0.5;
             }
@@ -873,11 +873,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 attack *= 1.5;
             }
-            if (ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && Array.Exists(user.Team.ActiveBattlers, p => p.Ability == PBEAbility.FlowerGift))
+            if (!user.HasCancellingAbility() && ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight && Array.Exists(user.Team.ActiveBattlers, p => p.Ability == PBEAbility.FlowerGift))
             {
                 attack *= 1.5;
             }
-            if ((moveType == PBEType.Fire || moveType == PBEType.Ice) && target.Ability == PBEAbility.ThickFat)
+            if ((moveType == PBEType.Fire || moveType == PBEType.Ice) && target.Ability == PBEAbility.ThickFat && !user.HasCancellingAbility())
             {
                 attack *= 0.5;
             }
@@ -900,7 +900,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 defense *= 2.0;
             }
-            if (target.Ability == PBEAbility.MarvelScale && target.Status1 != PBEStatus1.None)
+            if (target.Ability == PBEAbility.MarvelScale && target.Status1 != PBEStatus1.None && !user.HasCancellingAbility())
             {
                 defense *= 1.5;
             }
@@ -951,7 +951,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 spAttack *= 1.5;
             }
-            if ((moveType == PBEType.Fire || moveType == PBEType.Ice) && target.Ability == PBEAbility.ThickFat)
+            if ((moveType == PBEType.Fire || moveType == PBEType.Ice) && target.Ability == PBEAbility.ThickFat && !user.HasCancellingAbility())
             {
                 spAttack *= 0.5;
             }
@@ -984,7 +984,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     spDefense *= 1.5;
                 }
-                if (Weather == PBEWeather.HarshSunlight && Array.Exists(user.Team.ActiveBattlers, p => p.Ability == PBEAbility.FlowerGift))
+                if (!user.HasCancellingAbility() && Weather == PBEWeather.HarshSunlight && Array.Exists(target.Team.ActiveBattlers, p => p.Ability == PBEAbility.FlowerGift))
                 {
                     spDefense *= 1.5;
                 }
@@ -998,8 +998,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort damage;
             double a = 0, d = 0;
 
-            bool unawareA = user != target && target.Ability == PBEAbility.Unaware;
-            bool unawareD = user != target && user.Ability == PBEAbility.Unaware;
+            bool unawareA = user != target && target.Ability == PBEAbility.Unaware && !user.HasCancellingAbility();
+            bool unawareD = user != target && user.Ability == PBEAbility.Unaware && !target.HasCancellingAbility(); // Verified: A target with Mold Breaker will accept more damage from a user with Unaware
 
             switch (move)
             {

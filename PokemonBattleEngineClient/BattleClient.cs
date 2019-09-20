@@ -1510,7 +1510,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         case PBEWeatherAction.CausedDamage: break;
                         default: throw new ArgumentOutOfRangeException(nameof(wp.WeatherAction));
                     }
-                    PBEPokemon damageVictim = wp.DamageVictimTeam?.TryGetPokemon(wp.DamageVictim);
+                    PBEPokemon damageVictim = wp.HasDamageVictim ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
                     string message;
                     switch (wp.Weather)
                     {

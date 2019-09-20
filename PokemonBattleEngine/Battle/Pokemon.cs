@@ -612,83 +612,88 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return TempLockedMove == PBEMove.None;
         }
         // TODO: Make different public versions that use Known*? AIs should not be able to cheat
-        public bool CanBecomeBurnedBy(PBEPokemon other)
+        public bool CanBecomeBurnedBy(PBEPokemon considerer)
         {
-            if (other == null)
+            if (considerer == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                throw new ArgumentNullException(nameof(considerer));
             }
             return Status1 == PBEStatus1.None
                 && !HasType(PBEType.Fire)
-                && !(Ability == PBEAbility.WaterVeil && !other.HasCancellingAbility());
+                && !(Ability == PBEAbility.WaterVeil && !considerer.HasCancellingAbility());
         }
-        public bool CanBecomeConfusedBy(PBEPokemon other)
+        public bool CanBecomeConfusedBy(PBEPokemon considerer)
         {
-            if (other == null)
+            if (considerer == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                throw new ArgumentNullException(nameof(considerer));
             }
             return !Status2.HasFlag(PBEStatus2.Confused)
-                && !(Ability == PBEAbility.OwnTempo && !other.HasCancellingAbility());
+                && !(Ability == PBEAbility.OwnTempo && !considerer.HasCancellingAbility());
         }
-        public bool CanBecomeFrozenBy(PBEPokemon other)
+        public bool CanBecomeFrozenBy(PBEPokemon considerer)
         {
-            if (other == null)
+            if (considerer == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                throw new ArgumentNullException(nameof(considerer));
             }
             return Status1 == PBEStatus1.None
                 && !HasType(PBEType.Ice)
-                && !(Ability == PBEAbility.MagmaArmor && !other.HasCancellingAbility());
+                && !(Ability == PBEAbility.MagmaArmor && !considerer.HasCancellingAbility());
         }
-        /// <summary>Returns True if the Pokémon can become <see cref="PBEStatus2.Infatuated"/> with <paramref name="other"/>.</summary>
-        public bool CanBecomeInfatuatedWith(PBEPokemon other)
+        /// <summary>Returns True if the Pokémon can become <see cref="PBEStatus2.Infatuated"/> with <paramref name="considerer"/>.</summary>
+        public bool CanBecomeInfatuatedWith(PBEPokemon considerer)
         {
-            if (other == null)
+            if (considerer == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                throw new ArgumentNullException(nameof(considerer));
             }
             return !Status2.HasFlag(PBEStatus2.Infatuated)
-                && ((Gender == PBEGender.Male && other.Gender == PBEGender.Female) || (Gender == PBEGender.Female && other.Gender == PBEGender.Male))
-                && !(Ability == PBEAbility.Oblivious && !other.HasCancellingAbility());
+                && ((Gender == PBEGender.Male && considerer.Gender == PBEGender.Female) || (Gender == PBEGender.Female && considerer.Gender == PBEGender.Male))
+                && !(Ability == PBEAbility.Oblivious && !considerer.HasCancellingAbility());
         }
-        public bool CanBecomeParalyzedBy(PBEPokemon other)
+        public bool CanBecomeParalyzedBy(PBEPokemon considerer)
         {
-            if (other == null)
+            if (considerer == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                throw new ArgumentNullException(nameof(considerer));
             }
             return Status1 == PBEStatus1.None
-                && !(Ability == PBEAbility.Limber && !other.HasCancellingAbility());
+                && !(Ability == PBEAbility.Limber && !considerer.HasCancellingAbility());
         }
-        public bool CanBecomePoisonedBy(PBEPokemon other)
+        public bool CanBecomePoisonedBy(PBEPokemon considerer)
         {
-            if (other == null)
+            if (considerer == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                throw new ArgumentNullException(nameof(considerer));
             }
             return Status1 == PBEStatus1.None
                 && !HasType(PBEType.Poison)
                 && !HasType(PBEType.Steel)
-                && !(Ability == PBEAbility.Immunity && !other.HasCancellingAbility());
+                && !(Ability == PBEAbility.Immunity && !considerer.HasCancellingAbility());
         }
-        public bool CanFallAsleepFrom(PBEPokemon other)
+        public bool CanFallAsleepFrom(PBEPokemon considerer)
         {
-            if (other == null)
+            if (considerer == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                throw new ArgumentNullException(nameof(considerer));
             }
             return Status1 == PBEStatus1.None
-                && !((Ability == PBEAbility.Insomnia || Ability == PBEAbility.VitalSpirit) && !other.HasCancellingAbility());
+                && !((Ability == PBEAbility.Insomnia || Ability == PBEAbility.VitalSpirit) && !considerer.HasCancellingAbility());
         }
-        public bool CanFlinchFrom(PBEPokemon other)
+        public bool CanFlinchFrom(PBEPokemon considerer)
         {
-            if (other == null)
+            if (considerer == null)
             {
-                throw new ArgumentNullException(nameof(other));
+                throw new ArgumentNullException(nameof(considerer));
             }
             return !Status2.HasFlag(PBEStatus2.Flinching)
-                && !(Ability == PBEAbility.InnerFocus && !other.HasCancellingAbility());
+                && !(Ability == PBEAbility.InnerFocus && !considerer.HasCancellingAbility());
+        }
+        public bool IsConsideredGroundedBy(PBEPokemon considerer)
+        {
+            return HasType(PBEType.Flying)
+                || (Ability == PBEAbility.Levitate && !considerer.HasCancellingAbility());
         }
         /// <summary>Returns an array of moves the Pokémon can use.</summary>
         public PBEMove[] GetUsableMoves()

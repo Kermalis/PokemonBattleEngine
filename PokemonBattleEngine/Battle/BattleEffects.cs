@@ -12,12 +12,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private bool _calledFromOtherMove = false;
 
-        private void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers)
+        private void DoSwitchInEffects(IEnumerable<PBEPokemon> battlers, PBEPokemon forcedInBy = null)
         {
             foreach (PBEPokemon pkmn in GetActingOrder(battlers, true))
             {
+                PBEPokemon considerer = forcedInBy ?? pkmn;
+                bool consideredGrounded = pkmn.IsConsideredGroundedBy(considerer);
                 // Verified: (Spikes/StealthRock/ToxicSpikes in the order they were applied) before ability
-                if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes) && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
+                if (consideredGrounded && pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes))
                 {
                     BroadcastTeamStatus(pkmn.Team, PBETeamStatus.Spikes, PBETeamStatusAction.Damage, pkmn);
                     DealDamage(pkmn, pkmn, (ushort)(pkmn.MaxHP / (10.0 - (2 * pkmn.Team.SpikeCount))), true, ignoreSturdy: true);
@@ -40,15 +42,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     HealingBerryCheck(pkmn);
                 }
-                if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
+                if (consideredGrounded && pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.ToxicSpikes))
                 {
-                    if (pkmn.HasType(PBEType.Poison) && pkmn.Ability != PBEAbility.Levitate && !pkmn.HasType(PBEType.Flying))
+                    if (pkmn.HasType(PBEType.Poison))
                     {
                         pkmn.Team.TeamStatus &= ~PBETeamStatus.ToxicSpikes;
                         pkmn.Team.ToxicSpikeCount = 0;
                         BroadcastTeamStatus(pkmn.Team, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
                     }
-                    else if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel) && pkmn.Ability != PBEAbility.Immunity && !pkmn.HasType(PBEType.Flying) && pkmn.Ability != PBEAbility.Levitate)
+                    else if (pkmn.CanBecomePoisonedBy(considerer))
                     {
                         if (pkmn.Team.ToxicSpikeCount == 1)
                         {
@@ -60,6 +62,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             pkmn.Status1Counter = 1;
                         }
                         BroadcastStatus1(pkmn, pkmn, pkmn.Status1, PBEStatusAction.Added);
+                        AntiStatusAbilityCheck(pkmn);
                     }
                 }
 
@@ -85,7 +88,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (pkmn.GetStatChange(stat) < Settings.MaxStatChange)
                             {
                                 BroadcastAbility(pkmn, pkmn, PBEAbility.Download, PBEAbilityAction.ChangedStats);
-                                ApplyStatChange(pkmn, stat, +1);
+                                ApplyStatChange(pkmn, pkmn, stat, +1);
                             }
                         }
                         break;
@@ -180,18 +183,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (victim.HP > 0 && victim.Ability == PBEAbility.Justified && moveType == PBEType.Dark) // Verified: Justified before Rocky Helmet
                 {
                     BroadcastAbility(victim, user, PBEAbility.Justified, PBEAbilityAction.Damage);
-                    ApplyStatChange(victim, PBEStat.Attack, +1);
+                    ApplyStatChange(victim, victim, PBEStat.Attack, +1);
                 }
                 if (victim.HP > 0 && victim.Ability == PBEAbility.Rattled && (moveType == PBEType.Bug || moveType == PBEType.Dark || moveType == PBEType.Ghost)) // Verified: Rattled before Rocky Helmet
                 {
                     BroadcastAbility(victim, user, PBEAbility.Rattled, PBEAbilityAction.Damage);
-                    ApplyStatChange(victim, PBEStat.Speed, +1);
+                    ApplyStatChange(victim, victim, PBEStat.Speed, +1);
                 }
                 if (victim.HP > 0 && victim.Ability == PBEAbility.WeakArmor && mData.Category == PBEMoveCategory.Physical) // Verified: Weak Armor before Rocky Helmet
                 {
                     BroadcastAbility(victim, user, PBEAbility.WeakArmor, PBEAbilityAction.Damage);
-                    ApplyStatChange(victim, PBEStat.Defense, -1);
-                    ApplyStatChange(victim, PBEStat.Speed, +1);
+                    ApplyStatChange(victim, victim, PBEStat.Defense, -1);
+                    ApplyStatChange(victim, victim, PBEStat.Speed, +1);
                 }
 
                 if (mData.Flags.HasFlag(PBEMoveFlag.MakesContact))
@@ -605,11 +608,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
                                 if (upStat.HasValue)
                                 {
-                                    ApplyStatChange(pkmn, upStat.Value, +2);
+                                    ApplyStatChange(pkmn, pkmn, upStat.Value, +2);
                                 }
                                 if (downStat.HasValue)
                                 {
-                                    ApplyStatChange(pkmn, downStat.Value, -1);
+                                    ApplyStatChange(pkmn, pkmn, downStat.Value, -1);
                                 }
                             }
                             break;
@@ -631,7 +634,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             if (pkmn.SpeedBoost_AbleToSpeedBoostThisTurn && pkmn.SpeedChange < Settings.MaxStatChange)
                             {
                                 BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStats);
-                                ApplyStatChange(pkmn, PBEStat.Speed, +1);
+                                ApplyStatChange(pkmn, pkmn, PBEStat.Speed, +1);
                             }
                             break;
                         }
@@ -648,7 +651,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEItem.FlameOrb:
                         {
-                            if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Fire) && pkmn.Ability != PBEAbility.WaterVeil)
+                            if (pkmn.CanBecomeBurnedBy(pkmn))
                             {
                                 pkmn.Status1 = PBEStatus1.Burned;
                                 BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
@@ -658,7 +661,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.ToxicOrb:
                         {
-                            if (pkmn.Status1 == PBEStatus1.None && !pkmn.HasType(PBEType.Poison) && !pkmn.HasType(PBEType.Steel) && pkmn.Ability != PBEAbility.Immunity)
+                            if (pkmn.CanBecomePoisonedBy(pkmn))
                             {
                                 pkmn.Status1 = PBEStatus1.BadlyPoisoned;
                                 pkmn.Status1Counter = 1;
@@ -1299,7 +1302,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 if (user.Ability == PBEAbility.Steadfast && user.SpeedChange < Settings.MaxStatChange)
                 {
                     BroadcastAbility(user, user, PBEAbility.Steadfast, PBEAbilityAction.ChangedStats);
-                    ApplyStatChange(user, PBEStat.Speed, +1);
+                    ApplyStatChange(user, user, PBEStat.Speed, +1);
                 }
                 return true;
             }
@@ -1421,7 +1424,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 default:
                 {
-                    if (target.Ability == PBEAbility.WonderSkin && mData.Category == PBEMoveCategory.Status)
+                    if (target.Ability == PBEAbility.WonderSkin && mData.Category == PBEMoveCategory.Status && !user.HasCancellingAbility())
                     {
                         chance = 50;
                     }
@@ -1449,7 +1452,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 0.8;
             }
-            if (ShouldDoWeatherEffects())
+            if (!user.HasCancellingAbility() && ShouldDoWeatherEffects())
             {
                 if (Weather == PBEWeather.Sandstorm && target.Ability == PBEAbility.SandVeil)
                 {
@@ -1472,7 +1475,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 chance *= 1.1;
             }
-            if (target.Ability == PBEAbility.TangledFeet && target.Status2.HasFlag(PBEStatus2.Confused))
+            if (target.Ability == PBEAbility.TangledFeet && target.Status2.HasFlag(PBEStatus2.Confused) && !user.HasCancellingAbility())
             {
                 chance *= 0.5;
             }
@@ -1487,8 +1490,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private bool CritCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
-            if (target.Ability == PBEAbility.BattleArmor
-                || target.Ability == PBEAbility.ShellArmor
+            if (((target.Ability == PBEAbility.BattleArmor || target.Ability == PBEAbility.ShellArmor) && !user.HasCancellingAbility())
                 || target.Team.TeamStatus.HasFlag(PBETeamStatus.LuckyChant))
             {
                 return false;
@@ -1958,7 +1960,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEStatus2.Confused:
                 {
                     bool sub = target.Status2.HasFlag(PBEStatus2.Substitute);
-                    if (target.CanBecomeConfusedBy(user) && !sub)
+                    if (!sub && target.CanBecomeConfusedBy(user))
                     {
                         target.Status2 |= PBEStatus2.Confused;
                         target.ConfusionTurns = (byte)PBEUtils.RandomInt(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns);
@@ -2175,17 +2177,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return failReason;
         }
-        private void ApplyStatChange(PBEPokemon pkmn, PBEStat stat, short change)
+        private void ApplyStatChange(PBEPokemon user, PBEPokemon target, PBEStat stat, short change)
         {
             // Verified: Simple is silent
-            if (pkmn.Ability == PBEAbility.Simple)
+            if (target.Ability == PBEAbility.Simple && !user.HasCancellingAbility())
             {
                 change *= 2;
             }
 
-            sbyte oldValue = pkmn.GetStatChange(stat);
-            sbyte newValue = pkmn.SetStatChange(stat, oldValue + change);
-            BroadcastPkmnStatChanged(pkmn, stat, oldValue, newValue);
+            sbyte oldValue = target.GetStatChange(stat);
+            sbyte newValue = target.SetStatChange(stat, oldValue + change);
+            BroadcastPkmnStatChanged(target, stat, oldValue, newValue);
         }
 
         private PBEPkmnSwitchInPacket.PBESwitchInInfo CreateSwitchInInfo(PBEPokemon pkmn)
@@ -2209,7 +2211,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return new PBEPkmnSwitchInPacket.PBESwitchInInfo(pkmn.Id, pkmn.Id, pkmn.Species, pkmn.Nickname, pkmn.Level, pkmn.Shiny, pkmn.Gender, pkmn.HP, pkmn.MaxHP, pkmn.HPPercentage, pkmn.Status1, pkmn.FieldPosition);
         }
-        private void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, bool forced)
+        private void SwitchTwoPokemon(PBEPokemon pkmnLeaving, PBEPokemon pkmnComing, PBEPokemon forcedByPkmn = null)
         {
             PBEFieldPosition pos = pkmnLeaving.FieldPosition;
             _turnOrder.Remove(pkmnLeaving);
@@ -2217,15 +2219,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEPokemon disguisedAsPokemon = pkmnLeaving.Status2.HasFlag(PBEStatus2.Disguised) ? pkmnLeaving.DisguisedAsPokemon : pkmnLeaving;
             pkmnLeaving.ClearForSwitch();
             RemoveInfatuations(pkmnLeaving);
-            BroadcastPkmnSwitchOut(pkmnLeaving, disguisedAsPokemon, pos, forced);
+            BroadcastPkmnSwitchOut(pkmnLeaving, disguisedAsPokemon, pos, forcedByPkmn);
             pkmnComing.FieldPosition = pos;
             ActiveBattlers.Add(pkmnComing);
-            BroadcastPkmnSwitchIn(pkmnComing.Team, new[] { CreateSwitchInInfo(pkmnComing) }, forced);
-            if (forced)
+            BroadcastPkmnSwitchIn(pkmnComing.Team, new[] { CreateSwitchInInfo(pkmnComing) }, forcedByPkmn);
+            if (forcedByPkmn != null)
             {
                 BroadcastDraggedOut(pkmnComing);
             }
-            DoSwitchInEffects(new[] { pkmnComing });
+            DoSwitchInEffects(new[] { pkmnComing }, forcedByPkmn);
             CastformCherrimCheckAll();
         }
         private void RemoveInfatuations(PBEPokemon pkmnLeaving)
@@ -2772,7 +2774,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             for (int i = 0; i < stats.Length; i++)
                             {
-                                ApplyStatChange(target, stats[i], changes[i]);
+                                ApplyStatChange(user, target, stats[i], changes[i]);
                             }
                         }
                     }
@@ -2790,7 +2792,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             for (int i = 0; i < stats.Length; i++)
             {
-                ApplyStatChange(user, stats[i], changes[i]);
+                ApplyStatChange(user, user, stats[i], changes[i]);
             }
 
             RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
@@ -2815,7 +2817,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
-                            ApplyStatChange(target, stats[i], changes[i]);
+                            ApplyStatChange(user, target, stats[i], changes[i]);
                         }
                     }
                 }
@@ -2843,7 +2845,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         for (int i = 0; i < stats.Length; i++)
                         {
-                            ApplyStatChange(user, stats[i], changes[i]);
+                            ApplyStatChange(user, user, stats[i], changes[i]);
                         }
                     }
                 }
@@ -3463,7 +3465,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
 
-            if (user.Status1 == PBEStatus1.Asleep) // This is here in case Sleep Talk calls Rest
+            if (user.Status1 == PBEStatus1.Asleep)
             {
                 failReason = PBEFailReason.Default;
                 BroadcastMoveFailed(user, user, failReason);
@@ -3473,7 +3475,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.HPFull;
                 BroadcastMoveFailed(user, user, failReason);
             }
-            else if (user.Ability == PBEAbility.Insomnia || user.Ability == PBEAbility.VitalSpirit)
+            else if (!user.CanFallAsleepFrom(user))
             {
                 failReason = PBEFailReason.Ineffective;
                 BroadcastAbility(user, user, user.Ability, PBEAbilityAction.PreventedStatus);
@@ -3709,9 +3711,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     else
                     {
                         failReason = PBEFailReason.None;
-                        ApplyStatChange(user, PBEStat.Speed, -1);
-                        ApplyStatChange(user, PBEStat.Attack, +1);
-                        ApplyStatChange(user, PBEStat.Defense, +1);
+                        ApplyStatChange(user, user, PBEStat.Speed, -1);
+                        ApplyStatChange(user, user, PBEStat.Attack, +1);
+                        ApplyStatChange(user, user, PBEStat.Defense, +1);
                     }
                 }
             }
@@ -3745,7 +3747,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        ApplyStatChange(target, PBEStat.SpAttack, +1);
+                        ApplyStatChange(user, target, PBEStat.SpAttack, +1);
                         ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
                     }
                     success.NewHP = target.HP;
@@ -3940,7 +3942,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     else
                     {
-                        ApplyStatChange(target, PBEStat.Attack, +2);
+                        ApplyStatChange(user, target, PBEStat.Attack, +2);
                         ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
                     }
                     success.NewHP = target.HP;
@@ -3986,7 +3988,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         else
                         {
-                            SwitchTwoPokemon(target, possibleSwitcheroonies.RandomElement(), true);
+                            SwitchTwoPokemon(target, possibleSwitcheroonies.RandomElement(), user);
                         }
                     }
                     success.NewHP = target.HP;

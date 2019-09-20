@@ -315,7 +315,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 foreach (PBETeam team in teamsWithSwitchIns)
                 {
                     ActiveBattlers.AddRange(team.SwitchInQueue);
-                    BroadcastPkmnSwitchIn(team, team.SwitchInQueue.Select(p => CreateSwitchInInfo(p)).ToArray(), false);
+                    BroadcastPkmnSwitchIn(team, team.SwitchInQueue.Select(p => CreateSwitchInInfo(p)).ToArray());
                 }
                 DoSwitchInEffects(teamsWithSwitchIns.SelectMany(t => t.SwitchInQueue));
             }
@@ -608,7 +608,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBETurnDecision.SwitchOut:
                         {
-                            SwitchTwoPokemon(pkmn, TryGetPokemon(pkmn.TurnAction.SwitchPokemonId), false);
+                            SwitchTwoPokemon(pkmn, TryGetPokemon(pkmn.TurnAction.SwitchPokemonId));
                             break;
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(pkmn.TurnAction.Decision));

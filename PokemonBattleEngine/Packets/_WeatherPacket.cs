@@ -15,17 +15,22 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         public PBEWeather Weather { get; }
         public PBEWeatherAction WeatherAction { get; }
-        public PBEFieldPosition DamageVictim { get; } // PBEFieldPosition.None means no victim
-        public PBETeam DamageVictimTeam { get; } // null means no victim
+        public bool HasDamageVictim { get; }
+        public PBEFieldPosition? DamageVictim { get; }
+        public PBETeam DamageVictimTeam { get; }
 
-        internal PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon damageVictim)
+        internal PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon damageVictim = null)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((byte)(Weather = weather));
             bytes.Add((byte)(WeatherAction = weatherAction));
-            bytes.Add((byte)(DamageVictim = damageVictim == null ? PBEFieldPosition.None : damageVictim.FieldPosition));
-            bytes.Add((DamageVictimTeam = damageVictim?.Team) == null ? byte.MaxValue : damageVictim.Team.Id);
+            bytes.Add((byte)((HasDamageVictim = damageVictim != null) ? 1 : 0));
+            if (HasDamageVictim)
+            {
+                bytes.Add((byte)(DamageVictim = damageVictim.FieldPosition));
+                bytes.Add((DamageVictimTeam = damageVictim.Team).Id);
+            }
             bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
             Buffer = new ReadOnlyCollection<byte>(bytes);
         }
@@ -34,9 +39,12 @@ namespace Kermalis.PokemonBattleEngine.Packets
             Buffer = buffer;
             Weather = (PBEWeather)r.ReadByte();
             WeatherAction = (PBEWeatherAction)r.ReadByte();
-            DamageVictim = (PBEFieldPosition)r.ReadByte();
-            byte teamId = r.ReadByte();
-            DamageVictimTeam = teamId == byte.MaxValue ? null : battle.Teams[teamId];
+            HasDamageVictim = r.ReadBoolean();
+            if (HasDamageVictim)
+            {
+                DamageVictim = (PBEFieldPosition)r.ReadByte();
+                DamageVictimTeam = battle.Teams[r.ReadByte()];
+            }
         }
 
         public void Dispose() { }

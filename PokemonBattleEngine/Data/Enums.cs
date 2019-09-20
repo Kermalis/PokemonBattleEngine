@@ -1230,7 +1230,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The Pokémon's defense is boosted when it is afflicted with a <see cref="PBEStatus1"/>.</summary>
         MarvelScale = 63,
         Minus = 58,
-        MoldBreaker = 104, // TODO
+        MoldBreaker = 104,
         Moody = 141,
         MotorDrive = 78, // TODO
         Moxie = 153, // TODO
@@ -1320,7 +1320,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         TangledFeet = 77,
         Technician = 101, // TODO
         Telepathy = 140, // TODO
-        Teravolt = 164, // TODO
+        Teravolt = 164,
         /// <summary>The Pokémon takes less damage from Ice- and Fire-type moves.</summary>
         ThickFat = 47,
         /// <summary>The Pokémon deals double damage with outgoing not-very-effective moves.</summary>
@@ -1330,7 +1330,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ToxicBoost = 137,
         Trace = 36, // TODO
         Truant = 54, // TODO
-        Turboblaze = 163, // TODO
+        Turboblaze = 163,
         Unaware = 109,
         Unburden = 84, // TODO
         Unnerve = 127, // TODO
@@ -1342,7 +1342,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         WeakArmor = 133,
         WhiteSmoke = 73, // TODO
         /// <summary>The Pokémon is immune to all damaging moves except for moves that would deal super-effective damage.</summary>
-        WonderGuard = 25, // TODO: Mold Breaker, Teravolt, Turboblaze, Role Play, Skill Swap
+        WonderGuard = 25,
         WonderSkin = 147,
         ZenMode = 161, // TODO
         /// <summary>Invalid ability.</summary>
@@ -2235,7 +2235,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         StealthRock,
         Struggle,
         Substitute,
-        SuckerPunch, // TODO: Me First
+        SuckerPunch,
         SunnyDay,
         SuperFang,
         Swagger,
@@ -2444,7 +2444,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MagnetBomb = 443,
         Magnitude = 222,
         Meditate = 96,
-        //MeFirst // TODO: Blocked by Metronome
+        //MeFirst // TODO: Blocked by Metronome, Sucker Punch
         MegaDrain = 72,
         Megahorn = 224,
         MegaKick = 25,
@@ -2508,7 +2508,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Recover = 105,
         Reflect = 115,
         //RelicSong // TODO: Blocked by Metronome
-        Rest = 156, // TODO: Uproar, Insomnia, Vital Spirit, Sleep Talk, Leaf Guard
+        Rest = 156, // TODO: Uproar, Leaf Guard
         Retaliate = 514,
         Return = 216,
         Reversal = 179,

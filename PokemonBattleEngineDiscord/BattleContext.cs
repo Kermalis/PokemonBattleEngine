@@ -1278,7 +1278,7 @@ namespace Kermalis.PokemonBattleEngineDiscord
                 }
                 case PBEWeatherPacket wp:
                 {
-                    PBEPokemon damageVictim = wp.DamageVictimTeam?.TryGetPokemon(wp.DamageVictim);
+                    PBEPokemon damageVictim = wp.HasDamageVictim ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;
                     string message;
                     switch (wp.Weather)
                     {
