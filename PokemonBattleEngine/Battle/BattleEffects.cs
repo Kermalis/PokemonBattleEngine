@@ -1766,25 +1766,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        private bool HasUsedMoveThisTurn(PBEPokemon pkmn)
+        private void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason)
         {
-            for (int i = 0; i < pkmn.ExecutedMoves.Count; i++)
-            {
-                if (pkmn.ExecutedMoves[i].TurnNumber == TurnNumber)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        private void RecordExecutedMove(PBEPokemon user, PBEMove move, PBEFailReason failReason, IList<PBEExecutedMove.PBETargetSuccess> targets)
-        {
-            user.ExecutedMoves.Add(new PBEExecutedMove(TurnNumber, move, failReason, targets));
+            user.HasUsedMoveThisTurn = true;
             // Doesn't care if there is a Choice Locked move already. As long as the user knows it, it will become locked. (Metronome calling a move the user knows, Ditto transforming into someone else with transform)
             if ((user.Item == PBEItem.ChoiceBand || user.Item == PBEItem.ChoiceScarf || user.Item == PBEItem.ChoiceSpecs) && user.Moves.Contains(move))
             {
                 user.ChoiceLockedMove = move;
                 BroadcastMoveLock(user, move, PBETurnTarget.None, PBEMoveLockType.ChoiceItem);
+            }
+            // I don't think minimize can ever fail, but might as well include the check
+            if (move == PBEMove.Minimize && failReason == PBEFailReason.None)
+            {
+                user.Minimize_Used = true;
             }
         }
         private void PPReduce(PBEPokemon pkmn, PBEMove move)
@@ -2023,7 +2017,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEStatus2.HelpingHand:
                 {
-                    if (!HasUsedMoveThisTurn(target))
+                    if (!target.HasUsedMoveThisTurn)
                     {
                         target.Status2 |= PBEStatus2.HelpingHand;
                         BroadcastStatus2(target, user, PBEStatus2.HelpingHand, PBEStatusAction.Added);
@@ -2096,12 +2090,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     // TODO: If the user goes last, fail
                     if (PBEUtils.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
                     {
+                        user.Protection_Counter++;
                         user.Status2 |= PBEStatus2.Protected;
                         BroadcastStatus2(user, user, PBEStatus2.Protected, PBEStatusAction.Added);
                         failReason = PBEFailReason.None;
                     }
                     else
                     {
+                        user.Protection_Counter = 0;
                         failReason = PBEFailReason.Default;
                     }
                     break;
@@ -2243,7 +2239,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        private void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess,
+        private void BasicHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move,
             PBEType? overridingMoveType = null,
             Func<int, int> recoilFunc = null,
             Func<PBEPokemon, PBEFailReason> beforeDoingDamage = null,
@@ -2259,23 +2255,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double basePower = CalculateBasePower(user, targets, move, moveType);
             foreach (PBEPokemon target in targets)
             {
-                var success = new PBEExecutedMove.PBETargetSuccess
+                if (!MissCheck(user, target, move))
                 {
-                    Target = target,
-                    OldHP = target.HP,
-                    OldHPPercentage = target.HPPercentage
-                };
-                if (MissCheck(user, target, move))
-                {
-                    success.Missed = true;
-                }
-                else
-                {
-                    double damageMultiplier = targets.Length > 1 ? 0.75 : 1.0;
+                    double damageMultiplier = targets.Length > 1 ? 0.75 : 1d;
                     TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref damageMultiplier, false);
                     if (moveEffectiveness == PBEEffectiveness.Ineffective)
                     {
-                        success.FailReason = PBEFailReason.Ineffective;
                         BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                     }
                     else
@@ -2283,23 +2268,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         // Brick Break destroys Light Screen and Reflect before doing damage
                         // Dream Eater checks for sleep before doing damage
                         // Sucker Punch fails before doing damage
-                        if (beforeDoingDamage != null)
+                        if (beforeDoingDamage != null && beforeDoingDamage.Invoke(target) != PBEFailReason.None)
                         {
-                            success.FailReason = beforeDoingDamage.Invoke(target);
-                            if (success.FailReason != PBEFailReason.None)
-                            {
-                                goto record;
-                            }
+                            continue;
                         }
 
-                        success.CriticalHit = CritCheck(user, target, move);
-                        damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, moveEffectiveness, success.CriticalHit);
-                        ushort damage = (ushort)(damageMultiplier * CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, success.CriticalHit));
+                        bool crit = CritCheck(user, target, move);
+                        damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, moveEffectiveness, crit);
+                        ushort damage = (ushort)(damageMultiplier * CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, crit));
                         ushort damageDealt = DealDamage(user, target, damage, false);
                         totalDamageDealt += damageDealt;
 
                         BroadcastEffectiveness(target, moveEffectiveness);
-                        if (success.CriticalHit)
+                        if (crit)
                         {
                             BroadcastMoveCrit(target);
                         }
@@ -2317,10 +2298,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         afterPostHit?.Invoke(target, damageDealt);
                     }
                 }
-            record:
-                success.NewHP = target.HP;
-                success.NewHPPercentage = target.HPPercentage;
-                targetSuccess.Add(success);
             }
 
             if (hit > 0)
@@ -2335,7 +2312,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ushort recoilDamage = (ushort)(recoilFunc == null ? 0 : recoilFunc.Invoke(totalDamageDealt));
             DoPostAttackedEffects(user, !lifeOrbDamage, recoilDamage);
         }
-        private void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, ref List<PBEExecutedMove.PBETargetSuccess> targetSuccess, Func<PBEPokemon, ushort> damageFunc,
+        private void FixedDamageHit(PBEPokemon user, PBEPokemon[] targets, PBEMove move, Func<PBEPokemon, ushort> damageFunc,
             Func<PBEPokemon, PBEFailReason> beforeMissCheck = null,
             Action beforeTargetsFaint = null)
         {
@@ -2343,33 +2320,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEType moveType = user.GetMoveType(move);
             foreach (PBEPokemon target in targets)
             {
-                var success = new PBEExecutedMove.PBETargetSuccess
-                {
-                    Target = target,
-                    OldHP = target.HP,
-                    OldHPPercentage = target.HPPercentage
-                };
                 // Endeavor fails if the target's HP is <= the user's HP
                 // One hit knockout moves fail if the target's level is > the user's level
-                if (beforeMissCheck != null)
+                if (beforeMissCheck != null && beforeMissCheck.Invoke(target) != PBEFailReason.None)
                 {
-                    success.FailReason = beforeMissCheck.Invoke(target);
-                    if (success.FailReason != PBEFailReason.None)
-                    {
-                        goto record;
-                    }
+                    continue;
                 }
-                if (MissCheck(user, target, move))
+                if (!MissCheck(user, target, move))
                 {
-                    success.Missed = true;
-                }
-                else
-                {
-                    double d = 1.0;
+                    double d = 1d;
                     TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref d, false);
                     if (moveEffectiveness == PBEEffectiveness.Ineffective)
                     {
-                        success.FailReason = PBEFailReason.Ineffective;
                         BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                     }
                     else
@@ -2381,10 +2343,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         DoPostHitEffects(user, target, move, moveType);
                     }
                 }
-            record:
-                success.NewHP = target.HP;
-                success.NewHPPercentage = target.HPPercentage;
-                targetSuccess.Add(success);
             }
 
             if (hit > 0)
@@ -2401,7 +2359,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void Ef_TryForceStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2415,42 +2372,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
+                    if (!MissCheck(user, target, move))
                     {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
-                    }
-                    else
-                    {
-                        double d = 1.0;
+                        double d = 1d;
                         PBEType moveType = user.GetMoveType(move);
                         TypeCheck(user, target, moveType, out PBEEffectiveness moveEffectiveness, ref d, true);
                         if (moveEffectiveness == PBEEffectiveness.Ineffective) // Paralysis, Normalize
                         {
-                            success.FailReason = PBEFailReason.Ineffective;
                             BroadcastEffectiveness(target, moveEffectiveness);
                         }
                         else
                         {
-                            success.FailReason = ApplyStatus1IfPossible(user, target, status, true);
+                            ApplyStatus1IfPossible(user, target, status, true);
                         }
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
             return;
         }
         private void Ef_TryForceStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2464,26 +2406,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
+                    if (!MissCheck(user, target, move))
                     {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
+                        ApplyStatus2IfPossible(user, target, status, true);
                     }
-                    else
-                    {
-                        success.FailReason = ApplyStatus2IfPossible(user, target, status, true);
-                    }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_TryForceBattleStatus(PBEPokemon user, PBEMove move, PBEBattleStatus status)
         {
@@ -2510,7 +2439,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
-            RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
+            RecordExecutedMove(user, move, PBEFailReason.None);
         }
         private void Ef_TryForceTeamStatus(PBEPokemon user, PBEMove move, PBETeamStatus status)
         {
@@ -2613,12 +2542,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.WideGuard) && PBEUtils.RandomBool(user.GetProtectionChance(), ushort.MaxValue))
                     {
+                        user.Protection_Counter++;
                         user.Team.TeamStatus |= PBETeamStatus.WideGuard;
                         BroadcastTeamStatus(user.Team, PBETeamStatus.WideGuard, PBETeamStatusAction.Added);
                         failReason = PBEFailReason.None;
                     }
                     else
                     {
+                        user.Protection_Counter = 0;
                         failReason = PBEFailReason.Default;
                     }
                     break;
@@ -2629,7 +2560,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastMoveFailed(user, user, PBEFailReason.Default);
             }
-            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_TryForceWeather(PBEPokemon user, PBEMove move, PBEWeather weather)
         {
@@ -2684,11 +2615,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastWeather(Weather, PBEWeatherAction.Added);
                 CastformCherrimCheckAll();
             }
-            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Hit__MaybeInflictStatus1(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status, int chanceToInflict)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2707,13 +2637,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         ApplyStatus1IfPossible(user, target, status, false);
                     }
                 }
-                BasicHit(user, targets, move, ref targetSuccess, beforePostHit: BeforePostHit);
+                BasicHit(user, targets, move, beforePostHit: BeforePostHit);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Hit__MaybeInflictStatus2(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus2 status, int chanceToInflict)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2732,14 +2661,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         ApplyStatus2IfPossible(user, target, status, false);
                     }
                 }
-                BasicHit(user, targets, move, ref targetSuccess, beforePostHit: BeforePostHit);
+                BasicHit(user, targets, move, beforePostHit: BeforePostHit);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
 
         private void Ef_ChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2753,21 +2681,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
-                    {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
-                    }
-                    else
+                    if (!MissCheck(user, target, move))
                     {
                         if (target.Status2.HasFlag(PBEStatus2.Substitute))
                         {
-                            success.FailReason = PBEFailReason.Default;
                             BroadcastMoveFailed(user, target, PBEFailReason.Default);
                         }
                         else
@@ -2778,12 +2695,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_ChangeUserStats(PBEPokemon user, PBEMove move, PBEStat[] stats, short[] changes)
         {
@@ -2795,11 +2709,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 ApplyStatChange(user, user, stats[i], changes[i]);
             }
 
-            RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
+            RecordExecutedMove(user, move, PBEFailReason.None);
         }
         private void Ef_Hit__MaybeChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2821,13 +2734,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                BasicHit(user, targets, move, ref targetSuccess, beforePostHit: BeforePostHit);
+                BasicHit(user, targets, move, beforePostHit: BeforePostHit);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Hit__MaybeChangeUserStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, short[] changes, int chanceToChangeStats)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2849,14 +2761,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-                BasicHit(user, targets, move, ref targetSuccess, beforeTargetsFaint: BeforeTargetsFaint);
+                BasicHit(user, targets, move, beforeTargetsFaint: BeforeTargetsFaint);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
 
         private void Ef_BrickBreak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2885,13 +2796,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     return PBEFailReason.None;
                 }
-                BasicHit(user, targets, move, ref targetSuccess, beforeDoingDamage: BeforeDoingDamage);
+                BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Dig(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
         top:
@@ -2910,7 +2820,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                 {
                     failReason = PBEFailReason.None;
-                    BasicHit(user, targets, move, ref targetSuccess);
+                    BasicHit(user, targets, move);
                 }
             }
             else
@@ -2930,11 +2840,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     failReason = PBEFailReason.None;
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Dive(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
         top:
@@ -2953,7 +2862,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                 {
                     failReason = PBEFailReason.None;
-                    BasicHit(user, targets, move, ref targetSuccess);
+                    BasicHit(user, targets, move);
                 }
             }
             else
@@ -2973,18 +2882,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     failReason = PBEFailReason.None;
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Fail(PBEPokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             BroadcastMoveFailed(user, user, PBEFailReason.Default);
-            RecordExecutedMove(user, move, PBEFailReason.Default, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
+            RecordExecutedMove(user, move, PBEFailReason.Default);
         }
         private void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
         top:
@@ -3003,7 +2911,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 else
                 {
                     failReason = PBEFailReason.None;
-                    BasicHit(user, targets, move, ref targetSuccess);
+                    BasicHit(user, targets, move);
                 }
             }
             else
@@ -3023,11 +2931,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     failReason = PBEFailReason.None;
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Hit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3039,14 +2946,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 failReason = PBEFailReason.None;
-                BasicHit(user, targets, move, ref targetSuccess);
+                BasicHit(user, targets, move);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Selfdestruct(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             // TODO: Damp
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3062,14 +2968,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 failReason = PBEFailReason.None;
-                BasicHit(user, targets, move, ref targetSuccess);
+                BasicHit(user, targets, move);
             }
             FaintCheck(user);
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Snore(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int chanceToFlinch)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3093,13 +2998,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         ApplyStatus2IfPossible(user, target, PBEStatus2.Flinching, false);
                     }
                 }
-                BasicHit(user, targets, move, ref targetSuccess, beforePostHit: BeforePostHit);
+                BasicHit(user, targets, move, beforePostHit: BeforePostHit);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_SuckerPunch(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3115,7 +3019,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (target.TurnAction.Decision != PBETurnDecision.Fight
                         || PBEMoveData.Data[target.TurnAction.FightMove].Category == PBEMoveCategory.Status
-                        || HasUsedMoveThisTurn(target))
+                        || target.HasUsedMoveThisTurn)
                     {
                         BroadcastMoveFailed(user, target, PBEFailReason.Default);
                         return PBEFailReason.Default;
@@ -3125,14 +3029,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         return PBEFailReason.None;
                     }
                 }
-                BasicHit(user, targets, move, ref targetSuccess, beforeDoingDamage: BeforeDoingDamage);
+                BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
 
         private void Ef_Endeavor(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3157,13 +3060,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     return PBEFailReason.None;
                 }
-                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc, beforeMissCheck: BeforeMissCheck);
+                FixedDamageHit(user, targets, move, DamageFunc, beforeMissCheck: BeforeMissCheck);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_FinalGambit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3182,13 +3084,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     FaintCheck(user);
                     return oldHP;
                 }
-                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
+                FixedDamageHit(user, targets, move, DamageFunc);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_OneHitKnockout(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3223,13 +3124,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastOneHitKnockout();
                     }
                 }
-                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc, beforeMissCheck: BeforeMissCheck, beforeTargetsFaint: BeforeTargetsFaint);
+                FixedDamageHit(user, targets, move, DamageFunc, beforeMissCheck: BeforeMissCheck, beforeTargetsFaint: BeforeTargetsFaint);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Psywave(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3245,13 +3145,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return (ushort)(user.Level * (PBEUtils.RandomInt(0, 100) + 50) / 100);
                 }
-                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
+                FixedDamageHit(user, targets, move, DamageFunc);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_SeismicToss(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3267,13 +3166,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return user.Level;
                 }
-                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
+                FixedDamageHit(user, targets, move, DamageFunc);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_SetDamage(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int damage)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3289,13 +3187,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return (ushort)damage;
                 }
-                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
+                FixedDamageHit(user, targets, move, DamageFunc);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_SuperFang(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3311,14 +3208,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return (ushort)(target.HP / 2);
                 }
-                FixedDamageHit(user, targets, move, ref targetSuccess, DamageFunc);
+                FixedDamageHit(user, targets, move, DamageFunc);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
 
         private void Ef_HPDrain(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3361,9 +3257,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastHPDrained(target);
                     }
                 }
-                BasicHit(user, targets, move, ref targetSuccess, beforeDoingDamage: BeforeDoingDamage, afterPostHit: AfterPostHit);
+                BasicHit(user, targets, move, beforeDoingDamage: BeforeDoingDamage, afterPostHit: AfterPostHit);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Moonlight(PBEPokemon user, PBEMove move)
         {
@@ -3395,11 +3291,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 failReason = PBEFailReason.None;
             }
-            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_PainSplit(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3413,21 +3308,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
-                    {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
-                    }
-                    else
+                    if (!MissCheck(user, target, move))
                     {
                         if (target.Status2.HasFlag(PBEStatus2.Substitute))
                         {
-                            success.FailReason = PBEFailReason.Default;
                             BroadcastMoveFailed(user, target, PBEFailReason.Default);
                         }
                         else
@@ -3451,13 +3335,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             BroadcastPainSplit(user, target);
                         }
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
                 DoPostAttackedEffects(user, true);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Rest(PBEPokemon user, PBEMove move)
         {
@@ -3490,11 +3371,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Added);
                 HealDamage(user, user.MaxHP);
             }
-            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_RestoreTargetHP(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int percentRestored)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3508,21 +3388,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
-                    {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
-                    }
-                    else
+                    if (!MissCheck(user, target, move))
                     {
                         if (target.Status2.HasFlag(PBEStatus2.Substitute))
                         {
-                            success.FailReason = PBEFailReason.Default;
                             BroadcastMoveFailed(user, target, PBEFailReason.Default);
                         }
                         else
@@ -3530,17 +3399,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             ushort amtRestored = HealDamage(target, (ushort)(target.MaxHP * (percentRestored / 100.0)));
                             if (amtRestored == 0)
                             {
-                                success.FailReason = PBEFailReason.HPFull;
                                 BroadcastMoveFailed(user, target, PBEFailReason.HPFull);
                             }
                         }
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_RestoreUserHP(PBEPokemon user, PBEMove move, int percentRestored)
         {
@@ -3557,12 +3422,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 failReason = PBEFailReason.None;
             }
-            RecordExecutedMove(user, move, failReason, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
+            RecordExecutedMove(user, move, failReason);
         }
 
         private void Ef_Recoil(PBEPokemon user, PBEPokemon[] targets, PBEMove move, int denominator)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3578,13 +3442,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return user.Ability == PBEAbility.RockHead || totalDamageDealt == 0 ? 0 : Math.Max(1, totalDamageDealt / denominator);
                 }
-                BasicHit(user, targets, move, ref targetSuccess, recoilFunc: RecoilFunc);
+                BasicHit(user, targets, move, recoilFunc: RecoilFunc);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Recoil3__MaybeInflictStatus1With10PercentChance(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStatus1 status)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3607,13 +3470,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         ApplyStatus1IfPossible(user, target, status, false);
                     }
                 }
-                BasicHit(user, targets, move, ref targetSuccess, recoilFunc: RecoilFunc, beforePostHit: BeforePostHit);
+                BasicHit(user, targets, move, recoilFunc: RecoilFunc, beforePostHit: BeforePostHit);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Struggle(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastStruggle(user);
             BroadcastMoveUsed(user, move);
@@ -3629,14 +3491,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     return Math.Max(1, user.MaxHP / 4);
                 }
-                BasicHit(user, targets, move, ref targetSuccess, overridingMoveType: PBEType.None, recoilFunc: RecoilFunc);
+                BasicHit(user, targets, move, overridingMoveType: PBEType.None, recoilFunc: RecoilFunc);
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
 
         private void Ef_Curse(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3680,24 +3541,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             target = runtimeTargets[0];
                         }
                     }
-
-                    var success = new PBEExecutedMove.PBETargetSuccess
+                    if (!MissCheck(user, target, move))
                     {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
+                        ApplyStatus2IfPossible(user, target, PBEStatus2.Cursed, true);
                     }
-                    else
-                    {
-                        success.FailReason = ApplyStatus2IfPossible(user, target, PBEStatus2.Cursed, true);
-                    }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
                 else
                 {
@@ -3717,11 +3564,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Flatter(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3735,31 +3581,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
-                    {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
-                    }
-                    else
+                    if (!MissCheck(user, target, move))
                     {
                         ApplyStatChange(user, target, PBEStat.SpAttack, +1);
                         ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_GastroAcid(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3773,21 +3605,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
-                    {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
-                    }
-                    else
+                    if (!MissCheck(user, target, move))
                     {
                         if (target.Ability == PBEAbility.Multitype || target.Ability == PBEAbility.None)
                         {
-                            success.FailReason = PBEFailReason.Default;
                             BroadcastMoveFailed(user, target, PBEFailReason.Default);
                         }
                         else
@@ -3799,12 +3620,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             target.SpeedBoost_AbleToSpeedBoostThisTurn = false;
                         }
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Growth(PBEPokemon user, PBEMove move)
         {
@@ -3813,7 +3631,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void Ef_HelpingHand(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3827,43 +3644,29 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
-                    {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
                     // TODO: When triple battle shifting happens, all moves that can target allies but not the user will have to check if the user targetted itself due to shifting.
                     // For now, I'll put this check here, because this is the only move that will attempt to target the user when the move cannot normally do so (single/rotation battle).
                     if (target == user)
                     {
-                        success.FailReason = PBEFailReason.NoTarget;
                         BroadcastMoveFailed(user, user, PBEFailReason.NoTarget);
                     }
                     else
                     {
-                        if (MissCheck(user, target, move))
+                        if (!MissCheck(user, target, move))
                         {
-                            success.Missed = true;
-                        }
-                        else
-                        {
-                            success.FailReason = ApplyStatus2IfPossible(user, target, PBEStatus2.HelpingHand, true);
+                            ApplyStatus2IfPossible(user, target, PBEStatus2.HelpingHand, true);
                         }
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Metronome(PBEPokemon user, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
             // Record before the called move is recorded
-            RecordExecutedMove(user, move, PBEFailReason.None, Array.Empty<PBEExecutedMove.PBETargetSuccess>());
+            RecordExecutedMove(user, move, PBEFailReason.None);
 
             PBEMove calledMove = PBEMoveData.Data.Where(t => !t.Value.Flags.HasFlag(PBEMoveFlag.BlockedByMetronome)).Select(t => t.Key).ToArray().RandomElement();
             _calledFromOtherMove = true;
@@ -3872,7 +3675,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3886,17 +3688,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
-                    {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
-                    }
-                    else
+                    if (!MissCheck(user, target, move))
                     {
                         user.AttackChange = target.AttackChange;
                         user.DefenseChange = target.DefenseChange;
@@ -3907,16 +3699,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         user.EvasionChange = target.EvasionChange;
                         BroadcastPsychUp(user, target);
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Swagger(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3930,31 +3718,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
-                    {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
-                    }
-                    else
+                    if (!MissCheck(user, target, move))
                     {
                         ApplyStatChange(user, target, PBEStat.Attack, +2);
                         ApplyStatus2IfPossible(user, target, PBEStatus2.Confused, true);
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
         private void Ef_Whirlwind(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
-            var targetSuccess = new List<PBEExecutedMove.PBETargetSuccess>();
             PBEFailReason failReason;
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -3968,22 +3742,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.None;
                 foreach (PBEPokemon target in targets)
                 {
-                    var success = new PBEExecutedMove.PBETargetSuccess
-                    {
-                        Target = target,
-                        OldHP = target.HP,
-                        OldHPPercentage = target.HPPercentage
-                    };
-                    if (MissCheck(user, target, move))
-                    {
-                        success.Missed = true;
-                    }
-                    else
+                    if (!MissCheck(user, target, move))
                     {
                         PBEPokemon[] possibleSwitcheroonies = target.Team.Party.Where(p => p.FieldPosition == PBEFieldPosition.None && p.HP > 0).ToArray();
                         if (possibleSwitcheroonies.Length == 0)
                         {
-                            success.FailReason = PBEFailReason.Default;
                             BroadcastMoveFailed(user, target, PBEFailReason.Default);
                         }
                         else
@@ -3991,12 +3754,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             SwitchTwoPokemon(target, possibleSwitcheroonies.RandomElement(), user);
                         }
                     }
-                    success.NewHP = target.HP;
-                    success.NewHPPercentage = target.HPPercentage;
-                    targetSuccess.Add(success);
                 }
             }
-            RecordExecutedMove(user, move, failReason, targetSuccess);
+            RecordExecutedMove(user, move, failReason);
         }
     }
 }

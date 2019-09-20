@@ -1,6 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
 using System;
-using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Battle
 {
@@ -754,7 +753,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     break;
                 case PBEMove.Steamroller:
                 case PBEMove.Stomp:
-                    if (target.ExecutedMoves.Any(m => m.Move == PBEMove.Minimize)) // TODO: Could minimize ever fail?
+                    if (target.Minimize_Used)
                     {
                         damageMultiplier *= 2.0;
                     }

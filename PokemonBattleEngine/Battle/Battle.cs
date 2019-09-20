@@ -389,6 +389,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
                 foreach (PBEPokemon pkmn in ActiveBattlers)
                 {
+                    pkmn.HasUsedMoveThisTurn = false;
+                    pkmn.TurnAction = null;
                     pkmn.SpeedBoost_AbleToSpeedBoostThisTurn = pkmn.Ability == PBEAbility.SpeedBoost;
                     if (pkmn.Status2.HasFlag(PBEStatus2.Flinching))
                     {

@@ -131,8 +131,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #endregion
 
         #region Actions
+        /// <summary>True if the Pokémon has successfully executed a move this turn.</summary>
+        public bool HasUsedMoveThisTurn { get; set; }
+        /// <summary>The action the Pokémon will try to perform when the turn is run.</summary>
         public PBETurnAction TurnAction { get; set; }
-        public List<PBEExecutedMove> ExecutedMoves { get; } = new List<PBEExecutedMove>();
         /// <summary>The move the Pokémon is forced to use by multi-turn moves.</summary>
         public PBEMove TempLockedMove { get; set; }
         /// <summary>The targets the Pokémon is forced to target by multi-turn moves.</summary>
@@ -142,6 +144,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #endregion
 
         #region Special Flags
+        /// <summary>True if the Pokémon has successfully used <see cref="PBEMove.Minimize"/> which makes it succeptible to double damage from <see cref="PBEMove.Steamroller"/> and <see cref="PBEMove.Stomp"/>.</summary>
+        public bool Minimize_Used { get; set; }
+        /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMove.Detect"/>, <see cref="PBEMove.Protect"/>, <see cref="PBEMove.QuickGuard"/>, and/or <see cref="PBEMove.WideGuard"/> consecutively.</summary>
+        public int Protection_Counter { get; set; }
         /// <summary>True if the Pokémon was originally <see cref="PBESpecies.Shaymin_Sky"/> but was <see cref="PBEStatus1.Frozen"/>, therefore forcing it to remain as <see cref="PBESpecies.Shaymin"/> when switching out.</summary>
         public bool Shaymin_CannotChangeBackToSkyForm { get; set; }
         /// <summary>The amount of turns left until a Pokémon with <see cref="PBEAbility.SlowStart"/> loses its hinderance.</summary>
@@ -256,7 +262,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEAbility.NaturalCure:
                 {
                     Status1 = PBEStatus1.None;
-                    Status1Counter = SleepTurns = 0;
+                    Status1Counter = 0;
+                    SleepTurns = 0;
                     break;
                 }
                 case PBEAbility.Regenerator:
@@ -297,7 +304,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 Status1Counter = 1;
             }
 
-            ConfusionCounter = ConfusionTurns = 0;
+            ConfusionCounter = 0;
+            ConfusionTurns = 0;
             DisguisedAsPokemon = null;
             SeededPosition = PBEFieldPosition.None;
             SeededTeam = null;
@@ -309,11 +317,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             Status2 = PBEStatus2.None;
 
-            TempLockedMove = ChoiceLockedMove = PBEMove.None;
+            HasUsedMoveThisTurn = false;
+            TurnAction = null;
+            TempLockedMove = PBEMove.None;
             TempLockedTargets = PBETurnTarget.None;
+            ChoiceLockedMove = PBEMove.None;
 
-            ExecutedMoves.Clear();
-
+            Minimize_Used = false;
+            Protection_Counter = 0;
             SlowStart_HinderTurnsLeft = 0;
             SpeedBoost_AbleToSpeedBoostThisTurn = false;
 
@@ -724,23 +735,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return usableMoves.ToArray();
         }
-        /// <summary>Gets the chance of a protection move succeeding, out of <see cref="ushort.MaxValue"/>.</summary>
-        internal ushort GetProtectionChance()
+        /// <summary>Gets the chance of a protection move succeeding (based on <see cref="Protection_Counter"/>) out of <see cref="ushort.MaxValue"/>.</summary>
+        public ushort GetProtectionChance()
         {
-            ushort chance = ushort.MaxValue;
-            for (int i = ExecutedMoves.Count - 1; i >= 0; i--)
-            {
-                PBEExecutedMove ex = ExecutedMoves[i];
-                if ((ex.Move == PBEMove.Detect || ex.Move == PBEMove.Protect || ex.Move == PBEMove.WideGuard) && ex.FailReason == PBEFailReason.None && ex.Targets.All(t => t.FailReason == PBEFailReason.None))
-                {
-                    chance /= 2;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            return chance;
+            int count = Protection_Counter;
+            return count == 0 ? ushort.MaxValue : (ushort)(ushort.MaxValue / (count * 2));
         }
 
         internal void ToBytes(List<byte> bytes)
