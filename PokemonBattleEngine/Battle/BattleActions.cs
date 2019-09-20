@@ -104,7 +104,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(team));
             }
-            if (actions == null)
+            if (actions == null || actions.Any(a => a == null))
             {
                 throw new ArgumentNullException(nameof(actions));
             }
@@ -120,15 +120,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return false;
             }
-            var standBy = new List<PBEPokemon>();
+            var verified = new List<PBEPokemon>(team.ActionsRequired.Count);
+            var standBy = new List<PBEPokemon>(team.ActionsRequired.Count);
             foreach (PBETurnAction action in actions)
             {
-                if (action == null)
-                {
-                    return false;
-                }
                 PBEPokemon pkmn = team.TryGetPokemon(action.PokemonId);
-                if (!team.ActionsRequired.Contains(pkmn))
+                if (pkmn == null || !team.ActionsRequired.Contains(pkmn) || verified.Contains(pkmn))
                 {
                     return false;
                 }
@@ -168,6 +165,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                     default: return false;
                 }
+                verified.Add(pkmn);
             }
             return true;
         }
@@ -178,22 +176,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForActions"/>.</exception>
         public static bool SelectActionsIfValid(PBETeam team, IList<PBETurnAction> actions)
         {
-            if (team == null)
-            {
-                throw new ArgumentNullException(nameof(team));
-            }
-            if (actions == null)
-            {
-                throw new ArgumentNullException(nameof(actions));
-            }
-            if (team.IsDisposed)
-            {
-                throw new ObjectDisposedException(nameof(team));
-            }
-            if (team.Battle.BattleState != PBEBattleState.WaitingForActions)
-            {
-                throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForActions} to select actions.");
-            }
             if (AreActionsValid(team, actions))
             {
                 lock (team.Battle._disposeLockObj)
@@ -298,7 +280,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentNullException(nameof(team));
             }
-            if (switches == null)
+            if (switches == null || switches.Any(s => s == null))
             {
                 throw new ArgumentNullException(nameof(switches));
             }
@@ -314,17 +296,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return false;
             }
+            var verified = new List<PBEPokemon>(team.SwitchInsRequired);
             foreach (PBESwitchIn s in switches)
             {
-                if (s == null)
-                {
-                    return false;
-                }
                 PBEPokemon pkmn = team.TryGetPokemon(s.PokemonId);
-                if (pkmn == null || pkmn.HP == 0 || pkmn.FieldPosition != PBEFieldPosition.None)
+                if (pkmn == null || pkmn.HP == 0 || pkmn.FieldPosition != PBEFieldPosition.None || verified.Contains(pkmn))
                 {
                     return false;
                 }
+                verified.Add(pkmn);
             }
             return true;
         }
@@ -335,22 +315,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <exception cref="InvalidOperationException">Thrown when <see cref="BattleState"/> is not <see cref="PBEBattleState.WaitingForSwitchIns"/>.</exception>
         public static bool SelectSwitchesIfValid(PBETeam team, IList<PBESwitchIn> switches)
         {
-            if (team == null)
-            {
-                throw new ArgumentNullException(nameof(team));
-            }
-            if (switches == null)
-            {
-                throw new ArgumentNullException(nameof(switches));
-            }
-            if (team.IsDisposed)
-            {
-                throw new ObjectDisposedException(nameof(team));
-            }
-            if (team.Battle.BattleState != PBEBattleState.WaitingForSwitchIns)
-            {
-                throw new InvalidOperationException($"{nameof(BattleState)} must be {PBEBattleState.WaitingForSwitchIns} to select switches.");
-            }
             if (AreSwitchesValid(team, switches))
             {
                 lock (team.Battle._disposeLockObj)
