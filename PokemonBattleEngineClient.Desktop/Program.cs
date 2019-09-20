@@ -12,7 +12,7 @@ namespace Kermalis.PokemonBattleEngineClient.Desktop
         private static void Main()
         {
             Utils.SetWorkingDirectory(string.Empty);
-            BuildAvaloniaApp().Start<MainWindow>();
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(null);
         }
         /// <summary>This method is needed for IDE previewer infrastructure.</summary>
         public static AppBuilder BuildAvaloniaApp()
