@@ -162,7 +162,6 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (_move != move)
                 {
-                    PBEMove old = _move;
                     _move = move;
                     OnPropertyChanged(nameof(Move));
                     if (_move == PBEMove.None)
@@ -466,20 +465,17 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
+        private static readonly PBEMove[] secretSwordArray = new PBEMove[1] { PBEMove.SecretSword };
         private void SetAlloweds()
         {
+            // Set alloweds
             int i;
             PBEMove[] legalMoves = PBELegalityChecker.GetLegalMoves(_species, _level, Settings);
             var allowed = new List<PBEMove>(legalMoves.Length + 1);
             allowed.AddRange(legalMoves);
             if (_species == PBESpecies.Keldeo_Resolute)
             {
-                PBEMovesetSlot slot = _list[0];
-                slot.Allowed.Reset(new[] { PBEMove.SecretSword });
-                if (slot.Move != PBEMove.SecretSword)
-                {
-                    slot.Move = PBEMove.SecretSword;
-                }
+                _list[0].Allowed.Reset(secretSwordArray);
                 allowed.Remove(PBEMove.SecretSword);
                 i = 1;
             }
@@ -491,14 +487,22 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 if (i == 1)
                 {
-                    allowed.Add(PBEMove.None);
+                    allowed.Insert(0, PBEMove.None);
                 }
-                PBEMovesetSlot slot = _list[i];
-                slot.Allowed.Reset(allowed);
-                if (!allowed.Contains(slot.Move))
+                _list[i].Allowed.Reset(allowed);
+            }
+            // Remove unalloweds (slot.Move setter will automatically sort PBEMove.None)
+            while (true)
+            {
+                int bad = _list.FindIndex(s => !s.Allowed.Contains(s.Move));
+                if (bad == -1)
                 {
-                    PBEMove m = allowed[0];
-                    slot.Move = m;
+                    break;
+                }
+                else
+                {
+                    PBEMovesetSlot slot = _list[bad];
+                    slot.Move = slot.Allowed[0];
                 }
             }
             SetEditables();
