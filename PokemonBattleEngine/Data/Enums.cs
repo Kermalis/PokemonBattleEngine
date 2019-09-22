@@ -1215,7 +1215,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Justified = 154,
         KeenEye = 51, // TODO
         Klutz = 103, // TODO
-        LeafGuard = 102, // TODO
+        LeafGuard = 102,
         /// <summary>The Pokémon is immune to Ground-type moves and most entry hazards.</summary>
         Levitate = 26,
         LightMetal = 135, // TODO

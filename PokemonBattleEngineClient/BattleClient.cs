@@ -420,6 +420,15 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
+                        case PBEAbility.LeafGuard:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.PreventedStatus: message = "{0}'s {2} activated!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.LiquidOoze:
                         {
                             switch (ap.AbilityAction)

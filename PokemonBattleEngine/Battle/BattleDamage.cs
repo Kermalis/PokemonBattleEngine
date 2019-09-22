@@ -118,7 +118,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (moveEffectiveness != PBEEffectiveness.Ineffective)
             {
-                if ((target.Ability == PBEAbility.Levitate && moveType == PBEType.Ground && !target.IsConsideredGroundedBy(user))
+                if ((target.Ability == PBEAbility.Levitate && moveType == PBEType.Ground && !target.IsGrounded(user))
                     || (!ignoreWonderGuard && target.Ability == PBEAbility.WonderGuard && moveEffectiveness != PBEEffectiveness.SuperEffective && !user.HasCancellingAbility()))
                 {
                     moveEffectiveness = PBEEffectiveness.Ineffective;

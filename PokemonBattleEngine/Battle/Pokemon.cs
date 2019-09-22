@@ -599,7 +599,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEMoveData.Data[move].Targets;
             }
         }
-        /// <summary>Returns True if the Pokémon is only able to use <see cref="PBEMove.Struggle"/>, False otherwise.</summary>
+        /// <summary>Returns True if the Pokémon is only able to use <see cref="PBEMove.Struggle"/>.</summary>
         public bool IsForcedToStruggle()
         {
             if (TempLockedMove != PBEMove.None) // Temp locked moves deduct PP on the first turn and don't on the second, so having a temp locked move means it is supposed to be used again for the second turn
@@ -623,7 +623,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return TempLockedMove == PBEMove.None;
         }
         // TODO: Make different public versions that use Known*? AIs should not be able to cheat
-        public bool CanBecomeBurnedBy(PBEPokemon considerer)
+        public bool IsBurnPossible(PBEPokemon considerer)
         {
             if (considerer == null)
             {
@@ -631,9 +631,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return Status1 == PBEStatus1.None
                 && !HasType(PBEType.Fire)
-                && !(Ability == PBEAbility.WaterVeil && !considerer.HasCancellingAbility());
+                && !((Ability == PBEAbility.WaterVeil || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
         }
-        public bool CanBecomeConfusedBy(PBEPokemon considerer)
+        public bool IsConfusionPossible(PBEPokemon considerer)
         {
             if (considerer == null)
             {
@@ -642,7 +642,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return !Status2.HasFlag(PBEStatus2.Confused)
                 && !(Ability == PBEAbility.OwnTempo && !considerer.HasCancellingAbility());
         }
-        public bool CanBecomeFrozenBy(PBEPokemon considerer)
+        public bool IsFreezePossible(PBEPokemon considerer)
         {
             if (considerer == null)
             {
@@ -650,10 +650,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return Status1 == PBEStatus1.None
                 && !HasType(PBEType.Ice)
-                && !(Ability == PBEAbility.MagmaArmor && !considerer.HasCancellingAbility());
+                && !((Ability == PBEAbility.MagmaArmor || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
         }
-        /// <summary>Returns True if the Pokémon can become <see cref="PBEStatus2.Infatuated"/> with <paramref name="considerer"/>.</summary>
-        public bool CanBecomeInfatuatedWith(PBEPokemon considerer)
+        public bool IsInfatuationPossible(PBEPokemon considerer)
         {
             if (considerer == null)
             {
@@ -663,16 +662,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 && ((Gender == PBEGender.Male && considerer.Gender == PBEGender.Female) || (Gender == PBEGender.Female && considerer.Gender == PBEGender.Male))
                 && !(Ability == PBEAbility.Oblivious && !considerer.HasCancellingAbility());
         }
-        public bool CanBecomeParalyzedBy(PBEPokemon considerer)
+        public bool IsParalysisPossible(PBEPokemon considerer)
         {
             if (considerer == null)
             {
                 throw new ArgumentNullException(nameof(considerer));
             }
             return Status1 == PBEStatus1.None
-                && !(Ability == PBEAbility.Limber && !considerer.HasCancellingAbility());
+                && !((Ability == PBEAbility.Limber || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
         }
-        public bool CanBecomePoisonedBy(PBEPokemon considerer)
+        public bool IsPoisonPossible(PBEPokemon considerer)
         {
             if (considerer == null)
             {
@@ -681,18 +680,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return Status1 == PBEStatus1.None
                 && !HasType(PBEType.Poison)
                 && !HasType(PBEType.Steel)
-                && !(Ability == PBEAbility.Immunity && !considerer.HasCancellingAbility());
+                && !((Ability == PBEAbility.Immunity || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
         }
-        public bool CanFallAsleepFrom(PBEPokemon considerer)
+        public bool IsSleepPossible(PBEPokemon considerer)
         {
             if (considerer == null)
             {
                 throw new ArgumentNullException(nameof(considerer));
             }
             return Status1 == PBEStatus1.None
-                && !((Ability == PBEAbility.Insomnia || Ability == PBEAbility.VitalSpirit) && !considerer.HasCancellingAbility());
+                && !((Ability == PBEAbility.Insomnia || Ability == PBEAbility.VitalSpirit || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
         }
-        public bool CanFlinchFrom(PBEPokemon considerer)
+        public bool IsFlinchPossible(PBEPokemon considerer)
         {
             if (considerer == null)
             {
@@ -701,7 +700,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return !Status2.HasFlag(PBEStatus2.Flinching)
                 && !(Ability == PBEAbility.InnerFocus && !considerer.HasCancellingAbility());
         }
-        public bool IsConsideredGroundedBy(PBEPokemon considerer)
+        public bool IsGrounded(PBEPokemon considerer)
         {
             return HasType(PBEType.Flying)
                 || (Ability == PBEAbility.Levitate && !considerer.HasCancellingAbility());
@@ -709,22 +708,23 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <summary>Returns an array of moves the Pokémon can use.</summary>
         public PBEMove[] GetUsableMoves()
         {
-            var usableMoves = new List<PBEMove>(Team.Battle.Settings.NumMoves);
             if (IsForcedToStruggle())
             {
-                usableMoves.Add(PBEMove.Struggle);
+                return new PBEMove[1] { PBEMove.Struggle };
             }
             else if (TempLockedMove != PBEMove.None)
             {
-                usableMoves.Add(TempLockedMove);
+                return new PBEMove[1] { TempLockedMove };
             }
             else if (ChoiceLockedMove != PBEMove.None)
             {
-                usableMoves.Add(ChoiceLockedMove); // IsForcedToStruggle() being false means the choice locked move still has PP
+                return new PBEMove[1] { ChoiceLockedMove }; // IsForcedToStruggle() being false means the choice locked move still has PP
             }
             else
             {
-                for (int i = 0; i < Team.Battle.Settings.NumMoves; i++)
+                int numMoves = Moves.Count;
+                var usableMoves = new List<PBEMove>(numMoves);
+                for (int i = 0; i < numMoves; i++)
                 {
                     PBEBattleMoveset.PBEBattleMovesetSlot slot = Moves[i];
                     if (slot.PP > 0)
@@ -732,8 +732,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         usableMoves.Add(slot.Move);
                     }
                 }
+                return usableMoves.ToArray();
             }
-            return usableMoves.ToArray();
         }
         /// <summary>Gets the chance of a protection move succeeding (based on <see cref="Protection_Counter"/>) out of <see cref="ushort.MaxValue"/>.</summary>
         public ushort GetProtectionChance()

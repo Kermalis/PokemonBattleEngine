@@ -157,10 +157,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         {
                             return false;
                         }
-                        else
-                        {
-                            standBy.Add(switchPkmn);
-                        }
+                        standBy.Add(switchPkmn);
                         break;
                     }
                     default: return false;

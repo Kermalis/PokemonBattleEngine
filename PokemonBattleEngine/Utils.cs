@@ -159,9 +159,9 @@ namespace Kermalis.PokemonBattleEngine
 
         /// <summary>Returns a <see cref="string"/> that combines <paramref name="source"/>'s elements' string representations using "and" with commas.</summary>
         /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
-        /// <param name="source">An <see cref="IEnumerable{T}"/> to create a string from.</param>
+        /// <param name="source">An <see cref="IReadOnlyList{T}"/> to create a string from.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is null.</exception>
-        public static string Andify<T>(this IList<T> source)
+        public static string Andify<T>(this IReadOnlyList<T> source)
         {
             if (source == null)
             {

@@ -17,7 +17,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             foreach (PBEPokemon pkmn in GetActingOrder(battlers, true))
             {
                 PBEPokemon considerer = forcedInBy ?? pkmn;
-                bool consideredGrounded = pkmn.IsConsideredGroundedBy(considerer);
+                bool consideredGrounded = pkmn.IsGrounded(considerer);
                 // Verified: (Spikes/StealthRock/ToxicSpikes in the order they were applied) before ability
                 if (consideredGrounded && pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Spikes))
                 {
@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Team.ToxicSpikeCount = 0;
                         BroadcastTeamStatus(pkmn.Team, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
                     }
-                    else if (pkmn.CanBecomePoisonedBy(considerer))
+                    else if (pkmn.IsPoisonPossible(considerer))
                     {
                         if (pkmn.Team.ToxicSpikeCount == 1)
                         {
@@ -215,7 +215,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                     // Verified: Cute Charm can activate when victim is about to faint
-                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.CanBecomeInfatuatedWith(victim) && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.IsInfatuationPossible(victim) && PBEUtils.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.CuteCharm, PBEAbilityAction.ChangedStatus);
                         CauseInfatuation(user, victim);
@@ -226,68 +226,71 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         int randomNum = PBEUtils.RandomInt(0, 99);
                         if (randomNum < 30)
                         {
-                            PBEStatus1 status1;
+                            PBEStatus1 status;
                             if (randomNum <= 20)
                             {
                                 if (randomNum > 10) // 11-20 (10%)
                                 {
-                                    if (!user.CanBecomeParalyzedBy(victim) || user.HasType(PBEType.Electric))
+                                    if (!user.IsParalysisPossible(victim) || user.HasType(PBEType.Electric))
                                     {
                                         goto fail;
                                     }
                                     else
                                     {
-                                        status1 = PBEStatus1.Paralyzed;
+                                        status = PBEStatus1.Paralyzed;
                                     }
                                 }
                                 else // 0-10 (11%)
                                 {
-                                    if (!user.CanFallAsleepFrom(victim))
+                                    if (!user.IsSleepPossible(victim))
                                     {
                                         goto fail;
                                     }
                                     else
                                     {
-                                        status1 = PBEStatus1.Asleep;
+                                        status = PBEStatus1.Asleep;
                                     }
                                 }
                             }
                             else // 21-29 (9%)
                             {
-                                if (!user.CanBecomePoisonedBy(victim))
+                                if (!user.IsPoisonPossible(victim))
                                 {
                                     goto fail;
                                 }
                                 else
                                 {
-                                    status1 = PBEStatus1.Poisoned;
+                                    status = PBEStatus1.Poisoned;
                                 }
                             }
                             BroadcastAbility(victim, user, PBEAbility.EffectSpore, PBEAbilityAction.ChangedStatus);
-                            user.Status1 = status1;
-                            SetSleepTurns(user, Settings.SleepMinTurns, Settings.SleepMaxTurns);
+                            user.Status1 = status;
+                            if (status == PBEStatus1.Asleep)
+                            {
+                                SetSleepTurns(user, Settings.SleepMinTurns, Settings.SleepMaxTurns);
+                            }
                             user.Status1Counter = 0;
-                            BroadcastStatus1(user, victim, status1, PBEStatusAction.Added);
+                            BroadcastStatus1(user, victim, status, PBEStatusAction.Added);
                             AntiStatusAbilityCheck(user);
                         fail:
                             ;
                         }
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.CanBecomeBurnedBy(victim) && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.IsBurnPossible(victim) && PBEUtils.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.FlameBody, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Burned;
                         BroadcastStatus1(user, victim, PBEStatus1.Burned, PBEStatusAction.Added);
                         AntiStatusAbilityCheck(user);
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.CanBecomePoisonedBy(victim) && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.IsPoisonPossible(victim) && PBEUtils.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.PoisonPoint, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Poisoned;
                         BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
                         AntiStatusAbilityCheck(user);
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.CanBecomeParalyzedBy(victim) && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.IsParalysisPossible(victim) && PBEUtils.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.Static, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Paralyzed;
@@ -651,7 +654,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEItem.FlameOrb:
                         {
-                            if (pkmn.CanBecomeBurnedBy(pkmn))
+                            if (pkmn.IsBurnPossible(pkmn))
                             {
                                 pkmn.Status1 = PBEStatus1.Burned;
                                 BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
@@ -661,7 +664,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.ToxicOrb:
                         {
-                            if (pkmn.CanBecomePoisonedBy(pkmn))
+                            if (pkmn.IsPoisonPossible(pkmn))
                             {
                                 pkmn.Status1 = PBEStatus1.BadlyPoisoned;
                                 pkmn.Status1Counter = 1;
@@ -674,6 +677,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
         }
+
         public bool ShouldDoWeatherEffects()
         {
             if (IsDisposed)
@@ -683,6 +687,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // If HP is needed to be above 0, use HPPercentage so clients can continue to use this
             // However, I see no instance of this getting called where an ActiveBattler has 0 hp
             return !ActiveBattlers.Any(p => p.Ability == PBEAbility.AirLock || p.Ability == PBEAbility.CloudNine);
+        }
+        public bool WillLeafGuardActivate()
+        {
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(null);
+            }
+            return ShouldDoWeatherEffects() && Weather == PBEWeather.HarshSunlight;
         }
 
         private void UseMove(PBEPokemon user, PBEMove move, PBETurnTarget requestedTargets)
@@ -1495,46 +1507,52 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return false;
             }
-
-            PBEMoveData mData = PBEMoveData.Data[move];
-            byte stage = 0;
-
-            if (mData.Flags.HasFlag(PBEMoveFlag.HighCritChance))
+            else
             {
-                stage += 1;
+                PBEMoveData mData = PBEMoveData.Data[move];
+                if (mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit))
+                {
+                    return true;
+                }
+                else
+                {
+                    byte stage = 0;
+                    if (user.Status2.HasFlag(PBEStatus2.Pumped))
+                    {
+                        stage += 2;
+                    }
+                    if (user.OriginalSpecies == PBESpecies.Chansey && user.Item == PBEItem.LuckyPunch)
+                    {
+                        stage += 2;
+                    }
+                    if (user.OriginalSpecies == PBESpecies.Farfetchd && user.Item == PBEItem.Stick)
+                    {
+                        stage += 2;
+                    }
+                    if (mData.Flags.HasFlag(PBEMoveFlag.HighCritChance))
+                    {
+                        stage += 1;
+                    }
+                    if (user.Ability == PBEAbility.SuperLuck)
+                    {
+                        stage += 1;
+                    }
+                    if (user.Item == PBEItem.RazorClaw || user.Item == PBEItem.ScopeLens)
+                    {
+                        stage += 1;
+                    }
+                    double chance;
+                    switch (stage)
+                    {
+                        case 0: chance = 6.25; break;
+                        case 1: chance = 12.5; break;
+                        case 2: chance = 25; break;
+                        case 3: chance = 33.3; break;
+                        default: chance = 50; break;
+                    }
+                    return PBEUtils.RandomBool((int)(chance * 100), 100 * 100);
+                }
             }
-            if (user.Ability == PBEAbility.SuperLuck)
-            {
-                stage += 1;
-            }
-            if (user.Item == PBEItem.RazorClaw || user.Item == PBEItem.ScopeLens)
-            {
-                stage += 1;
-            }
-            if (user.Status2.HasFlag(PBEStatus2.Pumped))
-            {
-                stage += 2;
-            }
-            if (user.OriginalSpecies == PBESpecies.Chansey && user.Item == PBEItem.LuckyPunch)
-            {
-                stage += 2;
-            }
-            if (user.OriginalSpecies == PBESpecies.Farfetchd && user.Item == PBEItem.Stick)
-            {
-                stage += 2;
-            }
-
-            double chance;
-            switch (stage)
-            {
-                case 0: chance = 6.25; break;
-                case 1: chance = 12.5; break;
-                case 2: chance = 25; break;
-                case 3: chance = 33.3; break;
-                default: chance = 50; break;
-            }
-
-            return mData.Flags.HasFlag(PBEMoveFlag.AlwaysCrit) || PBEUtils.RandomBool((int)(chance * 100), 100 * 100);
         }
         private void TrySetLoser(PBEPokemon pkmn)
         {
@@ -1667,7 +1685,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     if (pkmn.Status1 == PBEStatus1.Asleep)
                     {
                         pkmn.Status1 = PBEStatus1.None;
-                        pkmn.Status1Counter = pkmn.SleepTurns = 0;
+                        pkmn.Status1Counter = 0;
+                        pkmn.SleepTurns = 0;
                         BroadcastAbility(pkmn, pkmn, pkmn.Ability, PBEAbilityAction.ChangedStatus);
                         BroadcastStatus1(pkmn, pkmn, PBEStatus1.Asleep, PBEStatusAction.Cured);
                     }
@@ -1732,7 +1751,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             target.Status2 |= PBEStatus2.Infatuated;
             target.InfatuatedWithPokemon = other;
             BroadcastStatus2(target, other, PBEStatus2.Infatuated, PBEStatusAction.Added);
-            if (target.Item == PBEItem.DestinyKnot && other.CanBecomeInfatuatedWith(target))
+            if (target.Item == PBEItem.DestinyKnot && other.IsInfatuationPossible(target))
             {
                 BroadcastItem(target, other, PBEItem.DestinyKnot, PBEItemAction.ChangedStatus);
                 other.Status2 |= PBEStatus2.Infatuated;
@@ -1799,10 +1818,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void SetSleepTurns(PBEPokemon pkmn, int minTurns, int maxTurns)
         {
-            if (pkmn.Status1 == PBEStatus1.Asleep)
-            {
-                pkmn.SleepTurns = (byte)(PBEUtils.RandomInt(minTurns, maxTurns) / (pkmn.Ability == PBEAbility.EarlyBird ? 2 : 1));
-            }
+            pkmn.SleepTurns = (byte)(PBEUtils.RandomInt(minTurns, maxTurns) / (pkmn.Ability == PBEAbility.EarlyBird ? 2 : 1));
         }
         private PBEFailReason ApplyStatus1IfPossible(PBEPokemon user, PBEPokemon target, PBEStatus1 status, bool broadcastFailOrEffectiveness)
         {
@@ -1860,74 +1876,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             if (!user.HasCancellingAbility())
             {
+                bool activateAbility;
                 switch (target.Ability)
                 {
-                    case PBEAbility.Immunity:
-                    {
-                        if (status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned)
-                        {
-                            if (broadcastFailOrEffectiveness)
-                            {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                            }
-                            return PBEFailReason.Ineffective;
-                        }
-                        break;
-                    }
+                    case PBEAbility.Immunity: activateAbility = status == PBEStatus1.BadlyPoisoned || status == PBEStatus1.Poisoned; break;
                     case PBEAbility.Insomnia:
-                    case PBEAbility.VitalSpirit:
+                    case PBEAbility.VitalSpirit: activateAbility = status == PBEStatus1.Asleep; break;
+                    case PBEAbility.LeafGuard: activateAbility = WillLeafGuardActivate(); break;
+                    case PBEAbility.Limber: activateAbility = status == PBEStatus1.Paralyzed; break;
+                    case PBEAbility.MagmaArmor: activateAbility = status == PBEStatus1.Frozen; break;
+                    case PBEAbility.WaterVeil: activateAbility = status == PBEStatus1.Burned; break;
+                    default: activateAbility = false; break;
+                }
+                if (activateAbility)
+                {
+                    if (broadcastFailOrEffectiveness)
                     {
-                        if (status == PBEStatus1.Asleep)
-                        {
-                            if (broadcastFailOrEffectiveness)
-                            {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                            }
-                            return PBEFailReason.Ineffective;
-                        }
-                        break;
+                        BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
+                        BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
                     }
-                    case PBEAbility.Limber:
-                    {
-                        if (status == PBEStatus1.Paralyzed)
-                        {
-                            if (broadcastFailOrEffectiveness)
-                            {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                            }
-                            return PBEFailReason.Ineffective;
-                        }
-                        break;
-                    }
-                    case PBEAbility.MagmaArmor:
-                    {
-                        if (status == PBEStatus1.Frozen)
-                        {
-                            if (broadcastFailOrEffectiveness)
-                            {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                            }
-                            return PBEFailReason.Ineffective;
-                        }
-                        break;
-                    }
-                    case PBEAbility.WaterVeil:
-                    {
-                        if (status == PBEStatus1.Burned)
-                        {
-                            if (broadcastFailOrEffectiveness)
-                            {
-                                BroadcastAbility(target, user, target.Ability, PBEAbilityAction.PreventedStatus);
-                                BroadcastEffectiveness(target, PBEEffectiveness.Ineffective);
-                            }
-                            return PBEFailReason.Ineffective;
-                        }
-                        break;
-                    }
+                    return PBEFailReason.Ineffective;
                 }
             }
 
@@ -1936,7 +1904,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 target.Status1Counter = 1;
             }
-            SetSleepTurns(target, Settings.SleepMinTurns, Settings.SleepMaxTurns);
+            else if (status == PBEStatus1.Asleep)
+            {
+                SetSleepTurns(target, Settings.SleepMinTurns, Settings.SleepMaxTurns);
+                target.Status1Counter = 0;
+            }
             BroadcastStatus1(target, user, status, PBEStatusAction.Added);
             // If a Shaymin_Sky is given MagmaArmor and then Frozen, it will change to Shaymin and obtain Shaymin's ability, therefore losing MagmaArmor and as a result will not be cured of its Frozen status.
             if (status == PBEStatus1.Frozen)
@@ -1954,7 +1926,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEStatus2.Confused:
                 {
                     bool sub = target.Status2.HasFlag(PBEStatus2.Substitute);
-                    if (!sub && target.CanBecomeConfusedBy(user))
+                    if (!sub && target.IsConfusionPossible(user))
                     {
                         target.Status2 |= PBEStatus2.Confused;
                         target.ConfusionTurns = (byte)PBEUtils.RandomInt(Settings.ConfusionMinTurns, Settings.ConfusionMaxTurns);
@@ -2004,7 +1976,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEStatus2.Flinching:
                 {
-                    if (target.CanFlinchFrom(user) && !target.Status2.HasFlag(PBEStatus2.Substitute))
+                    if (target.IsFlinchPossible(user) && !target.Status2.HasFlag(PBEStatus2.Substitute))
                     {
                         target.Status2 |= PBEStatus2.Flinching;
                         failReason = PBEFailReason.None;
@@ -2031,7 +2003,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEStatus2.Infatuated:
                 {
-                    if (target.CanBecomeInfatuatedWith(user))
+                    if (target.IsInfatuationPossible(user))
                     {
                         CauseInfatuation(target, user);
                         failReason = PBEFailReason.None;
@@ -3356,7 +3328,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 failReason = PBEFailReason.HPFull;
                 BroadcastMoveFailed(user, user, failReason);
             }
-            else if (!user.CanFallAsleepFrom(user))
+            else if (!user.IsSleepPossible(user)) // Immunity/LeafGuard/VitalSpirit
             {
                 failReason = PBEFailReason.Ineffective;
                 BroadcastAbility(user, user, user.Ability, PBEAbilityAction.PreventedStatus);
@@ -3366,7 +3338,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 failReason = PBEFailReason.None;
                 user.Status1 = PBEStatus1.Asleep;
-                SetSleepTurns(user, 3, 3);
+                SetSleepTurns(user, Settings.SleepMaxTurns, Settings.SleepMaxTurns); // Not a typo; Rest always sleeps for max turns
                 user.Status1Counter = 0;
                 BroadcastStatus1(user, user, PBEStatus1.Asleep, PBEStatusAction.Added);
                 HealDamage(user, user.MaxHP);

@@ -344,7 +344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="SleepMaxTurns"/>.</summary>
         public const byte DefaultSleepMaxTurns = 3;
         private byte _sleepMaxTurns = DefaultSleepMaxTurns;
-        /// <summary>The maximum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>.</summary>
+        /// <summary>The maximum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>. <see cref="PBEMove.Rest"/> will always sleep for <see cref="SleepMaxTurns"/> turns.</summary>
         public byte SleepMaxTurns
         {
             get => _sleepMaxTurns;
@@ -365,7 +365,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>The default value of <see cref="SleepMinTurns"/>.</summary>
         public const byte DefaultSleepMinTurns = 1;
         private byte _sleepMinTurns = DefaultSleepMinTurns;
-        /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>.</summary>
+        /// <summary>The minimum amount of turns a Pokémon can be <see cref="PBEStatus1.Asleep"/>. <see cref="PBEMove.Rest"/> will ignore this value and always sleep for <see cref="SleepMaxTurns"/> turns.</summary>
         public byte SleepMinTurns
         {
             get => _sleepMinTurns;
