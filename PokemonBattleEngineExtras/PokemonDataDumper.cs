@@ -1052,7 +1052,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         // TODO: Pichu & VoltTackle
         // TODO: Egg move logic (currently we only kept the possible egg moves, but no logic that assigns them, so it is incorrect)
 #pragma warning disable CS8321 // Local function is declared but never used
-        public static void Dump(SqliteConnection con)
+        public static void Run(SqliteConnection con)
         {
             using (var r = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\R.gba"), Endianness.LittleEndian))
             using (var s = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\S.gba"), Endianness.LittleEndian))

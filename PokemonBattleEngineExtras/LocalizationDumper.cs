@@ -9,7 +9,7 @@ namespace Kermalis.PokemonBattleEngineExtras
     internal sealed class LocalizationDumper
     {
         // You must dump the NARC files yourself (/a/0/0/2 in each language)
-        public static void Dump(SqliteConnection con)
+        public static void Run(SqliteConnection con)
         {
             using (var english = new NARC(@"../../../\DumpedData\W2EnglishTexts.narc"))
             using (var french = new NARC(@"../../../\DumpedData\W2FrenchTexts.narc"))

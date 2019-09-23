@@ -32,15 +32,15 @@ namespace Kermalis.PokemonBattleEngineExtras
                 case Extra.AIBattle:
                 {
                     PBEUtils.CreateDatabaseConnection(string.Empty);
-                    AIBattle.Test();
+                    AIBattleDemo.Run();
                     break;
                 }
-                case Extra.FontDumper: FontDumper.Dump(); break;
+                case Extra.FontDumper: FontDumper.Run(); break;
                 case Extra.LocalizationDumper:
                 {
                     using (SqliteConnection con = GetConnection())
                     {
-                        LocalizationDumper.Dump(con);
+                        LocalizationDumper.Run(con);
                         con.Close();
                     }
                     break;
@@ -50,7 +50,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 {
                     using (SqliteConnection con = GetConnection())
                     {
-                        PokemonDataDumper.Dump(con);
+                        PokemonDataDumper.Run(con);
                         con.Close();
                     }
                     break;

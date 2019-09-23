@@ -9,16 +9,27 @@ using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineExtras
 {
-    internal sealed class AIBattle
+    internal sealed class AIBattleDemo
     {
-        private const string LogFile = "Test Log.txt";
-        private const string ReplayFile = "Test Replay.pbereplay";
+        private const string LogFile = "AI Demo Log.txt";
+        private const string ReplayFile = "AI Demo Replay.pbereplay";
+        private static PBEBattle _battle;
         private static StreamWriter _writer;
         private static TextWriter _oldWriter;
 
-        public static void Test()
+        public static void Run()
         {
-            Console.WriteLine("----- Pokémon Battle Engine Test -----");
+            Console.WriteLine("----- Pokémon Battle Engine - AI Battle Demo -----");
+            try
+            {
+                _writer = new StreamWriter(new FileStream(LogFile, FileMode.Create, FileAccess.Write));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Cannot open \"{LogFile}\" for writing.");
+                Console.WriteLine(e.Message);
+                return;
+            }
 
             var settings = new PBESettings { NumMoves = 8 };
             PBETeamShell team1Shell, team2Shell;
@@ -47,27 +58,17 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBECompetitivePokemonShells.Victini_Uber
             };*/
 
-            var battle = new PBEBattle(PBEBattleFormat.Double, team1Shell, "Team 1", team2Shell, "Team 2");
-            battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
-            battle.OnNewEvent += Battle_OnNewEvent;
-            battle.OnStateChanged += Battle_OnStateChanged;
-            try
-            {
-                _writer = new StreamWriter(new FileStream(LogFile, FileMode.Create, FileAccess.Write));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Cannot open \"{LogFile}\" for writing.");
-                Console.WriteLine(e.Message);
-                return;
-            }
+            _battle = new PBEBattle(PBEBattleFormat.Double, team1Shell, "Team 1", team2Shell, "Team 2");
+            _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
+            _battle.OnNewEvent += Battle_OnNewEvent;
+            _battle.OnStateChanged += Battle_OnStateChanged;
             _oldWriter = Console.Out;
             Console.SetOut(_writer);
             new Thread(() =>
             {
                 try
                 {
-                    battle.Begin();
+                    _battle.Begin();
                 }
                 catch (Exception e)
                 {
@@ -82,8 +83,9 @@ namespace Kermalis.PokemonBattleEngineExtras
             Console.WriteLine(e.Message);
             Console.WriteLine(e.StackTrace);
             Console.SetOut(_oldWriter);
-            _writer.Close();
-            Console.WriteLine("Test battle threw an exception, check \"{0}\" for details.", LogFile);
+            _writer.Dispose();
+            _battle.Dispose();
+            Console.WriteLine("Demo battle threw an exception; check \"{0}\" for details.", LogFile);
             Console.ReadKey();
         }
 
@@ -134,15 +136,15 @@ namespace Kermalis.PokemonBattleEngineExtras
         {
             try
             {
-                switch (battle.BattleState)
+                switch (_battle.BattleState)
                 {
                     case PBEBattleState.Ended:
                     {
                         Console.SetOut(_oldWriter);
-                        _writer.Close();
+                        _writer.Dispose();
                         try
                         {
-                            battle.SaveReplay(ReplayFile);
+                            _battle.SaveReplay(ReplayFile);
                         }
                         catch (Exception e)
                         {
@@ -150,13 +152,14 @@ namespace Kermalis.PokemonBattleEngineExtras
                             Console.WriteLine(e.Message);
                             Console.WriteLine(e.StackTrace);
                         }
+                        _battle.Dispose();
                         Console.WriteLine("Test battle ended. The battle was saved to \"{0}\" and \"{1}\".", LogFile, ReplayFile);
                         Console.ReadKey();
                         break;
                     }
                     case PBEBattleState.ReadyToRunTurn:
                     {
-                        foreach (PBETeam team in battle.Teams)
+                        foreach (PBETeam team in _battle.Teams)
                         {
                             Console.WriteLine();
                             Console.WriteLine("{0}'s team:", team.TrainerName);
@@ -171,7 +174,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             try
                             {
-                                battle.RunTurn();
+                                _battle.RunTurn();
                             }
                             catch (Exception e)
                             {

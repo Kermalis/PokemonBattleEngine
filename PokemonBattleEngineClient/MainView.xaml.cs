@@ -80,7 +80,7 @@ namespace Kermalis.PokemonBattleEngineClient
         }
         private void WatchReplay()
         {
-            Add(new BattleClient(PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineExtras\bin\Debug\netcoreapp2.1\Test Replay.pbereplay"), BattleClient.ClientMode.Replay));
+            Add(new BattleClient(PBEBattle.LoadReplay(@"D:\Development\GitHub\PokemonBattleEngine\PokemonBattleEngineExtras\bin\Debug\netcoreapp2.1\AI Demo Replay.pbereplay"), BattleClient.ClientMode.Replay));
         }
         private void SinglePlayer()
         {

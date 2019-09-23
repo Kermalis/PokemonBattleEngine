@@ -41,7 +41,7 @@ namespace Kermalis.PokemonBattleEngineExtras
         }
 
         private static readonly Color[] _colors = new Color[] { Color.Transparent, Color.White, Color.Black }; // value 02 is never used
-        public static void Dump()
+        public static void Run()
         {
             using (var narc = new NARC(@"../../../\DumpedData\Gen5Font.narc"))
             {
