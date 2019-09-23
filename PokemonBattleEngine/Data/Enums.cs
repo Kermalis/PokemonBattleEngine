@@ -53,18 +53,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// <summary>Evasion.</summary>
         Evasion
     }
-    /// <summary>Represents the effectiveness of a move against a target.</summary>
-    public enum PBEEffectiveness : byte
-    {
-        /// <summary>The move does not affect the target.</summary>
-        Ineffective,
-        /// <summary>The move does less damage to the target.</summary>
-        NotVeryEffective,
-        /// <summary>The move affects the target as usual.</summary>
-        Normal,
-        /// <summary>The move does more damage to the target.</summary>
-        SuperEffective
-    }
     /// <summary>Represents the format of a specific battle.</summary>
     public enum PBEBattleFormat : byte
     {
@@ -318,37 +306,36 @@ namespace Kermalis.PokemonBattleEngine.Data
         LuckyChant = 1 << 1,
         /// <summary>The team will take less damage from <see cref="PBEMoveCategory.Physical"/> moves.</summary>
         Reflect = 1 << 2,
-        /// <summary>Grounded Pokémon that switch in will take damage.The amount of damage is based on <see cref="PBETeam.SpikeCount"/>.
-        /// </summary>
-        Spikes = 1 << 3, // TODO: Gravity, magnet rise, magic guard, iron ball, baton pass with ingrain, air balloon
-        /// <summary>Pokémon that switch in will take damage.The amount of damage is based on the effectiveness of <see cref="PBEType.Rock"/> on the Pokémon.
-        /// </summary>
-        StealthRock = 1 << 4, // TODO: magic guard
-        /// <summary>Grounded Pokémon that switch in will be <see cref="PBEStatus1.Poisoned"/> if <see cref="PBETeam.ToxicSpikeCount"/> is 1 or <see cref="PBEStatus1.BadlyPoisoned"/> if it is 2.Grounded <see cref="PBEType.Poison"/> Pokémon will remove toxic spikes.
-        /// </summary>
-        ToxicSpikes = 1 << 5, // TODO: Gravity, magnet rise, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
+        Safeguard = 1 << 3,
+        /// <summary>Grounded Pokémon that switch in will take damage. The amount of damage is based on <see cref="PBETeam.SpikeCount"/>. </summary>
+        Spikes = 1 << 4, // TODO: Gravity, magnet rise, magic guard, iron ball, baton pass with ingrain, air balloon
+        /// <summary>Pokémon that switch in will take damage. The amount of damage is based on the effectiveness of <see cref="PBEType.Rock"/> on the Pokémon. </summary>
+        StealthRock = 1 << 5, // TODO: magic guard
+        /// <summary>Grounded Pokémon that switch in will be <see cref="PBEStatus1.Poisoned"/> if <see cref="PBETeam.ToxicSpikeCount"/> is 1 or <see cref="PBEStatus1.BadlyPoisoned"/> if it is 2.
+        /// Grounded <see cref="PBEType.Poison"/> Pokémon will remove toxic spikes.</summary>
+        ToxicSpikes = 1 << 6, // TODO: Gravity, magnet rise, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
         /// <summary>The team is protected from spread moves for a turn.</summary>
-        WideGuard = 1 << 6
+        WideGuard = 1 << 7
     }
     /// <summary>Represents an action regarding a <see cref="PBEAbility"/>.</summary>
     public enum PBEAbilityAction : byte
     {
+        /// <summary>The ability is first announced.</summary>
+        Announced = 0,
         /// <summary>The ability was changed.</summary>
-        Changed = 0,
+        Changed = 1,
         /// <summary>The ability caused a Pokémon to change its appearance.</summary>
-        ChangedAppearance = 1,
+        ChangedAppearance = 2,
         /// <summary>The ability changed a Pokémon's stats.</summary>
-        ChangedStats = 2,
+        ChangedStats = 3,
         /// <summary>The ability changed a Pokémon's <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.</summary>
-        ChangedStatus = 3,
+        ChangedStatus = 4,
         /// <summary>The ability was involved with damage.</summary>
-        Damage = 4,
+        Damage = 5,
         /// <summary>The ability prevented a Pokémon from being inflicted with a <see cref="PBEStatus1"/> or <see cref="PBEStatus2"/>.</summary>
-        PreventedStatus = 5,
+        PreventedStatus = 6,
         /// <summary>The ability restored a Pokémon's HP.</summary>
-        RestoredHP = 6,
-        /// <summary><see cref="PBEAbility.SlowStart"/> began.</summary>
-        SlowStart_Began = 7,
+        RestoredHP = 7,
         /// <summary><see cref="PBEAbility.SlowStart"/> ended.</summary>
         SlowStart_Ended = 8,
         /// <summary>The ability was involved with weather.</summary>
@@ -427,33 +414,35 @@ namespace Kermalis.PokemonBattleEngine.Data
         /// </example>
         Ended = 3
     }
-    /// <summary>Represents the reason for a move failing.</summary>
-    public enum PBEFailReason : byte
+    /// <summary>Represents the result of an intention.</summary>
+    public enum PBEResult : byte
     {
-        /// <summary>The move did not fail.</summary>
-        None = 0,
-        /// <summary>The move failed because the target already has <see cref="PBEStatus1.Asleep"/>.</summary>
-        AlreadyAsleep = 1,
-        /// <summary>The move failed because the target already has <see cref="PBEStatus1.Burned"/>.</summary>
-        AlreadyBurned = 2,
-        /// <summary>The move failed because the target already has <see cref="PBEStatus2.Confused"/>.</summary>
-        AlreadyConfused = 3,
-        /// <summary>The move failed because the target already has <see cref="PBEStatus1.Paralyzed"/>.</summary>
-        AlreadyParalyzed = 4,
-        /// <summary>The move failed because the target already has <see cref="PBEStatus1.BadlyPoisoned"/> or <see cref="PBEStatus1.Poisoned"/>.</summary>
-        AlreadyPoisoned = 5,
-        /// <summary>The move failed because the target already has <see cref="PBEStatus2.Substitute"/>.</summary>
-        AlreadySubstituted = 6,
-        /// <summary>General failure.</summary>
-        Default = 7,
-        /// <summary>The move tried to heal a Pokémon's HP when it was already full.</summary>
-        HPFull = 8,
-        /// <summary>The move failed because the Pokémon was immune to the move.</summary>
-        Ineffective = 9,
-        /// <summary>The move was used when there were no available targets to hit.</summary>
+        /// <summary>No failure.</summary>
+        Success = 0,
+        /// <summary>Failure due to a <see cref="PBEAbility"/>.</summary>
+        Ineffective_Ability = 1,
+        /// <summary>Failure due to a <see cref="PBEGender"/>.</summary>
+        Ineffective_Gender = 2,
+        /// <summary>Failure due to a Pokémon's level.</summary>
+        Ineffective_Level = 3,
+        /// <summary>Failure due to <see cref="PBETeamStatus.Safeguard"/>.</summary>
+        Ineffective_Safeguard = 4,
+        /// <summary>Failure due to a <see cref="PBEStat"/>.</summary>
+        Ineffective_Stat = 5,
+        /// <summary>Failure due to a <see cref="PBEStatus1"/>, <see cref="PBEStatus2"/>, <see cref="PBETeamStatus"/>, <see cref="PBEBattleStatus"/>, or <see cref="PBEWeather"/>.</summary>
+        Ineffective_Status = 6,
+        /// <summary>Failure due to <see cref="PBEStatus2.Substitute"/>.</summary>
+        Ineffective_Substitute = 7,
+        /// <summary>Failure due to a <see cref="PBEType"/>.</summary>
+        Ineffective_Type = 8,
+        /// <summary>Failure due to the intention's unmet special conditions.</summary>
+        InvalidConditions = 9,
+        /// <summary>Failure due to having no available targets.</summary>
         NoTarget = 10,
-        /// <summary>The one-hit-knockout move failed because the target was a higher level than the user.</summary>
-        OneHitKnockoutUnaffected = 11
+        /// <summary>Limited success due to a Pokémon's <see cref="PBEType"/>.</summary>
+        NotVeryEffective_Type = 11,
+        /// <summary>Great success due to a Pokémon's <see cref="PBEType"/>.</summary>
+        SuperEffective_Type = 12
     }
     /// <summary>Represents an action regarding a <see cref="PBEWeather"/>.</summary>
     public enum PBEWeatherAction : byte
@@ -2225,6 +2214,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Rest,
         RestoreTargetHP,
         RestoreUserHP,
+        Safeguard,
         Sandstorm,
         SeismicToss,
         Selfdestruct,
@@ -2520,6 +2510,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         RockThrow = 88,
         RockTomb = 317,
         SacredFire = 221,
+        Safeguard = 219,
         SandAttack = 28,
         Sandstorm = 201,
         Scald = 503,

@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEMoveFailedPacket : INetPacket
+    public sealed class PBEMoveResultPacket : INetPacket
     {
         public const short Code = 0x15;
         public ReadOnlyCollection<byte> Buffer { get; }
@@ -17,9 +17,9 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBETeam MoveUserTeam { get; }
         public PBEFieldPosition Pokemon2 { get; }
         public PBETeam Pokemon2Team { get; }
-        public PBEFailReason FailReason { get; }
+        public PBEResult Result { get; }
 
-        internal PBEMoveFailedPacket(PBEPokemon moveUser, PBEPokemon pokemon2, PBEFailReason failReason)
+        internal PBEMoveResultPacket(PBEPokemon moveUser, PBEPokemon pokemon2, PBEResult result)
         {
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
@@ -27,18 +27,18 @@ namespace Kermalis.PokemonBattleEngine.Packets
             bytes.Add((MoveUserTeam = moveUser.Team).Id);
             bytes.Add((byte)(Pokemon2 = pokemon2.FieldPosition));
             bytes.Add((Pokemon2Team = pokemon2.Team).Id);
-            bytes.Add((byte)(FailReason = failReason));
+            bytes.Add((byte)(Result = result));
             bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
             Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        internal PBEMoveFailedPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEMoveResultPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
         {
             Buffer = buffer;
             MoveUser = (PBEFieldPosition)r.ReadByte();
             MoveUserTeam = battle.Teams[r.ReadByte()];
             Pokemon2 = (PBEFieldPosition)r.ReadByte();
             Pokemon2Team = battle.Teams[r.ReadByte()];
-            FailReason = (PBEFailReason)r.ReadByte();
+            Result = (PBEResult)r.ReadByte();
         }
 
         public void Dispose() { }

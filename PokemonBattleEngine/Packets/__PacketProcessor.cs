@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEActionsResponsePacket.Code: packet = new PBEActionsResponsePacket(buffer, r, _battle); break;
                     case PBEMoveUsedPacket.Code: packet = new PBEMoveUsedPacket(buffer, r, _battle); break;
                     case PBEPkmnHPChangedPacket.Code: packet = new PBEPkmnHPChangedPacket(buffer, r, _battle); break;
-                    case PBEMoveEffectivenessPacket.Code: packet = new PBEMoveEffectivenessPacket(buffer, r, _battle); break;
+                    //case PBEMoveEffectivenessPacket.Code: packet = new PBEMoveEffectivenessPacket(buffer, r, _battle); break;
                     case PBEPkmnSwitchOutPacket.Code: packet = new PBEPkmnSwitchOutPacket(buffer, r, _battle); break;
                     case PBEMoveMissedPacket.Code: packet = new PBEMoveMissedPacket(buffer, r, _battle); break;
                     case PBEPkmnFaintedPacket.Code: packet = new PBEPkmnFaintedPacket(buffer, r, _battle); break;
@@ -49,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEStatus2Packet.Code: packet = new PBEStatus2Packet(buffer, r, _battle); break;
                     case PBETeamStatusPacket.Code: packet = new PBETeamStatusPacket(buffer, r, _battle); break;
                     case PBEWeatherPacket.Code: packet = new PBEWeatherPacket(buffer, r, _battle); break;
-                    case PBEMoveFailedPacket.Code: packet = new PBEMoveFailedPacket(buffer, r, _battle); break;
+                    case PBEMoveResultPacket.Code: packet = new PBEMoveResultPacket(buffer, r, _battle); break;
                     case PBEItemPacket.Code: packet = new PBEItemPacket(buffer, r, _battle); break;
                     case PBEMovePPChangedPacket.Code: packet = new PBEMovePPChangedPacket(buffer, r, _battle); break;
                     case PBETransformPacket.Code: packet = new PBETransformPacket(buffer, r, _battle); break;

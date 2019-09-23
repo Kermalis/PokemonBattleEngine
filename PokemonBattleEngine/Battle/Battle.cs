@@ -625,7 +625,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
 
-            // Verified: Effects before Reflect/LightScreen/LuckyChant
+            // Verified: Effects before LightScreen/LuckyChant/Reflect/Safeguard/TrickRoom
             DoTurnEndedEffects();
 
             if (WinCheck())
@@ -633,18 +633,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return;
             }
 
-            // Reflect/Light Screen/Lucky Chant/Trick Room are removed in the order they were added, but who cares
+            // Verified: LightScreen/LuckyChant/Reflect/Safeguard/TrickRoom are removed in the order they were added
             foreach (PBETeam team in Teams)
             {
-                if (team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
-                {
-                    team.ReflectCount--;
-                    if (team.ReflectCount == 0)
-                    {
-                        team.TeamStatus &= ~PBETeamStatus.Reflect;
-                        BroadcastTeamStatus(team, PBETeamStatus.Reflect, PBETeamStatusAction.Ended);
-                    }
-                }
                 if (team.TeamStatus.HasFlag(PBETeamStatus.LightScreen))
                 {
                     team.LightScreenCount--;
@@ -663,8 +654,25 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         BroadcastTeamStatus(team, PBETeamStatus.LuckyChant, PBETeamStatusAction.Ended);
                     }
                 }
+                if (team.TeamStatus.HasFlag(PBETeamStatus.Reflect))
+                {
+                    team.ReflectCount--;
+                    if (team.ReflectCount == 0)
+                    {
+                        team.TeamStatus &= ~PBETeamStatus.Reflect;
+                        BroadcastTeamStatus(team, PBETeamStatus.Reflect, PBETeamStatusAction.Ended);
+                    }
+                }
+                if (team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+                {
+                    team.SafeguardCount--;
+                    if (team.SafeguardCount == 0)
+                    {
+                        team.TeamStatus &= ~PBETeamStatus.Safeguard;
+                        BroadcastTeamStatus(team, PBETeamStatus.Safeguard, PBETeamStatusAction.Ended);
+                    }
+                }
             }
-
             // Trick Room
             if (BattleStatus.HasFlag(PBEBattleStatus.TrickRoom))
             {

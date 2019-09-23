@@ -438,6 +438,15 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
+                        case PBEAbility.MoldBreaker:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Announced: message = "{0} breaks the mold!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
                         case PBEAbility.Moody:
                         case PBEAbility.SpeedBoost:
                         case PBEAbility.Steadfast:
@@ -472,8 +481,26 @@ namespace Kermalis.PokemonBattleEngineClient
                         {
                             switch (ap.AbilityAction)
                             {
-                                case PBEAbilityAction.SlowStart_Began: message = "{0} can't get it going!"; break;
+                                case PBEAbilityAction.Announced: message = "{0} can't get it going!"; break;
                                 case PBEAbilityAction.SlowStart_Ended: message = "{0} finally got its act together!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
+                        case PBEAbility.Teravolt:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Announced: message = "{0} is radiating a bursting aura!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
+                            }
+                            break;
+                        }
+                        case PBEAbility.Turboblaze:
+                        {
+                            switch (ap.AbilityAction)
+                            {
+                                case PBEAbilityAction.Announced: message = "{0} is radiating a blazing aura!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(ap.AbilityAction));
                             }
                             break;
@@ -679,41 +706,28 @@ namespace Kermalis.PokemonBattleEngineClient
                     BattleView.AddMessage(string.Format("A critical hit on {0}!", NameForTrainer(victim, false)), true, true);
                     return false;
                 }
-                case PBEMoveEffectivenessPacket mep:
+                case PBEMoveResultPacket mrp:
                 {
-                    PBEPokemon victim = mep.VictimTeam.TryGetPokemon(mep.Victim);
+                    PBEPokemon moveUser = mrp.MoveUserTeam.TryGetPokemon(mrp.MoveUser),
+                            pokemon2 = mrp.Pokemon2Team.TryGetPokemon(mrp.Pokemon2);
                     string message;
-                    switch (mep.Effectiveness)
+                    switch (mrp.Result)
                     {
-                        case PBEEffectiveness.Ineffective: message = "It doesn't affect {0}..."; break;
-                        case PBEEffectiveness.NotVeryEffective: message = "It's not very effective on {0}..."; break;
-                        case PBEEffectiveness.Normal: return true;
-                        case PBEEffectiveness.SuperEffective: message = "It's super effective on {0}!"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(mep.Effectiveness));
+                        case PBEResult.Ineffective_Ability: message = "{1} is protected by its Ability!"; break;
+                        case PBEResult.Ineffective_Gender:
+                        case PBEResult.Ineffective_Stat:
+                        case PBEResult.Ineffective_Status:
+                        case PBEResult.InvalidConditions: message = "But it failed!"; break;
+                        case PBEResult.Ineffective_Level: message = "{1} is protected by its level!"; break;
+                        case PBEResult.Ineffective_Safeguard: message = "{1} is protected by Safeguard!"; break;
+                        case PBEResult.Ineffective_Substitute: message = "{1} is protected by its substitute!"; break;
+                        case PBEResult.Ineffective_Type: message = "{1} is protected by its Type!"; break;
+                        case PBEResult.NoTarget: message = "But there was no target..."; break;
+                        case PBEResult.NotVeryEffective_Type: message = "It's not very effective on {2}..."; break;
+                        case PBEResult.SuperEffective_Type: message = "It's super effective on {2}!"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(mrp.Result));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(victim, false)), true, true);
-                    return false;
-                }
-                case PBEMoveFailedPacket mfp:
-                {
-                    PBEPokemon moveUser = mfp.MoveUserTeam.TryGetPokemon(mfp.MoveUser),
-                            pokemon2 = mfp.Pokemon2Team.TryGetPokemon(mfp.Pokemon2);
-                    string message;
-                    switch (mfp.FailReason)
-                    {
-                        case PBEFailReason.AlreadyAsleep: message = "{1} is already asleep!"; break;
-                        case PBEFailReason.AlreadyBurned: message = "{1} already has a burn."; break;
-                        case PBEFailReason.AlreadyConfused: message = "{1} is already confused!"; break;
-                        case PBEFailReason.AlreadyParalyzed: message = "{1} is already paralyzed!"; break;
-                        case PBEFailReason.AlreadyPoisoned: message = "{1} is already poisoned."; break;
-                        case PBEFailReason.AlreadySubstituted: message = "{1} already has a substitute!"; break;
-                        case PBEFailReason.Default: message = "But it failed!"; break;
-                        case PBEFailReason.HPFull: message = "{1}'s HP is full!"; break;
-                        case PBEFailReason.NoTarget: message = "There was no target..."; break;
-                        case PBEFailReason.OneHitKnockoutUnaffected: message = "{1} is unaffected!"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(mfp.FailReason));
-                    }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(moveUser, true), NameForTrainer(pokemon2, true)), true, true);
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(moveUser, true), NameForTrainer(pokemon2, true), NameForTrainer(pokemon2, false)), true, true);
                     return false;
                 }
                 case PBEMoveLockPacket mlp:
@@ -1384,6 +1398,16 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
+                        case PBETeamStatus.Safeguard:
+                        {
+                            switch (tsp.TeamStatusAction)
+                            {
+                                case PBETeamStatusAction.Added: message = "{5} team became cloaked in a mystical veil!"; break;
+                                case PBETeamStatusAction.Ended: message = "{5} team is no longer protected by Safeguard!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                            }
+                            break;
+                        }
                         case PBETeamStatus.Spikes:
                         {
                             switch (tsp.TeamStatusAction)
@@ -1397,7 +1421,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     message = "Spikes were scattered all around the feet of {2} team!";
                                     break;
                                 }
-                                case PBETeamStatusAction.Cleared:
+                                /*case PBETeamStatusAction.Cleared:
                                 {
                                     if (Mode != ClientMode.SinglePlayer)
                                     {
@@ -1405,7 +1429,7 @@ namespace Kermalis.PokemonBattleEngineClient
                                     }
                                     message = "The spikes disappeared from around {2} team's feet!";
                                     break;
-                                }
+                                }*/
                                 case PBETeamStatusAction.Damage: message = "{4} is hurt by the spikes!"; damageVictimCaps = true; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                             }
@@ -1416,7 +1440,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             switch (tsp.TeamStatusAction)
                             {
                                 case PBETeamStatusAction.Added: message = "Pointed stones float in the air around {3} team!"; break;
-                                case PBETeamStatusAction.Cleared: message = "The pointed stones disappeared from around {2} team!"; break;
+                                //case PBETeamStatusAction.Cleared: message = "The pointed stones disappeared from around {2} team!"; break;
                                 case PBETeamStatusAction.Damage: message = "Pointed stones dug into {4}!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
                             }
@@ -1466,7 +1490,8 @@ namespace Kermalis.PokemonBattleEngineClient
                         BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "Your" : "The opposing",
                         BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "your" : "the foe's",
                         BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "your" : "your foe's",
-                        NameForTrainer(damageVictim, damageVictimCaps)
+                        NameForTrainer(damageVictim, damageVictimCaps),
+                        BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "Your" : "The foe's"
                         ), true, true);
                     return false;
                 }

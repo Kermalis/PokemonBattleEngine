@@ -121,6 +121,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEPokemon DisguisedAsPokemon { get; set; }
         /// <summary>The Pokémon that <see cref="PBEStatus2.Infatuated"/> is bound to.</summary>
         public PBEPokemon InfatuatedWithPokemon { get; set; }
+        /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMove.Detect"/>, <see cref="PBEMove.Protect"/>, <see cref="PBEMove.QuickGuard"/>, and/or <see cref="PBEMove.WideGuard"/> consecutively.</summary>
+        public int Protection_Counter { get; set; }
         /// <summary>The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on <see cref="SeededTeam"/>.</summary>
         public PBEFieldPosition SeededPosition { get; set; }
         /// <summary>The team responsible for <see cref="PBEStatus2.LeechSeed"/>.</summary>
@@ -146,8 +148,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         #region Special Flags
         /// <summary>True if the Pokémon has successfully used <see cref="PBEMove.Minimize"/> which makes it succeptible to double damage from <see cref="PBEMove.Steamroller"/> and <see cref="PBEMove.Stomp"/>.</summary>
         public bool Minimize_Used { get; set; }
-        /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMove.Detect"/>, <see cref="PBEMove.Protect"/>, <see cref="PBEMove.QuickGuard"/>, and/or <see cref="PBEMove.WideGuard"/> consecutively.</summary>
-        public int Protection_Counter { get; set; }
         /// <summary>True if the Pokémon was originally <see cref="PBESpecies.Shaymin_Sky"/> but was <see cref="PBEStatus1.Frozen"/>, therefore forcing it to remain as <see cref="PBESpecies.Shaymin"/> when switching out.</summary>
         public bool Shaymin_CannotChangeBackToSkyForm { get; set; }
         /// <summary>The amount of turns left until a Pokémon with <see cref="PBEAbility.SlowStart"/> loses its hinderance.</summary>
@@ -623,87 +623,235 @@ namespace Kermalis.PokemonBattleEngine.Battle
             return TempLockedMove == PBEMove.None;
         }
         // TODO: Make different public versions that use Known*? AIs should not be able to cheat
-        public bool IsBurnPossible(PBEPokemon considerer)
+        public PBEResult IsAttractionPossible(PBEPokemon causer, bool ignoreCurrentStatus)
         {
-            if (considerer == null)
+            if (causer == null)
             {
-                throw new ArgumentNullException(nameof(considerer));
+                throw new ArgumentNullException(nameof(causer));
             }
-            return Status1 == PBEStatus1.None
-                && !HasType(PBEType.Fire)
-                && !((Ability == PBEAbility.WaterVeil || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
-        }
-        public bool IsConfusionPossible(PBEPokemon considerer)
-        {
-            if (considerer == null)
+            if (causer == this)
             {
-                throw new ArgumentNullException(nameof(considerer));
+                return PBEResult.InvalidConditions;
             }
-            return !Status2.HasFlag(PBEStatus2.Confused)
-                && !(Ability == PBEAbility.OwnTempo && !considerer.HasCancellingAbility());
-        }
-        public bool IsFreezePossible(PBEPokemon considerer)
-        {
-            if (considerer == null)
+            if (!ignoreCurrentStatus && Status2.HasFlag(PBEStatus2.Infatuated))
             {
-                throw new ArgumentNullException(nameof(considerer));
+                return PBEResult.Ineffective_Status;
             }
-            return Status1 == PBEStatus1.None
-                && !HasType(PBEType.Ice)
-                && !((Ability == PBEAbility.MagmaArmor || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
-        }
-        public bool IsInfatuationPossible(PBEPokemon considerer)
-        {
-            if (considerer == null)
+            if (Gender == PBEGender.Genderless || causer.Gender == PBEGender.Genderless || Gender == causer.Gender)
             {
-                throw new ArgumentNullException(nameof(considerer));
+                return PBEResult.Ineffective_Gender;
             }
-            return !Status2.HasFlag(PBEStatus2.Infatuated)
-                && ((Gender == PBEGender.Male && considerer.Gender == PBEGender.Female) || (Gender == PBEGender.Female && considerer.Gender == PBEGender.Male))
-                && !(Ability == PBEAbility.Oblivious && !considerer.HasCancellingAbility());
-        }
-        public bool IsParalysisPossible(PBEPokemon considerer)
-        {
-            if (considerer == null)
+            if (!causer.HasCancellingAbility() && Ability == PBEAbility.Oblivious)
             {
-                throw new ArgumentNullException(nameof(considerer));
+                return PBEResult.Ineffective_Ability;
             }
-            return Status1 == PBEStatus1.None
-                && !((Ability == PBEAbility.Limber || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
+            return PBEResult.Success;
         }
-        public bool IsPoisonPossible(PBEPokemon considerer)
+        public PBEResult IsBurnPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
         {
-            if (considerer == null)
+            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
             {
-                throw new ArgumentNullException(nameof(considerer));
+                return PBEResult.Ineffective_Substitute;
             }
-            return Status1 == PBEStatus1.None
-                && !HasType(PBEType.Poison)
-                && !HasType(PBEType.Steel)
-                && !((Ability == PBEAbility.Immunity || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
-        }
-        public bool IsSleepPossible(PBEPokemon considerer)
-        {
-            if (considerer == null)
+            if (!ignoreCurrentStatus && Status1 != PBEStatus1.None)
             {
-                throw new ArgumentNullException(nameof(considerer));
+                return PBEResult.Ineffective_Status;
             }
-            return Status1 == PBEStatus1.None
-                && !((Ability == PBEAbility.Insomnia || Ability == PBEAbility.VitalSpirit || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())) && !considerer.HasCancellingAbility());
-        }
-        public bool IsFlinchPossible(PBEPokemon considerer)
-        {
-            if (considerer == null)
+            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
             {
-                throw new ArgumentNullException(nameof(considerer));
+                return PBEResult.Ineffective_Safeguard;
             }
-            return !Status2.HasFlag(PBEStatus2.Flinching)
-                && !(Ability == PBEAbility.InnerFocus && !considerer.HasCancellingAbility());
+            if (HasType(PBEType.Fire))
+            {
+                return PBEResult.Ineffective_Type;
+            }
+            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.WaterVeil || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            {
+                return PBEResult.Ineffective_Ability;
+            }
+            return PBEResult.Success;
         }
-        public bool IsGrounded(PBEPokemon considerer)
+        public PBEResult IsConfusionPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
         {
-            return HasType(PBEType.Flying)
-                || (Ability == PBEAbility.Levitate && !considerer.HasCancellingAbility());
+            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                return PBEResult.Ineffective_Substitute;
+            }
+            if (!ignoreCurrentStatus && Status2.HasFlag(PBEStatus2.Confused))
+            {
+                return PBEResult.Ineffective_Status;
+            }
+            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            {
+                return PBEResult.Ineffective_Safeguard;
+            }
+            if (other?.HasCancellingAbility() == false && Ability == PBEAbility.OwnTempo)
+            {
+                return PBEResult.Ineffective_Ability;
+            }
+            return PBEResult.Success;
+        }
+        public PBEResult IsFreezePossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        {
+            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                return PBEResult.Ineffective_Substitute;
+            }
+            if (!ignoreCurrentStatus && Status1 != PBEStatus1.None)
+            {
+                return PBEResult.Ineffective_Status;
+            }
+            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            {
+                return PBEResult.Ineffective_Safeguard;
+            }
+            if (HasType(PBEType.Ice))
+            {
+                return PBEResult.Ineffective_Type;
+            }
+            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.MagmaArmor || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            {
+                return PBEResult.Ineffective_Ability;
+            }
+            return PBEResult.Success;
+        }
+        public PBEResult IsFlinchPossible(PBEPokemon other)
+        {
+            if (Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                return PBEResult.Ineffective_Substitute;
+            }
+            if (Status2.HasFlag(PBEStatus2.Flinching))
+            {
+                return PBEResult.Ineffective_Status;
+            }
+            if (other?.HasCancellingAbility() == false && Ability == PBEAbility.InnerFocus)
+            {
+                return PBEResult.Ineffective_Ability;
+            }
+            return PBEResult.Success;
+        }
+        public PBEResult IsGrounded(PBEPokemon other)
+        {
+            if (HasType(PBEType.Flying))
+            {
+                return PBEResult.Ineffective_Type;
+            }
+            if (other?.HasCancellingAbility() == false && Ability == PBEAbility.Levitate)
+            {
+                return PBEResult.Ineffective_Ability;
+            }
+            return PBEResult.Success;
+        }
+        public PBEResult IsLeechSeedPossible()
+        {
+            if (Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                return PBEResult.Ineffective_Substitute;
+            }
+            if (Status2.HasFlag(PBEStatus2.LeechSeed))
+            {
+                return PBEResult.Ineffective_Status;
+            }
+            if (HasType(PBEType.Grass))
+            {
+                return PBEResult.Ineffective_Type;
+            }
+            return PBEResult.Success;
+        }
+        public PBEResult IsParalysisPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        {
+            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                return PBEResult.Ineffective_Substitute;
+            }
+            if (!ignoreCurrentStatus && Status1 != PBEStatus1.None)
+            {
+                return PBEResult.Ineffective_Status;
+            }
+            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            {
+                return PBEResult.Ineffective_Safeguard;
+            }
+            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.Limber || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            {
+                return PBEResult.Ineffective_Ability;
+            }
+            return PBEResult.Success;
+        }
+        public PBEResult IsPoisonPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        {
+            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                return PBEResult.Ineffective_Substitute;
+            }
+            if (!ignoreCurrentStatus && Status1 != PBEStatus1.None)
+            {
+                return PBEResult.Ineffective_Status;
+            }
+            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            {
+                return PBEResult.Ineffective_Safeguard;
+            }
+            if (HasType(PBEType.Poison) || HasType(PBEType.Steel))
+            {
+                return PBEResult.Ineffective_Type;
+            }
+            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.Immunity || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            {
+                return PBEResult.Ineffective_Ability;
+            }
+            return PBEResult.Success;
+        }
+        public PBEResult IsSleepPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        {
+            if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                return PBEResult.Ineffective_Substitute;
+            }
+            if (!ignoreCurrentStatus && Status1 != PBEStatus1.None)
+            {
+                return PBEResult.Ineffective_Status;
+            }
+            if (!ignoreSafeguard && Team.TeamStatus.HasFlag(PBETeamStatus.Safeguard))
+            {
+                return PBEResult.Ineffective_Safeguard;
+            }
+            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.Insomnia || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate()) || Ability == PBEAbility.VitalSpirit))
+            {
+                return PBEResult.Ineffective_Ability;
+            }
+            return PBEResult.Success;
+        }
+        public PBEResult IsSubstitutePossible(bool ignoreCurrentStatus)
+        {
+            if (!ignoreCurrentStatus && Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                return PBEResult.Ineffective_Substitute;
+            }
+            int hpRequired = MaxHP / 4;
+            if (hpRequired < 1 || HP <= hpRequired)
+            {
+                return PBEResult.Ineffective_Stat;
+            }
+            return PBEResult.Success;
+        }
+        // TODO: This leaks PBEStatus2.Disguised to singleplayer/ai, make an argument (similar to the Known* suggestion above)
+        public PBEResult IsTransformPossible(PBEPokemon target)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+            if (target.Status2.HasFlag(PBEStatus2.Substitute))
+            {
+                return PBEResult.Ineffective_Substitute;
+            }
+            if (target.Status2.HasFlag(PBEStatus2.Disguised) || Status2.HasFlag(PBEStatus2.Transformed) || target.Status2.HasFlag(PBEStatus2.Transformed))
+            {
+                return PBEResult.Ineffective_Status;
+            }
+            return PBEResult.Success;
         }
         /// <summary>Returns an array of moves the Pokémon can use.</summary>
         public PBEMove[] GetUsableMoves()

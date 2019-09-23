@@ -2258,6 +2258,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Safeguard,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 5, 0, 0,
+                    PBEMoveEffect.Safeguard, 0, PBEMoveTarget.AllTeam,
+                    PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
                 PBEMove.SandAttack,
                 new PBEMoveData
                 (

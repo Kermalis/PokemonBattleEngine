@@ -23,12 +23,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="ignoreSubstitute">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEStatus2.Substitute"/>.</param>
         /// <param name="ignoreSturdy">Whether the damage should ignore <paramref name="victim"/>'s <see cref="PBEAbility.Sturdy"/>, <see cref="PBEItem.FocusBand"/>, or <see cref="PBEItem.FocusSash"/>.</param>
         /// <returns>The amount of damage dealt.</returns>
-        private ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, ushort hp, bool ignoreSubstitute, bool ignoreSturdy = false)
+        private ushort DealDamage(PBEPokemon culprit, PBEPokemon victim, int hp, bool ignoreSubstitute, bool ignoreSturdy = false)
         {
+            if (hp < 1)
+            {
+                hp = 1;
+            }
             if (!ignoreSubstitute && victim.Status2.HasFlag(PBEStatus2.Substitute))
             {
                 ushort oldHP = victim.SubstituteHP;
-                victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
+                victim.SubstituteHP = (ushort)Math.Max(0, victim.SubstituteHP - hp);
                 ushort damageAmt = (ushort)(oldHP - victim.SubstituteHP);
                 BroadcastStatus2(victim, culprit, PBEStatus2.Substitute, PBEStatusAction.Damage);
                 return damageAmt;
@@ -37,7 +41,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 ushort oldHP = victim.HP;
                 double oldPercentage = victim.HPPercentage;
-                victim.HP = (ushort)Math.Max(0, victim.HP - Math.Max((ushort)1, hp)); // Always lose at least 1 HP
+                victim.HP = (ushort)Math.Max(0, victim.HP - hp);
                 bool sturdyHappened = false, focusBandHappened = false, focusSashHappened = false;
                 if (!ignoreSturdy && victim.HP == 0)
                 {
@@ -80,11 +84,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="pkmn">The Pokémon receiving the HP.</param>
         /// <param name="hp">The amount of HP <paramref name="pkmn"/> will try to gain.</param>
         /// <returns>The amount of HP restored.</returns>
-        private ushort HealDamage(PBEPokemon pkmn, ushort hp)
+        private ushort HealDamage(PBEPokemon pkmn, int hp)
         {
+            if (hp < 1)
+            {
+                hp = 1;
+            }
             ushort oldHP = pkmn.HP;
             double oldPercentage = pkmn.HPPercentage;
-            pkmn.HP = (ushort)Math.Min(pkmn.MaxHP, pkmn.HP + Math.Max((ushort)1, hp)); // Always try to heal at least 1 HP
+            pkmn.HP = (ushort)Math.Min(pkmn.MaxHP, pkmn.HP + hp); // Always try to heal at least 1 HP
             ushort healAmt = (ushort)(pkmn.HP - oldHP);
             if (healAmt > 0)
             {
@@ -93,39 +101,41 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return healAmt;
         }
-        private void TypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEEffectiveness moveEffectiveness, ref double moveEffectivenessMultiplier, bool ignoreWonderGuard)
+        private bool TypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEResult result, ref double damageMultiplier, bool ignoreWonderGuard)
         {
             double m = PBEPokemonData.TypeEffectiveness[moveType][target.Type1];
             m *= PBEPokemonData.TypeEffectiveness[moveType][target.Type2];
+            damageMultiplier *= m;
 
             if (m <= 0) // (-infinity, 0]
             {
-                moveEffectiveness = PBEEffectiveness.Ineffective;
+                result = PBEResult.Ineffective_Type;
+                BroadcastMoveResult(user, target, result);
+                return false;
             }
             else if (m < 1) // (0, 1)
             {
-                moveEffectiveness = PBEEffectiveness.NotVeryEffective;
+                result = PBEResult.NotVeryEffective_Type;
             }
             else if (m == 1.0) // [1, 1]
             {
-                moveEffectiveness = PBEEffectiveness.Normal;
+                result = PBEResult.Success;
             }
             else // (1, infinity)
             {
-                moveEffectiveness = PBEEffectiveness.SuperEffective;
+                result = PBEResult.SuperEffective_Type;
             }
-            moveEffectivenessMultiplier *= m;
 
-            if (moveEffectiveness != PBEEffectiveness.Ineffective)
+            if ((moveType == PBEType.Ground && target.IsGrounded(user) == PBEResult.Ineffective_Ability)
+                || (!ignoreWonderGuard && target.Ability == PBEAbility.WonderGuard && result != PBEResult.SuperEffective_Type && !user.HasCancellingAbility()))
             {
-                if ((target.Ability == PBEAbility.Levitate && moveType == PBEType.Ground && !target.IsGrounded(user))
-                    || (!ignoreWonderGuard && target.Ability == PBEAbility.WonderGuard && moveEffectiveness != PBEEffectiveness.SuperEffective && !user.HasCancellingAbility()))
-                {
-                    moveEffectiveness = PBEEffectiveness.Ineffective;
-                    moveEffectivenessMultiplier = 0;
-                    BroadcastAbility(target, target, target.Ability, PBEAbilityAction.Damage);
-                }
+                result = PBEResult.Ineffective_Ability;
+                damageMultiplier = 0;
+                BroadcastAbility(target, target, target.Ability, PBEAbilityAction.Damage);
+                BroadcastMoveResult(user, target, result);
+                return false;
             }
+            return true;
         }
 
         private double CalculateBasePower(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEType moveType)
@@ -732,38 +742,46 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
             return basePower;
         }
-        private double CalculateDamageMultiplier(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEEffectiveness moveEffectiveness, bool criticalHit)
+        private double CalculateDamageMultiplier(PBEPokemon user, PBEPokemon target, PBEMove move, PBEType moveType, PBEResult moveResult, bool criticalHit)
         {
             PBEMoveData mData = PBEMoveData.Data[move];
             double damageMultiplier = 1;
             switch (move)
             {
                 case PBEMove.Gust:
+                {
                     if (target.Status2.HasFlag(PBEStatus2.Airborne))
                     {
                         damageMultiplier *= 2.0;
                     }
                     break;
+                }
                 case PBEMove.Earthquake:
                 case PBEMove.Magnitude:
+                {
                     if (target.Status2.HasFlag(PBEStatus2.Underground))
                     {
                         damageMultiplier *= 2.0;
                     }
                     break;
+                }
                 case PBEMove.Steamroller:
                 case PBEMove.Stomp:
+                {
                     if (target.Minimize_Used)
                     {
                         damageMultiplier *= 2.0;
                     }
                     break;
+                }
                 case PBEMove.Surf:
+                {
                     if (target.Status2.HasFlag(PBEStatus2.Underwater))
                     {
                         damageMultiplier *= 2.0;
                     }
                     break;
+                }
             }
 
             if (criticalHit)
@@ -790,15 +808,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
-            switch (moveEffectiveness)
+            switch (moveResult)
             {
-                case PBEEffectiveness.NotVeryEffective:
+                case PBEResult.NotVeryEffective_Type:
+                {
                     if (user.Ability == PBEAbility.TintedLens)
                     {
                         damageMultiplier *= 2.0;
                     }
                     break;
-                case PBEEffectiveness.SuperEffective:
+                }
+                case PBEResult.SuperEffective_Type:
+                {
                     if ((target.Ability == PBEAbility.Filter || target.Ability == PBEAbility.SolidRock) && !user.HasCancellingAbility())
                     {
                         damageMultiplier *= 0.75;
@@ -808,6 +829,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         damageMultiplier *= 1.2;
                     }
                     break;
+                }
             }
             if (user.HasType(moveType))
             {
