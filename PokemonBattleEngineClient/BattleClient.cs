@@ -718,30 +718,6 @@ namespace Kermalis.PokemonBattleEngineClient
                     BattleView.AddMessage(string.Format("A critical hit on {0}!", NameForTrainer(victim, false)));
                     return false;
                 }
-                case PBEMoveResultPacket mrp:
-                {
-                    PBEPokemon moveUser = mrp.MoveUserTeam.TryGetPokemon(mrp.MoveUser),
-                            pokemon2 = mrp.Pokemon2Team.TryGetPokemon(mrp.Pokemon2);
-                    string message;
-                    switch (mrp.Result)
-                    {
-                        case PBEResult.Ineffective_Ability: message = "{1} is protected by its Ability!"; break;
-                        case PBEResult.Ineffective_Gender:
-                        case PBEResult.Ineffective_Stat:
-                        case PBEResult.Ineffective_Status:
-                        case PBEResult.InvalidConditions: message = "But it failed!"; break;
-                        case PBEResult.Ineffective_Level: message = "{1} is protected by its level!"; break;
-                        case PBEResult.Ineffective_Safeguard: message = "{1} is protected by Safeguard!"; break;
-                        case PBEResult.Ineffective_Substitute: message = "{1} is protected by its substitute!"; break;
-                        case PBEResult.Ineffective_Type: message = "{1} is protected by its Type!"; break;
-                        case PBEResult.NoTarget: message = "But there was no target..."; break;
-                        case PBEResult.NotVeryEffective_Type: message = "It's not very effective on {2}..."; break;
-                        case PBEResult.SuperEffective_Type: message = "It's super effective on {2}!"; break;
-                        default: throw new ArgumentOutOfRangeException(nameof(mrp.Result));
-                    }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(moveUser, true), NameForTrainer(pokemon2, true), NameForTrainer(pokemon2, false)));
-                    return false;
-                }
                 case PBEMoveLockPacket mlp:
                 {
                     if (Mode != ClientMode.SinglePlayer)
@@ -784,6 +760,31 @@ namespace Kermalis.PokemonBattleEngineClient
                         moveUser.UpdateKnownPP(mpcp.Move, mpcp.AmountReduced);
                     }
                     return true;
+                }
+                case PBEMoveResultPacket mrp:
+                {
+                    PBEPokemon moveUser = mrp.MoveUserTeam.TryGetPokemon(mrp.MoveUser),
+                            pokemon2 = mrp.Pokemon2Team.TryGetPokemon(mrp.Pokemon2);
+                    string message;
+                    switch (mrp.Result)
+                    {
+                        case PBEResult.Ineffective_Ability: message = "{1} is protected by its Ability!"; break;
+                        case PBEResult.Ineffective_Gender:
+                        case PBEResult.Ineffective_Stat:
+                        case PBEResult.Ineffective_Status:
+                        case PBEResult.InvalidConditions: message = "But it failed!"; break;
+                        case PBEResult.Ineffective_Level: message = "{1} is protected by its level!"; break;
+                        case PBEResult.Ineffective_MagnetRise: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise).ToString()}!"; break;
+                        case PBEResult.Ineffective_Safeguard: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard).ToString()}!"; break;
+                        case PBEResult.Ineffective_Substitute: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute).ToString()}!"; break;
+                        case PBEResult.Ineffective_Type: message = "{1} is protected by its Type!"; break;
+                        case PBEResult.NoTarget: message = "But there was no target..."; break;
+                        case PBEResult.NotVeryEffective_Type: message = "It's not very effective on {2}..."; break;
+                        case PBEResult.SuperEffective_Type: message = "It's super effective on {2}!"; break;
+                        default: throw new ArgumentOutOfRangeException(nameof(mrp.Result));
+                    }
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(moveUser, true), NameForTrainer(pokemon2, true), NameForTrainer(pokemon2, false)));
+                    return false;
                 }
                 case PBEMoveUsedPacket mup:
                 {
@@ -1265,6 +1266,16 @@ namespace Kermalis.PokemonBattleEngineClient
                                     break;
                                 }
                                 case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus2.MagnetRise:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} levitated with electromagnetism!"; break;
+                                case PBEStatusAction.Ended: message = "{0}'s electromagnetism wore off!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;

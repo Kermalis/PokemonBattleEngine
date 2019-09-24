@@ -1646,6 +1646,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.MagnetRise,
+                new PBEMoveData
+                (
+                    PBEType.Electric, PBEMoveCategory.Status, 0, 2, 0, 0,
+                    PBEMoveEffect.MagnetRise, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
                 PBEMove.Magnitude,
                 new PBEMoveData
                 (

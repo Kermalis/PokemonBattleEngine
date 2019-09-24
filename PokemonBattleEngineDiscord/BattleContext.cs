@@ -785,6 +785,13 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     await context.CreateAndSendEmbedAsync("A critical hit on {0}!", NameForTrainer(victim));
                     break;
                 }
+                case PBEMoveMissedPacket mmp:
+                {
+                    PBEPokemon moveUser = mmp.MoveUserTeam.TryGetPokemon(mmp.MoveUser),
+                            pokemon2 = mmp.Pokemon2Team.TryGetPokemon(mmp.Pokemon2);
+                    await context.CreateAndSendEmbedAsync(string.Format("{0}'s attack missed {1}!", NameForTrainer(moveUser), NameForTrainer(pokemon2)), pkmn: moveUser);
+                    break;
+                }
                 case PBEMoveResultPacket mrp:
                 {
                     PBEPokemon moveUser = mrp.MoveUserTeam.TryGetPokemon(mrp.MoveUser),
@@ -798,8 +805,9 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         case PBEResult.Ineffective_Status:
                         case PBEResult.InvalidConditions: message = "But it failed!"; break;
                         case PBEResult.Ineffective_Level: message = "{1} is protected by its level!"; break;
-                        case PBEResult.Ineffective_Safeguard: message = "{1} is protected by Safeguard!"; break;
-                        case PBEResult.Ineffective_Substitute: message = "{1} is protected by its substitute!"; break;
+                        case PBEResult.Ineffective_MagnetRise: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise).English}!"; break;
+                        case PBEResult.Ineffective_Safeguard: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard).English}!"; break;
+                        case PBEResult.Ineffective_Substitute: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute).English}!"; break;
                         case PBEResult.Ineffective_Type: message = "{1} is protected by its Type!"; break;
                         case PBEResult.NoTarget: message = "But there was no target..."; break;
                         case PBEResult.NotVeryEffective_Type: message = "It's not very effective on {1}..."; break;
@@ -807,13 +815,6 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         default: throw new ArgumentOutOfRangeException(nameof(mrp.Result));
                     }
                     await context.CreateAndSendEmbedAsync(string.Format(message, NameForTrainer(moveUser), NameForTrainer(pokemon2)), pkmn: pokemon2);
-                    break;
-                }
-                case PBEMoveMissedPacket mmp:
-                {
-                    PBEPokemon moveUser = mmp.MoveUserTeam.TryGetPokemon(mmp.MoveUser),
-                            pokemon2 = mmp.Pokemon2Team.TryGetPokemon(mmp.Pokemon2);
-                    await context.CreateAndSendEmbedAsync(string.Format("{0}'s attack missed {1}!", NameForTrainer(moveUser), NameForTrainer(pokemon2)), pkmn: moveUser);
                     break;
                 }
                 case PBEMoveUsedPacket mup:
@@ -1136,6 +1137,16 @@ namespace Kermalis.PokemonBattleEngineDiscord
                             {
                                 case PBEStatusAction.Added: message = "{0} was seeded!"; break;
                                 case PBEStatusAction.Damage: message = "{0}'s health is sapped by Leech Seed!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
+                            }
+                            break;
+                        }
+                        case PBEStatus2.MagnetRise:
+                        {
+                            switch (s2p.StatusAction)
+                            {
+                                case PBEStatusAction.Added: message = "{0} levitated with electromagnetism!"; break;
+                                case PBEStatusAction.Ended: message = "{0}'s electromagnetism wore off!"; break;
                                 default: throw new ArgumentOutOfRangeException(nameof(s2p.StatusAction));
                             }
                             break;

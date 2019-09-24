@@ -529,6 +529,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Hail:
                                     case PBEMoveEffect.Haze:
                                     case PBEMoveEffect.HelpingHand:
+                                    case PBEMoveEffect.MagnetRise:
                                     case PBEMoveEffect.Metronome:
                                     case PBEMoveEffect.OneHitKnockout:
                                     case PBEMoveEffect.PainSplit:

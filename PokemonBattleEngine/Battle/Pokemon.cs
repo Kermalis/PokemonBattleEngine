@@ -121,6 +121,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEPokemon DisguisedAsPokemon { get; set; }
         /// <summary>The Pokémon that <see cref="PBEStatus2.Infatuated"/> is bound to.</summary>
         public PBEPokemon InfatuatedWithPokemon { get; set; }
+        /// <summary>The amount of turns until <see cref="PBEStatus2.MagnetRise"/> ends.</summary>
+        public byte MagnetRiseTurns { get; set; }
         /// <summary>The amount of times the Pokémon has successfully used <see cref="PBEMove.Detect"/>, <see cref="PBEMove.Protect"/>, <see cref="PBEMove.QuickGuard"/>, and/or <see cref="PBEMove.WideGuard"/> consecutively.</summary>
         public int Protection_Counter { get; set; }
         /// <summary>The position to return <see cref="PBEStatus2.LeechSeed"/> HP to on <see cref="SeededTeam"/>.</summary>
@@ -307,6 +309,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ConfusionCounter = 0;
             ConfusionTurns = 0;
             DisguisedAsPokemon = null;
+            MagnetRiseTurns = 0;
+            Protection_Counter = 0;
             SeededPosition = PBEFieldPosition.None;
             SeededTeam = null;
             SubstituteHP = 0;
@@ -324,7 +328,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             ChoiceLockedMove = PBEMove.None;
 
             Minimize_Used = false;
-            Protection_Counter = 0;
             SlowStart_HinderTurnsLeft = 0;
             SpeedBoost_AbleToSpeedBoostThisTurn = false;
 
@@ -642,11 +645,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 throw new ArgumentOutOfRangeException(nameof(moveType));
             }
+            PBEResult result;
+            if (moveType == PBEType.Ground)
+            {
+                result = IsGrounded(moveUser, useKnownInfo: useKnownInfo);
+                if (result != PBEResult.Success)
+                {
+                    damageMultiplier = 0;
+                    return result;
+                }
+            }
             damageMultiplier = PBEPokemonData.TypeEffectiveness[moveType][useKnownInfo ? KnownType1 : Type1];
             damageMultiplier *= PBEPokemonData.TypeEffectiveness[moveType][useKnownInfo ? KnownType2 : Type2];
-            PBEResult result;
             if (damageMultiplier <= 0) // (-infinity, 0]
             {
+                damageMultiplier = 0;
                 return PBEResult.Ineffective_Type;
             }
             else if (damageMultiplier < 1) // (0, 1)
@@ -659,10 +672,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else // (1, infinity)
             {
-                result = PBEResult.SuperEffective_Type;
+                return PBEResult.SuperEffective_Type;
             }
-            if ((moveType == PBEType.Ground && IsGrounded(moveUser, useKnownInfo: useKnownInfo) == PBEResult.Ineffective_Ability)
-                || (!statusMove && (useKnownInfo ? KnownAbility : Ability) == PBEAbility.WonderGuard && result != PBEResult.SuperEffective_Type && !moveUser.HasCancellingAbility()))
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (!statusMove && !moveUser.HasCancellingAbility() && kAbility == PBEAbility.WonderGuard)
             {
                 damageMultiplier = 0;
                 result = PBEResult.Ineffective_Ability;
@@ -794,6 +807,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Ability;
             }
+            if (Status2.HasFlag(PBEStatus2.MagnetRise))
+            {
+                return PBEResult.Ineffective_MagnetRise;
+            }
             return PBEResult.Success;
         }
         public PBEResult IsLeechSeedPossible(bool useKnownInfo = false)
@@ -809,6 +826,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             if (HasType(PBEType.Grass, useKnownInfo: useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
+            }
+            return PBEResult.Success;
+        }
+        public PBEResult IsMagnetRisePossible()
+        {
+            if (Status2.HasFlag(PBEStatus2.MagnetRise))
+            {
+                return PBEResult.Ineffective_Status;
             }
             return PBEResult.Success;
         }
@@ -883,7 +908,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             if (!ignoreCurrentStatus && Status2.HasFlag(PBEStatus2.Substitute))
             {
-                return PBEResult.Ineffective_Substitute;
+                return PBEResult.Ineffective_Status;
             }
             int hpRequired = MaxHP / 4;
             if (hpRequired < 1 || HP <= hpRequired)
@@ -892,7 +917,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return PBEResult.Success;
         }
-        // TODO: This leaks PBEStatus2.Disguised to singleplayer/ai, make an argument (similar to the Known* suggestion above)
+        // TODO: This leaks PBEStatus2.Disguised to singleplayer/ai, make an argument or KnownStatus2
         public PBEResult IsTransformPossible(PBEPokemon target)
         {
             if (target == null)

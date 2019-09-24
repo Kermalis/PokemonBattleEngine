@@ -266,24 +266,25 @@ namespace Kermalis.PokemonBattleEngine.Data
         Infatuated = 1 << 6,
         /// <summary>The Pokémon is seeded and HP will be stolen at the end of each turn.</summary>
         LeechSeed = 1 << 7,
+        MagnetRise = 1 << 8,
         /// <summary>The Pokémon's <see cref="PBEStat.Attack"/> and <see cref="PBEStat.Defense"/> are switched.</summary>
-        PowerTrick = 1 << 8,
+        PowerTrick = 1 << 9,
         /// <summary>The Pokémon is protected from moves this turn.</summary>
-        Protected = 1 << 9,
+        Protected = 1 << 10,
         /// <summary>The Pokémon is under the effect of <see cref="PBEMove.FocusEnergy"/> or <see cref="PBEItem.LansatBerry"/> and has a higher chance of landing critical hits.</summary>
-        Pumped = 1 << 10,
+        Pumped = 1 << 11,
         /// <summary>The Pokémon is behind a substitute that will take damage on behalf of the Pokémon and prevent most moves from affecting the Pokémon.</summary>
-        Substitute = 1 << 11,
+        Substitute = 1 << 12,
         /// <summary>The Pokémon is unable to use the same move two times in a row.</summary>
-        Tormented = 1 << 12, // TODO
+        Tormented = 1 << 13, // TODO
         /// <summary>The Pokémon is transformed into another Pokémon.</summary>
-        Transformed = 1 << 13,
+        Transformed = 1 << 14,
         /// <summary>The Pokémon is underground. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderground"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Earthquake"/> and <see cref="PBEMove.Magnitude"/>.</summary>
-        Underground = 1 << 14,
+        Underground = 1 << 15,
         /// <summary>The Pokémon is underwater. A move will miss against the Pokémon unless it has <see cref="PBEMoveFlag.HitsUnderwater"/> or either Pokémon has <see cref="PBEAbility.NoGuard"/>.
         /// The Pokémon will take double damage from <see cref="PBEMove.Surf"/> and <see cref="PBEMove.Whirlpool"/>.</summary>
-        Underwater = 1 << 15
+        Underwater = 1 << 16
     }
     /// <summary>Represents a specific <see cref="PBEBattle"/>'s status.</summary>
     [Flags]
@@ -425,24 +426,26 @@ namespace Kermalis.PokemonBattleEngine.Data
         Ineffective_Gender = 2,
         /// <summary>Failure due to a Pokémon's level.</summary>
         Ineffective_Level = 3,
+        /// <summary>Failure due to <see cref="PBEStatus2.MagnetRise"/>.</summary>
+        Ineffective_MagnetRise = 4,
         /// <summary>Failure due to <see cref="PBETeamStatus.Safeguard"/>.</summary>
-        Ineffective_Safeguard = 4,
+        Ineffective_Safeguard = 5,
         /// <summary>Failure due to a <see cref="PBEStat"/>.</summary>
-        Ineffective_Stat = 5,
+        Ineffective_Stat = 6,
         /// <summary>Failure due to a <see cref="PBEStatus1"/>, <see cref="PBEStatus2"/>, <see cref="PBETeamStatus"/>, <see cref="PBEBattleStatus"/>, or <see cref="PBEWeather"/>.</summary>
-        Ineffective_Status = 6,
+        Ineffective_Status = 7,
         /// <summary>Failure due to <see cref="PBEStatus2.Substitute"/>.</summary>
-        Ineffective_Substitute = 7,
+        Ineffective_Substitute = 8,
         /// <summary>Failure due to a <see cref="PBEType"/>.</summary>
-        Ineffective_Type = 8,
+        Ineffective_Type = 9,
         /// <summary>Failure due to the intention's unmet special conditions.</summary>
-        InvalidConditions = 9,
+        InvalidConditions = 10,
         /// <summary>Failure due to having no available targets.</summary>
-        NoTarget = 10,
+        NoTarget = 11,
         /// <summary>Limited success due to a Pokémon's <see cref="PBEType"/>.</summary>
-        NotVeryEffective_Type = 11,
+        NotVeryEffective_Type = 12,
         /// <summary>Great success due to a Pokémon's <see cref="PBEType"/>.</summary>
-        SuperEffective_Type = 12
+        SuperEffective_Type = 13
     }
     /// <summary>Represents an action regarding a <see cref="PBEWeather"/>.</summary>
     public enum PBEWeatherAction : byte
@@ -2190,6 +2193,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         LowerTarget_ATK_DEF_By1,
         LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2,
         LuckyChant,
+        MagnetRise,
         Metronome,
         Moonlight,
         OneHitKnockout,
@@ -2434,6 +2438,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         MachPunch = 183,
         MagicalLeaf = 345,
         MagnetBomb = 443,
+        MagnetRise = 393,
         Magnitude = 222,
         Meditate = 96,
         //MeFirst // TODO: Blocked by Metronome, Sucker Punch

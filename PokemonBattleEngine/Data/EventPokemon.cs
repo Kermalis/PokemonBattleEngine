@@ -1506,7 +1506,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // Victini movies promotion
                     (
                         new byte[] { 5 }, PBESpecies.Zekrom, 100, false, PBEGender.Genderless, new PBEAbility[] { PBEAbility.Teravolt }, PBEPokemonShell.AllNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BoltStrike/*, PBEMove.FusionBolt, PBEMove.Haze, PBEMove.Outrage*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.BoltStrike/*, PBEMove.FusionBolt*/, PBEMove.Haze/*, PBEMove.Outrage*/ }
                     )
                 })
             },

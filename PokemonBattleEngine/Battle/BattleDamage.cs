@@ -108,7 +108,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 BroadcastAbility(target, target, target.Ability, PBEAbilityAction.Damage);
             }
-            if (result == PBEResult.Ineffective_Type || result == PBEResult.Ineffective_Ability)
+            if (result != PBEResult.NotVeryEffective_Type && result != PBEResult.Success && result != PBEResult.SuperEffective_Type)
             {
                 BroadcastMoveResult(user, target, result);
                 return false;
