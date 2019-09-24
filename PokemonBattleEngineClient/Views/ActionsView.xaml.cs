@@ -959,7 +959,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                     else
                     {
-                        BattleView.AddMessage($"Send {Pokemon.Nickname} where?", true, false);
+                        BattleView.AddMessage($"Send {Pokemon.Nickname} where?", messageLog: false);
                         PositionsVisible = true;
                     }
                     break;
@@ -984,7 +984,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
                     }
                     else
                     {
-                        BattleView.AddMessage($"Send {Pokemon.Nickname} where?", true, false);
+                        BattleView.AddMessage($"Send {Pokemon.Nickname} where?", messageLog: false);
                         PositionsVisible = true;
                     }
                     break;

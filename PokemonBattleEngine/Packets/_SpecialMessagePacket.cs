@@ -30,28 +30,32 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PBESpecialMessage.Recoil:
                 case PBESpecialMessage.Struggle:
                 {
-                    par.Add(((PBEPokemon)parameters[0]).FieldPosition);
-                    par.Add(((PBEPokemon)parameters[0]).Team);
-                    bytes.Add((byte)((PBEPokemon)parameters[0]).FieldPosition);
-                    bytes.Add(((PBEPokemon)parameters[0]).Team.Id);
+                    var p = (PBEPokemon)parameters[0];
+                    par.Add(p.FieldPosition);
+                    par.Add(p.Team);
+                    bytes.Add((byte)p.FieldPosition);
+                    bytes.Add(p.Team.Id);
                     break;
                 }
                 case PBESpecialMessage.Magnitude:
                 {
-                    par.Add(parameters[0]);
-                    bytes.Add((byte)parameters[0]);
+                    byte p = (byte)parameters[0];
+                    par.Add(p);
+                    bytes.Add(p);
                     break;
                 }
                 case PBESpecialMessage.PainSplit:
                 {
-                    par.Add(((PBEPokemon)parameters[0]).FieldPosition);
-                    par.Add(((PBEPokemon)parameters[0]).Team);
-                    par.Add(((PBEPokemon)parameters[1]).FieldPosition);
-                    par.Add(((PBEPokemon)parameters[1]).Team);
-                    bytes.Add((byte)((PBEPokemon)parameters[0]).FieldPosition);
-                    bytes.Add(((PBEPokemon)parameters[0]).Team.Id);
-                    bytes.Add((byte)((PBEPokemon)parameters[1]).FieldPosition);
-                    bytes.Add(((PBEPokemon)parameters[1]).Team.Id);
+                    var p0 = (PBEPokemon)parameters[0];
+                    var p1 = (PBEPokemon)parameters[1];
+                    par.Add(p0.FieldPosition);
+                    par.Add(p0.Team);
+                    par.Add(p1.FieldPosition);
+                    par.Add(p1.Team);
+                    bytes.Add((byte)p0.FieldPosition);
+                    bytes.Add(p0.Team.Id);
+                    bytes.Add((byte)p1.FieldPosition);
+                    bytes.Add(p1.Team.Id);
                     break;
                 }
             }

@@ -527,6 +527,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.FocusEnergy:
                                     case PBEMoveEffect.GastroAcid:
                                     case PBEMoveEffect.Hail:
+                                    case PBEMoveEffect.Haze:
                                     case PBEMoveEffect.HelpingHand:
                                     case PBEMoveEffect.Metronome:
                                     case PBEMoveEffect.OneHitKnockout:

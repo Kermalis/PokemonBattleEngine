@@ -1178,6 +1178,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Haze,
+                new PBEMoveData
+                (
+                    PBEType.Ice, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.Haze, 0, PBEMoveTarget.All,
+                    PBEMoveFlag.None
+                )
+            },
+            {
                 PBEMove.Headbutt,
                 new PBEMoveData
                 (

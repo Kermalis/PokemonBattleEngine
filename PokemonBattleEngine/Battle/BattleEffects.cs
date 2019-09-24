@@ -697,7 +697,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     user.TempLockedMove = PBEMove.None;
                     user.TempLockedTargets = PBETurnTarget.None;
-                    BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
+                    BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Airborne;
                     BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
                 }
@@ -705,7 +705,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     user.TempLockedMove = PBEMove.None;
                     user.TempLockedTargets = PBETurnTarget.None;
-                    BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
+                    BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Underground;
                     BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
                 }
@@ -713,7 +713,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     user.TempLockedMove = PBEMove.None;
                     user.TempLockedTargets = PBETurnTarget.None;
-                    BroadcastMoveLock(user, user.TempLockedMove, user.TempLockedTargets, PBEMoveLockType.Temporary);
+                    BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Underwater;
                     BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
                 }
@@ -868,6 +868,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.Hail:
                     {
                         Ef_TryForceWeather(user, move, PBEWeather.Hailstorm);
+                        break;
+                    }
+                    case PBEMoveEffect.Haze:
+                    {
+                        Ef_Haze(user, move);
                         break;
                     }
                     case PBEMoveEffect.HelpingHand:
@@ -3338,6 +3343,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             short change = (short)(WillLeafGuardActivate() ? +2 : +1);
             Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new short[] { change, change });
+        }
+        private void Ef_Haze(PBEPokemon user, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            foreach (PBEPokemon pkmn in ActiveBattlers)
+            {
+                pkmn.ClearStatChanges();
+            }
+            BroadcastHaze();
+            RecordExecutedMove(user, move);
         }
         private void Ef_HelpingHand(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {

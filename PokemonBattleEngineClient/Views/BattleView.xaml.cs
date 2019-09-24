@@ -28,7 +28,7 @@ namespace Kermalis.PokemonBattleEngineClient.Views
             _messages = this.FindControl<MessageView>("Messages"); // Messages will be null
         }
 
-        internal void AddMessage(string message, bool messageBox, bool messageLog)
+        internal void AddMessage(string message, bool messageBox = true, bool messageLog = true)
         {
             if (messageBox)
             {

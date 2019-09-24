@@ -39,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEActionsResponsePacket.Code: packet = new PBEActionsResponsePacket(buffer, r, _battle); break;
                     case PBEMoveUsedPacket.Code: packet = new PBEMoveUsedPacket(buffer, r, _battle); break;
                     case PBEPkmnHPChangedPacket.Code: packet = new PBEPkmnHPChangedPacket(buffer, r, _battle); break;
-                    //case PBEMoveEffectivenessPacket.Code: packet = new PBEMoveEffectivenessPacket(buffer, r, _battle); break;
+                    case PBEHazePacket.Code: packet = new PBEHazePacket(buffer, r, _battle); break;
                     case PBEPkmnSwitchOutPacket.Code: packet = new PBEPkmnSwitchOutPacket(buffer, r, _battle); break;
                     case PBEMoveMissedPacket.Code: packet = new PBEMoveMissedPacket(buffer, r, _battle); break;
                     case PBEPkmnFaintedPacket.Code: packet = new PBEPkmnFaintedPacket(buffer, r, _battle); break;

@@ -24,6 +24,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
+        private void BroadcastHaze()
+        {
+            var p = new PBEHazePacket();
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         private void BroadcastIllusion(PBEPokemon pokemon)
         {
             var p = new PBEIllusionPacket(pokemon);
@@ -516,6 +522,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(bsp.BattleStatus));
                     }
                     Console.WriteLine(message);
+                    break;
+                }
+                case PBEHazePacket _:
+                {
+                    Console.WriteLine("All stat changes were eliminated!");
                     break;
                 }
                 case PBEItemPacket ip:

@@ -95,7 +95,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 PBETurnAction[] acts = _actions.Select(p => p.TurnAction).ToArray();
                 if (Mode == ClientMode.Online)
                 {
-                    BattleView.AddMessage($"Waiting for {Team.OpposingTeam.TrainerName}...", true, false);
+                    BattleView.AddMessage($"Waiting for {Team.OpposingTeam.TrainerName}...", messageLog: false);
                     Send(new PBEActionsResponsePacket(acts));
                 }
                 else // ClientMode.SinglePlayer
@@ -105,7 +105,7 @@ namespace Kermalis.PokemonBattleEngineClient
             }
             else
             {
-                BattleView.AddMessage($"What will {_actions[i].Nickname} do?", true, false);
+                BattleView.AddMessage($"What will {_actions[i].Nickname} do?", messageLog: false);
                 BattleView.Actions.DisplayActions(_actions[i]);
             }
         }
@@ -128,7 +128,7 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 if (Mode == ClientMode.Online)
                 {
-                    BattleView.AddMessage($"Waiting for {(Team.OpposingTeam.SwitchInsRequired > 0 ? Team.OpposingTeam.TrainerName : "server")}...", true, false);
+                    BattleView.AddMessage($"Waiting for {(Team.OpposingTeam.SwitchInsRequired > 0 ? Team.OpposingTeam.TrainerName : "server")}...", messageLog: false);
                     Send(new PBESwitchInResponsePacket(Switches));
                 }
                 else // ClientMode.SinglePlayer
@@ -138,7 +138,7 @@ namespace Kermalis.PokemonBattleEngineClient
             }
             else
             {
-                BattleView.AddMessage($"You must send in {switchesRequired} Pokémon.", true, false);
+                BattleView.AddMessage($"You must send in {switchesRequired} Pokémon.", messageLog: false);
                 BattleView.Actions.DisplaySwitches();
             }
         }
@@ -146,12 +146,12 @@ namespace Kermalis.PokemonBattleEngineClient
         protected override void OnConnected()
         {
             Debug.WriteLine("Connected to {0}", Socket.RemoteEndPoint);
-            BattleView.AddMessage("Waiting for players...", false, true);
+            BattleView.AddMessage("Waiting for players...", messageBox: false);
         }
         protected override void OnDisconnected()
         {
             Debug.WriteLine("Disconnected from server");
-            BattleView.AddMessage("Disconnected from server.", false, true);
+            BattleView.AddMessage("Disconnected from server.", messageBox: false);
         }
         protected override void OnSocketError(SocketError socketError)
         {
@@ -165,7 +165,7 @@ namespace Kermalis.PokemonBattleEngineClient
             {
                 case PBEMatchCancelledPacket _:
                 {
-                    BattleView.AddMessage("Match cancelled!", false, true);
+                    BattleView.AddMessage("Match cancelled!", messageBox: false);
                     break;
                 }
                 case PBEPlayerJoinedPacket pjp:
@@ -179,7 +179,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     else
                     {
-                        BattleView.AddMessage(string.Format("{0} joined the game.", pjp.TrainerName), false, true);
+                        BattleView.AddMessage(string.Format("{0} joined the game.", pjp.TrainerName), messageBox: false);
                     }
                     if (pjp.BattleId < 2)
                     {
@@ -507,7 +507,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ap.Ability));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), NameForTrainer(pokemon2, true), PBELocalizedString.GetAbilityName(ap.Ability).ToString()), true, true);
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(abilityOwner, true), NameForTrainer(pokemon2, true), PBELocalizedString.GetAbilityName(ap.Ability).ToString()));
                     return false;
                 }
                 case PBEBattleStatusPacket bsp:
@@ -528,7 +528,19 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(bsp.BattleStatus));
                     }
-                    BattleView.AddMessage(message, true, true);
+                    BattleView.AddMessage(message);
+                    return false;
+                }
+                case PBEHazePacket _:
+                {
+                    if (Mode != ClientMode.SinglePlayer)
+                    {
+                        foreach (PBEPokemon pkmn in Battle.ActiveBattlers)
+                        {
+                            pkmn.ClearStatChanges();
+                        }
+                    }
+                    BattleView.AddMessage("All stat changes were eliminated!");
                     return false;
                 }
                 case PBEIllusionPacket ilp:
@@ -697,13 +709,13 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(ip.Item));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(itemHolder, itemHolderCaps), NameForTrainer(pokemon2, pokemon2Caps), PBELocalizedString.GetItemName(ip.Item).ToString()), true, true);
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(itemHolder, itemHolderCaps), NameForTrainer(pokemon2, pokemon2Caps), PBELocalizedString.GetItemName(ip.Item).ToString()));
                     return false;
                 }
                 case PBEMoveCritPacket mcp:
                 {
                     PBEPokemon victim = mcp.VictimTeam.TryGetPokemon(mcp.Victim);
-                    BattleView.AddMessage(string.Format("A critical hit on {0}!", NameForTrainer(victim, false)), true, true);
+                    BattleView.AddMessage(string.Format("A critical hit on {0}!", NameForTrainer(victim, false)));
                     return false;
                 }
                 case PBEMoveResultPacket mrp:
@@ -727,7 +739,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         case PBEResult.SuperEffective_Type: message = "It's super effective on {2}!"; break;
                         default: throw new ArgumentOutOfRangeException(nameof(mrp.Result));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(moveUser, true), NameForTrainer(pokemon2, true), NameForTrainer(pokemon2, false)), true, true);
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(moveUser, true), NameForTrainer(pokemon2, true), NameForTrainer(pokemon2, false)));
                     return false;
                 }
                 case PBEMoveLockPacket mlp:
@@ -757,7 +769,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 {
                     PBEPokemon moveUser = mmp.MoveUserTeam.TryGetPokemon(mmp.MoveUser),
                             pokemon2 = mmp.Pokemon2Team.TryGetPokemon(mmp.Pokemon2);
-                    BattleView.AddMessage(string.Format("{0}'s attack missed {1}!", NameForTrainer(moveUser, true), NameForTrainer(pokemon2, false)), true, true);
+                    BattleView.AddMessage(string.Format("{0}'s attack missed {1}!", NameForTrainer(moveUser, true), NameForTrainer(pokemon2, false)));
                     return false;
                 }
                 case PBEMovePPChangedPacket mpcp:
@@ -780,7 +792,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         moveUser.KnownMoves[PBEMove.MAX].Move = mup.Move;
                     }
-                    BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(moveUser, true), PBELocalizedString.GetMoveName(mup.Move).ToString()), true, true);
+                    BattleView.AddMessage(string.Format("{0} used {1}!", NameForTrainer(moveUser, true), PBELocalizedString.GetMoveName(mup.Move).ToString()));
                     return false;
                 }
                 case PBEPkmnFaintedPacket pfap:
@@ -796,7 +808,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                     }
                     BattleView.Field.UpdatePokemon(pokemon, pfap.PokemonPosition);
-                    BattleView.AddMessage(string.Format("{0} fainted!", NameForTrainer(pokemon, true)), true, true);
+                    BattleView.AddMessage(string.Format("{0} fainted!", NameForTrainer(pokemon, true)));
                     return false;
                 }
                 case PBEPkmnFormChangedPacket pfcp:
@@ -821,7 +833,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                     }
                     BattleView.Field.UpdatePokemon(pokemon);
-                    BattleView.AddMessage(string.Format("{0} transformed!", NameForTrainer(pokemon, true)), true, true);
+                    BattleView.AddMessage(string.Format("{0} transformed!", NameForTrainer(pokemon, true)));
                     return false;
                 }
                 case PBEPkmnHPChangedPacket phcp:
@@ -839,11 +851,11 @@ namespace Kermalis.PokemonBattleEngineClient
                     double absPercentageChange = Math.Abs(percentageChange);
                     if (pokemon.Team.Id == BattleId || Mode == ClientMode.Replay) // Show raw values
                     {
-                        BattleView.AddMessage(string.Format("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon, true), change <= 0 ? "lost" : "restored", absChange, absPercentageChange), true, true);
+                        BattleView.AddMessage(string.Format("{0} {1} {2} ({3:P2}) HP!", NameForTrainer(pokemon, true), change <= 0 ? "lost" : "restored", absChange, absPercentageChange));
                     }
                     else
                     {
-                        BattleView.AddMessage(string.Format("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon, true), percentageChange <= 0 ? "lost" : "restored", absPercentageChange), true, true);
+                        BattleView.AddMessage(string.Format("{0} {1} {2:P2} of its HP!", NameForTrainer(pokemon, true), percentageChange <= 0 ? "lost" : "restored", absPercentageChange));
                     }
                     return false;
                 }
@@ -898,7 +910,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             break;
                         }
                     }
-                    BattleView.AddMessage(string.Format("{0}'s {1} {2}!", NameForTrainer(pokemon, true), statName, message), true, true);
+                    BattleView.AddMessage(string.Format("{0}'s {1} {2}!", NameForTrainer(pokemon, true), statName, message));
                     return false;
                 }
                 case PBEPkmnSwitchInPacket psip:
@@ -938,7 +950,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     if (!psip.Forced)
                     {
-                        BattleView.AddMessage(string.Format("{1} sent out {0}!", PBEUtils.Andify(psip.SwitchIns.Select(s => s.Nickname).ToArray()), psip.Team.TrainerName), true, true);
+                        BattleView.AddMessage(string.Format("{1} sent out {0}!", PBEUtils.Andify(psip.SwitchIns.Select(s => s.Nickname).ToArray()), psip.Team.TrainerName));
                     }
                     return false;
                 }
@@ -962,7 +974,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     BattleView.Field.UpdatePokemon(pokemon, psop.PokemonPosition);
                     if (!psop.Forced)
                     {
-                        BattleView.AddMessage(string.Format("{1} withdrew {0}!", disguisedAsPokemon.Nickname, psop.PokemonTeam.TrainerName), true, true);
+                        BattleView.AddMessage(string.Format("{1} withdrew {0}!", disguisedAsPokemon.Nickname, psop.PokemonTeam.TrainerName));
                     }
                     return false;
                 }
@@ -980,7 +992,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         user.AccuracyChange = target.AccuracyChange = pup.AccuracyChange;
                         user.EvasionChange = target.EvasionChange = pup.EvasionChange;
                     }
-                    BattleView.AddMessage(string.Format("{0} copied {1}'s stat changes!", NameForTrainer(user, true), NameForTrainer(target, false)), true, true);
+                    BattleView.AddMessage(string.Format("{0} copied {1}'s stat changes!", NameForTrainer(user, true), NameForTrainer(target, false)));
                     return false;
                 }
                 case PBESpecialMessagePacket smp:
@@ -1030,7 +1042,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(smp.Message));
                     }
-                    BattleView.AddMessage(message, true, true);
+                    BattleView.AddMessage(message);
                     return false;
                 }
                 case PBEStatus1Packet s1p:
@@ -1123,7 +1135,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(s1p.Status1));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(status1Receiver, true)), true, true);
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(status1Receiver, true)));
                     return false;
                 }
                 case PBEStatus2Packet s2p:
@@ -1345,7 +1357,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(s2p.Status2));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(status2Receiver, status2ReceiverCaps), NameForTrainer(pokemon2, pokemon2Caps)), true, true);
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(status2Receiver, status2ReceiverCaps), NameForTrainer(pokemon2, pokemon2Caps)));
                     return false;
                 }
                 case PBETeamStatusPacket tsp:
@@ -1492,7 +1504,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "your" : "your foe's",
                         NameForTrainer(damageVictim, damageVictimCaps),
                         BattleId >= 2 ? $"{tsp.Team.TrainerName}'s" : tsp.Team.Id == BattleId ? "Your" : "The foe's"
-                        ), true, true);
+                        ));
                     return false;
                 }
                 case PBETransformPacket tp:
@@ -1592,7 +1604,7 @@ namespace Kermalis.PokemonBattleEngineClient
                         }
                         default: throw new ArgumentOutOfRangeException(nameof(wp.Weather));
                     }
-                    BattleView.AddMessage(string.Format(message, NameForTrainer(damageVictim, true)), true, true);
+                    BattleView.AddMessage(string.Format(message, NameForTrainer(damageVictim, true)));
                     return false;
                 }
                 case PBEActionsRequestPacket arp:
@@ -1607,7 +1619,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             else if (BattleId >= 2) // Spectators
                             {
-                                BattleView.AddMessage("Waiting for players...", true, false);
+                                BattleView.AddMessage("Waiting for players...", messageLog: false);
                             }
                             break;
                         }
@@ -1643,7 +1655,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     BattleView.Field.UpdatePokemon(pokemon1, acp.Pokemon1Position);
                     BattleView.Field.UpdatePokemon(pokemon2, acp.Pokemon2Position);
-                    BattleView.AddMessage("The battlers shifted to the center!", true, true);
+                    BattleView.AddMessage("The battlers shifted to the center!");
                     return false;
                 }
                 case PBESwitchInRequestPacket sirp:
@@ -1660,11 +1672,11 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             else if (BattleId >= 2) // Spectators
                             {
-                                BattleView.AddMessage("Waiting for players...", true, false);
+                                BattleView.AddMessage("Waiting for players...", messageLog: false);
                             }
                             else if (Team.SwitchInsRequired == 0) // Don't display this message if we're in switchesloop because it'd overwrite the messages we need to see.
                             {
-                                BattleView.AddMessage($"Waiting for {Team.OpposingTeam.TrainerName}...", true, false);
+                                BattleView.AddMessage($"Waiting for {Team.OpposingTeam.TrainerName}...", messageLog: false);
                             }
                             break;
                         }
@@ -1690,7 +1702,7 @@ namespace Kermalis.PokemonBattleEngineClient
                 }
                 case PBETurnBeganPacket tbp:
                 {
-                    BattleView.AddMessage($"Turn {Battle.TurnNumber = tbp.TurnNumber}", false, true);
+                    BattleView.AddMessage($"Turn {Battle.TurnNumber = tbp.TurnNumber}", messageBox: false);
                     return true;
                 }
                 case PBEWinnerPacket win:
@@ -1699,7 +1711,7 @@ namespace Kermalis.PokemonBattleEngineClient
                     {
                         Battle.Winner = win.WinningTeam;
                     }
-                    BattleView.AddMessage(string.Format("{0} defeated {1}!", win.WinningTeam.TrainerName, win.WinningTeam.OpposingTeam.TrainerName), true, true);
+                    BattleView.AddMessage(string.Format("{0} defeated {1}!", win.WinningTeam.TrainerName, win.WinningTeam.OpposingTeam.TrainerName));
                     return true;
                 }
                 default: throw new ArgumentOutOfRangeException(nameof(packet));

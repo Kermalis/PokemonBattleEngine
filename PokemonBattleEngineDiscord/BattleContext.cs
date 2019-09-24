@@ -637,6 +637,11 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     await context.CreateAndSendEmbedAsync(message);
                     break;
                 }
+                case PBEHazePacket _:
+                {
+                    await context.CreateAndSendEmbedAsync("All stat changes were eliminated!");
+                    break;
+                }
                 case PBEItemPacket ip:
                 {
                     PBEPokemon itemHolder = ip.ItemHolderTeam.TryGetPokemon(ip.ItemHolder),

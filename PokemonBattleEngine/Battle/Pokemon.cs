@@ -293,7 +293,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             KnownType1 = Type1 = pData.Type1;
             KnownType2 = Type2 = pData.Type2;
 
-            AttackChange = DefenseChange = SpAttackChange = SpDefenseChange = SpeedChange = AccuracyChange = EvasionChange = 0;
+            ClearStatChanges();
 
             if (Status1 == PBEStatus1.Asleep)
             {
@@ -496,6 +496,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEStat.Speed: return SpeedChange = val;
                 default: throw new ArgumentOutOfRangeException(nameof(stat));
             }
+        }
+        public void ClearStatChanges()
+        {
+            AccuracyChange = 0;
+            AttackChange = 0;
+            DefenseChange = 0;
+            EvasionChange = 0;
+            SpAttackChange = 0;
+            SpDefenseChange = 0;
+            SpeedChange = 0;
         }
         /// <summary>Gets the type that a move will become when used by this Pokémon.</summary>
         /// <param name="move">The move to check.</param>
