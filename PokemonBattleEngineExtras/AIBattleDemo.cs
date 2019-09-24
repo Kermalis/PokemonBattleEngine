@@ -31,7 +31,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 return;
             }
 
-            var settings = new PBESettings { NumMoves = 8 };
+            var settings = new PBESettings { NumMoves = 8, MaxPartySize = 10 };
             PBETeamShell team1Shell, team2Shell;
 
             // Completely Randomized Pokémon

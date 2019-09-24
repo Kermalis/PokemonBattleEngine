@@ -49,7 +49,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         pkmn.Team.ToxicSpikeCount = 0;
                         BroadcastTeamStatus(pkmn.Team, PBETeamStatus.ToxicSpikes, PBETeamStatusAction.Cleared);
                     }
-                    else if (pkmn.IsPoisonPossible(forcedInBy, true, false, false) == PBEResult.Success)
+                    else if (pkmn.IsPoisonPossible(forcedInBy, ignoreSubstitute: true) == PBEResult.Success)
                     {
                         if (pkmn.Team.ToxicSpikeCount == 1)
                         {
@@ -218,7 +218,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                     // Verified: Cute Charm can activate when victim is about to faint
-                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.IsAttractionPossible(victim, false) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.CuteCharm && user.IsAttractionPossible(victim) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.CuteCharm, PBEAbilityAction.ChangedStatus);
                         CauseInfatuation(user, victim);
@@ -234,14 +234,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             {
                                 if (randomNum > 10) // 11-20 (10%)
                                 {
-                                    if (!user.HasType(PBEType.Electric) && user.IsParalysisPossible(victim, false, false, false) == PBEResult.Success)
+                                    if (!user.HasType(PBEType.Electric) && user.IsParalysisPossible(victim) == PBEResult.Success)
                                     {
                                         status = PBEStatus1.Paralyzed;
                                     }
                                 }
                                 else // 0-10 (11%)
                                 {
-                                    if (user.IsSleepPossible(victim, false, false, false) == PBEResult.Success)
+                                    if (user.IsSleepPossible(victim) == PBEResult.Success)
                                     {
                                         status = PBEStatus1.Asleep;
                                     }
@@ -249,7 +249,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                             else // 21-29 (9%)
                             {
-                                if (user.IsPoisonPossible(victim, false, false, false) == PBEResult.Success)
+                                if (user.IsPoisonPossible(victim) == PBEResult.Success)
                                 {
                                     status = PBEStatus1.Poisoned;
                                 }
@@ -268,21 +268,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                             }
                         }
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.IsBurnPossible(victim, false, false, false) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.FlameBody && user.IsBurnPossible(victim) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.FlameBody, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Burned;
                         BroadcastStatus1(user, victim, PBEStatus1.Burned, PBEStatusAction.Added);
                         AntiStatusAbilityCheck(user);
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.IsPoisonPossible(victim, false, false, false) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.PoisonPoint && user.IsPoisonPossible(victim) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.PoisonPoint, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Poisoned;
                         BroadcastStatus1(user, victim, PBEStatus1.Poisoned, PBEStatusAction.Added);
                         AntiStatusAbilityCheck(user);
                     }
-                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.IsParalysisPossible(victim, false, false, false) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
+                    if (user.HP > 0 && victim.Ability == PBEAbility.Static && user.IsParalysisPossible(victim) == PBEResult.Success && PBEUtils.RandomBool(30, 100))
                     {
                         BroadcastAbility(victim, user, PBEAbility.Static, PBEAbilityAction.ChangedStatus);
                         user.Status1 = PBEStatus1.Paralyzed;
@@ -646,7 +646,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEItem.FlameOrb:
                         {
-                            if (pkmn.IsBurnPossible(null, true, false, true) == PBEResult.Success)
+                            if (pkmn.IsBurnPossible(null, ignoreSubstitute: true, ignoreSafeguard: true) == PBEResult.Success)
                             {
                                 pkmn.Status1 = PBEStatus1.Burned;
                                 BroadcastItem(pkmn, pkmn, pkmn.Item, PBEItemAction.ChangedStatus);
@@ -656,7 +656,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                         case PBEItem.ToxicOrb:
                         {
-                            if (pkmn.IsPoisonPossible(null, true, false, true) == PBEResult.Success)
+                            if (pkmn.IsPoisonPossible(null, ignoreSubstitute: true, ignoreSafeguard: true) == PBEResult.Success)
                             {
                                 pkmn.Status1 = PBEStatus1.BadlyPoisoned;
                                 pkmn.Status1Counter = 1;
@@ -1748,7 +1748,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             target.Status2 |= PBEStatus2.Infatuated;
             target.InfatuatedWithPokemon = other;
             BroadcastStatus2(target, other, PBEStatus2.Infatuated, PBEStatusAction.Added);
-            if (target.Item == PBEItem.DestinyKnot && other.IsAttractionPossible(target, false) == PBEResult.Success)
+            if (target.Item == PBEItem.DestinyKnot && other.IsAttractionPossible(target) == PBEResult.Success)
             {
                 BroadcastItem(target, other, PBEItem.DestinyKnot, PBEItemAction.ChangedStatus);
                 other.Status2 |= PBEStatus2.Infatuated;
@@ -1832,12 +1832,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             PBEResult result;
             switch (status)
             {
-                case PBEStatus1.Asleep: result = target.IsSleepPossible(user, false, false, false); break;
+                case PBEStatus1.Asleep: result = target.IsSleepPossible(user); break;
                 case PBEStatus1.BadlyPoisoned:
-                case PBEStatus1.Poisoned: result = target.IsPoisonPossible(user, false, false, false); break;
-                case PBEStatus1.Burned: result = target.IsBurnPossible(user, false, false, false); break;
-                case PBEStatus1.Frozen: result = target.IsFreezePossible(user, false, false, false); break;
-                case PBEStatus1.Paralyzed: result = target.IsParalysisPossible(user, false, false, false); break;
+                case PBEStatus1.Poisoned: result = target.IsPoisonPossible(user); break;
+                case PBEStatus1.Burned: result = target.IsBurnPossible(user); break;
+                case PBEStatus1.Frozen: result = target.IsFreezePossible(user); break;
+                case PBEStatus1.Paralyzed: result = target.IsParalysisPossible(user); break;
                 default: throw new ArgumentOutOfRangeException(nameof(status));
             }
             if (result == PBEResult.Success)
@@ -1877,7 +1877,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEStatus2.Confused:
                 {
-                    result = target.IsConfusionPossible(user, false, false, false);
+                    result = target.IsConfusionPossible(user);
                     if (result == PBEResult.Success)
                     {
                         target.Status2 |= PBEStatus2.Confused;
@@ -1931,7 +1931,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEStatus2.Infatuated:
                 {
-                    result = target.IsAttractionPossible(user, false);
+                    result = target.IsAttractionPossible(user);
                     if (result == PBEResult.Success)
                     {
                         CauseInfatuation(target, user);
@@ -1991,7 +1991,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEStatus2.Substitute:
                 {
-                    result = target.IsSubstitutePossible(false);
+                    result = target.IsSubstitutePossible();
                     if (result == PBEResult.Success)
                     {
                         int hpRequired = target.MaxHP / 4;
@@ -2108,14 +2108,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (!MissCheck(user, target, move))
                 {
-                    double damageMultiplier = targets.Length > 1 ? 0.75 : 1d;
-                    if (TypeCheck(user, target, moveType, out PBEResult result, ref damageMultiplier, false))
+                    if (TypeCheck(user, target, moveType, out PBEResult result, out double damageMultiplier))
                     {
                         // Brick Break destroys Light Screen and Reflect before doing damage
                         // Dream Eater checks for sleep before doing damage
                         // Sucker Punch fails before doing damage
                         if (beforeDoingDamage == null || beforeDoingDamage.Invoke(target) == PBEResult.Success)
                         {
+                            if (targets.Length > 1)
+                            {
+                                damageMultiplier *= 0.75;
+                            }
                             bool crit = CritCheck(user, target, move);
                             damageMultiplier *= CalculateDamageMultiplier(user, target, move, moveType, result, crit);
                             int damage = (int)(damageMultiplier * CalculateDamage(user, target, move, moveType, PBEMoveData.Data[move].Category, basePower, crit));
@@ -2170,8 +2173,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        double d = 1d;
-                        if (TypeCheck(user, target, moveType, out PBEResult _, ref d, false))
+                        if (TypeCheck(user, target, moveType, out PBEResult _, out double _))
                         {
                             // Damage func is run and the output is dealt to target
                             DealDamage(user, target, damageFunc.Invoke(target), false);
@@ -2208,8 +2210,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        double d = 1d;
-                        if (TypeCheck(user, target, user.GetMoveType(move), out PBEResult _, ref d, true)) // Paralysis, Normalize
+                        if (TypeCheck(user, target, user.GetMoveType(move), out PBEResult _, out double _, statusMove: true)) // Paralysis, Normalize
                         {
                             ApplyStatus1IfPossible(user, target, status, true);
                         }
@@ -3105,7 +3106,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             else
             {
-                PBEResult result = user.IsSleepPossible(null, true, true, true);
+                PBEResult result = user.IsSleepPossible(null, ignoreSubstitute: true, ignoreCurrentStatus: true, ignoreSafeguard: true);
                 if (result == PBEResult.Ineffective_Ability)
                 {
                     BroadcastAbility(user, user, user.Ability, PBEAbilityAction.PreventedStatus);

@@ -101,37 +101,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             return healAmt;
         }
-        private bool TypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEResult result, ref double damageMultiplier, bool ignoreWonderGuard)
+        private bool TypeCheck(PBEPokemon user, PBEPokemon target, PBEType moveType, out PBEResult result, out double damageMultiplier, bool statusMove = false)
         {
-            double m = PBEPokemonData.TypeEffectiveness[moveType][target.Type1];
-            m *= PBEPokemonData.TypeEffectiveness[moveType][target.Type2];
-            damageMultiplier *= m;
-
-            if (m <= 0) // (-infinity, 0]
+            result = target.IsAffectedByMove(user, moveType, out damageMultiplier, statusMove: statusMove);
+            if (result == PBEResult.Ineffective_Ability)
             {
-                result = PBEResult.Ineffective_Type;
-                BroadcastMoveResult(user, target, result);
-                return false;
-            }
-            else if (m < 1) // (0, 1)
-            {
-                result = PBEResult.NotVeryEffective_Type;
-            }
-            else if (m == 1.0) // [1, 1]
-            {
-                result = PBEResult.Success;
-            }
-            else // (1, infinity)
-            {
-                result = PBEResult.SuperEffective_Type;
-            }
-
-            if ((moveType == PBEType.Ground && target.IsGrounded(user) == PBEResult.Ineffective_Ability)
-                || (!ignoreWonderGuard && target.Ability == PBEAbility.WonderGuard && result != PBEResult.SuperEffective_Type && !user.HasCancellingAbility()))
-            {
-                result = PBEResult.Ineffective_Ability;
-                damageMultiplier = 0;
                 BroadcastAbility(target, target, target.Ability, PBEAbilityAction.Damage);
+            }
+            if (result == PBEResult.Ineffective_Type || result == PBEResult.Ineffective_Ability)
+            {
                 BroadcastMoveResult(user, target, result);
                 return false;
             }

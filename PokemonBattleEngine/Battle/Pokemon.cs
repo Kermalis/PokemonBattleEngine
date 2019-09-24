@@ -422,19 +422,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
         }
 
-        /// <summary>Returns True if the Pokémon has <paramref name="type"/>, False otherwise.</summary>
-        /// <param name="type">The type to check.</param>
-        public bool HasType(PBEType type)
+        public bool HasType(PBEType type, bool useKnownInfo = false)
         {
             if (type >= PBEType.MAX)
             {
                 throw new ArgumentOutOfRangeException(nameof(type));
             }
-            return Type1 == type || Type2 == type;
+            return ((useKnownInfo ? KnownType1 : Type1) == type) || ((useKnownInfo ? KnownType2 : Type2) == type);
         }
-        public bool HasCancellingAbility()
+        public bool HasCancellingAbility(bool useKnownInfo = false)
         {
-            return Ability == PBEAbility.MoldBreaker || Ability == PBEAbility.Teravolt || Ability == PBEAbility.Turboblaze;
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            return kAbility == PBEAbility.MoldBreaker || kAbility == PBEAbility.Teravolt || kAbility == PBEAbility.Turboblaze;
         }
         public PBEStat[] GetChangedStats()
         {
@@ -622,8 +621,45 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             return TempLockedMove == PBEMove.None;
         }
-        // TODO: Make different public versions that use Known*? AIs should not be able to cheat
-        public PBEResult IsAttractionPossible(PBEPokemon causer, bool ignoreCurrentStatus)
+        // TODO: Make something separate for status moves (thunder wave/glare)
+        public PBEResult IsAffectedByMove(PBEPokemon moveUser, PBEType moveType, out double damageMultiplier, bool useKnownInfo = false, bool statusMove = false)
+        {
+            if (moveUser == null)
+            {
+                throw new ArgumentNullException(nameof(moveUser));
+            }
+            if (moveType >= PBEType.MAX)
+            {
+                throw new ArgumentOutOfRangeException(nameof(moveType));
+            }
+            damageMultiplier = PBEPokemonData.TypeEffectiveness[moveType][useKnownInfo ? KnownType1 : Type1];
+            damageMultiplier *= PBEPokemonData.TypeEffectiveness[moveType][useKnownInfo ? KnownType2 : Type2];
+            PBEResult result;
+            if (damageMultiplier <= 0) // (-infinity, 0]
+            {
+                return PBEResult.Ineffective_Type;
+            }
+            else if (damageMultiplier < 1) // (0, 1)
+            {
+                result = PBEResult.NotVeryEffective_Type;
+            }
+            else if (damageMultiplier == 1) // [1, 1]
+            {
+                result = PBEResult.Success;
+            }
+            else // (1, infinity)
+            {
+                result = PBEResult.SuperEffective_Type;
+            }
+            if ((moveType == PBEType.Ground && IsGrounded(moveUser, useKnownInfo: useKnownInfo) == PBEResult.Ineffective_Ability)
+                || (!statusMove && (useKnownInfo ? KnownAbility : Ability) == PBEAbility.WonderGuard && result != PBEResult.SuperEffective_Type && !moveUser.HasCancellingAbility()))
+            {
+                damageMultiplier = 0;
+                result = PBEResult.Ineffective_Ability;
+            }
+            return result;
+        }
+        public PBEResult IsAttractionPossible(PBEPokemon causer, bool useKnownInfo = false, bool ignoreCurrentStatus = false)
         {
             if (causer == null)
             {
@@ -637,17 +673,19 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (Gender == PBEGender.Genderless || causer.Gender == PBEGender.Genderless || Gender == causer.Gender)
+            PBEGender kGender = useKnownInfo && !Status2.HasFlag(PBEStatus2.Transformed) ? KnownGender : Gender;
+            if (kGender == PBEGender.Genderless || causer.Gender == PBEGender.Genderless || kGender == causer.Gender)
             {
                 return PBEResult.Ineffective_Gender;
             }
-            if (!causer.HasCancellingAbility() && Ability == PBEAbility.Oblivious)
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (!causer.HasCancellingAbility() && kAbility == PBEAbility.Oblivious)
             {
                 return PBEResult.Ineffective_Ability;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsBurnPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        public PBEResult IsBurnPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -661,17 +699,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Safeguard;
             }
-            if (HasType(PBEType.Fire))
+            if (HasType(PBEType.Fire, useKnownInfo: useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
-            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.WaterVeil || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.WaterVeil || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsConfusionPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        public PBEResult IsConfusionPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -685,13 +724,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Safeguard;
             }
-            if (other?.HasCancellingAbility() == false && Ability == PBEAbility.OwnTempo)
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (other?.HasCancellingAbility() == false && kAbility == PBEAbility.OwnTempo)
             {
                 return PBEResult.Ineffective_Ability;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsFreezePossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        public PBEResult IsFreezePossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -705,17 +745,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Safeguard;
             }
-            if (HasType(PBEType.Ice))
+            if (HasType(PBEType.Ice, useKnownInfo: useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
-            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.MagmaArmor || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.MagmaArmor || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsFlinchPossible(PBEPokemon other)
+        public PBEResult IsFlinchPossible(PBEPokemon other, bool useKnownInfo = false)
         {
             if (Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -725,25 +766,27 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (other?.HasCancellingAbility() == false && Ability == PBEAbility.InnerFocus)
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (other?.HasCancellingAbility() == false && kAbility == PBEAbility.InnerFocus)
             {
                 return PBEResult.Ineffective_Ability;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsGrounded(PBEPokemon other)
+        public PBEResult IsGrounded(PBEPokemon other, bool useKnownInfo = false)
         {
-            if (HasType(PBEType.Flying))
+            if (HasType(PBEType.Flying, useKnownInfo: useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
-            if (other?.HasCancellingAbility() == false && Ability == PBEAbility.Levitate)
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (other?.HasCancellingAbility() == false && kAbility == PBEAbility.Levitate)
             {
                 return PBEResult.Ineffective_Ability;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsLeechSeedPossible()
+        public PBEResult IsLeechSeedPossible(bool useKnownInfo = false)
         {
             if (Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -753,13 +796,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Status;
             }
-            if (HasType(PBEType.Grass))
+            if (HasType(PBEType.Grass, useKnownInfo: useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsParalysisPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        public PBEResult IsParalysisPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -773,13 +816,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Safeguard;
             }
-            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.Limber || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.Limber || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsPoisonPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        public PBEResult IsPoisonPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -793,17 +837,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Safeguard;
             }
-            if (HasType(PBEType.Poison) || HasType(PBEType.Steel))
+            if (HasType(PBEType.Poison, useKnownInfo: useKnownInfo) || HasType(PBEType.Steel, useKnownInfo: useKnownInfo))
             {
                 return PBEResult.Ineffective_Type;
             }
-            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.Immunity || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.Immunity || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsSleepPossible(PBEPokemon other, bool ignoreSubstitute, bool ignoreCurrentStatus, bool ignoreSafeguard)
+        public PBEResult IsSleepPossible(PBEPokemon other, bool useKnownInfo = false, bool ignoreSubstitute = false, bool ignoreCurrentStatus = false, bool ignoreSafeguard = false)
         {
             if (!ignoreSubstitute && Status2.HasFlag(PBEStatus2.Substitute))
             {
@@ -817,13 +862,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 return PBEResult.Ineffective_Safeguard;
             }
-            if (other?.HasCancellingAbility() == false && (Ability == PBEAbility.Insomnia || (Ability == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate()) || Ability == PBEAbility.VitalSpirit))
+            PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
+            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.Insomnia || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate()) || kAbility == PBEAbility.VitalSpirit))
             {
                 return PBEResult.Ineffective_Ability;
             }
             return PBEResult.Success;
         }
-        public PBEResult IsSubstitutePossible(bool ignoreCurrentStatus)
+        public PBEResult IsSubstitutePossible(bool ignoreCurrentStatus = false)
         {
             if (!ignoreCurrentStatus && Status2.HasFlag(PBEStatus2.Substitute))
             {
