@@ -701,7 +701,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // Pokémon Adventure Camp fossil Pokémon
                     (
                         new byte[] { 5 }, PBESpecies.Lileep, 15, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.SuctionCups }, PBEPokemonShell.AllNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Recover, PBEMove.RockSlide/*, PBEMove.Constrict*/, PBEMove.Acid }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Recover, PBEMove.RockSlide, PBEMove.Constrict, PBEMove.Acid }
                     )
                 })
             },
