@@ -487,7 +487,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public sbyte SetStatChange(PBEStat stat, int value)
         {
-            sbyte val = (sbyte)PBEUtils.Clamp(value, -Team.Battle.Settings.MaxStatChange, Team.Battle.Settings.MaxStatChange);
+            sbyte maxStatChange = Team.Battle.Settings.MaxStatChange;
+            sbyte val = (sbyte)PBEUtils.Clamp(value, -maxStatChange, maxStatChange);
             switch (stat)
             {
                 case PBEStat.Accuracy: return AccuracyChange = val;

@@ -309,12 +309,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         Reflect = 1 << 2,
         Safeguard = 1 << 3,
         /// <summary>Grounded Pokémon that switch in will take damage. The amount of damage is based on <see cref="PBETeam.SpikeCount"/>. </summary>
-        Spikes = 1 << 4, // TODO: Gravity, magnet rise, magic guard, iron ball, baton pass with ingrain, air balloon
+        Spikes = 1 << 4, // TODO: Gravity, magic guard, iron ball, baton pass with ingrain, air balloon
         /// <summary>Pokémon that switch in will take damage. The amount of damage is based on the effectiveness of <see cref="PBEType.Rock"/> on the Pokémon. </summary>
         StealthRock = 1 << 5, // TODO: magic guard
         /// <summary>Grounded Pokémon that switch in will be <see cref="PBEStatus1.Poisoned"/> if <see cref="PBETeam.ToxicSpikeCount"/> is 1 or <see cref="PBEStatus1.BadlyPoisoned"/> if it is 2.
         /// Grounded <see cref="PBEType.Poison"/> Pokémon will remove toxic spikes.</summary>
-        ToxicSpikes = 1 << 6, // TODO: Gravity, magnet rise, leaf guard, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
+        ToxicSpikes = 1 << 6, // TODO: Gravity, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
         /// <summary>The team is protected from spread moves for a turn.</summary>
         WideGuard = 1 << 7
     }
@@ -2153,7 +2153,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         Endeavor,
         Fail,
         FinalGambit,
-        FlareBlitz,
         Flatter,
         Fly,
         FocusEnergy,
@@ -2164,9 +2163,11 @@ namespace Kermalis.PokemonBattleEngine.Data
         HelpingHand,
         Hit,
         Hit__MaybeBurn,
+        Hit__MaybeBurn__10PercentFlinch,
         Hit__MaybeConfuse,
         Hit__MaybeFlinch,
         Hit__MaybeFreeze,
+        Hit__MaybeFreeze__10PercentFlinch,
         Hit__MaybeLowerTarget_ACC_By1,
         Hit__MaybeLowerTarget_ATK_By1,
         Hit__MaybeLowerTarget_DEF_By1,
@@ -2180,6 +2181,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeLowerUser_SPE_By1,
         Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1,
         Hit__MaybeParalyze,
+        Hit__MaybeParalyze__10PercentFlinch,
         Hit__MaybePoison,
         Hit__MaybeRaiseUser_ATK_By1,
         Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1,
@@ -2188,6 +2190,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hit__MaybeRaiseUser_SPE_By1,
         Hit__MaybeToxic,
         HPDrain,
+        HPDrain__RequireSleep,
         LeechSeed,
         LightScreen,
         LowerTarget_ATK_DEF_By1,
@@ -2215,6 +2218,8 @@ namespace Kermalis.PokemonBattleEngine.Data
         RaiseUser_SPATK_SPDEF_SPE_By1,
         RaiseUser_SPE_By2_ATK_By1,
         Recoil,
+        Recoil__10PercentBurn,
+        Recoil__10PercentParalyze,
         Reflect,
         Rest,
         RestoreTargetHP,
@@ -2238,7 +2243,6 @@ namespace Kermalis.PokemonBattleEngine.Data
         ToxicSpikes,
         Transform,
         TrickRoom,
-        VoltTackle,
         Whirlwind,
         WideGuard
     }
@@ -2349,6 +2353,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         FieryDance = 552,
         FinalGambit = 515,
         FireBlast = 126,
+        FireFang = 424,
         FirePunch = 7,
         Fissure = 90,
         Flail = 175,
@@ -2409,6 +2414,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Hypnosis = 95,
         IceBeam = 58,
         //IceBurn // TODO: Blocked by Metronome
+        IceFang = 423,
         IcePunch = 8,
         IceShard = 420,
         IcicleCrash = 556,
@@ -2599,6 +2605,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         //Thief // TODO: Blocked by Metronome
         Thunder = 87,
         Thunderbolt = 85,
+        ThunderFang = 422,
         ThunderPunch = 9,
         ThunderShock = 84,
         ThunderWave = 86,

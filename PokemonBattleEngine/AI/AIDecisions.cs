@@ -121,9 +121,11 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Fly:
                                     case PBEMoveEffect.Hit:
                                     case PBEMoveEffect.Hit__MaybeBurn:
+                                    case PBEMoveEffect.Hit__MaybeBurn__10PercentFlinch:
                                     case PBEMoveEffect.Hit__MaybeConfuse:
                                     case PBEMoveEffect.Hit__MaybeFlinch:
                                     case PBEMoveEffect.Hit__MaybeFreeze:
+                                    case PBEMoveEffect.Hit__MaybeFreeze__10PercentFlinch:
                                     case PBEMoveEffect.Hit__MaybeLowerTarget_ACC_By1:
                                     case PBEMoveEffect.Hit__MaybeLowerTarget_ATK_By1:
                                     case PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1:
@@ -137,6 +139,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Hit__MaybeLowerUser_SPE_By1:
                                     case PBEMoveEffect.Hit__MaybeLowerUser_SPE_DEF_SPDEF_By1:
                                     case PBEMoveEffect.Hit__MaybeParalyze:
+                                    case PBEMoveEffect.Hit__MaybeParalyze__10PercentFlinch:
                                     case PBEMoveEffect.Hit__MaybePoison:
                                     case PBEMoveEffect.Hit__MaybeRaiseUser_ATK_By1:
                                     case PBEMoveEffect.Hit__MaybeRaiseUser_ATK_DEF_SPATK_SPDEF_SPE_By1:
@@ -146,9 +149,9 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Hit__MaybeToxic:
                                     case PBEMoveEffect.HPDrain:
                                     case PBEMoveEffect.Recoil:
-                                    case PBEMoveEffect.FlareBlitz:
+                                    case PBEMoveEffect.Recoil__10PercentBurn:
+                                    case PBEMoveEffect.Recoil__10PercentParalyze:
                                     case PBEMoveEffect.SuckerPunch:
-                                    case PBEMoveEffect.VoltTackle:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -529,6 +532,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Hail:
                                     case PBEMoveEffect.Haze:
                                     case PBEMoveEffect.HelpingHand:
+                                    case PBEMoveEffect.HPDrain__RequireSleep:
                                     case PBEMoveEffect.MagnetRise:
                                     case PBEMoveEffect.Metronome:
                                     case PBEMoveEffect.OneHitKnockout:
@@ -606,18 +610,7 @@ namespace Kermalis.PokemonBattleEngine.AI
         private static void ScoreStatChange(PBEPokemon user, PBEPokemon target, PBEStat stat, int change, ref double score)
         {
             // TODO: Do we need the stat change? Physical vs special vs status users, and base stats/transform stats/power trick stats
-            sbyte original;
-            switch (stat)
-            {
-                case PBEStat.Accuracy: original = target.AccuracyChange; break;
-                case PBEStat.Attack: original = target.AttackChange; break;
-                case PBEStat.Defense: original = target.DefenseChange; break;
-                case PBEStat.Evasion: original = target.EvasionChange; break;
-                case PBEStat.SpAttack: original = target.SpAttackChange; break;
-                case PBEStat.SpDefense: original = target.SpDefenseChange; break;
-                case PBEStat.Speed: original = target.SpeedChange; break;
-                default: throw new ArgumentOutOfRangeException(nameof(stat));
-            }
+            sbyte original = target.GetStatChange(stat);
             sbyte maxStatChange = user.Team.Battle.Settings.MaxStatChange;
             change = Math.Max(-maxStatChange, Math.Min(maxStatChange, original + change)) - original;
             if (change != 0)

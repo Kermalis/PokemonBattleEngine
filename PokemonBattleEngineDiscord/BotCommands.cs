@@ -139,10 +139,10 @@ namespace Kermalis.PokemonBattleEngineDiscord
                         .AddField("Accuracy", mData.Accuracy == 0 ? "--" : mData.Accuracy.ToString(), true);
                     switch (mData.Effect)
                     {
-                        case PBEMoveEffect.FlareBlitz: embed.AddField("Recoil", "1/3 damage dealt", true); break; // TODO: Burn chance
                         case PBEMoveEffect.Recoil: embed.AddField("Recoil", $"1/{mData.EffectParam} damage dealt", true); break;
+                        case PBEMoveEffect.Recoil__10PercentBurn: embed.AddField("Recoil", "1/3 damage dealt", true); break; // TODO: Burn chance
+                        case PBEMoveEffect.Recoil__10PercentParalyze: embed.AddField("Recoil", "1/3 damage dealt", true); break; // TODO: Paralyze chance
                         case PBEMoveEffect.Struggle: embed.AddField("Recoil", "1/4 user's max HP", true); break;
-                        case PBEMoveEffect.VoltTackle: embed.AddField("Recoil", "1/3 damage dealt", true); break; // TODO: Paralyze chance
                     }
                     embed.AddField("Targets", mData.Targets, true)
                         .AddField("Flags", mData.Flags, true);
