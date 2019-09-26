@@ -124,6 +124,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Moves with variable base power
             switch (move)
             {
+                case PBEMove.CrushGrip:
+                case PBEMove.WringOut:
+                {
+                    PBEPokemon target = targets[0];
+                    basePower = Math.Max(1, 120 * target.HP / target.MaxHP);
+                    break;
+                }
                 case PBEMove.Eruption:
                 case PBEMove.WaterSpout:
                 {
@@ -142,7 +149,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         basePower = 150;
                     }
-                    else if (val < 9)
+                    else if (val < 8)
                     {
                         basePower = 100;
                     }
@@ -162,29 +169,30 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.Frustration:
                 {
-                    basePower = (int)Math.Max(1, (byte.MaxValue - user.Friendship) / 2.5);
+                    basePower = Math.Max(1, (byte.MaxValue - user.Friendship) / 2.5);
                     break;
                 }
                 case PBEMove.GrassKnot:
                 case PBEMove.LowKick:
                 {
-                    if (targets[0].Weight >= 200.0)
+                    PBEPokemon target = targets[0];
+                    if (target.Weight >= 200.0)
                     {
                         basePower = 120;
                     }
-                    else if (targets[0].Weight >= 100.0)
+                    else if (target.Weight >= 100.0)
                     {
                         basePower = 100;
                     }
-                    else if (targets[0].Weight >= 50.0)
+                    else if (target.Weight >= 50.0)
                     {
                         basePower = 80;
                     }
-                    else if (targets[0].Weight >= 25.0)
+                    else if (target.Weight >= 25.0)
                     {
                         basePower = 60;
                     }
-                    else if (targets[0].Weight >= 10.0)
+                    else if (target.Weight >= 10.0)
                     {
                         basePower = 40;
                     }
@@ -197,7 +205,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 case PBEMove.HeatCrash:
                 case PBEMove.HeavySlam:
                 {
-                    double relative = user.Weight / targets[0].Weight;
+                    PBEPokemon target = targets[0];
+                    double relative = user.Weight / target.Weight;
                     if (relative < 2)
                     {
                         basePower = 40;
@@ -269,16 +278,17 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 case PBEMove.Return:
                 {
-                    basePower = (int)Math.Max(1, user.Friendship / 2.5);
+                    basePower = Math.Max(1, user.Friendship / 2.5);
                     break;
                 }
             }
 
-            // Item-specific power boosts
+            // Ability/Item-specific power boosts
             bool canUseGems = !mData.Flags.HasFlag(PBEMoveFlag.UnaffectedByGems);
             switch (moveType)
             {
                 case PBEType.Bug:
+                {
                     if (user.Ability == PBEAbility.Swarm && user.HP <= user.MaxHP / 3)
                     {
                         basePower *= 1.5;
@@ -287,317 +297,430 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         case PBEItem.InsectPlate:
                         case PBEItem.SilverPowder:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.BugGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.BugGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Dark:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.BlackGlasses:
                         case PBEItem.DreadPlate:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.DarkGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.DarkGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Dragon:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.AdamantOrb:
+                        {
                             if (user.OriginalSpecies == PBESpecies.Dialga)
                             {
                                 basePower *= 1.2;
                             }
                             break;
+                        }
                         case PBEItem.DracoPlate:
                         case PBEItem.DragonFang:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.GriseousOrb:
+                        {
                             if (user.OriginalSpecies == PBESpecies.Giratina_Origin)
                             {
                                 basePower *= 1.2;
                             }
                             break;
+                        }
                         case PBEItem.LustrousOrb:
+                        {
                             if (user.OriginalSpecies == PBESpecies.Palkia)
                             {
                                 basePower *= 1.2;
                             }
                             break;
+                        }
                         case PBEItem.DragonGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.DragonGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Electric:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.Magnet:
                         case PBEItem.ZapPlate:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.ElectricGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.ElectricGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Fighting:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.BlackBelt:
                         case PBEItem.FistPlate:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.FightingGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.FightingGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Fire:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.Charcoal:
                         case PBEItem.FlamePlate:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.FireGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.FireGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Flying:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.SharpBeak:
                         case PBEItem.SkyPlate:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.FlyingGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.FlyingGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Ghost:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.GriseousOrb:
+                        {
                             if (user.OriginalSpecies == PBESpecies.Giratina_Origin)
                             {
                                 basePower *= 1.2;
                             }
                             break;
+                        }
                         case PBEItem.SpellTag:
                         case PBEItem.SpookyPlate:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.GhostGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.GhostGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Grass:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.MeadowPlate:
                         case PBEItem.MiracleSeed:
                         case PBEItem.RoseIncense:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.GrassGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.GrassGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Ground:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.EarthPlate:
                         case PBEItem.SoftSand:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.GroundGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.GroundGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Ice:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.IciclePlate:
                         case PBEItem.NeverMeltIce:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.IceGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.IceGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.None:
                 {
                     break;
                 }
                 case PBEType.Normal:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.SilkScarf:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.NormalGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.NormalGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Poison:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.PoisonBarb:
                         case PBEItem.ToxicPlate:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.PoisonGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.PoisonGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Psychic:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.MindPlate:
                         case PBEItem.OddIncense:
                         case PBEItem.TwistedSpoon:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.PsychicGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.PsychicGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Rock:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.HardStone:
                         case PBEItem.RockIncense:
                         case PBEItem.StonePlate:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.RockGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.RockGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Steel:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.AdamantOrb:
+                        {
                             if (user.OriginalSpecies == PBESpecies.Dialga)
                             {
                                 basePower *= 1.2;
                             }
                             break;
+                        }
                         case PBEItem.IronPlate:
                         case PBEItem.MetalCoat:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.SteelGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.SteelGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 case PBEType.Water:
+                {
                     switch (user.Item)
                     {
                         case PBEItem.LustrousOrb:
+                        {
                             if (user.OriginalSpecies == PBESpecies.Palkia)
                             {
                                 basePower *= 1.2;
                             }
                             break;
+                        }
                         case PBEItem.MysticWater:
                         case PBEItem.SeaIncense:
                         case PBEItem.SplashPlate:
                         case PBEItem.WaveIncense:
+                        {
                             basePower *= 1.2;
                             break;
+                        }
                         case PBEItem.WaterGem:
+                        {
                             if (canUseGems)
                             {
                                 BroadcastItem(user, user, PBEItem.WaterGem, PBEItemAction.Consumed);
                                 basePower *= 1.5;
                             }
                             break;
+                        }
                     }
                     break;
+                }
                 default: throw new ArgumentOutOfRangeException(nameof(moveType));
             }
 
@@ -605,41 +728,56 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (move)
             {
                 case PBEMove.Acrobatics:
+                {
                     if (user.Item == PBEItem.None)
                     {
                         basePower *= 2.0;
                     }
                     break;
+                }
                 case PBEMove.Brine:
-                    if (targets[0].HP <= targets[0].HP / 2)
+                {
+                    PBEPokemon target = targets[0];
+                    if (target.HP <= target.HP / 2)
                     {
                         basePower *= 2.0;
                     }
                     break;
+                }
                 case PBEMove.Facade:
+                {
                     if (user.Status1 == PBEStatus1.Burned || user.Status1 == PBEStatus1.Paralyzed || user.Status1 == PBEStatus1.Poisoned || user.Status1 == PBEStatus1.BadlyPoisoned)
                     {
                         basePower *= 2.0;
                     }
                     break;
+                }
                 case PBEMove.Hex:
-                    if (targets[0].Status1 != PBEStatus1.None)
+                {
+                    PBEPokemon target = targets[0];
+                    if (target.Status1 != PBEStatus1.None)
                     {
                         basePower *= 2.0;
                     }
                     break;
+                }
                 case PBEMove.Retaliate:
+                {
                     if (user.Team.MonFaintedLastTurn)
                     {
                         basePower *= 2.0;
                     }
                     break;
+                }
                 case PBEMove.Venoshock:
-                    if (targets[0].Status1 == PBEStatus1.Poisoned || targets[0].Status1 == PBEStatus1.BadlyPoisoned)
+                {
+                    PBEPokemon target = targets[0];
+                    if (target.Status1 == PBEStatus1.Poisoned || target.Status1 == PBEStatus1.BadlyPoisoned)
                     {
                         basePower *= 2.0;
                     }
                     break;
+                }
                 case PBEMove.WeatherBall:
                 {
                     if (ShouldDoWeatherEffects() && Weather != PBEWeather.None)
@@ -650,6 +788,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
+            // Weather-specific power boosts
             if (ShouldDoWeatherEffects())
             {
                 switch (Weather)
@@ -689,6 +828,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
             }
 
+            // Other power boosts
             if (user.Status2.HasFlag(PBEStatus2.HelpingHand))
             {
                 basePower *= 1.5;
@@ -727,6 +867,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             switch (move)
             {
                 case PBEMove.Gust:
+                case PBEMove.Twister:
                 {
                     if (target.Status2.HasFlag(PBEStatus2.Airborne))
                     {

@@ -449,6 +449,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Constrict,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 7, 10, 100,
+                    PBEMoveEffect.Hit__MaybeLowerTarget_SPE_By1, 10, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.CosmicPower,
                 new PBEMoveData
                 (
@@ -464,6 +473,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEType.Grass, PBEMoveCategory.Status, 0, 2, 0, 0,
                     PBEMoveEffect.ChangeUser_DEF, +3, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
+                PBEMove.CottonSpore,
+                new PBEMoveData
+                (
+                    PBEType.Grass, PBEMoveCategory.Status, 0, 8, 0, 100,
+                    PBEMoveEffect.ChangeTarget_SPE, -2, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
             {
@@ -508,6 +526,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 (
                     PBEType.Normal, PBEMoveCategory.Physical, 0, 2, 75, 95,
                     PBEMoveEffect.Hit__MaybeLowerTarget_DEF_By1, 50, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
+                PBEMove.CrushGrip,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Physical, 0, 1, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
                     PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
@@ -2285,6 +2312,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.RollingKick,
+                new PBEMoveData
+                (
+                    PBEType.Fighting, PBEMoveCategory.Physical, 0, 3, 60, 85,
+                    PBEMoveEffect.Hit__MaybeFlinch, 30, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.SacredFire,
                 new PBEMoveData
                 (
@@ -3068,6 +3104,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Twister,
+                new PBEMoveData
+                (
+                    PBEType.Dragon, PBEMoveCategory.Special, 0, 4, 40, 100,
+                    PBEMoveEffect.Hit__MaybeFlinch, 20, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.HitsAirborne
+                )
+            },
+            {
                 PBEMove.VacuumWave,
                 new PBEMoveData
                 (
@@ -3245,6 +3290,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                     PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
                     PBEMoveEffect.RaiseUser_ATK_SPATK_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
+                PBEMove.WringOut,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Special, 0, 1, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
                 )
             },
             {
