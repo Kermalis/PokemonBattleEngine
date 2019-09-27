@@ -218,7 +218,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         break;
                                     }
                                     case PBEMoveEffect.ChangeTarget_ATK:
-                                    case PBEMoveEffect.ChangeUser_ATK:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -227,7 +226,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         break;
                                     }
                                     case PBEMoveEffect.ChangeTarget_DEF:
-                                    case PBEMoveEffect.ChangeUser_DEF:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -236,7 +234,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         break;
                                     }
                                     case PBEMoveEffect.ChangeTarget_EVA:
-                                    case PBEMoveEffect.ChangeUser_EVA:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -244,8 +241,15 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
+                                    case PBEMoveEffect.ChangeTarget_SPATK:
+                                    {
+                                        foreach (PBEPokemon target in targets)
+                                        {
+                                            ScoreStatChange(user, target, PBEStat.SpAttack, mData.EffectParam, ref score);
+                                        }
+                                        break;
+                                    }
                                     case PBEMoveEffect.ChangeTarget_SPDEF:
-                                    case PBEMoveEffect.ChangeUser_SPDEF:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -254,19 +258,10 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         break;
                                     }
                                     case PBEMoveEffect.ChangeTarget_SPE:
-                                    case PBEMoveEffect.ChangeUser_SPE:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
                                             ScoreStatChange(user, target, PBEStat.Speed, mData.EffectParam, ref score);
-                                        }
-                                        break;
-                                    }
-                                    case PBEMoveEffect.ChangeUser_SPATK:
-                                    {
-                                        foreach (PBEPokemon target in targets)
-                                        {
-                                            ScoreStatChange(user, target, PBEStat.SpAttack, mData.EffectParam, ref score);
                                         }
                                         break;
                                     }
@@ -332,7 +327,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
+                                    case PBEMoveEffect.LowerTarget_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -352,7 +347,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.Moonlight:
                                     case PBEMoveEffect.Rest:
                                     case PBEMoveEffect.RestoreTargetHP:
-                                    case PBEMoveEffect.RestoreUserHP:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -400,7 +394,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.RaiseUser_ATK_ACC_By1:
+                                    case PBEMoveEffect.RaiseTarget_ATK_ACC_By1:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -409,7 +403,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.RaiseUser_ATK_DEF_By1:
+                                    case PBEMoveEffect.RaiseTarget_ATK_DEF_By1:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -418,7 +412,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.RaiseUser_ATK_DEF_ACC_By1:
+                                    case PBEMoveEffect.RaiseTarget_ATK_DEF_ACC_By1:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -428,7 +422,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.RaiseUser_ATK_SPATK_By1:
+                                    case PBEMoveEffect.RaiseTarget_ATK_SPATK_By1:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -437,7 +431,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.RaiseUser_ATK_SPE_By1:
+                                    case PBEMoveEffect.RaiseTarget_ATK_SPE_By1:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -446,7 +440,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.RaiseUser_DEF_SPDEF_By1:
+                                    case PBEMoveEffect.RaiseTarget_DEF_SPDEF_By1:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -455,7 +449,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.RaiseUser_SPATK_SPDEF_By1:
+                                    case PBEMoveEffect.RaiseTarget_SPATK_SPDEF_By1:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -464,7 +458,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1:
+                                    case PBEMoveEffect.RaiseTarget_SPATK_SPDEF_SPE_By1:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -474,7 +468,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1:
+                                    case PBEMoveEffect.RaiseTarget_SPE_By2_ATK_By1:
                                     {
                                         foreach (PBEPokemon target in targets)
                                         {
@@ -524,6 +518,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
+                                    case PBEMoveEffect.ChangeTarget_SPATK__IfAttractionPossible:
                                     case PBEMoveEffect.Curse:
                                     case PBEMoveEffect.Endeavor:
                                     case PBEMoveEffect.FinalGambit:

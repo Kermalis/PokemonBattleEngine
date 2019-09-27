@@ -769,13 +769,13 @@ namespace Kermalis.PokemonBattleEngineClient
                     switch (mrp.Result)
                     {
                         case PBEResult.Ineffective_Ability: message = "{1} is protected by its Ability!"; break;
-                        case PBEResult.Ineffective_Gender:
-                        case PBEResult.Ineffective_Stat:
-                        case PBEResult.Ineffective_Status:
-                        case PBEResult.InvalidConditions: message = "But it failed!"; break;
+                        case PBEResult.Ineffective_Gender: message = "It doesn't affect {2}..."; break;
                         case PBEResult.Ineffective_Level: message = "{1} is protected by its level!"; break;
                         case PBEResult.Ineffective_MagnetRise: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.MagnetRise).ToString()}!"; break;
                         case PBEResult.Ineffective_Safeguard: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Safeguard).ToString()}!"; break;
+                        case PBEResult.Ineffective_Stat:
+                        case PBEResult.Ineffective_Status:
+                        case PBEResult.InvalidConditions: message = "But it failed!"; break;
                         case PBEResult.Ineffective_Substitute: message = $"{{1}} is protected by {PBELocalizedString.GetMoveName(PBEMove.Substitute).ToString()}!"; break;
                         case PBEResult.Ineffective_Type: message = "{1} is protected by its Type!"; break;
                         case PBEResult.NoTarget: message = "But there was no target..."; break;

@@ -75,7 +75,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Poison, PBEMoveCategory.Status, 0, 8, 0, 0,
-                    PBEMoveEffect.ChangeUser_DEF, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_DEF, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -120,7 +120,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Status, 0, 6, 0, 0,
-                    PBEMoveEffect.ChangeUser_SPE, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_SPE, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -147,7 +147,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.ChangeUser_SPDEF, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_SPDEF, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -228,7 +228,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Status, 0, 6, 0, 0,
-                    PBEMoveEffect.ChangeUser_DEF, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_DEF, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -354,7 +354,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Fighting, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.RaiseUser_ATK_DEF_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_ATK_DEF_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -381,8 +381,17 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.RaiseUser_SPATK_SPDEF_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_SPATK_SPDEF_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
+                PBEMove.Captivate,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 100,
+                    PBEMoveEffect.ChangeTarget_SPATK__IfAttractionPossible, -2, PBEMoveTarget.AllFoesSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
                 )
             },
             {
@@ -426,7 +435,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Poison, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.RaiseUser_ATK_DEF_ACC_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_ATK_DEF_ACC_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -462,7 +471,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.RaiseUser_DEF_SPDEF_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_DEF_SPDEF_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -471,7 +480,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Grass, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.ChangeUser_DEF, +3, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_DEF, +3, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -579,7 +588,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Bug, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RaiseUser_DEF_SPDEF_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_DEF_SPDEF_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -588,7 +597,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 0,
-                    PBEMoveEffect.ChangeUser_DEF, +1, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_DEF, +1, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -651,7 +660,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 3, 0, 0,
-                    PBEMoveEffect.ChangeUser_EVA, +1, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_EVA, +1, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -687,7 +696,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Dragon, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.RaiseUser_ATK_SPE_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_ATK_SPE_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -1209,7 +1218,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
-                    PBEMoveEffect.ChangeUser_DEF, +1, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_DEF, +1, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -1254,7 +1263,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Bug, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreTargetHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -1335,7 +1344,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Dark, PBEMoveCategory.Status, 0, 3, 0, 0,
-                    PBEMoveEffect.RaiseUser_ATK_ACC_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_ATK_ACC_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -1371,7 +1380,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 0,
-                    PBEMoveEffect.ChangeUser_ATK, +1, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_ATK, +1, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -1488,7 +1497,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Steel, PBEMoveCategory.Status, 0, 3, 0, 0,
-                    PBEMoveEffect.ChangeUser_DEF, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_DEF, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -1713,7 +1722,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Status, 0, 8, 0, 0,
-                    PBEMoveEffect.ChangeUser_ATK, +1, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_ATK, +1, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -1794,7 +1803,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreTargetHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -1803,7 +1812,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.ChangeUser_EVA, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_EVA, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -1884,7 +1893,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Dark, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.ChangeUser_SPATK, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_SPATK, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2163,7 +2172,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Bug, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_SPATK_SPDEF_SPE_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2199,7 +2208,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreTargetHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2271,7 +2280,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Rock, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.ChangeUser_SPE, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_SPE, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2487,7 +2496,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
-                    PBEMoveEffect.ChangeUser_ATK, +1, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_ATK, +1, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2505,7 +2514,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 3, 0, 0,
-                    PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.LowerTarget_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2514,7 +2523,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Steel, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_SPE_By2_ATK_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2568,7 +2577,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreTargetHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2667,7 +2676,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 2, 0, 0,
-                    PBEMoveEffect.RestoreUserHP, 50, PBEMoveTarget.Self,
+                    PBEMoveEffect.RestoreTargetHP, 50, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2928,7 +2937,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
-                    PBEMoveEffect.ChangeUser_ATK, +2, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_ATK, +2, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -2955,7 +2964,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Bug, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.ChangeUser_SPATK, +3, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_SPATK, +3, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -3270,7 +3279,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Water, PBEMoveCategory.Status, 0, 8, 0, 0,
-                    PBEMoveEffect.ChangeUser_DEF, +1, PBEMoveTarget.Self,
+                    PBEMoveEffect.ChangeTarget_DEF, +1, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },
@@ -3288,7 +3297,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Normal, PBEMoveCategory.Status, 0, 6, 0, 0,
-                    PBEMoveEffect.RaiseUser_ATK_SPATK_By1, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.RaiseTarget_ATK_SPATK_By1, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.AffectedBySnatch
                 )
             },

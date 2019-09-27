@@ -774,6 +774,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Evasion }, new int[] { effectParam });
                         break;
                     }
+                    case PBEMoveEffect.ChangeTarget_SPATK:
+                    {
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new int[] { effectParam });
+                        break;
+                    }
+                    case PBEMoveEffect.ChangeTarget_SPATK__IfAttractionPossible:
+                    {
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack }, new int[] { effectParam }, requireAttraction: true);
+                        break;
+                    }
                     case PBEMoveEffect.ChangeTarget_SPDEF:
                     {
                         Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpDefense }, new int[] { effectParam });
@@ -782,36 +792,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.ChangeTarget_SPE:
                     {
                         Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Speed }, new int[] { effectParam });
-                        break;
-                    }
-                    case PBEMoveEffect.ChangeUser_ATK:
-                    {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack }, new int[] { effectParam });
-                        break;
-                    }
-                    case PBEMoveEffect.ChangeUser_DEF:
-                    {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense }, new int[] { effectParam });
-                        break;
-                    }
-                    case PBEMoveEffect.ChangeUser_EVA:
-                    {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Evasion }, new int[] { effectParam });
-                        break;
-                    }
-                    case PBEMoveEffect.ChangeUser_SPATK:
-                    {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack }, new int[] { effectParam });
-                        break;
-                    }
-                    case PBEMoveEffect.ChangeUser_SPDEF:
-                    {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpDefense }, new int[] { effectParam });
-                        break;
-                    }
-                    case PBEMoveEffect.ChangeUser_SPE:
-                    {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Speed }, new int[] { effectParam });
                         break;
                     }
                     case PBEMoveEffect.Confuse:
@@ -872,7 +852,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.Growth:
                     {
                         int change = WillLeafGuardActivate() ? +2 : +1;
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new int[] { change, change });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new int[] { change, change });
                         break;
                     }
                     case PBEMoveEffect.Hail:
@@ -1055,9 +1035,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new int[] { -1, -1 });
                         break;
                     }
-                    case PBEMoveEffect.LowerUser_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
+                    case PBEMoveEffect.LowerTarget_DEF_SPDEF_By1_Raise_ATK_SPATK_SPE_By2:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense, PBEStat.Attack, PBEStat.SpAttack, PBEStat.Speed }, new int[] { -1, -1, +2, +2, +2 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense, PBEStat.Attack, PBEStat.SpAttack, PBEStat.Speed }, new int[] { -1, -1, +2, +2, +2 });
                         break;
                     }
                     case PBEMoveEffect.LuckyChant:
@@ -1125,49 +1105,49 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_TryForceWeather(user, move, PBEWeather.Rain);
                         break;
                     }
-                    case PBEMoveEffect.RaiseUser_ATK_ACC_By1:
+                    case PBEMoveEffect.RaiseTarget_ATK_ACC_By1:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Accuracy }, new int[] { +1, +1 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Accuracy }, new int[] { +1, +1 });
                         break;
                     }
-                    case PBEMoveEffect.RaiseUser_ATK_DEF_By1:
+                    case PBEMoveEffect.RaiseTarget_ATK_DEF_By1:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new int[] { +1, +1 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense }, new int[] { +1, +1 });
                         break;
                     }
-                    case PBEMoveEffect.RaiseUser_ATK_DEF_ACC_By1:
+                    case PBEMoveEffect.RaiseTarget_ATK_DEF_ACC_By1:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.Accuracy }, new int[] { +1, +1, +1 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Defense, PBEStat.Accuracy }, new int[] { +1, +1, +1 });
                         break;
                     }
-                    case PBEMoveEffect.RaiseUser_ATK_SPATK_By1:
+                    case PBEMoveEffect.RaiseTarget_ATK_SPATK_By1:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new int[] { +1, +1 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.SpAttack }, new int[] { +1, +1 });
                         break;
                     }
-                    case PBEMoveEffect.RaiseUser_ATK_SPE_By1:
+                    case PBEMoveEffect.RaiseTarget_ATK_SPE_By1:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Attack, PBEStat.Speed }, new int[] { +1, +1 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Attack, PBEStat.Speed }, new int[] { +1, +1 });
                         break;
                     }
-                    case PBEMoveEffect.RaiseUser_DEF_SPDEF_By1:
+                    case PBEMoveEffect.RaiseTarget_DEF_SPDEF_By1:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense }, new int[] { +1, +1 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Defense, PBEStat.SpDefense }, new int[] { +1, +1 });
                         break;
                     }
-                    case PBEMoveEffect.RaiseUser_SPATK_SPDEF_By1:
+                    case PBEMoveEffect.RaiseTarget_SPATK_SPDEF_By1:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense }, new int[] { +1, +1 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense }, new int[] { +1, +1 });
                         break;
                     }
-                    case PBEMoveEffect.RaiseUser_SPATK_SPDEF_SPE_By1:
+                    case PBEMoveEffect.RaiseTarget_SPATK_SPDEF_SPE_By1:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed }, new int[] { +1, +1, +1 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.SpAttack, PBEStat.SpDefense, PBEStat.Speed }, new int[] { +1, +1, +1 });
                         break;
                     }
-                    case PBEMoveEffect.RaiseUser_SPE_By2_ATK_By1:
+                    case PBEMoveEffect.RaiseTarget_SPE_By2_ATK_By1:
                     {
-                        Ef_ChangeUserStats(user, move, new PBEStat[] { PBEStat.Speed, PBEStat.Attack }, new int[] { +2, +1 });
+                        Ef_ChangeTargetStats(user, targets, move, new PBEStat[] { PBEStat.Speed, PBEStat.Attack }, new int[] { +2, +1 });
                         break;
                     }
                     case PBEMoveEffect.Recoil:
@@ -1198,11 +1178,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.RestoreTargetHP:
                     {
                         Ef_RestoreTargetHP(user, targets, move, effectParam);
-                        break;
-                    }
-                    case PBEMoveEffect.RestoreUserHP:
-                    {
-                        Ef_RestoreUserHP(user, move, effectParam);
                         break;
                     }
                     case PBEMoveEffect.Safeguard:
@@ -1407,6 +1382,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private bool MissCheck(PBEPokemon user, PBEPokemon target, PBEMove move)
         {
+            if (user == target)
+            {
+                return false;
+            }
             PBEMoveData mData = PBEMoveData.Data[move];
 
             if (target.Status2.HasFlag(PBEStatus2.Protected) && mData.Flags.HasFlag(PBEMoveFlag.AffectedByProtect))
@@ -2518,7 +2497,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
-        private void Ef_ChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, int[] changes)
+        private void Ef_ChangeTargetStats(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBEStat[] stats, int[] changes, bool requireAttraction = false)
         {
             BroadcastMoveUsed(user, move);
             PPReduce(user, move);
@@ -2532,7 +2511,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        if (target.Status2.HasFlag(PBEStatus2.Substitute))
+                        PBEResult result = requireAttraction ? target.IsAttractionPossible(user, ignoreCurrentStatus: true) : PBEResult.Success;
+                        if (result != PBEResult.Success)
+                        {
+                            BroadcastMoveResult(user, target, result);
+                        }
+                        else if (user != target && target.Status2.HasFlag(PBEStatus2.Substitute))
                         {
                             BroadcastMoveResult(user, target, PBEResult.Ineffective_Substitute);
                         }
@@ -2545,16 +2529,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-            }
-            RecordExecutedMove(user, move);
-        }
-        private void Ef_ChangeUserStats(PBEPokemon user, PBEMove move, PBEStat[] stats, int[] changes)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-            for (int i = 0; i < stats.Length; i++)
-            {
-                ApplyStatChange(user, user, stats[i], changes[i]);
             }
             RecordExecutedMove(user, move);
         }
@@ -2846,7 +2820,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 void BeforePostHit(PBEPokemon target)
                 {
-                    if (target.HP > 0 && !target.Status2.HasFlag(PBEStatus2.Substitute) && PBEUtils.RandomBool(chanceToFlinch, 100))
+                    if (target.HP > 0 && PBEUtils.RandomBool(chanceToFlinch, 100))
                     {
                         ApplyStatus2IfPossible(user, target, PBEStatus2.Flinching, false);
                     }
@@ -3226,7 +3200,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     if (!MissCheck(user, target, move))
                     {
-                        if (target.Status2.HasFlag(PBEStatus2.Substitute))
+                        if (user != target && target.Status2.HasFlag(PBEStatus2.Substitute))
                         {
                             BroadcastMoveResult(user, target, PBEResult.Ineffective_Substitute);
                         }
@@ -3240,17 +3214,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         }
                     }
                 }
-            }
-            RecordExecutedMove(user, move);
-        }
-        private void Ef_RestoreUserHP(PBEPokemon user, PBEMove move, int percentRestored)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-            ushort amtRestored = HealDamage(user, (int)(user.MaxHP * (percentRestored / 100.0)));
-            if (amtRestored == 0)
-            {
-                BroadcastMoveResult(user, user, PBEResult.Ineffective_Stat);
             }
             RecordExecutedMove(user, move);
         }
