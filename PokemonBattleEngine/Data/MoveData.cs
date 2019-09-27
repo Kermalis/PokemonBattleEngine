@@ -2717,6 +2717,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Splash,
+                new PBEMoveData
+                (
+                    PBEType.Normal, PBEMoveCategory.Status, 0, 8, 0, 0,
+                    PBEMoveEffect.Nothing, 0, PBEMoveTarget.Self,
+                    PBEMoveFlag.None
+                )
+            },
+            {
                 PBEMove.Spore,
                 new PBEMoveData
                 (
@@ -3009,7 +3018,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                 new PBEMoveData
                 (
                     PBEType.Psychic, PBEMoveCategory.Status, 0, 4, 0, 0,
-                    PBEMoveEffect.Fail, 0, PBEMoveTarget.Self,
+                    PBEMoveEffect.Teleport, 0, PBEMoveTarget.Self,
                     PBEMoveFlag.None
                 )
             },

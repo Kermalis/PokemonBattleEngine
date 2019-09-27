@@ -819,11 +819,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_Endeavor(user, targets, move);
                         break;
                     }
-                    case PBEMoveEffect.Fail:
-                    {
-                        Ef_Fail(user, move);
-                        break;
-                    }
                     case PBEMoveEffect.FinalGambit:
                     {
                         Ef_FinalGambit(user, targets, move);
@@ -1060,6 +1055,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_Moonlight(user, move);
                         break;
                     }
+                    case PBEMoveEffect.Nothing:
+                    {
+                        Ef_Nothing(user, move);
+                        break;
+                    }
                     case PBEMoveEffect.OneHitKnockout:
                     {
                         Ef_OneHitKnockout(user, targets, move);
@@ -1253,6 +1253,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.Swagger:
                     {
                         Ef_Swagger(user, targets, move);
+                        break;
+                    }
+                    case PBEMoveEffect.Teleport:
+                    {
+                        Ef_Teleport(user, move);
                         break;
                     }
                     case PBEMoveEffect.Toxic:
@@ -2682,13 +2687,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             }
             RecordExecutedMove(user, move);
         }
-        private void Ef_Fail(PBEPokemon user, PBEMove move)
-        {
-            BroadcastMoveUsed(user, move);
-            PPReduce(user, move);
-            BroadcastMoveResult(user, user, PBEResult.InvalidConditions);
-            RecordExecutedMove(user, move);
-        }
         private void Ef_Fly(PBEPokemon user, PBEPokemon[] targets, PBEMove move, PBETurnTarget requestedTargets)
         {
             BroadcastMoveUsed(user, move);
@@ -3373,6 +3371,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             UseMove(user, calledMove, GetRandomTargetForMetronome(user, calledMove));
             _calledFromOtherMove = false;
         }
+        private void Ef_Nothing(PBEPokemon user, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            BroadcastNothingHappened();
+            RecordExecutedMove(user, move);
+        }
         private void Ef_PsychUp(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);
@@ -3447,6 +3452,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     }
                 }
             }
+            RecordExecutedMove(user, move);
+        }
+        private void Ef_Teleport(PBEPokemon user, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            BroadcastMoveResult(user, user, PBEResult.InvalidConditions);
             RecordExecutedMove(user, move);
         }
     }

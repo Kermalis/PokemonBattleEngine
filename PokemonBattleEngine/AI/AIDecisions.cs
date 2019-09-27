@@ -283,11 +283,6 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         }
                                         break;
                                     }
-                                    case PBEMoveEffect.Fail:
-                                    {
-                                        score -= 100;
-                                        break;
-                                    }
                                     case PBEMoveEffect.Growth:
                                     {
                                         int change = team.Battle.WillLeafGuardActivate() ? +2 : +1;
@@ -359,6 +354,12 @@ namespace Kermalis.PokemonBattleEngine.AI
                                                 score -= 100;
                                             }
                                         }
+                                        break;
+                                    }
+                                    case PBEMoveEffect.Nothing:
+                                    case PBEMoveEffect.Teleport:
+                                    {
+                                        score -= 100;
                                         break;
                                     }
                                     case PBEMoveEffect.Paralyze:

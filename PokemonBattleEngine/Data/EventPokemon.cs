@@ -125,7 +125,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // PCNY
                     (
                         new byte[] { 3 }, PBESpecies.Azurill, 5, false, PBEGender.MAX, new PBEAbility[] { PBEAbility.HugePower, PBEAbility.ThickFat }, PBEPokemonShell.AllNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Splash, */PBEMove.Charm, PBEMove.None, PBEMove.None }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Splash, PBEMove.Charm, PBEMove.None, PBEMove.None }
                     )
                 })
             },
@@ -738,32 +738,32 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // GTS Ryuuta
                     (
                         new byte[] { 4 }, PBESpecies.Magikarp, 4, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SwiftSwim }, new PBENature[] { PBENature.Modest },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Splash, */PBEMove.None, PBEMove.None, PBEMove.None }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Splash, PBEMove.None, PBEMove.None, PBEMove.None }
                     ),
                     new PBEEventPokemon // GTS Nana
                     (
                         new byte[] { 4 }, PBESpecies.Magikarp, 5, false, PBEGender.Female, new PBEAbility[] { PBEAbility.SwiftSwim }, new PBENature[] { PBENature.Lonely },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Splash, */PBEMove.None, PBEMove.None, PBEMove.None }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Splash, PBEMove.None, PBEMove.None, PBEMove.None }
                     ),
                     new PBEEventPokemon // GTS Utz
                     (
                         new byte[] { 4 }, PBESpecies.Magikarp, 5, false, PBEGender.Male, new PBEAbility[] { PBEAbility.SwiftSwim }, new PBENature[] { PBENature.Relaxed },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Splash, */PBEMove.None, PBEMove.None, PBEMove.None }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Splash, PBEMove.None, PBEMove.None, PBEMove.None }
                     ),
                     new PBEEventPokemon // GTS Ruirui
                     (
                         new byte[] { 4 }, PBESpecies.Magikarp, 6, false, PBEGender.Female, new PBEAbility[] { PBEAbility.SwiftSwim }, new PBENature[] { PBENature.Rash },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Splash, */PBEMove.None, PBEMove.None, PBEMove.None }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Splash, PBEMove.None, PBEMove.None, PBEMove.None }
                     ),
                     new PBEEventPokemon // GTS Nory
                     (
                         new byte[] { 4 }, PBESpecies.Magikarp, 7, false, PBEGender.Female, new PBEAbility[] { PBEAbility.SwiftSwim }, new PBENature[] { PBENature.Hardy },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { /*PBEMove.Splash, */PBEMove.None, PBEMove.None, PBEMove.None }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Splash, PBEMove.None, PBEMove.None, PBEMove.None }
                     ),
                     new PBEEventPokemon // Pokémon Center relocation
                     (
                         new byte[] { 5 }, PBESpecies.Magikarp, 99, true, PBEGender.MAX, new PBEAbility[] { PBEAbility.SwiftSwim }, PBEPokemonShell.AllNatures,
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Flail, PBEMove.HydroPump/*, PBEMove.Bounce, PBEMove.Splash*/ }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Flail, PBEMove.HydroPump/*, PBEMove.Bounce*/, PBEMove.Splash }
                     )
                 })
             },

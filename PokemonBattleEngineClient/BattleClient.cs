@@ -1021,6 +1021,11 @@ namespace Kermalis.PokemonBattleEngineClient
                             message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
                             break;
                         }
+                        case PBESpecialMessage.NothingHappened:
+                        {
+                            message = "But nothing happened!";
+                            break;
+                        }
                         case PBESpecialMessage.OneHitKnockout:
                         {
                             message = "It's a one-hit KO!";

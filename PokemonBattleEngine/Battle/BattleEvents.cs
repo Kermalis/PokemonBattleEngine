@@ -177,6 +177,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
+        private void BroadcastNothingHappened()
+        {
+            var p = new PBESpecialMessagePacket(PBESpecialMessage.NothingHappened);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
         private void BroadcastOneHitKnockout()
         {
             var p = new PBESpecialMessagePacket(PBESpecialMessage.OneHitKnockout);
@@ -850,6 +856,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         case PBESpecialMessage.Magnitude:
                         {
                             message = string.Format("Magnitude {0}!", (byte)smp.Params[0]);
+                            break;
+                        }
+                        case PBESpecialMessage.NothingHappened:
+                        {
+                            message = "But nothing happened!";
                             break;
                         }
                         case PBESpecialMessage.OneHitKnockout:

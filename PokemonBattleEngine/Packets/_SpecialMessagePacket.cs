@@ -83,6 +83,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     Params = new ReadOnlyCollection<object>(new object[] { r.ReadByte() });
                     break;
                 }
+                case PBESpecialMessage.NothingHappened:
                 case PBESpecialMessage.OneHitKnockout:
                 {
                     Params = new ReadOnlyCollection<object>(Array.Empty<object>());
