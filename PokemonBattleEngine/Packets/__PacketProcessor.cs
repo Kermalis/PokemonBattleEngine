@@ -65,6 +65,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                     case PBEMoveLockPacket.Code: packet = new PBEMoveLockPacket(buffer, r, _battle); break;
                     case PBEPkmnFormChangedPacket.Code: packet = new PBEPkmnFormChangedPacket(buffer, r, _battle); break;
                     case PBEAutoCenterPacket.Code: packet = new PBEAutoCenterPacket(buffer, r, _battle); break;
+                    case PBETypeChangedPacket.Code: packet = new PBETypeChangedPacket(buffer, r, _battle); break;
                     default: throw new ArgumentOutOfRangeException(nameof(code));
                 }
             }

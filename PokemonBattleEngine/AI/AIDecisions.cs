@@ -520,6 +520,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                         break;
                                     }
                                     case PBEMoveEffect.ChangeTarget_SPATK__IfAttractionPossible:
+                                    case PBEMoveEffect.Conversion:
                                     case PBEMoveEffect.Curse:
                                     case PBEMoveEffect.Endeavor:
                                     case PBEMoveEffect.FinalGambit:

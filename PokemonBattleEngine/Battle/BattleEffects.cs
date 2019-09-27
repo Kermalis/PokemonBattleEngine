@@ -707,24 +707,18 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 if (user.Status2.HasFlag(PBEStatus2.Airborne))
                 {
-                    user.TempLockedMove = PBEMove.None;
-                    user.TempLockedTargets = PBETurnTarget.None;
                     BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Airborne;
                     BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
                 }
                 if (user.Status2.HasFlag(PBEStatus2.Underground))
                 {
-                    user.TempLockedMove = PBEMove.None;
-                    user.TempLockedTargets = PBETurnTarget.None;
                     BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Underground;
                     BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
                 }
                 if (user.Status2.HasFlag(PBEStatus2.Underwater))
                 {
-                    user.TempLockedMove = PBEMove.None;
-                    user.TempLockedTargets = PBETurnTarget.None;
                     BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                     user.Status2 &= ~PBEStatus2.Underwater;
                     BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
@@ -797,6 +791,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     case PBEMoveEffect.Confuse:
                     {
                         Ef_TryForceStatus2(user, targets, move, PBEStatus2.Confused);
+                        break;
+                    }
+                    case PBEMoveEffect.Conversion:
+                    {
+                        Ef_Conversion(user, targets, move);
                         break;
                     }
                     case PBEMoveEffect.Curse:
@@ -1825,7 +1824,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             // Doesn't care if there is a Choice Locked move already. As long as the user knows it, it will become locked. (Metronome calling a move the user knows, Ditto transforming into someone else with transform)
             if ((user.Item == PBEItem.ChoiceBand || user.Item == PBEItem.ChoiceScarf || user.Item == PBEItem.ChoiceSpecs) && user.Moves.Contains(move))
             {
-                user.ChoiceLockedMove = move;
                 BroadcastMoveLock(user, move, PBETurnTarget.None, PBEMoveLockType.ChoiceItem);
             }
             if (move == PBEMove.Minimize)
@@ -2623,8 +2621,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underground))
             {
-                user.TempLockedMove = PBEMove.None;
-                user.TempLockedTargets = PBETurnTarget.None;
                 BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Ended);
@@ -2640,8 +2636,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 PPReduce(user, move);
-                user.TempLockedMove = move;
-                user.TempLockedTargets = requestedTargets;
                 BroadcastMoveLock(user, move, requestedTargets, PBEMoveLockType.Temporary);
                 user.Status2 |= PBEStatus2.Underground;
                 BroadcastStatus2(user, user, PBEStatus2.Underground, PBEStatusAction.Added);
@@ -2658,8 +2652,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         top:
             if (user.Status2.HasFlag(PBEStatus2.Underwater))
             {
-                user.TempLockedMove = PBEMove.None;
-                user.TempLockedTargets = PBETurnTarget.None;
                 BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Ended);
@@ -2675,8 +2667,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 PPReduce(user, move);
-                user.TempLockedMove = move;
-                user.TempLockedTargets = requestedTargets;
                 BroadcastMoveLock(user, move, requestedTargets, PBEMoveLockType.Temporary);
                 user.Status2 |= PBEStatus2.Underwater;
                 BroadcastStatus2(user, user, PBEStatus2.Underwater, PBEStatusAction.Added);
@@ -2693,8 +2683,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
         top:
             if (user.Status2.HasFlag(PBEStatus2.Airborne))
             {
-                user.TempLockedMove = PBEMove.None;
-                user.TempLockedTargets = PBETurnTarget.None;
                 BroadcastMoveLock(user, PBEMove.None, PBETurnTarget.None, PBEMoveLockType.Temporary);
                 user.Status2 &= ~PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Ended);
@@ -2710,8 +2698,6 @@ namespace Kermalis.PokemonBattleEngine.Battle
             else
             {
                 PPReduce(user, move);
-                user.TempLockedMove = move;
-                user.TempLockedTargets = requestedTargets;
                 BroadcastMoveLock(user, move, requestedTargets, PBEMoveLockType.Temporary);
                 user.Status2 |= PBEStatus2.Airborne;
                 BroadcastStatus2(user, user, PBEStatus2.Airborne, PBEStatusAction.Added);
@@ -3216,6 +3202,48 @@ namespace Kermalis.PokemonBattleEngine.Battle
             RecordExecutedMove(user, move);
         }
 
+        private void Ef_Conversion(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEPokemon target in targets)
+                {
+                    if (!MissCheck(user, target, move))
+                    {
+                        PBEBattleMoveset moves = target.Moves;
+                        int count = moves.Count;
+                        var available = new PBEList<PBEType>(count);
+                        for (int i = 0; i < count; i++)
+                        {
+                            PBEMove m = moves[i].Move;
+                            if (m != PBEMove.None && m != move)
+                            {
+                                PBEType type = PBEMoveData.Data[m].Type;
+                                if (!target.HasType(type))
+                                {
+                                    available.Add(type);
+                                }
+                            }
+                        }
+                        if (available.Count == 0)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.InvalidConditions);
+                        }
+                        else
+                        {
+                            BroadcastTypeChanged(target, available.RandomElement(), PBEType.None);
+                        }
+                    }
+                }
+            }
+            RecordExecutedMove(user, move);
+        }
         private void Ef_Curse(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
         {
             BroadcastMoveUsed(user, move);

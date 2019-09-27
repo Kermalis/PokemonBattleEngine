@@ -1327,6 +1327,15 @@ namespace Kermalis.PokemonBattleEngineDiscord
                     await context.CreateAndSendEmbedAsync(string.Format(message, tsp.Team.TrainerName, NameForTrainer(damageVictim)), pkmn: damageVictim);
                     break;
                 }
+                case PBETypeChangedPacket tcp:
+                {
+                    PBEPokemon pokemon = tcp.PokemonTeam.TryGetPokemon(tcp.Pokemon);
+                    PBEType type1 = tcp.Type1;
+                    PBEType type2 = tcp.Type2;
+                    string type1Str = PBELocalizedString.GetTypeName(type1).English;
+                    await context.CreateAndSendEmbedAsync(string.Format("{0} transformed into the {1}", NameForTrainer(pokemon), type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2).English} types!"), pkmn: pokemon);
+                    break;
+                }
                 case PBEWeatherPacket wp:
                 {
                     PBEPokemon damageVictim = wp.HasDamageVictim ? wp.DamageVictimTeam.TryGetPokemon(wp.DamageVictim.Value) : null;

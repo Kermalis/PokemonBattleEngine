@@ -1553,6 +1553,22 @@ namespace Kermalis.PokemonBattleEngineClient
                     }
                     return true;
                 }
+                case PBETypeChangedPacket tcp:
+                {
+                    PBEPokemon pokemon = tcp.PokemonTeam.TryGetPokemon(tcp.Pokemon);
+                    PBEType type1 = tcp.Type1;
+                    PBEType type2 = tcp.Type2;
+                    if (Mode != ClientMode.SinglePlayer)
+                    {
+                        pokemon.Type1 = type1;
+                        pokemon.KnownType1 = type1;
+                        pokemon.Type2 = type2;
+                        pokemon.KnownType2 = type2;
+                    }
+                    string type1Str = PBELocalizedString.GetTypeName(type1).ToString();
+                    BattleView.AddMessage(string.Format("{0} transformed into the {1}", NameForTrainer(pokemon, true), type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2).ToString()} types!"));
+                    return false;
+                }
                 case PBEWeatherPacket wp:
                 {
                     if (Mode != ClientMode.SinglePlayer)

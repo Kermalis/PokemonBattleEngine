@@ -13,7 +13,8 @@ namespace Kermalis.PokemonBattleEngine.Battle
 
         private void BroadcastAbility(PBEPokemon abilityOwner, PBEPokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
         {
-            abilityOwner.Ability = abilityOwner.KnownAbility = ability;
+            abilityOwner.Ability = ability;
+            abilityOwner.KnownAbility = ability;
             var p = new PBEAbilityPacket(abilityOwner, pokemon2, ability, abilityAction);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
@@ -42,12 +43,14 @@ namespace Kermalis.PokemonBattleEngine.Battle
             {
                 case PBEItemAction.Consumed:
                 {
-                    itemHolder.Item = itemHolder.KnownItem = PBEItem.None;
+                    itemHolder.Item = PBEItem.None;
+                    itemHolder.KnownItem = PBEItem.None;
                     break;
                 }
                 default:
                 {
-                    itemHolder.Item = itemHolder.KnownItem = item;
+                    itemHolder.Item = item;
+                    itemHolder.KnownItem = item;
                     break;
                 }
             }
@@ -63,6 +66,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void BroadcastMoveLock(PBEPokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets, PBEMoveLockType moveLockType)
         {
+            switch (moveLockType)
+            {
+                case PBEMoveLockType.ChoiceItem:
+                {
+                    moveUser.ChoiceLockedMove = lockedMove;
+                    break;
+                }
+                case PBEMoveLockType.Temporary:
+                {
+                    moveUser.TempLockedMove = lockedMove;
+                    moveUser.TempLockedTargets = lockedTargets;
+                    break;
+                }
+                default: throw new ArgumentOutOfRangeException(nameof(moveLockType));
+            }
             var p = new PBEMoveLockPacket(moveUser, lockedMove, lockedTargets, moveLockType);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
@@ -111,14 +129,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
         {
             pokemon.Ability = newAbility;
             pokemon.KnownAbility = newKnownAbility;
-            pokemon.Species = pokemon.KnownSpecies = newSpecies;
+            pokemon.Species = newSpecies;
+            pokemon.KnownSpecies = newSpecies;
             pokemon.SetStats(false);
             // Verified: PBEStatus2.PowerTrick is not cleared when changing form. Possible gen 4+ bug?
             var pData = PBEPokemonData.GetData(newSpecies);
-            pokemon.Type1 = pokemon.KnownType1 = pData.Type1;
-            pokemon.Type2 = pokemon.KnownType2 = pData.Type2;
-            pokemon.Weight = pokemon.KnownWeight = pData.Weight;
-            var p = new PBEPkmnFormChangedPacket(pokemon.FieldPosition, pokemon.Team, pokemon.Attack, pokemon.Defense, pokemon.SpAttack, pokemon.SpDefense, pokemon.Speed, newAbility, newKnownAbility, newSpecies, pokemon.Type1, pokemon.Type2, pokemon.Weight);
+            PBEType type1 = pData.Type1;
+            pokemon.Type1 = type1;
+            pokemon.KnownType1 = type1;
+            PBEType type2 = pData.Type2;
+            pokemon.Type2 = type2;
+            pokemon.KnownType2 = type2;
+            double weight = pData.Weight;
+            pokemon.Weight = weight;
+            pokemon.KnownWeight = weight;
+            var p = new PBEPkmnFormChangedPacket(pokemon.FieldPosition, pokemon.Team, pokemon.Attack, pokemon.Defense, pokemon.SpAttack, pokemon.SpDefense, pokemon.Speed, newAbility, newKnownAbility, newSpecies, type1, type2, weight);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -229,6 +254,16 @@ namespace Kermalis.PokemonBattleEngine.Battle
         private void BroadcastTransform(PBEPokemon user, PBEPokemon target)
         {
             var p = new PBETransformPacket(user, target);
+            Events.Add(p);
+            OnNewEvent?.Invoke(this, p);
+        }
+        private void BroadcastTypeChanged(PBEPokemon pokemon, PBEType type1, PBEType type2)
+        {
+            pokemon.Type1 = type1;
+            pokemon.KnownType1 = type1;
+            pokemon.Type2 = type2;
+            pokemon.KnownType2 = type2;
+            var p = new PBETypeChangedPacket(pokemon, type1, type2);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -1229,6 +1264,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatus));
                     }
                     Console.WriteLine(message, tsp.Team.TrainerName, NameForTrainer(damageVictim));
+                    break;
+                }
+                case PBETypeChangedPacket tcp:
+                {
+                    PBEPokemon pokemon = tcp.PokemonTeam.TryGetPokemon(tcp.Pokemon);
+                    PBEType type1 = tcp.Type1;
+                    PBEType type2 = tcp.Type2;
+                    string type1Str = PBELocalizedString.GetTypeName(type1).English;
+                    Console.WriteLine("{0} transformed into the {1}", NameForTrainer(pokemon), type2 == PBEType.None ? $"{type1Str} type!" : $"{type1Str} and {PBELocalizedString.GetTypeName(type2).English} types!");
                     break;
                 }
                 case PBEWeatherPacket wp:

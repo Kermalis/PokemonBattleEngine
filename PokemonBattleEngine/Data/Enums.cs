@@ -2144,6 +2144,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ChangeTarget_SPDEF,
         ChangeTarget_SPE,
         Confuse,
+        Conversion,
         Curse,
         Dig,
         Dive,
@@ -2323,7 +2324,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         ConfuseRay = 109,
         Confusion = 93,
         Constrict = 132,
-        //Conversion = 160,
+        Conversion = 160,
         //Conversion2 = 176,
         //Copycat = 383, // TODO: Blocked by Metronome
         CosmicPower = 322,
