@@ -1,5 +1,6 @@
 ﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.SimpleNARC;
 using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
 using System;
@@ -1143,9 +1144,9 @@ namespace Kermalis.PokemonBattleEngineExtras
 
                 #region Pokémon Data
 
-                using (var b2w2Pokedata = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc"))
-                using (var b2w2Evolution = new NARC(@"../../../\DumpedData\B2W2Evolution.narc"))
                 {
+                    var b2w2Pokedata = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc");
+                    var b2w2Evolution = new NARC(@"../../../\DumpedData\B2W2Evolution.narc");
                     for (int sp = 1; sp <= 708; sp++)
                     {
                         // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon
@@ -1156,8 +1157,8 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 species = (PBESpecies)sp;
                             }
                             AddSpecies(species);
-                            using (var pokedata = new EndianBinaryReader(b2w2Pokedata.Files[sp], Endianness.LittleEndian))
-                            using (var evolution = new EndianBinaryReader(b2w2Evolution.Files[sp], Endianness.LittleEndian))
+                            using (var pokedata = new EndianBinaryReader(new MemoryStream(b2w2Pokedata[sp]), Endianness.LittleEndian))
+                            using (var evolution = new EndianBinaryReader(new MemoryStream(b2w2Evolution[sp]), Endianness.LittleEndian))
                             {
                                 Pokemon pkmn = dict[species];
                                 // Pokedata
@@ -1280,10 +1281,10 @@ namespace Kermalis.PokemonBattleEngineExtras
                     //ReadGCLevelUpMoves(xdCommonRel, PBEMoveObtainMethod.LevelUp_RSColoXD);
                 }
                 // Gen 4
-                using (var dp = new NARC(@"../../../\DumpedData\DPLevelUp.narc"))
-                using (var pt = new NARC(@"../../../\DumpedData\PtLevelUp.narc"))
-                using (var hgss = new NARC(@"../../../\DumpedData\HGSSLevelUp.narc"))
                 {
+                    var dp = new NARC(@"../../../\DumpedData\DPLevelUp.narc");
+                    var pt = new NARC(@"../../../\DumpedData\PtLevelUp.narc");
+                    var hgss = new NARC(@"../../../\DumpedData\HGSSLevelUp.narc");
                     for (int sp = 1; sp <= 507; sp++)
                     {
                         // 494 is Egg, 495 is Bad Egg
@@ -1295,9 +1296,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             species = (PBESpecies)sp;
                         }
-                        void ReadLevelUpMoves(MemoryStream file, PBEMoveObtainMethod flag)
+                        void ReadLevelUpMoves(byte[] file, PBEMoveObtainMethod flag)
                         {
-                            using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
+                            using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
                             {
                                 while (true)
                                 {
@@ -1316,25 +1317,25 @@ namespace Kermalis.PokemonBattleEngineExtras
                         // DP only has 0-500
                         if (sp <= 500)
                         {
-                            ReadLevelUpMoves(dp.Files[sp], PBEMoveObtainMethod.LevelUp_DP);
+                            ReadLevelUpMoves(dp[sp], PBEMoveObtainMethod.LevelUp_DP);
                         }
-                        ReadLevelUpMoves(pt.Files[sp], PBEMoveObtainMethod.LevelUp_Pt);
-                        ReadLevelUpMoves(hgss.Files[sp], PBEMoveObtainMethod.LevelUp_HGSS);
+                        ReadLevelUpMoves(pt[sp], PBEMoveObtainMethod.LevelUp_Pt);
+                        ReadLevelUpMoves(hgss[sp], PBEMoveObtainMethod.LevelUp_HGSS);
                     }
                 }
                 // Gen 5
-                using (var bw = new NARC(@"../../../\DumpedData\BWLevelUp.narc"))
-                using (var b2w2 = new NARC(@"../../../\DumpedData\B2W2LevelUp.narc"))
                 {
+                    var bw = new NARC(@"../../../\DumpedData\BWLevelUp.narc");
+                    var b2w2 = new NARC(@"../../../\DumpedData\B2W2LevelUp.narc");
                     for (int sp = 1; sp <= 708; sp++)
                     {
-                        void ReadLevelUpMoves(MemoryStream file, bool isBW)
+                        void ReadLevelUpMoves(byte[] file, bool isBW)
                         {
                             if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
                             {
                                 species = (PBESpecies)sp;
                             }
-                            using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
+                            using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
                             {
                                 while (true)
                                 {
@@ -1353,12 +1354,12 @@ namespace Kermalis.PokemonBattleEngineExtras
                         // BW only has 0-667 (no Egg or Bad Egg)
                         if (sp <= 667)
                         {
-                            ReadLevelUpMoves(bw.Files[sp], true);
+                            ReadLevelUpMoves(bw[sp], true);
                         }
                         // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon in B2W2
                         if (sp <= 649 || sp >= 685)
                         {
-                            ReadLevelUpMoves(b2w2.Files[sp], false);
+                            ReadLevelUpMoves(b2w2[sp], false);
                         }
                     }
                 }
@@ -1418,9 +1419,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                     //ReadGCTMHM(xdCommonRel);
                 }
                 // Gen 4
-                using (var dppt = new NARC(@"../../../\DumpedData\PtPokedata.narc"))
-                using (var hgss = new NARC(@"../../../\DumpedData\HGSSPokedata.narc"))
                 {
+                    var dppt = new NARC(@"../../../\DumpedData\PtPokedata.narc");
+                    var hgss = new NARC(@"../../../\DumpedData\HGSSPokedata.narc");
                     for (int sp = 1; sp <= 507; sp++)
                     {
                         // 494 is Egg, 495 is Bad Egg
@@ -1432,9 +1433,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                         {
                             species = (PBESpecies)sp;
                         }
-                        void ReadTMHMMoves(MemoryStream file, bool isDPPt)
+                        void ReadTMHMMoves(byte[] file, bool isDPPt)
                         {
-                            using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
+                            using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
                             {
                                 byte[] bytes = reader.ReadBytes(13, 0x1C);
                                 for (int i = 0; i < _gen4TMHMs.Length; i++)
@@ -1451,23 +1452,23 @@ namespace Kermalis.PokemonBattleEngineExtras
                                 }
                             }
                         }
-                        ReadTMHMMoves(dppt.Files[sp], true);
-                        ReadTMHMMoves(hgss.Files[sp], false);
+                        ReadTMHMMoves(dppt[sp], true);
+                        ReadTMHMMoves(hgss[sp], false);
                     }
                 }
                 // Gen 5
-                using (var bw = new NARC(@"../../../\DumpedData\BWPokedata.narc"))
-                using (var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc"))
                 {
+                    var bw = new NARC(@"../../../\DumpedData\BWPokedata.narc");
+                    var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc");
                     for (int sp = 1; sp <= 708; sp++)
                     {
-                        void ReadTMHMMoves(MemoryStream file, bool isBW)
+                        void ReadTMHMMoves(byte[] file, bool isBW)
                         {
                             if (!(isBW ? _bwSpeciesIndexToPBESpecies : _b2w2SpeciesIndexToPBESpecies).TryGetValue(sp, out PBESpecies species))
                             {
                                 species = (PBESpecies)sp;
                             }
-                            using (var reader = new EndianBinaryReader(file, Endianness.LittleEndian))
+                            using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
                             {
                                 byte[] bytes = reader.ReadBytes(13, 0x28);
                                 for (int i = 0; i < _gen5TMHMs.Length; i++)
@@ -1491,12 +1492,12 @@ namespace Kermalis.PokemonBattleEngineExtras
                         // BW only has 0-667 (no Egg or Bad Egg)
                         if (sp <= 667)
                         {
-                            ReadTMHMMoves(bw.Files[sp], true);
+                            ReadTMHMMoves(bw[sp], true);
                         }
                         // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon in B2W2
                         if (sp <= 649 || sp >= 685)
                         {
-                            ReadTMHMMoves(b2w2.Files[sp], false);
+                            ReadTMHMMoves(b2w2[sp], false);
                         }
                     }
                 }
@@ -1582,9 +1583,9 @@ namespace Kermalis.PokemonBattleEngineExtras
                     }
                 }
                 // Gen 5
-                using (var bw = new NARC(@"../../../\DumpedData\BWPokedata.narc"))
-                using (var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc"))
                 {
+                    var bw = new NARC(@"../../../\DumpedData\BWPokedata.narc");
+                    var b2w2 = new NARC(@"../../../\DumpedData\B2W2Pokedata.narc");
                     for (int sp = 1; sp <= 708; sp++)
                     {
                         void ReadFreeTutorMoves(EndianBinaryReader reader, bool isBW)
@@ -1623,7 +1624,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         // BW only has 0-667 (no Egg or Bad Egg)
                         if (sp <= 667)
                         {
-                            using (var reader = new EndianBinaryReader(bw.Files[sp], Endianness.LittleEndian))
+                            using (var reader = new EndianBinaryReader(new MemoryStream(bw[sp]), Endianness.LittleEndian))
                             {
                                 ReadFreeTutorMoves(reader, true);
                             }
@@ -1631,7 +1632,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                         // Skip Egg, Bad Egg, and Pokéstar Studios Pokémon
                         if (sp <= 649 || sp >= 685)
                         {
-                            using (var reader = new EndianBinaryReader(b2w2.Files[sp], Endianness.LittleEndian))
+                            using (var reader = new EndianBinaryReader(new MemoryStream(b2w2[sp]), Endianness.LittleEndian))
                             {
                                 ReadFreeTutorMoves(reader, false);
                                 ReadB2W2TutorMoves(reader);
@@ -1648,8 +1649,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 using (var d = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Doverlay_0005.bin"), Endianness.LittleEndian))
                 using (var p = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Poverlay_0005.bin"), Endianness.LittleEndian))
                 using (var pt = new EndianBinaryReader(File.OpenRead(@"../../../\DumpedData\Ptoverlay_0005.bin"), Endianness.LittleEndian))
-                using (var hgssNARC = new NARC(@"../../../\DumpedData\HGSSEgg.narc"))
-                using (var hgss = new EndianBinaryReader(hgssNARC.Files[0], Endianness.LittleEndian))
+                using (var hgss = new EndianBinaryReader(new MemoryStream(new NARC(@"../../../\DumpedData\HGSSEgg.narc")[0]), Endianness.LittleEndian))
                 {
                     // The table is the same in all five GBA games, so I will only read one
                     r.BaseStream.Position = 0x2091DC;
@@ -1693,11 +1693,11 @@ namespace Kermalis.PokemonBattleEngineExtras
                     ReadEggMoves(hgss, false, PBEMoveObtainMethod.EggMove_HGSS);
                 }
                 // Gen 5
-                using (var bwb2w2 = new NARC(@"../../../\DumpedData\BWB2W2Egg.narc"))
                 {
+                    var bwb2w2 = new NARC(@"../../../\DumpedData\BWB2W2Egg.narc");
                     for (int sp = 1; sp <= 649; sp++)
                     {
-                        using (var reader = new EndianBinaryReader(bwb2w2.Files[sp], Endianness.LittleEndian))
+                        using (var reader = new EndianBinaryReader(new MemoryStream(bwb2w2[sp]), Endianness.LittleEndian))
                         {
                             ushort numEggMoves = reader.ReadUInt16();
                             if (numEggMoves > 0)

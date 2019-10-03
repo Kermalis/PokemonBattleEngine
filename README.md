@@ -40,3 +40,4 @@ This will change in the future as the server will send the settings to all conne
 
 # PokemonBattleEngineExtras Uses:
 * [EndianBinaryIO](https://github.com/Kermalis/EndianBinaryIO)
+* [SimpleNARC](https://github.com/Kermalis/SimpleNARC)

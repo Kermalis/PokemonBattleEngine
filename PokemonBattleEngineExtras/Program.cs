@@ -9,7 +9,6 @@ namespace Kermalis.PokemonBattleEngineExtras
         private enum Extra
         {
             AIBattle,
-            FontDumper,
             LocalizationDumper,
             NARCTextDumper,
             PokemonDataDumper
@@ -35,7 +34,6 @@ namespace Kermalis.PokemonBattleEngineExtras
                     AIBattleDemo.Run();
                     break;
                 }
-                case Extra.FontDumper: FontDumper.Run(); break;
                 case Extra.LocalizationDumper:
                 {
                     using (SqliteConnection con = GetConnection())

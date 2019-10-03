@@ -1,4 +1,5 @@
 ﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.SimpleNARC;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,13 @@ namespace Kermalis.PokemonBattleEngineExtras
         // You must dump the NARC files yourself (/a/0/0/2 in each language)
         public static void Run(SqliteConnection con)
         {
-            using (var english = new NARC(@"../../../\DumpedData\W2EnglishTexts.narc"))
-            using (var french = new NARC(@"../../../\DumpedData\W2FrenchTexts.narc"))
-            using (var german = new NARC(@"../../../\DumpedData\W2GermanTexts.narc"))
-            using (var italian = new NARC(@"../../../\DumpedData\W2ItalianTexts.narc"))
-            using (var japanese = new NARC(@"../../../\DumpedData\W2JapaneseTexts.narc"))
-            using (var korean = new NARC(@"../../../\DumpedData\W2KoreanTexts.narc"))
-            using (var spanish = new NARC(@"../../../\DumpedData\W2SpanishTexts.narc"))
+            var english = new NARC(@"../../../\DumpedData\W2EnglishTexts.narc");
+            var french = new NARC(@"../../../\DumpedData\W2FrenchTexts.narc");
+            var german = new NARC(@"../../../\DumpedData\W2GermanTexts.narc");
+            var italian = new NARC(@"../../../\DumpedData\W2ItalianTexts.narc");
+            var japanese = new NARC(@"../../../\DumpedData\W2JapaneseTexts.narc");
+            var korean = new NARC(@"../../../\DumpedData\W2KoreanTexts.narc");
+            var spanish = new NARC(@"../../../\DumpedData\W2SpanishTexts.narc");
             using (SqliteTransaction transaction = con.BeginTransaction())
             using (SqliteCommand cmd = con.CreateCommand())
             {

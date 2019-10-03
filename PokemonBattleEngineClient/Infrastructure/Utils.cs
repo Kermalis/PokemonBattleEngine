@@ -46,7 +46,7 @@ namespace Kermalis.PokemonBattleEngineClient.Infrastructure
             return _assembly.GetManifestResourceStream(AssemblyPrefix + resource);
         }
 
-        public static string WorkingDirectory;
+        public static string WorkingDirectory { get; private set; }
         public static void SetWorkingDirectory(string workingDirectory)
         {
             PBEUtils.CreateDatabaseConnection(workingDirectory);
