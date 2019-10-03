@@ -15,13 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineExtras",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineClient.Desktop", "PokemonBattleEngineClient.Desktop\PokemonBattleEngineClient.Desktop.csproj", "{CEDCFABE-658C-42AB-BCE2-A96A7B17410E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineClient.NetCore", "PokemonBattleEngineClient.NetCore\PokemonBattleEngineClient.NetCore.csproj", "{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBattleEngineClient.iOS", "PokemonBattleEngineClient.iOS\PokemonBattleEngineClient.iOS.csproj", "{57E0455D-D565-44BB-B069-EE1AA20F8337}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBattleEngineClient.Android", "PokemonBattleEngineClient.Android\PokemonBattleEngineClient.Android.csproj", "{29132311-1848-4FD6-AE0C-4FF841151BD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonBattleEngineTests", "PokemonBattleEngineTests\PokemonBattleEngineTests.csproj", "{2B15A32D-C213-4C60-981A-350E1569E5DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonBattleEngineTests", "PokemonBattleEngineTests\PokemonBattleEngineTests.csproj", "{2B15A32D-C213-4C60-981A-350E1569E5DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -183,30 +181,6 @@ Global
 		{CEDCFABE-658C-42AB-BCE2-A96A7B17410E}.Release|iPhone.Build.0 = Release|Any CPU
 		{CEDCFABE-658C-42AB-BCE2-A96A7B17410E}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{CEDCFABE-658C-42AB-BCE2-A96A7B17410E}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Ad-Hoc|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Ad-Hoc|Any CPU.Build.0 = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Ad-Hoc|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.AppStore|Any CPU.Build.0 = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.AppStore|iPhone.Build.0 = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.AppStore|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.AppStore|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Release|iPhone.Build.0 = Release|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{8C27FEB8-A661-4EEB-938E-FC970FF43FE7}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{57E0455D-D565-44BB-B069-EE1AA20F8337}.Ad-Hoc|Any CPU.ActiveCfg = Ad-Hoc|iPhone
 		{57E0455D-D565-44BB-B069-EE1AA20F8337}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
 		{57E0455D-D565-44BB-B069-EE1AA20F8337}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
