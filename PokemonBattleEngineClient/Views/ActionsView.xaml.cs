@@ -6,6 +6,7 @@ using Kermalis.PokemonBattleEngineClient.Models;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
+using System.Reactive;
 
 namespace Kermalis.PokemonBattleEngineClient.Views
 {
@@ -324,8 +325,8 @@ namespace Kermalis.PokemonBattleEngineClient.Views
         private PBETurnTarget _targetAllyLeftResult, _targetAllyCenterResult, _targetAllyRightResult,
             _targetFoeLeftResult, _targetFoeCenterResult, _targetFoeRightResult;
 
-        public ReactiveCommand SelectTargetCommand { get; }
-        public ReactiveCommand SelectPositionCommand { get; }
+        public ReactiveCommand<string, Unit> SelectTargetCommand { get; }
+        public ReactiveCommand<string, Unit> SelectPositionCommand { get; }
 
         private MoveInfo[] _moves;
         public MoveInfo[] Moves
@@ -412,8 +413,6 @@ namespace Kermalis.PokemonBattleEngineClient.Views
 
         public ActionsView()
         {
-            MoveInfo.CreateBrushes();
-
             SelectTargetCommand = ReactiveCommand.Create<string>(SelectTarget);
             SelectPositionCommand = ReactiveCommand.Create<string>(SelectPosition);
             DataContext = this;

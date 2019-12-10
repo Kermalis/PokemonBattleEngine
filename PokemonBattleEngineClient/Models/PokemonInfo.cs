@@ -3,12 +3,13 @@ using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngineClient.Infrastructure;
 using ReactiveUI;
 using System;
+using System.Reactive;
 
 namespace Kermalis.PokemonBattleEngineClient.Models
 {
     public sealed class PokemonInfo
     {
-        public ReactiveCommand SelectPokemonCommand { get; }
+        public ReactiveCommand<Unit, Unit> SelectPokemonCommand { get; }
         public bool Enabled { get; }
 
         public PBEPokemon Pokemon { get; }

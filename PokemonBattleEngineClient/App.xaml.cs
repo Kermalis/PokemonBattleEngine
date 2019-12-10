@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Kermalis.PokemonBattleEngineClient.Models;
+using System;
 
 namespace Kermalis.PokemonBattleEngineClient
 {
@@ -13,10 +15,13 @@ namespace Kermalis.PokemonBattleEngineClient
 
         public override void OnFrameworkInitializationCompleted()
         {
+            MoveInfo.CreateBrushes();
             switch (ApplicationLifetime)
             {
+                case null: break;
                 case IClassicDesktopStyleApplicationLifetime desktop: desktop.MainWindow = new MainWindow(); break;
                 case ISingleViewApplicationLifetime singleView: singleView.MainView = new MainView(); break;
+                default: throw new PlatformNotSupportedException();
             }
             base.OnFrameworkInitializationCompleted();
         }

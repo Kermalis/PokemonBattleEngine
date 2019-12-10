@@ -13,21 +13,21 @@ namespace Kermalis.PokemonBattleEngineExtras
     {
         private sealed class Pokemon
         {
-            public byte HP { get; set; }
-            public byte Attack { get; set; }
-            public byte Defense { get; set; }
-            public byte SpAttack { get; set; }
-            public byte SpDefense { get; set; }
-            public byte Speed { get; set; }
-            public PBEType Type1 { get; set; }
-            public PBEType Type2 { get; set; }
-            public PBEGenderRatio GenderRatio { get; set; }
-            public double Weight { get; set; }
-            public List<PBESpecies> PreEvolutions { get; set; } = new List<PBESpecies>();
-            public List<PBESpecies> Evolutions { get; set; } = new List<PBESpecies>();
-            public List<PBEAbility> Abilities { get; set; } = new List<PBEAbility>();
-            public Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod> LevelUpMoves { get; set; } = new Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod>();
-            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves { get; set; } = new Dictionary<PBEMove, PBEMoveObtainMethod>();
+            public byte HP;
+            public byte Attack;
+            public byte Defense;
+            public byte SpAttack;
+            public byte SpDefense;
+            public byte Speed;
+            public PBEType Type1;
+            public PBEType Type2;
+            public PBEGenderRatio GenderRatio;
+            public double Weight;
+            public List<PBESpecies> PreEvolutions = new List<PBESpecies>();
+            public List<PBESpecies> Evolutions = new List<PBESpecies>();
+            public List<PBEAbility> Abilities = new List<PBEAbility>();
+            public Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod> LevelUpMoves = new Dictionary<(PBEMove Move, byte Level), PBEMoveObtainMethod>();
+            public Dictionary<PBEMove, PBEMoveObtainMethod> OtherMoves = new Dictionary<PBEMove, PBEMoveObtainMethod>();
         }
 
         private static readonly Dictionary<int, PBESpecies> _gen3SpeciesIndexToPBESpecies = new Dictionary<int, PBESpecies>
@@ -440,7 +440,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Protect,
             PBEMove.RainDance,
             PBEMove.GigaDrain,
-            (PBEMove)219, // Safeguard
+            PBEMove.Safeguard,
             PBEMove.Frustration,
             (PBEMove)76, // SolarBeam
             PBEMove.IronTail,
@@ -582,7 +582,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Protect,
             PBEMove.RainDance,
             PBEMove.GigaDrain,
-            (PBEMove)219, // Safeguard
+            PBEMove.Safeguard,
             PBEMove.Frustration,
             (PBEMove)76, // SolarBeam
             PBEMove.IronTail,
@@ -640,7 +640,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.SwordsDance,
             PBEMove.StealthRock,
             PBEMove.PsychUp,
-            (PBEMove)445, // Captivate
+            PBEMove.Captivate,
             PBEMove.DarkPulse,
             PBEMove.RockSlide,
             PBEMove.XScissor,
@@ -702,10 +702,10 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.VacuumWave,
             PBEMove.EarthPower,
             PBEMove.GunkShot,
-            (PBEMove)239, // Twister
+            PBEMove.Twister,
             PBEMove.SeedBomb,
             PBEMove.IronDefense,
-            (PBEMove)393, // MagnetRise
+            PBEMove.MagnetRise,
             (PBEMove)387, // LastResort
             (PBEMove)340, // Bounce
             (PBEMove)271, // Trick
@@ -748,10 +748,10 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.VacuumWave,
             PBEMove.EarthPower,
             PBEMove.GunkShot,
-            (PBEMove)239, // Twister
+            PBEMove.Twister,
             PBEMove.SeedBomb,
             PBEMove.IronDefense,
-            (PBEMove)393, // MagnetRise
+            PBEMove.MagnetRise,
             (PBEMove)387, // LastResort
             (PBEMove)340, // Bounce
             (PBEMove)271, // Trick
@@ -844,7 +844,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.Protect,
             PBEMove.RainDance,
             (PBEMove)477, // Telekinesis
-            (PBEMove)219, // Safeguard
+            PBEMove.Safeguard,
             PBEMove.Frustration,
             (PBEMove)76, // SolarBeam
             (PBEMove)479, // SmackDown
@@ -970,7 +970,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBEMove.EarthPower,
                 PBEMove.FoulPlay,
                 (PBEMove)356, // Gravity
-                (PBEMove)393, // MagnetRise
+                PBEMove.MagnetRise,
                 PBEMove.IronDefense,
                 (PBEMove)387, // LastResort
                 PBEMove.Superpower,
@@ -1210,75 +1210,74 @@ namespace Kermalis.PokemonBattleEngineExtras
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
-                    if (sp > 251 && sp < 277)
+                    if (sp <= 251 || sp >= 277)
                     {
-                        continue;
-                    }
-                    // It is the same in Ruby, Sapphire, Colo, and XD; the others have some differences
-                    r.BaseStream.Position = 0x207BC8 + (sizeof(uint) * sp);
-                    s.BaseStream.Position = 0x207B58 + (sizeof(uint) * sp);
-                    fr.BaseStream.Position = 0x25D7B4 + (sizeof(uint) * sp);
-                    lg.BaseStream.Position = 0x25D794 + (sizeof(uint) * sp);
-                    e.BaseStream.Position = 0x32937C + (sizeof(uint) * sp);
-                    coloCommonRel.BaseStream.Position = 0x123250 + (0x11C * sp) + 0xBA;
-                    xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0xC4;
-                    void ReadGBALevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
-                    {
-                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
-                        if (species == PBESpecies.Deoxys)
+                        // It is the same in Ruby, Sapphire, Colo, and XD; the others have some differences
+                        r.BaseStream.Position = 0x207BC8 + (sizeof(uint) * sp);
+                        s.BaseStream.Position = 0x207B58 + (sizeof(uint) * sp);
+                        fr.BaseStream.Position = 0x25D7B4 + (sizeof(uint) * sp);
+                        lg.BaseStream.Position = 0x25D794 + (sizeof(uint) * sp);
+                        e.BaseStream.Position = 0x32937C + (sizeof(uint) * sp);
+                        coloCommonRel.BaseStream.Position = 0x123250 + (0x11C * sp) + 0xBA;
+                        xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0xC4;
+                        void ReadGBALevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
                         {
-                            if (reader == e)
+                            PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
+                            if (species == PBESpecies.Deoxys)
                             {
-                                species = PBESpecies.Deoxys_Speed;
+                                if (reader == e)
+                                {
+                                    species = PBESpecies.Deoxys_Speed;
+                                }
+                                else if (reader == lg)
+                                {
+                                    species = PBESpecies.Deoxys_Defense;
+                                }
+                                else if (reader == fr)
+                                {
+                                    species = PBESpecies.Deoxys_Attack;
+                                }
                             }
-                            if (reader == lg)
+                            reader.BaseStream.Position = reader.ReadUInt32() - 0x8000000;
+                            while (true)
                             {
-                                species = PBESpecies.Deoxys_Defense;
-                            }
-                            if (reader == fr)
-                            {
-                                species = PBESpecies.Deoxys_Attack;
+                                ushort val = reader.ReadUInt16();
+                                if (val == 0xFFFF)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    AddLevelUpMove(species, (PBEMove)(val & 0x1FF), (byte)(val >> 9), flag);
+                                }
                             }
                         }
-                        reader.BaseStream.Position = reader.ReadUInt32() - 0x8000000;
-                        while (true)
+                        ReadGBALevelUpMoves(r, PBEMoveObtainMethod.LevelUp_RSColoXD);
+                        //ReadGBALevelUpMoves(s, PBEMoveObtainMethod.LevelUp_RSColoXD);
+                        ReadGBALevelUpMoves(fr, PBEMoveObtainMethod.LevelUp_FR);
+                        ReadGBALevelUpMoves(lg, PBEMoveObtainMethod.LevelUp_LG);
+                        ReadGBALevelUpMoves(e, PBEMoveObtainMethod.LevelUp_E);
+                        void ReadGCLevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
                         {
-                            ushort val = reader.ReadUInt16();
-                            if (val == 0xFFFF)
+                            PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
+                            for (int i = 0; i < 17; i++)
                             {
-                                break;
-                            }
-                            else
-                            {
-                                AddLevelUpMove(species, (PBEMove)(val & 0x1FF), (byte)(val >> 9), flag);
+                                byte level = reader.ReadByte();
+                                reader.ReadByte(); // Padding
+                                var move = (PBEMove)reader.ReadUInt16();
+                                if (move == PBEMove.None)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    AddLevelUpMove(species, move, level, flag);
+                                }
                             }
                         }
+                        //ReadGCLevelUpMoves(coloCommonRel, PBEMoveObtainMethod.LevelUp_RSColoXD);
+                        //ReadGCLevelUpMoves(xdCommonRel, PBEMoveObtainMethod.LevelUp_RSColoXD);
                     }
-                    ReadGBALevelUpMoves(r, PBEMoveObtainMethod.LevelUp_RSColoXD);
-                    //ReadGBALevelUpMoves(s, PBEMoveObtainMethod.LevelUp_RSColoXD);
-                    ReadGBALevelUpMoves(fr, PBEMoveObtainMethod.LevelUp_FR);
-                    ReadGBALevelUpMoves(lg, PBEMoveObtainMethod.LevelUp_LG);
-                    ReadGBALevelUpMoves(e, PBEMoveObtainMethod.LevelUp_E);
-                    void ReadGCLevelUpMoves(EndianBinaryReader reader, PBEMoveObtainMethod flag)
-                    {
-                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
-                        for (int i = 0; i < 17; i++)
-                        {
-                            byte level = reader.ReadByte();
-                            reader.ReadByte(); // Padding
-                            var move = (PBEMove)reader.ReadUInt16();
-                            if (move == PBEMove.None)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                AddLevelUpMove(species, move, level, flag);
-                            }
-                        }
-                    }
-                    //ReadGCLevelUpMoves(coloCommonRel, PBEMoveObtainMethod.LevelUp_RSColoXD);
-                    //ReadGCLevelUpMoves(xdCommonRel, PBEMoveObtainMethod.LevelUp_RSColoXD);
                 }
                 // Gen 4
                 {
@@ -1288,39 +1287,38 @@ namespace Kermalis.PokemonBattleEngineExtras
                     for (int sp = 1; sp <= 507; sp++)
                     {
                         // 494 is Egg, 495 is Bad Egg
-                        if (sp == 494 || sp == 495)
+                        if (sp != 494 && sp != 495)
                         {
-                            continue;
-                        }
-                        if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
-                        {
-                            species = (PBESpecies)sp;
-                        }
-                        void ReadLevelUpMoves(byte[] file, PBEMoveObtainMethod flag)
-                        {
-                            using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
+                            if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
                             {
-                                while (true)
+                                species = (PBESpecies)sp;
+                            }
+                            void ReadLevelUpMoves(byte[] file, PBEMoveObtainMethod flag)
+                            {
+                                using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
                                 {
-                                    ushort val = reader.ReadUInt16();
-                                    if (val == 0xFFFF)
+                                    while (true)
                                     {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        AddLevelUpMove(species, (PBEMove)(val & 0x1FF), (byte)(val >> 9), flag);
+                                        ushort val = reader.ReadUInt16();
+                                        if (val == 0xFFFF)
+                                        {
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            AddLevelUpMove(species, (PBEMove)(val & 0x1FF), (byte)(val >> 9), flag);
+                                        }
                                     }
                                 }
                             }
+                            // DP only has 0-500
+                            if (sp <= 500)
+                            {
+                                ReadLevelUpMoves(dp[sp], PBEMoveObtainMethod.LevelUp_DP);
+                            }
+                            ReadLevelUpMoves(pt[sp], PBEMoveObtainMethod.LevelUp_Pt);
+                            ReadLevelUpMoves(hgss[sp], PBEMoveObtainMethod.LevelUp_HGSS);
                         }
-                        // DP only has 0-500
-                        if (sp <= 500)
-                        {
-                            ReadLevelUpMoves(dp[sp], PBEMoveObtainMethod.LevelUp_DP);
-                        }
-                        ReadLevelUpMoves(pt[sp], PBEMoveObtainMethod.LevelUp_Pt);
-                        ReadLevelUpMoves(hgss[sp], PBEMoveObtainMethod.LevelUp_HGSS);
                     }
                 }
                 // Gen 5
@@ -1346,7 +1344,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                                     }
                                     else
                                     {
-                                        AddLevelUpMove(species, (PBEMove)(ushort)val, (byte)(val >> 0x10), isBW ? PBEMoveObtainMethod.LevelUp_BW : PBEMoveObtainMethod.LevelUp_B2W2);
+                                        AddLevelUpMove(species, (PBEMove)val, (byte)(val >> 0x10), isBW ? PBEMoveObtainMethod.LevelUp_BW : PBEMoveObtainMethod.LevelUp_B2W2);
                                     }
                                 }
                             }
@@ -1372,51 +1370,50 @@ namespace Kermalis.PokemonBattleEngineExtras
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
-                    if (sp > 251 && sp < 277)
+                    if (sp <= 251 || sp >= 277)
                     {
-                        continue;
-                    }
-                    PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
-                    // It is the same across all of gen 3, so I will only read one
-                    r.BaseStream.Position = 0x1FD0F0 + (8 * sp);
-                    s.BaseStream.Position = 0x1FD080 + (8 * sp);
-                    fr.BaseStream.Position = 0x252BC8 + (8 * sp);
-                    lg.BaseStream.Position = 0x252BA4 + (8 * sp);
-                    e.BaseStream.Position = 0x31E898 + (8 * sp);
-                    coloCommonRel.BaseStream.Position = 0x123250 + (0x11C * sp) + 0x34;
-                    xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0x34;
-                    PBEMoveObtainMethod GetFlag(int i)
-                    {
-                        return i < 50 ? PBEMoveObtainMethod.TM_RSFRLGEColoXD : PBEMoveObtainMethod.HM_RSFRLGEColoXD;
-                    }
-                    void ReadGBATMHM(EndianBinaryReader reader)
-                    {
-                        byte[] bytes = reader.ReadBytes(8);
-                        for (int i = 0; i < _gen3TMHMs.Length; i++)
+                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
+                        // It is the same across all of gen 3, so I will only read one
+                        r.BaseStream.Position = 0x1FD0F0 + (8 * sp);
+                        s.BaseStream.Position = 0x1FD080 + (8 * sp);
+                        fr.BaseStream.Position = 0x252BC8 + (8 * sp);
+                        lg.BaseStream.Position = 0x252BA4 + (8 * sp);
+                        e.BaseStream.Position = 0x31E898 + (8 * sp);
+                        coloCommonRel.BaseStream.Position = 0x123250 + (0x11C * sp) + 0x34;
+                        xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0x34;
+                        PBEMoveObtainMethod GetFlag(int i)
                         {
-                            if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                            return i < 50 ? PBEMoveObtainMethod.TM_RSFRLGEColoXD : PBEMoveObtainMethod.HM_RSFRLGEColoXD;
+                        }
+                        void ReadGBATMHM(EndianBinaryReader reader)
+                        {
+                            byte[] bytes = reader.ReadBytes(8);
+                            for (int i = 0; i < _gen3TMHMs.Length; i++)
                             {
-                                AddOtherMove(species, _gen3TMHMs[i], GetFlag(i));
+                                if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                                {
+                                    AddOtherMove(species, _gen3TMHMs[i], GetFlag(i));
+                                }
                             }
                         }
-                    }
-                    ReadGBATMHM(r);
-                    //ReadGBATMHM(s);
-                    //ReadGBATMHM(fr);
-                    //ReadGBATMHM(lg);
-                    //ReadGBATMHM(e);
-                    void ReadGCTMHM(EndianBinaryReader reader)
-                    {
-                        for (int i = 0; i < _gen3TMHMs.Length; i++)
+                        ReadGBATMHM(r);
+                        //ReadGBATMHM(s);
+                        //ReadGBATMHM(fr);
+                        //ReadGBATMHM(lg);
+                        //ReadGBATMHM(e);
+                        void ReadGCTMHM(EndianBinaryReader reader)
                         {
-                            if (reader.ReadBoolean())
+                            for (int i = 0; i < _gen3TMHMs.Length; i++)
                             {
-                                AddOtherMove(species, _gen3TMHMs[i], GetFlag(i));
+                                if (reader.ReadBoolean())
+                                {
+                                    AddOtherMove(species, _gen3TMHMs[i], GetFlag(i));
+                                }
                             }
                         }
+                        //ReadGCTMHM(coloCommonRel);
+                        //ReadGCTMHM(xdCommonRel);
                     }
-                    //ReadGCTMHM(coloCommonRel);
-                    //ReadGCTMHM(xdCommonRel);
                 }
                 // Gen 4
                 {
@@ -1425,35 +1422,34 @@ namespace Kermalis.PokemonBattleEngineExtras
                     for (int sp = 1; sp <= 507; sp++)
                     {
                         // 494 is Egg, 495 is Bad Egg
-                        if (sp == 494 || sp == 495)
+                        if (sp != 494 && sp != 495)
                         {
-                            continue;
-                        }
-                        if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
-                        {
-                            species = (PBESpecies)sp;
-                        }
-                        void ReadTMHMMoves(byte[] file, bool isDPPt)
-                        {
-                            using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
+                            if (!_gen4SpeciesIndexToPBESpecies.TryGetValue(sp, out PBESpecies species))
                             {
-                                byte[] bytes = reader.ReadBytes(13, 0x1C);
-                                for (int i = 0; i < _gen4TMHMs.Length; i++)
+                                species = (PBESpecies)sp;
+                            }
+                            void ReadTMHMMoves(byte[] file, bool isDPPt)
+                            {
+                                using (var reader = new EndianBinaryReader(new MemoryStream(file), Endianness.LittleEndian))
                                 {
-                                    if ((bytes[i / 8] & (1 << (i % 8))) != 0)
+                                    byte[] bytes = reader.ReadBytes(13, 0x1C);
+                                    for (int i = 0; i < _gen4TMHMs.Length; i++)
                                     {
-                                        PBEMove move = _gen4TMHMs[i];
-                                        if (move == PBEMove.None)
+                                        if ((bytes[i / 8] & (1 << (i % 8))) != 0)
                                         {
-                                            move = isDPPt ? (PBEMove)432 : (PBEMove)250;
+                                            PBEMove move = _gen4TMHMs[i];
+                                            if (move == PBEMove.None)
+                                            {
+                                                move = isDPPt ? (PBEMove)432 : (PBEMove)250;
+                                            }
+                                            AddOtherMove(species, move, i < 92 ? (isDPPt ? PBEMoveObtainMethod.TM_DPPt : PBEMoveObtainMethod.TM_HGSS) : (isDPPt ? PBEMoveObtainMethod.HM_DPPt : PBEMoveObtainMethod.HM_HGSS));
                                         }
-                                        AddOtherMove(species, move, i < 92 ? (isDPPt ? PBEMoveObtainMethod.TM_DPPt : PBEMoveObtainMethod.TM_HGSS) : (isDPPt ? PBEMoveObtainMethod.HM_DPPt : PBEMoveObtainMethod.HM_HGSS));
                                     }
                                 }
                             }
+                            ReadTMHMMoves(dppt[sp], true);
+                            ReadTMHMMoves(hgss[sp], false);
                         }
-                        ReadTMHMMoves(dppt[sp], true);
-                        ReadTMHMMoves(hgss[sp], false);
                     }
                 }
                 // Gen 5
@@ -1510,44 +1506,42 @@ namespace Kermalis.PokemonBattleEngineExtras
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
-                    if (sp > 251 && sp < 277)
+                    if (sp <= 251 || sp >= 277)
                     {
-                        continue;
-                    }
-                    PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
-                    // It is the same in FR and LG, so I will only read one
-                    fr.BaseStream.Position = 0x459B7E + (sizeof(ushort) * sp);
-                    lg.BaseStream.Position = 0x45959E + (sizeof(ushort) * sp);
-                    e.BaseStream.Position = 0x615048 + (sizeof(uint) * sp);
-                    void ReadTutorMoves(uint val, PBEMove[] tutorMoves, PBEMoveObtainMethod flag)
-                    {
-                        for (int i = 0; i < tutorMoves.Length; i++)
+                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
+                        // It is the same in FR and LG, so I will only read one
+                        fr.BaseStream.Position = 0x459B7E + (sizeof(ushort) * sp);
+                        lg.BaseStream.Position = 0x45959E + (sizeof(ushort) * sp);
+                        e.BaseStream.Position = 0x615048 + (sizeof(uint) * sp);
+                        void ReadTutorMoves(uint val, PBEMove[] tutorMoves, PBEMoveObtainMethod flag)
                         {
-                            if ((val & (1u << i)) != 0)
+                            for (int i = 0; i < tutorMoves.Length; i++)
                             {
-                                AddOtherMove(species, tutorMoves[i], flag);
+                                if ((val & (1u << i)) != 0)
+                                {
+                                    AddOtherMove(species, tutorMoves[i], flag);
+                                }
                             }
                         }
+                        ReadTutorMoves(fr.ReadUInt16(), _frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
+                        //ReadTutorMoves(lg.ReadUInt16(), frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
+                        ReadTutorMoves(e.ReadUInt32(), _emeraldTutorMoves, PBEMoveObtainMethod.MoveTutor_E);
                     }
-                    ReadTutorMoves(fr.ReadUInt16(), _frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
-                    //ReadTutorMoves(lg.ReadUInt16(), frlgTutorMoves, PBEMoveObtainMethod.MoveTutor_FRLG);
-                    ReadTutorMoves(e.ReadUInt32(), _emeraldTutorMoves, PBEMoveObtainMethod.MoveTutor_E);
                 }
                 // Gen 3 - XD
                 for (int sp = 1; sp <= 411; sp++)
                 {
                     // Gen 2 Unown slots are ignored in gen 3
-                    if (sp > 251 && sp < 277)
+                    if (sp <= 251 || sp >= 277)
                     {
-                        continue;
-                    }
-                    PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
-                    xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0x6E;
-                    for (int i = 0; i < _xdTutorMoves.Length; i++)
-                    {
-                        if (xdCommonRel.ReadBoolean())
+                        PBESpecies species = _gen3SpeciesIndexToPBESpecies[sp];
+                        xdCommonRel.BaseStream.Position = 0x29DA8 + (0x124 * sp) + 0x6E;
+                        for (int i = 0; i < _xdTutorMoves.Length; i++)
                         {
-                            AddOtherMove(species, _xdTutorMoves[i], PBEMoveObtainMethod.MoveTutor_XD);
+                            if (xdCommonRel.ReadBoolean())
+                            {
+                                AddOtherMove(species, _xdTutorMoves[i], PBEMoveObtainMethod.MoveTutor_XD);
+                            }
                         }
                     }
                 }

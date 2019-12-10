@@ -3218,7 +3218,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         PBEBattleMoveset moves = target.Moves;
                         int count = moves.Count;
-                        var available = new PBEList<PBEType>(count);
+                        var available = new List<PBEType>(count);
                         for (int i = 0; i < count; i++)
                         {
                             PBEMove m = moves[i].Move;
