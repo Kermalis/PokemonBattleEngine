@@ -748,7 +748,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Type;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.WaterVeil || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.WaterVeil || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -769,7 +769,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Safeguard;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() == false && kAbility == PBEAbility.OwnTempo)
+            if (other?.HasCancellingAbility() != true && kAbility == PBEAbility.OwnTempo)
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -794,7 +794,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Type;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.MagmaArmor || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.MagmaArmor || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -811,7 +811,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Status;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() == false && kAbility == PBEAbility.InnerFocus)
+            if (other?.HasCancellingAbility() != true && kAbility == PBEAbility.InnerFocus)
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -824,7 +824,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Type;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() == false && kAbility == PBEAbility.Levitate)
+            if (other?.HasCancellingAbility() != true && kAbility == PBEAbility.Levitate)
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -873,7 +873,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Safeguard;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.Limber || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.Limber || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -898,7 +898,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Type;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.Immunity || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.Immunity || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate())))
             {
                 return PBEResult.Ineffective_Ability;
             }
@@ -919,7 +919,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 return PBEResult.Ineffective_Safeguard;
             }
             PBEAbility kAbility = useKnownInfo ? KnownAbility : Ability;
-            if (other?.HasCancellingAbility() == false && (kAbility == PBEAbility.Insomnia || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate()) || kAbility == PBEAbility.VitalSpirit))
+            if (other?.HasCancellingAbility() != true && (kAbility == PBEAbility.Insomnia || (kAbility == PBEAbility.LeafGuard && Team.Battle.WillLeafGuardActivate()) || kAbility == PBEAbility.VitalSpirit))
             {
                 return PBEResult.Ineffective_Ability;
             }
