@@ -1214,6 +1214,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_Snore(user, targets, move, effectParam);
                         break;
                     }
+                    case PBEMoveEffect.Soak:
+                    {
+                        Ef_Soak(user, targets, move);
+                        break;
+                    }
                     case PBEMoveEffect.Spikes:
                     {
                         Ef_TryForceTeamStatus(user, move, PBETeamStatus.Spikes);
@@ -3431,6 +3436,26 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         user.AccuracyChange = target.AccuracyChange;
                         user.EvasionChange = target.EvasionChange;
                         BroadcastPsychUp(user, target);
+                    }
+                }
+            }
+            RecordExecutedMove(user, move);
+        }
+        private void Ef_Soak(PBEPokemon user, PBEPokemon[] targets, PBEMove move)
+        {
+            BroadcastMoveUsed(user, move);
+            PPReduce(user, move);
+            if (targets.Length == 0)
+            {
+                BroadcastMoveResult(user, user, PBEResult.NoTarget);
+            }
+            else
+            {
+                foreach (PBEPokemon target in targets)
+                {
+                    if (!MissCheck(user, target, move))
+                    {
+                        BroadcastTypeChanged(target, PBEType.Water, PBEType.None);
                     }
                 }
             }

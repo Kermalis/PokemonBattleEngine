@@ -2228,6 +2228,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SetDamage,
         Sleep,
         Snore,
+        Soak,
         Spikes,
         StealthRock,
         Struggle,
@@ -2696,7 +2697,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Snarl = 555,
         //Snatch = 289, // TODO: Blocked by Metronome
         Snore = 173,
-        //Soak = 487,
+        Soak = 487,
         Softboiled = 135,
         //SolarBeam = 49,
         SonicBoom = 49,

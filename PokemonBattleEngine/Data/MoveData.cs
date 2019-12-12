@@ -2681,6 +2681,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Soak,
+                new PBEMoveData
+                (
+                    PBEType.Water, PBEMoveCategory.Status, 0, 4, 0, 100,
+                    PBEMoveEffect.Soak, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMagicCoat | PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect
+                )
+            },
+            {
                 PBEMove.Softboiled,
                 new PBEMoveData
                 (
