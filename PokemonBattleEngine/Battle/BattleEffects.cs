@@ -3279,17 +3279,20 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 }
                 else
                 {
-                    if (user.SpeedChange == -Settings.MaxStatChange
-                        && user.AttackChange == Settings.MaxStatChange
-                        && user.DefenseChange == Settings.MaxStatChange)
+                    foreach (PBEPokemon target in targets)
                     {
-                        BroadcastMoveResult(user, user, PBEResult.Ineffective_Stat);
-                    }
-                    else
-                    {
-                        ApplyStatChange(user, user, PBEStat.Speed, -1);
-                        ApplyStatChange(user, user, PBEStat.Attack, +1);
-                        ApplyStatChange(user, user, PBEStat.Defense, +1);
+                        if (target.SpeedChange == -Settings.MaxStatChange
+                            && target.AttackChange == Settings.MaxStatChange
+                            && target.DefenseChange == Settings.MaxStatChange)
+                        {
+                            BroadcastMoveResult(user, target, PBEResult.Ineffective_Stat);
+                        }
+                        else
+                        {
+                            ApplyStatChange(user, target, PBEStat.Speed, -1);
+                            ApplyStatChange(user, target, PBEStat.Attack, +1);
+                            ApplyStatChange(user, target, PBEStat.Defense, +1);
+                        }
                     }
                 }
             }
