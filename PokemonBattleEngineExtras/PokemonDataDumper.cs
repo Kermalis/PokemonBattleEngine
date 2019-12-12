@@ -763,7 +763,7 @@ namespace Kermalis.PokemonBattleEngineExtras
             PBEMove.SuperFang,
             PBEMove.PainSplit,
             PBEMove.StringShot,
-            (PBEMove)366, // Tailwind
+            PBEMove.Tailwind,
             (PBEMove)356, // Gravity
             (PBEMove)388, // WorrySeed
             (PBEMove)277, // MagicCoat
@@ -992,7 +992,7 @@ namespace Kermalis.PokemonBattleEngineExtras
                 PBEMove.HeatWave,
                 (PBEMove)272, // RolePlay
                 (PBEMove)215, // HealBell
-                (PBEMove)366, // Tailwind
+                PBEMove.Tailwind,
                 (PBEMove)143, // SkyAttack
                 PBEMove.PainSplit,
                 PBEMove.GigaDrain,

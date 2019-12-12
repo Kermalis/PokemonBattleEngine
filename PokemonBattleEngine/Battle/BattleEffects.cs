@@ -1259,6 +1259,11 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         Ef_Swagger(user, targets, move);
                         break;
                     }
+                    case PBEMoveEffect.Tailwind:
+                    {
+                        Ef_TryForceTeamStatus(user, move, PBETeamStatus.Tailwind);
+                        break;
+                    }
                     case PBEMoveEffect.Teleport:
                     {
                         Ef_Teleport(user, move);
@@ -2405,6 +2410,21 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         user.Team.OpposingTeam.TeamStatus |= PBETeamStatus.StealthRock;
                         BroadcastTeamStatus(user.Team.OpposingTeam, PBETeamStatus.StealthRock, PBETeamStatusAction.Added);
+                        result = PBEResult.Success;
+                    }
+                    else
+                    {
+                        result = PBEResult.Ineffective_Status;
+                    }
+                    break;
+                }
+                case PBETeamStatus.Tailwind:
+                {
+                    if (!user.Team.TeamStatus.HasFlag(PBETeamStatus.Tailwind))
+                    {
+                        user.Team.TeamStatus |= PBETeamStatus.Tailwind;
+                        user.Team.TailwindCount = 4;
+                        BroadcastTeamStatus(user.Team, PBETeamStatus.Tailwind, PBETeamStatusAction.Added);
                         result = PBEResult.Success;
                     }
                     else

@@ -549,6 +549,7 @@ namespace Kermalis.PokemonBattleEngine.AI
                                     case PBEMoveEffect.StealthRock:
                                     case PBEMoveEffect.SunnyDay:
                                     case PBEMoveEffect.SuperFang:
+                                    case PBEMoveEffect.Tailwind:
                                     case PBEMoveEffect.ToxicSpikes:
                                     case PBEMoveEffect.Transform:
                                     case PBEMoveEffect.TrickRoom:

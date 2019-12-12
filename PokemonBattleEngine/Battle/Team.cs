@@ -77,6 +77,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public byte ReflectCount { get; set; }
         public byte SafeguardCount { get; set; }
         public byte SpikeCount { get; set; }
+        public byte TailwindCount { get; set; }
         public byte ToxicSpikeCount { get; set; }
         public bool MonFaintedLastTurn { get; set; }
         public bool MonFaintedThisTurn { get; set; }

@@ -297,7 +297,7 @@ namespace Kermalis.PokemonBattleEngine.Data
     }
     /// <summary>Represents a specific <see cref="PBETeam"/>'s status.</summary>
     [Flags]
-    public enum PBETeamStatus : byte
+    public enum PBETeamStatus : ushort
     {
         /// <summary>The team has no status.</summary>
         None,
@@ -312,11 +312,12 @@ namespace Kermalis.PokemonBattleEngine.Data
         Spikes = 1 << 4, // TODO: Gravity, magic guard, iron ball, baton pass with ingrain, air balloon
         /// <summary>Pokémon that switch in will take damage. The amount of damage is based on the effectiveness of <see cref="PBEType.Rock"/> on the Pokémon. </summary>
         StealthRock = 1 << 5, // TODO: magic guard
+        Tailwind = 1 << 6,
         /// <summary>Grounded Pokémon that switch in will be <see cref="PBEStatus1.Poisoned"/> if <see cref="PBETeam.ToxicSpikeCount"/> is 1 or <see cref="PBEStatus1.BadlyPoisoned"/> if it is 2.
         /// Grounded <see cref="PBEType.Poison"/> Pokémon will remove toxic spikes.</summary>
-        ToxicSpikes = 1 << 6, // TODO: Gravity, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
+        ToxicSpikes = 1 << 7, // TODO: Gravity, magic guard, iron ball, baton pass with ingrain, air balloon, synchronize with roar/whirlwind
         /// <summary>The team is protected from spread moves for a turn.</summary>
-        WideGuard = 1 << 7
+        WideGuard = 1 << 8
     }
     /// <summary>Represents an action regarding a <see cref="PBEAbility"/>.</summary>
     public enum PBEAbilityAction : byte
@@ -2237,6 +2238,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         SunnyDay,
         SuperFang,
         Swagger,
+        Tailwind,
         Teleport,
         Toxic,
         ToxicSpikes,
@@ -2744,7 +2746,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         TailGlow = 294,
         //TailSlap = 541,
         TailWhip = 39,
-        //Tailwind = 366,
+        Tailwind = 366,
         TakeDown = 36,
         //Taunt = 269,
         TechnoBlast = 546,

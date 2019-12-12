@@ -1474,6 +1474,16 @@ namespace Kermalis.PokemonBattleEngineClient
                             }
                             break;
                         }
+                        case PBETeamStatus.Tailwind:
+                        {
+                            switch (tsp.TeamStatusAction)
+                            {
+                                case PBETeamStatusAction.Added: message = "The tailwind blew from behind {2} team!"; break;
+                                case PBETeamStatusAction.Ended: message = "{5} team's tailwind petered out!"; break;
+                                default: throw new ArgumentOutOfRangeException(nameof(tsp.TeamStatusAction));
+                            }
+                            break;
+                        }
                         case PBETeamStatus.ToxicSpikes:
                         {
                             switch (tsp.TeamStatusAction)

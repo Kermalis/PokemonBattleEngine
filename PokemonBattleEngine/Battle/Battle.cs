@@ -523,6 +523,10 @@ namespace Kermalis.PokemonBattleEngine.Battle
                 {
                     speed *= 0.25;
                 }
+                if (pkmn.Team.TeamStatus.HasFlag(PBETeamStatus.Tailwind))
+                {
+                    speed *= 2.0;
+                }
 
                 Debug.WriteLine("Team {0}'s {1}'s evaluated speed: {2}", pkmn.Team.Id, pkmn.Nickname, speed);
                 (PBEPokemon Pokemon, double Speed) tup = (pkmn, speed);
@@ -670,6 +674,15 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     {
                         team.TeamStatus &= ~PBETeamStatus.Safeguard;
                         BroadcastTeamStatus(team, PBETeamStatus.Safeguard, PBETeamStatusAction.Ended);
+                    }
+                }
+                if (team.TeamStatus.HasFlag(PBETeamStatus.Tailwind))
+                {
+                    team.TailwindCount--;
+                    if (team.TailwindCount == 0)
+                    {
+                        team.TeamStatus &= ~PBETeamStatus.Tailwind;
+                        BroadcastTeamStatus(team, PBETeamStatus.Tailwind, PBETeamStatusAction.Ended);
                     }
                 }
             }

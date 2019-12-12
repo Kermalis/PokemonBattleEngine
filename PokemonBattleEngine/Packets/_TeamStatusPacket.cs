@@ -23,7 +23,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
             var bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Code));
             bytes.Add((Team = team).Id);
-            bytes.Add((byte)(TeamStatus = teamStatus));
+            bytes.AddRange(BitConverter.GetBytes((ushort)(TeamStatus = teamStatus)));
             bytes.Add((byte)(TeamStatusAction = teamStatusAction));
             bytes.Add((byte)(DamageVictim = damageVictim == null ? PBEFieldPosition.None : damageVictim.FieldPosition));
             bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
@@ -33,7 +33,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             Buffer = buffer;
             Team = battle.Teams[r.ReadByte()];
-            TeamStatus = (PBETeamStatus)r.ReadByte();
+            TeamStatus = (PBETeamStatus)r.ReadUInt16();
             TeamStatusAction = (PBETeamStatusAction)r.ReadByte();
             DamageVictim = (PBEFieldPosition)r.ReadByte();
         }

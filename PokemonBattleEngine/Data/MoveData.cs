@@ -3005,6 +3005,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Tailwind,
+                new PBEMoveData
+                (
+                    PBEType.Flying, PBEMoveCategory.Status, 0, 6, 0, 0,
+                    PBEMoveEffect.Tailwind, 0, PBEMoveTarget.AllTeam,
+                    PBEMoveFlag.AffectedBySnatch
+                )
+            },
+            {
                 PBEMove.TakeDown,
                 new PBEMoveData
                 (
