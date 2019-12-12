@@ -503,13 +503,33 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         public void ClearStatChanges()
         {
-            AccuracyChange = 0;
             AttackChange = 0;
             DefenseChange = 0;
-            EvasionChange = 0;
             SpAttackChange = 0;
             SpDefenseChange = 0;
             SpeedChange = 0;
+            AccuracyChange = 0;
+            EvasionChange = 0;
+        }
+        /// <summary>For use with <see cref="PBEMove.Punishment"/>.</summary>
+        public int GetPositiveStatTotal()
+        {
+            int total = 0;
+            void Add(sbyte c)
+            {
+                if (c > 0)
+                {
+                    total += c;
+                }
+            }
+            Add(AttackChange);
+            Add(DefenseChange);
+            Add(SpAttackChange);
+            Add(SpDefenseChange);
+            Add(SpeedChange);
+            Add(AccuracyChange);
+            Add(EvasionChange);
+            return total;
         }
         /// <summary>Gets the type that a move will become when used by this Pokémon.</summary>
         /// <param name="move">The move to check.</param>

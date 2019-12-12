@@ -276,6 +276,12 @@ namespace Kermalis.PokemonBattleEngine.Battle
                     BroadcastMagnitude(magnitude);
                     break;
                 }
+                case PBEMove.Punishment:
+                {
+                    PBEPokemon target = targets[0];
+                    basePower = Math.Max(1, Math.Min(200, 60 + (20 * target.GetPositiveStatTotal())));
+                    break;
+                }
                 case PBEMove.Return:
                 {
                     basePower = Math.Max(1, user.Friendship / 2.5);

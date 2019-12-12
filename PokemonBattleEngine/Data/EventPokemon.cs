@@ -1517,7 +1517,7 @@ namespace Kermalis.PokemonBattleEngine.Data
                     new PBEEventPokemon // 2011
                     (
                         new byte[] { 5 }, PBESpecies.Zoroark, 50, false, PBEGender.Male, new PBEAbility[] { PBEAbility.Illusion }, new PBENature[] { PBENature.Quirky },
-                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Agility/*, PBEMove.Embargo, PBEMove.Punishment*/, PBEMove.Snarl }
+                        new byte?[] { null, null, null, null, null, null }, new PBEMove[] { PBEMove.Agility/*, PBEMove.Embargo*/, PBEMove.Punishment, PBEMove.Snarl }
                     )
                 })
             }

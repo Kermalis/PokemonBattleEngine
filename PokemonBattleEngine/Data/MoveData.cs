@@ -2168,6 +2168,15 @@ namespace Kermalis.PokemonBattleEngine.Data
                 )
             },
             {
+                PBEMove.Punishment,
+                new PBEMoveData
+                (
+                    PBEType.Dark, PBEMoveCategory.Physical, 0, 1, 0, 100,
+                    PBEMoveEffect.Hit, 0, PBEMoveTarget.SingleSurrounding,
+                    PBEMoveFlag.AffectedByMirrorMove | PBEMoveFlag.AffectedByProtect | PBEMoveFlag.MakesContact
+                )
+            },
+            {
                 PBEMove.QuickAttack,
                 new PBEMoveData
                 (

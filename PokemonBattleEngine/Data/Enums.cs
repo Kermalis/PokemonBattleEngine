@@ -2608,7 +2608,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         Psyshock = 473,
         Psystrike = 540,
         Psywave = 149,
-        //Punishment = 386,
+        Punishment = 386,
         //Pursuit = 228,
         //Quash = 511, // TODO: Blocked by Metronome
         QuickAttack = 98,
