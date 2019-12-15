@@ -100,9 +100,12 @@ namespace Kermalis.PokemonBattleEngine.Network
 
         public void SendToAll(IPBEPacket packet)
         {
-            foreach (PBEServerClient client in _connectedClients)
+            lock (_connectedClients)
             {
-                client.Send(packet);
+                foreach (PBEServerClient client in _connectedClients)
+                {
+                    client.Send(packet);
+                }
             }
         }
 
