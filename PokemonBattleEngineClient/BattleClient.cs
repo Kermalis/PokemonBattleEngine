@@ -1583,7 +1583,7 @@ namespace Kermalis.PokemonBattleEngineClient
                             {
                                 BattleView.AddMessage("Waiting for players...", messageLog: false);
                             }
-                            else if (Team.SwitchInsRequired == 0) // Don't display this message if we're in switchesloop because it'd overwrite the messages we need to see.
+                            else if (switchesRequired == 0) // Don't display this message if we're in switchesloop because it'd overwrite the messages we need to see.
                             {
                                 BattleView.AddMessage($"Waiting for {Team.OpposingTeam.TrainerName}...", messageLog: false);
                             }
