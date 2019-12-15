@@ -33,7 +33,6 @@ namespace Kermalis.PokemonBattleEngineServer
 
         public static void Main(string[] args)
         {
-            args = new string[] { "10.0.0.197", "8888" };
             PBEUtils.CreateDatabaseConnection(string.Empty);
             new BattleServer(args);
         }
