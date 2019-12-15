@@ -1,6 +1,7 @@
 ﻿using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 
 namespace Kermalis.PokemonBattleEngine.Network
@@ -12,11 +13,15 @@ namespace Kermalis.PokemonBattleEngine.Network
 
         private readonly PBEEncryption _encryption;
 
+        public IPEndPoint IP { get; }
+        public bool IsConnected { get; internal set; }
+
         public EventHandler<IPBEPacket> MessageReceived;
 
         internal PBEServerClient(Socket socket, PBEEncryption encryption)
         {
             Socket = socket;
+            IP = (IPEndPoint)socket.RemoteEndPoint;
             _encryption = encryption;
         }
 

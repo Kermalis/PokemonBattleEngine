@@ -77,7 +77,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                     player.TrainerName = Utils.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
                     _readyPlayers.Add(client, player);
-                    Console.WriteLine($"Client connected ({player.BattleId} {player.TrainerName})");
+                    Console.WriteLine($"Client connected ({client.IP} {player.BattleId} {player.TrainerName})");
 
                     foreach (Player rp in _readyPlayers.Values.ToArray()) // Copy so a disconnect doesn't cause an exception
                     {
@@ -135,10 +135,12 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     // Wait for the server to be in a state where no events will be sent
                     _resetEvent.WaitOne();
+
                     if (_readyPlayers.ContainsKey(client))
                     {
                         Player player = _readyPlayers[client];
                         _readyPlayers.Remove(client);
+                        player.Dispose();
 
                         Console.WriteLine($"Client disconnected ({player.BattleId} {player.TrainerName})");
                         if (player.BattleId < 2)
@@ -161,11 +163,11 @@ namespace Kermalis.PokemonBattleEngineServer
         }
         private void OnClientRefused(object sender, IPEndPoint clientIP, bool refusedForBan)
         {
-            Console.WriteLine($"Client refused ({(refusedForBan ? "banned" : "no more room")}): {clientIP}");
+            Console.WriteLine($"Client refused ({clientIP} {(refusedForBan ? "banned" : "no more room")})");
         }
-        private void OnError(object sender, Exception e)
+        private void OnError(object sender, Exception ex)
         {
-            Console.WriteLine($"Server error: {e}");
+            Console.WriteLine($"Server error:{Environment.NewLine}{ex}");
         }
 
         private void CancelMatch()
@@ -193,7 +195,12 @@ namespace Kermalis.PokemonBattleEngineServer
             foreach (Player c in _readyPlayers.Values.ToArray())
             {
                 DisconnectClient(c);
-                c.ResetEvent.Dispose();
+            }
+            if (_battle != null)
+            {
+                _battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+                _battle.OnNewEvent -= BattleEventHandler;
+                _battle.OnStateChanged -= BattleStateHandler;
             }
             _battle = new PBEBattle(PBEBattleFormat.Double, PBESettings.DefaultSettings);
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
@@ -470,7 +477,7 @@ namespace Kermalis.PokemonBattleEngineServer
 
         public void DisconnectClient(Player player)
         {
-            _server.CloseClient(player.Client);
+            _server.DisconnectClient(player.Client);
         }
         private void SendTo(IEnumerable<Player> players, IPBEPacket packet)
         {

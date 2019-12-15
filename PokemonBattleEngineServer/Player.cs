@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineServer
 {
-    internal sealed class Player
+    internal sealed class Player : IDisposable
     {
         public BattleServer Server { get; }
         public PBEServerClient Client { get; }
@@ -36,12 +36,13 @@ namespace Kermalis.PokemonBattleEngineServer
 
         public void Send(IPBEPacket packet)
         {
+            Debug.WriteLine($"Message sent ({BattleId} \"{packet.GetType().Name}\")");
             ResetEvent.Reset();
             Client.Send(packet);
         }
         private void HandleMessage(object sender, IPBEPacket packet)
         {
-            Debug.WriteLine($"Message received: \"{packet.GetType().Name}\" ({BattleId})");
+            Debug.WriteLine($"Message received ({BattleId} \"{packet.GetType().Name}\")");
             if (Client == null || ResetEvent.SafeWaitHandle.IsClosed)
             {
                 return;
@@ -78,6 +79,13 @@ namespace Kermalis.PokemonBattleEngineServer
                     }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            ResetEvent.Dispose();
+            Client.MessageReceived -= HandleMessage;
+            TeamShell?.Dispose();
         }
     }
 }
