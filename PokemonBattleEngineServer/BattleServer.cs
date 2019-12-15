@@ -1,17 +1,17 @@
-﻿using Ether.Network.Packets;
-using Ether.Network.Server;
-using Kermalis.PokemonBattleEngine;
+﻿using Kermalis.PokemonBattleEngine;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Network;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 
 namespace Kermalis.PokemonBattleEngineServer
 {
-    internal sealed class BattleServer : NetServer<Player>
+    internal sealed class BattleServer
     {
         private enum ServerState
         {
@@ -23,38 +23,38 @@ namespace Kermalis.PokemonBattleEngineServer
             BattleProcessing,    // Battle is running and sending events
             BattleEnded          // Battle ended
         }
+        private readonly PBEServer _server;
         private ServerState _state = ServerState.Resetting;
         private PBEBattle _battle;
         private Player[] _battlers;
-        private readonly List<INetPacket> _spectatorPackets = new List<INetPacket>();
-        private readonly List<Player> _readyPlayers = new List<Player>();
+        private readonly List<IPBEPacket> _spectatorPackets = new List<IPBEPacket>();
+        private readonly Dictionary<PBEServerClient, Player> _readyPlayers = new Dictionary<PBEServerClient, Player>();
         private readonly ManualResetEvent _resetEvent = new ManualResetEvent(true);
 
-        private IPacketProcessor _packetProcessor;
-        public override IPacketProcessor PacketProcessor => _packetProcessor;
         public static void Main(string[] args)
         {
-            using (var server = new BattleServer(args[0], int.Parse(args[1])))
+            PBEUtils.CreateDatabaseConnection(string.Empty);
+            new BattleServer(args);
+        }
+        private BattleServer(string[] args)
+        {
+            using (_server = new PBEServer())
             {
-                server.Start();
+                _server.ClientConnected += OnClientConnected;
+                _server.ClientDisconnected += OnClientDisconnected;
+                _server.ClientRefused += OnClientRefused;
+                _server.Error += OnError;
+                _server.Start(new IPEndPoint(IPAddress.Parse(args[0]), ushort.Parse(args[1])), 100);
+                Console.WriteLine("Server online.");
+                Reset();
+                Thread.Sleep(-1);
+                _server.ClientConnected -= OnClientConnected;
+                _server.ClientDisconnected -= OnClientDisconnected;
+                _server.ClientRefused -= OnClientRefused;
+                _server.Error -= OnError;
             }
         }
-        public BattleServer(string host, int port)
-        {
-            Configuration.Backlog = 50;
-            Configuration.Host = host;
-            Configuration.Port = port;
-            Configuration.MaximumNumberOfConnections = 100;
-            Configuration.BufferSize = 1024;
-            Configuration.Blocking = true;
-        }
-        protected override void Initialize()
-        {
-            PBEUtils.CreateDatabaseConnection(string.Empty);
-            Console.WriteLine("Server online.");
-            Reset();
-        }
-        protected override void OnClientConnected(Player client)
+        private void OnClientConnected(object sender, PBEServerClient client)
         {
             // Need to spawn a new thread so "WaitOne()" doesn't block the thread that receives client packets
             new Thread(() =>
@@ -64,47 +64,47 @@ namespace Kermalis.PokemonBattleEngineServer
                     // Wait for the server to be in a state where no events will be sent
                     _resetEvent.WaitOne();
 
+                    var player = new Player(this, client);
+
                     // Set new player's info
                     for (int i = 0; i < int.MaxValue; i++)
                     {
-                        if (!_readyPlayers.Any(p => p.BattleId == i))
+                        if (!_readyPlayers.Any(p => p.Value.BattleId == i))
                         {
-                            client.BattleId = i;
+                            player.BattleId = i;
                             break;
                         }
                     }
-                    client.TrainerName = Utils.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
-                    _readyPlayers.Add(client);
-                    Console.WriteLine($"Client connected ({client.BattleId} {client.TrainerName})");
+                    player.TrainerName = Utils.RandomElement(new string[] { "Sasha", "Nikki", "Lara", "Violet", "Naomi", "Rose", "Sabrina", "Nicole" });
+                    _readyPlayers.Add(client, player);
+                    Console.WriteLine($"Client connected ({client.IP} {player.BattleId} {player.TrainerName})");
 
-                    foreach (Player player in _readyPlayers.ToArray()) // Copy so a disconnect doesn't cause an exception
+                    foreach (Player rp in _readyPlayers.Values.ToArray()) // Copy so a disconnect doesn't cause an exception
                     {
                         // Alert new player of all other players that have already joined
-                        if (player != client)
+                        if (rp != player)
                         {
-                            client.Send(new PBEPlayerJoinedPacket(false, player.BattleId, player.TrainerName));
-                            if (!client.WaitForResponse())
+                            player.Send(new PBEPlayerJoinedPacket(false, rp.BattleId, rp.TrainerName));
+                            if (!player.WaitForResponse())
                             {
                                 return;
                             }
                         }
                         // Alert all players that this new player joined (including him/herself)
-                        if (player.Socket != null)
+                        bool isMe = rp == player;
+                        rp.Send(new PBEPlayerJoinedPacket(isMe, player.BattleId, player.TrainerName));
+                        if (!rp.WaitForResponse() && (isMe || rp.BattleId < 2))
                         {
-                            player.Send(new PBEPlayerJoinedPacket(player == client, client.BattleId, client.TrainerName));
-                            if (!player.WaitForResponse() && player.BattleId < 2)
-                            {
-                                return;
-                            }
+                            return;
                         }
                     }
 
-                    if (client.BattleId >= 2) // Catch up spectator
+                    if (player.BattleId >= 2) // Catch up spectator
                     {
-                        foreach (INetPacket packet in _spectatorPackets)
+                        foreach (IPBEPacket packet in _spectatorPackets)
                         {
-                            client.Send(packet);
-                            if (!client.WaitForResponse())
+                            player.Send(packet);
+                            if (!player.WaitForResponse())
                             {
                                 return;
                             }
@@ -114,7 +114,7 @@ namespace Kermalis.PokemonBattleEngineServer
                     {
                         _state = ServerState.WaitingForParties;
                         Console.WriteLine("Two players connected! Waiting for parties...");
-                        _battlers = _readyPlayers.ToArray();
+                        _battlers = _readyPlayers.Values.ToArray();
                         SendTo(_battlers, new PBEPartyRequestPacket());
                     }
                 }
@@ -123,7 +123,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 Name = "Client Connected Thread"
             }.Start();
         }
-        protected override void OnClientDisconnected(Player client)
+        private void OnClientDisconnected(object sender, PBEServerClient client)
         {
             // Need to spawn a new thread so "WaitOne()" doesn't block the thread that receives client packets
             new Thread(() =>
@@ -132,19 +132,25 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     // Wait for the server to be in a state where no events will be sent
                     _resetEvent.WaitOne();
-                    _readyPlayers.Remove(client);
 
-                    Console.WriteLine($"Client disconnected ({client.BattleId} {client.TrainerName})");
-                    if (client.BattleId < 2)
+                    if (_readyPlayers.ContainsKey(client))
                     {
-                        if (_state != ServerState.WaitingForPlayers)
+                        Player player = _readyPlayers[client];
+                        _readyPlayers.Remove(client);
+                        player.Dispose();
+
+                        Console.WriteLine($"Client disconnected ({player.BattleId} {player.TrainerName})");
+                        if (player.BattleId < 2)
                         {
-                            CancelMatch();
+                            if (_state != ServerState.WaitingForPlayers)
+                            {
+                                CancelMatch();
+                            }
                         }
-                    }
-                    else
-                    {
-                        // Temporarily ignore spectators
+                        else
+                        {
+                            // Temporarily ignore spectators
+                        }
                     }
                 }
             })
@@ -152,9 +158,13 @@ namespace Kermalis.PokemonBattleEngineServer
                 Name = "Client Disconnected Thread"
             }.Start();
         }
-        protected override void OnError(Exception e)
+        private void OnClientRefused(object sender, IPEndPoint clientIP, bool refusedForBan)
         {
-            Console.WriteLine($"Server error: {e}");
+            Console.WriteLine($"Client refused ({clientIP} {(refusedForBan ? "banned" : "no more room")})");
+        }
+        private void OnError(object sender, Exception ex)
+        {
+            Console.WriteLine($"Server error:{Environment.NewLine}{ex}");
         }
 
         private void CancelMatch()
@@ -179,22 +189,27 @@ namespace Kermalis.PokemonBattleEngineServer
         {
             _resetEvent.Reset();
             _state = ServerState.Resetting;
-            foreach (Player c in _readyPlayers.ToArray())
+            foreach (Player c in _readyPlayers.Values.ToArray())
             {
-                DisconnectClient(c.Id);
-                c.ResetEvent.Close();
+                DisconnectClient(c);
+            }
+            if (_battle != null)
+            {
+                _battle.OnNewEvent -= PBEBattle.ConsoleBattleEventHandler;
+                _battle.OnNewEvent -= BattleEventHandler;
+                _battle.OnStateChanged -= BattleStateHandler;
             }
             _battle = new PBEBattle(PBEBattleFormat.Double, PBESettings.DefaultSettings);
             _battle.OnNewEvent += PBEBattle.ConsoleBattleEventHandler;
             _battle.OnNewEvent += BattleEventHandler;
             _battle.OnStateChanged += BattleStateHandler;
-            _packetProcessor = new PBEPacketProcessor(_battle);
+            _server.Battle = _battle;
             _battlers = null;
             _spectatorPackets.Clear();
             _state = ServerState.WaitingForPlayers;
             _resetEvent.Set();
         }
-        public void PartySubmitted(Player player)
+        public void PartySubmitted(Player player, PBETeamShell teamShell)
         {
             if (_state != ServerState.WaitingForParties)
             {
@@ -206,7 +221,23 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                PBEBattle.CreateTeamParty(_battle.Teams[player.BattleId], player.TeamShell, player.TrainerName);
+                foreach (PBEPokemonShell shell in teamShell)
+                {
+                    try
+                    {
+                        // Not currently necessary, but it would be necessary eventually because PBEMovesetBuilder cannot check if a moveset "makes sense" for the method the Pokémon was obtained in
+                        // Eventually we would probably want to store that sort of information in PBEPokemonShell
+                        PBELegalityChecker.MoveLegalityCheck(shell.Moveset);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Illegal moveset received from {player.TrainerName}");
+                        Console.WriteLine(e.Message);
+                        CancelMatch();
+                        return;
+                    }
+                }
+                PBEBattle.CreateTeamParty(_battle.Teams[player.BattleId], teamShell, player.TrainerName);
             }
         }
         public void ActionsSubmitted(Player player, IList<PBETurnAction> actions)
@@ -260,25 +291,6 @@ namespace Kermalis.PokemonBattleEngineServer
                 case PBEBattleState.ReadyToBegin:
                 {
                     _resetEvent.Reset();
-                    foreach (Player player in _battlers)
-                    {
-                        foreach (PBEPokemonShell shell in player.TeamShell)
-                        {
-                            try
-                            {
-                                // Not currently necessary, but it would be necessary eventually because PBEMovesetBuilder cannot check if a moveset "makes sense" for the method the Pokémon was obtained in
-                                // Eventually we would probably want to store that sort of information in PBEPokemonShell
-                                PBELegalityChecker.MoveLegalityCheck(shell.Moveset);
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine($"Illegal moveset received from {player.TrainerName}");
-                                Console.WriteLine(e.Message);
-                                CancelMatch();
-                                return;
-                            }
-                        }
-                    }
                     Console.WriteLine("Battle starting!");
                     new Thread(battle.Begin) { Name = "Battle Thread" }.Start();
                     break;
@@ -302,9 +314,9 @@ namespace Kermalis.PokemonBattleEngineServer
                 }
             }
         }
-        private void BattleEventHandler(PBEBattle battle, INetPacket packet)
+        private void BattleEventHandler(PBEBattle battle, IPBEPacket packet)
         {
-            void SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(INetPacket realPacket, INetPacket hiddenInfo, byte teamOwnerId)
+            void SendOriginalPacketToTeamOwnerAndEveryoneElseGetsAPacketWithHiddenInfo(IPBEPacket realPacket, IPBEPacket hiddenInfo, byte teamOwnerId)
             {
                 _spectatorPackets.Add(hiddenInfo);
                 Player teamOwner = _battlers[teamOwnerId];
@@ -313,15 +325,12 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     return;
                 }
-                foreach (Player player in _readyPlayers.Except(new[] { teamOwner }))
+                foreach (Player player in _readyPlayers.Values.Except(new[] { teamOwner }))
                 {
-                    if (player.Socket != null)
+                    player.Send(hiddenInfo);
+                    if (!player.WaitForResponse() && player.BattleId < 2)
                     {
-                        player.Send(hiddenInfo);
-                        if (!player.WaitForResponse() && player.BattleId < 2)
-                        {
-                            return;
-                        }
+                        return;
                     }
                 }
             }
@@ -387,7 +396,7 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     _state = ServerState.WaitingForActions;
                     _spectatorPackets.Add(packet);
-                    foreach (Player player in _readyPlayers.ToArray())
+                    foreach (Player player in _readyPlayers.Values.ToArray())
                     {
                         player.Send(packet);
                     }
@@ -410,13 +419,10 @@ namespace Kermalis.PokemonBattleEngineServer
                     {
                         return;
                     }
-                    foreach (Player player in _readyPlayers.Except(_battlers))
+                    foreach (Player player in _readyPlayers.Values.Except(_battlers))
                     {
-                        if (player.Socket != null)
-                        {
-                            player.Send(spectators);
-                            player.WaitForResponse();
-                        }
+                        player.Send(spectators);
+                        player.WaitForResponse();
                     }
                     break;
                 }
@@ -434,30 +440,40 @@ namespace Kermalis.PokemonBattleEngineServer
                 {
                     _state = ServerState.WaitingForSwitchIns;
                     _spectatorPackets.Add(packet);
-                    foreach (Player player in _readyPlayers.ToArray())
-                    {
-                        player.Send(packet);
-                    }
+                    SendToAll(packet);
                     _resetEvent.Set();
                     break;
                 }
                 default:
                 {
                     _spectatorPackets.Add(packet);
-                    foreach (Player player in _readyPlayers.ToArray())
+                    foreach (Player player in _readyPlayers.Values.ToArray())
                     {
-                        if (player.Socket != null)
+                        player.Send(packet);
+                        if (!player.WaitForResponse() && player.BattleId < 2)
                         {
-                            player.Send(packet);
-                            if (!player.WaitForResponse() && player.BattleId < 2)
-                            {
-                                return;
-                            }
+                            return;
                         }
                     }
                     break;
                 }
             }
+        }
+
+        public void DisconnectClient(Player player)
+        {
+            _server.DisconnectClient(player.Client);
+        }
+        private void SendTo(IEnumerable<Player> players, IPBEPacket packet)
+        {
+            foreach (Player p in players)
+            {
+                p.Send(packet);
+            }
+        }
+        private void SendToAll(IPBEPacket packet)
+        {
+            SendTo(_readyPlayers.Values.ToArray(), packet);
         }
     }
 }

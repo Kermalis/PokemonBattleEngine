@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEMoveLockPacket : INetPacket
+    public sealed class PBEMoveLockPacket : IPBEPacket
     {
-        public const short Code = 0x28;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x28;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition MoveUser { get; }
         public PBETeam MoveUserTeam { get; }
@@ -21,26 +19,26 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBEMoveLockPacket(PBEPokemon moveUser, PBEMove lockedMove, PBETurnTarget lockedTargets, PBEMoveLockType moveLockType)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(MoveUser = moveUser.FieldPosition));
-            bytes.Add((MoveUserTeam = moveUser.Team).Id);
-            bytes.AddRange(BitConverter.GetBytes((ushort)(LockedMove = lockedMove)));
-            bytes.Add((byte)(LockedTargets = lockedTargets));
-            bytes.Add((byte)(MoveLockType = moveLockType));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(MoveUser = moveUser.FieldPosition);
+                w.Write((MoveUserTeam = moveUser.Team).Id);
+                w.Write(LockedMove = lockedMove);
+                w.Write(LockedTargets = lockedTargets);
+                w.Write(MoveLockType = moveLockType);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEMoveLockPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEMoveLockPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            MoveUser = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            MoveUser = r.ReadEnum<PBEFieldPosition>();
             MoveUserTeam = battle.Teams[r.ReadByte()];
-            LockedMove = (PBEMove)r.ReadUInt16();
-            LockedTargets = (PBETurnTarget)r.ReadByte();
-            MoveLockType = (PBEMoveLockType)r.ReadByte();
+            LockedMove = r.ReadEnum<PBEMove>();
+            LockedTargets = r.ReadEnum<PBETurnTarget>();
+            MoveLockType = r.ReadEnum<PBEMoveLockType>();
         }
-
-        public void Dispose() { }
     }
 }

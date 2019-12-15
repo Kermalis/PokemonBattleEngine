@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPkmnSwitchOutPacket : INetPacket
+    public sealed class PBEPkmnSwitchOutPacket : IPBEPacket
     {
-        public const short Code = 0x0C;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x0C;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public byte PokemonId { get; }
         public byte DisguisedAsPokemonId { get; }
@@ -23,34 +21,36 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         private PBEPkmnSwitchOutPacket(byte pokemonId, byte disguisedAsPokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam, bool forced = false, PBEFieldPosition? forcedByPokemonPosition = null, PBETeam forcedByPokemonTeam = null)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(PokemonId = pokemonId);
-            bytes.Add(DisguisedAsPokemonId = disguisedAsPokemonId);
-            bytes.Add((byte)(PokemonPosition = pokemonPosition));
-            bytes.Add((PokemonTeam = pokemonTeam).Id);
-            bytes.Add((byte)((Forced = forced) ? 1 : 0));
-            if (Forced)
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
-                bytes.Add((byte)(ForcedByPokemonPosition = forcedByPokemonPosition));
-                bytes.Add((ForcedByPokemonTeam = forcedByPokemonTeam).Id);
+                w.Write(Code);
+                w.Write(PokemonId = pokemonId);
+                w.Write(DisguisedAsPokemonId = disguisedAsPokemonId);
+                w.Write(PokemonPosition = pokemonPosition);
+                w.Write((PokemonTeam = pokemonTeam).Id);
+                w.Write(Forced = forced);
+                if (Forced)
+                {
+                    w.Write((ForcedByPokemonPosition = forcedByPokemonPosition).Value);
+                    w.Write((ForcedByPokemonTeam = forcedByPokemonTeam).Id);
+                }
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        internal PBEPkmnSwitchOutPacket(byte pokemonId, byte disguisedAsPokemonId, PBEFieldPosition pokemonPosition, PBETeam pokemonTeam, PBEPokemon forcedByPokemon = null)
-            : this(pokemonId, disguisedAsPokemonId, pokemonPosition, pokemonTeam, forcedByPokemon != null, forcedByPokemon?.FieldPosition, forcedByPokemon?.Team) { }
-        internal PBEPkmnSwitchOutPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEPkmnSwitchOutPacket(PBEPokemon pokemon, PBEPokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEPokemon forcedByPokemon = null)
+            : this(pokemon.Id, disguisedAsPokemon.Id, oldPosition, pokemon.Team, forcedByPokemon != null, forcedByPokemon?.FieldPosition, forcedByPokemon?.Team) { }
+        internal PBEPkmnSwitchOutPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             PokemonId = r.ReadByte();
             DisguisedAsPokemonId = r.ReadByte();
-            PokemonPosition = (PBEFieldPosition)r.ReadByte();
+            PokemonPosition = r.ReadEnum<PBEFieldPosition>();
             PokemonTeam = battle.Teams[r.ReadByte()];
             Forced = r.ReadBoolean();
             if (Forced)
             {
-                ForcedByPokemonPosition = (PBEFieldPosition)r.ReadByte();
+                ForcedByPokemonPosition = r.ReadEnum<PBEFieldPosition>();
                 ForcedByPokemonTeam = battle.Teams[r.ReadByte()];
             }
         }
@@ -59,7 +59,5 @@ namespace Kermalis.PokemonBattleEngine.Packets
         {
             return new PBEPkmnSwitchOutPacket(byte.MaxValue, byte.MaxValue, PokemonPosition, PokemonTeam, Forced, ForcedByPokemonPosition, ForcedByPokemonTeam);
         }
-
-        public void Dispose() { }
     }
 }

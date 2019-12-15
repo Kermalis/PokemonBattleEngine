@@ -1,33 +1,31 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEWinnerPacket : INetPacket
+    public sealed class PBEWinnerPacket : IPBEPacket
     {
-        public const short Code = 0x26;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x26;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBETeam WinningTeam { get; }
 
         internal PBEWinnerPacket(PBETeam winningTeam)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((WinningTeam = winningTeam).Id);
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write((WinningTeam = winningTeam).Id);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEWinnerPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEWinnerPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             WinningTeam = battle.Teams[r.ReadByte()];
         }
-
-        public void Dispose() { }
     }
 }

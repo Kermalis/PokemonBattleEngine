@@ -1,36 +1,34 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBESwitchInRequestPacket : INetPacket
+    public sealed class PBESwitchInRequestPacket : IPBEPacket
     {
-        public const short Code = 0x23;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x23;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBETeam Team { get; }
         public byte Amount { get; }
 
         internal PBESwitchInRequestPacket(PBETeam team)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((Team = team).Id);
-            bytes.Add(Amount = Team.SwitchInsRequired);
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write((Team = team).Id);
+                w.Write(Amount = Team.SwitchInsRequired);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBESwitchInRequestPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBESwitchInRequestPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             Team = battle.Teams[r.ReadByte()];
             Amount = r.ReadByte();
         }
-
-        public void Dispose() { }
     }
 }

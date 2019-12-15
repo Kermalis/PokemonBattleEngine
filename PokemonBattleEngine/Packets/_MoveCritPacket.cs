@@ -1,37 +1,35 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEMoveCritPacket : INetPacket
+    public sealed class PBEMoveCritPacket : IPBEPacket
     {
-        public const short Code = 0x0F;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x0F;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition Victim { get; }
         public PBETeam VictimTeam { get; }
 
         internal PBEMoveCritPacket(PBEPokemon victim)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Victim = victim.FieldPosition));
-            bytes.Add((VictimTeam = victim.Team).Id);
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(Victim = victim.FieldPosition);
+                w.Write((VictimTeam = victim.Team).Id);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEMoveCritPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEMoveCritPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            Victim = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            Victim = r.ReadEnum<PBEFieldPosition>();
             VictimTeam = battle.Teams[r.ReadByte()];
         }
-
-        public void Dispose() { }
     }
 }

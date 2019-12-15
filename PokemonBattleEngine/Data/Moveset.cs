@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Kermalis.EndianBinaryIO;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -266,7 +267,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        internal PBEMoveset(PBESpecies species, byte level, PBESettings settings, BinaryReader r)
+        internal PBEMoveset(PBESpecies species, byte level, PBESettings settings, EndianBinaryReader r)
         {
             if (r.ReadByte() != settings.NumMoves)
             {
@@ -284,7 +285,7 @@ namespace Kermalis.PokemonBattleEngine.Data
             for (int i = 0; i < Settings.NumMoves; i++)
             {
                 PBEMovesetSlot slot = _list[i];
-                var move = (PBEMove)r.ReadUInt16();
+                PBEMove move = r.ReadEnum<PBEMove>();
                 slot.Move = move;
                 if (slot.Move != move)
                 {
@@ -614,15 +615,15 @@ namespace Kermalis.PokemonBattleEngine.Data
             return GetEnumerator();
         }
 
-        internal void ToBytes(List<byte> bytes)
+        internal void ToBytes(EndianBinaryWriter w)
         {
-            byte amt = (byte)_list.Count;
-            bytes.Add(amt);
-            for (int i = 0; i < amt; i++)
+            byte count = (byte)_list.Count;
+            w.Write(count);
+            for (int i = 0; i < count; i++)
             {
                 PBEMovesetSlot slot = _list[i];
-                bytes.AddRange(BitConverter.GetBytes((ushort)slot.Move));
-                bytes.Add(slot.PPUps);
+                w.Write(slot.Move);
+                w.Write(slot.PPUps);
             }
         }
         internal void ToJson(JsonTextWriter w)

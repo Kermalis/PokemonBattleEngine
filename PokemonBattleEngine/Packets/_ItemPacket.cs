@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEItemPacket : INetPacket
+    public sealed class PBEItemPacket : IPBEPacket
     {
-        public const short Code = 0x16;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x16;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition ItemHolder { get; }
         public PBETeam ItemHolderTeam { get; }
@@ -22,28 +20,28 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBEItemPacket(PBEPokemon itemHolder, PBEPokemon pokemon2, PBEItem item, PBEItemAction itemAction)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(ItemHolder = itemHolder.FieldPosition));
-            bytes.Add((ItemHolderTeam = itemHolder.Team).Id);
-            bytes.Add((byte)(Pokemon2 = pokemon2.FieldPosition));
-            bytes.Add((Pokemon2Team = pokemon2.Team).Id);
-            bytes.AddRange(BitConverter.GetBytes((ushort)(Item = item)));
-            bytes.Add((byte)(ItemAction = itemAction));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(ItemHolder = itemHolder.FieldPosition);
+                w.Write((ItemHolderTeam = itemHolder.Team).Id);
+                w.Write(Pokemon2 = pokemon2.FieldPosition);
+                w.Write((Pokemon2Team = pokemon2.Team).Id);
+                w.Write(Item = item);
+                w.Write(ItemAction = itemAction);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEItemPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEItemPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            ItemHolder = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            ItemHolder = r.ReadEnum<PBEFieldPosition>();
             ItemHolderTeam = battle.Teams[r.ReadByte()];
-            Pokemon2 = (PBEFieldPosition)r.ReadByte();
+            Pokemon2 = r.ReadEnum<PBEFieldPosition>();
             Pokemon2Team = battle.Teams[r.ReadByte()];
-            Item = (PBEItem)r.ReadUInt16();
-            ItemAction = (PBEItemAction)r.ReadByte();
+            Item = r.ReadEnum<PBEItem>();
+            ItemAction = r.ReadEnum<PBEItemAction>();
         }
-
-        public void Dispose() { }
     }
 }

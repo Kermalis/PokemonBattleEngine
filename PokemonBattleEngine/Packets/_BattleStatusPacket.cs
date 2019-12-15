@@ -1,37 +1,34 @@
-﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEBattleStatusPacket : INetPacket
+    public sealed class PBEBattleStatusPacket : IPBEPacket
     {
-        public const short Code = 0x21;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x21;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEBattleStatus BattleStatus { get; }
         public PBEBattleStatusAction BattleStatusAction { get; }
 
         internal PBEBattleStatusPacket(PBEBattleStatus battleStatus, PBEBattleStatusAction battleStatusAction)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(BattleStatus = battleStatus));
-            bytes.Add((byte)(BattleStatusAction = battleStatusAction));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(BattleStatus = battleStatus);
+                w.Write(BattleStatusAction = battleStatusAction);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEBattleStatusPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEBattleStatusPacket(byte[] data, EndianBinaryReader r)
         {
-            Buffer = buffer;
-            BattleStatus = (PBEBattleStatus)r.ReadByte();
-            BattleStatusAction = (PBEBattleStatusAction)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            BattleStatus = r.ReadEnum<PBEBattleStatus>();
+            BattleStatusAction = r.ReadEnum<PBEBattleStatusAction>();
         }
-
-        public void Dispose() { }
     }
 }

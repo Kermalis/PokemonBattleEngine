@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Kermalis.PokemonBattleEngine
 {
@@ -257,17 +256,6 @@ namespace Kermalis.PokemonBattleEngine
                 fileName = fileName.Replace(invalid[i], '-');
             }
             return fileName;
-        }
-
-        internal static void StringToBytes(List<byte> bytes, string str)
-        {
-            byte[] nameBytes = Encoding.Unicode.GetBytes(str);
-            bytes.Add((byte)nameBytes.Length);
-            bytes.AddRange(nameBytes);
-        }
-        internal static string StringFromBytes(BinaryReader r)
-        {
-            return Encoding.Unicode.GetString(r.ReadBytes(r.ReadByte()));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 {
     public sealed class PBEAlphabeticalList<T> : INotifyCollectionChanged, INotifyPropertyChanged, IReadOnlyList<T>
     {
-        private sealed class PBEAlphabeticalListEntry<T>
+        private sealed class PBEAlphabeticalListEntry
         {
             public T Key { get; }
             public PBELocalizedString Value { get; }
@@ -44,7 +44,7 @@ namespace Kermalis.PokemonBattleEngine.Data
         public event NotifyCollectionChangedEventHandler CollectionChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private PBEAlphabeticalListEntry<T>[] _list;
+        private PBEAlphabeticalListEntry[] _list;
         public int Count => _list.Length;
         public T this[int index]
         {
@@ -60,7 +60,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         internal PBEAlphabeticalList()
         {
-            _list = Array.Empty<PBEAlphabeticalListEntry<T>>();
+            _list = Array.Empty<PBEAlphabeticalListEntry>();
             PBELocalizedString.PBECultureChanged += OnCultureChanged;
         }
         internal PBEAlphabeticalList(IEnumerable<T> collection)
@@ -76,11 +76,11 @@ namespace Kermalis.PokemonBattleEngine.Data
                 Sort(_list);
             }
         }
-        private void Sort(PBEAlphabeticalListEntry<T>[] old)
+        private void Sort(PBEAlphabeticalListEntry[] old)
         {
             if (old == null || old == _list)
             {
-                old = (PBEAlphabeticalListEntry<T>[])_list.Clone();
+                old = (PBEAlphabeticalListEntry[])_list.Clone();
             }
             Array.Sort(_list, (x, y) => x.Value.ToString().CompareTo(y.Value.ToString()));
             if (!_list.SequenceEqual(old))
@@ -105,14 +105,14 @@ namespace Kermalis.PokemonBattleEngine.Data
             {
                 throw new ArgumentNullException(nameof(collection));
             }
-            PBEAlphabeticalListEntry<T>[] old = _list;
+            PBEAlphabeticalListEntry[] old = _list;
             if (collection is PBEAlphabeticalList<T> other)
             {
-                _list = (PBEAlphabeticalListEntry<T>[])other._list.Clone();
+                _list = (PBEAlphabeticalListEntry[])other._list.Clone();
             }
             else
             {
-                _list = collection.Select(t => new PBEAlphabeticalListEntry<T>(t)).ToArray();
+                _list = collection.Select(t => new PBEAlphabeticalListEntry(t)).ToArray();
             }
             if (old != null && old.Length != _list.Length)
             {

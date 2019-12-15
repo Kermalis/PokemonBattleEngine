@@ -1,17 +1,16 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEAutoCenterPacket : INetPacket
+    public sealed class PBEAutoCenterPacket : IPBEPacket
     {
-        public const short Code = 0x2A;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x2A;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public byte Pokemon1Id { get; }
         public PBEFieldPosition Pokemon1Position { get; }
@@ -20,27 +19,31 @@ namespace Kermalis.PokemonBattleEngine.Packets
         public PBEFieldPosition Pokemon2Position { get; }
         public PBETeam Pokemon2Team { get; }
 
-        internal PBEAutoCenterPacket(byte pokemon1Id, PBEFieldPosition pokemon1Position, PBETeam pokemon1Team, byte pokemon2Id, PBEFieldPosition pokemon2Position, PBETeam pokemon2Team)
+        private PBEAutoCenterPacket(byte pokemon1Id, PBEFieldPosition pokemon1Position, PBETeam pokemon1Team, byte pokemon2Id, PBEFieldPosition pokemon2Position, PBETeam pokemon2Team)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add(Pokemon1Id = pokemon1Id);
-            bytes.Add((byte)(Pokemon1Position = pokemon1Position));
-            bytes.Add((Pokemon1Team = pokemon1Team).Id);
-            bytes.Add(Pokemon2Id = pokemon2Id);
-            bytes.Add((byte)(Pokemon2Position = pokemon2Position));
-            bytes.Add((Pokemon2Team = pokemon2Team).Id);
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(Pokemon1Id = pokemon1Id);
+                w.Write(Pokemon1Position = pokemon1Position);
+                w.Write((Pokemon1Team = pokemon1Team).Id);
+                w.Write(Pokemon2Id = pokemon2Id);
+                w.Write(Pokemon2Position = pokemon2Position);
+                w.Write((Pokemon2Team = pokemon2Team).Id);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEAutoCenterPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEAutoCenterPacket(PBEPokemon pokemon1, PBEFieldPosition pokemon1OldPosition, PBEPokemon pokemon2, PBEFieldPosition pokemon2OldPosition)
+            : this(pokemon1.Id, pokemon1OldPosition, pokemon1.Team, pokemon2.Id, pokemon2OldPosition, pokemon2.Team) { }
+        internal PBEAutoCenterPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             Pokemon1Id = r.ReadByte();
-            Pokemon1Position = (PBEFieldPosition)r.ReadByte();
+            Pokemon1Position = r.ReadEnum<PBEFieldPosition>();
             Pokemon1Team = battle.Teams[r.ReadByte()];
             Pokemon2Id = r.ReadByte();
-            Pokemon2Position = (PBEFieldPosition)r.ReadByte();
+            Pokemon2Position = r.ReadEnum<PBEFieldPosition>();
             Pokemon2Team = battle.Teams[r.ReadByte()];
         }
 
@@ -52,7 +55,5 @@ namespace Kermalis.PokemonBattleEngine.Packets
             }
             return new PBEAutoCenterPacket(team0Hidden ? byte.MaxValue : Pokemon1Id, Pokemon1Position, Pokemon1Team, team1Hidden ? byte.MaxValue : Pokemon2Id, Pokemon2Position, Pokemon2Team);
         }
-
-        public void Dispose() { }
     }
 }

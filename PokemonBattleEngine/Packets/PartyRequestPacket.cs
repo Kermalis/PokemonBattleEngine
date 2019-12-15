@@ -1,29 +1,26 @@
-﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Battle;
-using System;
-using System.Collections.Generic;
+﻿using Kermalis.EndianBinaryIO;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPartyRequestPacket : INetPacket
+    public sealed class PBEPartyRequestPacket : IPBEPacket
     {
-        public const short Code = 0x03;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x03;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEPartyRequestPacket()
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEPartyRequestPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEPartyRequestPacket(byte[] data)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
         }
-
-        public void Dispose() { }
     }
 }

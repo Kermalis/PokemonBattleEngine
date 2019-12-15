@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPsychUpPacket : INetPacket
+    public sealed class PBEPsychUpPacket : IPBEPacket
     {
-        public const short Code = 0x22;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x22;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEFieldPosition User { get; }
         public PBETeam UserTeam { get; }
@@ -27,28 +25,30 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBEPsychUpPacket(PBEPokemon user, PBEPokemon target)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(User = user.FieldPosition));
-            bytes.Add((UserTeam = user.Team).Id);
-            bytes.Add((byte)(Target = target.FieldPosition));
-            bytes.Add((TargetTeam = target.Team).Id);
-            bytes.Add((byte)(AttackChange = target.AttackChange));
-            bytes.Add((byte)(DefenseChange = target.DefenseChange));
-            bytes.Add((byte)(SpAttackChange = target.SpAttackChange));
-            bytes.Add((byte)(SpDefenseChange = target.SpDefenseChange));
-            bytes.Add((byte)(SpeedChange = target.SpeedChange));
-            bytes.Add((byte)(AccuracyChange = target.AccuracyChange));
-            bytes.Add((byte)(EvasionChange = target.EvasionChange));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(User = user.FieldPosition);
+                w.Write((UserTeam = user.Team).Id);
+                w.Write(Target = target.FieldPosition);
+                w.Write((TargetTeam = target.Team).Id);
+                w.Write(AttackChange = target.AttackChange);
+                w.Write(DefenseChange = target.DefenseChange);
+                w.Write(SpAttackChange = target.SpAttackChange);
+                w.Write(SpDefenseChange = target.SpDefenseChange);
+                w.Write(SpeedChange = target.SpeedChange);
+                w.Write(AccuracyChange = target.AccuracyChange);
+                w.Write(EvasionChange = target.EvasionChange);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEPsychUpPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEPsychUpPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            User = (PBEFieldPosition)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            User = r.ReadEnum<PBEFieldPosition>();
             UserTeam = battle.Teams[r.ReadByte()];
-            Target = (PBEFieldPosition)r.ReadByte();
+            Target = r.ReadEnum<PBEFieldPosition>();
             TargetTeam = battle.Teams[r.ReadByte()];
             AttackChange = r.ReadSByte();
             DefenseChange = r.ReadSByte();
@@ -58,7 +58,5 @@ namespace Kermalis.PokemonBattleEngine.Packets
             AccuracyChange = r.ReadSByte();
             EvasionChange = r.ReadSByte();
         }
-
-        public void Dispose() { }
     }
 }

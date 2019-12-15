@@ -1,4 +1,4 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
 using System;
@@ -8,65 +8,67 @@ using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBESpecialMessagePacket : INetPacket
+    public sealed class PBESpecialMessagePacket : IPBEPacket
     {
-        public const short Code = 0x20;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x20;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBESpecialMessage Message { get; }
         public ReadOnlyCollection<object> Params { get; }
 
         internal PBESpecialMessagePacket(PBESpecialMessage message, params object[] parameters)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Message = message));
-            var par = new List<object>();
-            switch (Message)
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
-                case PBESpecialMessage.DraggedOut:
-                case PBESpecialMessage.Endure:
-                case PBESpecialMessage.HPDrained:
-                case PBESpecialMessage.Recoil:
-                case PBESpecialMessage.Struggle:
+                w.Write(Code);
+                w.Write(Message = message);
+                var par = new List<object>();
+                switch (Message)
                 {
-                    var p = (PBEPokemon)parameters[0];
-                    par.Add(p.FieldPosition);
-                    par.Add(p.Team);
-                    bytes.Add((byte)p.FieldPosition);
-                    bytes.Add(p.Team.Id);
-                    break;
+                    case PBESpecialMessage.DraggedOut:
+                    case PBESpecialMessage.Endure:
+                    case PBESpecialMessage.HPDrained:
+                    case PBESpecialMessage.Recoil:
+                    case PBESpecialMessage.Struggle:
+                    {
+                        var p = (PBEPokemon)parameters[0];
+                        par.Add(p.FieldPosition);
+                        par.Add(p.Team);
+                        w.Write(p.FieldPosition);
+                        w.Write(p.Team.Id);
+                        break;
+                    }
+                    case PBESpecialMessage.Magnitude:
+                    {
+                        byte p = (byte)parameters[0];
+                        par.Add(p);
+                        w.Write(p);
+                        break;
+                    }
+                    case PBESpecialMessage.PainSplit:
+                    {
+                        var p0 = (PBEPokemon)parameters[0];
+                        var p1 = (PBEPokemon)parameters[1];
+                        par.Add(p0.FieldPosition);
+                        par.Add(p0.Team);
+                        par.Add(p1.FieldPosition);
+                        par.Add(p1.Team);
+                        w.Write(p0.FieldPosition);
+                        w.Write(p0.Team.Id);
+                        w.Write(p1.FieldPosition);
+                        w.Write(p1.Team.Id);
+                        break;
+                    }
                 }
-                case PBESpecialMessage.Magnitude:
-                {
-                    byte p = (byte)parameters[0];
-                    par.Add(p);
-                    bytes.Add(p);
-                    break;
-                }
-                case PBESpecialMessage.PainSplit:
-                {
-                    var p0 = (PBEPokemon)parameters[0];
-                    var p1 = (PBEPokemon)parameters[1];
-                    par.Add(p0.FieldPosition);
-                    par.Add(p0.Team);
-                    par.Add(p1.FieldPosition);
-                    par.Add(p1.Team);
-                    bytes.Add((byte)p0.FieldPosition);
-                    bytes.Add(p0.Team.Id);
-                    bytes.Add((byte)p1.FieldPosition);
-                    bytes.Add(p1.Team.Id);
-                    break;
-                }
+                Params = new ReadOnlyCollection<object>(par);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
-            Params = new ReadOnlyCollection<object>(par);
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        internal PBESpecialMessagePacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBESpecialMessagePacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            Message = (PBESpecialMessage)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            Message = r.ReadEnum<PBESpecialMessage>();
             switch (Message)
             {
                 case PBESpecialMessage.DraggedOut:
@@ -75,7 +77,7 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 case PBESpecialMessage.Recoil:
                 case PBESpecialMessage.Struggle:
                 {
-                    Params = new ReadOnlyCollection<object>(new object[] { (PBEFieldPosition)r.ReadByte(), battle.Teams[r.ReadByte()] });
+                    Params = new ReadOnlyCollection<object>(new object[] { r.ReadEnum<PBEFieldPosition>(), battle.Teams[r.ReadByte()] });
                     break;
                 }
                 case PBESpecialMessage.Magnitude:
@@ -91,13 +93,11 @@ namespace Kermalis.PokemonBattleEngine.Packets
                 }
                 case PBESpecialMessage.PainSplit:
                 {
-                    Params = new ReadOnlyCollection<object>(new object[] { (PBEFieldPosition)r.ReadByte(), battle.Teams[r.ReadByte()], (PBEFieldPosition)r.ReadByte(), battle.Teams[r.ReadByte()] });
+                    Params = new ReadOnlyCollection<object>(new object[] { r.ReadEnum<PBEFieldPosition>(), battle.Teams[r.ReadByte()], r.ReadEnum<PBEFieldPosition>(), battle.Teams[r.ReadByte()] });
                     break;
                 }
                 throw new InvalidDataException();
             }
         }
-
-        public void Dispose() { }
     }
 }

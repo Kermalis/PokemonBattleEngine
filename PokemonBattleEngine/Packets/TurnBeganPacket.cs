@@ -1,33 +1,30 @@
-﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Battle;
-using System;
-using System.Collections.Generic;
+﻿using Kermalis.EndianBinaryIO;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBETurnBeganPacket : INetPacket
+    public sealed class PBETurnBeganPacket : IPBEPacket
     {
-        public const short Code = 0x27;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x27;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public ushort TurnNumber { get; }
 
         internal PBETurnBeganPacket(ushort turnNumber)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.AddRange(BitConverter.GetBytes(TurnNumber = turnNumber));
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(TurnNumber = turnNumber);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBETurnBeganPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBETurnBeganPacket(byte[] data, EndianBinaryReader r)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             TurnNumber = r.ReadUInt16();
         }
-
-        public void Dispose() { }
     }
 }

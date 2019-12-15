@@ -1,17 +1,15 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using Kermalis.PokemonBattleEngine.Data;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEWeatherPacket : INetPacket
+    public sealed class PBEWeatherPacket : IPBEPacket
     {
-        public const short Code = 0x14;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x14;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public PBEWeather Weather { get; }
         public PBEWeatherAction WeatherAction { get; }
@@ -21,32 +19,32 @@ namespace Kermalis.PokemonBattleEngine.Packets
 
         internal PBEWeatherPacket(PBEWeather weather, PBEWeatherAction weatherAction, PBEPokemon damageVictim = null)
         {
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Weather = weather));
-            bytes.Add((byte)(WeatherAction = weatherAction));
-            bytes.Add((byte)((HasDamageVictim = damageVictim != null) ? 1 : 0));
-            if (HasDamageVictim)
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
-                bytes.Add((byte)(DamageVictim = damageVictim.FieldPosition));
-                bytes.Add((DamageVictimTeam = damageVictim.Team).Id);
+                w.Write(Code);
+                w.Write(Weather = weather);
+                w.Write(WeatherAction = weatherAction);
+                w.Write(HasDamageVictim = damageVictim != null);
+                if (HasDamageVictim)
+                {
+                    w.Write((DamageVictim = damageVictim.FieldPosition).Value);
+                    w.Write((DamageVictimTeam = damageVictim.Team).Id);
+                }
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        internal PBEWeatherPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEWeatherPacket(byte[] data, EndianBinaryReader r, PBEBattle battle)
         {
-            Buffer = buffer;
-            Weather = (PBEWeather)r.ReadByte();
-            WeatherAction = (PBEWeatherAction)r.ReadByte();
+            Data = new ReadOnlyCollection<byte>(data);
+            Weather = r.ReadEnum<PBEWeather>();
+            WeatherAction = r.ReadEnum<PBEWeatherAction>();
             HasDamageVictim = r.ReadBoolean();
             if (HasDamageVictim)
             {
-                DamageVictim = (PBEFieldPosition)r.ReadByte();
+                DamageVictim = r.ReadEnum<PBEFieldPosition>();
                 DamageVictimTeam = battle.Teams[r.ReadByte()];
             }
         }
-
-        public void Dispose() { }
     }
 }

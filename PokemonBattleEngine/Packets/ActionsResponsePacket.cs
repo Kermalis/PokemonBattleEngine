@@ -1,4 +1,4 @@
-﻿using Ether.Network.Packets;
+﻿using Kermalis.EndianBinaryIO;
 using Kermalis.PokemonBattleEngine.Battle;
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEActionsResponsePacket : INetPacket
+    public sealed class PBEActionsResponsePacket : IPBEPacket
     {
-        public const short Code = 0x08;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x08;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public ReadOnlyCollection<PBETurnAction> Actions { get; }
 
@@ -29,19 +29,22 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 throw new ArgumentNullException(nameof(actions));
             }
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)(Actions = new ReadOnlyCollection<PBETurnAction>(actions)).Count);
-            for (int i = 0; i < (byte)Actions.Count; i++)
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
             {
-                Actions[i].ToBytes(bytes);
+                w.Write(Code);
+                byte count = (byte)(Actions = new ReadOnlyCollection<PBETurnAction>(actions)).Count;
+                w.Write(count);
+                for (int i = 0; i < count; i++)
+                {
+                    Actions[i].ToBytes(w);
+                }
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
             }
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
         }
-        internal PBEActionsResponsePacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEActionsResponsePacket(byte[] data, EndianBinaryReader r)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             var actions = new PBETurnAction[r.ReadByte()];
             for (int i = 0; i < actions.Length; i++)
             {
@@ -49,7 +52,5 @@ namespace Kermalis.PokemonBattleEngine.Packets
             }
             Actions = new ReadOnlyCollection<PBETurnAction>(actions);
         }
-
-        public void Dispose() { }
     }
 }

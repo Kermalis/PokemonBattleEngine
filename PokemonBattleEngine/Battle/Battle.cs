@@ -1,5 +1,5 @@
-﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
+using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,7 +36,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         public PBEBattleStatus BattleStatus { get; set; }
         public byte TrickRoomCount { get; set; }
 
-        public List<INetPacket> Events { get; } = new List<INetPacket>();
+        public List<IPBEPacket> Events { get; } = new List<IPBEPacket>();
 
         /// <summary>Gets a specific <see cref="PBEPokemon"/> participating in this battle by its ID.</summary>
         /// <param name="pkmnId">The ID of the <see cref="PBEPokemon"/>.</param>
@@ -431,7 +431,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
                         PBEFieldPosition pkmn1OldPos = pkmn1.FieldPosition,
                             pkmn2OldPos = pkmn2.FieldPosition;
                         pkmn2.FieldPosition = pkmn1.FieldPosition = PBEFieldPosition.Center;
-                        BroadcastAutoCenter(pkmn1.Id, pkmn1OldPos, pkmn1.Team, pkmn2.Id, pkmn2OldPos, pkmn2.Team);
+                        BroadcastAutoCenter(pkmn1, pkmn1OldPos, pkmn2, pkmn2OldPos);
                     }
                 }
 

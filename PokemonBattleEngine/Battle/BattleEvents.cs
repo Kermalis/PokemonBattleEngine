@@ -1,5 +1,4 @@
-﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Data;
+﻿using Kermalis.PokemonBattleEngine.Data;
 using Kermalis.PokemonBattleEngine.Packets;
 using System;
 using System.Linq;
@@ -8,7 +7,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
 {
     public sealed partial class PBEBattle
     {
-        public delegate void BattleEvent(PBEBattle battle, INetPacket packet);
+        public delegate void BattleEvent(PBEBattle battle, IPBEPacket packet);
         public event BattleEvent OnNewEvent;
 
         private void BroadcastAbility(PBEPokemon abilityOwner, PBEPokemon pokemon2, PBEAbility ability, PBEAbilityAction abilityAction)
@@ -93,7 +92,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void BroadcastMovePPChanged(PBEPokemon moveUser, PBEMove move, int amountReduced)
         {
-            var p = new PBEMovePPChangedPacket(moveUser.FieldPosition, moveUser.Team, move, amountReduced);
+            var p = new PBEMovePPChangedPacket(moveUser, move, amountReduced);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -121,7 +120,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void BroadcastPkmnFainted(PBEPokemon pokemon, PBEFieldPosition oldPosition)
         {
-            var p = new PBEPkmnFaintedPacket(pokemon.Id, oldPosition, pokemon.Team);
+            var p = new PBEPkmnFaintedPacket(pokemon, oldPosition);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -143,13 +142,13 @@ namespace Kermalis.PokemonBattleEngine.Battle
             double weight = pData.Weight;
             pokemon.Weight = weight;
             pokemon.KnownWeight = weight;
-            var p = new PBEPkmnFormChangedPacket(pokemon.FieldPosition, pokemon.Team, pokemon.Attack, pokemon.Defense, pokemon.SpAttack, pokemon.SpDefense, pokemon.Speed, newAbility, newKnownAbility, newSpecies, type1, type2, weight);
+            var p = new PBEPkmnFormChangedPacket(pokemon);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
         private void BroadcastPkmnHPChanged(PBEPokemon pokemon, ushort oldHP, double oldHPPercentage)
         {
-            var p = new PBEPkmnHPChangedPacket(pokemon.FieldPosition, pokemon.Team, oldHP, pokemon.HP, oldHPPercentage, pokemon.HPPercentage);
+            var p = new PBEPkmnHPChangedPacket(pokemon, oldHP, oldHPPercentage);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -167,7 +166,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         }
         private void BroadcastPkmnSwitchOut(PBEPokemon pokemon, PBEPokemon disguisedAsPokemon, PBEFieldPosition oldPosition, PBEPokemon forcedByPokemon = null)
         {
-            var p = new PBEPkmnSwitchOutPacket(pokemon.Id, disguisedAsPokemon.Id, oldPosition, pokemon.Team, forcedByPokemon);
+            var p = new PBEPkmnSwitchOutPacket(pokemon, disguisedAsPokemon, oldPosition, forcedByPokemon);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -279,9 +278,9 @@ namespace Kermalis.PokemonBattleEngine.Battle
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
-        private void BroadcastAutoCenter(byte pokemon1Id, PBEFieldPosition pokemon1Position, PBETeam pokemon1Team, byte pokemon2Id, PBEFieldPosition pokemon2Position, PBETeam pokemon2Team)
+        private void BroadcastAutoCenter(PBEPokemon pokemon1, PBEFieldPosition pokemon1OldPosition, PBEPokemon pokemon2, PBEFieldPosition pokemon2OldPosition)
         {
-            var p = new PBEAutoCenterPacket(pokemon1Id, pokemon1Position, pokemon1Team, pokemon2Id, pokemon2Position, pokemon2Team);
+            var p = new PBEAutoCenterPacket(pokemon1, pokemon1OldPosition, pokemon2, pokemon2OldPosition);
             Events.Add(p);
             OnNewEvent?.Invoke(this, p);
         }
@@ -315,7 +314,7 @@ namespace Kermalis.PokemonBattleEngine.Battle
         /// <param name="battle">The battle that <paramref name="packet"/> belongs to.</param>
         /// <param name="packet">The battle event packet.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="battle"/> or <paramref name="packet"/> are null.</exception>
-        public static void ConsoleBattleEventHandler(PBEBattle battle, INetPacket packet)
+        public static void ConsoleBattleEventHandler(PBEBattle battle, IPBEPacket packet)
         {
             if (battle == null)
             {

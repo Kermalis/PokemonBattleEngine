@@ -1,16 +1,14 @@
-﻿using Ether.Network.Packets;
-using Kermalis.PokemonBattleEngine.Battle;
+﻿using Kermalis.EndianBinaryIO;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
 namespace Kermalis.PokemonBattleEngine.Packets
 {
-    public sealed class PBEPlayerJoinedPacket : INetPacket
+    public sealed class PBEPlayerJoinedPacket : IPBEPacket
     {
-        public const short Code = 0x01;
-        public ReadOnlyCollection<byte> Buffer { get; }
+        public const ushort Code = 0x01;
+        public ReadOnlyCollection<byte> Data { get; }
 
         public bool IsMe { get; }
         public int BattleId { get; }
@@ -26,22 +24,22 @@ namespace Kermalis.PokemonBattleEngine.Packets
             {
                 throw new ArgumentOutOfRangeException(nameof(trainerName));
             }
-            var bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Code));
-            bytes.Add((byte)((IsMe = isMe) ? 1 : 0));
-            bytes.AddRange(BitConverter.GetBytes(BattleId = battleId));
-            PBEUtils.StringToBytes(bytes, TrainerName = trainerName);
-            bytes.InsertRange(0, BitConverter.GetBytes((short)bytes.Count));
-            Buffer = new ReadOnlyCollection<byte>(bytes);
+            using (var ms = new MemoryStream())
+            using (var w = new EndianBinaryWriter(ms, encoding: EncodingType.UTF16))
+            {
+                w.Write(Code);
+                w.Write(IsMe = isMe);
+                w.Write(BattleId = battleId);
+                w.Write(TrainerName = trainerName, true);
+                Data = new ReadOnlyCollection<byte>(ms.ToArray());
+            }
         }
-        internal PBEPlayerJoinedPacket(ReadOnlyCollection<byte> buffer, BinaryReader r, PBEBattle battle)
+        internal PBEPlayerJoinedPacket(byte[] data, EndianBinaryReader r)
         {
-            Buffer = buffer;
+            Data = new ReadOnlyCollection<byte>(data);
             IsMe = r.ReadBoolean();
             BattleId = r.ReadInt32();
-            TrainerName = PBEUtils.StringFromBytes(r);
+            TrainerName = r.ReadStringNullTerminated();
         }
-
-        public void Dispose() { }
     }
 }

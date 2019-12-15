@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Kermalis.EndianBinaryIO;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -38,7 +39,7 @@ namespace Kermalis.PokemonBattleEngine.Data
 
         public PBESettings Settings { get; }
 
-        internal PBETeamShell(PBESettings settings, BinaryReader r)
+        internal PBETeamShell(PBESettings settings, EndianBinaryReader r)
         {
             sbyte count = r.ReadSByte();
             if (count < 1 || count > settings.MaxPartySize)
@@ -304,12 +305,13 @@ namespace Kermalis.PokemonBattleEngine.Data
             }
         }
 
-        internal void ToBytes(List<byte> bytes)
+        internal void ToBytes(EndianBinaryWriter w)
         {
-            bytes.Add((byte)_list.Count);
-            for (int i = 0; i < _list.Count; i++)
+            sbyte count = (sbyte)_list.Count;
+            w.Write(count);
+            for (int i = 0; i < count; i++)
             {
-                _list[i].ToBytes(bytes);
+                _list[i].ToBytes(w);
             }
         }
         public void ToJsonFile(string path)
